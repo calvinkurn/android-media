@@ -35,6 +35,11 @@ private const val QUERY = """
               branchApplink
               isClosed
             }
+            state {
+              status
+              title
+              subtitle
+            }
             nextPageKey
           }
         }
@@ -100,6 +105,10 @@ class TokofoodSearchMerchantUseCase @Inject constructor(
                 put(
                     TokoFoodMerchantListParamMapper.TIMEZONE_KEY,
                     TokoFoodMerchantListParamMapper.TIMEZONE
+                )
+                put(
+                    TokoFoodMerchantListParamMapper.USER_CITY_ID_KEY,
+                    localCacheModel?.city_id.orEmpty()
                 )
             }
             return UrlParamUtils.generateUrlParamString(updatedSearchParamMap)

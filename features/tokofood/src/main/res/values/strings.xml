@@ -173,6 +173,19 @@
     <string name="search_srp_quick_sort_title">Urutkan restoran</string>
     <string name="search_srp_quick_price_range_button">Tampilkan</string>
     <string name="search_srp_quick_price_reset">Reset</string>
+    <string name="search_srp_ooc_no_address_title">Kamu belum atur alamat pengiriman, nih</string>
+    <string name="search_srp_ooc_no_address_subtitle">Biar pengalaman belanjamu lebih baik, masukkan alamat pengiriman dengan lengkap, ya.</string>
+    <string name="search_srp_ooc_no_address_button">Atur Alamat</string>
+    <string name="search_srp_ooc_no_pinpoint_title">Kamu belum atur pinpoint lokasi</string>
+    <string name="search_srp_ooc_no_pinpoint_subtitle">Biar pengalaman belanjamu lebih baik, atur pinpoint lokasi alamatmu dulu, ya.</string>
+    <string name="search_srp_ooc_no_pinpoint_button">Atur Pinpoint</string>
+    <string name="search_srp_ooc_out_of_coverage_title">Yaah, saat ini GoFood belum bisa antar ke tempatmu</string>
+    <string name="search_srp_ooc_out_of_coverage_subtitle">Tunggu GoFood di daerahmu, ya!</string>
+    <string name="search_srp_ooc_out_of_coverage_button">Ubah Alamat</string>
+    <string name="search_srp_ooc_out_of_coverage_secondary_button">Kembali ke Home</string>
+    <string name="search_srp_ooc_success_change_address">Berhasil mengubah alamat</string>
+    <string name="search_srp_ooc_failed_edit_pinpoint">Gagal mengubah pinpoint alamat</string>
+    <string name="search_srp_ooc_okay">Oke</string>
 
     <!-- Search - Common -->
     <string name="search_common_to_homepage">Ke Homepage</string>

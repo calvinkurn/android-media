@@ -11,6 +11,7 @@ object TokoFoodMerchantListParamMapper {
     private const val SORT_BY_KEY = "sortBy"
     const val LAT_LONG_KEY = "latlong"
     const val TIMEZONE_KEY = "timezone"
+    const val USER_CITY_ID_KEY = "user_cityId"
     const val PAGE_KEY = "pageKey"
     const val LIMIT_KEY = "limit"
 

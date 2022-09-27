@@ -15,6 +15,9 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticCommon.data.constant.AddressConstant
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
+import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
@@ -28,6 +31,7 @@ import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.Tokofood
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiState
@@ -50,6 +54,8 @@ import javax.inject.Inject
 class TokofoodSearchResultPageViewModel @Inject constructor(
     private val tokofoodSearchMerchantUseCase: TokofoodSearchMerchantUseCase,
     private val tokofoodFilterSortUseCase: TokofoodFilterSortUseCase,
+    private val eligibleForAddressUseCase: EligibleForAddressUseCase,
+    private val keroEditAddressUseCase: KeroEditAddressUseCase,
     private val tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper,
     private val tokofoodFilterSortMapper: TokofoodFilterSortMapper,
     val dispatcher: CoroutineDispatchers
@@ -152,15 +158,15 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     fun getInitialMerchantSearchResult(searchParameter: HashMap<String, String>?) {
         pageKeyLiveData.value = null
         currentSearchParameterMap.value = searchParameter
-        _uiState.tryEmit(
-            TokofoodSearchUiState(
-                state = TokofoodSearchUiState.STATE_LOAD_INITIAL
-            )
-        )
+        showInitialLoading()
         launchCatchError(
             block = {
-                val searchResult = getSearchResult()
-                _uiState.emit(getInitialSearchResultSuccessState(searchResult))
+                checkAddressForEligibility {
+                    val searchResult = getSearchResult()
+                    emitSuccessIfInCoverage(searchResult) {
+                        _uiState.emit(getInitialSearchResultSuccessState(searchResult))
+                    }
+                }
             },
             onError = {
                 _uiState.emit(
@@ -267,6 +273,17 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         return currentSearchParameterMap.value?.get(sortKey).orEmpty()
     }
 
+    fun updatePinpoint(latitude: String, longitude: String) {
+        showInitialLoading()
+        val localCacheModel = localCacheModelLiveData.value
+        val addressId = localCacheModel?.address_id
+        if (addressId.isNullOrBlank()) {
+            checkEligibleForAnaRevamp()
+        } else {
+            editPinpoint(addressId, latitude, longitude)
+        }
+    }
+
     private fun setIndicatorCount() {
         currentSearchParameterMap.value?.let { searchParameter ->
             _appliedFilterCount.tryEmit(searchParameter.getActiveCount())
@@ -301,6 +318,14 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    private fun showInitialLoading() {
+        _uiState.tryEmit(
+            TokofoodSearchUiState(
+                state = TokofoodSearchUiState.STATE_LOAD_INITIAL
+            )
+        )
+    }
+
     private fun loadDetailSortFilter() {
         launchCatchError(
             block = {
@@ -330,9 +355,13 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     private fun loadMoreSearch() {
         launchCatchError(
             block = {
-                val searchResult = getSearchResult()
-                pageKeyLiveData.value = searchResult.tokofoodSearchMerchant.nextPageKey
-                _uiState.emit(getMoreSearchResultSuccessState(searchResult))
+                checkAddressForEligibility {
+                    val searchResult = getSearchResult()
+                    emitSuccessIfInCoverage(searchResult) {
+                        pageKeyLiveData.value = searchResult.tokofoodSearchMerchant.nextPageKey
+                        _uiState.emit(getMoreSearchResultSuccessState(searchResult))
+                    }
+                }
             },
             onError = {
                 _uiEventFlow.emit(
@@ -383,6 +412,83 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
         }
     }
 
+    private suspend fun checkAddressForEligibility(onEligible: suspend () -> Unit) {
+        localCacheModelLiveData.value.let {
+            when {
+                it == null || it.address_id.isBlank() -> {
+                    checkEligibleForAnaRevamp()
+                }
+                it.latLong.isBlank() -> {
+                    emitNoPinpointState()
+                }
+                else -> {
+                    onEligible()
+                }
+            }
+        }
+    }
+
+    private fun checkEligibleForAnaRevamp() {
+        eligibleForAddressUseCase.eligibleForAddressFeature(
+            {
+                if (it.eligibleForRevampAna.eligible) {
+                    emitNoAddressRevampState()
+                } else {
+                    emitNoAddressState()
+                }
+            },
+            {
+                emitNoAddressState()
+            },
+            AddressConstant.ANA_REVAMP_FEATURE_ID
+        )
+    }
+
+    private suspend fun emitSuccessIfInCoverage(response: TokofoodSearchMerchantResponse,
+                                                onSuccess: suspend () -> Unit) {
+        if (response.tokofoodSearchMerchant.state.isOOC) {
+            emitOutOfCoverageState()
+        } else {
+            onSuccess()
+        }
+    }
+
+    private fun emitNoPinpointState() {
+        _uiState.tryEmit(
+            TokofoodSearchUiState(
+                state = TokofoodSearchUiState.STATE_OOC,
+                data = MerchantSearchOOCUiModel.NO_PINPOINT
+            )
+        )
+    }
+
+    private fun emitNoAddressState() {
+        _uiState.tryEmit(
+            TokofoodSearchUiState(
+                state = TokofoodSearchUiState.STATE_OOC,
+                data = MerchantSearchOOCUiModel.NO_ADDRESS
+            )
+        )
+    }
+
+    private fun emitNoAddressRevampState() {
+        _uiState.tryEmit(
+            TokofoodSearchUiState(
+                state = TokofoodSearchUiState.STATE_OOC,
+                data = MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP
+            )
+        )
+    }
+
+    private suspend fun emitOutOfCoverageState() {
+        _uiState.emit(
+            TokofoodSearchUiState(
+                state = TokofoodSearchUiState.STATE_OOC,
+                data = MerchantSearchOOCUiModel.OUT_OF_COVERAGE
+            )
+        )
+    }
+
     private fun getMoreSearchResultSuccessState(searchResult: TokofoodSearchMerchantResponse): TokofoodSearchUiState {
         return TokofoodSearchUiState(
             state = TokofoodSearchUiState.STATE_SUCCESS_LOAD_MORE,
@@ -414,6 +520,9 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
                             uiState.data,
                             currentVisitables.value
                         )
+                    }
+                    TokofoodSearchUiState.STATE_OOC -> {
+                        tokofoodMerchantSearchResultMapper.getOutOfCoverageUiModels(uiState.data)
                     }
                     else -> {
                         tokofoodMerchantSearchResultMapper.getErrorSearchResultInitial(uiState.throwable)
@@ -474,6 +583,37 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
             }
         }
         return DynamicFilterModel(updatedDataValue)
+    }
+
+    private fun editPinpoint(addressId: String,
+                             latitude: String,
+                             longitude: String) {
+        launchCatchError(
+            block = {
+                val isSuccess = withContext(dispatcher.io) {
+                    keroEditAddressUseCase.execute(addressId, latitude, longitude)
+                }
+                val uiEventState =
+                    if (isSuccess) {
+                        TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT
+                    } else {
+                        TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT
+                    }
+                _uiEventFlow.tryEmit(
+                    TokofoodSearchUiEvent(
+                        state = uiEventState
+                    )
+                )
+            },
+            onError = {
+                _uiEventFlow.tryEmit(
+                    TokofoodSearchUiEvent(
+                        state = TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT,
+                        throwable = it
+                    )
+                )
+            }
+        )
     }
 
     private suspend fun sendFailureEvent(state: Int, throwable: Throwable) {
