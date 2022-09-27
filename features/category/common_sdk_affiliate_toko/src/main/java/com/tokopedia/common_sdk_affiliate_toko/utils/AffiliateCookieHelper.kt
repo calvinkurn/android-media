@@ -36,7 +36,7 @@ class AffiliateCookieHelper @Inject constructor(
      * @param[affiliateChannel] required and pass it from url query params
      * @param[affiliatePageDetail] [AffiliatePageDetail]
      * @param[uuid] random UUID generated every time user land on PDP page. (Required for Product)
-     * @param[isATC] mandatory for direct ATC attribution
+     * @param[isATC] mandatory for Direct ATC attribution
      * @param[additionalParam] some additional params of type [AdditionalParam]
      *
      */
