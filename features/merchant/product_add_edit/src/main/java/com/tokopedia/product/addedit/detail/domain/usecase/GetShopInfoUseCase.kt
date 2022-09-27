@@ -14,7 +14,7 @@ class GetShopInfoUseCase @Inject constructor(
         private const val PARAM_SHOP_ID = "shopID"
         private val query = """
             query shopInfoByID (${'$'}shopID: Int!) {
-                shopInfoByID(input:{shopIDs: [${'$'}shopID], fields:["shopstats,other-goldos"]}) {
+                shopInfoByID(input:{shopIDs: [${'$'}shopID], fields:["shopstats","other-goldos"]}) {
                     result {
                         shopStats {
                             totalTxSuccess
