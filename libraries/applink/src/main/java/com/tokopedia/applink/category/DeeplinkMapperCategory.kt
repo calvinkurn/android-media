@@ -46,6 +46,9 @@ object DeeplinkMapperCategory {
     fun getRegisteredNavigationAffiliate(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
+    fun getRegisteredNavigationAffiliateFromHttp(uri: Uri): String {
+        return UriUtil.buildUri("${DeeplinkConstant.SCHEME_INTERNAL}:/${uri.path}")
+    }
 
     fun getRegisteredNavigationCategory(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
