@@ -52,10 +52,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private val predefinedTabs by lazy {
         listOf(
-            TabMetadata(TabConstant.TAB_ID_UPCOMING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_upcoming)),
-            TabMetadata(TabConstant.TAB_ID_REGISTERED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_registered)),
-            TabMetadata(TabConstant.TAB_ID_ONGOING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_ongoing)),
-            TabMetadata(TabConstant.TAB_ID_FINISHED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_finished))
+            TabMetadata.Tab(TabConstant.TAB_ID_UPCOMING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_upcoming)),
+            TabMetadata.Tab(TabConstant.TAB_ID_REGISTERED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_registered)),
+            TabMetadata.Tab(TabConstant.TAB_ID_ONGOING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_ongoing)),
+            TabMetadata.Tab(TabConstant.TAB_ID_FINISHED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_finished))
         )
     }
 
@@ -115,7 +115,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
         renderTicker(uiState.showTicker, uiState.error)
-        renderTabs(uiState.tabsMetadata, uiState.error, findTargetTabDestination() ?: return)
+        renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return)
         renderErrorState(uiState.error)
     }
 
@@ -133,7 +133,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.shimmer?.content?.isVisible = isLoading && !isError
     }
 
-    private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?, targetTabPosition: Int) {
+    private fun renderTabs(tabs: List<TabMetadata.Tab>, error: Throwable?, targetTabPosition: Int) {
         val isError = error != null
         binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
         binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError
@@ -143,7 +143,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun createFragments(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
+    private fun createFragments(predefinedTabs: List<TabMetadata.Tab>, tabs: List<TabMetadata.Tab>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         predefinedTabs.forEachIndexed { _, currentTab ->
@@ -161,7 +161,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         return pages
     }
 
-    private fun displayTabs(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>, targetTabPosition: Int) {
+    private fun displayTabs(predefinedTabs: List<TabMetadata.Tab>, tabs: List<TabMetadata.Tab>, targetTabPosition: Int) {
         val fragments = createFragments(predefinedTabs, tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)

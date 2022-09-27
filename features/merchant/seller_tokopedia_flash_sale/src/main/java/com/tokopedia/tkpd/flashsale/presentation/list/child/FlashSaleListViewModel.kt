@@ -222,7 +222,8 @@ class FlashSaleListViewModel @Inject constructor(
             formattedDate.endDate,
             endDateUnix,
             findQuotaUsagePercentage(),
-            submissionEndDateUnix
+            submissionEndDateUnix,
+            useMultiLocation
         )
     }
 
@@ -237,7 +238,8 @@ class FlashSaleListViewModel @Inject constructor(
             statusText,
             productMeta,
             cancellationReason,
-            findProductSoldPercentage()
+            findProductSoldPercentage(),
+            useMultiLocation
         )
     }
 
@@ -259,7 +261,8 @@ class FlashSaleListViewModel @Inject constructor(
             reviewStartDateUnix,
             reviewEndDateUnix,
             status,
-            statusText
+            statusText,
+            useMultiLocation
         )
     }
 
@@ -279,7 +282,8 @@ class FlashSaleListViewModel @Inject constructor(
             productMeta.totalStockSold,
             productMeta.totalProductStock,
             status,
-            statusText
+            statusText,
+            useMultiLocation
         )
     }
 }

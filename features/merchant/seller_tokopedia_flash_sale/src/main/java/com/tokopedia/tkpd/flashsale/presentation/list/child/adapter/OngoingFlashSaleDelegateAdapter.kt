@@ -59,7 +59,6 @@ class OngoingFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) -> 
                 item.formattedEndDate
             )
             binding.timer.setTimer(item)
-            binding.imgCampaignStatusIndicator
         }
 
         private fun TextView.setStatus(item: OngoingFlashSaleItem) {
