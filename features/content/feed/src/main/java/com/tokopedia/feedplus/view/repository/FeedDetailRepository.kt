@@ -52,6 +52,11 @@ query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
           shortName
           startTime
           endTime
+          restrictions{
+          label
+          isActive
+          __typename
+          }
         }
     nextCursor
   }

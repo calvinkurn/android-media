@@ -236,7 +236,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val OPEN_KOL_COMMENT = 101
         private const val OPEN_FEED_DETAIL = 1011
         private const val OPEN_CONTENT_REPORT = 1310
-        private const val CREATE_POST = 888
         private const val DEFAULT_VALUE = -1
         private const val OPEN_PLAY_CHANNEL = 1858
         private const val OPEN_VIDEO_DETAIL = 1311
@@ -880,9 +879,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             }
             OPEN_FEED_DETAIL -> if (resultCode == Activity.RESULT_OK) {
-
-            }
-            CREATE_POST -> {
+               if (data.getBooleanExtra(IS_FOLLOWED, false)) {
+                   val authorType =  data.getStringExtra(PARAM_AUTHOR_TYPE)
+                   val rowNumber = data.getIntExtra(PARAM_POST_POSITION, -1)
+                   if (rowNumber in 0 until adapter.getList().size) {
+                       if (authorType == FollowCta.AUTHOR_USER) {
+                           onSuccessFollowUnfollowKol(rowNumber)
+                       } else if (authorType == FollowCta.AUTHOR_SHOP) {
+                           onSuccessToggleFavoriteShop(FavoriteShopViewModel(rowNumber = rowNumber, isUnfollowFromShopsMenu = false))
+                       }
+                   }
+               }
             }
             OPEN_CONTENT_REPORT -> if (resultCode == Activity.RESULT_OK) {
                 if (data.getBooleanExtra(CONTENT_REPORT_RESULT_SUCCESS, false)) {
@@ -2528,10 +2535,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     saleType = card.campaign.name
                 )
             )
-            if (!card.followers.isFollowed)
+            if (shouldShowFollowerBottomSheet(card))
                 showFollowerBottomSheet(positionInFeed)
         }
     }
+
+    private fun shouldShowFollowerBottomSheet(card: FeedXCard) =
+         card.isRilisanSpl && !card.followers.isFollowed && card.campaign.isRSFollowersRestrictionOn
+
 
     private fun addToWishList(
         postId: String,
@@ -3453,6 +3464,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 campaignStatus = getTrackerLabelSuffixForCampaignSaleTracker(feedXCard)
             )
             val authorType = if (feedXCard.author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+            val campaign = feedXCard.campaign
 
             val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
             intent.putExtra(IS_FOLLOWED, isFollowed)
@@ -3460,10 +3472,14 @@ class FeedPlusFragment : BaseDaggerFragment(),
             intent.putExtra(SHOP_NAME, feedXCard.author.name)
             intent.putExtra(PARAM_ACTIVITY_ID, postId)
             intent.putExtra(POST_TYPE, type)
+            intent.putExtra(PARAM_POST_POSITION, positionInFeed)
             intent.putExtra(PARAM_AUTHOR_TYPE, authorType)
-            intent.putExtra(PARAM_SALE_TYPE, feedXCard.campaign.name)
-            intent.putExtra(PARAM_SALE_STATUS, feedXCard.campaign.status)
-            requireActivity().startActivityForResult(intent, OPEN_FEED_DETAIL)
+            intent.putExtra(PARAM_SALE_TYPE, campaign.name)
+            intent.putExtra(PARAM_SALE_STATUS, campaign.status)
+            if (shouldShowFollowerBottomSheet(feedXCard))
+                startActivityForResult(intent, OPEN_FEED_DETAIL)
+            else
+                startActivity(intent)
         }
     }
 

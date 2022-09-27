@@ -1,5 +1,6 @@
 package com.tokopedia.feedplus.view.fragment
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -35,6 +36,7 @@ import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
+import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity.Companion.PARAM_IS_FOLLOWED
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
@@ -64,7 +66,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
@@ -188,10 +189,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                     getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                     Toaster.TYPE_NORMAL
                                 )
+                                onResponseAfterFollowFromBottomSheet(true)
                             }
                         }
                     }
                     is Fail -> {
+                        onResponseAfterFollowFromBottomSheet(false)
                         val message = it.throwable.message
                             ?: getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
@@ -208,12 +211,14 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                 getString(com.tokopedia.feedplus.R.string.feed_follow_bottom_sheet_success_toaster_text),
                                 Toaster.TYPE_NORMAL
                             )
+                            onResponseAfterFollowFromBottomSheet(true)
                             if (::feedFollowersOnlyBottomSheet.isInitialized) {
                                 feedFollowersOnlyBottomSheet.dismiss()
                             }
                         }
                     }
                     is Fail -> {
+                        onResponseAfterFollowFromBottomSheet(false)
                         val message = it.throwable.message
                             ?: getString(R.string.default_request_error_unknown)
                         showToast(message, Toaster.TYPE_ERROR)
@@ -287,7 +292,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             }
         }
         arguments?.run {
-            getBoolean(FeedPlusDetailActivity.PARAM_IS_FOLLOWED)?.let {
+            getBoolean(PARAM_IS_FOLLOWED).let {
                 isFollowed = it
             }
         }
@@ -463,6 +468,11 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun showFollowerBottomSheet() {
         feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
         feedFollowersOnlyBottomSheet.show(childFragmentManager, this)
+    }
+
+    private fun onResponseAfterFollowFromBottomSheet(isFollowSuccess: Boolean){
+        isFollowed = isFollowSuccess
+        activity?.setResult(Activity.RESULT_OK, getReturnIntent(isFollowSuccess))
     }
 
     override fun onStart() {
@@ -836,8 +846,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     private fun setUpShopDataHeader() {
         (activity as FeedPlusDetailActivity).getShopInfoLayout()?.run {
-
-            product_detail_back_icon?.setOnClickListener { activity?.finish() }
+            product_detail_back_icon?.setOnClickListener {
+                (activity as FeedPlusDetailActivity).onBackPressed()
+            }
             show()
         }
     }
@@ -899,6 +910,15 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             null
         }
     }
+
+    private fun getReturnIntent(isFollowSuccessFromBottomSheet: Boolean): Intent {
+        val intent = Intent()
+        val arguments = arguments
+        if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
+        intent.putExtra(PARAM_IS_FOLLOWED, isFollowSuccessFromBottomSheet)
+        return intent
+    }
+
 
     private fun setHasNextPage(hasNextPage: Boolean) {
         pagingHandler.setHasNext(hasNextPage)

@@ -331,6 +331,11 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
             shortName
             startTime
             endTime
+            restrictions {
+            label
+            isActive
+            __typename
+          }
           }
         title
         subTitle

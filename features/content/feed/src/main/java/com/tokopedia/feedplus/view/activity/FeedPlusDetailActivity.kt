@@ -6,7 +6,6 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 
@@ -19,6 +18,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var shopName: String
     private lateinit var saleType: String
     private lateinit var saleStatus: String
+    private var postPosition: Int = -1
     private lateinit var postType: String
     private var isFollowed: Boolean = false
 
@@ -33,6 +33,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val PARAM_SHOP_NAME = "shop_name"
         const val PARAM_SALE_TYPE = "sale_type"
         const val PARAM_SALE_STATUS = "sale_status"
+        const val PARAM_POST_POSITION = "position"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +60,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         shopName = intent.getStringExtra(PARAM_SHOP_NAME).orEmpty()
         saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
         saleStatus = intent.getStringExtra(PARAM_SALE_STATUS).orEmpty()
+        postPosition = intent.getIntExtra(PARAM_POST_POSITION, -1)
     }
 
     override fun getNewFragment(): Fragment? {
@@ -68,6 +70,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(PARAM_AUTHOR_TYPE, authorType)
         bundle.putString(PARAM_ACTIVITY_ID, activityId)
         bundle.putString(PARAM_POST_TYPE, postType)
+        bundle.putInt(PARAM_POST_POSITION, postPosition)
         bundle.putString(PARAM_SHOP_NAME, shopName)
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
         bundle.putString(PARAM_SALE_TYPE, saleType)
@@ -90,6 +93,4 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     fun getShopInfoLayout(): View? {
         return findViewById(R.id.shop_info_card)
     }
-
-
 }
