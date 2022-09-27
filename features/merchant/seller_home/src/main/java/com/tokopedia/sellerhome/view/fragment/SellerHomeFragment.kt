@@ -159,7 +159,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import org.json.JSONException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -1849,13 +1848,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observe(sellerHomeViewModel.submitWidgetDismissal) {
             when (it) {
                 is Success -> setSubmitDismissalSuccess(it.data)
-                is Fail -> {
-                    when (it.throwable) {
-                        is JSONException, is UnknownHostException -> {
-                            it.throwable.showErrorToaster()
-                        }
-                    }
-                }
+                is Fail -> it.throwable.showErrorToaster()
             }
         }
     }
