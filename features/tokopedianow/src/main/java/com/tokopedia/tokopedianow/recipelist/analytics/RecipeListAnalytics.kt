@@ -40,14 +40,13 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class RecipeListAnalytics @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val category: String
 ) {
     /**
      * Recipe Search
@@ -87,50 +86,42 @@ class RecipeListAnalytics @Inject constructor(
         const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
     }
 
-    private fun getCategory(pageName: String): String {
-        return if (pageName == TokoNowRecipeHomeFragment.PAGE_NAME) {
-            EVENT_CATEGORY_RECIPE_HOME
-        } else {
-            EVENT_CATEGORY_RECIPE_SEARCH
-        }
-    }
-
-    fun clickBackButton(pageName: String) {
+    fun clickBackButton() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BACK,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickSearchBar(pageName: String) {
+    fun clickSearchBar() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_SEARCH_BAR,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickBookmarkList(pageName: String) {
+    fun clickBookmarkList() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BOOKMARK_LIST,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickFilter(pageName: String) {
+    fun clickFilter() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_FILTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
@@ -139,8 +130,7 @@ class RecipeListAnalytics @Inject constructor(
         recipeId: String,
         recipeTitle: String,
         warehouseId: String,
-        position: Int,
-        pageName: String
+        position: Int
     ) {
         val promotion = getPromotion(
             recipeId = recipeId,
@@ -153,8 +143,7 @@ class RecipeListAnalytics @Inject constructor(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_RECIPE_CARD,
             label = "$recipeId - $recipeTitle",
-            promotions = arrayListOf(promotion),
-            pageName = pageName
+            promotions = arrayListOf(promotion)
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
@@ -163,8 +152,7 @@ class RecipeListAnalytics @Inject constructor(
         recipeId: String,
         recipeTitle: String,
         position: Int,
-        warehouseId: String,
-        pageName: String
+        warehouseId: String
     ) {
         val promotion = getPromotion(
             recipeId = recipeId,
@@ -177,170 +165,169 @@ class RecipeListAnalytics @Inject constructor(
             event = EVENT_VIEW_ITEM,
             action = EVENT_ACTION_IMPRESS_RECIPE_CARD,
             label = "$recipeId - $recipeTitle",
-            promotions = arrayListOf(promotion),
-            pageName = pageName
+            promotions = arrayListOf(promotion)
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
-    fun impressFailedLoadPage(pageName: String) {
+    fun impressFailedLoadPage() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_CLICK_IMPRESS_FAILED_LOAD_PAGE,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickBackFailedLoadPage(pageName: String) {
+    fun clickBackFailedLoadPage() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickRetryFailedLoadPage(pageName: String) {
+    fun clickRetryFailedLoadPage() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickBookmarkRecipe(recipeId: String, recipeTitle: String, pageName: String) {
+    fun clickBookmarkRecipe(recipeId: String, recipeTitle: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BOOKMARK_RECIPE,
                 label = "$recipeId - $recipeTitle",
-                category = getCategory(pageName),
+                category = category
             )
         )
     }
 
-    fun impressBookmarkToasterAdded(pageName: String) {
+    fun impressBookmarkToasterAdded() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickSeeBookmarkToaster(pageName: String) {
+    fun clickSeeBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_TOASTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickUnBookmarkRecipe(recipeId: String, recipeTitle: String, pageName: String) {
+    fun clickUnBookmarkRecipe(recipeId: String, recipeTitle: String) {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_UNBOOKMARK,
-                category = getCategory(pageName),
+                category = category,
                 label = "$recipeId - $recipeTitle"
             )
         )
     }
 
-    fun impressUnBookmarkToaster(pageName: String) {
+    fun impressUnBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun impressFailedBookmarkToaster(pageName: String) {
+    fun impressFailedBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickRetryFailedBookmarkToaster(pageName: String) {
+    fun clickRetryFailedBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickCancelUnBookmarkToaster(pageName: String) {
+    fun clickCancelUnBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_TOASTER_CANCEL_UNBOOKMARK,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun impressNoSearchResult(pageName: String) {
+    fun impressNoSearchResult() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickBackNoSearchResult(pageName: String) {
+    fun clickBackNoSearchResult() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickSearchBarNoSearchResult(pageName: String) {
+    fun clickSearchBarNoSearchResult() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickResetFilter(pageName: String) {
+    fun clickResetFilter() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RESET_FILTER,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
 
-    fun clickFilterNoSearchResult(pageName: String) {
+    fun clickFilterNoSearchResult() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT,
-                category = getCategory(pageName)
+                category = category
             )
         )
     }
@@ -363,13 +350,12 @@ class RecipeListAnalytics @Inject constructor(
         event: String,
         action: String,
         label: String = "",
-        promotions: ArrayList<Bundle>,
-        pageName: String
+        promotions: ArrayList<Bundle>
     ): Bundle {
         return Bundle().apply {
             putString(TrackAppUtils.EVENT, event)
             putString(TrackAppUtils.EVENT_ACTION, action)
-            putString(TrackAppUtils.EVENT_CATEGORY, getCategory(pageName))
+            putString(TrackAppUtils.EVENT_CATEGORY, category)
             putString(TrackAppUtils.EVENT_LABEL, label)
             putString(KEY_BUSINESS_UNIT, BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE)
             putString(KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE)

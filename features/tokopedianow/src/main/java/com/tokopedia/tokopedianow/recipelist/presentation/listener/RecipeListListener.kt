@@ -14,7 +14,6 @@ class RecipeListListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
     private val warehouseId: String,
-    private val pageName: String,
     private val viewModel: BaseTokoNowRecipeListViewModel
 ) : RecipeViewHolder.RecipeItemListener {
 
@@ -24,8 +23,7 @@ class RecipeListListener(
             recipeId = recipe.id,
             recipeTitle = recipe.title,
             warehouseId = warehouseId,
-            position = position,
-            pageName = pageName
+            position = position
         )
     }
 
@@ -34,8 +32,7 @@ class RecipeListListener(
             recipeId = recipe.id,
             recipeTitle = recipe.title,
             warehouseId = warehouseId,
-            position = position,
-            pageName = pageName
+            position = position
         )
     }
 
@@ -49,8 +46,7 @@ class RecipeListListener(
 
             analytics.clickBookmarkRecipe(
                 recipeId = recipe.id,
-                recipeTitle = recipe.title,
-                pageName = pageName
+                recipeTitle = recipe.title
             )
         } else {
             viewModel.removeRecipeBookmark(
@@ -61,8 +57,7 @@ class RecipeListListener(
 
             analytics.clickUnBookmarkRecipe(
                 recipeId = recipe.id,
-                recipeTitle = recipe.title,
-                pageName = pageName
+                recipeTitle = recipe.title
             )
         }
     }

@@ -15,7 +15,6 @@ import java.util.*
 class RecipeFilterListener(
     private val view: RecipeListView,
     private val analytics: RecipeListAnalytics,
-    private val pageName: String,
     private val viewModel: BaseTokoNowRecipeListViewModel
 ) : RecipeChipFilterListener {
 
@@ -28,10 +27,10 @@ class RecipeFilterListener(
 
             viewModel.whenLoadPage(
                 onSuccessLoaded = {
-                    analytics.clickFilter(pageName)
+                    analytics.clickFilter()
                 },
                 onEmptyLoaded = {
-                    analytics.clickFilterNoSearchResult(pageName)
+                    analytics.clickFilterNoSearchResult()
                 },
                 onFailedLoaded = { /* nothing to do */ }
             )

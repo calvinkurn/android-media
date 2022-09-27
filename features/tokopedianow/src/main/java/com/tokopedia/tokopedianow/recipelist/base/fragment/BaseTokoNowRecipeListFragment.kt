@@ -29,6 +29,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeListBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeHomeFragment
 import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeListAdapterTypeFactory
@@ -42,6 +43,7 @@ import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSor
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -51,9 +53,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     ServerErrorAnalytics,
     RecipeEmptyStateListener
 {
-
     @Inject
-    lateinit var analytics: RecipeListAnalytics
+    lateinit var userSession: UserSessionInterface
+
+    private val analytics by lazy { RecipeListAnalytics(userSession, if (pageName == TokoNowRecipeHomeFragment.PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH) }
 
     companion object {
         const val REQUEST_CODE_FILTER = 101
@@ -66,13 +69,11 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                     view = this,
                     analytics = analytics,
                     warehouseId = viewModel.warehouseId,
-                    pageName = pageName,
                     viewModel = viewModel
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
                     analytics = analytics,
-                    pageName = pageName,
                     viewModel = viewModel
                 ),
                 serverErrorListener = this,
@@ -131,19 +132,19 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     }
 
     override fun trackImpressErrorPage() {
-        analytics.impressFailedLoadPage(pageName)
+        analytics.impressFailedLoadPage()
     }
 
     override fun trackClickRetryPage() {
-        analytics.clickRetryFailedLoadPage(pageName)
+        analytics.clickRetryFailedLoadPage()
     }
 
     override fun onClickResetFilter() {
-        analytics.clickResetFilter(pageName)
+        analytics.clickResetFilter()
     }
 
     override fun onImpressEmptyStatePage() {
-        analytics.impressNoSearchResult(pageName)
+        analytics.impressNoSearchResult()
     }
 
     override fun viewModel() = viewModel
@@ -166,10 +167,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         ) {
             viewModel.whenLoadPage(
                 onSuccessLoaded = {
-                    analytics.clickSearchBar(pageName)
+                    analytics.clickSearchBar()
                 },
                 onEmptyLoaded = {
-                    analytics.clickSearchBarNoSearchResult(pageName)
+                    analytics.clickSearchBarNoSearchResult()
                 },
                 onFailedLoaded = { /* nothing to do */ }
             )
@@ -182,13 +183,13 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         navToolbar?.setBackButtonOnClickListener {
             viewModel.whenLoadPage(
                 onSuccessLoaded = {
-                    analytics.clickBackButton(pageName)
+                    analytics.clickBackButton()
                 },
                 onFailedLoaded = {
-                    analytics.clickBackFailedLoadPage(pageName)
+                    analytics.clickBackFailedLoadPage()
                 },
                 onEmptyLoaded = {
-                    analytics.clickBackNoSearchResult(pageName)
+                    analytics.clickBackNoSearchResult()
                 }
             )
             activity?.finish()
@@ -282,10 +283,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
                     clickListener = {
                         viewModel.addRecipeBookmark(recipeId, data.position.orZero(), title)
-                        analytics.clickCancelUnBookmarkToaster(pageName)
+                        analytics.clickCancelUnBookmarkToaster()
                     }
                 )
-                analytics.impressUnBookmarkToaster(pageName)
+                analytics.impressUnBookmarkToaster()
             } else {
                 setupToaster(
                     message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe, title),
@@ -293,10 +294,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
                     clickListener = {
                         RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
-                        analytics.clickSeeBookmarkToaster(pageName)
+                        analytics.clickSeeBookmarkToaster()
                     }
                 )
-                analytics.impressBookmarkToasterAdded(pageName)
+                analytics.impressBookmarkToasterAdded()
             }
         }
     }
@@ -327,10 +328,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                             position = data.position.orZero(),
                             title = data.model.title
                         )
-                        analytics.clickRetryFailedBookmarkToaster(pageName)
+                        analytics.clickRetryFailedBookmarkToaster()
                     }
                 )
-                analytics.impressFailedBookmarkToaster(pageName)
+                analytics.impressFailedBookmarkToaster()
             }
         }
     }
@@ -379,7 +380,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     }
 
     private fun goToBookmarkPage() {
-        analytics.clickBookmarkList(pageName)
+        analytics.clickBookmarkList()
         RouteManager.route(context, ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK)
     }
 }
