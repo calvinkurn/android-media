@@ -853,10 +853,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val selectedVpsPackage = viewModel.findSelectedVpsPackage(
             campaign.packageInfo.packageId,
             campaignWithSelectedVpsPackage.vpsPackages
-        )
+        ) ?: return
 
         val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, campaignWithSelectedVpsPackage.vpsPackages) ?: return
-        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage?.packageEndTime)
+        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage.packageEndTime)
 
         val campaignStartDate = if (isSelectedVpsPackageExpired) {
             now.advanceHourBy(TWO_HOURS)

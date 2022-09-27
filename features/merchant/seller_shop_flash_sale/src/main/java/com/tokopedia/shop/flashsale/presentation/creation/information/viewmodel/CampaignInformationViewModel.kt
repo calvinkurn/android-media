@@ -101,7 +101,6 @@ class CampaignInformationViewModel @Inject constructor(
     private var selectedColor = defaultGradientColor
     private var selectedStartDate = Date()
     private var selectedEndDate = Date()
-    private var showTeaser = true
     private var paymentType = PaymentType.INSTANT
     private var remainingQuota = Int.ZERO
     private var selection : Selection? = null
@@ -533,10 +532,10 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun findSuggestedVpsPackage(
         currentDate: Date,
-        selectedVpsPackage: VpsPackageUiModel?,
+        selectedVpsPackage: VpsPackageUiModel,
         vpsPackages: List<VpsPackageUiModel>
     ): VpsPackageUiModel? {
-        return if (currentDate.after(selectedVpsPackage?.packageEndTime)) {
+        return if (currentDate.after(selectedVpsPackage.packageEndTime)) {
             vpsPackages.firstOrNull()
         } else {
             selectedVpsPackage

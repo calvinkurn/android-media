@@ -5,6 +5,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.flashsale.common.constant.Constant
 import com.tokopedia.shop.flashsale.common.extension.advanceDayBy
 import com.tokopedia.shop.flashsale.common.extension.advanceHourBy
+import com.tokopedia.shop.flashsale.common.extension.advanceMonthBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseHourBy
 import com.tokopedia.shop.flashsale.common.extension.decreaseMinuteBy
 import com.tokopedia.shop.flashsale.common.extension.removeTimeZone
@@ -1593,11 +1594,83 @@ class CampaignInformationViewModelTest {
     //endregion
 
     //region findSuggestedVpsPackage
+    @Test
+    fun `When selected vps package is expired, should return first element from the vpsPackages list as the new selected vps package`() {
+        //Given
+        val now = Date()
+
+        val vpsPackageEndTime = now.decreaseHourBy(desiredHourToBeDecreased = 24)
+        val expiredSelectedVpsPackage = buildVpsPackageUiModel().copy(packageId = 101, packageEndTime = vpsPackageEndTime)
+
+        val firstVpsPackage = buildVpsPackageUiModel().copy(packageId = 102, packageName = "Active VPS Package 1")
+        val secondVpsPackage = buildVpsPackageUiModel().copy(packageId = 103, packageName = "Active VPS Package 2")
+        val vpsPackages = listOf(firstVpsPackage, secondVpsPackage)
+
+        //When
+        val actual = viewModel.findSuggestedVpsPackage(now, expiredSelectedVpsPackage, vpsPackages)
+
+        //Then
+        assertEquals(firstVpsPackage, actual)
+    }
+
+    @Test
+    fun `When selected vps package is still active, should return the selected vps package`() {
+        //Given
+        val now = Date()
+
+        val vpsPackageEndTime = now.advanceDayBy(days = 7)
+        val selectedVpsPackage = buildVpsPackageUiModel().copy(packageId = 101, packageEndTime = vpsPackageEndTime)
+
+        val firstVpsPackage = buildVpsPackageUiModel().copy(packageId = 102, packageName = "Active VPS Package 1")
+        val secondVpsPackage = buildVpsPackageUiModel().copy(packageId = 103, packageName = "Active VPS Package 2")
+        val vpsPackages = listOf(firstVpsPackage, secondVpsPackage)
+
+        //When
+        val actual = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, vpsPackages)
+
+        //Then
+        assertEquals(selectedVpsPackage, actual)
+    }
 
     //endregion
 
     //region findCampaignMaxEndDateByVpsRule
+    @Test
+    fun `When vps package selected, max campaign end date should equals to selected vps package decreased by 30 minute`() {
+        //Given
+        val now = Date()
+        val defaultEndDate = now.advanceMonthBy(months = 3)
+        val vpsPackageEndTime = now.advanceDayBy(days = 7)
+        val expectedMaxCampaignEndDate = vpsPackageEndTime.decreaseMinuteBy(desiredMinuteBeDecreased = 30)
 
+        val vpsPackage = buildVpsPackageUiModel().copy(packageId = 101, packageEndTime = vpsPackageEndTime)
+
+        //When
+        val actual = viewModel.findCampaignMaxEndDateByVpsRule(vpsPackage, defaultEndDate)
+
+        //Then
+        assertEquals(expectedMaxCampaignEndDate, actual)
+    }
+
+    @Test
+    fun `When shop tier benefit selected, max campaign end date should equals to defaultEndDate`() {
+        //Given
+        val now = Date()
+        val defaultEndDate = now.advanceMonthBy(months = 3)
+        val vpsPackageEndTime = now.advanceDayBy(days = 7)
+        val expectedMaxCampaignEndDate = defaultEndDate
+
+        val vpsPackage = buildVpsPackageUiModel().copy(
+            packageId = Constant.DEFAULT_SHOP_TIER_BENEFIT_PACKAGE_ID.toLong(),
+            packageEndTime = vpsPackageEndTime
+        )
+
+        //When
+        val actual = viewModel.findCampaignMaxEndDateByVpsRule(vpsPackage, defaultEndDate)
+
+        //Then
+        assertEquals(expectedMaxCampaignEndDate, actual)
+    }
     //endregion
 
     //region shouldEnableProceedButton
@@ -1648,12 +1721,147 @@ class CampaignInformationViewModelTest {
         //Then
         assertEquals(false, actual)
     }
-
-
     //endregion
 
     //region recheckLatestSelectedVpsPackageQuota
+    @Test
+    fun `When recheck latest vps package quota success, remainingQuota value should be updated with the latest value from remote`() =
+        runBlocking {
+            //Given
+            val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
 
+            val packageStartTime = now
+            val packageEndTime = now.advanceDayBy(days = 2)
+
+            val packageStartTimeEpoch = (packageStartTime.time / 1000)
+            val packageEndTimeEpoch = (packageEndTime.time / 1000)
+
+            val packageStartTimeDate = packageStartTime.removeTimeZone()
+            val packageEndTimeDate = packageEndTime.removeTimeZone()
+
+            val selectedVpsPackage = VpsPackageUiModel(
+                packageId = 101,
+                remainingQuota = 1,
+                currentQuota = 49,
+                originalQuota = 50,
+                packageEndTime = packageEndTime,
+                packageName = "VPS Package",
+                packageStartTime = packageStartTime,
+                isSelected = false,
+                disabled = false,
+                isShopTierBenefit = false
+            )
+
+            val emptyQuotaVpsPackage = VpsPackage(
+                packageId = 101.toString(),
+                remainingQuota = 0,
+                currentQuota = 50,
+                isDisabled = false,
+                originalQuota = 50,
+                packageEndTime = packageEndTimeEpoch,
+                packageName = "VPS Package",
+                packageStartTime = packageStartTimeEpoch
+            )
+
+            val response = listOf(emptyQuotaVpsPackage)
+            val expected = Success(
+                selectedVpsPackage.copy(
+                    packageStartTime = packageStartTimeDate,
+                    packageEndTime = packageEndTimeDate,
+                    remainingQuota = 0,
+                    currentQuota = 50,
+                    originalQuota = 50,
+                    isSelected = true
+                )
+            )
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            viewModel.setSelectedVpsPackage(selectedVpsPackage)
+
+            //When
+            viewModel.recheckLatestSelectedVpsPackageQuota()
+
+            //Then
+            val actual = viewModel.emptyQuotaVpsPackage.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
+
+    @Test
+    fun `When recheck latest vps package quota success but has no selected vps package, should not update observer`() =
+        runBlocking {
+            //Given
+            val now = GregorianCalendar(2020, 8, 1, 7,0,0).time
+
+            val packageStartTime = now
+            val packageEndTime = now.advanceDayBy(days = 2)
+
+            val packageStartTimeEpoch = (packageStartTime.time / 1000)
+            val packageEndTimeEpoch = (packageEndTime.time / 1000)
+
+            val packageStartTimeDate = packageStartTime.removeTimeZone()
+            val packageEndTimeDate = packageEndTime.removeTimeZone()
+
+            val selectedVpsPackage = VpsPackageUiModel(
+                packageId = 101,
+                remainingQuota = 1,
+                currentQuota = 49,
+                originalQuota = 50,
+                packageEndTime = packageEndTime,
+                packageName = "VPS Package",
+                packageStartTime = packageStartTime,
+                isSelected = false,
+                disabled = false,
+                isShopTierBenefit = false
+            )
+
+            val emptyQuotaVpsPackage = VpsPackage(
+                packageId = 101.toString(),
+                remainingQuota = 0,
+                currentQuota = 50,
+                isDisabled = false,
+                originalQuota = 50,
+                packageEndTime = packageEndTimeEpoch,
+                packageName = "VPS Package",
+                packageStartTime = packageStartTimeEpoch
+            )
+
+            val response = listOf(emptyQuotaVpsPackage)
+            val expected = Success(
+                selectedVpsPackage.copy(
+                    packageStartTime = packageStartTimeDate,
+                    packageEndTime = packageEndTimeDate,
+                    remainingQuota = 0,
+                    currentQuota = 50,
+                    originalQuota = 50,
+                    isSelected = true
+                )
+            )
+
+            coEvery { getSellerCampaignPackageListUseCase.execute() } returns response
+
+            //When
+            viewModel.recheckLatestSelectedVpsPackageQuota()
+
+
+        }
+
+    @Test
+    fun `When recheck latest vps package quota error, observer should receive error result`() =
+        runBlocking {
+            //Given
+            val error = MessageErrorException("Server error")
+            val expected = Fail(error)
+
+            coEvery { getSellerCampaignPackageListUseCase.execute()  } throws error
+
+            //When
+            viewModel.recheckLatestSelectedVpsPackageQuota()
+
+            //Then
+            val actual = viewModel.emptyQuotaVpsPackage.getOrAwaitValue()
+            assertEquals(expected, actual)
+        }
     //endregion
 
     //region isTodayInVpsPeriod
