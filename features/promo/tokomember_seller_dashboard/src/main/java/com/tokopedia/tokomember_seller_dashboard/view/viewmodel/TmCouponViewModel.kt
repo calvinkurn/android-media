@@ -39,7 +39,15 @@ class TmCouponViewModel @Inject constructor(
     val tmCouponQuotaUpdateLiveData: LiveData<TokoLiveDataResult<TmUpdateCouponQuotaDataExt>> =
         _tmCouponQuotaUpdateLiveData
 
-    fun getCouponList(voucherStatus: String, voucherType: Int?){
+    private val _tmCouponListStateLiveData = MutableLiveData<Int>()
+    val tmCouponListStateLiveData: LiveData<Int> = _tmCouponListStateLiveData
+
+
+    fun refreshListState(state: Int){
+        _tmCouponListStateLiveData.postValue(state)
+    }
+
+    fun getCouponList(voucherStatus: String, voucherType: Int?, page: Int = 1, perPage: Int = 10){
         tmCouponUsecase.cancelJobs()
         _couponListLiveData.postValue(TokoLiveDataResult.loading())
         tmCouponUsecase.getCouponList({
@@ -47,7 +55,7 @@ class TmCouponViewModel @Inject constructor(
         },
             {
                 _couponListLiveData.postValue(TokoLiveDataResult.error(it))
-            }, voucherStatus, voucherType)
+            }, voucherStatus, voucherType, page, perPage)
     }
 
     fun getInitialCouponData(action: String, couponType: String){

@@ -199,12 +199,6 @@ object TmDateUtil {
         }
     }
 
-    fun getDateFromISO(time:String?) : Date?{
-        if(time.isNullOrEmpty() || !time.contains("T")) return null
-        val sdf = SimpleDateFormat(ISO_8601_UTC_DATE_FORMAT, locale)
-        return sdf.parse(time)
-    }
-
 
     fun setDateFromDetails(time: String): String {
         // 2022-09-11T19:00:00Z00 >> Input
@@ -238,6 +232,13 @@ object TmDateUtil {
             calendar.time = it
         }
         return calendar
+    }
+
+
+    fun getDateFromISO(time:String?) : Date?{
+        if(time.isNullOrEmpty() || !time.contains("T")) return null
+        val sdf = SimpleDateFormat(ISO_8601_UTC_DATE_FORMAT, locale)
+        return sdf.parse(time)
     }
 
 }

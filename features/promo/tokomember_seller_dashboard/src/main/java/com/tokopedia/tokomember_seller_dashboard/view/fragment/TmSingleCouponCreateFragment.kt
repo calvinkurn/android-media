@@ -217,13 +217,21 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         renderButton()
         observeViewModel()
 
+        voucherId = arguments?.getInt(BUNDLE_VOUCHER_ID)?:0
         if(fromEdit){
-            voucherId = arguments?.getInt(BUNDLE_VOUCHER_ID)?:0
             if (TmInternetCheck.isConnectedToInternet(context)) {
                 tokomemberDashCreateViewModel.getInitialCouponData(UPDATE, "")
             }
             else{
                 noInternetUi { tokomemberDashCreateViewModel.getInitialCouponData(UPDATE, "") }
+            }
+        }
+        else if(fromDuplicate){
+            if (TmInternetCheck.isConnectedToInternet(context)) {
+                tokomemberDashCreateViewModel.getInitialCouponData(CREATE, "")
+            }
+            else{
+                noInternetUi{tokomemberDashCreateViewModel.getInitialCouponData(CREATE, "")}
             }
         }
         else{
@@ -238,8 +246,9 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 prefManager?.cardId?.let { it1 ->
                     if (TmInternetCheck.isConnectedToInternet(context)) {
                         tmProgramListViewModel?.getProgramList(it, it1)
-                    } else {
-                        noInternetUi { tmProgramListViewModel?.getProgramList(it, it1) }
+                    }
+                    else{
+                        noInternetUi{tmProgramListViewModel?.getProgramList(it, it1)}
                     }
                 }
             }
@@ -891,19 +900,22 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             })
         }
 
-        data?.voucherStartTime?.let {
-            textFieldProgramStartDate.editText.setText(TmDateUtil.setDateFromDetails(it))
-            textFieldProgramStartTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
-            tmCouponStartDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
-            tmCouponStartTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+        try {
+            data?.voucherStartTime?.let {
+                textFieldProgramStartDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+                textFieldProgramStartTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+                tmCouponStartDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+                tmCouponStartTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            }
+            data?.voucherFinishTime?.let{
+                textFieldProgramEndDate.editText.setText(TmDateUtil.setDateFromDetails(it))
+                textFieldProgramEndTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
+                tmCouponEndDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+                tmCouponEndTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
-        data?.voucherFinishTime?.let {
-            textFieldProgramEndDate.editText.setText(TmDateUtil.setDateFromDetails(it))
-            textFieldProgramEndTime.editText.setText(TmDateUtil.setTimeFromDetails(it))
-            tmCouponEndDateUnix = TmDateUtil.getCalendarFromDetailsTime(it)
-            tmCouponEndTimeUnix = TmDateUtil.getCalendarFromDetailsTime(it)
-        }
-
     }
 
     private fun openLoadingDialog(){
@@ -1548,13 +1560,12 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
             // for both cases
             // user can select end date 1 year from start date
-
-            if (fromEdit) {
+            if(fromEdit || fromDuplicate){
                 defaultCalendar.time = tmCouponStartDateUnix?.time
-            } else {
+            }
+            else {
                 if (programStatus != ACTIVE) {
-                    defaultCalendar.time =
-                        sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
+                    defaultCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                 }
             }
             val calendarMax = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
@@ -1574,17 +1585,18 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
                 minCalendar.time = tmCouponStartDateUnix?.time
             }
 
-            if (fromEdit) {
-                if (type == CALENDAR_TYPE_START) {
+            if(fromEdit || fromDuplicate){
+                if(type == CALENDAR_TYPE_START) {
                     calendarMax.time = tmCouponStartDateUnix?.time
                     minCalendar.time = tmCouponStartDateUnix?.time
                 }
-                if (type == CALENDAR_TYPE_END) {
+                if(type == CALENDAR_TYPE_END) {
                     calendarMax.time = tmCouponEndDateUnix?.time
                     minCalendar.time = tmCouponEndDateUnix?.time
                 }
-            } else {
-                if (type == CALENDAR_TYPE_START) {
+            }
+            else {
+                if(type == CALENDAR_TYPE_START){
                     calendarMax.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                     minCalendar.time = sdf.parse(programData?.timeWindow?.startTime + "00") ?: Date()
                 }
