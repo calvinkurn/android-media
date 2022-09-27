@@ -2,6 +2,6 @@
     android:shape="rectangle">
     <gradient
         android:angle="90"
-        android:endColor="@color/topads_purple_gradient_top_color"
-        android:startColor="@color/topads_purple_gradient_bottom_color" />
+        android:endColor="@color/Unify_PN400"
+        android:startColor="@color/Unify_PN100" />
 </shape>

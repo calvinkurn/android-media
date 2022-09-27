@@ -8,9 +8,8 @@
     <color name="orange_red">#ff5722</color>
     <color name="label_color">#868686</color>
     <color name="warm_grey">#999999</color>
-    <color name="transparent">#00000000</color>
     <color name="label_text_color">#9b9b9b</color>
-    <color name="black">#000000</color>
+    <color name="black">@color/Unify_Static_Black</color>
     <color name="black_70">#b2000000</color>
     <color name="black_70_new">#b3000000</color>
     <color name="black_36">#5b000000</color>
