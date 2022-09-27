@@ -1601,6 +1601,54 @@ class CampaignInformationViewModelTest {
     //endregion
 
     //region shouldEnableProceedButton
+    @Test
+    fun `When campaign name length is below minimum character, should return false`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel()
+
+        //When
+        val actual = viewModel.shouldEnableProceedButton("camp", vpsPackage)
+
+        //Then
+        assertEquals(false, actual)
+    }
+
+    @Test
+    fun `When selected vps package is shop tier benefit, should return true`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel().copy(isShopTierBenefit = true)
+
+        //When
+        val actual = viewModel.shouldEnableProceedButton("September Campaign", vpsPackage)
+
+        //Then
+        assertEquals(true, actual)
+    }
+
+    @Test
+    fun `When selected vps package is non shop tier benefit and has remaining quota, should return true`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel().copy(isShopTierBenefit = false, remainingQuota = 5)
+
+        //When
+        val actual = viewModel.shouldEnableProceedButton("September Campaign", vpsPackage)
+
+        //Then
+        assertEquals(true, actual)
+    }
+
+    @Test
+    fun `When selected vps package is non shop tier benefit and has no remaining quota, should return false`() {
+        //Given
+        val vpsPackage = buildVpsPackageUiModel().copy(isShopTierBenefit = false, remainingQuota = 0)
+
+        //When
+        val actual = viewModel.shouldEnableProceedButton("September Campaign", vpsPackage)
+
+        //Then
+        assertEquals(false, actual)
+    }
+
 
     //endregion
 
