@@ -20,15 +20,17 @@ class FlightOrderDetailActivity : BaseSimpleActivity(), HasComponent<FlightOrder
     lateinit var userSession: UserSessionInterface
 
     private var invoiceId: String = ""
-    private var isCancellation: String = "0"
+    private var isCancellation: String = STRING_FALSE_INT
+    private var isOpenInvoice: Boolean = false
     private var isRequestCancellation: Boolean = false
 
     override fun getNewFragment(): Fragment? =
-            FlightOrderDetailFragment.createInstance(
-                    invoiceId,
-                    isCancellation == "1",
-                    isRequestCancellation
-            )
+        FlightOrderDetailFragment.createInstance(
+            invoiceId,
+            isCancellation == STRING_TRUE_INT,
+            isRequestCancellation,
+            isOpenInvoice
+        )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         component.inject(this)
@@ -50,9 +52,16 @@ class FlightOrderDetailActivity : BaseSimpleActivity(), HasComponent<FlightOrder
                         isCancellation = tempIsCancellation
                     }
                 }
+
+                it.getQueryParameter(EXTRA_OPEN_INVOICE)?.let { openInvoice ->
+                    isOpenInvoice = openInvoice == STRING_TRUE_INT
+                }
             }
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            startActivityForResult(
+                RouteManager.getIntent(this, ApplinkConst.LOGIN),
+                REQUEST_CODE_LOGIN
+            )
         }
 
         if (invoiceId.isEmpty()) finish()
@@ -61,9 +70,9 @@ class FlightOrderDetailActivity : BaseSimpleActivity(), HasComponent<FlightOrder
     }
 
     override fun getComponent(): FlightOrderDetailComponent =
-            DaggerFlightOrderDetailComponent.builder()
-                    .flightComponent(FlightComponentInstance.getFlightComponent(application))
-                    .build()
+        DaggerFlightOrderDetailComponent.builder()
+            .flightComponent(FlightComponentInstance.getFlightComponent(application))
+            .build()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -78,6 +87,11 @@ class FlightOrderDetailActivity : BaseSimpleActivity(), HasComponent<FlightOrder
         private const val EXTRA_INVOICE_ID = "iv"
         private const val PATH_CANCELLATION = "cancellation"
         private const val EXTRA_IS_CANCELLATION = "is_cancellation"
+
+        private const val EXTRA_OPEN_INVOICE = "open_invoice"
+
+        private const val STRING_FALSE_INT = "0"
+        private const val STRING_TRUE_INT = "1"
 
         private const val REQUEST_CODE_LOGIN = 6
     }

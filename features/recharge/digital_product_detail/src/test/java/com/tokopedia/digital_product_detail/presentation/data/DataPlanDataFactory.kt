@@ -14,6 +14,10 @@ import com.tokopedia.digital_product_detail.presentation.util.JsonToString
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 
 class DataPlanDataFactory {
@@ -111,6 +115,35 @@ class DataPlanDataFactory {
         )
     }
 
+    fun getErrorAtcFromGql(): DigitalAtcResult{
+        return DigitalAtcResult(
+            errorAtc = getErrorAtc()
+        )
+    }
+
+    fun getErrorAtc(): ErrorAtc {
+        return ErrorAtc(
+            status = 400,
+            title = "this is an error",
+            atcErrorPage = AtcErrorPage(
+                isShowErrorPage = true,
+                title = "Waduh Ada Error",
+                subTitle = "Hayolo Ada Error",
+                imageUrl = "https://images.tokopedia.net/img/verify_account.png",
+                buttons = listOf(
+                    AtcErrorButton(
+                        label = "Tambah Nomor HP",
+                        url = "https://tokopedia.com",
+                        appLinkUrl = "tokopedia://home",
+                        type = "primary"
+                    )
+                )
+            )
+        )
+    }
+
+    val errorAtcResponse = gson.JsonToString(ERROR_UNVERIFIED_PHONE_NUMBER)
+
     fun getCheckoutPassData(denomData: DenomData = getDenomData()): DigitalCheckoutPassData {
         return DigitalCheckoutPassData().apply {
             categoryId = denomData.categoryId
@@ -198,8 +231,10 @@ class DataPlanDataFactory {
         const val GET_PREFIX_OPERATOR = "common_telco/get_prefix_operator_mock.json"
         const val GET_PREFIX_OPERATOR_EMPTY_VALIDATION = "common_telco/get_prefix_operator_empty_validation_mock.json"
         const val GET_ADD_TO_CART = "common_telco/get_add_to_cart_mock.json"
+        const val GET_ADD_TO_CART_WITH_ERRORS = "common_telco/get_add_to_cart_not_empty_error_mock.json"
         const val GET_CATALOG_INPUT_MULTITAB = "dataplan/get_catalog_input_multitab_mock.json"
         const val GET_MENU_DETAIL = "dataplan/get_menu_detail_mock.json"
+        const val ERROR_UNVERIFIED_PHONE_NUMBER = "common_telco/unverified_phone_number_error_mock.json"
 
         const val FILTER_PARAM_NAME = "param_name"
         const val FILTER_VALUE = "value"

@@ -35,9 +35,13 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils.convertToLocationParams
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.officialstore.*
+import com.tokopedia.officialstore.FirebasePerformanceMonitoringConstant
+import com.tokopedia.officialstore.OSPerformanceConstant
+import com.tokopedia.officialstore.OfficialStoreInstance
+import com.tokopedia.officialstore.OSFeaturedShopTracking
 import com.tokopedia.officialstore.ApplinkConstant.CLICK_TYPE_WISHLIST
 import com.tokopedia.officialstore.OSPerformanceConstant.KEY_PERFORMANCE_PREPARING_OS_HOME
+import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.analytics.OSMixLeftTracking
 import com.tokopedia.officialstore.analytics.OfficialStoreTracking
 import com.tokopedia.officialstore.category.data.model.Category
@@ -55,11 +59,19 @@ import com.tokopedia.officialstore.official.presentation.adapter.OfficialHomeAda
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.typefactory.OfficialHomeAdapterTypeFactory
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelEventHandler
-import com.tokopedia.officialstore.official.presentation.listener.*
+import com.tokopedia.officialstore.official.presentation.listener.RecommendationWidgetCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreHomeComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OfficialStoreLegoBannerComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixLeftComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMixTopComponentCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedBrandCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSFeaturedShopDCCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSMerchantVoucherCallback
+import com.tokopedia.officialstore.official.presentation.listener.OSSpecialReleaseComponentCallback
 import com.tokopedia.officialstore.official.presentation.viewmodel.OfficialStoreHomeViewModel
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -73,9 +85,8 @@ import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlist_common.R as Rwishlist
-import java.util.*
 import javax.inject.Inject
+import com.tokopedia.wishlist_common.R as Rwishlist
 
 class OfficialHomeFragment :
         BaseDaggerFragment(),
@@ -120,6 +131,7 @@ class OfficialHomeFragment :
     private var isScrolling = false
     private var localChooseAddress: OSChooseAddressData? = null
     private var recommendationWishlistItem: RecommendationItem? = null
+    private var totalScrollRecyclerView = 0
 
     private lateinit var bannerPerformanceMonitoring: PerformanceMonitoring
     private lateinit var shopPerformanceMonitoring: PerformanceMonitoring
@@ -362,26 +374,6 @@ class OfficialHomeFragment :
                 category?.title.toString(),
                 viewModel.productRecommendationTitleSection,
                 item.position.toString()
-        )
-    }
-
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-        if (isLogin()) {
-            if (isAddWishlist) {
-                viewModel.addWishlist(item, callback)
-            } else {
-                viewModel.removeWishlist(item, callback)
-            }
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-
-        tracking?.eventClickWishlist(
-                category?.title.toEmptyStringIfNull(),
-                isAddWishlist,
-                isLogin(),
-                item.productId,
-                item.isTopAds
         )
     }
 
@@ -945,9 +937,10 @@ class OfficialHomeFragment :
                     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                         super.onScrolled(recyclerView, dx, dy)
 
+                        totalScrollRecyclerView += dy
                         if (!isScrolling) {
                             isScrolling = true
-                            scrollListener.onContentScrolled(dy)
+                            scrollListener.onContentScrolled(dy, totalScrollRecyclerView)
                             Handler().postDelayed({
                                 isScrolling = false
                             }, DELAY_200L)
@@ -983,22 +976,10 @@ class OfficialHomeFragment :
     }
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isSuccess)
-            if (isUsingWishlistV2) handleWishlistV2ActionSuccess(productCardOptionsModel)
-            else handleWishlistActionSuccess(productCardOptionsModel)
+            handleWishlistV2ActionSuccess(productCardOptionsModel)
         else
-            if (isUsingWishlistV2) showErrorWishlistV2(productCardOptionsModel.wishlistResult)
-            else showErrorWishlist()
-    }
-
-    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            showSuccessAddWishlist()
-        else
-            showSuccessRemoveWishlist()
-
-        updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
+            showErrorWishlistV2(productCardOptionsModel.wishlistResult)
     }
 
     private fun handleWishlistV2ActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1008,16 +989,6 @@ class OfficialHomeFragment :
             showSuccessRemoveWishlistV2()
 
         updateWishlist(productCardOptionsModel.wishlistResult.isAddWishlist, productCardOptionsModel.productPosition)
-    }
-
-    private fun showSuccessAddWishlist() {
-        activity?.let { activity ->
-            val view = activity.findViewById<View>(android.R.id.content) ?: return
-
-            val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-            val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-            Toaster.build(view, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { RouteManager.route(activity, ApplinkConst.WISHLIST) }.show()
-        }
     }
 
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
@@ -1039,28 +1010,12 @@ class OfficialHomeFragment :
         }
     }
 
-    private fun showSuccessRemoveWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            val message = getString(com.tokopedia.officialstore.R.string.msg_success_remove_wishlist)
-
-            Snackbar.make(view, message, Snackbar.LENGTH_LONG).show()
-        }
-    }
-
     private fun showSuccessRemoveWishlistV2() {
         activity?.let {
             val view = it.findViewById<View>(android.R.id.content) ?: return
             val message = getString(Rwishlist.string.on_success_remove_from_wishlist_msg)
 
             Toaster.build(view, message, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
-        }
-    }
-
-    private fun showErrorWishlist() {
-        activity?.let {
-            val view = it.findViewById<View>(android.R.id.content) ?: return
-            Toaster.build(view, ErrorHandler.getErrorMessage(it, null), Snackbar.LENGTH_LONG, TYPE_ERROR).show()
         }
     }
 
