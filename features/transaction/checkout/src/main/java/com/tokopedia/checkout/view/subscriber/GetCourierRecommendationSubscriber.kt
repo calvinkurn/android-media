@@ -24,7 +24,9 @@ class GetCourierRecommendationSubscriber(
     private val isForceReloadRates: Boolean,
     private val isBoUnstackEnabled: Boolean
 ) : Subscriber<ShippingRecommendationData?>() {
+
     override fun onCompleted() {}
+
     override fun onError(e: Throwable) {
         Timber.d(e)
         if (isInitialLoad) {
