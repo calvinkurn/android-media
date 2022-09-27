@@ -32,6 +32,11 @@ class ChooseProductViewModel @Inject constructor(
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
+    companion object{
+        private const val OFFSET_FLASHSALE_INFO = 0
+        private const val ROWS_FLASHSALE_INFO = 1
+    }
+
     // General Livedata
     private val _selectedProductCount = MutableLiveData<Int>()
     val selectedProductCount: LiveData<Int> get() = _selectedProductCount
@@ -167,14 +172,14 @@ class ChooseProductViewModel @Inject constructor(
         )
     }
 
-    fun getFlashSaleList() {
+    fun getMaxProductSubmission() {
         launchCatchError(
             dispatchers.io,
             block = {
                 val params = GetFlashSaleListForSellerUseCase.Param(
                     tabName,
-                    0,
-                    1,
+                    OFFSET_FLASHSALE_INFO,
+                    ROWS_FLASHSALE_INFO,
                     campaignIds = listOf(campaignId)
                 )
                 val response = getFlashSaleListForSellerUseCase.execute(params)
@@ -183,7 +188,7 @@ class ChooseProductViewModel @Inject constructor(
                 selectedProductList.postValue(listOf())
             },
             onError = { error ->
-
+                _error.postValue(error)
             }
         )
     }
