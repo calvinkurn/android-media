@@ -92,8 +92,14 @@ class GetCourierRecommendationSubscriber(
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
                                 shippingCourierUiModel.isSelected = false
                             }
+                            val selectedSpId =
+                                if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
+                                    shippingDurationUiModel.serviceData.selectedShipperProductId
+                                } else {
+                                    spId
+                                }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId &&
+                                if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId &&
                                         shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)
                                 ) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
