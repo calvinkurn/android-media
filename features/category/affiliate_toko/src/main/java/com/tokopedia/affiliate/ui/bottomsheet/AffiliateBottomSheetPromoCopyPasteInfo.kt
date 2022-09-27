@@ -21,9 +21,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateBottomSheetPromoCopyPasteInfo : BottomSheetUnify() {
-    private lateinit var contentView: View
+    private var contentView: View? = null
 
     companion object {
+
+        private const val SPAN_LENGTH = 12
 
         fun newInstance(): AffiliateBottomSheetPromoCopyPasteInfo {
             return AffiliateBottomSheetPromoCopyPasteInfo()
@@ -52,7 +54,6 @@ class AffiliateBottomSheetPromoCopyPasteInfo : BottomSheetUnify() {
 
     private fun setData() {
         val spanStr = getString(R.string.paste_info_step_two)
-        val spanLength = 12
         context?.let { ctx ->
             val boldFont = Typography.getFontType(ctx, true, Typography.PARAGRAPH_2)
 
@@ -61,10 +62,10 @@ class AffiliateBottomSheetPromoCopyPasteInfo : BottomSheetUnify() {
             sb.setSpan(
                 CustomTypefaceSpan(boldFont!!),
                 fromChar,
-                fromChar + spanLength,
+                fromChar + SPAN_LENGTH,
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
-            contentView.findViewById<Typography>(R.id.paste_info_step_two)?.setText(sb)
+            contentView?.findViewById<Typography>(R.id.paste_info_step_two)?.setText(sb)
         }
 
     }
