@@ -49,19 +49,25 @@ class GetBoPromoCourierRecommendationSubscriber(
                             if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == spId && shippingCourierUiModel.productData.shipperId == shipperId)) {
                                 if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                     presenter.cancelAutoApplyPromoStackLogistic(
-                                        itemPosition, promoCode, shipmentCartItemModel
+                                        itemPosition,
+                                        promoCode,
+                                        shipmentCartItemModel
                                     )
                                     presenter.clearOrderPromoCodeFromLastValidateUseRequest(
-                                        uniqueId, promoCode
+                                        uniqueId,
+                                        promoCode
                                     )
                                     view.resetCourier(shipmentCartItemModel)
                                     view.renderCourierStateFailed(
-                                        itemPosition, isTradeInDropOff, true
+                                        itemPosition,
+                                        isTradeInDropOff,
+                                        true
                                     )
                                     view.logOnErrorLoadCourier(
                                         MessageErrorException(
                                             shippingCourierUiModel.productData.error?.errorMessage
-                                        ), itemPosition
+                                        ),
+                                        itemPosition
                                     )
                                     return
                                 } else {
@@ -75,7 +81,10 @@ class GetBoPromoCourierRecommendationSubscriber(
                                             shippingCourierUiModel,
                                             shippingRecommendationData,
                                             logisticPromo
-                                        ), itemPosition, isTradeInDropOff, isForceReloadRates
+                                        ),
+                                        itemPosition,
+                                        isTradeInDropOff,
+                                        isForceReloadRates
                                     )
                                     return
                                 }

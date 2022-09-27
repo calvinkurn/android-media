@@ -99,8 +99,10 @@ class GetCourierRecommendationSubscriber(
                                     spId
                                 }
                             for (shippingCourierUiModel in shippingDurationUiModel.shippingCourierViewModelList) {
-                                if (isTradeInDropOff || (shippingCourierUiModel.productData.shipperProductId == selectedSpId &&
-                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden)
+                                if (isTradeInDropOff || (
+                                    shippingCourierUiModel.productData.shipperProductId == selectedSpId &&
+                                        shippingCourierUiModel.productData.shipperId == shipperId && !shippingCourierUiModel.serviceData.isUiRatesHidden
+                                )
                                 ) {
                                     if (!shippingCourierUiModel.productData.error?.errorMessage.isNullOrEmpty()) {
                                         view.renderCourierStateFailed(
