@@ -24,16 +24,7 @@ class RecipeFilterListener(
             val intent = Intent(view.context(), TokoNowRecipeFilterActivity::class.java)
             intent.putStringArrayListExtra(EXTRA_SELECTED_FILTER_IDS, ArrayList(selectedFilterIds))
             view.fragment().startActivityForResult(intent, REQUEST_CODE_FILTER)
-
-            viewModel.whenLoadPage(
-                onSuccessLoaded = {
-                    analytics.clickFilter()
-                },
-                onEmptyLoaded = {
-                    analytics.clickFilterNoSearchResult()
-                },
-                onFailedLoaded = { /* nothing to do */ }
-            )
+            analytics.clickFilter(viewModel.getLoadPageStatus())
         }
     }
 }

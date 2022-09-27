@@ -20,7 +20,8 @@ import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMappe
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addFilterItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeItems
-import com.tokopedia.tokopedianow.recipelist.util.StatusLoadPage
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
 abstract class BaseTokoNowRecipeListViewModel(
@@ -51,8 +52,6 @@ abstract class BaseTokoNowRecipeListViewModel(
     private val _searchKeyword = MutableLiveData<String>()
     private val _showToaster = MutableLiveData<ToasterUiModel>()
 
-    private var statusPage = StatusLoadPage.EMPTY
-
     protected var getRecipeListParam = RecipeListParam()
     protected var visitableItems = mutableListOf<Visitable<*>>()
 
@@ -73,17 +72,15 @@ abstract class BaseTokoNowRecipeListViewModel(
             }
 
             visitableItems.addFilterItems()
-            statusPage = if (response.data.recipes.isNotEmpty()) {
+            if (response.data.recipes.isNotEmpty()) {
                 visitableItems.addRecipeItems(
                     response = response
                 )
-                StatusLoadPage.SUCCESS
             } else {
                 visitableItems.addEmptyStateItem(
                     isFilterSelected = selectedFilters.isNotEmpty(),
                     title = getRecipeListParam.title.orEmpty()
                 )
-                StatusLoadPage.EMPTY
             }
 
             _visitableList.postValue(visitableItems)
@@ -185,11 +182,11 @@ abstract class BaseTokoNowRecipeListViewModel(
         }
     }
 
-    fun whenLoadPage(onSuccessLoaded: () -> Unit, onFailedLoaded: () -> Unit, onEmptyLoaded: () -> Unit) {
-        when (statusPage) {
-            StatusLoadPage.SUCCESS -> onSuccessLoaded()
-            StatusLoadPage.ERROR -> onFailedLoaded()
-            StatusLoadPage.EMPTY -> onEmptyLoaded()
+    fun getLoadPageStatus(): LoadPageStatus {
+        return when (visitableItems.firstOrNull { it is RecipeUiModel || it is TokoNowServerErrorUiModel }) {
+            is RecipeUiModel -> LoadPageStatus.SUCCESS
+            is TokoNowServerErrorUiModel -> LoadPageStatus.ERROR
+            else -> LoadPageStatus.EMPTY
         }
     }
 
@@ -220,7 +217,6 @@ abstract class BaseTokoNowRecipeListViewModel(
         visitableItems.clear()
         visitableItems.add(TokoNowServerErrorUiModel)
         _visitableList.postValue(visitableItems)
-        statusPage = StatusLoadPage.ERROR
     }
 
     private fun resetVisitableItems() {

@@ -16,7 +16,7 @@ import javax.inject.Inject
 class TokoNowRecipeSearchFragment: BaseTokoNowRecipeListFragment() {
 
     companion object {
-        const val PAGE_NAME = "TokoNow Recipe Search"
+        private const val PAGE_NAME = "TokoNow Recipe Search"
 
         fun newInstance(): Fragment {
             return TokoNowRecipeSearchFragment()

@@ -53,14 +53,15 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     ServerErrorAnalytics,
     RecipeEmptyStateListener
 {
+    companion object {
+        const val HOME_PAGE_NAME = "TokoNow Recipe Home"
+        const val REQUEST_CODE_FILTER = 101
+    }
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
-    private val analytics by lazy { RecipeListAnalytics(userSession, if (pageName == TokoNowRecipeHomeFragment.PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH) }
-
-    companion object {
-        const val REQUEST_CODE_FILTER = 101
-    }
+    private val analytics by lazy { RecipeListAnalytics(userSession, if (pageName == HOME_PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH) }
 
     private val adapter by lazy {
         RecipeListAdapter(
@@ -165,15 +166,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
             pageName = pageName,
             hintData = searchHintData
         ) {
-            viewModel.whenLoadPage(
-                onSuccessLoaded = {
-                    analytics.clickSearchBar()
-                },
-                onEmptyLoaded = {
-                    analytics.clickSearchBarNoSearchResult()
-                },
-                onFailedLoaded = { /* nothing to do */ }
-            )
+            analytics.clickSearchBar(viewModel.getLoadPageStatus())
             RouteManager.route(context, ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE)
         }
         navToolbar?.headerBackground = headerBg
@@ -181,17 +174,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         navToolbar?.init(fragment)
 
         navToolbar?.setBackButtonOnClickListener {
-            viewModel.whenLoadPage(
-                onSuccessLoaded = {
-                    analytics.clickBackButton()
-                },
-                onFailedLoaded = {
-                    analytics.clickBackFailedLoadPage()
-                },
-                onEmptyLoaded = {
-                    analytics.clickBackNoSearchResult()
-                }
-            )
+            analytics.clickBackButton(viewModel.getLoadPageStatus())
             activity?.finish()
         }
 

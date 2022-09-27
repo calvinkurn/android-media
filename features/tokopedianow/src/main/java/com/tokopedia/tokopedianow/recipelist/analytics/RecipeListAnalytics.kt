@@ -17,7 +17,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
-import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeHomeFragment
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT
@@ -40,6 +39,7 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
+import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -86,24 +86,60 @@ class RecipeListAnalytics @Inject constructor(
         const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
     }
 
-    fun clickBackButton() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_BACK,
-                category = category
-            )
-        )
+    fun clickBackButton(pageStatus: LoadPageStatus) {
+        when (pageStatus) {
+            LoadPageStatus.SUCCESS -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_BACK,
+                        category = category
+                    )
+                )
+            }
+            LoadPageStatus.ERROR -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE,
+                        category = category
+                    )
+                )
+            }
+            LoadPageStatus.EMPTY -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT,
+                        category = category
+                    )
+                )
+            }
+        }
     }
 
-    fun clickSearchBar() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_SEARCH_BAR,
-                category = category
-            )
-        )
+    fun clickSearchBar(pageStatus: LoadPageStatus) {
+        when (pageStatus) {
+            LoadPageStatus.SUCCESS -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_SEARCH_BAR,
+                        category = category
+                    )
+                )
+            }
+            LoadPageStatus.ERROR -> { /* nothing to do */ }
+            LoadPageStatus.EMPTY -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
+                        category = category
+                    )
+                )
+            }
+        }
     }
 
     fun clickBookmarkList() {
@@ -116,14 +152,28 @@ class RecipeListAnalytics @Inject constructor(
         )
     }
 
-    fun clickFilter() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_FILTER,
-                category = category
-            )
-        )
+    fun clickFilter(pageStatus: LoadPageStatus) {
+        when(pageStatus) {
+            LoadPageStatus.SUCCESS -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_FILTER,
+                        category = category
+                    )
+                )
+            }
+            LoadPageStatus.ERROR -> { /* nothing to do */ }
+            LoadPageStatus.EMPTY -> {
+                TokoNowCommonAnalytics.hitCommonTracker(
+                    TokoNowCommonAnalytics.getDataLayer(
+                        event = EVENT_CLICK_PG,
+                        action = EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT,
+                        category = category
+                    )
+                )
+            }
+        }
     }
 
     fun clickRecipeCard(
@@ -175,16 +225,6 @@ class RecipeListAnalytics @Inject constructor(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_VIEW_PG_IRIS,
                 action = EVENT_ACTION_CLICK_IMPRESS_FAILED_LOAD_PAGE,
-                category = category
-            )
-        )
-    }
-
-    fun clickBackFailedLoadPage() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE,
                 category = category
             )
         )
@@ -292,41 +332,11 @@ class RecipeListAnalytics @Inject constructor(
         )
     }
 
-    fun clickBackNoSearchResult() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT,
-                category = category
-            )
-        )
-    }
-
-    fun clickSearchBarNoSearchResult() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT,
-                category = category
-            )
-        )
-    }
-
     fun clickResetFilter() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RESET_FILTER,
-                category = category
-            )
-        )
-    }
-
-    fun clickFilterNoSearchResult() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_FILTER_NO_SEARCH_RESULT,
                 category = category
             )
         )

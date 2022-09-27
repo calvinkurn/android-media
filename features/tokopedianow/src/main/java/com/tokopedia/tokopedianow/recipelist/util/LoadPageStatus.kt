@@ -1,5 +1,5 @@
 package com.tokopedia.tokopedianow.recipelist.util
 
-enum class StatusLoadPage {
+enum class LoadPageStatus {
     SUCCESS, ERROR, EMPTY
 }
