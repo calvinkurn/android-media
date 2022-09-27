@@ -1,4 +1,4 @@
-package com.tokopedia.macrobenchmark_util.env.interceptor.mock
+package com.tokopedia.graphql.interceptor
 
 import android.content.Context
 import androidx.annotation.Keep

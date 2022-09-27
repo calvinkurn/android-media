@@ -21,6 +21,7 @@ import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
 import com.tokopedia.network.CommonNetwork;
@@ -161,10 +162,7 @@ public class GraphqlClient {
         TkpdOkHttpBuilder tkpdOkHttpBuilder = new TkpdOkHttpBuilder(context.getApplicationContext(), new OkHttpClient.Builder());
         if (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL) {
             try {
-                String className = "com.tokopedia.macrobenchmark_util.env.interceptor.mock.MockInterceptor";
-                Object mockInterceptorClass = MacroInterceptorProvider.INSTANCE.get(className, context);
-
-                tkpdOkHttpBuilder.addInterceptor((Interceptor) mockInterceptorClass);
+                tkpdOkHttpBuilder.addInterceptor(new MockInterceptor(context));
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -3,6 +3,7 @@ package com.tokopedia.macrobenchmark_util.env.interceptor.mock
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
+import com.tokopedia.graphql.interceptor.dataStore
 import com.tokopedia.macrobenchmark_util.env.mock.MockModelConfig
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map

@@ -71,14 +71,10 @@ dependencies {
     } else {
         implementation rootProject.ext.tkpdInternalLibDependencies.fakeresponseNoOp
     }
-
-    if (project.hasProperty('enableMacrobenchmarkUtil')?: false) {
-        implementation projectOrAar(rootProject.ext.libraries.macrobenchmarkUtil)
-        implementation rootProject.ext.supportLibDependencies.kotlinReflection
-    }
-
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
+    implementation rootProject.ext.miscDependencies.dataStorePreferences
+    implementation rootProject.ext.miscDependencies.dataStoreCore
 }
 
 project.ext {
