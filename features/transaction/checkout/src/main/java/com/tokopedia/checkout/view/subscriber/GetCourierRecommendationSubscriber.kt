@@ -114,6 +114,7 @@ class GetCourierRecommendationSubscriber(
                                             shippingRecommendationData
                                         )
                                         if (shippingCourierUiModel.productData.isUiRatesHidden && shippingCourierUiModel.serviceData.selectedShipperProductId == 0 && courierItemData.logPromoCode.isNullOrEmpty()) {
+                                            // courier should only be used with BO, but no BO code found
                                             view.renderCourierStateFailed(
                                                 itemPosition,
                                                 isTradeInDropOff,
