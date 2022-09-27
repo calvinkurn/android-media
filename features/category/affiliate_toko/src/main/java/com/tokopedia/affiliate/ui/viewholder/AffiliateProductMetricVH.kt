@@ -12,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateProductMetricVH(itemView: View)
-    : AbstractViewHolder<AffiliateProductCardMetricsModel>(itemView) {
+class AffiliateProductMetricVH(itemView: View) :
+    AbstractViewHolder<AffiliateProductCardMetricsModel>(itemView) {
 
     companion object {
         @JvmField
@@ -28,38 +28,17 @@ class AffiliateProductMetricVH(itemView: View)
     override fun bind(element: AffiliateProductCardMetricsModel?) {
         setCommisionData(element?.metrics, element?.status == PRODUCT_ACTIVE)
     }
-    private fun setCommisionData(metrics: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric?, isActive: Boolean) {
-        if (isActive){
-            itemView.findViewById<Typography>(R.id.metric_title)?.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                )
-            )
-            itemView.findViewById<Typography>(R.id.metric_value)?.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN950
-                )
-            )
-            itemView.findViewById<Typography>(R.id.metric_title)?.setWeight(Typography.REGULAR)
 
-        } else {
-            itemView.findViewById<Typography>(R.id.metric_title)?.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                       com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                )
-            )
-            itemView.findViewById<Typography>(R.id.metric_value)?.setTextColor(
-                MethodChecker.getColor(
-                    itemView.context,
-                       com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                )
-            )
-            itemView.findViewById<Typography>(R.id.metric_title)?.setWeight(Typography.BOLD)
-        }
-
+    private fun setCommisionData(
+        metrics: AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item.Metric?,
+        isActive: Boolean
+    ) {
+        val valueColor = MethodChecker.getColor(
+            itemView.context,
+            if (isActive) com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            else com.tokopedia.unifyprinciples.R.color.Unify_NN400
+        )
+        itemView.findViewById<Typography>(R.id.metric_value)?.setTextColor(valueColor)
         itemView.findViewById<Typography>(R.id.metric_title)?.text = metrics?.metricTitle ?: ""
         itemView.findViewById<Typography>(R.id.metric_value)?.text = metrics?.metricValueFmt ?: "0"
         val metricIntValue: Double? = metrics?.metricDifferenceValue?.toDouble()
@@ -69,7 +48,7 @@ class AffiliateProductMetricVH(itemView: View)
     private fun setTrend(view: IconUnify?, metricIntValue: Double?, isActive: Boolean) {
         val disabledColor = MethodChecker.getColor(
             itemView.context,
-            com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400
         )
         val greenColor = MethodChecker.getColor(
             itemView.context,

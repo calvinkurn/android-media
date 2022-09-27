@@ -147,4 +147,5 @@
     <string name="no_promoted_products_message">Kamu bisa cari %s di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
+    <string name="affiliate_date">Dibuat %s</string>
 </resources>
