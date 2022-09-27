@@ -40,11 +40,7 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         label: String,
         isDelete: Boolean
     ) {
-        val paramSource = when (categoryId) {
-            CATEGORY_ID_PASCABAYAR -> FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID
-            CATEGORY_ID_CREDIT_CARD -> FAVORITE_NUMBER_PARAM_SOURCE_CREDIT_CARD
-            else -> FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-        }
+       val paramSource = "${FAVORITE_NUMBER_PARAM_SOURCE_PERSO}$categoryId"
 
         val requestData = mapOf(
             FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
@@ -79,11 +75,6 @@ class ModifyRechargeFavoriteNumberUseCase @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_UPDATE_STATUS = "updateStatus"
         const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
 
-        const val CATEGORY_ID_PASCABAYAR = 9
-        const val CATEGORY_ID_CREDIT_CARD = 26
-
-        const val FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID = "pdp_favorite_list_telco_postpaid"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_PREPAID = "pdp_favorite_list_telco_prepaid"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_CREDIT_CARD = "digital-personalization26"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_PERSO = "digital-personalization"
     }
 }

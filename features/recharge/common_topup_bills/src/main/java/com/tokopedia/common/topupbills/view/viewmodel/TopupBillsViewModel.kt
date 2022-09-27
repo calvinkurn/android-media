@@ -8,6 +8,7 @@ import com.tokopedia.common.topupbills.data.*
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckoutData
+import com.tokopedia.common.topupbills.favoritepage.domain.usecase.ModifyRechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
@@ -336,8 +337,8 @@ class TopupBillsViewModel @Inject constructor(
     }
 
     fun createSeamlessFavoriteNumberParams(categoryIds: List<String>): Map<String, Any> {
-        var paramSource = if (categoryIds.contains(CATEGORY_ID_PASCABAYAR.toString()))
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
+        val joinedCategoryIds = categoryIds.joinToString(separator = ",")
+        val paramSource = "${FAVORITE_NUMBER_PARAM_SOURCE_PERSO}$joinedCategoryIds"
 
         return mapOf(
             FAVORITE_NUMBER_PARAM_FIELDS to mapOf(
@@ -348,32 +349,6 @@ class TopupBillsViewModel @Inject constructor(
                 FAVORITE_NUMBER_PARAM_SERVICE_PLAN_TYPE to "",
                 FAVORITE_NUMBER_PARAM_SUBSCRIPTION to false,
                 FAVORITE_NUMBER_PARAM_LIMIT to FAVORITE_NUMBER_LIMIT
-            )
-        )
-    }
-
-    fun createSeamlessFavoriteNumberUpdateParams(
-        categoryId: Int,
-        productId: Int,
-        clientNumber: String,
-        totalTransaction: Int,
-        label: String,
-        isDelete: Boolean
-    ): Map<String, Any> {
-        var paramSource = if (categoryId == CATEGORY_ID_PASCABAYAR)
-            FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID else FAVORITE_NUMBER_PARAM_SOURCE_PREPAID
-
-        return mapOf(
-            FAVORITE_NUMBER_PARAM_UPDATE_REQUEST to mapOf(
-                FAVORITE_NUMBER_PARAM_CATEGORY_ID to categoryId,
-                FAVORITE_NUMBER_PARAM_CLIENT_NUMBER to clientNumber,
-                FAVORITE_NUMBER_PARAM_LAST_PRODUCT to productId,
-                FAVORITE_NUMBER_PARAM_LABEL to label,
-                FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION to totalTransaction,
-                FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE to false,
-                FAVORITE_NUMBER_PARAM_SOURCE to paramSource,
-                FAVORITE_NUMBER_PARAM_UPDATE_STATUS to true,
-                FAVORITE_NUMBER_PARAM_WISHLIST to !isDelete
             )
         )
     }
@@ -453,17 +428,7 @@ class TopupBillsViewModel @Inject constructor(
         const val FAVORITE_NUMBER_PARAM_SUBSCRIPTION = "subscription"
 
         const val FAVORITE_NUMBER_PARAM_LIMIT = "limit"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_REQUEST = "updateRequest"
-        const val FAVORITE_NUMBER_PARAM_CATEGORY_ID = "categoryID"
-        const val FAVORITE_NUMBER_PARAM_CLIENT_NUMBER = "clientNumber"
-        const val FAVORITE_NUMBER_PARAM_LAST_PRODUCT = "lastProduct"
-        const val FAVORITE_NUMBER_PARAM_LABEL = "label"
-        const val FAVORITE_NUMBER_PARAM_TOTAL_TRANSACTION = "totalTransaction"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_LAST_ORDER_DATE = "updateLastOrderDate"
-        const val FAVORITE_NUMBER_PARAM_UPDATE_STATUS = "updateStatus"
-        const val FAVORITE_NUMBER_PARAM_WISHLIST = "wishlist"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_POSTPAID = "pdp_favorite_list_telco_postpaid"
-        const val FAVORITE_NUMBER_PARAM_SOURCE_PREPAID = "pdp_favorite_list_telco_prepaid"
+        const val FAVORITE_NUMBER_PARAM_SOURCE_PERSO = "digital-personalization"
 
         const val STATUS_DONE = "DONE"
         const val STATUS_PENDING = "PENDING"
@@ -474,13 +439,10 @@ class TopupBillsViewModel @Inject constructor(
 
         const val NULL_RESPONSE = "null response"
 
-        const val CATEGORY_ID_PASCABAYAR = 9
-
         const val CHECK_VOUCHER_DEBOUNCE_DELAY = 1000L
         const val FAVORITE_NUMBER_LIMIT = 10
         const val RETRY_DURATION = 0
         const val MS_TO_S_DURATION = 1000
         const val FIVE_MINS_CACHE_DURATION = 5
     }
-
 }
