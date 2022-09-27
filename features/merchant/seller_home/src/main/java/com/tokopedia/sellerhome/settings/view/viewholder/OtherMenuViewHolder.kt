@@ -465,7 +465,7 @@ class OtherMenuViewHolder(
         otherMenuHeader?.setBackgroundResource(headerBackgroundResource)
     }
 
-    private fun setInitialValues() {
+    fun setInitialValues() {
         secondaryInfoAdapter.showInitialInfo()
         setHeaderValues()
         setInitialBalanceInfoLoading()
