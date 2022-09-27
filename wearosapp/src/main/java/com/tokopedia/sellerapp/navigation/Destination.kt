@@ -22,13 +22,18 @@ fun NavGraphBuilder.splashComposable(
     }
 }
 
+// TODO solve conflict
 fun NavGraphBuilder.homeComposable(
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
     navigateToNotification: () -> Unit,
     navigateToNewOrderSummary: () -> Unit
 ) {
     composable(
         route = ScreenConstant.HOME_SCREEN
     ) {
+        // TODO solve conflict
+        HomeScreen(screenNavigation, sharedViewModel)
         HomeScreen(
             navigateToNotification = navigateToNotification,
             navigateToNewOrderSummary = navigateToNewOrderSummary
@@ -48,16 +53,12 @@ fun NavGraphBuilder.notificationComposable(
 
 fun NavGraphBuilder.newOrderListComposable(
     sharedViewModel: SharedViewModel,
-    messageClient: MessageClient,
-    nodeClient: NodeClient
 ) {
     composable(
         route = ScreenConstant.NEW_ORDER_LIST_SCREEN
     ) {
         NewOrderListScreen(
             sharedViewModel = sharedViewModel,
-            messageClient = messageClient,
-            nodeClient = nodeClient
         )
     }
 }

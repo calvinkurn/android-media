@@ -9,6 +9,11 @@
     <string name="new_order_summary_text_potency_format">+Rp%1s</string>
     <string name="new_order_summary_text_title">Pesanan baru</string>
 
+    <!-- New Order List -->
+    <string name="new_order_list_text_title">Pesanan baru (%1d)</string>
+    <string name="new_order_list_text_due_response">Batas respons</string>
+    <string name="new_order_list_text_accept_all_order">Terima Semua\n Pesanan</string>
+    <string name="new_order_list_text_open_on_phone">Buka di handphone</string>
     <!-- New Order Detail -->
     <string name="new_order_detail_content_description_seller_icon">Seller Icon</string>
     <string name="new_order_detail_header_title">Pesanan Baru</string>
