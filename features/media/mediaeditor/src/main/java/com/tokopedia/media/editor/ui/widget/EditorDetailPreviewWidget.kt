@@ -74,13 +74,13 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
 
         // if previous value is true then use it, otherwise use current editor state for indicator
         val isRotate =
-            if (data.cropRotateValue.isRotate) true else data.isToolRotate() ?: false
+            if (data.cropRotateValue.isRotate) true else data.isToolRotate()
         val isCrop =
-            if (data.cropRotateValue.isCrop) true else data.isToolCrop() ?: false
+            if (data.cropRotateValue.isCrop) true else data.isToolCrop()
 
         // if rotated image is same with original ratio without overflow, ucrop will skip it
         // need to manually crop & save
-        if (cropImageView.currentAngle % 90f == 0f && rotateNumber != 0 && isRotate) {
+        if (cropImageView.currentAngle % 90f == 0f && isRotate) {
             val cropRotateData = data.cropRotateValue
             val scalingSize = if (cropRotateData.croppedSourceWidth != 0) {
                 bitmap.width.toFloat() / cropRotateData.croppedSourceWidth
@@ -116,8 +116,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             if(isRatioChange){
                 finalWidth = imageHeight
                 finalHeight = imageWidth
-//                finalOffsetX = offsetY
-//                finalOffsetY = offsetX
             }
 
             // set crop area on data that will be pass to landing pass for state
@@ -139,35 +137,40 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 cropRatio = data.cropRotateValue.cropRatio
             )
 
+            var cropSize = data.cropRotateValue.getOriginalCropSize()
+
             onCropFinish(
-                if (offsetX == 0 && offsetY == 0){
+                // check if cropped area is larger then source, if yes then ignore crop
+                // on some cases the cropped is don't needed since user rotate back the image to 0 degree
+                if((cropSize.first + offsetX > bitmap.width) ||
+                    (cropSize.second + offsetY > bitmap.height) ||
+                    (imageWidth == bitmap.width && imageHeight == bitmap.height)
+                ){
                     Bitmap.createBitmap(
                         bitmap,
-                        offsetX,
-                        offsetY,
+                        0,
+                        0,
                         bitmap.width,
                         bitmap.height,
                         matrix,
                         true
                     )
                 } else {
-                    val cropSize = getCroppedOriginalSize(
-                        rotateNumber + initialRotateNumber,
-                        Pair(imageWidth, imageHeight),
-                        Pair(finalWidth, finalHeight)
-                    )
+                    val normalizeX =
+                        if (scaleX == -1f) bitmap.width - (offsetX + cropSize.first) else offsetX
+                    val normalizeY =
+                        if (scaleY == -1f) bitmap.height - (offsetY + cropSize.second) else offsetY
 
                     Bitmap.createBitmap(
                         bitmap,
-                        offsetX,
-                        offsetY,
+                        normalizeX,
+                        normalizeY,
                         cropSize.first,
                         cropSize.second,
                         matrix,
                         true
                     )
                 }
-
             )
             return
         }
@@ -188,20 +191,15 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                     val scaleX = scale.first
                     val scaleY = scale.second
 
-                    // adjust crop image according to rotate ratio
-                    val isRatioChange = rotateNumber % 2 != 0
-                    val finalOffsetX = if (isRatioChange) offsetY else offsetX
-                    val finalOffsetY = if (isRatioChange) offsetX else offsetY
-
                     onCropFinish(
                         getProcessedBitmap(
                             bitmap,
-                            finalOffsetX,
-                            finalOffsetY,
+                            offsetX,
+                            offsetY,
                             imageWidth, imageHeight,
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
-                            rotateNumber = rotateNumber,
+                            rotateNumber = rotateNumber + initialRotateNumber,
                             data = data,
                             translateX,
                             translateY,
@@ -243,29 +241,16 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
 
-        var isCropped = true
-
         val matrix = Matrix()
 
         matrix.preScale(scaleX, scaleY)
         matrix.postRotate(
             finalRotationDegree,
-            (originalWidth / 2).toFloat(),
-            (originalHeight / 2).toFloat()
+            (offsetX + (imageWidth / 2f)),
+            (offsetY + (imageHeight / 2f))
         )
 
-        val rotatedBitmap = try {Bitmap.createBitmap(
-                originalBitmap,
-                offsetX,
-                offsetY,
-                imageWidth,
-                imageHeight,
-                matrix,
-                true
-            )
-        } catch (e: Exception){
-            isCropped = false
-            Bitmap.createBitmap(
+        val rotatedBitmap = Bitmap.createBitmap(
                 originalBitmap,
                 0,
                 0,
@@ -274,7 +259,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 matrix,
                 true
             )
-        }
 
         // set crop area on data that will be pass to landing pass for state
         data?.cropRotateValue = EditorCropRotateModel(
@@ -295,11 +279,12 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(0, 0)
         )
 
-        return if(isCropped){
-            rotatedBitmap
-        } else {
-            Bitmap.createBitmap(rotatedBitmap, offsetX, offsetY, imageWidth, imageHeight)
-        }
+        val normalizeX =
+            if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
+        val normalizeY =
+            if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
+
+        return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -331,20 +316,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 listener.onLoadComplete()
             }
         })
-    }
-
-    // get original cropped size before image is rotated & ratio is change
-    private fun getCroppedOriginalSize(
-        ratioRotationNumber: Int,
-        currentCropSize: Pair<Int, Int>,
-        swappedCropSize: Pair<Int, Int>
-    ): Pair<Int, Int> {
-        val isRatioRotate = ratioRotationNumber % 2 == 1
-        return if (isRatioRotate) {
-            currentCropSize
-        } else {
-            swappedCropSize
-        }
     }
 
     interface Listener {

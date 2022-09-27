@@ -107,7 +107,7 @@ class DetailEditorFragment @Inject constructor(
             viewBinding?.imgUcropPreview?.cropRotate(
                 finalRotationDegree = viewModel.rotateRotationFinalDegree,
                 sliderValue = viewModel.rotateSliderValue,
-                rotateNumber = if (rotateNumber == 0) viewModel.rotateNumber else rotateNumber,
+                rotateNumber = rotateNumber,
                 initialRotateNumber = initialRotateNumber,
                 data
             ) {
@@ -505,7 +505,7 @@ class DetailEditorFragment @Inject constructor(
             viewModel.setRotate(it, rotateDegree, isRotate, isPreviousState = true)
             viewModel.rotateNumber = cropRotateData.orientationChangeNumber
             viewModel.rotateSliderValue = cropRotateData.rotateDegree
-            viewModel.rotateInitialScale = cropRotateData.scale
+            viewModel.rotatePreviousDegree = cropRotateData.rotateDegree * cropRotateData.scaleX * cropRotateData.scaleY
 
             cropView.setImageToWrapCropBounds(false)
         }
@@ -540,7 +540,9 @@ class DetailEditorFragment @Inject constructor(
             manualCropBitmap(data.cropRotateValue)
         }
 
+        var cropScale = 0f
         detailState.getFilteredStateList().forEach { editorDetailUi ->
+            if (editorDetailUi.cropRotateValue.isCrop) cropScale = editorDetailUi.cropRotateValue.scale
             if (editorDetailUi.editorToolType == data.editorToolType) return@forEach
             readPreviousDetailState(editorDetailUi)
         }
@@ -548,6 +550,8 @@ class DetailEditorFragment @Inject constructor(
         if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
             implementPreviousStateCrop(data.cropRotateValue)
+
+            if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
         }
 
         implementedBaseBitmap = getBitmap()

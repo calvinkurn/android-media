@@ -35,8 +35,14 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
     private var initialRatioZoom = 0f
     private var rotatedRatioZoom = 0f
 
+    private var isMirrorY = false
+
     // used by rotated via slider & be used as source of truth anchor of zooming 
     override var initialScale = 0f
+    set(value) {
+        field = value
+        if(latestZoomPoint == 0f) latestZoomPoint = value
+    }
     private var latestZoomPoint = 0f
 
     private var originalTargetWidth: RectF = RectF()
@@ -60,13 +66,17 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             originalTargetWidth.set(editorDetailPreview.overlayView.cropViewRect)
         }
 
+        // if set rotate is triggered by implemented previous state, then ignore all set
         if (isPreviousState) {
             cropImageView.postRotate(normalizeDegree)
+            isMirrorY = isRotateRatio
             return
         }
 
+        latestZoomPoint = cropImageView.currentScale
+
         // rotate logic when rotation is triggered by rotate button instead on slider
-        if (isRotateRatio) {
+        if (isRotateRatio && !isPreviousState) {
             val cropOverlay = editorDetailPreview.overlayView
 
             cropImageView.postRotate(normalizeDegree)
@@ -98,6 +108,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
             initialScale = cropImageView.currentScale
             isRatioRotated = !isRatioRotated
+            isMirrorY = !isMirrorY
             rotateNumber++
         } else {
             val rotateDegree = normalizeDegree - previousDegree
@@ -118,7 +129,6 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         }
 
         cropImageView.setImageToWrapCropBounds(false)
-        latestZoomPoint = cropImageView.currentScale
     }
 
     override fun mirror(editorDetailPreview: EditorDetailPreviewWidget?) {
@@ -126,7 +136,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             val originalDegree = it.cropImageView.currentAngle
             it.cropImageView.postRotate(-originalDegree * 2)
 
-            if (!isRatioRotated) {
+            if (!isMirrorY) {
                 it.cropImageView.scaleX = -it.cropImageView.scaleX
             } else {
                 it.cropImageView.scaleY = -it.cropImageView.scaleY

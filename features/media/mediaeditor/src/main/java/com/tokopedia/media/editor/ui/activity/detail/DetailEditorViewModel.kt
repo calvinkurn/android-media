@@ -178,6 +178,12 @@ class DetailEditorViewModel @Inject constructor(
             rotateFilterRepository.initialScale = value
         }
 
+    var rotatePreviousDegree: Float
+        get() = rotateFilterRepository.previousDegree
+        set(value) {
+            rotateFilterRepository.previousDegree = value
+        }
+
     fun saveImageCache(
         context: Context,
         bitmapParam: Bitmap,

@@ -29,6 +29,20 @@ data class EditorCropRotateModel(
         return if (imageWidth == 0 && imageHeight == 0) null else cropRatio.first.toFloat() / cropRatio.second
     }
 
+    // crop size without rotate ratio
+    fun getOriginalCropSize(): Pair<Int, Int>{
+        var result = Pair(imageWidth, imageHeight)
+        for (i in orientationChangeNumber downTo 1) {
+            result = swapValue(result)
+        }
+
+        return result
+    }
+
+    private fun swapValue(source: Pair<Int, Int>): Pair<Int, Int>{
+        return Pair(source.second, source.first)
+    }
+
     companion object {
         fun getEmptyEditorCropRotateModel(): EditorCropRotateModel {
             return EditorCropRotateModel(
