@@ -51,6 +51,10 @@ import javax.inject.Inject
 
 class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
+    private var currentPage = 1
+    private var hasNext = false
+    private var linearLayoutManager: LinearLayoutManager? = null
+    private var rvProgram: RecyclerView? = null
     private var tmTracker: TmTracker? = null
     private var shopId = 0
     private var cardId = 0
@@ -103,13 +107,14 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
         tmTracker = TmTracker()
 
-        var rvProgram = view.findViewById<RecyclerView>(R.id.rv_program)
-        rvProgram.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvProgram = view.findViewById<RecyclerView>(R.id.rv_program)
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvProgram?.apply {
+            layoutManager = linearLayoutManager
             adapter = tokomemberDashProgramAdapter
         }
         observeViewModel()
-        tmProgramListViewModel?.getProgramList(shopId, cardId)
+        tmProgramListViewModel?.getProgramList(shopId, cardId, page = currentPage)
         tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
         setToastOnProgramAction(arguments?.getInt(BUNDLE_PROGRAM_ACTION)?:0)
@@ -118,6 +123,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
             tmTracker?.clickProgramListButton(shopId.toString())
         }
         setEmptyProgramListData()
+        handleProgramListPagination()
     }
 
     private fun setToastOnProgramAction(programActionType:Int){
@@ -144,8 +150,9 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                         tmProgramListViewModel?.refreshList(LOADED)
                     }
                     else {
+                        hasNext = it.data?.membershipGetProgramList?.programSellerList?.size != 0
                         viewFlipperProgramList.displayedChild = 1
-                        tokomemberDashProgramAdapter.programSellerList = it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>
+                        tokomemberDashProgramAdapter.programSellerList.addAll(it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>)
                         tokomemberDashProgramAdapter.notifyDataSetChanged()
                         tmProgramListViewModel?.refreshList(LOADED)
                     }
@@ -283,6 +290,31 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     private fun closeLoadingDialog(){
         loaderDialog?.dialog?.dismiss()
+    }
+
+    private fun handleProgramListPagination() {
+        rvProgram?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount: Int? = linearLayoutManager?.childCount
+                val totalItemCount: Int? = linearLayoutManager?.itemCount
+                val firstVisibleItemPosition: Int? = linearLayoutManager?.findFirstVisibleItemPosition()
+                if ((tmProgramListViewModel?.tokomemberProgramListResultLiveData?.value)?.equals(TokoLiveDataResult.STATUS.LOADING) == false) {
+                    if (visibleItemCount != null && firstVisibleItemPosition != null && totalItemCount != null) {
+                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition > 0) {
+                            if(hasNext) {
+                                currentPage += 1
+                                tmProgramListViewModel?.getProgramList(
+                                    shopId,
+                                    cardId,
+                                    page = currentPage
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
 }

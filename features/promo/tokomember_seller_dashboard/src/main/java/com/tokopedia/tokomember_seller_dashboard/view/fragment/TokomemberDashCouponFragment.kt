@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
@@ -18,6 +19,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
@@ -35,6 +37,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
+import com.tokopedia.tokomember_seller_dashboard.util.LOADED
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
@@ -52,6 +56,10 @@ import javax.inject.Inject
 class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, SortFilterBottomSheet.Callback,
     TmCouponListRefreshCallback, TmFilterCallback {
 
+    private var hasNext = false
+    private var linearLayoutManager: LinearLayoutManager? = null
+    private var currentPage = 1
+    private var perPage = 10
     private var tmCouponDetailCallback:TmCouponDetailCallback?=null
 
     private var showButton: Boolean = true
@@ -146,10 +154,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                             filterStatus?.type = ChipsUnify.TYPE_SELECTED
                         }
                         if(selectedType.toInt() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
                         }
                         else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt(), page = currentPage, perPage = perPage)
                         }
                     }
                 }
@@ -205,10 +213,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                             filterType?.type = ChipsUnify.TYPE_SELECTED
                         }
                         if(selectedType.toInt() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null)
+                            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
                         }
                         else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt(), page = currentPage, perPage = perPage)
                         }
                     }
                 },
@@ -223,8 +231,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         filter_error.parentListener = {
             TmFilterBottomsheet.show(childFragmentManager, this, voucherStatus, selectedType)
         }
+        linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rv_coupon.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            layoutManager = linearLayoutManager
             adapter = tmCouponAdapter
         }
 
@@ -246,13 +255,14 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
         observeViewModel()
         if(selectedType.toInt() == 0){
-            tmCouponViewModel.getCouponList(voucherStatus, null)
+            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
         else {
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt(), page = currentPage, perPage = perPage)
         }
 
         setEmptyCouponListData()
+        handleCouponListPagination()
     }
 
     private fun setEmptyCouponListData() {
@@ -274,6 +284,11 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     filter_error.hide()
                 }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
+                    tmCouponViewModel.refreshListState(LOADED)
+                    hasNext = it.data?.merchantPromotionGetMVList?.data?.paging?.hasNext == true
+                    it.data?.merchantPromotionGetMVList?.data?.paging?.perPage?.let{
+                        perPage = it
+                    }
                     if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty()){
                         viewFlipperCoupon.displayedChild = 2
                         filter_error.show()
@@ -281,8 +296,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     else {
                         filter_error.hide()
                         viewFlipperCoupon.displayedChild = 1
-                        tmCouponAdapter.vouchersItemList.clear()
-                        tmCouponAdapter.vouchersItemList = it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>
+                        tmCouponAdapter.vouchersItemList.addAll(it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>)
                         tmCouponAdapter.notifyDataSetChanged()
                     }
                 }
@@ -401,10 +415,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
 
     override fun refreshCouponList(action: String) {
         if(selectedType.toInt() == 0){
-            tmCouponViewModel.getCouponList(voucherStatus, null)
+            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
         else {
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt(), page = currentPage, perPage = perPage)
         }
         var message = ""
         when(action){
@@ -443,11 +457,47 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
         if(selectedType.toInt() == 0){
             filterType?.type = ChipsUnify.TYPE_NORMAL
-            tmCouponViewModel.getCouponList(voucherStatus, null)
+            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
         else {
             filterType?.type = ChipsUnify.TYPE_SELECTED
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt())
+            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toInt(), page = currentPage, perPage = perPage)
         }
+    }
+
+    private fun handleCouponListPagination() {
+        rv_coupon?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount: Int? = linearLayoutManager?.childCount
+                val totalItemCount: Int? = linearLayoutManager?.itemCount
+                val firstVisibleItemPosition: Int? = linearLayoutManager?.findFirstVisibleItemPosition()
+                if ((tmCouponViewModel.tmCouponListStateLiveData.value)?.equals(LOADED) == true) {
+                    if (visibleItemCount != null && firstVisibleItemPosition != null && totalItemCount != null) {
+                        if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition > 0) {
+                            if(hasNext) {
+                                tmCouponViewModel.refreshListState(REFRESH)
+                                currentPage += 1
+                                if (selectedType.toIntOrZero() == 0) {
+                                    filterType?.type = ChipsUnify.TYPE_NORMAL
+                                    tmCouponViewModel.getCouponList(
+                                        voucherStatus,
+                                        null,
+                                        page = currentPage, perPage = perPage
+                                    )
+                                } else {
+                                    filterType?.type = ChipsUnify.TYPE_SELECTED
+                                    tmCouponViewModel.getCouponList(
+                                        voucherStatus,
+                                        selectedType.toInt(),
+                                        page = currentPage, perPage = perPage
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 }
