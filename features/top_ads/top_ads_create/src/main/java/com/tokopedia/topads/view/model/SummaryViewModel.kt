@@ -4,8 +4,10 @@ import android.os.Bundle
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.topads.SourceConstant
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.PUBLISHED
+import com.tokopedia.topads.common.data.internal.ParamObject.SOURCE_CREATE_HEADLINE
 import com.tokopedia.topads.common.data.response.DepositAmount
 import com.tokopedia.topads.common.data.response.ResponseGroupValidateName
 import com.tokopedia.topads.common.domain.usecase.TopAdsCreateUseCase
@@ -36,7 +38,7 @@ class SummaryViewModel @Inject constructor(
         groupName: String,
         onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)
     ) {
-        validGroupUseCase.setParams(groupName)
+        validGroupUseCase.setParams(groupName, SourceConstant.SOURCE_ANDROID_SUMMARY)
         validGroupUseCase.execute({
             onSuccess(it.topAdsGroupValidateName)
         }, { throwable ->

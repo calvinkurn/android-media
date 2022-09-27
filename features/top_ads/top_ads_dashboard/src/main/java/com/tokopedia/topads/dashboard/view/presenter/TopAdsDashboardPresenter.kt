@@ -260,7 +260,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId)
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId, ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE)
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
         shopAdInfoUseCase.setRequestParams(params)
         shopAdInfoUseCase.setGraphqlQuery(ShopInfo.GQL_QUERY)
@@ -370,7 +370,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     }
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
-        validGroupUseCase.setParams(groupName)
+        validGroupUseCase.setParams(groupName, "android_topads_validate_group")
         validGroupUseCase.execute(
                 {
                     onSuccess(it.topAdsGroupValidateName)

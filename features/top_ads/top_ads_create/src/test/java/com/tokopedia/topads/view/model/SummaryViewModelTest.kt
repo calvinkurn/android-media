@@ -114,7 +114,7 @@ class SummaryViewModelTest {
         }
 
         viewModel.validateGroup("name") { actual = it }
-        verify { validGroupUseCase.setParams(any()) }
+        verify { validGroupUseCase.setParams(any(), any()) }
         Assert.assertEquals(expected.topAdsGroupValidateName, actual)
     }
 
