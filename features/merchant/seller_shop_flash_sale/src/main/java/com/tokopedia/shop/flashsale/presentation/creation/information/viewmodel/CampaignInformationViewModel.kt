@@ -366,6 +366,10 @@ class CampaignInformationViewModel @Inject constructor(
         this.campaignId = campaignId
     }
 
+    fun getCampaignId() : Long {
+        return this.campaignId
+    }
+
     fun setPaymentType(paymentType : PaymentType) {
         this.paymentType = paymentType
     }
@@ -404,10 +408,6 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun getRemainingQuota(): Int {
         return remainingQuota
-    }
-
-    fun setShowTeaser(showTeaser: Boolean) {
-        this.showTeaser = showTeaser
     }
 
     fun storeAsDefaultSelection(selection : Selection) {
