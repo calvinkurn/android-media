@@ -32,6 +32,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
@@ -143,10 +144,9 @@ class ChatbotVideoUploadViewHolder(
         val minutes = TimeUnit.MILLISECONDS.toMinutes(totalLength) % MINUTES
         val seconds = TimeUnit.MILLISECONDS.toSeconds(totalLength) % SECONDS
 
-        return when {
-            hours == 0L -> String.format("%02d:%02d", minutes, seconds)
-            else ->
-                String.format("%02d:%02d:%02d", hours, minutes, seconds)
+        return when (hours) {
+            0L -> String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds)
+            else -> String.format(Locale.getDefault(), "%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
 
