@@ -331,7 +331,16 @@ class PostListViewHolder(
             postPagers = pagers
         )
         if (element.isEmpty()) {
-            showEmptyState(element)
+            if (element.isShowEmpty) {
+                showEmptyState(element)
+            } else {
+                if (listener.getIsShouldRemoveWidget()) {
+                    listener.removeWidget(adapterPosition, element)
+                } else {
+                    listener.onRemoveWidget(adapterPosition)
+                    itemView.toggleWidgetHeight(false)
+                }
+            }
         }
     }
 
