@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatActivity
@@ -14,7 +15,6 @@ import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.ValueUtil
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
-import com.tokopedia.tokochat_common.view.uimodel.StringUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.tokochat_common.view.uimodel.MessageBubbleUiModel
@@ -39,13 +39,8 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     override fun initViews() {
         super.initViews()
-        val list = arrayListOf<StringUiModel>()
-        for (i in 0 until 10) {
-            val string = StringUiModel("HELOOOOO $i")
-            list.add(string)
-            adapter.addItem(string)
-            adapter.notifyItemChanged(i)
-        }
+        setupToolbarData()
+        setupReceiverDummyMessages()
     }
 
     private fun setupReceiverDummyMessages() {
