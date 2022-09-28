@@ -210,7 +210,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 val isReload = shipping.serviceId != null && shipping.shipperProductId != null
                 if (isReload) {
                     val (orderShipment1, errorId1) = onRenewShipping(
-                        shippingDurationUiModels, shipping, shippingRecommendationData
+                        shippingDurationUiModels,
+                        shipping,
+                        shippingRecommendationData
                     )
                     shipping = orderShipment1
                     shippingErrorId = errorId1
@@ -298,6 +300,8 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             )
         }
         val durationError: ErrorServiceData? = selectedShippingDurationUiModel.serviceData.error
+        val hasSelectedSpIdFromRates =
+            selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0
         if (durationError?.errorId?.isNotBlank() == true && durationError.errorMessage?.isNotBlank() == true) {
             return Pair(
                 OrderShipment(
@@ -305,7 +309,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                     serviceId = selectedShippingDurationUiModel.serviceData.serviceId,
                     serviceDuration = selectedShippingDurationUiModel.serviceData.serviceName,
                     serviceName = selectedShippingDurationUiModel.serviceData.serviceName,
-                    isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0,
+                    isHideChangeCourierCard = hasSelectedSpIdFromRates,
                     needPinpoint = durationError.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED,
                     serviceErrorMessage = durationError.errorMessage,
                     shippingRecommendationData = shippingRecommendationData
@@ -314,11 +318,17 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
         }
         val shippingCourierViewModelList: List<ShippingCourierUiModel> =
             selectedShippingDurationUiModel.shippingCourierViewModelList
+        val selectedSpId = if (hasSelectedSpIdFromRates) {
+            // use spId from rates if given
+            selectedShippingDurationUiModel.serviceData.selectedShipperProductId
+        } else {
+            shipping.shipperProductId
+        }
         shippingCourierViewModelList.forEach {
-            it.isSelected = it.productData.shipperProductId == shipping.shipperProductId
+            it.isSelected = it.productData.shipperProductId == selectedSpId
         }
         val selectedShippingCourierUiModel =
-            shippingCourierViewModelList.firstOrNull { it.isSelected && !it.productData.isUiRatesHidden }
+            shippingCourierViewModelList.firstOrNull { it.isSelected && (hasSelectedSpIdFromRates || !it.productData.isUiRatesHidden) }
                 ?: shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
                 ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
                 ?: shippingCourierViewModelList.first()
@@ -355,8 +365,9 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 logisticPromoViewModel = null,
                 logisticPromoShipping = null,
                 shippingRecommendationData = shippingRecommendationData,
-                isHideChangeCourierCard = selectedShippingDurationUiModel.serviceData.selectedShipperProductId > 0
-            ), shippingErrorId
+                isHideChangeCourierCard = hasSelectedSpIdFromRates
+            ),
+            shippingErrorId
         )
     }
 
@@ -381,10 +392,13 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             )
         }
         val selectedShippingCourierUiModel = getSelectedCourierFromProfileSpId(
-            profileShipment.spId, selectedShippingDurationUiModel.shippingCourierViewModelList
-        ) ?: return onRevampNewShippingFromRecommendation(
-            shippingDurationUiModels, profileShipment, shippingRecommendationData
+            profileShipment.spId,
+            selectedShippingDurationUiModel,
+            selectedShippingDurationUiModel.shippingCourierViewModelList
         )
+            ?: return onRevampNewShippingFromRecommendation(
+                shippingDurationUiModels, profileShipment, shippingRecommendationData
+            )
         val flagNeedToSetPinpoint = false
         val errorMessage: String? = null
         val shippingErrorId: String? = null
@@ -437,9 +451,16 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
             shippingDurationUiModel.isSelected =
                 shippingDurationUiModel.serviceData.serviceId == profileShipment.recommendationServiceId && !shippingDurationUiModel.serviceData.isUiRatesHidden
             if (shippingDurationUiModel.isSelected) {
+                val recommendationSpId =
+                    if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
+                        // use spId from rates if given
+                        shippingDurationUiModel.serviceData.selectedShipperProductId
+                    } else {
+                        profileShipment.recommendationSpId
+                    }
                 for (shippingCourierUiModel in shippingCourierViewModelList) {
                     shippingCourierUiModel.isSelected = false
-                    if (shippingCourierUiModel.productData.shipperProductId == profileShipment.recommendationSpId && !shippingCourierUiModel.productData.isUiRatesHidden) {
+                    if (shippingCourierUiModel.productData.shipperProductId == recommendationSpId && (shippingDurationUiModel.serviceData.selectedShipperProductId > 0 || !shippingCourierUiModel.productData.isUiRatesHidden)) {
                         shippingCourierUiModel.isSelected = true
                         selectedShippingCourierUiModel = shippingCourierUiModel
                         selectedShippingDurationUiModel = shippingDurationUiModel
@@ -534,16 +555,23 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
     }
 
     private fun getSelectedCourierFromProfileSpId(
-        spId: Int, shippingCourierViewModelList: List<ShippingCourierUiModel>
+        spId: Int,
+        shippingDurationUiModel: ShippingDurationUiModel,
+        shippingCourierViewModelList: List<ShippingCourierUiModel>
     ): ShippingCourierUiModel? {
         var selectedCourier: ShippingCourierUiModel? = null
-        if (spId > 0) {
+        if (shippingDurationUiModel.serviceData.selectedShipperProductId > 0) {
+            // use spId from rates if given
+            selectedCourier =
+                shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == shippingDurationUiModel.serviceData.selectedShipperProductId }
+        } else if (spId > 0) {
             selectedCourier =
                 shippingCourierViewModelList.firstOrNull { it.productData.shipperProductId == spId && !it.productData.isUiRatesHidden }
         }
         if (selectedCourier == null) {
+            // fallback if spId from cart is ui-hidden
             selectedCourier =
-                shippingCourierViewModelList.firstOrNull { it.isSelected && !it.productData.isUiRatesHidden }
+                shippingCourierViewModelList.firstOrNull { it.productData.isRecommend && !it.productData.isUiRatesHidden }
                     ?: shippingCourierViewModelList.firstOrNull { !it.productData.isUiRatesHidden }
         }
         return selectedCourier
