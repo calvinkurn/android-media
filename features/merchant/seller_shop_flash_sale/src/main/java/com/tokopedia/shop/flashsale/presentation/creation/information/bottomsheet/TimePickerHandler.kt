@@ -104,12 +104,7 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     private fun buildMaxTime(isUsingVpsPackage: Boolean): Calendar {
          if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
              return if (isUsingVpsPackage) {
-                 val maxHour = param.maximumDate.extractHour()
-                 val maxMinute = param.maximumDate.extractMinute()
-                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                     set(Calendar.HOUR_OF_DAY, maxHour)
-                     set(Calendar.MINUTE, maxMinute)
-                 }
+                 handleVpsPackageMaxTime()
              } else {
                  GregorianCalendar(LocaleConstant.INDONESIA).apply {
                      set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
@@ -135,5 +130,23 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
         val endDateDayOfYear = endDateCalendar.get(Calendar.DAY_OF_YEAR)
 
         return startDateDayOfYear == endDateDayOfYear
+    }
+
+    private fun handleVpsPackageMaxTime(): GregorianCalendar {
+        val isSelectedDateIsTheLastVpsPackageDayActive = isSameDay(param.maximumDate, param.selectedDateFromCalendar)
+        return if (isSelectedDateIsTheLastVpsPackageDayActive) {
+            val maxHour = param.maximumDate.extractHour()
+            val maxMinute = param.maximumDate.extractMinute()
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, maxHour)
+                set(Calendar.MINUTE, maxMinute)
+            }
+        } else {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
+                set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
+                set(Calendar.MINUTE, LAST_MINUTE)
+            }
+        }
+
     }
 }
