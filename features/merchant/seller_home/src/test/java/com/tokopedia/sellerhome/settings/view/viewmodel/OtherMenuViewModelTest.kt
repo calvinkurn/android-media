@@ -13,6 +13,8 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.domain.model.MembershipGetSumUserCardMember
+import com.tokopedia.sellerhome.domain.model.SumUserCardMember
 import com.tokopedia.sellerhome.domain.model.TotalTokomemberResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
@@ -246,6 +248,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 )
             )
             onGetUserShopInfo_thenReturn(UserShopInfoWrapper(null))
+            onGetTotalTokoMember_thenReturn(0L)
             onGetShopTotalFollowers_thenReturn(100L)
             onGetFreeShipping_thenReturn(
                 TokoPlusBadgeUiModel(
@@ -278,6 +281,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetShopBadge_thenThrow()
             onGetShopOperational_thenThrow()
             onGetUserShopInfo_thenThrow()
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetNewIklanPromotion_thenError()
@@ -508,6 +512,40 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetShopBadgeCalled()
             val expectedResult = SettingResponseState.SettingError(error)
             mViewModel.shopBadgeLiveData.verifyStateErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember success should set live data state success`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTotalTokoMember_thenReturn(0L)
+            mViewModel.getTotalTokoMember()
+
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingSuccess("0")
+            mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember success should set live data state success with data null`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTotalTokoMember_thenReturn(0L)
+            mViewModel.getTotalTokoMember()
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingSuccess("0")
+            mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember error should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetTotalTokoMember_thenThrow(error)
+
+            mViewModel.getTotalTokoMember()
+
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.totalTokoMemberLiveData.verifyStateErrorEquals(expectedResult)
         }
 
     @Test
@@ -841,6 +879,10 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
 
+    private suspend fun onGetTotalTokoMember_thenReturn(totalTokoMember:Long) {
+        coEvery { getTotalTokoMemberUseCase.executeOnBackground() } returns totalTokoMember
+    }
+
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
     }
@@ -848,7 +890,6 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     private suspend fun onGetTotalTokoMember_thenThrow(exception: Exception = IllegalStateException()) {
         coEvery { getTotalTokoMemberUseCase.executeOnBackground() } throws exception
     }
-
 
     private suspend fun onGetShopTotalFollowers_thenThrow(exception: Exception = IllegalStateException()) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } throws exception
