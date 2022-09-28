@@ -462,9 +462,8 @@ class DetailEditorFragment @Inject constructor(
             val cropView = it.cropImageView
             val overlayView = it.overlayView
 
-            overlayView.setTargetAspectRatio(cropRotateData.imageWidth.toFloat() / cropRotateData.imageHeight)
-            overlayView.setupCropBounds()
             cropView.zoomInImage(cropRotateData.scale)
+            overlayView.setTargetAspectRatio(cropRotateData.imageWidth.toFloat() / cropRotateData.imageHeight)
 
             // if crop state is not produce from auto crop on beginning of landing page
             if (!cropRotateData.isAutoCrop) {
@@ -472,6 +471,7 @@ class DetailEditorFragment @Inject constructor(
                     val cropImageMatrix = cropView.imageMatrix.values()
                     val deltaX = (cropImageMatrix[2] * -1) + cropRotateData.translateX
                     val deltaY = (cropImageMatrix[5] * -1) + cropRotateData.translateY
+
                     cropView.postTranslate(deltaX, deltaY)
 
                     cropView.setImageToWrapCropBounds(false)
