@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -559,6 +560,7 @@ class DetailEditorFragment @Inject constructor(
 
         if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
+            Thread.sleep(DELAY_IMPLEMENT_ROTATE)
             implementPreviousStateCrop(data.cropRotateValue)
 
             if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
@@ -601,9 +603,13 @@ class DetailEditorFragment @Inject constructor(
             val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
             val imageHeight = (cropRotateData.imageHeight * scalingSize).toInt()
 
+            val mirrorMatrix = Matrix()
+            mirrorMatrix.preScale(cropRotateData.scaleX, cropRotateData.scaleY)
+            val mirroredBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+
             // get processed, since data param is set to be null then other data value is not necessary
             val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
-                it,
+                mirroredBitmap,
                 offsetX,
                 offsetY,
                 imageWidth,
@@ -617,8 +623,8 @@ class DetailEditorFragment @Inject constructor(
                 0f,
                 isRotate = false,
                 isCrop = false,
-                cropRotateData.scaleX,
-                cropRotateData.scaleY
+                1f,
+                1f
             )
 
 
@@ -767,7 +773,6 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
 
         private const val DELAY_IMPLEMENT_CROP = 300L
-
-        private const val DEFAULT_CROP_RATIO = 1f
+        private const val DELAY_IMPLEMENT_ROTATE = 300L
     }
 }
