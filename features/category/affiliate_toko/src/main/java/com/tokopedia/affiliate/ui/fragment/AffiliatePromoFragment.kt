@@ -149,7 +149,7 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.let {
                 it.editingState(false)
                 if (it.editText.text?.isNotEmpty() == true) {
-                    affiliatePromoViewModel.getSearch(it.toString())
+                    affiliatePromoViewModel.getSearch(it.editText.text.toString())
                 }
             }
         }
