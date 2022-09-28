@@ -73,7 +73,7 @@ import kotlin.collections.HashMap
 /**
  * Created by Rafli Syam 20/07/2020
  */
-class UniversalShareBottomSheet : BottomSheetUnify() {
+open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     companion object {
         @LayoutRes
@@ -249,7 +249,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var affiliateRegisterTitle: Typography? = null
     private var affiliateRegisterIcon: ImageView? = null
     private var affiliateRegisterContainer: CardUnify? = null
-    private var imgOptionsHeaderTv:Typography?=null
 
     //Fixed sharing options
     private var copyLinkImage: ImageView? = null
@@ -266,7 +265,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var thumbNailTitle = ""
     private var bottomSheetTitleRemoteConfKey = ""
     private var bottomSheetTitleStr = ""
-    private var imgOptionsHeaderStr = ""
     private var thumbNailImageUrl = ""
     private var thumbNailImageUrlFallback = ""
     private var previewImageUrl = ""
@@ -514,9 +512,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
             bottomBackgroundImage = findViewById(R.id.background_image)
-            imgOptionsHeaderTv = findViewById<Typography?>(R.id.img_options_heading)?.apply {
-                if(imgOptionsHeaderStr.isNotEmpty()) text = imgOptionsHeaderStr
-            }
 
             //setting background image for light and dark mode
             if (context?.isDarkMode() == true) {
@@ -546,9 +541,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             setFixedOptionsClickListeners()
 
             setUserVisualData()
-            val title = if(bottomSheetTitleStr.isNotEmpty()) bottomSheetTitleStr
-                        else context.getString(R.string.label_to_social_media_text)
-            setTitle(title)
+            setTitle(context.getString(R.string.label_to_social_media_text))
             setChild(this)
             setCloseClickListener {
                 bottomSheetListener?.onCloseOptionClicked()
@@ -846,10 +839,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setBottomSheetTitle(title: String){
         bottomSheetTitleStr = title
-    }
-
-    fun setBottomSheetImgOptionsTitle(title: String){
-        imgOptionsHeaderStr = title
     }
 
     fun setBottomSheetTitleRemoteConfKey(key: String){
