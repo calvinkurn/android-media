@@ -179,4 +179,6 @@
 
     <string name="tokopedianow_on_boarding_2h_toaster">Selamat menikmati layanan NOW! maks. 2 jam tiba!</string>
     <string name="tokopedianow_on_boarding_20m_toaster">Kamu sekarang berada di halaman khusus produk NOW! 20 menit tiba. Selamat belanja!</string>
+    <string name="tokopedianow_content_description_quantity_editor_view_add">tombol tambah</string>
+    <string name="tokopedianow_content_description_quantity_editor_view_sub">tombol kurang</string>
 </resources>

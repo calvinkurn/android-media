@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetEnd="@+id/end"
+        motion:constraintSetStart="@id/start"
+        motion:duration="500">
+        <OnClick
+            motion:targetId="@id/quantity_editor_add_button"
+            motion:clickAction="transitionToEnd" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/background"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:translationZ="1dp" >
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="0" />
+        </Constraint>
+        <Constraint
+            android:layout_height="32dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="32dp"
+            android:id="@+id/quantity_editor_sub_button"
+            android:translationZ="2dp"
+            motion:layout_constraintStart_toStartOf="@+id/background" />
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:layout_height="32dp"
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="32dp"
+            android:translationZ="2dp"
+            android:id="@+id/quantity_editor_sub_button"
+            motion:layout_constraintStart_toStartOf="@+id/background" />
+        <Constraint
+            android:id="@+id/edit_text"
+            motion:layout_constraintEnd_toStartOf="@+id/quantity_editor_add_button"
+            motion:layout_constraintStart_toEndOf="@+id/quantity_editor_sub_button"
+            android:layout_width="0dp"
+            android:layout_height="30dp"
+            android:translationZ="2dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toTopOf="parent" />
+        <Constraint
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:translationZ="3dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:id="@+id/quantity_editor_add_button" />
+        <Constraint
+            android:id="@+id/background"
+            motion:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            motion:layout_constraintBottom_toBottomOf="parent"
+            motion:layout_constraintTop_toTopOf="parent"
+            android:translationZ="1dp"
+            motion:layout_constraintStart_toStartOf="parent">
+            <CustomAttribute
+                motion:attributeName="crossfade"
+                motion:customFloatValue="1" />
+        </Constraint>
+    </ConstraintSet>
+</MotionScene>

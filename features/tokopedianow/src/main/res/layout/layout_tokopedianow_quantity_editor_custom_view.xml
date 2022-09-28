@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/constraintLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layoutDescription="@xml/layout_tokopedianow_quantity_editor_custom_view_xml_constraintlayout3_scene2">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/background"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:translationZ="1dp"
+        app:altSrc="@drawable/tokopedianow_bg_quantity_editor_view_expanded"
+        android:background="@drawable/tokopedianow_bg_quantity_editor_view"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/quantity_editor_add_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_add"
+        android:padding="7.25dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/iconunify_add"
+        android:tint="@color/Unify_GN500"
+        android:translationZ="3dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/quantity_editor_sub_button"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_sub"
+        android:padding="7.25dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/iconunify_remove"
+        android:tint="@color/Unify_GN500"
+        android:translationZ="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.tokopedianow.common.view.TokoNowEditTextView
+        android:id="@+id/edit_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@null"
+        android:gravity="center"
+        android:inputType="number"
+        android:minWidth="32dp"
+        android:textColor="@color/Unify_NN950"
+        android:textCursorDrawable="@drawable/tokopedianow_bg_quantity_editor_view_cursor"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/quantity_editor_add_button"
+        app:layout_constraintStart_toEndOf="@+id/quantity_editor_sub_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck,SpeakableTextPresentCheck" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>
