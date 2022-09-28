@@ -370,7 +370,7 @@ class AutoAdsWidgetCommon(context: Context, attrs: AttributeSet?) : CardUnify(co
 
     fun loadData(fromEdit: Int) {
         this.entryPoint = fromEdit
-        widgetViewModel.getAutoAdsStatus(userSession.shopId.toInt())
+        widgetViewModel.getAutoAdsStatus(userSession.shopId)
     }
 
     private fun initView(context: Context) {

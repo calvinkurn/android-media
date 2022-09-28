@@ -45,7 +45,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     val autoAdsStatus = MutableLiveData<TopAdsAutoAdsModel>()
     val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
-    fun getAutoAdsStatus(shopId: Int) {
+    fun getAutoAdsStatus(shopId: String) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status),
