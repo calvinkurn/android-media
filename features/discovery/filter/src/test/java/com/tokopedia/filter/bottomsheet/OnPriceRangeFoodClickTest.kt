@@ -1,9 +1,12 @@
 package com.tokopedia.filter.bottomsheet
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.common.data.Filter
+import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.filter.testutils.jsonToObject
 import org.junit.Test
@@ -32,6 +35,7 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
         `Then assert map parameter values contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
         `Then assert ACTIVE filter map parameter contains the clicked Price Range option`(selectedOptionViewModel)
+        `Then assert option list doesn't sort by selected or name`(selectedFilter.options)
     }
 
     private fun `When an Checkbox Option is Clicked And Applied`(filterRefreshable: FilterRefreshable,
@@ -111,6 +115,20 @@ internal class OnPriceRangeFoodClickTest: SortFilterBottomSheetViewModelTestFixt
     ) {
         val activeFilterMapParameter = sortFilterBottomSheetViewModel.getSelectedFilterMap()
         assertMapValueContainsClickedOption(activeFilterMapParameter, clickedOptionViewModel)
+    }
+
+    private fun `Then assert option list doesn't sort by selected or name`(
+        options: List<Option>
+    ) {
+        this.sortFilterList?.filterIsInstance<FilterViewModel>()?.forEach { visitable ->
+            visitable.optionViewModelList.forEachIndexed { index, optionViewModel ->
+                assert(options[index].name == optionViewModel.option.name)
+                assert(options[index].description == optionViewModel.option.description)
+                assert(options[index].key == optionViewModel.option.key)
+                assert(options[index].value == optionViewModel.option.value)
+                assert(options[index].inputType == optionViewModel.option.inputType)
+            }
+        }
     }
 
 
