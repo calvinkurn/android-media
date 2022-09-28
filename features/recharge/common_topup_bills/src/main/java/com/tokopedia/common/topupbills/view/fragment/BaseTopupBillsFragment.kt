@@ -122,7 +122,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
             when{
                 it.atcErrorPage.isShowErrorPage -> redirectToCart(categoryId.toString())
-                it.appLinkUrl.isEmpty() -> showErrorMessage(MessageErrorException(it.atcErrorPage.subTitle.ifEmpty { it.title }))
+                it.appLinkUrl.isEmpty() -> showErrorMessage(MessageErrorException(it.title))
                 else -> redirectErrorUnVerifiedNumber(it)
             }
             onLoadingAtc(false)
