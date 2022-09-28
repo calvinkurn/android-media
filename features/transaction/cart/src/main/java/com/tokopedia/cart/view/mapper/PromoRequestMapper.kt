@@ -17,7 +17,11 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 
 object PromoRequestMapper {
 
-    fun generateValidateUseRequestParams(promoData: Any?, selectedCartShopHolderDataList: List<CartShopHolderData>, lastValidateUsePromoRequest: ValidateUsePromoRequest?): ValidateUsePromoRequest {
+    fun generateValidateUseRequestParams(
+        promoData: Any?,
+        selectedCartShopHolderDataList: List<CartShopHolderData>,
+        lastValidateUsePromoRequest: ValidateUsePromoRequest?
+    ): ValidateUsePromoRequest {
         return ValidateUsePromoRequest().apply {
             val tmpOrders = mutableListOf<OrdersItem>()
             selectedCartShopHolderDataList.forEach { cartShopHolderData ->
@@ -254,7 +258,10 @@ object PromoRequestMapper {
                 orders = orders)
     }
 
-    fun generateClearBoParam(promoData: Any?, availableCartShopHolderDataList: List<CartShopHolderData>): ClearPromoOrderData? {
+    fun generateClearBoParam(
+        promoData: Any?,
+        availableCartShopHolderDataList: List<CartShopHolderData>
+    ): ClearPromoOrderData? {
         val orders = arrayListOf<ClearPromoOrder>()
         availableCartShopHolderDataList.forEach { cartShopHolderData ->
             val order = ClearPromoOrder(
