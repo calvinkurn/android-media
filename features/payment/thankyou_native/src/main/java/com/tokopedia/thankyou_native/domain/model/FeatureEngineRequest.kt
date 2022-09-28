@@ -39,7 +39,9 @@ data class FeatureEngineRequestParameters(
         @SerializedName("is_OS")
         val isOS : String,
         @SerializedName("is_enjoy_plus_benefit")
-        val isPlus: String
+        val isPlus: String,
+        @SerializedName("is_plus_transaction")
+        val isPlusTransaction:String
 )
 
 class FeatureEngineRequestOperators
