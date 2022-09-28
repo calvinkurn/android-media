@@ -15,6 +15,7 @@ import androidx.work.Configuration;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.tokopedia.abstraction.relic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
 import com.tokopedia.cachemanager.PersistentCacheManager;
@@ -65,6 +66,7 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
+import timber.log.Timber;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -112,6 +114,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initCacheManager();
         initEmbrace();
 
+        if (GlobalConfig.DEBUG) {
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
 
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);

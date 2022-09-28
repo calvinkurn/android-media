@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -103,6 +104,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -238,7 +240,7 @@ class ChatbotPresenter @Inject constructor(
 
                     if (attachmentType == UPDATE_TOOLBAR) {
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
-                        view.updateToolbar(tool.profileName, tool.profileImage, tool.badgeImage)
+                        updateToolbar(tool)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
@@ -290,6 +292,24 @@ class ChatbotPresenter @Inject constructor(
             ?.subscribe(subscriber)
 
         mSubscription.add(subscription)
+    }
+
+    private fun updateToolbar(tool: ToolbarAttributes?) {
+
+        var profileImage = ""
+
+        tool?.profileImage?.let {
+            profileImage = it
+        }
+
+        if (view.isInDarkMode()) {
+            tool?.profileImageDark?.let {
+                profileImage = it
+            }
+        }
+
+        view.updateToolbar(tool?.profileName,profileImage, tool?.badgeImage)
+
     }
 
     private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {

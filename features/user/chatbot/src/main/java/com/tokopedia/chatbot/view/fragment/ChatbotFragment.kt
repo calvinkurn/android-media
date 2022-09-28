@@ -531,16 +531,16 @@ class ChatbotFragment :
 
     private fun bindReplyTextBackground() {
         val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
-            replyEditTextContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            R.dimen.dp_chatbot_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_chatbot_2,
-            R.dimen.dp_chatbot_1,
-            Gravity.CENTER
+                replyEditTextContainer,
+                R.color.chatbot_dms_left_message_bg,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
+                R.dimen.dp_chatbot_20,
+                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+                R.dimen.dp_chatbot_2,
+                R.dimen.dp_chatbot_1,
+                Gravity.CENTER
         )
         val paddingStart = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4).toInt()
         val paddingEnd = resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
