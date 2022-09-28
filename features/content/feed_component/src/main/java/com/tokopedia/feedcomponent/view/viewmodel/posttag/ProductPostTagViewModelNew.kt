@@ -46,6 +46,8 @@ data class ProductPostTagViewModelNew(
 
     val isRilisanSpl: Boolean
         get() = saleType == ASGC_RILISAN_SPECIAL
+    val isFlashSaleToko: Boolean
+        get() = type == ASGC_FLASH_SALE_TOKO
     val isUpcoming: Boolean
         get() = saleStatus == Upcoming
     val isOngoing: Boolean
@@ -53,6 +55,7 @@ data class ProductPostTagViewModelNew(
 
     companion object {
         private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
         const val PRODUCT_TYPE = "product"

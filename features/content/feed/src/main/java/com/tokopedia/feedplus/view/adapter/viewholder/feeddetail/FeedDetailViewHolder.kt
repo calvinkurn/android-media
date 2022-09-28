@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.roundToInt
 
 /**
  * @author by nisie on 5/18/17.
@@ -58,10 +59,10 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             freeShipping = findViewById(R.id.free_shipping)
             rating = findViewById(R.id.rating)
             menuBtn = findViewById(R.id.menu)
-            btnAddToCart = findViewById(R.id.button_add_to_cart)
-            btnAddToWishlist = findViewById(R.id.button_add_to_wishlist)
-            progressBar = findViewById(R.id.ongoing_progress_bar)
-            stockText = findViewById(R.id.stock_text)
+            btnAddToCart = findViewById(R.id.button_add_to_cart_product_detail)
+            btnAddToWishlist = findViewById(R.id.button_add_to_wishlist_product_detail)
+            progressBar = findViewById(R.id.ongoing_progress_bar_product_detail)
+            stockText = findViewById(R.id.stock_text_product_detail)
             stockProgressBarLayout = findViewById(R.id.product_stock_bar_layout)
             soldInfo = findViewById(R.id.soldInfo)
             divider = findViewById(R.id.divider)
@@ -142,6 +143,8 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
+            val value = (item.product.stockSoldPercentage).roundToInt()
+            progressBar.setValue(value, true)
             stockText.text = item.product.stockWording
             stockProgressBarLayout.visible()
         }

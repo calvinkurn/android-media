@@ -161,11 +161,18 @@ class CarouselImageViewHolder(
 
         postImage.setImageUrl(item.mediaUrl)
         llLihatProduct.showWithCondition(item.tagProducts.isNotEmpty())
-        if (card.isUpcoming) {
-            updateAsgcButton()
-            showHideFlashSaleRsUpcomingCampaignCard(card)
-        } else if (card.isOngoing) {
-            showHideFlashSaleRsOngoingCampaignCard(card, item)
+        when {
+            card.isUpcoming -> {
+                updateAsgcButton()
+                showHideFlashSaleRsUpcomingCampaignCard(card)
+            }
+            card.isOngoing -> {
+                showHideFlashSaleRsOngoingCampaignCard(card, item)
+            }
+            else -> {
+                flashSaleViewCardUpcoming.hide()
+                flashSaleViewCardOngoing.hide()
+            }
         }
 
         itemView.doOnLayout {

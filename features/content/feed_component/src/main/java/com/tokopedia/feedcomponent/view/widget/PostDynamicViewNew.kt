@@ -262,10 +262,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             override fun onImageClicked(viewHolder: CarouselImageViewHolder) {
                 changeCTABtnColorAsPerWidget(mData)
                 listener?.onImageClicked(
-                    mData.id,
-                    mData.typename,
-                    mData.followers.isFollowed,
-                    mData.author.id,
+                    mData
                 )
             }
 
@@ -413,11 +410,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.removeOngoingCampaignSaleWidget(mData, positionInFeed)
 
             }
-
-            override fun setInitialStateOfReminderBtn(isReminderSet: Boolean, positionInFeed: Int) {
-
-            }
-
             override fun onReminderBtnClick(isReminderSet: Boolean, positionInFeed: Int) {
                 listener?.onIngatkanSayaBtnClicked(mData, positionInFeed)
             }
@@ -648,7 +640,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ASGC_NEW_PRODUCTS -> context.getString(R.string.feeds_asgc_new_product_text)
                 ASGC_RESTOCK_PRODUCTS -> context.getString(R.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->  mData.campaign.name
+                ASGC_FLASH_SALE_TOKO ->   context.getString(R.string.feed_asgc_flash_sale_toko)
                 ASGC_RILISAN_SPECIAL ->  mData.campaign.name
                 else -> String.EMPTY
             }
@@ -1797,12 +1789,14 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             card.isAsgcColorChangedAsPerWidgetColor = true
             if (card.isTypeProductHighlight) {
-                if (card.isRilisanSpl || card.isFlashSaleToko) {
+                if ((card.isRilisanSpl || card.isFlashSaleToko) && colorGradient.isNotEmpty()) {
                     changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
                         colorGradient.color
                     } as? ArrayList<String>)
-                } else {
+                } else if (card.cta.color.isNotEmpty()) {
                     changeCTABtnColorAsPerColorCodeFromBE(card.cta.color)
+                } else {
+                    changeCTABtnColorToGreen()
                 }
             } else
                 changeCTABtnColorToGreen()

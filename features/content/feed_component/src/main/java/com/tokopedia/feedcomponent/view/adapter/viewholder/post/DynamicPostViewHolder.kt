@@ -719,7 +719,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
-        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
+        fun onImageClicked(card: FeedXCard)
 
         fun onTagClicked(
                 card: FeedXCard,

@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import kotlin.math.roundToInt
 
 private const val RATING_FORMAT = 20.0
 
@@ -123,7 +124,6 @@ class ProductPostTagViewHolderNew(
 
         addToWishlistBtn.showWithCondition(item.isUpcoming || item.isOngoing)
         addToCartBtn.showWithCondition(item.isUpcoming || item.isOngoing)
-        addToCartBtn.isEnabled = item.product.cartable
         val isUpcomingAndRilisanSpecial = item.isUpcoming && item.isRilisanSpl
         addToCartBtn.isEnabled = item.product.cartable && !isUpcomingAndRilisanSpecial
 
@@ -149,6 +149,8 @@ class ProductPostTagViewHolderNew(
             ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
         )
 
+        val value = (item.product.stockSoldPercentage).roundToInt()
+        stockProgressBar.setValue(value, true)
         stockProgressBar.progressBarColor = progressBarColor
         stockText.text = item.product.stockWording
         stockBarLayout.visible()
