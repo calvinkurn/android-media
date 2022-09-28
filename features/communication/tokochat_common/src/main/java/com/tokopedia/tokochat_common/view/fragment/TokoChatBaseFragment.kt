@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.tokochat_common.databinding.TokoChatBaseFragmentBinding
+import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -18,7 +18,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
 
     protected var binding: viewBinding? by autoClearedNullable()
-    protected var baseBinding: TokoChatBaseFragmentBinding? by autoClearedNullable()
+    protected var baseBinding: TokochatBaseFragmentBinding? by autoClearedNullable()
     abstract var adapter: TokoChatBaseAdapter
 
     override fun onCreateView(
@@ -28,7 +28,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     ): View? {
         binding = getViewBindingInflate(container)
         binding?.let {
-            baseBinding = TokoChatBaseFragmentBinding.bind(it.root)
+            baseBinding = TokochatBaseFragmentBinding.bind(it.root)
         }
         return binding?.root
     }
@@ -49,10 +49,10 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     }
 
     private fun setupChatRoomRecyclerView() {
-        baseBinding?.tokochatChatroomRv?.layoutManager = LinearLayoutManager(
+        baseBinding?.tokochatRvChatroom?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL, false
         )
-        baseBinding?.tokochatChatroomRv?.adapter = adapter
+        baseBinding?.tokochatRvChatroom?.adapter = adapter
     }
 }

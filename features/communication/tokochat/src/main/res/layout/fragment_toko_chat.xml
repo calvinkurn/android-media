@@ -5,6 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
-        layout="@layout/toko_chat_base_fragment"/>
+        layout="@layout/tokochat_base_fragment"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

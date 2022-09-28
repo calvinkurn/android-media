@@ -90,8 +90,8 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     }
 
     private fun initViewBinding() {
-        bodyMsgContainerLayout = findViewById(R.id.body_message_container_layout)
-        msgChatLayout = findViewById(R.id.message_chat_layout)
+        bodyMsgContainerLayout = findViewById(R.id.tokochat_layout_body_message_container)
+        msgChatLayout = findViewById(R.id.tokochat_layout_message_chat)
     }
 
     private fun initFlexboxChatLayout() {
@@ -185,7 +185,7 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.tokochat_partial_messsage_bubble
+        val LAYOUT = R.layout.tokochat_partial_message_bubble
 
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1

@@ -8,7 +8,7 @@
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tokochat_chatroom_rv"
+        android:id="@+id/tokochat_rv_chatroom"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintTop_toTopOf="parent"

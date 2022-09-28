@@ -21,10 +21,10 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.tokochat_chatroom_fragment
+        return R.id.tokochat_layout_chatroom_fragment
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.toko_chat_base_activity
+        return R.layout.tokochat_base_activity
     }
 }

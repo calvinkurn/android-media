@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/message_bubble_layout"
+    android:id="@+id/tokochat_layout_item_msg_bubble"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.tokopedia.tokochat_common.view.customview.TokoChatBubbleContainerLayout
-        android:id="@+id/bubble_container_layout"
+        android:id="@+id/tokochat_layout_bubble_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -16,12 +16,12 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/body_message_container_layout"
+            android:id="@+id/tokochat_layout_body_message_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.tokopedia.tokochat_common.view.customview.TokoChatMessageBubbleLayout
-                android:id="@+id/body_message_bubble_layout"
+                android:id="@+id/tokochat_layout_body_message_bubble"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:messageOrientation="LEFT"/>

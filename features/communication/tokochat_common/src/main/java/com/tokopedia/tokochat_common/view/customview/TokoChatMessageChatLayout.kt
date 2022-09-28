@@ -102,12 +102,12 @@ class TokoChatMessageChatLayout : ViewGroup {
 
     private fun initView(context: Context?) {
         LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
-            message = it.findViewById(R.id.message_tv)
-            status = it.findViewById(R.id.message_status_layout)
-            checkMark = it.findViewById(R.id.message_check_mark_iv)
-            hourTime = it.findViewById(R.id.message_time_tv)
-            info = it.findViewById(R.id.message_info_tv)
-            icon = it.findViewById(R.id.message_icon)
+            message = it.findViewById(R.id.tokochat_tv_msg)
+            status = it.findViewById(R.id.tokochat_layout_msg_status)
+            checkMark = it.findViewById(R.id.tokochat_iv_msg_check_mark)
+            hourTime = it.findViewById(R.id.tokochat_tv_msg_time)
+            info = it.findViewById(R.id.tokochat_tv_msg_info)
+            icon = it.findViewById(R.id.tokochat_icon_msg)
         }
         initCheckMarkVisibility()
     }

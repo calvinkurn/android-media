@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemMessageBubbleBinding
-import com.tokopedia.tokochat_common.databinding.TokochatPartialMesssageBubbleBinding
+import com.tokopedia.tokochat_common.databinding.TokochatPartialMessageBubbleBinding
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.getOppositeMargin
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MILLISECONDS
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.START_YEAR
@@ -24,22 +24,22 @@ import com.tokopedia.utils.view.binding.viewBinding
 class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) {
 
     private val binding: TokochatItemMessageBubbleBinding? by viewBinding()
-    private val messageBubbleBinding: TokochatPartialMesssageBubbleBinding? by viewBinding()
+    private val messageBubbleBinding: TokochatPartialMessageBubbleBinding? by viewBinding()
 
     private val topMarginOpposite: Float = getOppositeMargin(itemView.context)
     private val bubbleToScreenMargin: Float = itemView.context?.resources?.getDimension(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
 
-    private val bgLeft = generateLeftBg(messageBubbleBinding?.messageChatLayout)
-    private val bgRight = generateRightBg(messageBubbleBinding?.messageChatLayout)
+    private val bgLeft = generateLeftBg(messageBubbleBinding?.tokochatLayoutMessageChat)
+    private val bgRight = generateRightBg(messageBubbleBinding?.tokochatLayoutMessageChat)
 
     fun bind(msg: TokoChatMessageBubbleBaseUiModel) {
         verifyReplyTime(msg)
         TokoChatMessageBubbleViewHolderBinder.bindChatMessage(
-            msg, messageBubbleBinding?.messageChatLayout)
+            msg, messageBubbleBinding?.tokochatLayoutMessageChat)
         TokoChatMessageBubbleViewHolderBinder.bindHour(
-            msg, messageBubbleBinding?.messageChatLayout)
+            msg, messageBubbleBinding?.tokochatLayoutMessageChat)
         bindMargin(msg)
         bindClick()
         bindIcon(msg)
@@ -60,7 +60,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
         paddingRightMsg()
         bindBackground(bgRight)
         TokoChatMessageBubbleViewHolderBinder.bindChatReadStatus(
-            msg, messageBubbleBinding?.messageChatLayout)
+            msg, messageBubbleBinding?.tokochatLayoutMessageChat)
     }
 
     /**
@@ -70,26 +70,26 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
         bindMsgGravity(Gravity.START)
         paddingLeftMsg()
         bindBackground(bgLeft)
-        messageBubbleBinding?.messageChatLayout?.checkMark?.hide()
+        messageBubbleBinding?.tokochatLayoutMessageChat?.checkMark?.hide()
     }
 
     private fun bindTextColor(msg: TokoChatMessageBubbleBaseUiModel) {
-        messageBubbleBinding?.messageChatLayout?.bindTextColor(msg)
+        messageBubbleBinding?.tokochatLayoutMessageChat?.bindTextColor(msg)
     }
 
     private fun bindIcon(msg: TokoChatMessageBubbleBaseUiModel) {
-        messageBubbleBinding?.messageChatLayout?.bindIcon(msg)
+        messageBubbleBinding?.tokochatLayoutMessageChat?.bindIcon(msg)
     }
 
     private fun bindMsgGravity(gravity: Int) {
         bindLayoutGravity(gravity)
         bindGravity(gravity)
         bindLayoutMsgGravity(gravity)
-        binding?.bodyMessageBubbleLayout?.setMsgGravity(gravity)
+        binding?.tokochatLayoutBodyMessageBubble?.setMsgGravity(gravity)
     }
 
     private fun paddingRightMsg() {
-        binding?.bubbleContainerLayout?.let {
+        binding?.tokochatLayoutBubbleContainer?.let {
             it.setPadding(
                 0, it.paddingTop, bubbleToScreenMargin.toInt(), it.paddingBottom
             )
@@ -97,7 +97,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     }
 
     private fun paddingLeftMsg() {
-        binding?.bubbleContainerLayout?.let {
+        binding?.tokochatLayoutBubbleContainer?.let {
             it.setPadding(
                 bubbleToScreenMargin.toInt(), it.paddingTop, 0, it.paddingBottom
             )
@@ -105,7 +105,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     }
 
     private fun bindMessageInfo(msg: TokoChatMessageBubbleBaseUiModel) {
-        messageBubbleBinding?.messageChatLayout?.bindInfo(msg)
+        messageBubbleBinding?.tokochatLayoutMessageChat?.bindInfo(msg)
     }
 
     private fun verifyReplyTime(chat: TokoChatMessageBubbleBaseUiModel) {
@@ -121,9 +121,9 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     private fun bindMargin(message: TokoChatMessageBubbleBaseUiModel) {
 //        if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
         if (message.isSender) {
-            binding?.bubbleContainerLayout?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
+            binding?.tokochatLayoutBubbleContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
         } else {
-            binding?.bubbleContainerLayout?.setMargin(0, 0, 0, 0)
+            binding?.tokochatLayoutBubbleContainer?.setMargin(0, 0, 0, 0)
         }
     }
 
@@ -137,21 +137,21 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     }
 
     private fun bindGravity(gravity: Int) {
-        binding?.bubbleContainerLayout?.gravity = gravity
+        binding?.tokochatLayoutBubbleContainer?.gravity = gravity
     }
 
     private fun bindLayoutGravity(gravity: Int) {
-        val containerLp = binding?.bubbleContainerLayout?.layoutParams as FrameLayout.LayoutParams
+        val containerLp = binding?.tokochatLayoutBubbleContainer?.layoutParams as FrameLayout.LayoutParams
         containerLp.gravity = gravity
-        binding?.bubbleContainerLayout?.layoutParams = containerLp
+        binding?.tokochatLayoutBubbleContainer?.layoutParams = containerLp
     }
 
     private fun bindLayoutMsgGravity(gravity: Int) {
-        binding?.bodyMessageContainerLayout?.gravity = gravity
+        binding?.tokochatLayoutBodyMessageContainer?.gravity = gravity
     }
 
     private fun bindBackground(drawable: Drawable?) {
-        messageBubbleBinding?.messageChatLayout?.background = drawable
+        messageBubbleBinding?.tokochatLayoutMessageChat?.background = drawable
     }
 
     companion object {

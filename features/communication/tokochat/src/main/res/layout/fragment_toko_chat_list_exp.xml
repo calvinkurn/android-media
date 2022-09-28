@@ -26,7 +26,7 @@
     </ScrollView>
 
     <include
-        layout="@layout/toko_chat_base_fragment"
+        layout="@layout/tokochat_base_fragment"
         android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
