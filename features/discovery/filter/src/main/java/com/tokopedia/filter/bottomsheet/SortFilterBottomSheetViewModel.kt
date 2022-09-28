@@ -207,7 +207,7 @@ internal class SortFilterBottomSheetViewModel {
                     isSelected = option.inputState.toBoolean()
                 }
             }.toMutableList(),
-            isWillSortOptionList = false
+            willSortOptionList = false
         )
     }
 
@@ -262,7 +262,7 @@ internal class SortFilterBottomSheetViewModel {
     }
 
     private fun processOptionList(optionList: List<Option>, optionViewModelList: MutableList<OptionViewModel>,
-                                  isWillSortOptionList: Boolean) {
+                                  willSortOptionList: Boolean) {
         val levelTwoCategoryList = mutableListOf<Option>()
         val levelThreeCategoryList = mutableListOf<Option>()
 
@@ -285,7 +285,7 @@ internal class SortFilterBottomSheetViewModel {
             selectedOrPopularOptionList.addIfSelectedOrPopular(option)
         }
 
-        val optionListForViewModel = if (isWillSortOptionList) {
+        val optionListForViewModel = if (willSortOptionList) {
              createOptionListForViewModel(selectedOrPopularOptionList)
         } else {
             selectedOrPopularOptionList
@@ -706,12 +706,12 @@ internal class SortFilterBottomSheetViewModel {
 
     private fun FilterRefreshable.refreshOptionList() {
         val newOptionViewModelList = mutableListOf<OptionViewModel>()
-        processOptionList(filter.options, newOptionViewModelList, isWillSortOptionList)
+        processOptionList(filter.options, newOptionViewModelList, willSortOptionList)
 
         optionViewModelList.clear()
         optionViewModelList.addAll(newOptionViewModelList)
 
-        if (isWillSortOptionList) {
+        if (willSortOptionList) {
             sortBySelectedAndName()
         }
     }
