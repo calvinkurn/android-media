@@ -68,10 +68,10 @@ class ShopSecondaryInfoAdapter(
             if (index >= START_INDEX) {
                 when (state) {
                     is SettingResponseState.SettingSuccess -> {
-                        if(state.data == TOTAL_TOKOMEMBER_ZERO){
+                        if (state.data == TOTAL_TOKOMEMBER_ZERO) {
                             visitables.removeAt(index)
                             notifyItemRemoved(index)
-                        }else{
+                        } else {
                             visitables[index] = TokoMemberWidgetUiModel(state)
                             notifyItemChanged(index)
                         }
@@ -85,11 +85,14 @@ class ShopSecondaryInfoAdapter(
                         notifyItemChanged(index)
                     }
                 }
-            }else {
-                visitables?.indexOfFirst { it is ShopFollowersWidgetUiModel }?.let { index ->
-                    visitables[index-1] = TokoMemberWidgetUiModel(state)
-                    notifyItemInserted(index-1)
-                }
+            } else {
+                visitables?.indexOfFirst { it is ShopFollowersWidgetUiModel }
+                    ?.let { indexFollower ->
+                        if (index >= START_INDEX) {
+                            visitables[indexFollower - 1] = TokoMemberWidgetUiModel(state)
+                            notifyItemInserted(indexFollower - 1)
+                        }
+                    }
             }
         }
     }
@@ -123,7 +126,9 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusSuccess(data: Pair<Boolean, String>) {
+    private inline fun <reified T : ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusSuccess(
+        data: Pair<Boolean, String>
+    ) {
         val (isActive, badgeUrl) = data
         visitables?.run {
             indexOfFirst { it is T }.let { index ->
@@ -149,7 +154,9 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusError(throwable: Throwable) {
+    private inline fun <reified T : ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusError(
+        throwable: Throwable
+    ) {
         visitables?.indexOfFirst { it is T }?.let { index ->
             val model = T::class.java.newInstance()
             model.state = SettingResponseState.SettingError(throwable)
@@ -163,7 +170,7 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusLoading() {
+    private inline fun <reified T : ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusLoading() {
         visitables?.indexOfFirst { it is T }?.let { index ->
             val model = T::class.java.newInstance()
             model.state = SettingResponseState.SettingLoading

@@ -56,7 +56,8 @@ class ShopSecondaryInfoAdapterTypeFactory(private val listener: OtherMenuViewHol
             ShopTokoMemberViewHolder.LAYOUT_RES -> ShopTokoMemberViewHolder(
                 parent,
                 listener::onTokoMemberCountClicked,
-                listener::onTotalTokoMemberRefresh
+                listener::onTotalTokoMemberRefresh,
+                listener::onImpressionTokoMember
             )
             ShopFollowersViewHolder.LAYOUT_RES -> ShopFollowersViewHolder(
                 parent,

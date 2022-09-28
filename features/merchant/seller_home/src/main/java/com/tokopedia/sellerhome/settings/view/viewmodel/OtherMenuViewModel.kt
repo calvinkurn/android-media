@@ -26,11 +26,15 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.common.viewmodel.NonNullLiveData
-import com.tokopedia.sellerhome.domain.usecase.*
+import com.tokopedia.sellerhome.domain.usecase.GetNewPromotionUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopOperationalUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
+import com.tokopedia.sellerhome.domain.usecase.ShareInfoOtherUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsAutoTopupUseCase
+import com.tokopedia.sellerhome.domain.usecase.TopAdsDashboardDepositUseCase
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.OtherMenuDataType
-import com.tokopedia.shop.common.domain.interactor.GetShopFreeShippingStatusUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.GetTokoPlusBadgeUseCase
 import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 import com.tokopedia.usecase.coroutines.Fail
