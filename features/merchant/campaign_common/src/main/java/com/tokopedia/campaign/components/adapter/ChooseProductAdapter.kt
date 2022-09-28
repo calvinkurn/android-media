@@ -58,6 +58,7 @@ class ChooseProductAdapter {
     }
 
     fun enable() {
+        if (enableSelection) return
         enableSelection = true
         errorMessage = ""
         refresh()

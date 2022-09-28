@@ -29,8 +29,6 @@ object ChooseProductUiMapper {
         return list.filter { it.isSelected && it.isEnabled }
     }
 
-    fun getSelectedProductCount(list: List<ChooseProductItem>) = getSelectedProduct(list).size
-
     // limit max selected to MAX_PRODUCT_SELECTION due to server limitation
     fun getMaxSelectedProduct(maximumFromRemote: Int): Int {
         return if (maximumFromRemote < MAX_PRODUCT_SELECTION) maximumFromRemote
@@ -82,11 +80,32 @@ object ChooseProductUiMapper {
         }
     }
 
-    fun isExceedMaxProduct(productCount: Int?, maxProduct: Int): Boolean {
+    fun isExceedMaxProduct(productCount: Int): Boolean {
+        return productCount.orZero() >= MAX_PRODUCT_SELECTION
+    }
+
+    fun isExceedMaxQuota(productCount: Int, maxProduct: Int): Boolean {
         return productCount.orZero() >= maxProduct
     }
 
     fun isExceedMaxCriteria(criteriaList: List<CriteriaSelection>): Boolean {
         return !criteriaList.validateMax()
     }
+
+    fun getSelectionValidationResult(
+        selectedProductCount: Int,
+        criteriaList: List<CriteriaSelection>,
+        maxSelectedProduct: Int
+    ): SelectionValidationResult {
+        val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
+        val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct)
+        val isExceedMaxCriteria =  isExceedMaxCriteria(criteriaList)
+        return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, isExceedMaxCriteria)
+    }
+
+    data class SelectionValidationResult (
+        val isExceedMaxProduct: Boolean = false,
+        val isExceedMaxQuota: Boolean = false,
+        val isExceedMaxCriteria: Boolean = false
+    )
 }

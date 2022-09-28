@@ -7,7 +7,6 @@ import androidx.lifecycle.asFlow
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.entity.ChooseProductItem
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
@@ -28,14 +27,9 @@ class ChooseProductViewModel @Inject constructor(
     private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase,
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
-    private val getFlashSaleListForSellerUseCase: GetFlashSaleListForSellerUseCase,
+    private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
-
-    companion object{
-        private const val OFFSET_FLASHSALE_INFO = 0
-        private const val ROWS_FLASHSALE_INFO = 1
-    }
 
     // General Livedata
     private val _selectedProductCount = MutableLiveData<Int>()
@@ -76,9 +70,7 @@ class ChooseProductViewModel @Inject constructor(
     val selectionValidationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { selectedProductCount, criteriaList, maxSelectedProduct ->
-        val isExceedMaxProduct = ChooseProductUiMapper.isExceedMaxProduct(selectedProductCount, maxSelectedProduct)
-        val isExceedMaxCriteria =  ChooseProductUiMapper.isExceedMaxCriteria(criteriaList)
-        Pair(isExceedMaxProduct, isExceedMaxCriteria)
+        ChooseProductUiMapper.getSelectionValidationResult(selectedProductCount, criteriaList, maxSelectedProduct)
     }
 
     // public variables
@@ -176,15 +168,8 @@ class ChooseProductViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = GetFlashSaleListForSellerUseCase.Param(
-                    tabName,
-                    OFFSET_FLASHSALE_INFO,
-                    ROWS_FLASHSALE_INFO,
-                    campaignIds = listOf(campaignId)
-                )
-                val response = getFlashSaleListForSellerUseCase.execute(params)
-                val max = response.flashSales.firstOrNull()?.maxProductSubmission.orZero()
-                maxProductSubmission.postValue(max)
+                val response = getFlashSaleDetailForSellerUseCase.execute(campaignId)
+                maxProductSubmission.postValue(response.maxProductSubmission)
                 selectedProductList.postValue(listOf())
             },
             onError = { error ->

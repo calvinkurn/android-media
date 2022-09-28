@@ -286,8 +286,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         }
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.selectionValidationResult.collectLatest {
-                if (it.first) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_product_item))
-                else if (it.second) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_criteria_item))
+                if (it.isExceedMaxQuota) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_quota_item))
+                else if (it.isExceedMaxProduct) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_product_item))
+                else if (it.isExceedMaxCriteria) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_criteria_item))
                 else chooseProductAdapter.enable()
             }
         }

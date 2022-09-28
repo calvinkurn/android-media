@@ -207,6 +207,7 @@
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
     <string name="chooseproduct_error_max_product_item">Kamu sudah mengajukan 40 produk.</string>
+    <string name="chooseproduct_error_max_quota_item">Kuota pengajuan produkmu sudah habis.</string>
     <string name="chooseproduct_error_max_criteria_item">Kuota pengajuan untuk kategori produk ini sudah habis.</string>
 
     <!--Manage Product-->
