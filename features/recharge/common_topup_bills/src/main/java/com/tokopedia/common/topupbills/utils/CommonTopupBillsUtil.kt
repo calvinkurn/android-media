@@ -46,5 +46,16 @@ class CommonTopupBillsUtil {
 
             return phoneNumber.replace(NUMBER_REGEX.toRegex(), "")
         }
+
+        fun buildRedirectAppLinkToCheckout(
+            productId: String,
+            clientNumber: String,
+            categoryId: String
+        ): String{
+            return """
+                tokopedia://digital/cart?product_id=$productId&client_number=$clientNumber
+                &category_id=$categoryId&operator_id=&idem_potency_key=&instant_checkout=&slug=
+            """.filterNot { it.isWhitespace() }
+        }
     }
 }
