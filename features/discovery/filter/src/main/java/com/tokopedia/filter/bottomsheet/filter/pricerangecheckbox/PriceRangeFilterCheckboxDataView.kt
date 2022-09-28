@@ -8,9 +8,11 @@ import com.tokopedia.filter.common.data.Filter
 
 internal data class PriceRangeFilterCheckboxDataView(
     override val filter: Filter,
-    override val willSortOptionList: Boolean,
     override var optionViewModelList: MutableList<OptionViewModel>,
 ): FilterRefreshable, Visitable<SortFilterBottomSheetTypeFactory> {
+
+    override val willSortOptionList: Boolean
+        get() = false
 
     override fun type(typeFactory: SortFilterBottomSheetTypeFactory): Int {
         return typeFactory.type(this)

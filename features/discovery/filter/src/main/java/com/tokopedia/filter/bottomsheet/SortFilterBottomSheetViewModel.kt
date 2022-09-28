@@ -207,7 +207,6 @@ internal class SortFilterBottomSheetViewModel {
                     isSelected = option.inputState.toBoolean()
                 }
             }.toMutableList(),
-            willSortOptionList = false
         )
     }
 
