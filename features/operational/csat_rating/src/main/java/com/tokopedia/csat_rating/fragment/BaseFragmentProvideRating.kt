@@ -26,7 +26,6 @@ import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.abstraction.R as RAbstraction
 
 
 open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContract.ProvideRatingView {
@@ -256,12 +255,12 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         handleSubmitButtonState()
     }
 
-    fun disableSubmitButton() {
+    override fun disableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context,  com.tokopedia.unifyprinciples.R.color.Unify_NN400))
         mTxtFinished.isEnabled = false
     }
 
-    fun enableSubmitButton() {
+    override fun enableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         mTxtFinished.isEnabled = true
     }

@@ -33,7 +33,7 @@ open class ItemFilterViewHolder(itemView: View, listener: QuickSingleFilterListe
         val drawableBorder = layoutBorder?.background?.current?.mutate() as GradientDrawable
         if (selected) {
             layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
-            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G100)) }
+            layoutInside?.context?.let { drawableInside.setColor(ContextCompat.getColor(it, R.color.csat_dms_reason_bg)) }
             filterName?.context?.let { filterName?.setTextColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_G500)) }
         } else {
             layoutBorder?.context?.let { drawableBorder.setColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)) }
