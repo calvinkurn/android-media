@@ -59,6 +59,7 @@ class FeedPlusContainerViewModel @Inject constructor(
         }
     }
 
+    @Deprecated("No longer in use")
     fun getContentForm() {
         getContentFormForFeedUseCase.clearRequest()
         getContentFormForFeedUseCase.execute(GetContentFormForFeedUseCase.createRequestParams(
