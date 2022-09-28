@@ -3,12 +3,12 @@ package com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmode
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-//import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodQuickPriceRangeHelper
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -69,20 +69,20 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
         setPriceRangeUiModels(resetUiModels)
     }
 
-//    fun setPriceRangeUiModel(
-//        uiModel: OptionViewModel,
-//        isSelected: Boolean
-//    ) {
-//        val appliedOptions = getCurrentAppliedOptions().toMutableList()
-//        val newAppliedOptions = appliedOptions.map {
-//            it.clone().apply {
-//                if (uiModel.option.value == it.value) {
-//                    inputState = isSelected.toString()
-//                }
-//            }
-//        }
-//        setCurrentAppliedOptions(newAppliedOptions)
-//    }
+    fun setPriceRangeUiModel(
+        uiModel: TokofoodOptionUiModel,
+        isSelected: Boolean
+    ) {
+        val appliedOptions = getCurrentAppliedOptions().toMutableList()
+        val newAppliedOptions = appliedOptions.map {
+            it.clone().apply {
+                if (uiModel.option.value == it.value) {
+                    inputState = isSelected.toString()
+                }
+            }
+        }
+        setCurrentAppliedOptions(newAppliedOptions)
+    }
 
     fun setPriceRangeUiModels(uiModels: List<PriceRangeFilterCheckboxItemUiModel>,
                               isInitialSet: Boolean = false) {
