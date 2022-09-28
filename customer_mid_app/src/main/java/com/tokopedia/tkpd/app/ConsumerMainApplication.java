@@ -108,6 +108,8 @@ import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
+import com.tokopedia.developer_options.notification.DevOpsNotificationManager;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -175,6 +177,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
+
+        showDevOpsNotification();
     }
 
     private void initializationNewRelic() {
@@ -665,6 +669,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
+    }
+
+    private void showDevOpsNotification() {
+        new DevOpsNotificationManager(this).start();
     }
 
     @Override
