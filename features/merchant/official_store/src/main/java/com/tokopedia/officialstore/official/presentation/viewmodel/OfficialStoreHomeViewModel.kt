@@ -33,16 +33,14 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.topads.sdk.utils.VALUE_HEADLINE_PRODUCT_COUNT
 import com.tokopedia.topads.sdk.utils.VALUE_ITEM
 import com.tokopedia.topads.sdk.utils.VALUE_TEMPLATE_ID
-import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
@@ -63,6 +61,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         private val topAdsWishlishedUseCase: TopAdsWishlishedUseCase,
         private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
         private val getDisplayHeadlineAds: GetDisplayHeadlineAds,
+        private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
         private val getRecommendationUseCaseCoroutine: com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase,
         private val bestSellerMapper: BestSellerMapper,
         private val getTopAdsHeadlineUseCase: GetTopAdsHeadlineUseCase,
@@ -72,6 +71,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     companion object {
         private const val COUNTER_RECOM_TITLE_RENDERED = 1
+        const val TOP_ADS_SOURCE = "1"
+        const val TOP_ADS_COUNT = 3
+        const val TOP_ADS_DIMEN_ID = 3
     }
 
     var currentSlug: String = ""
@@ -248,6 +250,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 else if (it.channel.layout == DynamicChannelLayout.LAYOUT_BEST_SELLING){
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
+                else if(it.channel.layout == DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL){
+                    getTopAdsBannerCarousel()
+                }
             }
         }) {
             _officialStoreError.postValue(it)
@@ -320,6 +325,23 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     it is FeaturedShopDataModel && it.channelModel.id == featuredShopDataModel.channelModel.id
                 }
             }
+        }
+    }
+
+    private fun getTopAdsBannerCarousel(){
+        launchCatchError(coroutineContext, block={
+            val results = topAdsImageViewUseCase.getImageData(
+                topAdsImageViewUseCase.getQueryMap(
+                    "",
+                    TOP_ADS_SOURCE,
+                    "",
+                    TOP_ADS_COUNT,
+                    TOP_ADS_DIMEN_ID,
+                    ""
+                )
+            )
+        }){
+
         }
     }
 
