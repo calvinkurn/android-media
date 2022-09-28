@@ -15,13 +15,13 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.domain.SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.model.DataModel
 import com.tokopedia.tokomember_seller_dashboard.util.InfiniteListResult
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmMemberListAdapter
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.decoration.TmMemberItemDecoration
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmMemberListViewModel
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.tm_member_list_fragment.*
 import javax.inject.Inject
 
@@ -30,6 +30,10 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
     private lateinit var tmMemberListRv : RecyclerView
     private lateinit var flipper: ViewFlipper
     private var shopId:Int = 0
+
+    @Inject
+    lateinit var userSessionInterface : UserSessionInterface
+
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
 
@@ -41,9 +45,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let{
-            shopId = it.getInt(SHOP_ID,0)
-        }
+        shopId = userSessionInterface.shopId.toIntOrZero()
         initInjector()
     }
 
@@ -96,9 +98,9 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
 
     private fun setupRecyclerView(){
         tmMemberListRv.apply {
-            tmMemberAdapter = TmMemberListAdapter(listOf(),requireContext())
-            layoutManager = LinearLayoutManager(requireContext())
-            val dividerDecor  = TmMemberItemDecoration(requireContext())
+            tmMemberAdapter = TmMemberListAdapter(listOf(),context)
+            layoutManager = LinearLayoutManager(context)
+            val dividerDecor  = TmMemberItemDecoration(context)
             addItemDecoration(dividerDecor)
             this.adapter = tmMemberAdapter
             setHasFixedSize(true)
@@ -116,7 +118,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
                 val lastVisiblePos = linearManager.findLastVisibleItemPosition()
                 val totalCount = recyclerView.adapter?.itemCount.toZeroIfNull()
                 val hasNext = tmMemberViewModel.hasMorePages.orFalse()
-                if(lastVisiblePos!=RecyclerView.NO_POSITION && totalCount - lastVisiblePos <= 5 && hasNext){
+                if(lastVisiblePos!=RecyclerView.NO_POSITION && totalCount - lastVisiblePos <= 4 && hasNext){
                     tmMemberViewModel.getMoreMembers(shopId)
                 }
                 else if(!hasNext) removeRvScrollListener()
@@ -153,7 +155,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
             val memberCount = tmMemberViewModel.tmMemberListInitialResult.value
                               ?.data?.membershipGetUserCardMemberList?.userCardMemberList
                               ?.sumUserCardMember?.sumUserCardMember?.toZeroIfNull().toString()
-            title = (requireContext().resources.getString(R.string.tm_member_list_header_title,memberCount))
+            title = context?.resources?.getString(R.string.tm_member_list_header_title,memberCount).orEmpty()
         }
     }
 
@@ -167,13 +169,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
 
 
     companion object{
-        fun getInstance(shopId:String) : TokomemberMemberListFragment{
-            val bundle = Bundle()
-            bundle.putInt(SHOP_ID,shopId.toIntOrZero())
-            return TokomemberMemberListFragment().apply {
-                arguments = bundle
-            }
-        }
+        fun getInstance() : TokomemberMemberListFragment = TokomemberMemberListFragment()
 
         private val layout = R.layout.tm_member_list_fragment
     }

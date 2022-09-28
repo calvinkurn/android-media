@@ -6,25 +6,25 @@ import com.google.gson.annotations.SerializedName
 data class TmMemberListResponse(
     @Expose
     @SerializedName("membershipGetUserCardMemberList" )
-    val membershipGetUserCardMemberList : MembershipGetUserCardMemberList? = null
+    val membershipGetUserCardMemberList : MembershipGetUserCardMemberList? = MembershipGetUserCardMemberList()
 )
 
 data class MembershipGetUserCardMemberList (
     @Expose
     @SerializedName("resultStatus")
-    val resultStatus:ResultStatus?= null,
+    val resultStatus:ResultStatus?= ResultStatus(),
     @Expose
     @SerializedName("userCardMemberList")
-    val userCardMemberList:UserCardMemberList?=null,
+    val userCardMemberList:UserCardMemberList?= UserCardMemberList(),
     @Expose
     @SerializedName("paging")
-    val paging: MembershipPaging?=null
+    val paging: MembershipPaging?= MembershipPaging()
 )
 
 data class UserCardMemberList (
     @Expose
     @SerializedName("sumUserCardMember")
-    val sumUserCardMember:SumUserCardMember?=null,
+    val sumUserCardMember:SumUserCardMember?= SumUserCardMember(),
     @Expose
     @SerializedName("userCardMember")
     val userCardMember:List<UserCardMember>? = null
@@ -33,48 +33,48 @@ data class UserCardMemberList (
 data class SumUserCardMember (
     @Expose
     @SerializedName("card")
-    val card:Card?=null,
+    val card:Card?=Card(),
     @Expose
     @SerializedName("sumUserCardMember")
-    val sumUserCardMember    : Int?    = null,
+    val sumUserCardMember:Int?= 0,
     @Expose
     @SerializedName("sumUserCardMemberStr")
-    val sumUserCardMemberStr : String? = null
+    val sumUserCardMemberStr: String? = ""
 )
 
 data class UserCardMember (
     @Expose
     @SerializedName("id")
-    val id:String? = null,
+    val id:String? = "",
     @Expose
     @SerializedName("userID")
-    val userID:Int?= null,
+    val userID:Int?= 0,
     @Expose
     @SerializedName("referenceID")
-    val referenceID:String?=null,
+    val referenceID:String?= "",
     @Expose
     @SerializedName("userInfo")
-    val userInfo:UserInfo? = null
+    val userInfo:UserInfo? = UserInfo()
 )
 
 data class UserInfo (
     @Expose
     @SerializedName("name")
-    val name:String? = null,
+    val name:String? = "",
     @Expose
     @SerializedName("email")
-    val email:String? = null,
+    val email:String? = "",
     @Expose
     @SerializedName("phoneNumber")
-    val phoneNumber:String? = null,
+    val phoneNumber:String? = "",
     @Expose
     @SerializedName("profilePicture")
-    val profilePicture : String? = null
+    val profilePicture : String? = ""
 )
 
 data class MembershipPaging(
     @Expose
     @SerializedName("hasNext")
-    val hasNext:Boolean?=null
+    val hasNext:Boolean?=false
 )
 
