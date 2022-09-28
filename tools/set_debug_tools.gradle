@@ -8,7 +8,9 @@ if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
     return
 }
 if (project.hasProperty('enableMacrobenchmarkUtil')?: false) {
+    rootProject.ext.debugToolsEnabled = false
     rootProject.ext.enableMacrobenchmarkUtil = true
+    println("Debug tools set false based on buildType Parameter")
     println("enableMacrobenchmarkUtil tools set true based on buildType Parameter")
     return
 }
