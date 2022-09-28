@@ -103,6 +103,22 @@ class GiftBoxTapTapViewModelTest {
         assertEquals(viewModel.giftCrackLiveData.value?.status, LiveDataResult.STATUS.ERROR)
     }
 
+    @Test
+    fun `get coupon details error`(){
+        prepareRelaxedViewModel()
+        coEvery { couponDetailUseCase.getResponse(any()) } throws Exception()
+        viewModel.getCouponDetails(listOf())
+        assertEquals(viewModel.couponLiveData.value?.status,LiveDataResult.STATUS.ERROR)
+    }
+
+    @Test
+    fun `get coupon details success`(){
+        prepareRelaxedViewModel()
+        coEvery { couponDetailUseCase.getResponse(any()) } returns CouponDetailResponse(listOf())
+        viewModel.getCouponDetails(listOf())
+        assertEquals(viewModel.couponLiveData.value?.status,LiveDataResult.STATUS.SUCCESS)
+    }
+
     @After
     fun cleanup() {
         dispatcher.cleanupTestCoroutines()
