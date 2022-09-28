@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.INITIAL_RESOURCE
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
@@ -38,27 +40,30 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
-    private var phoneError = RESOURCE_NOT_CHANGED
+    private var phoneError = INITIAL_RESOURCE
 
     private val _formState = SingleLiveEvent<Int>()
     val formState: LiveData<Int> get() = _formState
 
+    private val _submitPhoneLoading = MutableLiveData<Boolean>()
+    val submitPhoneLoading: LiveData<Boolean> get() = _submitPhoneLoading
+
     private val _isRegisteredPhone = SingleLiveEvent<RegistrationPhoneState>()
     val isRegisteredPhone: LiveData<RegistrationPhoneState> get() = _isRegisteredPhone
 
-    private val _registerV2 = MutableLiveData<Result<Register>>()
+    private val _registerV2 = SingleLiveEvent<Result<Register>>()
     val registerV2: LiveData<Result<Register>> get() = _registerV2
 
-    private val _getUserInfo = MutableLiveData<Result<ProfilePojo>>()
+    private val _getUserInfo = SingleLiveEvent<Result<ProfilePojo>>()
     val getUserInfo: LiveData<Result<ProfilePojo>> get() = _getUserInfo
 
-    private val _submitRegisterLoading = SingleLiveEvent<Boolean>()
+    private val _submitRegisterLoading = MutableLiveData<Boolean>()
     val submitRegisterLoading: LiveData<Boolean> get() = _submitRegisterLoading
 
-    private val _userPhoneUpdate = MutableLiveData<Result<UserProfileUpdateModel>>()
+    private val _userPhoneUpdate = SingleLiveEvent<Result<UserProfileUpdateModel>>()
     val userPhoneUpdate: LiveData<Result<UserProfileUpdateModel>> get() = _userPhoneUpdate
 
-    private val _userProfileValidate = MutableLiveData<Result<UserProfileValidateModel>>()
+    private val _userProfileValidate = SingleLiveEvent<Result<UserProfileValidateModel>>()
     val userProfileValidate: LiveData<Result<UserProfileValidateModel>> get() = _userProfileValidate
 
     fun validatePhone(phone: String) {
@@ -73,7 +78,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                 R.string.register_email_input_phone_max_length_error
             }
             else -> {
-                NOTHING_RESOURCE
+                EMPTY_RESOURCE
             }
         }
 
@@ -81,7 +86,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     private fun isPhoneNumberValid(): Boolean {
-        return phoneError == NOTHING_RESOURCE
+        return phoneError == EMPTY_RESOURCE
     }
 
     fun submitForm(phone: String, email: String, isRequiredInputPhone: Boolean) {
@@ -102,7 +107,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     private fun registerCheck(phone: String) {
-        _isRegisteredPhone.value = RegistrationPhoneState.Loading()
+        _submitPhoneLoading.value = true
         launchCatchError(coroutineContext, {
             val response = getRegisterCheckUseCase(phone)
 
@@ -117,8 +122,9 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
                     RegistrationPhoneState.Unregistered(phoneNumber = phone)
                 }
             }
-
+            _submitPhoneLoading.value = false
         }, {
+            _submitPhoneLoading.value = false
             _isRegisteredPhone.value = RegistrationPhoneState.Failed(throwable = it)
         })
     }
@@ -154,12 +160,15 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     private fun userProfileValidate(userProfileValidateParam: UserProfileValidateParam) {
+        _submitPhoneLoading.value = true
         launchCatchError(coroutineContext, {
 
             val response = getUserProfileValidateUseCase(userProfileValidateParam)
 
+            _submitPhoneLoading.value = false
             _userProfileValidate.value = Success(response)
         }, {
+            _submitPhoneLoading.value = false
             _userProfileValidate.value = Fail(it)
         })
     }
@@ -180,11 +189,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         launchCatchError(dispatcher.io, {
             registerPreferences.saveFirstInstallTime()
         }, {})
-    }
-
-    companion object {
-        const val NOTHING_RESOURCE = 0
-        const val RESOURCE_NOT_CHANGED = -1
     }
 
 }
