@@ -77,69 +77,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         val isCrop =
             if (data.cropRotateValue.isCrop) true else data.isToolCrop()
 
-        // if rotated image is same with original ratio without overflow, ucrop will skip it
-        // need to manually crop & save
-        if (cropImageView.currentAngle % 90f == 0f && isRotate) {
-            val cropRotateData = data.cropRotateValue
-            val scalingSize = if (cropRotateData.croppedSourceWidth != 0) {
-                bitmap.width.toFloat() / cropRotateData.croppedSourceWidth
-            } else {
-                1f
-            }
-
-            val offsetX = (cropRotateData.offsetX * scalingSize).toInt()
-            val imageWidth = if(cropRotateData.imageWidth != 0) {
-                (cropRotateData.imageWidth * scalingSize).toInt()
-            } else bitmap.width
-
-            val offsetY = (cropRotateData.offsetY * scalingSize).toInt()
-            val imageHeight = if(cropRotateData.imageHeight != 0) {
-                (cropRotateData.imageHeight * scalingSize).toInt()
-            } else bitmap.height
-
-            val isRatioChange = rotateNumber % 2 != 0
-            var finalWidth = imageWidth
-            var finalHeight = imageHeight
-            var finalOffsetX = offsetX
-            var finalOffsetY = offsetY
-
-            // need to swap the detail if image is rotated
-            if(isRatioChange){
-                finalWidth = imageHeight
-                finalHeight = imageWidth
-
-                val sourceWidth = if(totalRotateNumber % 2 != 0) bitmap.height else bitmap.width
-                finalOffsetX = abs(sourceWidth - offsetY - imageHeight)
-                finalOffsetY = offsetX
-            }
-
-            val scale = getScale()
-            val scaleX = scale.first
-            val scaleY = scale.second
-
-            onCropFinish(
-                getProcessedBitmap(
-                    bitmap,
-                    finalOffsetX,
-                    finalOffsetY,
-                    finalWidth,
-                    finalHeight,
-                    finalRotationDegree = finalRotationDegree,
-                    sliderValue = sliderValue,
-                    rotateNumber = totalRotateNumber,
-                    data = data,
-                    translateX,
-                    translateY,
-                    imageScale,
-                    isRotate = isRotate,
-                    isCrop = isCrop,
-                    scaleX,
-                    scaleY
-                )
-            )
-            return
-        }
-
         // if rotated image is overflow from the original ratio then we can use ucrop crop feature
         cropImageView.cropAndSaveImage(
             Bitmap.CompressFormat.JPEG,
