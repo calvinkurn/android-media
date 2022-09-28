@@ -45,7 +45,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     fun initializeTimerTask() {
         timerTask = object : TimerTask() {
             override fun run() {
-                binding?.root?.transitionToStart()
+                if (binding?.editText?.text?.isBlank() == true) {
+                    binding?.root?.transitionToStart()
+                } else {
+                    binding?.editText?.clearFocus()
+                    binding?.root?.setTransition(R.id.end, R.id.startWithValue)
+                    binding?.root?.transitionToEnd()
+                }
             }
         }
     }
