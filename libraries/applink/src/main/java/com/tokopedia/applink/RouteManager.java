@@ -209,7 +209,7 @@ public class RouteManager {
         } else {
             destinationFragment = FragmentDFMapper.getFragmentDFDownloader(activity, classPathName, extras);
         }
-        if( destinationFragment == null){
+        if (destinationFragment == null) {
             logErrorGetFragmentDF(activity, classPathName);
         }
         return destinationFragment;
@@ -501,7 +501,7 @@ public class RouteManager {
         return resultIntent;
     }
 
-    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink){
+    private static boolean checkSellerappIntent(Context context, Intent intent, String deeplink) {
         return (intent == null || intent.resolveActivity(context.getPackageManager()) == null)
                 &&
                 (!GlobalConfig.isSellerApp() && deeplink.startsWith(SCHEME_SELLERAPP));

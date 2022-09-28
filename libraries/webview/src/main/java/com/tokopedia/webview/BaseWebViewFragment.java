@@ -568,21 +568,21 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
             permissionCheckerHelper.checkPermissions(this,
                     LocationDetectorHelper.Companion.getPermissions(RequestLocationType.APPROXIMATE_OR_PRECISE),
                     new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onNeverAskAgain(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    callback.invoke(origin, true, false);
-                }
-            }, getString(R.string.webview_rationale_need_location));
+                        @Override
+                        public void onPermissionGranted() {
+                            callback.invoke(origin, true, false);
+                        }
+                    }, getString(R.string.webview_rationale_need_location));
         } else callback.invoke(origin, true, false);
     }
 
@@ -597,7 +597,7 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (permissionCheckerHelper!= null) {
+        if (permissionCheckerHelper != null) {
             permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
         }
     }
