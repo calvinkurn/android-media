@@ -84,7 +84,7 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
         }
     }
 
-    override fun setupToolbarLayout() {
+    override fun setupToolbar() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         getToolbar().run {

@@ -17,7 +17,7 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     override fun onCreate(savedInstanceState: Bundle?) {
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
-        setupToolbarLayout()
+        setupToolbar()
     }
 
     override fun getParentViewResourceID(): Int {
@@ -34,7 +34,7 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     protected fun getChatHeaderLayout() = R.layout.header_toko_chat
 
-    protected open fun setupToolbarLayout() {}
+    protected open fun setupToolbar() {}
 
     fun getToolbar(): HeaderUnify {
         return findViewById(R.id.partial_tokochat_toolbar)
