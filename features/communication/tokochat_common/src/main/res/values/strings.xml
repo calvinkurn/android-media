@@ -6,4 +6,6 @@
     <string name="tokochat_content_desc_header_menu">header_menu</string>
     <string name="tokochat_content_desc_badge">badge</string>
     <string name="tokochat_reply_box_title">Tulis Pesan</string>
+    <string name="tokochat_edit_text">Tulis pesan …</string>
+    <string name="tokochat_desc_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
 </resources>
