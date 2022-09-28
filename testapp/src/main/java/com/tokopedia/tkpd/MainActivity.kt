@@ -28,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.main_testapp)
         userSession = UserSession(this)
-        userSession.setFirstTimeUserOnboarding(false)
 
         if (TokopediaUrl.getInstance().GQL.contains("staging")) {
             testapp_environment?.text = "STAGING URL"

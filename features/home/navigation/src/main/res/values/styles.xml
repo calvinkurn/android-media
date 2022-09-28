@@ -14,9 +14,31 @@
         <item name="android:ellipsize">end</item>
     </style>
 
-    <style name="TokopediaTransparentStatus" parent="Theme.Tokopedia3">
+    <style name="TokopediaTransparentStatus" parent="Theme.TokopediaNavigation">
         <item name="android:windowBackground">@color/Unify_Background</item>
         <item name="android:windowSharedElementsUseOverlay">false</item>
         <item name="android:windowContentTransitions">true</item>
+    </style>
+
+    <!-- EOF TAB STYLING -->
+    <style name="Theme.TokopediaNavigation" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeBackground">@color/tkpd_main_green</item>
+        <item name="android:actionModeSplitBackground">@color/tkpd_main_green</item>
+        <item name="android:windowBackground">@color/Unify_NN50</item>
+        <item name="android:colorBackground">@color/Unify_NN50</item>
+        <!-- Remove shadow from action bar -->
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:colorPrimary">@color/tkpd_dark_green</item>
+        <item name="android:statusBarColor">@color/green_600</item>
+        <item name="android:colorAccent">@color/tkpd_dark_green</item>
+        <item name="windowActionModeOverlay">true</item>
+        <item name="android:windowActionModeOverlay">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="spinnerStyle">@style/Widget.AppCompat.Spinner.Underlined</item>
     </style>
 </resources>

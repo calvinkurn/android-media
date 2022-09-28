@@ -16,7 +16,8 @@ import com.tokopedia.developer_options.presentation.viewholder.*
 class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
-    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener
+    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
+    private val skipOnBoardingListener: SkipOnBoardingViewHolder.SkipOnBoardingListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
@@ -62,6 +63,7 @@ class DeveloperOptionTypeFactoryImpl(
     override fun type(uiModel: TypographySwitchUiModel): Int = TypographySwitcherViewHolder.LAYOUT
     override fun type(uiModel: ConvertResourceIdUiModel): Int = ConvertResourceIdViewHolder.LAYOUT
     override fun type(uiModel: ForceLogoutUiModel): Int = ForceLogoutViewHolder.LAYOUT
+    override fun type(uiModel: SkipOnBoardingUiModel): Int = SkipOnBoardingViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -108,6 +110,7 @@ class DeveloperOptionTypeFactoryImpl(
             PlayWebSocketSseLoggingViewHolder.LAYOUT -> PlayWebSocketSseLoggingViewHolder(view)
             TypographySwitcherViewHolder.LAYOUT -> TypographySwitcherViewHolder(view)
             ConvertResourceIdViewHolder.LAYOUT -> ConvertResourceIdViewHolder(view)
+            SkipOnBoardingViewHolder.LAYOUT -> SkipOnBoardingViewHolder(view, skipOnBoardingListener)
             else -> super.createViewHolder(view, type)
         }
     }
