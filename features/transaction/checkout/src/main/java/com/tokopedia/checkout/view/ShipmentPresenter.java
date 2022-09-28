@@ -5,7 +5,6 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
-import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -71,7 +70,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
-import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.constant.AddressConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -159,7 +157,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -2596,7 +2593,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (shipmentCartItemModel != null && itemAdapterPosition != -1) {
             getView().resetCourier(itemAdapterPosition);
             clearCacheAutoApply(shipmentCartItemModel, promoCode);
-            clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode);
+            clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode, lastApplyData.getCodes());
             getView().onNeedUpdateViewItem(itemAdapterPosition);
         }
     }
@@ -2620,11 +2617,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode) {
+    public void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode, List<String> lastAppliedPromoCodes) {
         if (lastValidateUsePromoRequest != null) {
             for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
                 if (order.getUniqueId().equals(uniqueId)) {
                     order.getCodes().remove(promoCode);
+                    for (String lastAppliedPromoCode : lastAppliedPromoCodes) {
+                        order.getCodes().remove(lastAppliedPromoCode);
+                    }
                 }
             }
         }
@@ -2683,6 +2683,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         String promoCode = voucherOrdersItemUiModel.getCode();
         int shippingId = voucherOrdersItemUiModel.getShippingId();
         int spId = voucherOrdersItemUiModel.getSpId();
+        List<String> lastAppliedPromoCodes = lastApplyData.getCodes();
         getView().setStateLoadingCourierStateAtIndex(itemPosition, true);
         compositeSubscription.add(
                 observable
@@ -2691,9 +2692,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         spId, 0))
                         .subscribe(
                                 new GetBoPromoCourierRecommendationSubscriber(
-                                        getView(), this, cartString, promoCode, shippingId, spId,
-                                        itemPosition, shippingCourierConverter, shipmentCartItemModel,
-                                        isTradeInDropOff, false
+                                        getView(), this, cartString, promoCode, lastAppliedPromoCodes,
+                                        shippingId, spId, itemPosition, shippingCourierConverter,
+                                        shipmentCartItemModel, isTradeInDropOff, false
                                 )));
     }
 

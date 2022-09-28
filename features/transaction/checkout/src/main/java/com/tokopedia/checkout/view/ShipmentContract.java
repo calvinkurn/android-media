@@ -404,7 +404,7 @@ public interface ShipmentContract {
 
         Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
-        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
+        void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode, List<String> lastAppliedPromoCodes);
 
         void validateClearAllBoPromo();
 

@@ -16,6 +16,7 @@ class GetBoPromoCourierRecommendationSubscriber(
     private val presenter: ShipmentContract.Presenter,
     private val uniqueId: String,
     private val promoCode: String,
+    private val lastAppliedPromoCodes: List<String>,
     private val shipperId: Int,
     private val spId: Int,
     private val itemPosition: Int,
@@ -29,7 +30,7 @@ class GetBoPromoCourierRecommendationSubscriber(
     override fun onError(e: Throwable) {
         Timber.d(e)
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
-        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode, lastAppliedPromoCodes)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(e, itemPosition)
@@ -55,7 +56,8 @@ class GetBoPromoCourierRecommendationSubscriber(
                                     )
                                     presenter.clearOrderPromoCodeFromLastValidateUseRequest(
                                         uniqueId,
-                                        promoCode
+                                        promoCode,
+                                        lastAppliedPromoCodes
                                     )
                                     view.resetCourier(shipmentCartItemModel)
                                     view.renderCourierStateFailed(
@@ -95,7 +97,7 @@ class GetBoPromoCourierRecommendationSubscriber(
             }
         }
         presenter.cancelAutoApplyPromoStackLogistic(itemPosition, promoCode, shipmentCartItemModel)
-        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode, lastAppliedPromoCodes)
         view.resetCourier(shipmentCartItemModel)
         view.renderCourierStateFailed(itemPosition, isTradeInDropOff, true)
         view.logOnErrorLoadCourier(MessageErrorException("rates empty data"), itemPosition)
