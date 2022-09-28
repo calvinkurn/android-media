@@ -9,6 +9,7 @@ import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.view.type.PlayChannelType
+import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_SCREEN_NAME
 import com.tokopedia.track.builder.Tracker
 import javax.inject.Inject
 
@@ -46,5 +47,18 @@ class PlayNewAnalytic @Inject constructor(
                         .setCurrentSite(VAL_CURRENT_SITE)
                         .build()
                         .send()
+        }
+
+        fun screenWithSwipeCoachMark(isShown: Boolean, isLoggedIn: Boolean, channelType: PlayChannelType, userId: String, channelId: String) {
+            Tracker.Builder()
+                .setEvent("openScreen")
+                .setCustomProperty("trackerId" , "13881")
+                .setBusinessUnit(VAL_BUSINESS_UNIT)
+                .setCurrentSite(VAL_CURRENT_SITE)
+                .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
+                .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark $isShown")
+                .setUserId(userId)
+                .build()
+                .send()
         }
 }

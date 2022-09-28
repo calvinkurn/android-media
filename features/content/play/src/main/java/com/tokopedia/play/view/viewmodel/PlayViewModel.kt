@@ -1293,6 +1293,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
+        playAnalytic.screenWithSwipeCoachMark(isShown = playPreference.isCoachMark(), channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
         if (playPreference.isCoachMark() && !videoMetaInfo.videoPlayer.isYouTube) {
             viewModelScope.launch(dispatchers.main) {
                 delay(ONBOARDING_DELAY)

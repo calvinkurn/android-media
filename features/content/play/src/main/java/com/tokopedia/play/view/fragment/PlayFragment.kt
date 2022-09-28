@@ -577,7 +577,8 @@ class PlayFragment @Inject constructor(
     }
 
     private fun sendSwipeRoomAnalytic() {
-        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
+        val nextId = playParentViewModel.getChannelInfo(1)
+        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
     }
 
     //region onStateChanged
