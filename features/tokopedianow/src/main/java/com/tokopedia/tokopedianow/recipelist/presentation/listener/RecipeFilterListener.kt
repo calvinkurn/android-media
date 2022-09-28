@@ -14,8 +14,7 @@ import java.util.*
 
 class RecipeFilterListener(
     private val view: RecipeListView,
-    private val analytics: RecipeListAnalytics,
-    private val viewModel: BaseTokoNowRecipeListViewModel
+    private val analytics: RecipeListAnalytics
 ) : RecipeChipFilterListener {
 
     override fun onClickItem(filter: RecipeChipFilterUiModel) {
@@ -24,7 +23,7 @@ class RecipeFilterListener(
             val intent = Intent(view.context(), TokoNowRecipeFilterActivity::class.java)
             intent.putStringArrayListExtra(EXTRA_SELECTED_FILTER_IDS, ArrayList(selectedFilterIds))
             view.fragment().startActivityForResult(intent, REQUEST_CODE_FILTER)
-            analytics.clickFilter(viewModel.getLoadPageStatus())
+            analytics.clickFilter()
         }
     }
 }

@@ -39,13 +39,14 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
+import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment
 import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 
 class RecipeListAnalytics (
     private val userSession: UserSessionInterface,
-    private val category: String,
+    private val pageName: String,
     private val warehouseId: String
 ) {
     /**
@@ -86,7 +87,12 @@ class RecipeListAnalytics (
         const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
     }
 
-    fun clickBackButton(pageStatus: LoadPageStatus) {
+    private val category: String
+        get() = if (pageName == BaseTokoNowRecipeListFragment.HOME_PAGE_NAME) CATEGORY.EVENT_CATEGORY_RECIPE_HOME else CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH
+
+    var pageStatus: LoadPageStatus = LoadPageStatus.EMPTY
+
+    fun clickBackButton() {
         when (pageStatus) {
             LoadPageStatus.SUCCESS -> {
                 TokoNowCommonAnalytics.hitCommonTracker(
@@ -118,7 +124,7 @@ class RecipeListAnalytics (
         }
     }
 
-    fun clickSearchBar(pageStatus: LoadPageStatus) {
+    fun clickSearchBar() {
         when (pageStatus) {
             LoadPageStatus.SUCCESS -> {
                 TokoNowCommonAnalytics.hitCommonTracker(
@@ -152,7 +158,7 @@ class RecipeListAnalytics (
         )
     }
 
-    fun clickFilter(pageStatus: LoadPageStatus) {
+    fun clickFilter() {
         when(pageStatus) {
             LoadPageStatus.SUCCESS -> {
                 TokoNowCommonAnalytics.hitCommonTracker(

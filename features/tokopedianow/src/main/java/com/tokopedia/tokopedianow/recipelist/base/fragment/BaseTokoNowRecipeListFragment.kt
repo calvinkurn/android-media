@@ -64,7 +64,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     private val analytics by lazy {
         RecipeListAnalytics(
             userSession = userSession,
-            category = if (pageName == HOME_PAGE_NAME) RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_HOME else RecipeListAnalytics.CATEGORY.EVENT_CATEGORY_RECIPE_SEARCH,
+            pageName = pageName,
             warehouseId = viewModel.warehouseId
         )
     }
@@ -79,8 +79,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
-                    analytics = analytics,
-                    viewModel = viewModel
+                    analytics = analytics
                 ),
                 serverErrorListener = this,
                 serverErrorAnalytics = this,
@@ -175,7 +174,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
             pageName = pageName,
             hintData = searchHintData
         ) {
-            analytics.clickSearchBar(viewModel.getLoadPageStatus())
+            analytics.clickSearchBar()
             RouteManager.route(context, ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE)
         }
         navToolbar?.headerBackground = headerBg
@@ -183,7 +182,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         navToolbar?.init(fragment)
 
         navToolbar?.setBackButtonOnClickListener {
-            analytics.clickBackButton(viewModel.getLoadPageStatus())
+            analytics.clickBackButton()
             activity?.finish()
         }
 
@@ -240,6 +239,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         observe(viewModel.visitableList) {
             submitList(it)
             resetSwipeRefresh()
+            updateLoadStatus()
         }
 
         observe(viewModel.showProgressBar) {
@@ -260,8 +260,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
             }
         }
 
-        observe(viewModel.showToaster) {
-            showToaster(it)
+        observe(viewModel.showBookmarkToaster) {
+            showBookmarkToaster(it)
         }
     }
 
@@ -269,19 +269,23 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         viewModel.onViewCreated()
     }
 
-    private fun showToaster(toasterUiModel: ToasterUiModel) {
+    private fun updateLoadStatus() {
+        analytics.pageStatus = viewModel.getLoadPageStatus()
+    }
+
+    private fun showBookmarkToaster(toasterUiModel: ToasterUiModel) {
         val isFailed = toasterUiModel.model?.title.isNullOrEmpty()
         if (isFailed) {
-            showFailToaster(data = toasterUiModel)
+            showFailBookmarkToaster(data = toasterUiModel)
         } else {
-            showSuccessToaster(data = toasterUiModel)
+            showSuccessBookmarkToaster(data = toasterUiModel)
         }
     }
 
-    private fun showSuccessToaster(data: ToasterUiModel?) {
+    private fun showSuccessBookmarkToaster(data: ToasterUiModel?) {
         data?.model?.apply {
             if (data.isRemoving) {
-                setupToaster(
+                showToaster(
                     message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_cancel),
@@ -292,7 +296,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 )
                 analytics.impressUnBookmarkToaster()
             } else {
-                setupToaster(
+                showToaster(
                     message = getString(R.string.tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe, title),
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_see),
@@ -306,10 +310,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         }
     }
 
-    private fun showFailToaster(data: ToasterUiModel?) {
+    private fun showFailBookmarkToaster(data: ToasterUiModel?) {
         data?.model?.apply {
             if (data.isRemoving) {
-                setupToaster(
+                showToaster(
                     message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_remove_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
@@ -322,7 +326,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                     }
                 )
             } else {
-                setupToaster(
+                showToaster(
                     message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_add_bookmark) },
                     isSuccess = isSuccess,
                     cta = getString(R.string.tokopedianow_recipe_bookmark_toaster_cta_try_again),
@@ -340,7 +344,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         }
     }
 
-    private fun setupToaster(message: String, isSuccess: Boolean, cta: String, clickListener: () -> Unit) {
+    private fun showToaster(message: String, isSuccess: Boolean, cta: String, clickListener: () -> Unit) {
         binding?.apply {
             val toaster = Toaster.build(
                 view = root,

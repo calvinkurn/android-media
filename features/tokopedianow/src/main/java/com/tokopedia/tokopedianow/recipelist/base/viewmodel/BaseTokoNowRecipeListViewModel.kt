@@ -49,19 +49,20 @@ abstract class BaseTokoNowRecipeListViewModel(
         get() = _showHeaderBackground
     val searchKeyword: LiveData<String>
         get() = _searchKeyword
-    val showToaster: LiveData<ToasterUiModel>
-        get() = _showToaster
-    val warehouseId: String
-        get() = addressData.getWarehouseId().toString()
+    val showBookmarkToaster: LiveData<ToasterUiModel>
+        get() = _showBookmarkToaster
     val removeScrollListener: LiveData<Boolean>
         get() = _removeScrollListener
+
+    val warehouseId: String
+        get() = addressData.getWarehouseId().toString()
 
     private val _visitableList = MutableLiveData<List<Visitable<*>>>()
     private val _showProgressBar = MutableLiveData<Boolean>()
     private val _showHeaderBackground = MutableLiveData<Boolean>()
     private val _searchKeyword = MutableLiveData<String>()
     private val _removeScrollListener = MutableLiveData<Boolean>()
-    private val _showToaster = MutableLiveData<ToasterUiModel>()
+    private val _showBookmarkToaster = MutableLiveData<ToasterUiModel>()
 
     private var visitableItems = mutableListOf<Visitable<*>>()
     private var hasNext = false
@@ -124,8 +125,8 @@ abstract class BaseTokoNowRecipeListViewModel(
             )
 
             isSuccess = response.header.success
-            if (response.header.success) {
-                _showToaster.postValue(
+            if (isSuccess) {
+                _showBookmarkToaster.postValue(
                     ToasterUiModel(
                         isRemoving = isRemoving,
                         position = position,
@@ -137,7 +138,7 @@ abstract class BaseTokoNowRecipeListViewModel(
                     )
                 )
             } else {
-                _showToaster.postValue(
+                _showBookmarkToaster.postValue(
                     ToasterUiModel(
                         isRemoving = isRemoving,
                         position = position,
@@ -150,7 +151,7 @@ abstract class BaseTokoNowRecipeListViewModel(
                 )
             }
         }) {
-            _showToaster.postValue(
+            _showBookmarkToaster.postValue(
                 ToasterUiModel(
                     isRemoving = isRemoving,
                     position = position,
@@ -172,8 +173,8 @@ abstract class BaseTokoNowRecipeListViewModel(
             )
 
             isSuccess = response.header.success
-            if (response.header.success) {
-                _showToaster.postValue(ToasterUiModel(
+            if (isSuccess) {
+                _showBookmarkToaster.postValue(ToasterUiModel(
                     isRemoving = isRemoving,
                     position = position,
                     model = ToasterModel(
@@ -183,7 +184,7 @@ abstract class BaseTokoNowRecipeListViewModel(
                     )
                 ))
             } else {
-                _showToaster.postValue(ToasterUiModel(
+                _showBookmarkToaster.postValue(ToasterUiModel(
                     isRemoving = isRemoving,
                     position = position,
                     model = ToasterModel(
@@ -194,7 +195,7 @@ abstract class BaseTokoNowRecipeListViewModel(
                 ))
             }
         }) {
-            _showToaster.value = ToasterUiModel(
+            _showBookmarkToaster.value = ToasterUiModel(
                 isRemoving = isRemoving,
                 position = position,
                 model = ToasterModel(
