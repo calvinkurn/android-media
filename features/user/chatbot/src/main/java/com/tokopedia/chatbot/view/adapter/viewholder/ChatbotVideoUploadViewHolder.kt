@@ -288,10 +288,9 @@ class ChatbotVideoUploadViewHolder(
     private fun setLayoutParams() {
         if (videoWidth != 0 && videoHeight != 0) {
             val maxAllowedWidthInPixel = convertDpToPixel(MAX_ALLOWED_WIDTH, itemView.context)
-            val aspectRatio = (videoHeight.toFloat() / maxAllowedWidthInPixel.toFloat())
-
+            val scaledRatio = (maxAllowedWidthInPixel.toFloat() / videoWidth.toFloat())
             if (videoWidth > maxAllowedWidthInPixel) {
-                val newHeight = (videoHeight * aspectRatio).roundToInt()
+                val newHeight = (videoHeight * scaledRatio).roundToInt()
                 adjustLayoutDimensions(maxAllowedWidthInPixel, newHeight)
             } else {
                 adjustLayoutDimensions(videoWidth, videoHeight)
