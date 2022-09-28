@@ -30,7 +30,7 @@ class TokoChatCourierClientProvider @Inject constructor(
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
-            applicationId = GlobalConfig.APPLICATION_ID,
+            applicationId = "com.gojek.app.staging",
             retrofit = retrofit,
 //            authenticationApiUrl = "authentication",
 //            authenticationApiUrl = "v3/cf34f513-2a6c-4188-b612-fd057c67a0c5",
@@ -38,7 +38,8 @@ class TokoChatCourierClientProvider @Inject constructor(
             usernameProvider = getUsernameProvider(),
             eventTracker = getEventTracker(),
             mqttInterceptors = getMqttInterceptors(),
-            debuggingEnabled = BuildConfig.DEBUG,
+//            debuggingEnabled = BuildConfig.DEBUG,
+            debuggingEnabled = true,
             courierRemoteConfig = courierRemoteConfig
         )
         return CourierComponent.getOrCreate(params).courierConnection()
@@ -47,7 +48,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     private fun getUsernameProvider(): UsernameProvider {
         return object : UsernameProvider {
             override fun get(): String {
-                return userSession.userId
+                return "3306058"
             }
         }
     }
@@ -61,12 +62,15 @@ class TokoChatCourierClientProvider @Inject constructor(
     }
 
     private fun getMqttInterceptors(): List<MqttInterceptor> {
-        return if (BuildConfig.DEBUG) {
-            listOf(
-                MqttChuckInterceptor(context, MqttChuckConfig())
-            )
-        } else{
-            listOf()
-        }
+//        return if (BuildConfig.DEBUG) {
+//            listOf(
+//                MqttChuckInterceptor(context, MqttChuckConfig())
+//            )
+//        } else{
+//            listOf()
+//        }
+        return listOf(
+            MqttChuckInterceptor(context, MqttChuckConfig())
+        )
     }
 }

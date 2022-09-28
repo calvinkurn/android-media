@@ -11,7 +11,7 @@ import rx.Observable
 import javax.inject.Inject
 
 class TokoChatBabbleCourierImpl @Inject constructor(
-    courierConnection: CourierConnection,
+    private val courierConnection: CourierConnection,
     private val tokoCourierStateObservable: TokoCourierStateObservable
 ): BabbleCourierClient {
 
@@ -42,7 +42,10 @@ class TokoChatBabbleCourierImpl @Inject constructor(
         return ExponentialWithJitterRetryPolicy()
     }
 
-    //We don't need this, not required
-    override fun init(chatProfileId: String?) {}
+    override fun init(chatProfileId: String?) {
+        chatProfileId?.let {
+            courierConnection.init("", it)
+        }
+    }
 
 }

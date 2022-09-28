@@ -21,6 +21,7 @@ import com.tokopedia.tokochat.domain.MarkAsReadUseCase
 import com.tokopedia.tokochat.domain.RegistrationActiveChannelUseCase
 import com.tokopedia.tokochat.domain.SendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokochat.domain.MutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -37,7 +38,8 @@ class TokoChatViewModel @Inject constructor(
     private val registrationActiveChannelUseCase: RegistrationActiveChannelUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getTypingUseCase: GetTypingUseCase,
-    private val dispatcher: CoroutineDispatchers
+    private val profileUseCase: MutationProfileUseCase,
+    private val dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.main) {
 
     private val _conversationsChannel = MutableLiveData<Result<ConversationsChannel>>()
@@ -176,8 +178,10 @@ class TokoChatViewModel @Inject constructor(
     fun doCheckChatConnection() {
         launchCatchError(context = dispatcher.io, block = {
             withContext(NonCancellable) {
-                _isChatConnected.postValue(createChannelUseCase.isChatConnected())
-                delay(5000)
+                while (true) {
+                    _isChatConnected.postValue(createChannelUseCase.isChatConnected())
+                    delay(5000)
+                }
             }
         }, onError = {
             _isChatConnected.postValue(false)
@@ -190,6 +194,31 @@ class TokoChatViewModel @Inject constructor(
         } catch (throwable: Throwable) {
             _error.value = throwable
             MutableLiveData()
+        }
+    }
+
+    fun initializeProfile() {
+        try {
+            profileUseCase.initializeConversationProfile()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun getUserId(): String {
+        return try {
+            profileUseCase.getUserId()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+            ""
+        }
+    }
+
+    fun resetData() {
+        try {
+            profileUseCase.resetConversationData()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
         }
     }
 

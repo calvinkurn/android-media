@@ -5,6 +5,9 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <include layout="@layout/tokochat_base_fragment"
+        android:visibility="gone"/>
+
     <EditText
         android:id="@+id/order_id_edt"
         android:layout_width="0dp"

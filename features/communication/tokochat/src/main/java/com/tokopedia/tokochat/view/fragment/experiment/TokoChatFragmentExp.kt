@@ -52,6 +52,10 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
     override fun additionalSetup() {
         AndroidThreeTen.init(context?.applicationContext)
+        val userId = viewModel.getUserId()
+        if (userId.isEmpty()) {
+            viewModel.initializeProfile()
+        }
     }
 
     override fun initViews() {
@@ -66,7 +70,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
         binding?.mainBtn?.setOnClickListener {
             val message = binding?.mainEdt?.text.toString()
             binding?.mainEdt?.setText("")
-            viewModel.sendMessage(message, channelUrl)
+            viewModel.sendMessage(channelUrl, message)
         }
 
         binding?.clearBtn?.setOnClickListener {
@@ -130,7 +134,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "F-176219770"
+            "RB-140464-1881400"
         } else {
             text.toString()
         }
@@ -172,7 +176,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 }
                 binding?.mainTv?.text = messageText
             }
-            viewModel.markChatAsRead(channelUrl)
+//            viewModel.markChatAsRead(channelUrl)
         }
     }
 
@@ -182,9 +186,9 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) {
-                    viewModel.setTypingStatus(true)
+//                    viewModel.setTypingStatus(true)
                 } else {
-                    viewModel.setTypingStatus(false)
+//                    viewModel.setTypingStatus(false)
                 }
             }
 

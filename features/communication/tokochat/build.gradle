@@ -54,6 +54,14 @@ android {
 }
 
 dependencies {
+    implementation files('libs/courier-client-0.0.2-release.aar')
+
+    implementation "com.gojek.courier:chuck-mqtt:0.0.9"
+    implementation "com.gojek.courier:timer-pingsender:0.0.9"
+    implementation "com.gojek.courier:courier-message-adapter-gson:0.0.9"
+    implementation "com.gojek.courier:courier-stream-adapter-rxjava:0.0.9"
+    implementation "com.gojek.courier:courier-auth-http:0.0.9"
+
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
