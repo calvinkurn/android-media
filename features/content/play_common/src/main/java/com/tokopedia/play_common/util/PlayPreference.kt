@@ -2,6 +2,8 @@ package com.tokopedia.play_common.util
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import javax.inject.Inject
 
 /**
@@ -14,11 +16,14 @@ class PlayPreference @Inject constructor(
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
 
-        private const val A_DAY_IN_MILLIS : Long = 86400000L // add delay for 5-10 s
+        private const val A_DAY_IN_MILLIS: Long = 86406000L // add delay for 5-10 s
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
         private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
+
+        private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
+        private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first"
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
@@ -64,23 +69,33 @@ class PlayPreference @Inject constructor(
      */
 
     private val currentTime: Long
-        get() =  System.currentTimeMillis()
+        get() = System.currentTimeMillis()
 
     private val diffDay: Long
         get() {
             return currentTime - lastVisit
         }
 
-    private val lastVisit: Long get() =
-        sharedPref.getLong(SWIPE_ONBOARDING, currentTime)
+    private val lastVisit: Long
+        get() =
+            sharedPref.getLong(SWIPE_ONBOARDING, currentTime)
 
-    fun setCoachMark() { // first channel event
-        if (isCoachMark()) {
+    private val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+        RollenceKey.SWIPE_LIVE_ROOM,
+        ""
+    )
+
+    fun setCoachMark(isFirstChannel: Boolean = false) { // first channel event
+        if (variant == SWIPE_LIVE_ROOM_VARIANT && diffDay >= A_DAY_IN_MILLIS) {
             sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
+        } else {
+            sharedPref.edit().putBoolean(SWIPE_LIVE_ROOM_DEFAULT, isFirstChannel).apply()
         }
     }
 
     fun isCoachMark(): Boolean {
-        return diffDay >= A_DAY_IN_MILLIS
+        return if (variant == SWIPE_LIVE_ROOM_VARIANT)
+            diffDay >= A_DAY_IN_MILLIS
+        else sharedPref.getBoolean(SWIPE_LIVE_ROOM_DEFAULT, false)
     }
 }

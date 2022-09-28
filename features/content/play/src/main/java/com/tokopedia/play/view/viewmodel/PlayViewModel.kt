@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -1294,9 +1293,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val userId = userSession.userId
-        Log.d("sukses", playPreference.isCoachMark().toString())
-        if (!playPreference.isOnboardingShown(userId) && !videoMetaInfo.videoPlayer.isYouTube) {
+        if (!playPreference.isCoachMark() && !videoMetaInfo.videoPlayer.isYouTube) {
             viewModelScope.launch(dispatchers.main) {
                 delay(ONBOARDING_DELAY)
                 _observableOnboarding.value = Event(Unit)

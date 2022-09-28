@@ -70,6 +70,9 @@ object RollenceKey {
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
 
+    //Play
+    const val SWIPE_LIVE_ROOM = "play_sc"
+
     object PdpToolbar {
         const val key = "pdp_dyn_container"
         const val transparent = "var_container"
