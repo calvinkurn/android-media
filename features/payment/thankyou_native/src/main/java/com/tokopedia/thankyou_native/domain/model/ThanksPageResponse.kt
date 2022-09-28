@@ -142,7 +142,7 @@ data class CustomDataOther(
     val isEnjoyPLus: String?,
     @SerializedName("custom_illustration")
     val customIllustration: String?,
-    @SerializedName("gyro_data")
+    @SerializedName("validate_engine_data")
     val gyroData: String?
 ) : Parcelable
 
