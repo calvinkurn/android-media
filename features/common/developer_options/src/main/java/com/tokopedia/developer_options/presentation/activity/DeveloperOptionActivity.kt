@@ -83,7 +83,7 @@ class DeveloperOptionActivity : BaseActivity() {
                 accessTokenListener = clickAccessTokenBtn(),
                 resetOnBoardingListener = clickResetOnBoarding(),
                 urlEnvironmentListener = selectUrlEnvironment(),
-                skipOnBoardingListener = clickSkipOnBoarding()
+                homeAndNavigationRevampListener = homeAndNavigationListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -236,10 +236,10 @@ class DeveloperOptionActivity : BaseActivity() {
         }
     }
 
-    private fun clickSkipOnBoarding() = object : SkipOnBoardingViewHolder.SkipOnBoardingListener {
+    private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
         override fun onClickSkipOnBoardingBtn() {
             userSession?.setFirstTimeUserOnboarding(false)
-            Toast.makeText(this@DeveloperOptionActivity,getString(R.string.skip_onboarding), Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 
