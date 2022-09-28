@@ -33,7 +33,7 @@
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/iv_sah_new_other_curved_header"
                         android:layout_width="match_parent"
-                        android:layout_height="@dimen/sah_new_other_header_background_height"
+                        android:layout_height="154dp"
                         android:scaleType="fitXY"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
@@ -51,19 +51,19 @@
                             android:id="@+id/view_sah_new_other_header_info"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            android:layout_marginVertical="@dimen/spacing_lvl3"/>
+                            android:layout_marginVertical="8dp"/>
 
                         <include
                             layout="@layout/view_partial_sah_new_other_balance_info"
                             android:id="@+id/view_sah_new_other_balance_info"
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
-                            android:layout_marginVertical="@dimen/spacing_lvl3"/>
+                            android:layout_marginVertical="8dp"/>
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rv_sah_new_other_secondary_info"
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/sah_new_other_shop_secondary_info_height"
+                            android:layout_height="72dp"
                             android:orientation="horizontal"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                             tools:listitem="@layout/item_sah_new_other_shop_operational_hour"
@@ -84,7 +84,7 @@
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="@dimen/setting_white_space_height"/>
+                            android:layout_height="10dp"/>
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -92,9 +92,9 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_sah_new_other_share"
-                    android:layout_width="@dimen/layout_lvl4"
-                    android:layout_height="@dimen/layout_lvl4"
-                    android:layout_marginTop="@dimen/layout_lvl5"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="40dp"
                     app:srcCompat="@drawable/ic_sah_new_other_share"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
