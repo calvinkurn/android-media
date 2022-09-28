@@ -2626,10 +2626,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 }
             }
         }
-        for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyData.getVoucherOrders()) {
-            if (voucherOrder.getUniqueId().equals(uniqueId) && voucherOrder.getCode().equals(promoCode)) {
-                lastApplyData.getVoucherOrders().remove(voucherOrder);
-                break;
+        if (lastApplyData != null) {
+            for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyData.getVoucherOrders()) {
+                if (voucherOrder.getUniqueId().equals(uniqueId) && voucherOrder.getCode().equals(promoCode)) {
+                    lastApplyData.getVoucherOrders().remove(voucherOrder);
+                    break;
+                }
             }
         }
     }
