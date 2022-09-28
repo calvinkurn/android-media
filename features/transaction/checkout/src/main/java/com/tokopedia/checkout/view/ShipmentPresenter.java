@@ -5,7 +5,6 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
-import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -71,7 +70,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
-import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.constant.AddressConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -100,7 +98,6 @@ import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.network.exception.MessageErrorException;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.network.utils.TKPDMapParam;
-import com.tokopedia.promocheckout.common.view.uimodel.VoucherLogisticItemUiModel;
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection;
 import com.tokopedia.purchase_platform.common.analytics.ConstantTransactionAnalytics;
 import com.tokopedia.purchase_platform.common.analytics.PromoRevampAnalytics;
@@ -161,7 +158,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
