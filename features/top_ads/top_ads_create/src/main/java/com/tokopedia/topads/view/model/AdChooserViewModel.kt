@@ -78,7 +78,7 @@ class AdChooserViewModel @Inject constructor(
                         context.resources,
                         R.raw.query_auto_ads_status),
                         AutoAdsResponse::class.java,
-                        hashMapOf(SHOP_Id to userSession.shopId))
+                        hashMapOf(SHOP_Id to userSession.shopId, SOURCE to "android_topads_ad_chooser"))
                     val cacheStrategy = RequestHelper.getCacheStrategy()
                     repository.response(listOf(request), cacheStrategy)
                 }
