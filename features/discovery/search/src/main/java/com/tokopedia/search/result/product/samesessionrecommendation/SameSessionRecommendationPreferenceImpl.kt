@@ -5,9 +5,10 @@ import com.tokopedia.kotlin.extensions.long
 
 class SameSessionRecommendationPreferenceImpl(
     context: Context
-): SameSessionRecommendationPreference {
+) : SameSessionRecommendationPreference {
     companion object {
-        private const val SEARCH_SAME_SESSION_RECOMMENDATION_PREFERENCE = "search_same_session_recommendation_preference"
+        private const val SEARCH_SAME_SESSION_RECOMMENDATION_PREFERENCE =
+            "search_same_session_recommendation_preference"
 
         private const val HIDE_RECOMMENDATION_TIMESTAMP = "hide_recommendation_timestamp"
     }
@@ -17,5 +18,8 @@ class SameSessionRecommendationPreferenceImpl(
         Context.MODE_PRIVATE
     )
 
-    override var hideRecommendationTimestamp: Long by sharedPref.long(0L, HIDE_RECOMMENDATION_TIMESTAMP)
+    override var hideRecommendationTimestamp: Long by sharedPref.long(
+        0L,
+        HIDE_RECOMMENDATION_TIMESTAMP
+    )
 }

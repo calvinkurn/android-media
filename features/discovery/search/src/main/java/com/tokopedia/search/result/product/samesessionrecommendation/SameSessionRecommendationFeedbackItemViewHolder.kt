@@ -19,6 +19,7 @@ class SameSessionRecommendationFeedbackItemViewHolder(
         @JvmField
         val LAYOUT = R.layout.search_result_same_session_recommendation_feedback_layout
     }
+
     private var binding: SearchResultSameSessionRecommendationFeedbackLayoutBinding? by viewBinding()
 
     fun bind(element: SameSessionRecommendationDataView.Feedback.FeedbackItem) {
@@ -26,9 +27,10 @@ class SameSessionRecommendationFeedbackItemViewHolder(
         binding.imgFeedbackItem.loadImage(element.imageUrl)
         binding.tgFeedbackItemName.text = element.name
         itemView.addOnImpressionListener(element) {
-            sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemImpressed(element)
+            sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemImpressed(
+                element
+            )
         }
     }
-
 
 }

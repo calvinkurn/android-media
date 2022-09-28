@@ -12,7 +12,10 @@ class SameSessionRecommendationProductAdapter(
 ) : RecyclerView.Adapter<AbstractViewHolder<Visitable<*>>>() {
     private val list = mutableListOf<Visitable<InspirationCarouselOptionTypeFactory>>()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<Visitable<*>> {
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): AbstractViewHolder<Visitable<*>> {
         val context = parent.context
         val view = LayoutInflater.from(context).inflate(viewType, parent, false)
 

@@ -44,7 +44,7 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
             return currentTime - hideRecommendationTimestamp > HIDE_RECOMMENDATION_THRESHOLD
         }
 
-    private val isFilterOrFeedbackActive : Boolean
+    private val isFilterOrFeedbackActive: Boolean
         get() = isAnyFilterActive
             || isIrrelevantRecommendationClicked
             || !isHideRecommendationExceedThreshold

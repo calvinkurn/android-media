@@ -102,12 +102,14 @@ class SearchSameSessionRecommendationGqlUseCase(
 
     private fun getSameSessionRecommendationModel(graphqlResponse: GraphqlResponse?) =
         graphqlResponse
-            ?.getData<SearchSameSessionRecommendationResponse>(SearchSameSessionRecommendationResponse::class.java)
+            ?.getData<SearchSameSessionRecommendationResponse>(
+                SearchSameSessionRecommendationResponse::class.java
+            )
             ?.response
             ?.data
 
     @GqlQuery("SameSessionRecommendation", SAME_SEARCH_RECOMMENDATION_QUERY)
-    private fun createSameSessionRecommendationRequest(requestParams: RequestParams) : GraphqlRequest {
+    private fun createSameSessionRecommendationRequest(requestParams: RequestParams): GraphqlRequest {
         val params = UrlParamUtils.generateUrlParamString(requestParams.parameters)
         return GraphqlRequest(
             SameSessionRecommendation(),

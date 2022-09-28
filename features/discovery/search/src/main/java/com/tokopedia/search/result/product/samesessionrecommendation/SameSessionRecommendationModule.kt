@@ -13,7 +13,7 @@ object SameSessionRecommendationModule {
     @SearchScope
     fun provideSameSessionRecommendationPreference(
         @ApplicationContext context: Context
-    ) : SameSessionRecommendationPreference {
+    ): SameSessionRecommendationPreference {
         return SameSessionRecommendationPreferenceImpl(context)
     }
 

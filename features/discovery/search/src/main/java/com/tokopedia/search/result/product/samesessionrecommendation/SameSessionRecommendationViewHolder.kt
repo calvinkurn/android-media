@@ -154,7 +154,9 @@ class SameSessionRecommendationViewHolder(
     }
 
     private fun onFeedbackItemClicked(feedbackItem: FeedbackItem) {
-        sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemClicked(feedbackItem)
+        sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemClicked(
+            feedbackItem
+        )
         bindSelectedFeedbackItem(feedbackItem)
     }
 
