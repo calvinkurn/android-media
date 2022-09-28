@@ -186,7 +186,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            submitForm()
+            if (binding?.btnSubmit?.isLoading == false) {
+                submitForm()
+            }
         }
 
         binding?.globalError?.setActionClickListener {
