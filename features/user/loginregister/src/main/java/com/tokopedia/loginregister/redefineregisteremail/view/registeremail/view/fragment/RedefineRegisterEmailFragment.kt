@@ -25,10 +25,12 @@ import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.databinding.FragmentRedefineRegisterEmailBinding
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.INITIAL_RESOURCE
 import com.tokopedia.loginregister.redefineregisteremail.common.analytics.RedefineRegisterEmailAnalytics
 import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToLoginWithEmail
-import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerification
-import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
+import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerificationRegister
+import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationRegisterParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
@@ -55,7 +57,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private var binding: FragmentRedefineRegisterEmailBinding? = null
 
-    private var paramSource: String = RedefineRegisterEmailConstants.EMPTY_STRING
+    private var paramSource: String = ""
     private var paramIsRequiredInputPhone: Boolean = false
     private var isExtensionSelected = false
     private var emailExtensionList = mutableListOf<String>()
@@ -137,7 +139,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                     } else {
                         binding?.fieldEmail?.editText?.setText(String.format(
                             STRING_FORMAT_EMAIL,  binding?.fieldEmail?.editText?.text.toString().replace(
-                            DELIMITER_EMAIL, RedefineRegisterEmailConstants.EMPTY_STRING
+                            DELIMITER_EMAIL, ""
                             ), extension))
                     }
                     binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= RedefineRegisterEmailConstants.CHAR_SPACE }.length)
@@ -301,7 +303,7 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun TextFieldUnify2.setMessageField(stringResource: Int) {
-        isInputError = if (stringResource != RedefineRegisterEmailViewModel.NOTHING_RESOURCE && stringResource != RedefineRegisterEmailViewModel.RESOURCE_NOT_CHANGED) {
+        isInputError = if (stringResource != EMPTY_RESOURCE && stringResource != INITIAL_RESOURCE) {
             setMessage(getString(stringResource))
             true
         } else {
@@ -355,8 +357,8 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationEmail() {
-        val intent = requireActivity().intentGoToVerification(
-            GoToVerificationParam(
+        val intent = requireActivity().intentGoToVerificationRegister(
+            GoToVerificationRegisterParam(
                 email = viewModel.currentEmail,
                 otpType = RegisterConstants.OtpType.OTP_TYPE_REGISTER,
                 otpMode = OTP_MODE_EMAIL,

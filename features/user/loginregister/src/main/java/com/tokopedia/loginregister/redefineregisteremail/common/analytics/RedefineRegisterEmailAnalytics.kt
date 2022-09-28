@@ -122,7 +122,7 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickUbahBenarPhoneNumberEvent(requiredInputPhone: Boolean) {
+    fun sendClickUbahPhoneNumberEvent(requiredInputPhone: Boolean) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_UBAH_BENAR - $PHONE_NUMBER")

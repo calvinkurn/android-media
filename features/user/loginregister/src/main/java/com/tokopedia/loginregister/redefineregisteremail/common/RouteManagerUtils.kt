@@ -7,10 +7,11 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationParam
+import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationRegisterParam
+import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationUpdateParam
 
-fun Context.intentGoToVerification(
-    param: GoToVerificationParam
+fun Context.intentGoToVerificationRegister(
+    param: GoToVerificationRegisterParam
 ): Intent {
     val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.COTP)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, param.phone)
@@ -20,6 +21,17 @@ fun Context.intentGoToVerification(
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, param.otpMode)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_LOGIN_REGISTER_FLOW, true)
     intent.putExtra(ApplinkConstInternalGlobal.PARAM_USER_ACCESS_TOKEN, param.token)
+    return intent
+}
+
+fun Context.intentGoToVerificationUpdatePhone(
+    param: GoToVerificationUpdateParam
+): Intent {
+    val intent = RouteManager.getIntent(this, ApplinkConstInternalUserPlatform.COTP)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, param.phone)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, param.source)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, param.otpType)
+    intent.putExtra(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, param.otpMode)
     return intent
 }
 

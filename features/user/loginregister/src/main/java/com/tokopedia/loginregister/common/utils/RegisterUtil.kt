@@ -2,6 +2,7 @@ package com.tokopedia.loginregister.common.utils
 
 import android.text.TextUtils
 import android.util.Patterns
+import androidx.core.util.PatternsCompat
 import com.tokopedia.sessioncommon.util.PasswordUtils
 
 /**
@@ -17,7 +18,7 @@ object RegisterUtil {
     private const val PASSWORD_MAXIMUM_LENGTH = 32
 
     fun isValidEmail(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return PatternsCompat.EMAIL_ADDRESS.matcher(email).matches()
     }
 
     fun checkRegexNameLocal(param: String): Boolean {
