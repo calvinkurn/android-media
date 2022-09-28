@@ -3,7 +3,10 @@ package com.tokopedia.otp.verification.domain.pojo
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
 
-data class ParamOtpRequest168(
+data class OtpValidatePhoneRegisterMandatoryParam(
+
+    @SerializedName("code")
+    val code: String = "",
 
     @SerializedName("otpType")
     val otpType: String = "",
@@ -18,9 +21,6 @@ data class ParamOtpRequest168(
     val email: String = "",
 
     @SerializedName("ValidateToken")
-    val validateToken: String = "",
-
-    @SerializedName("otpDigit")
-    val otpDigit: Int = 6
+    val validateToken: String = ""
 
 ): GqlParam

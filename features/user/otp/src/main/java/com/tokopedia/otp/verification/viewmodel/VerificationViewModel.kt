@@ -15,8 +15,8 @@ import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
 import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
-import com.tokopedia.otp.verification.domain.pojo.ParamOtpRequest168
-import com.tokopedia.otp.verification.domain.pojo.ParamOtpValidate168
+import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -74,15 +74,14 @@ open class VerificationViewModel @Inject constructor(
         email: String,
         msisdn: String
     ) {
+        val param = GetVerificationMethodPhoneRegisterMandatoryParam(
+            otpType = otpType,
+            msisdn = msisdn,
+            email = email,
+            validateToken = validateToken
+        )
         launchCatchError(block = {
-            val response = getVerificationMethodPhoneRegisterMandatoryUseCase(
-                GetVerificationMethodPhoneRegisterMandatoryParam(
-                    otpType = otpType,
-                    msisdn = msisdn,
-                    email = email,
-                    validateToken = validateToken
-                )
-            )
+            val response = getVerificationMethodPhoneRegisterMandatoryUseCase(param)
 
             when {
                 response.data.success -> {
@@ -221,17 +220,16 @@ open class VerificationViewModel @Inject constructor(
         otpDigit: Int,
         validateToken: String
     ) {
+        val param = OtpRequestPhoneRegisterMandatoryParam(
+            otpType = otpType,
+            mode = mode,
+            msisdn = msisdn,
+            email = email,
+            otpDigit = otpDigit,
+            validateToken = validateToken
+        )
         launchCatchError(coroutineContext, {
-            val response = sendOtpPhoneRegisterMandatoryUseCase(
-                ParamOtpRequest168(
-                    otpType = otpType,
-                    mode = mode,
-                    msisdn = msisdn,
-                    email = email,
-                    otpDigit = otpDigit,
-                    validateToken = validateToken
-                )
-            )
+            val response = sendOtpPhoneRegisterMandatoryUseCase(param)
             val data = response.data
             _sendOtpResult.value = Success(data)
         }, {
@@ -295,16 +293,15 @@ open class VerificationViewModel @Inject constructor(
         email: String,
         validateToken: String
     ) {
+        val params = OtpValidatePhoneRegisterMandatoryParam(
+            code,
+            otpType,
+            mode,
+            msisdn,
+            email,
+            validateToken
+        )
         launchCatchError(coroutineContext, {
-            val params = ParamOtpValidate168(
-                code,
-                otpType,
-                mode,
-                msisdn,
-                email,
-                validateToken
-            )
-
             val data = otpValidatePhoneRegisterMandatoryUseCase(params).data
 
             when {
