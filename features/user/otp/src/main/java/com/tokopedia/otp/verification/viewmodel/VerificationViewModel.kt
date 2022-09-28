@@ -75,7 +75,6 @@ open class VerificationViewModel @Inject constructor(
         msisdn: String
     ) {
         launchCatchError(block = {
-            TkpdIdlingResource.increment()
             val response = getVerificationMethodPhoneRegisterMandatoryUseCase(
                 GetVerificationMethodPhoneRegisterMandatoryParam(
                     otpType = otpType,
