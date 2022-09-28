@@ -102,18 +102,10 @@ class TimePickerHandler @Inject constructor(private val param: Param) {
     }
 
     private fun buildMaxTime(isUsingVpsPackage: Boolean): Calendar {
-         if (param.mode == TimePickerSelectionMode.CAMPAIGN_START_DATE) {
-             return if (isUsingVpsPackage) {
-                 handleVpsPackageMaxTime()
-             } else {
-                 GregorianCalendar(LocaleConstant.INDONESIA).apply {
-                     set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
-                     set(Calendar.MINUTE, LAST_MINUTE)
-                 }
-             }
-
+        return if (isUsingVpsPackage) {
+            handleVpsPackageMaxTime()
         } else {
-            return GregorianCalendar(LocaleConstant.INDONESIA).apply {
+            GregorianCalendar(LocaleConstant.INDONESIA).apply {
                 set(Calendar.HOUR_OF_DAY, LAST_HOUR_OF_A_DAY)
                 set(Calendar.MINUTE, LAST_MINUTE)
             }
