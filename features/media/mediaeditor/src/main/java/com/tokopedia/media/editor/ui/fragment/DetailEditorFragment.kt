@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.createBitmap
 import androidx.core.graphics.values
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -485,7 +484,7 @@ class DetailEditorFragment @Inject constructor(
                             }
                         }
                     }
-                }, DELAY_IMPLEMENT_CROP)
+                }, DELAY_EXECUTION_PREVIOUS_CROP)
             }
         }
     }
@@ -509,6 +508,10 @@ class DetailEditorFragment @Inject constructor(
             viewModel.rotatePreviousDegree = cropRotateData.rotateDegree * cropRotateData.scaleX * cropRotateData.scaleY
 
             cropView.setImageToWrapCropBounds(false)
+
+            cropView.postDelayed({
+                implementPreviousStateCrop(cropRotateData)
+            }, DELAY_EXECUTION_PREVIOUS_ROTATE)
         }
     }
 
@@ -560,9 +563,6 @@ class DetailEditorFragment @Inject constructor(
 
         if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
-            Thread.sleep(DELAY_IMPLEMENT_ROTATE)
-            implementPreviousStateCrop(data.cropRotateValue)
-
             if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
         }
 
@@ -773,7 +773,7 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
 
-        private const val DELAY_IMPLEMENT_CROP = 300L
-        private const val DELAY_IMPLEMENT_ROTATE = 300L
+        private const val DELAY_EXECUTION_PREVIOUS_CROP = 300L
+        private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 300L
     }
 }
