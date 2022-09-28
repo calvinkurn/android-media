@@ -69,8 +69,6 @@ class ManageAddressViewModel @Inject constructor(
     var source = ""
     private val isTokonow: Boolean
         get() = source == ManageAddressSource.TOKONOW.source
-    val isFromLCA: Boolean
-        get() = source == ManageAddressSource.LOCALIZED_ADDRESS_WIDGET.source || isTokonow
 
     private val _addressList = MutableLiveData<ManageAddressState<AddressListModel>>()
     val addressList: LiveData<ManageAddressState<AddressListModel>>

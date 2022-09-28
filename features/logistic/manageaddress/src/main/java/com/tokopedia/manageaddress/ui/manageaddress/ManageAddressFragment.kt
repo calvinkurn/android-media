@@ -150,9 +150,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.offscreenPageLimit = fragments.size
             vpManageAddress.isUserInputEnabled = false
-            if (viewModel.isFromLCA) {
-                tlManageAddress.gone()
-            } else if (viewModel.isNeedToShareAddress) {
+            if (viewModel.isNeedToShareAddress) {
                 tlManageAddress.gone()
                 manageAddressListener?.setToolbarTitle(getString(R.string.title_select_share_address), false)
             } else {
@@ -204,7 +202,7 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     }
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
-        return if (viewModel.isFromLCA || viewModel.isNeedToShareAddress) {
+        return if (viewModel.isNeedToShareAddress) {
             listOf(Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())))
         } else {
             listOf(
