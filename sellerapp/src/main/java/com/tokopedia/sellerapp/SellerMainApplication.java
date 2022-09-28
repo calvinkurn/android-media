@@ -68,6 +68,8 @@ import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
 
+import com.tokopedia.developer_options.notification.DevOpsNotificationManager;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -138,6 +140,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         Loader.init(this);
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        showDevOpsNotification();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -345,5 +349,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
         }).build();
+    }
+
+    private void showDevOpsNotification() {
+        new DevOpsNotificationManager(this).start();
     }
 }
