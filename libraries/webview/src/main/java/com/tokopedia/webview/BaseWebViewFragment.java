@@ -597,7 +597,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        if (permissionCheckerHelper!= null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
