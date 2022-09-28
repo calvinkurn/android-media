@@ -65,7 +65,6 @@ class OnBoardingListenerDelegate @Inject constructor(
             }
             onDismissListener = {
                 shouldShowCoachmark = false
-
             }
         }
     }
