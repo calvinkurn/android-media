@@ -1148,7 +1148,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             if (!shipmentCartItemModel.getBoCode().isEmpty()) {
                 shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
-                shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode(), savedLastApplyData.getCodes());
+                shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
                 shipmentCartItemModel.setBoCode("");
                 showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
             } else if (isBoAutoApplyFlow) {
