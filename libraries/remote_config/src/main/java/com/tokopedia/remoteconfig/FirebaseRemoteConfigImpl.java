@@ -31,13 +31,13 @@ public class FirebaseRemoteConfigImpl implements RemoteConfig {
             this.firebaseRemoteConfig = FirebaseRemoteConfig.getInstance();
         } catch (Exception ignored) { } // FirebaseApp is not intialized, ignoring the error and handle it with default value
 
-        if ((GlobalConfig.isAllowDebuggingTools() && context != null) || (GlobalConfig.ENABLE_MACROBENCHMARK_UTIL && context != null)) {
+        if (GlobalConfig.isAllowDebuggingTools() && context != null) {
             this.sharedPrefs = context.getSharedPreferences(CACHE_NAME, Context.MODE_PRIVATE);
         }
     }
 
     private boolean isDebug() {
-        return (GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null) || GlobalConfig.ENABLE_MACROBENCHMARK_UTIL;
+        return GlobalConfig.isAllowDebuggingTools() && sharedPrefs != null;
     }
 
     @Override
