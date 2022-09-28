@@ -116,13 +116,6 @@
       "sessionIris": ".*"
     },
     {
-      "eventAction": "click watch mode option",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
       "eventAction": "click on play button video",
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.ViewPlayCoverPreviewBinding
@@ -81,6 +82,6 @@ class PlayCoverPreview : ConstraintLayout {
     }
 
     fun setShopName(shopName: String) {
-        binding.tvCoverShopName.text = shopName
+        binding.tvCoverShopName.text = MethodChecker.fromHtml(shopName)
     }
 }
