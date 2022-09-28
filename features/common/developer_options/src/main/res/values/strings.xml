@@ -36,7 +36,7 @@
     <string name="access_token">Access Token</string>
     <string name="pdp_dev">Product Detail Dev</string>
     <string name="app_auth_secret">App Auth Secret (IT Risk)</string>
-    <string name="skip_onboarding_user_session">Skip OnBoarding User Session</string>
+    <string name="skip_onboarding_user_session">Set False OnBoarding User Session</string>
     <string name="reset_onboarding">Reset OnBoarding</string>
     <string name="test_onboarding">Test OnBoarding</string>
     <string name="force_crash">Force Crash</string>
