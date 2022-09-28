@@ -502,7 +502,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                            getString(R.string.default_request_error_unknown),
+                            it.throwable.message
+                                ?: getString(R.string.default_request_error_unknown),
                             Toaster.TYPE_ERROR
                         )
                     }
