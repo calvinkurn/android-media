@@ -479,7 +479,11 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
             it.visible()
 
+            val categoryId = cartPassData?.categoryId ?: ""
+            val operatorId = cartPassData?.operatorId ?: ""
+
             if (error.atcErrorPage.buttons.isNullOrEmpty()) {
+                digitalAnalytics.eventClickErrorButton(categoryId, operatorId)
                 it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
                 it.setActionClickListener { _ ->
                     it.gone()
@@ -492,7 +496,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
 
             it.errorAction.text = button.label
 
+            digitalAnalytics.eventViewErrorPage(categoryId, operatorId, button.actionType)
+
             it.setActionClickListener {
+                digitalAnalytics.eventClickErrorButton(categoryId, operatorId, button.actionType)
                 if (button.actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
                     RouteManager.getIntent(context, button.appLinkUrl).apply {
                         startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
