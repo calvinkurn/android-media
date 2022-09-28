@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <attr name="showCheckMark" format="boolean" />
-    <declare-styleable name="MessageBubbleConstraintLayout">
+    <declare-styleable name="TokoChatMessageBubbleLayout">
         <attr name="showCheckMark"/>
         <attr name="messageOrientation" format="enum">
             <enum name="LEFT" value="0"/>
             <enum name="RIGHT" value="1" />
         </attr>
     </declare-styleable>
-    <declare-styleable name="FlexBoxChatLayout">
+    <declare-styleable name="TokoChatMessageChatLayout">
         <attr name="showCheckMark"/>
         <attr name="useMaxWidth" format="boolean" />
     </declare-styleable>

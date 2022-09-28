@@ -11,7 +11,7 @@ import com.tokopedia.tokochat.di.TokoChatContextModule
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
 import com.tokopedia.tokochat.view.fragment.experiment.TokoChatFragmentExp
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
-import com.tokopedia.tokochat_common.view.activity.BaseTokoChatActivity
+import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
 /**
  * Base Applink: [com.tokopedia.applink.ApplinkConst.TOKO_CHAT]
@@ -41,7 +41,7 @@ import com.tokopedia.tokochat_common.view.activity.BaseTokoChatActivity
  * note: Do not hardcode applink.
  * use variables provided in [com.tokopedia.applink.ApplinkConst]
  */
-class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
+class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()

@@ -8,9 +8,9 @@ import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatContextModule
 import com.tokopedia.tokochat.view.fragment.experiment.TokoChatListFragmentExp
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
-import com.tokopedia.tokochat_common.view.activity.BaseTokoChatActivity
+import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
-class TokoChatListActivity: BaseTokoChatActivity<TokoChatComponent>() {
+class TokoChatListActivity: TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()

@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.tokochat_common.R
 
-abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
+abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     protected var tokoChatComponent: T? = null
     protected var bundle: Bundle? = null
@@ -21,10 +21,10 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     }
 
     override fun getParentViewResourceID(): Int {
-        return R.id.tokochat_chatroom_fragment
+        return R.id.tokochat_layout_chatroom_fragment
     }
 
     override fun getLayoutRes(): Int {
-        return R.layout.base_activity_toko_chat
+        return R.layout.tokochat_base_activity
     }
 }

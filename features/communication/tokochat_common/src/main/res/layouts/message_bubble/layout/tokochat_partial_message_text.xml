@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.tokochat_common.view.customview.MessageChatLayout">
+    tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout">
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/message_icon"
+        android:id="@+id/tokochat_icon_msg"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginEnd="2dp"
@@ -17,7 +17,7 @@
         tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/message_tv"
+        android:id="@+id/tokochat_tv_msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
@@ -30,7 +30,7 @@
         tools:text="Mau cari susu yang bisa buat keker dlm satu malam ada gak ya gan?" />
 
     <LinearLayout
-        android:id="@+id/message_status_layout"
+        android:id="@+id/tokochat_layout_msg_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom|center_vertical"
@@ -39,16 +39,16 @@
         android:orientation="horizontal">
 
         <com.tokopedia.unifycomponents.ImageUnify
-            android:id="@+id/message_check_mark_iv"
+            android:id="@+id/tokochat_iv_msg_check_mark"
             android:layout_width="14dp"
             android:layout_height="14dp"
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="2dp"
             android:contentDescription="@null"
-            tools:srcCompat="@drawable/ic_tokochat_check_read_rounded_green" />
+            tools:srcCompat="@drawable/tokochat_ic_check_read_rounded_green" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/message_time_tv"
+            android:id="@+id/tokochat_tv_msg_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -60,7 +60,7 @@
     </LinearLayout>
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/message_info_tv"
+        android:id="@+id/tokochat_tv_msg_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"

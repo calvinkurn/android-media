@@ -1,13 +1,13 @@
 package com.tokopedia.tokochat_common.view.uimodel
 
-import com.tokopedia.tokochat_common.view.uimodel.base.SendableUiModel
+import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiModel
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
  */
-open class MessageBubbleUiModel protected constructor(
+open class TokoChatMessageBubbleBaseUiModel protected constructor(
     builder: Builder
-) : SendableUiModel(builder) {
+) : TokoChatSendableBaseUiModel(builder) {
 
     var attachment: Any? = builder.attachment
         private set
@@ -24,7 +24,7 @@ open class MessageBubbleUiModel protected constructor(
         return attachment != null
     }
 
-    open class Builder : SendableUiModel.Builder<Builder, MessageBubbleUiModel>() {
+    open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatMessageBubbleBaseUiModel>() {
 
         internal var attachment: Any? = null
 
@@ -33,8 +33,8 @@ open class MessageBubbleUiModel protected constructor(
             return self()
         }
 
-        override fun build(): MessageBubbleUiModel {
-            return MessageBubbleUiModel(this)
+        override fun build(): TokoChatMessageBubbleBaseUiModel {
+            return TokoChatMessageBubbleBaseUiModel(this)
         }
     }
 }

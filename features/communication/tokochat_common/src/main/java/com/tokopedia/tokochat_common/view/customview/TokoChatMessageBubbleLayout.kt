@@ -14,11 +14,10 @@ import kotlin.math.min
 
 class TokoChatMessageBubbleLayout : ViewGroup {
 
-    private var fxChat: MessageChatLayout? = null
-    private var showCheckMark = MessageChatLayout.DEFAULT_SHOW_CHECK_MARK
+    private var bodyMsgContainerLayout: LinearLayout? = null
+    private var msgChatLayout: TokoChatMessageChatLayout? = null
+    private var showCheckMark = TokoChatMessageChatLayout.DEFAULT_SHOW_CHECK_MARK
     private var msgOrientation = DEFAULT_MSG_ORIENTATION
-
-    private var bodyMsgContainer: LinearLayout? = null
 
     constructor(context: Context) : super(context) {
         initConfig(context, null)
@@ -67,17 +66,17 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     private fun initAttrs(context: Context?, attrs: AttributeSet?) {
         context?.theme?.obtainStyledAttributes(
             attrs,
-            R.styleable.MessageBubbleConstraintLayout,
+            R.styleable.TokoChatMessageBubbleLayout,
             0,
             0
         )?.apply {
             try {
                 showCheckMark = getBoolean(
-                    R.styleable.MessageBubbleConstraintLayout_showCheckMark,
-                    MessageChatLayout.DEFAULT_SHOW_CHECK_MARK
+                    R.styleable.TokoChatMessageBubbleLayout_showCheckMark,
+                    TokoChatMessageChatLayout.DEFAULT_SHOW_CHECK_MARK
                 )
                 msgOrientation = getInteger(
-                    R.styleable.MessageBubbleConstraintLayout_messageOrientation,
+                    R.styleable.TokoChatMessageBubbleLayout_messageOrientation,
                     DEFAULT_MSG_ORIENTATION
                 )
             } finally {
@@ -91,12 +90,12 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     }
 
     private fun initViewBinding() {
-        fxChat = findViewById(R.id.message_chat_layout)
-        bodyMsgContainer = findViewById(R.id.body_message_container_layout)
+        bodyMsgContainerLayout = findViewById(R.id.tokochat_layout_body_message_container)
+        msgChatLayout = findViewById(R.id.tokochat_layout_message_chat)
     }
 
     private fun initFlexboxChatLayout() {
-        fxChat?.setShowCheckMark(showCheckMark)
+        msgChatLayout?.setShowCheckMark(showCheckMark)
     }
 
     /**
@@ -152,7 +151,7 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     }
 
     override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        fxChat?.let {
+        msgChatLayout?.let {
             it.layout(
                 0, 0, it.measuredWidth, it.measuredHeight
             )
@@ -186,7 +185,7 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     }
 
     companion object {
-        val LAYOUT = R.layout.partial_tokochat_messsage_bubble
+        val LAYOUT = R.layout.tokochat_partial_message_bubble
 
         const val LEFT_MSG_ORIENTATION = 0
         const val RIGHT_MSG_ORIENTATION = 1

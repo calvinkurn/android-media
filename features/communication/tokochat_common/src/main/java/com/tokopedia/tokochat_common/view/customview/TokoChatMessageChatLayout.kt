@@ -20,21 +20,17 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil
-import com.tokopedia.tokochat_common.view.uimodel.MessageBubbleUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.abs
 
-class MessageChatLayout : ViewGroup {
+class TokoChatMessageChatLayout : ViewGroup {
 
     var checkMark: ImageUnify? = null
         private set
     var hourTime: Typography? = null
         private set
-
-    /**
-     * Direct child view
-     */
     var message: Typography? = null
         private set
     var status: LinearLayout? = null
@@ -89,15 +85,15 @@ class MessageChatLayout : ViewGroup {
     private fun initAttr(context: Context?, attrs: AttributeSet?) {
         context?.theme?.obtainStyledAttributes(
             attrs,
-            R.styleable.FlexBoxChatLayout,
+            R.styleable.TokoChatMessageChatLayout,
             0,
             0
         )?.apply {
             try {
                 showCheckMark =
-                    getBoolean(R.styleable.FlexBoxChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
                 useMaxWidth =
-                    getBoolean(R.styleable.FlexBoxChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -106,12 +102,12 @@ class MessageChatLayout : ViewGroup {
 
     private fun initView(context: Context?) {
         LayoutInflater.from(context).inflate(LAYOUT, this, true).also {
-            message = it.findViewById(R.id.message_tv)
-            status = it.findViewById(R.id.message_status_layout)
-            checkMark = it.findViewById(R.id.message_check_mark_iv)
-            hourTime = it.findViewById(R.id.message_time_tv)
-            info = it.findViewById(R.id.message_info_tv)
-            icon = it.findViewById(R.id.message_icon)
+            message = it.findViewById(R.id.tokochat_tv_msg)
+            status = it.findViewById(R.id.tokochat_layout_msg_status)
+            checkMark = it.findViewById(R.id.tokochat_iv_msg_check_mark)
+            hourTime = it.findViewById(R.id.tokochat_tv_msg_time)
+            info = it.findViewById(R.id.tokochat_tv_msg_info)
+            icon = it.findViewById(R.id.tokochat_icon_msg)
         }
         initCheckMarkVisibility()
     }
@@ -129,21 +125,21 @@ class MessageChatLayout : ViewGroup {
         }
     }
 
-    fun setMessage(msg: MessageBubbleUiModel, text: CharSequence?) {
+    fun setMessage(msg: TokoChatMessageBubbleBaseUiModel, text: CharSequence?) {
         when {
             msg.isBanned() -> {
-                val bannedText = context.getString(R.string.title_tokochat_sender_chat_banned)
+                val bannedText = context.getString(R.string.tokochat_title_sender_chat_banned)
                 message?.text = bannedText
             }
             msg.isDeleted() -> {
-                val deletedText = context.getString(R.string.title_tokochat_chat_deleted)
+                val deletedText = context.getString(R.string.tokochat_title_chat_deleted)
                 message?.text = deletedText
             }
             msg.isNormal() -> message?.text = text
         }
     }
 
-    fun setMessageTypeFace(msg: MessageBubbleUiModel) {
+    fun setMessageTypeFace(msg: TokoChatMessageBubbleBaseUiModel) {
         val typeface = if (msg.isDeleted() || msg.isBanned()) {
             Typeface.ITALIC
         } else {
@@ -164,11 +160,7 @@ class MessageChatLayout : ViewGroup {
         checkMark?.hide()
     }
 
-    fun changeReadStatus(readStatus: Drawable?) {
-        checkMark?.setImageDrawable(readStatus)
-    }
-
-    fun bindInfo(msg: MessageBubbleUiModel) {
+    fun bindInfo(msg: TokoChatMessageBubbleBaseUiModel) {
         if (msg.isBanned()) {
             bindInfoBanned()
         } else if (msg.hasLabel()) {
@@ -179,7 +171,7 @@ class MessageChatLayout : ViewGroup {
     }
 
     private fun bindInfoBanned() {
-        info?.text = context.getString(R.string.title_tokochat_check_tnc)
+        info?.text = context.getString(R.string.tokochat_title_check_tnc)
         info?.setTextColor(MethodChecker.getColor(
             context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
         info?.setOnClickListener {
@@ -188,12 +180,12 @@ class MessageChatLayout : ViewGroup {
         info?.show()
     }
 
-    private fun bindInfoNormal(msg: MessageBubbleUiModel) {
+    private fun bindInfoNormal(msg: TokoChatMessageBubbleBaseUiModel) {
         info?.text = msg.label
         info?.show()
     }
 
-    fun bindIcon(msg: MessageBubbleUiModel) {
+    fun bindIcon(msg: TokoChatMessageBubbleBaseUiModel) {
         icon?.shouldShowWithAction(msg.isDeleted() || msg.isBanned()) {
             val unifyIcon = getIconUnifyDrawable(
                 context,
@@ -207,7 +199,7 @@ class MessageChatLayout : ViewGroup {
         }
     }
 
-    fun bindTextColor(msg: MessageBubbleUiModel) {
+    fun bindTextColor(msg: TokoChatMessageBubbleBaseUiModel) {
         val textColor = if (msg.isDeleted() || msg.isBanned()) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
@@ -442,7 +434,7 @@ class MessageChatLayout : ViewGroup {
     }
 
     /**
-     * Per-child layout information associated with [MessageChatLayout].
+     * Per-child layout information associated with [TokoChatMessageChatLayout].
      */
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
@@ -455,6 +447,6 @@ class MessageChatLayout : ViewGroup {
         const val DEFAULT_USE_MAX_WIDTH = false
         const val DEFAULT_SHOW_CHECK_MARK = true
         const val REPLY_WIDTH_OFFSET = 5
-        val LAYOUT = R.layout.partial_tokochat_message_text
+        val LAYOUT = R.layout.tokochat_partial_message_text
     }
 }
