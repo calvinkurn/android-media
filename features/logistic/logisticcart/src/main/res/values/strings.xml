@@ -32,4 +32,20 @@
     <string name="content_description_img_logo_rates_promo_prefix">image %1$s</string>
     <string name="message_error_shipping_general">Terjadi kesalahan</string>
     <string name="txt_label_dynamic_pricing">Ongkir Spesial PM Pro</string>
+
+    <string name="content_desc_label_choose_shipping">text pilih pengiriman</string>
+    <string name="label_choose_shipping">Pilih Pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_shipping">image pilih pengiriman</string>
+    <string name="content_desc_icon_chevron_choose_duration">image pilih durasi</string>
+    <string name="label_otdg_tnc"><![CDATA[S&K Berlaku]]></string>
+    <string name="content_desc_icon_chevron_choose_courier">image pilih kurir</string>
+    <string name="checkout_shipping">Pengiriman</string>
+    <string name="checkout_label_failed_get_shipping">Gagal menampilkan pengiriman</string>
+    <string name="checkout_label_reload_shipping">Refresh</string>
+    <string name="label_trade_in_shipping_price">Pilih lokasi untuk menampilkan harga</string>
+    <string name="content_desc_label_selected_shipping_duration">text durasi pengiriman</string>
+    <string name="content_desc_label_selected_shipping_courier">text kurir pengiriman</string>
+    <string name="checkout_label_set_pinpoint_title">Atur pinpoint alamatmu dulu, ya.</string>
+    <string name="checkout_label_set_pinpoint_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
+    <string name="checkout_label_set_pinpoint_action">Atur</string>
 </resources>
