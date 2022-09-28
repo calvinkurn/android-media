@@ -94,10 +94,10 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
             phoneNumber = "08123456789"
         )
         (activity as? TokoChatActivity)?.getToolbar()?.run {
-            val userTitle = findViewById<Typography>(R.id.userTitle)
-            val subTitle = findViewById<Typography>(R.id.userSubtitle)
-            val imageUrl = findViewById<ImageUnify>(R.id.user_avatar)
-            val callMenu = findViewById<IconUnify>(R.id.tokoChatHeaderMenu)
+            val userTitle = findViewById<Typography>(R.id.tokochat_text_user_title)
+            val subTitle = findViewById<Typography>(R.id.tokochat_text_user_subtitle)
+            val imageUrl = findViewById<ImageUnify>(R.id.tokochat_user_avatar)
+            val callMenu = findViewById<IconUnify>(R.id.tokochat_icon_header_menu)
 
             userTitle.text = uiModel.title
             subTitle.text = uiModel.subTitle

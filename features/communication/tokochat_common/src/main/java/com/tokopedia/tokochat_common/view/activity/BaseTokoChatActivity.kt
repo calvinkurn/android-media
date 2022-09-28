@@ -1,7 +1,6 @@
 package com.tokopedia.tokochat_common.view.activity
 
 import android.os.Bundle
-import androidx.appcompat.widget.Toolbar
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
@@ -44,7 +43,7 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         viewBinding = BaseActivityTokoChatBinding.inflate(layoutInflater)
     }
 
-    protected fun getChatHeaderLayout() = R.layout.header_toko_chat
+    protected fun getChatHeaderLayout() = R.layout.item_tokochat_header
 
     protected open fun setupToolbar() {}
 
