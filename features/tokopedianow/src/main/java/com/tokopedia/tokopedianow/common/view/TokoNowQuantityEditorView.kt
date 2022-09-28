@@ -5,10 +5,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.motion.widget.MotionLayout
-import androidx.core.content.ContextCompat
+import com.tokopedia.home_component.util.toSp
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorCustomViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.tokopedianow.R
 import java.util.*
 
 
@@ -74,7 +74,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
         binding?.root?.setTransitionListener(object : MotionLayout.TransitionListener {
             override fun onTransitionStarted(motionLayout: MotionLayout?, p1: Int, p2: Int) {
-
+                if (motionLayout?.currentState == R.id.startWithValue) {
+                    binding?.editText?.setPadding(16, 0, 16, 0)
+                }
             }
 
             override fun onTransitionChange(motionLayout: MotionLayout?, p1: Int, p2: Int, p3: Float) {
@@ -82,10 +84,14 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
 
             override fun onTransitionCompleted(motionLayout: MotionLayout?, p1: Int) {
-                if (motionLayout?.progress == 0F) {
+                if (motionLayout?.currentState == R.id.startWithValue) {
+                    binding?.editText?.textSize = pixelsToSp(resources.getDimension(R.dimen.tokopedianow_test))
+                    binding?.editText?.setTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                     cancelTask()
-                } else {
+                } else if (motionLayout?.currentState == R.id.end) {
                     binding?.editText?.requestFocus()
+                } else {
+                    cancelTask()
                 }
             }
 
@@ -94,5 +100,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
 
         })
+    }
+
+    fun pixelsToSp(px: Float): Float {
+        val scaledDensity: Float = resources.getDisplayMetrics().scaledDensity
+        return px / scaledDensity
     }
 }
