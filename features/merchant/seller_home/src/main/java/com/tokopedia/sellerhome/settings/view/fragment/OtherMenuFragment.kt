@@ -783,6 +783,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 }.addCallback(object : Snackbar.Callback() {
                     override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                         super.onDismissed(transientBottomBar, event)
+                        viewModel.reloadErrorData()
                         viewModel.onShownMultipleError()
                         hasShownMultipleErrorToaster = false
                     }

@@ -459,9 +459,7 @@ class OtherMenuViewModel @Inject constructor(
                 val totalTokoMember = withContext(dispatcher.io) {
                     getShopTotalTokoMembersUseCase.params =
                         GetTotalTokoMemberUseCase.createRequestParams(userSession.shopId.toLongOrZero())
-                    getShopTotalTokoMembersUseCase.executeOnBackground().let {
-                        it.membershipGetSumUserCardMember?.sumUserCardMember?.sumUserCardMember.orZero()
-                    }
+                    getShopTotalTokoMembersUseCase.executeOnBackground()
                 }
                 _totalTokoMemberLiveData.value = SettingResponseState.SettingSuccess(
                     totalTokoMember.thousandFormatted()

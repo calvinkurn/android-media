@@ -13,6 +13,8 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.domain.model.MembershipGetSumUserCardMember
+import com.tokopedia.sellerhome.domain.model.SumUserCardMember
 import com.tokopedia.sellerhome.domain.model.TotalTokomemberResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
@@ -246,7 +248,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 )
             )
             onGetUserShopInfo_thenReturn(UserShopInfoWrapper(null))
-            onGetTotalTokoMember_thenReturn()
+            onGetTotalTokoMember_thenReturn(0L)
             onGetShopTotalFollowers_thenReturn(100L)
             onGetFreeShipping_thenReturn(
                 TokoPlusBadgeUiModel(
@@ -515,9 +517,19 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     @Test
     fun `when getTotalTokoMember success should set live data state success`() =
         coroutineTestRule.runBlockingTest {
-            onGetTotalTokoMember_thenReturn()
+            onGetTotalTokoMember_thenReturn(0L)
             mViewModel.getTotalTokoMember()
 
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingSuccess("0")
+            mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember success should set live data state success with data null`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTotalTokoMember_thenReturn(0L)
+            mViewModel.getTotalTokoMember()
             verifyGetTotalTokoMemberCalled()
             val expectedResult = SettingResponseState.SettingSuccess("0")
             mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
@@ -867,8 +879,8 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
 
-    private suspend fun onGetTotalTokoMember_thenReturn() {
-        coEvery { getTotalTokoMemberUseCase.executeOnBackground() } returns TotalTokomemberResponse()
+    private suspend fun onGetTotalTokoMember_thenReturn(totalTokoMember:Long) {
+        coEvery { getTotalTokoMemberUseCase.executeOnBackground() } returns totalTokoMember
     }
 
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {

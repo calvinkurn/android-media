@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.seller.menu.common.constant.Constant
@@ -23,11 +24,11 @@ import com.tokopedia.usecase.coroutines.UseCase
 
 @GqlQuery("GetTotalTokomemberGqlQuery", GetTotalTokoMemberUseCase.QUERY)
 class GetTotalTokoMemberUseCase(private val gqlRepository: GraphqlRepository) :
-    UseCase<TotalTokomemberResponse>() {
+    UseCase<Long>() {
 
     var params = HashMap<String, Any>()
 
-    override suspend fun executeOnBackground(): TotalTokomemberResponse {
+    override suspend fun executeOnBackground(): Long {
         val gqlRequest = GraphqlRequest(
             GetTotalTokomemberGqlQuery(),
             TotalTokomemberResponse::class.java,
@@ -41,7 +42,8 @@ class GetTotalTokoMemberUseCase(private val gqlRepository: GraphqlRepository) :
         val resultStatus = data.membershipGetSumUserCardMember?.resultStatus
 
         return when {
-            data.membershipGetSumUserCardMember?.sumUserCardMember != null -> data
+            data.membershipGetSumUserCardMember?.sumUserCardMember != null -> data.membershipGetSumUserCardMember
+                .sumUserCardMember.sumUserCardMember.orZero()
             !resultStatus?.message.isNullOrEmpty() -> throw MessageErrorException(
                 resultStatus?.message?.joinToString(",")
             )
