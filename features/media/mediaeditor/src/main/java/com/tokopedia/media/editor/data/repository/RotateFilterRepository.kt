@@ -106,6 +106,9 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
                 cropImageView.zoomOutImage(newScale)
             }
 
+            // need delay process to prevent cropview zoom & rotate to conflict in process
+            Thread.sleep(CROP_VIEW_ZOOM_DELAY)
+
             initialScale = cropImageView.currentScale
             isRatioRotated = !isRatioRotated
             isMirrorY = !isMirrorY
@@ -149,5 +152,9 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
     // get total degree from clicked rotate button & slider value
     override fun getFinalRotationDegree(): Float {
         return ((rotateNumber * RotateToolUiComponent.ROTATE_BTN_DEGREE) + sliderValue)
+    }
+
+    companion object{
+        private const val CROP_VIEW_ZOOM_DELAY = 500L
     }
 }
