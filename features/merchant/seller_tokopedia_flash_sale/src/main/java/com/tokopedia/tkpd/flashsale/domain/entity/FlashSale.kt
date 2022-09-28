@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
-import com.google.gson.annotations.SerializedName
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import java.util.Date
 

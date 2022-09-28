@@ -42,7 +42,16 @@ class FlashSaleContainerViewModelTest {
     @Test
     fun `When fetch tabs metadata from remote success, should successfully receive the data`() = runBlockingTest {
         //Given
-        val tabsMetadata = listOf(TabMetadata(TabConstant.TAB_ID_UPCOMING, "upcoming", 100, "Akan Datang"))
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ), "Some ticker message"
+        )
 
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
@@ -61,7 +70,8 @@ class FlashSaleContainerViewModelTest {
 
         assertEquals(false, actual.isLoading)
         assertEquals(null, actual.error)
-        assertEquals(tabsMetadata, actual.tabsMetadata)
+        assertEquals(tabsMetadata.tabs, actual.tabs)
+        assertEquals(tabsMetadata.tickerNonMultiLocationMessage, actual.tickerMessage)
 
         job.cancel()
     }
@@ -69,7 +79,17 @@ class FlashSaleContainerViewModelTest {
     @Test
     fun `When fetch tabs metadata from remote success and has showed multi location ticker previously , showTicker should be false`() = runBlockingTest {
         //Given
-        val tabsMetadata = listOf(TabMetadata(TabConstant.TAB_ID_UPCOMING, "upcoming", 100, "Akan Datang"))
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ),
+            "Some ticker message"
+        )
 
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
@@ -94,7 +114,17 @@ class FlashSaleContainerViewModelTest {
     @Test
     fun `When fetch tabs metadata from remote success and has not showed multi location ticker previously , showTicker should be true`() = runBlockingTest {
         //Given
-        val tabsMetadata = listOf(TabMetadata(TabConstant.TAB_ID_UPCOMING, "upcoming", 100, "Akan Datang"))
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ),
+            "Some ticker message"
+        )
 
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
