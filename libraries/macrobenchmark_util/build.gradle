@@ -39,6 +39,10 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dataStorePreferences
     implementation rootProject.ext.miscDependencies.dataStoreCore
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+
+    implementation rootProject.ext.networkDependencies.retrofit
+    implementation rootProject.ext.networkDependencies.okHttp
+    implementation rootProject.ext.supportLibDependencies.appCompactV7
 }
 
 project.ext {
