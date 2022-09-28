@@ -550,7 +550,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         // need to provide sequence for watermark that implemented before / after rotate
-        if (watermarkIndexNumber < rotateIndexNumber) {
+        if (watermarkIndexNumber < rotateIndexNumber && !data.isToolWatermark()) {
             implementPreviousWatermark(data)
         }
 
@@ -566,19 +566,20 @@ class DetailEditorFragment @Inject constructor(
             if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
         }
 
-        if (watermarkIndexNumber > rotateIndexNumber) {
+        if (watermarkIndexNumber > rotateIndexNumber && !data.isToolWatermark()) {
             implementPreviousWatermark(data)
         }
 
         implementedBaseBitmap = getBitmap()
-        readPreviousDetailState(data)
+        readPreviousDetailState(data, isIncludeWatermark = true)
     }
 
-    private fun readPreviousDetailState(previousState: EditorDetailUiModel) {
+    private fun readPreviousDetailState(previousState: EditorDetailUiModel, isIncludeWatermark: Boolean = false) {
         previousState.apply {
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
+                EditorToolType.WATERMARK -> if(isIncludeWatermark) implementPreviousWatermark(previousState)
             }
         }
     }
