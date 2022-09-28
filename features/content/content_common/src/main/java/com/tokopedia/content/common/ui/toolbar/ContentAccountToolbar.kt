@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat.getColor
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.content.common.R.color.Unify_NN1000
@@ -81,7 +82,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
     var subtitle: String = ""
         set(value) {
             field = value
-            mBinding.textComToolbarSubtitle.text = value
+            mBinding.textComToolbarSubtitle.text = MethodChecker.fromHtml(value)
             mBinding.textComToolbarSubtitle.showWithCondition(value.isNotEmpty())
         }
 

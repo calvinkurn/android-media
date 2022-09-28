@@ -41,7 +41,7 @@ object MenuManager {
                 spanText.setSpan(ForegroundColorSpan(color), 0, spanText.length, 0)
                 tv.text = spanText
 
-                tv.setPadding(0, 0, 16.toPx(), 0)
+                tv.setPadding(16.toPx(), 0, 16.toPx(), 0)
                 actionView = tv
             }
         }
