@@ -13,7 +13,7 @@ data class ProductUiModel(
     val id: String,
     val name: String,
     val imageUrl: String,
-    val stock: Int,
+    val stock: Long,
     val price: ProductPrice,
     val pinStatus: PinProductUiModel = PinProductUiModel.Empty,
 ) : Parcelable
