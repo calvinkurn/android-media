@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter
 
 import android.content.Context
+import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -15,10 +16,14 @@ open class ManageProductVariantBaseViewHolder(
     private val listener: ManageProductVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
 
-    fun Number?.toStringOrEmpty() =
+    var listenerOfEditTextNominal : TextWatcher? = null
+    var listenerOfEditTextDiscount : TextWatcher? = null
+    var listenerQty : TextWatcher? = null
+
+    private fun Number?.toStringOrEmpty() =
         if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
 
-    fun TextFieldUnify2.setTextIfNotFocus(text: String) {
+    private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
         if (!editText.isFocused) {
             editText.setText(text)
         }
@@ -58,24 +63,36 @@ open class ManageProductVariantBaseViewHolder(
         criteria: ReservedProduct.Product.ProductCriteria,
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?,
     ) {
-        textFieldPriceDiscountNominal.editText.afterTextChanged {
+
+        listenerOfEditTextNominal = EditTextWatcher{
             discount?.price = it.digitsOnly()
             textFieldPriceDiscountPercentage.setTextIfNotFocus(
                 listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
             )
             triggerListener(criteria, discount)
         }
-        textFieldPriceDiscountPercentage.editText.afterTextChanged {
+        textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerOfEditTextNominal)
+
+        listenerOfEditTextDiscount = EditTextWatcher{
             discount?.discount = it.digitsOnly().toInt()
             textFieldPriceDiscountNominal.setTextIfNotFocus(
                 listener?.calculatePrice(it.digitsOnly(), adapterPosition).orEmpty()
             )
             triggerListener(criteria, discount)
         }
-        quantityEditor.editText.afterTextChanged {
+        textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerOfEditTextDiscount)
+
+        listenerQty = EditTextWatcher{
             discount?.stock = it.digitsOnly()
             triggerListener(criteria, discount)
         }
+        quantityEditor.editText.addTextChangedListener(listenerQty)
+    }
+
+    protected fun LayoutCampaignManageProductDetailInformationBinding.clearListener() {
+        textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerOfEditTextNominal)
+        textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerOfEditTextDiscount)
+        quantityEditor.editText.removeTextChangedListener(listenerQty)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setupInputField(
@@ -88,9 +105,9 @@ open class ManageProductVariantBaseViewHolder(
         textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
         quantityEditor.editText.setText(discount?.stock?.orZero().toString())
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
-        val validationResult =
+        /*val validationResult =
             discount?.let { listener?.onDataInputChanged(adapterPosition, criteria, it) }
-        textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
+        textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))*/
 
 
         textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()

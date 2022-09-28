@@ -28,6 +28,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
         MutableLiveData()
+    val productVariant: LiveData<ReservedProduct.Product.ChildProduct> get() = _productVariant
 
     val enableBulkApply = Transformations.map(_productVariant) {
         var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK

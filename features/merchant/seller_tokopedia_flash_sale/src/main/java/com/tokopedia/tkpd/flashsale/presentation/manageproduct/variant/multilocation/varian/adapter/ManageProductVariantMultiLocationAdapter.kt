@@ -78,6 +78,7 @@ class ManageProductVariantMultiLocationAdapter :
             }
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {
+                clearListener()
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
                 if (selectedWarehouse.isDilayaniTokopedia) {

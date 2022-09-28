@@ -161,6 +161,16 @@ class ManageProductMultiLocationVariantFragment :
                 positionOfVariant = variantPositionOnProduct,
                 positionOfWarehouse = index
             )
+
+            val listDilayaniTokopedia =viewModel.servedByTokopedia()
+            listDilayaniTokopedia?.forEach {
+                val (positionOnItem, dataWarehouse) = it
+                if(positionOnItem != index){
+                    rvManageProductDetail?.post {
+                        inputAdapter.setDataList(positionOnItem, dataWarehouse)
+                    }
+                }
+            }
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
