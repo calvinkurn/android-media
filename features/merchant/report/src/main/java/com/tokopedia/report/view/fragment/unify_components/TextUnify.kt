@@ -1,58 +1,38 @@
 package com.tokopedia.report.view.fragment.unify_components
 
-import android.content.Context
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.viewinterop.AndroidView
-import com.tokopedia.unifyprinciples.Typography
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.sp
 
 /**
  * Created by yovi.putra on 07/09/22"
  * Project name: android-tokopedia-core
  **/
 
-@Composable
-fun TextUnify(
-    modifier: Modifier = Modifier,
-    type: TextUnifyType,
-    weight: TextUnifyWeight = TextUnifyWeight.Regular,
-    update: Typography.(Context) -> Unit
-) {
-    AndroidView(
-        factory = { context ->
-            Typography(context).apply {
-                setWeight(weight = weight.value)
-                setType(type = type.value)
-            }
-        },
-        modifier = modifier,
-        update = {
-            update.invoke(it, it.context)
-        }
-    )
-}
-
 sealed class TextUnifyWeight(val value: Int) {
     object Regular: TextUnifyWeight(value = 1)
     object Bold: TextUnifyWeight(value = 2)
 }
 
-sealed class TextUnifyType(val value: Int) {
-    object Heading1: TextUnifyType(value = 1)
-    object Heading2: TextUnifyType(value = 2)
-    object Heading3: TextUnifyType(value = 3)
-    object Heading4: TextUnifyType(value = 4)
-    object Heading5: TextUnifyType(value = 5)
-    object Heading6: TextUnifyType(value = 6)
-    object Body1: TextUnifyType(value = 7)
-    object Body2: TextUnifyType(value = 8)
-    object Body3: TextUnifyType(value = 9)
-    object Small: TextUnifyType(value = 10)
-    object Display1: TextUnifyType(value = 14)
-    object Display2: TextUnifyType(value = 15)
-    object Display3: TextUnifyType(value = 16)
-    object Paragraph1: TextUnifyType(value = 17)
-    object Paragraph2: TextUnifyType(value = 18)
-    object Paragraph3: TextUnifyType(value = 19)
-    object Display3Uppercase: TextUnifyType(value = 20)
+sealed class TextUnifyType(
+    open val fontSize: TextUnit,
+    open val openSourceSize: TextUnit,
+) {
+    object Heading1: TextUnifyType(fontSize = 24.sp, openSourceSize = 28.sp)
+    object Heading2: TextUnifyType(fontSize = 20.sp, openSourceSize = 20.sp)
+    object Heading3: TextUnifyType(fontSize = 18.sp, openSourceSize = 18.sp)
+    object Heading4: TextUnifyType(fontSize = 16.sp, openSourceSize = 16.sp)
+    object Heading5: TextUnifyType(fontSize = 14.sp, openSourceSize = 14.sp)
+    object Heading6: TextUnifyType(fontSize = 12.sp, openSourceSize = 12.sp)
+    object Body1: TextUnifyType(fontSize = 16.sp, openSourceSize = 16.sp)
+    object Body2: TextUnifyType(fontSize = 14.sp, openSourceSize = 14.sp)
+    object Body3: TextUnifyType(fontSize = 12.sp, openSourceSize = 12.sp)
+    object Small: TextUnifyType(fontSize = 10.sp, openSourceSize = 10.sp)
+    object Display1: TextUnifyType(fontSize = 16.sp, openSourceSize = 16.sp)
+    object Display2: TextUnifyType(fontSize = 14.sp, openSourceSize = 14.sp)
+    object Display3: TextUnifyType(fontSize = 12.sp, openSourceSize = 12.sp)
+    object Paragraph1: TextUnifyType(fontSize = 16.sp, openSourceSize = 16.sp)
+    object Paragraph2: TextUnifyType(fontSize = 14.sp, openSourceSize = 14.sp)
+    object Paragraph3: TextUnifyType(fontSize = 12.sp, openSourceSize = 12.sp)
+    object Display3Uppercase: TextUnifyType(fontSize = 12.sp, openSourceSize = 12.sp)
+    data class Custom(val size: TextUnit): TextUnifyType(fontSize = size, openSourceSize = size)
 }
