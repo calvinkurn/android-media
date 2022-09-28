@@ -70,7 +70,7 @@ class GetRegisterV2AndSaveSessionUseCase @Inject constructor(
             Success(result)
         } else {
             userSession.clearToken()
-            Fail(MessageErrorException(result.errors[0].message))
+            Fail(MessageErrorException(result.errors.first().message))
         }
     }
 

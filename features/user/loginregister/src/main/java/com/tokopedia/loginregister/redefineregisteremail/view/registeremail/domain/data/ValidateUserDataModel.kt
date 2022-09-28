@@ -6,32 +6,32 @@ import com.google.gson.annotations.SerializedName
 data class ValidateUserDataModel(
 
 	@SerializedName("validate_user_data")
-	val validateUserData: ValidateUserData
+	val validateUserData: ValidateUserData = ValidateUserData()
 
 )
 
 data class ValidateUserData(
 
 	@SerializedName("error_password")
-	val errorPassword: String,
+	val errorPassword: String = "",
 
 	@SuppressLint("Invalid Data Type")
 	@SerializedName("is_valid")
-	val isValid: Boolean,
+	val isValid: Boolean = false,
 
 	@SerializedName("error_fullname")
-	val errorFullName: String,
+	val errorFullName: String = "",
 
 	@SerializedName("is_exist")
-	val isExist: Boolean,
+	val isExist: Boolean = false,
 
 	@SerializedName("error_email")
-	val errorEmail: String,
+	val errorEmail: String = "",
 
 	@SerializedName("error")
-	val error: String,
+	val error: String = "",
 
 	@SerializedName("error_phone")
-	val errorPhone: String
+	val errorPhone: String = ""
 
 )

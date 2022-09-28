@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.encryption.security.RsaUtils
@@ -9,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
 import com.tokopedia.sessioncommon.domain.usecase.GenerateKeyUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.ValidateUserDataUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserData
@@ -24,33 +26,34 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val state = RedefineEmailFormErrorValidation()
+    private val state = RedefineEmailFormState()
 
-    private val _formState = SingleLiveEvent<RedefineEmailFormErrorValidation>()
-    val formState: LiveData<RedefineEmailFormErrorValidation> get() = _formState
+    private val _formState = SingleLiveEvent<RedefineEmailFormState>()
+    val formState: LiveData<RedefineEmailFormState> get() = _formState
 
-    private var _isLoading = SingleLiveEvent<Boolean>()
+    private var _isLoading = MutableLiveData<Boolean>()
     val isLoading : LiveData<Boolean> get() = _isLoading
 
     private val _validateUserData = SingleLiveEvent<Result<ValidateUserData>>()
     val validateUserData: LiveData<Result<ValidateUserData>> get() = _validateUserData
 
-    private var _currentEmail = ""
-    val currentEmail get() = _currentEmail
+    var currentEmail = ""
+        private set
 
-    private var _currentPassword = ""
-    val currentPassword get() = _currentPassword
+    var currentPassword = ""
+        private set
 
-    private var _currentName = ""
-    val currentName get() = _currentName
+    var currentName = ""
+        private set
 
-    private var _currentHash = ""
-    val currentHash get() = _currentHash
+    var currentHash = ""
+        private set
 
-    private var _encryptedPassword = ""
-    val encryptedPassword get() = _encryptedPassword
+    var encryptedPassword = ""
+        private set
 
     fun validateEmail(email: String, setValue: Boolean = true) {
+        currentEmail = email
         state.emailError = when {
             email.isEmpty() -> {
                 R.string.register_email_message_must_be_filled
@@ -59,13 +62,14 @@ class RedefineRegisterEmailViewModel @Inject constructor(
                 R.string.register_email_message_email_not_valid
             }
             else -> {
-                NOTHING_RESOURCE
+                EMPTY_RESOURCE
             }
         }
         if (setValue) _formState.value = state
     }
 
     fun validatePassword(password: String, setValue: Boolean = true) {
+        currentPassword = password
         state.passwordError = when {
             password.isEmpty() -> {
                 R.string.register_email_message_must_be_filled
@@ -77,13 +81,14 @@ class RedefineRegisterEmailViewModel @Inject constructor(
                 R.string.error_maximal_password
             }
             else -> {
-                NOTHING_RESOURCE
+                EMPTY_RESOURCE
             }
         }
         if (setValue) _formState.value = state
     }
 
     fun validateName(name: String, setValue: Boolean = true) {
+        currentName = name
         state.nameError = when {
             name.isEmpty() -> {
                 R.string.register_email_message_must_be_filled
@@ -97,7 +102,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
             RegisterUtil.isExceedMaxCharacter(name) -> {
                 R.string.register_email_message_name_max_length_error
             }
-            else -> NOTHING_RESOURCE
+            else -> EMPTY_RESOURCE
         }
         if (setValue) _formState.value = state
     }
@@ -107,18 +112,12 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     }
 
     private fun isDataValid(stringResource: Int): Boolean {
-        return stringResource == NOTHING_RESOURCE
+        return stringResource == EMPTY_RESOURCE
     }
 
     fun submitForm(email: String, password: String, name: String) {
         if (isAllDataValid()) {
             if (_isLoading.value == false || _isLoading.value == null) {
-
-                //save value
-                _currentEmail = email
-                _currentPassword = password
-                _currentName = name
-
                 validateUserData()
             }
         } else {
@@ -133,8 +132,8 @@ class RedefineRegisterEmailViewModel @Inject constructor(
         _isLoading.value = true
         launchCatchError(coroutineContext, {
             val keyData = generateKeyUseCase(Unit).keyData
-            _encryptedPassword = RsaUtils.encrypt(_currentPassword, keyData.key.decodeBase64(), true)
-            _currentHash = keyData.hash
+            encryptedPassword = RsaUtils.encrypt(currentPassword, keyData.key.decodeBase64(), true)
+            currentHash = keyData.hash
 
             val param = ValidateUserDataParam(
                 email = currentEmail,
@@ -150,11 +149,6 @@ class RedefineRegisterEmailViewModel @Inject constructor(
             _validateUserData.value = Fail(it)
             _isLoading.value = false
         })
-    }
-
-    companion object {
-        const val NOTHING_RESOURCE = 0
-        const val RESOURCE_NOT_CHANGED = -1
     }
 
 }

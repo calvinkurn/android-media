@@ -2,7 +2,9 @@ package com.tokopedia.loginregister.redefineregisteremail.common
 
 object RedefineRegisterEmailConstants {
 
-    const val EMPTY_STRING = ""
+    const val EMPTY_RESOURCE = 0
+    const val INITIAL_RESOURCE = -1
+
     const val SPACE = " "
     const val CHAR_SPACE = ' '
 
