@@ -5,13 +5,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.otp.verification.domain.data.OtpValidatePojo
-import com.tokopedia.otp.verification.domain.pojo.ParamOtpValidate168
+import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
 import javax.inject.Inject
 
 class OtpValidatePhoneRegisterMandatoryUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<ParamOtpValidate168, OtpValidatePojo>(dispatcher.io)  {
+) : CoroutineUseCase<OtpValidatePhoneRegisterMandatoryParam, OtpValidatePojo>(dispatcher.io)  {
     override fun graphqlQuery(): String =
         """
             query otp_validate(
@@ -43,7 +43,7 @@ class OtpValidatePhoneRegisterMandatoryUseCase @Inject constructor(
             }
         """.trimIndent()
 
-    override suspend fun execute(params: ParamOtpValidate168): OtpValidatePojo {
+    override suspend fun execute(params: OtpValidatePhoneRegisterMandatoryParam): OtpValidatePojo {
         return graphqlRepository.request(graphqlQuery(), params)
     }
 }

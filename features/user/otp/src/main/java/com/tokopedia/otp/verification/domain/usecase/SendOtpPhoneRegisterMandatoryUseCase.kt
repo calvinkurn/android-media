@@ -5,13 +5,13 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.otp.verification.domain.data.OtpRequestPojo
-import com.tokopedia.otp.verification.domain.pojo.ParamOtpRequest168
+import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
 import javax.inject.Inject
 
 class SendOtpPhoneRegisterMandatoryUseCase @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<ParamOtpRequest168, OtpRequestPojo>(dispatcher.io) {
+) : CoroutineUseCase<OtpRequestPhoneRegisterMandatoryParam, OtpRequestPojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
             query otp_request(${'$'}otpType: String!, ${'$'}mode: String, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}otpDigit: Int, ${'$'}ValidateToken: String){
@@ -28,7 +28,7 @@ class SendOtpPhoneRegisterMandatoryUseCase @Inject constructor(
             }
         """.trimIndent()
 
-    override suspend fun execute(params: ParamOtpRequest168): OtpRequestPojo {
+    override suspend fun execute(params: OtpRequestPhoneRegisterMandatoryParam): OtpRequestPojo {
         return graphqlRepository.request(graphqlQuery(), params)
     }
 }
