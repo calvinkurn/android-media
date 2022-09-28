@@ -256,12 +256,14 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     }
 
     override fun disableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context,  com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN400))
         mTxtFinished.isEnabled = false
     }
 
     override fun enableSubmitButton() {
-        mTxtFinished.setTextColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN0))
+        mTxtFinished.setTextColor(MethodChecker.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN0))
         mTxtFinished.isEnabled = true
     }
 
