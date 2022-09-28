@@ -236,7 +236,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
                 type = Ticker.TYPE_ANNOUNCEMENT
             )
 
-            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(defaultTicker, remoteTicker)
+            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
 
             val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
