@@ -7,7 +7,8 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 data class InspirationListAtcDataView(
-    val data: Option = Option()
+    val data: Option = Option(),
+    val type: String = "",
 ) : Visitable<ProductListTypeFactory>,
     VerticalSeparable {
     override fun type(typeFactory: ProductListTypeFactory): Int {

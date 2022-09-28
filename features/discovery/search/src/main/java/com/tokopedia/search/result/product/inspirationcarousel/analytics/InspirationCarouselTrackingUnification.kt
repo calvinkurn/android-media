@@ -43,6 +43,15 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         )
     }
 
+    fun trackCarouselAtcClick(data: Data) {
+        SearchTracking.trackEventClickAddToCartInspirationCarouselUnification(
+            data.eventLabel,
+            data.product.inspirationCarouselType,
+            data.product.componentId,
+            arrayListOf(data.productDataLayer),
+        )
+    }
+
     fun trackCarouselClickSeeAll(
         keyword: String,
         option: Option,

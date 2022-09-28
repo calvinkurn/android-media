@@ -2,6 +2,8 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
@@ -51,7 +53,16 @@ class InspirationCarouselDataView(
         val dimension90: String = "",
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
-    ): Visitable<InspirationCarouselOptionTypeFactory>{
+        val keyword: String = "",
+    ): Visitable<InspirationCarouselOptionTypeFactory>,
+        SearchComponentTracking by searchComponentTracking(
+            trackingOption = trackingOption,
+            keyword = keyword,
+            valueName = title,
+            componentId = componentId,
+            applink = applink,
+            dimension90 = dimension90,
+        ) {
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -113,7 +124,19 @@ class InspirationCarouselDataView(
             val label: String = "",
             val bundleId: String = "",
             val parentId: Int = 0,
-        ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
+            val keyword: String = "",
+            val trackingOption: Int = 0,
+            val minOrder: Int = 0,
+        ): ImpressHolder(),
+            Visitable<InspirationCarouselOptionTypeFactory>,
+            SearchComponentTracking by searchComponentTracking(
+                trackingOption = trackingOption,
+                keyword = keyword,
+                valueName = name,
+                componentId = componentId,
+                applink = applink,
+                dimension90 = dimension90,
+            ) {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
@@ -131,9 +154,11 @@ class InspirationCarouselDataView(
                 return labelGroupDataList.find { it.position == position }
             }
 
-            fun willShowRating(): Boolean{
+            fun willShowRating(): Boolean {
                 return ratingAverage.isNotEmpty()
             }
+
+            fun shouldOpenVariantBottomSheet(): Boolean = parentId != 0
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

@@ -892,6 +892,10 @@ data class SearchProductModel(
             @SerializedName("parent_id")
             @Expose
             val parentId: Int = 0,
+
+            @SerializedName("min_order")
+            @Expose
+            val minOrder: Int = 0,
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }

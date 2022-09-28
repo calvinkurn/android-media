@@ -1040,7 +1040,7 @@ class ProductListPresenter @Inject constructor(
                                 InspirationCarouselDataView.Option.Product(
                                     id = "3339227182",
                                     name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-                                    parentId = 0,
+                                    parentId = 123,
                                     imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
                                     url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
                                     applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
@@ -1399,7 +1399,8 @@ class ProductListPresenter @Inject constructor(
     ): List<Visitable<*>> {
         return data.options.map {
             InspirationListAtcDataView(
-                data = it
+                data = it,
+                type = data.type,
             )
         }
     }
@@ -2509,6 +2510,7 @@ class ProductListPresenter @Inject constructor(
     ) {
         if (isViewNotAttached) return
 
+        val keyword = view.queryKey
         val mapper = InspirationCarouselProductDataViewMapper()
         val productList = mapper.convertToInspirationCarouselProductDataView(
             inspirationCarouselChipsProductModel.searchProductCarouselByIdentifier.product,
@@ -2520,6 +2522,8 @@ class ProductListPresenter @Inject constructor(
             inspirationCarouselTitle,
             dimension90,
             externalReference,
+            keyword,
+            clickedInspirationCarouselOption.trackingOption
         )
 
         clickedInspirationCarouselOption.product = productList

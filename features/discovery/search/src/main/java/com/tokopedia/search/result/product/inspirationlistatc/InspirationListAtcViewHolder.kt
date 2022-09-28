@@ -66,7 +66,7 @@ class InspirationListAtcViewHolder(
                     carouselProductCardPosition: Int
                 ) {
                     val product = products.getOrNull(carouselProductCardPosition) ?: return
-                    inspirationListAtcListener.onListAtcItemAddToCart(product)
+                    inspirationListAtcListener.onListAtcItemAddToCart(product, item.type)
                 }
             }
         )

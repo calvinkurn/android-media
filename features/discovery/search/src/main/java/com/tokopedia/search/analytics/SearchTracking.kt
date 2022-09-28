@@ -805,4 +805,28 @@ object SearchTracking {
             )
         )
     }
+
+    fun trackEventClickAddToCartInspirationCarouselUnification(
+        eventLabel: String,
+        type: String,
+        componentId: String,
+        products: ArrayList<Any>,
+    ) {
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            DataLayer.mapOf(
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_CAROUSEL_LIST_ATC,
+                SearchTrackingConstant.EVENT_LABEL, eventLabel,
+                ECOMMERCE, DataLayer.mapOf("click",
+                    DataLayer.mapOf(
+                        "actionField", DataLayer.mapOf(
+                            "list", getInspirationCarouselUnificationListName(type, componentId)
+                        ),
+                        "products", products
+                    )
+                )
+            )
+        )
+    }
 }

@@ -13,6 +13,7 @@ interface SearchEventTracking {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CLICK_SEARCH = "clickSearch"
+            const val ADD_TO_CART = "addToCart"
         }
     }
 
@@ -80,6 +81,7 @@ interface SearchEventTracking {
             const val CLICK_CAROUSEL_PRODUCT = "click - carousel product"
             const val CLICK_DROPDOWN_QUICK_FILTER = "filter product dropdown - click"
             const val APPLY_DROPDOWN_QUICK_FILTER = "filter product dropdown - apply"
+            const val CLICK_CAROUSEL_LIST_ATC = "carousel - add to cart"
         }
     }
 
