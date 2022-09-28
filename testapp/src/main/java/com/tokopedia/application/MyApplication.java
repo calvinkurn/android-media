@@ -29,6 +29,7 @@ import com.tokopedia.core.analytics.TrackingUtils;
 import com.tokopedia.core.analytics.container.GTMAnalytics;
 import com.tokopedia.core.analytics.container.MoengageAnalytics;
 import com.tokopedia.core.gcm.base.IAppNotificationReceiver;
+import com.tokopedia.developer_options.notification.DevOpsNotificationManager;
 import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
@@ -124,6 +125,8 @@ public class MyApplication extends BaseMainApplication
         IrisAnalytics.Companion.getInstance(this).initialize();
         LinkerManager.initLinkerManager(getApplicationContext()).setGAClientId(TrackingUtils.getClientID(getApplicationContext()));
         FirebaseApp.initializeApp(this);
+
+        new DevOpsNotificationManager(this).start();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
