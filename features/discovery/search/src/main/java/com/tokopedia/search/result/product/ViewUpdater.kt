@@ -9,5 +9,6 @@ interface ViewUpdater {
     fun refreshItemAtIndex(index: Int)
     fun addLoading()
     fun removeLoading()
+    fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>)
     fun insertItemAtIndex(item: Visitable<*>, index: Int)
 }

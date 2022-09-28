@@ -53,6 +53,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         get() = visitableListSlot.captured
 
     private val recommendationSlot = slot<SameSessionRecommendationDataView>()
+    private val selectedVisitableSlot = slot<Visitable<*>>()
     private val targetPositionSlot = slot<Int>()
 
     @Before
@@ -106,12 +107,11 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
         val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
-        val targetPosition = productItemDataViewIndex + 1
 
         `When product item is clicked`(productItemDataView, productItemDataViewIndex)
 
         `Then verify same session recommendation API called once`()
-        `Then verify recommendationItem`(sameSessionRecommendation, targetPosition)
+        `Then verify recommendationItem`(sameSessionRecommendation, productItemDataView)
     }
 
     @Test
@@ -156,32 +156,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
         `Then verify same session recommendation API not called`()
         `Then verify no recommendationItem added`()
-    }
-
-    @Test
-    fun `Product click after irrelevant recommendation selected will not call recommendation use case again`() {
-        val lowIntentionKeywordResponse =
-            searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
-        val sameSessionRecommendation =
-            sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
-        `Given view already load data`(lowIntentionKeywordResponse)
-        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(sameSessionRecommendation)
-        `Given recyclerViewUpdater`()
-        `Given same session recommendation preference will return empty`()
-        `Given filter controller has no active filter`()
-        `Given queryKeyProvider queryKey return empty string`()
-
-        val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
-        val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
-        val targetPosition = productItemDataViewIndex + 1
-
-        `When product item is clicked`(productItemDataView, productItemDataViewIndex)
-
-        `Then verify same session recommendation API called once`()
-        `Then verify recommendationItem`(sameSessionRecommendation, targetPosition)
-
-        `When irrelevant product is clicked`(recommendationSlot.captured)
-        `Then verify same session recommendation API called once`()
     }
 
     private fun `Given view already load data`(searchProductModel: SearchProductModel) {
@@ -241,7 +215,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Given recyclerViewUpdater addSameSessionRecommendation`() {
         every {
-            recyclerViewUpdater.insertItemAtIndex(capture(recommendationSlot), capture(targetPositionSlot))
+            recyclerViewUpdater.insertItemAfter(capture(recommendationSlot), capture(selectedVisitableSlot))
         } just runs
     }
 
@@ -256,20 +230,15 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         productListPresenter.onProductClick(productItemDataView, adapterPosition)
     }
 
-    private fun `When irrelevant product is clicked`(recommendation: SameSessionRecommendationDataView) {
-        val irrelevantRecommendationFeedback = recommendation.feedback.items.first { IRRELEVANT_RECOMMENDATION_ID == it.componentId }
-        sameSessionRecommendationPresenterDelegate.handleFeedbackItemClick(irrelevantRecommendationFeedback)
-    }
-
     private fun `Then verify recommendationItem`(
         expectedRecommendation: SearchSameSessionRecommendationModel,
-        expectedTargetPosition: Int,
+        expectedSelectedProduct: Visitable<*>,
     ) {
         verify {
             productListAdapter.removeLastSameSessionRecommendation()
-            recyclerViewUpdater.insertItemAtIndex(recommendationSlot.captured, targetPositionSlot.captured)
+            recyclerViewUpdater.insertItemAfter(recommendationSlot.captured, selectedVisitableSlot.captured)
         }
-        Assert.assertEquals(expectedTargetPosition, targetPositionSlot.captured)
+        Assert.assertEquals(expectedSelectedProduct, selectedVisitableSlot.captured)
         expectedRecommendation.assertRecommendation(recommendationSlot.captured)
     }
 
@@ -311,7 +280,7 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private fun `Then verify no recommendationItem added`() {
         verify(exactly = 0) {
             productListAdapter.removeLastSameSessionRecommendation()
-            recyclerViewUpdater.insertItemAtIndex(any(), any())
+            recyclerViewUpdater.insertItemAfter(any(), any())
         }
     }
 

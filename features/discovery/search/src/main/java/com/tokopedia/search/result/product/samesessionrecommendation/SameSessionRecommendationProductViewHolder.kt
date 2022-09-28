@@ -8,6 +8,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultSameSessionRecommendationProductLayoutBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
+import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -50,8 +51,14 @@ class SameSessionRecommendationProductViewHolder(
             labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
             shopLocation = shopLocation,
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
+            freeOngkir = freeOngkirDataView.toFreeOngkir(),
             cardInteraction = true,
+            customVideoURL = customVideoURL,
         )
+    }
+
+    private fun FreeOngkirDataView.toFreeOngkir() :ProductCardModel.FreeOngkir {
+        return ProductCardModel.FreeOngkir(isActive, imageUrl)
     }
 
     private fun List<LabelGroupDataView>?.toProductCardModelLabelGroup(): List<ProductCardModel.LabelGroup> {

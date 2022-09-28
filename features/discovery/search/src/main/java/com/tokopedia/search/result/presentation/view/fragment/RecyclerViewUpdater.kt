@@ -111,6 +111,10 @@ class RecyclerViewUpdater @Inject constructor(
         recyclerView?.requestLayout()
     }
 
+    override fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>) {
+        productListAdapter?.insertItemAfter(item, previousItem)
+    }
+
     override fun insertItemAtIndex(item: Visitable<*>, index: Int) {
         productListAdapter?.insertItemAtIndex(item, index)
     }

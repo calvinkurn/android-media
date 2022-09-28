@@ -46,12 +46,9 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
 
     private val isFilterOrFeedbackActive: Boolean
         get() = isAnyFilterActive
-            || isIrrelevantRecommendationClicked
             || !isHideRecommendationExceedThreshold
 
     private var currentRecommendation: SameSessionRecommendationDataView? = null
-
-    private var isIrrelevantRecommendationClicked: Boolean = false
 
     fun requestSameSessionRecommendation(
         item: ProductItemDataView,
@@ -97,7 +94,7 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
                         )
                     currentRecommendation = recommendationData
                     removePreviousSameSessionRecommendation()
-                    addSameSessionRecommendation(recommendationData, targetPosition)
+                    addSameSessionRecommendation(recommendationData, item)
                 }
             }
         )
@@ -109,21 +106,15 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
 
     private fun addSameSessionRecommendation(
         recommendation: SameSessionRecommendationDataView,
-        targetPosition: Int,
+        selectedProduct: ProductItemDataView,
     ) {
-        recyclerViewUpdater.insertItemAtIndex(recommendation, targetPosition)
+        recyclerViewUpdater.insertItemAfter(recommendation, selectedProduct)
     }
 
     fun handleFeedbackItemClick(feedbackItem: FeedbackItem) {
-        if (IRRELEVANT_RECOMMENDATION_ID == feedbackItem.componentId) {
-            handleIrrelevantRecommendationClick()
-        } else if (HIDE_RECOMMENDATION_ID == feedbackItem.componentId) {
+        if (HIDE_RECOMMENDATION_ID == feedbackItem.componentId) {
             handleHideRecommendationClick()
         }
-    }
-
-    private fun handleIrrelevantRecommendationClick() {
-        isIrrelevantRecommendationClicked = true
     }
 
     private fun handleHideRecommendationClick() {
