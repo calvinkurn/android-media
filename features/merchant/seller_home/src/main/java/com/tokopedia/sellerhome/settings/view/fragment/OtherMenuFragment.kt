@@ -58,6 +58,7 @@ import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
+import com.tokopedia.sellerhome.databinding.FragmentNewOtherMenuBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
@@ -88,7 +89,8 @@ import javax.inject.Inject
 
 class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
     SettingTrackingListener, OtherMenuAdapter.Listener, OtherMenuViewHolder.Listener,
-    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener, ShareBottomsheetListener {
+    StatusBarCallback, FragmentChangeCallback, SellerHomeFragmentListener,
+    ShareBottomsheetListener {
 
     companion object {
         private const val TAB_PM_PARAM = "tab"
@@ -182,6 +184,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private var shopSnippetImageUrl: String = ""
     private var shopShareImagePath: String = ""
     private var canShowShareBottomSheet = true
+    private var binding: FragmentNewOtherMenuBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -200,7 +203,8 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_new_other_menu, container, false)
+        binding = FragmentNewOtherMenuBinding.inflate(layoutInflater)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -213,6 +217,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             setStatusBar()
         }
         observeLiveData()
+        binding?.swipeRefresh?.setOnRefreshListener {
+            viewHolder?.setInitialValues()
+            viewModel.getAllOtherMenuData()
+            binding?.swipeRefresh?.isRefreshing = false
+        }
     }
 
     override fun onResume() {
@@ -311,7 +320,11 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
             bottomSheet.dismiss()
             RouteManager.route(context, ApplinkConst.SellerApp.TOPADS_AUTO_TOPUP)
         } else {
-            RouteManager.route(context,kreditTopadsClickedBundle, ApplinkConst.SellerApp.TOPADS_CREDIT)
+            RouteManager.route(
+                context,
+                kreditTopadsClickedBundle,
+                ApplinkConst.SellerApp.TOPADS_CREDIT
+            )
         }
         NewOtherMenuTracking.sendEventClickTopadsBalance()
     }
@@ -635,7 +648,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 is Success -> {
                     setTrackerPerformanceMenu(it.data.isNewSeller)
                 }
-                is Fail -> { }
+                is Fail -> {}
             }
         }
         viewModel.getShopPeriodType()
@@ -684,7 +697,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     private fun observeIsShowTageCentralizePromo() {
         viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
-           viewHolder?.setCentralizePromoTag(it)
+            viewHolder?.setCentralizePromoTag(it)
         }
     }
 
@@ -727,14 +740,20 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val bottomSheetInfix: String
         val bottomSheetDescription: String
         if (isTopAdsActive) {
-            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_active).orEmpty()
-            bottomSheetDescription = context?.resources?.getString(R.string.setting_topads_description_active).orEmpty()
-        } else {
-            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_inactive).orEmpty()
+            bottomSheetInfix =
+                context?.resources?.getString(R.string.setting_topads_status_active).orEmpty()
             bottomSheetDescription =
-                context?.resources?.getString(R.string.setting_topads_description_inactive).orEmpty()
+                context?.resources?.getString(R.string.setting_topads_description_active).orEmpty()
+        } else {
+            bottomSheetInfix =
+                context?.resources?.getString(R.string.setting_topads_status_inactive).orEmpty()
+            bottomSheetDescription =
+                context?.resources?.getString(R.string.setting_topads_description_inactive)
+                    .orEmpty()
         }
-        val bottomSheetTitle = context?.resources?.getString(R.string.setting_topads_status, bottomSheetInfix).orEmpty()
+        val bottomSheetTitle =
+            context?.resources?.getString(R.string.setting_topads_status, bottomSheetInfix)
+                .orEmpty()
         return topAdsBottomSheetView?.apply {
             findViewById<Typography>(R.id.topAdsBottomSheetTitle)?.text = bottomSheetTitle
             findViewById<TextView>(R.id.topAdsBottomSheetDescription)?.text = bottomSheetDescription
@@ -754,10 +773,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                         .orEmpty(),
                     Snackbar.LENGTH_INDEFINITE,
                     Toaster.TYPE_NORMAL,
-                    context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry).orEmpty()
+                    context?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_retry)
+                        .orEmpty()
                 )
                 {
-                    viewHolder?.setInitialLayouts()
                     viewModel.reloadErrorData()
                     viewModel.onShownMultipleError()
                     hasShownMultipleErrorToaster = false
@@ -780,7 +799,9 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         if (canShowToaster && !hasShownMultipleErrorToaster) {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
-            } ?: context?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty()
+            }
+                ?: context?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
+                    .orEmpty()
             view?.showToasterError(errorMessage, onRetryAction)
         }
     }
@@ -788,14 +809,16 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     private fun logHeaderError(throwable: Throwable, errorType: String) {
         SellerHomeErrorHandler.logException(
             throwable,
-            context?.getString(R.string.setting_header_error_message,
+            context?.getString(
+                R.string.setting_header_error_message,
                 errorType
             ).orEmpty()
         )
         SellerHomeErrorHandler.logExceptionToServer(
             errorTag = SellerHomeErrorHandler.OTHER_MENU,
             throwable = throwable,
-            errorType = context?.getString(R.string.setting_header_error_message,
+            errorType = context?.getString(
+                R.string.setting_header_error_message,
                 errorType
             ).orEmpty(),
             deviceId = userSession.deviceId.orEmpty()
@@ -827,7 +850,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
                 canShowShareBottomSheet = false
                 shopSnippetImageUrl = snippetUrl
                 context?.let {
-                    SharingUtil.saveImageFromURLToStorage(it, shopSnippetImageUrl) { storageImagePath ->
+                    SharingUtil.saveImageFromURLToStorage(
+                        it,
+                        shopSnippetImageUrl
+                    ) { storageImagePath ->
                         canShowShareBottomSheet = true
                         deletePreviousSavedImage()
                         shopShareImagePath = storageImagePath

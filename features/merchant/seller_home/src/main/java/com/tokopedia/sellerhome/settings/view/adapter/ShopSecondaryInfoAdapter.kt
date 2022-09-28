@@ -66,18 +66,29 @@ class ShopSecondaryInfoAdapter(
     fun setTokoMemberData(state: SettingResponseState<String>) {
         visitables?.indexOfFirst { it is TokoMemberWidgetUiModel }?.let { index ->
             if (index >= START_INDEX) {
-                if (state is SettingResponseState.SettingSuccess){
-                    if(state.data == TOTAL_TOKOMEMBER_ZERO){
+                when (state) {
+                    is SettingResponseState.SettingSuccess -> {
+                        if(state.data == TOTAL_TOKOMEMBER_ZERO){
+                            visitables.removeAt(index)
+                            notifyItemRemoved(index)
+                        }else{
+                            visitables[index] = TokoMemberWidgetUiModel(state)
+                            notifyItemChanged(index)
+                        }
+                    }
+                    is SettingResponseState.SettingError -> {
                         visitables.removeAt(index)
                         notifyItemRemoved(index)
-                    }else{
+                    }
+                    else -> {
                         visitables[index] = TokoMemberWidgetUiModel(state)
                         notifyItemChanged(index)
                     }
-
-                }else{
-                    visitables[index] = TokoMemberWidgetUiModel(state)
-                    notifyItemChanged(index)
+                }
+            }else {
+                visitables?.indexOfFirst { it is ShopFollowersWidgetUiModel }?.let { index ->
+                    visitables[index-1] = TokoMemberWidgetUiModel(state)
+                    notifyItemInserted(index-1)
                 }
             }
         }
