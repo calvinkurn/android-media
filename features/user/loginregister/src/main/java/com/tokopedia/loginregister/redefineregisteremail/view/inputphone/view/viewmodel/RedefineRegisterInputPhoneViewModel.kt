@@ -113,7 +113,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
 
             _isRegisteredPhone.value = when {
                 response.data.errors.isNotEmpty() -> {
-                    RegistrationPhoneState.Ineligible(message = response.data.errors[0])
+                    RegistrationPhoneState.Ineligible(message = response.data.errors.first())
                 }
                 response.data.isExist -> {
                     RegistrationPhoneState.Registered(phoneNumber = phone)
