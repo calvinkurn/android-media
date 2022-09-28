@@ -312,7 +312,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAutoAdsStatus(resources: Resources, onSuccess: ((data: AutoAdsResponse.TopAdsGetAutoAds.Data) -> Unit)) {
         autoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
-        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId, "source" to "android_topads_product_iklan"))
         autoAdsStatusUseCase.setTypeClass(AutoAdsResponse::class.java)
         autoAdsStatusUseCase.execute({
             onSuccess(it.topAdsGetAutoAds.data)
