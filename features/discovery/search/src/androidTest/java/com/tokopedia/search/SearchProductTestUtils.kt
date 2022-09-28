@@ -18,18 +18,18 @@ import com.tokopedia.recommendation_widget_common.listener.RecommendationListene
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.presentation.view.listener.BannerAdsListener
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateListener
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
@@ -37,7 +37,6 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import org.hamcrest.Matcher
 import org.hamcrest.core.Is.`is`
 
@@ -164,7 +163,6 @@ internal fun createRecommendationListener(): RecommendationListener {
     return object: RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
-        override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
         override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }

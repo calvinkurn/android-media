@@ -6,9 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import com.airbnb.lottie.LottieComposition
-import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.thankyou_native.R
 import com.tokopedia.thankyou_native.domain.model.ThanksPageData
@@ -26,23 +23,6 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
         return inflater.inflate(R.layout.thank_fragment_success_payment, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        showCharacterAnimation()
-    }
-
-    private fun showCharacterAnimation() {
-        context?.let {
-            val lottieTask = LottieCompositionFactory.fromAsset(context, CHARACTER_LOADER_JSON_ZIP_FILE)
-            lottieTask?.addListener { result: LottieComposition? ->
-                result?.let {
-                    lottieAnimationView?.setComposition(result)
-                    lottieAnimationView?.playAnimation()
-                }
-            }
-        }
-    }
-
     override fun getTopTickerView(): Ticker? = topTicker
 
     override fun getRecommendationContainer(): LinearLayout? = recommendationContainer
@@ -53,6 +33,8 @@ class CashOnDeliveryFragment : ThankYouBaseFragment() {
     override fun bindThanksPageDataToUI(thanksPageData: ThanksPageData) {
         tv_payment_success.text = getString(R.string.thank_cod_payment_successful)
         tv_payment_success_check_order.text = getString(R.string.thank_cod_payment_check_order)
+
+        setUpIllustration()
 
         if(thanksPageData.gatewayImage.isNotEmpty()){
             ivPayment.scaleType = ImageView.ScaleType.CENTER_INSIDE

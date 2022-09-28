@@ -2,14 +2,24 @@ package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
-import com.tokopedia.checkout.data.model.request.checkout.old.*
+import com.tokopedia.checkout.data.model.request.checkout.old.AddOnGiftingRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.CheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.DropshipDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.EgoldData
+import com.tokopedia.checkout.data.model.request.checkout.old.ProductDataCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.PromoRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShippingInfoCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.ShopProductCheckoutRequest
+import com.tokopedia.checkout.data.model.request.checkout.old.TokopediaCornerData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
-
+const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
 data class Carts(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
@@ -63,7 +73,9 @@ data class ShopOrder(
         @SerializedName("warehouse_id")
         var warehouseId: Long = 0,
         @SerializedName("items")
-        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList()
+        var checkoutGiftingOrderLevel: List<CheckoutGiftingAddOn> = emptyList(),
+        @SerializedName("order_metadata")
+        var orderMetadata: List<OrderMetadata> = emptyList()
 )
 
 data class Bundle(
@@ -170,6 +182,17 @@ data class TokopediaCorner(
         var cornerId: Long = 0
 )
 
+data class OrderMetadata(
+        @SerializedName("key")
+        val key: String = "",
+        @SerializedName("value")
+        val value: String = ""
+) {
+    companion object {
+        const val FREE_SHIPPING_METADATA = "free_shipping_metadata"
+    }
+}
+
 object CheckoutRequestMapper {
 
     fun map(checkoutRequest: CheckoutRequest): Carts {
@@ -177,7 +200,7 @@ object CheckoutRequestMapper {
             promos = mapPromos(checkoutRequest.promos)
             isDonation = checkoutRequest.isDonation
             egold = mapEgoldData(checkoutRequest.egoldData)
-            data = mapData(checkoutRequest.data)
+            data = mapData(checkoutRequest.data, checkoutRequest.prescriptionIds)
             val tmpCornerData = checkoutRequest.cornerData
             tokopediaCorner = if (tmpCornerData != null) mapTokopediaCornerData(tmpCornerData) else null
             hasPromoStacking = checkoutRequest.hasPromoStacking
@@ -214,19 +237,19 @@ object CheckoutRequestMapper {
         }
     }
 
-    private fun mapData(dataCheckoutRequestList: List<DataCheckoutRequest>?): List<Data> {
+    private fun mapData(dataCheckoutRequestList: List<DataCheckoutRequest>?, prescriptionIds: ArrayList<String>?): List<Data> {
         val checkoutGqlDataList = mutableListOf<Data>()
         dataCheckoutRequestList?.forEach {
             checkoutGqlDataList.add(Data().apply {
                 addressId = it.addressId.toLongOrZero()
-                shopOrders = mapShopProduct(it.shopProducts)
+                shopOrders = mapShopProduct(it.shopProducts,prescriptionIds)
             })
         }
 
         return checkoutGqlDataList
     }
 
-    private fun mapShopProduct(shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?): List<ShopOrder> {
+    private fun mapShopProduct(shopProductCheckoutRequests: List<ShopProductCheckoutRequest>?, prescriptionIds : ArrayList<String>?): List<ShopOrder> {
         val shopProductList = mutableListOf<ShopOrder>()
         shopProductCheckoutRequests?.forEach {
             shopProductList.add(ShopOrder().apply {
@@ -242,6 +265,7 @@ object CheckoutRequestMapper {
                 promos = mapPromos(it.promos)
                 bundle = mapBundle(it.productData)
                 checkoutGiftingOrderLevel = mapGiftingAddOn(it.giftingAddOnOrderLevel)
+                orderMetadata = mapOrderMetadata(it,prescriptionIds)
             })
         }
 
@@ -332,5 +356,16 @@ object CheckoutRequestMapper {
             listCheckoutGiftingAddOn.add(addOnRequest)
         }
         return listCheckoutGiftingAddOn.toList()
+    }
+
+    private fun mapOrderMetadata(shopProductCheckoutRequest: ShopProductCheckoutRequest, prescriptionIds: ArrayList<String>?): List<OrderMetadata> {
+        val orderMetadata = arrayListOf<OrderMetadata>()
+        if (shopProductCheckoutRequest.freeShippingMetadata.isNotBlank()) {
+            orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, shopProductCheckoutRequest.freeShippingMetadata))
+        }
+        if(shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()){
+            orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
+        }
+        return orderMetadata
     }
 }

@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -205,6 +206,10 @@ class DiscoveryPageDataMapper(
                     listComponents.add(component)
                 }
             }
+            ComponentNames.ExplicitWidget.componentName -> {
+                addPageInfoToExplicitWidget(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
@@ -256,7 +261,14 @@ class DiscoveryPageDataMapper(
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        if(component.data?.firstOrNull()?.endDate.isNullOrEmpty() || component.data?.firstOrNull()?.startDate.isNullOrEmpty()){
+            return false
+        }
         return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
+
+    private fun addPageInfoToExplicitWidget(component: ComponentsItem){
+        component.pageType = pageInfo.type ?: EMPTY_STRING
     }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {

@@ -16,7 +16,10 @@ object ShopPageGqlQueryConstant {
                   product_id
                   name
                   product_url
+                  app_link
                   stock
+                  minimum_order
+                  max_order
                   status
                   price{
                     text_idr
@@ -47,6 +50,8 @@ object ShopPageGqlQueryConstant {
                     discounted_price
                     is_upcoming
                     stock_sold_percentage
+                    custom_stock
+                    max_order
                   }
                   primary_image{
                     original
@@ -67,6 +72,8 @@ object ShopPageGqlQueryConstant {
                     title
                     url
                   }
+                  hasVariant
+                  parent_id
                 }
                 suggestion {
                   text

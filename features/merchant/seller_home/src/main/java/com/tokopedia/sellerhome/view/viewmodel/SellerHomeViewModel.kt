@@ -15,6 +15,7 @@ import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
+import com.tokopedia.sellerhomecommon.domain.model.UnificationDataFetchModel
 import com.tokopedia.sellerhomecommon.domain.usecase.*
 import com.tokopedia.sellerhomecommon.presentation.model.*
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
@@ -53,6 +54,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getRecommendationUseCase: Lazy<GetRecommendationDataUseCase>,
     private val getMilestoneDataUseCase: Lazy<GetMilestoneDataUseCase>,
     private val getCalendarDataUseCase: Lazy<GetCalendarDataUseCase>,
+    private val getUnificationDataUseCase: Lazy<GetUnificationDataUseCase>,
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
@@ -97,6 +99,7 @@ class SellerHomeViewModel @Inject constructor(
         MutableLiveData<Result<List<RecommendationDataUiModel>>>()
     private val _milestoneWidgetData = MutableLiveData<Result<List<MilestoneDataUiModel>>>()
     private val _calendarWidgetData = MutableLiveData<Result<List<CalendarDataUiModel>>>()
+    private val _unificationWidgetData = MutableLiveData<Result<List<UnificationDataUiModel>>>()
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
 
@@ -136,6 +139,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _milestoneWidgetData
     val calendarWidgetData: LiveData<Result<List<CalendarDataUiModel>>>
         get() = _calendarWidgetData
+    val unificationWidgetData: LiveData<Result<List<UnificationDataUiModel>>>
+        get() = _unificationWidgetData
     val shopShareData: LiveData<Result<ShopShareDataUiModel>>
         get() = _shopShareData
     val shopShareTracker: LiveData<Result<ShopQuestGeneralTracker>>
@@ -348,6 +353,17 @@ class SellerHomeViewModel @Inject constructor(
             getDataFromUseCase(useCase, _calendarWidgetData)
         }, onError = {
             _calendarWidgetData.value = Fail(it)
+        })
+    }
+
+    fun getUnificationWidgetData(widgets: List<UnificationWidgetUiModel>) {
+        launchCatchError(block = {
+            val useCase = getUnificationDataUseCase.get()
+            val shopId = userSession.get().shopId
+            useCase.setParam(shopId, widgets, dynamicParameter)
+            getDataFromUseCase(useCase, _unificationWidgetData)
+        }, onError = {
+            _unificationWidgetData.value = Fail(it)
         })
     }
 

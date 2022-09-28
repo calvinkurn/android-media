@@ -15,6 +15,8 @@ class PlayLikeBubblesManager(
 
     private var timeInterval = getTimeByFps(FULL_FPS)
 
+    private var previouslyHasBubble = false
+
     private var timerJob: Job? = null
 
     private val viewWidth: Int
@@ -45,7 +47,9 @@ class PlayLikeBubblesManager(
                 bubbles.clear()
                 bubbles.addAll(newBubbles)
                 mView?.setBubbles(bubbles)
-                mView?.postInvalidate()
+                if (previouslyHasBubble || bubbles.isNotEmpty()) mView?.postInvalidate()
+
+                previouslyHasBubble = bubbles.isNotEmpty()
             }
         }
     }

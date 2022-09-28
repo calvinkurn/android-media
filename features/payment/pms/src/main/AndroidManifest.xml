@@ -4,11 +4,15 @@
 
     <application>
         <activity
+            android:name=".paymentlist.presentation.activity.CompletePayment"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".paymentlist.presentation.activity.PaymentListActivity"
+            android:exported="false"
             android:label="@string/payment_title_payment_status"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".paymentlist.presentation.activity.PaymentListActivity"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -22,21 +26,21 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".clickbca.view.ChangeClickBcaActivity"
             android:label="@string/payment_title_activity_change_clik_bca"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".clickbca.view.ChangeClickBcaActivity" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
+            android:name=".bankaccount.view.activity.ChangeBankAccountActivity"
             android:label="@string/payment_title_activity_change_detail_account"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".bankaccount.view.activity.ChangeBankAccountActivity" />
+            android:theme="@style/Theme.WhiteUnify" />
         <activity
+            android:name=".howtopay.ui.activity.HowToPayActivity"
+            android:exported="false"
             android:label="@string/payment_title_activity_howtopay"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".howtopay.ui.activity.HowToPayActivity"
-            android:exported="false">
+            android:theme="@style/Theme.WhiteUnify">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -49,9 +53,10 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".proof.view.UploadProofPaymentActivity"
             android:label="@string/payment_title_upload_proof"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify"
-            android:name=".proof.view.UploadProofPaymentActivity" />
+            android:theme="@style/Theme.WhiteUnify" />
     </application>
+
 </manifest>

@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
@@ -37,6 +38,7 @@ class MiniCartChatListBottomSheet @Inject constructor(
     companion object {
         const val MAX_PRODUCT_SIZE = 3
         const val DEFAULT_PRODUCT_SIZE = 0
+        const val RECYCLER_VIEW_EXTRA_PADDING_BOTTOM = 16
     }
 
     private var viewBinding: LayoutBottomsheetMiniCartChatListBinding? = null
@@ -219,7 +221,8 @@ class MiniCartChatListBottomSheet @Inject constructor(
                     analytics.eventClickBtnAskProductChatBottomSheet()
                 }
             }
-            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height)
+            viewBinding.rvMiniCartChatList.setPadding(0, 0, 0, viewBinding.cardView.height +
+                    RECYCLER_VIEW_EXTRA_PADDING_BOTTOM.dpToPx(resources.displayMetrics))
         }
     }
 

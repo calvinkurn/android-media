@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/signal_operator_label"
+        android:layout_width="@dimen/signal_operator_result_label_width"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="display_3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="Wilayah" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/signal_operator_value"
+        android:layout_width="@dimen/unify_space_0"
+        android:layout_height="wrap_content"
+        android:lines="1"
+        android:textColor="@color/Unify_N700_96"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/signal_operator_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="Banten"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

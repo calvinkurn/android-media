@@ -26,6 +26,7 @@ import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.abstraction.R as RAbstraction
 
 
 open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContract.ProvideRatingView {
@@ -40,6 +41,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     private var progress: ProgressDialog?=null
     private var selectedOption: MutableList<String> = ArrayList()
     protected lateinit var mFilterReview: QuickSingleFilterView
+    private var reviewLength : Int = 0
 
     companion object {
         const val CSAT_TITLE = "csatTitle"
@@ -49,6 +51,8 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
         const val CAPTION_LIST = "captionList"
         const val QUESTION_LIST = "questionList"
         const val NO_EMOJI = 0
+        const val minLength = 1
+        const val maxLength = 29
 
         fun newInstance(bundle: Bundle): BaseFragmentProvideRating {
             val fragment = BaseFragmentProvideRating()
@@ -168,12 +172,7 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
                         selectedOption.add(typeFilter)
                     }
                 }
-
-                if (mFilterReview.isAnyItemSelected) {
-                    enableSubmitButton()
-                } else {
-                    disableSubmitButton()
-                }
+                handleSubmitButtonState()
             }
         })
     }
@@ -243,6 +242,19 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(), ProvideRatingContra
     open fun getFeedbackQuestionId():Int = R.id.txt_feedback_question
     open fun getTextFinishedId():Int = R.id.txt_finished
     open fun getFilterReviewId():Int = R.id.filter_review
+
+    fun handleSubmitButtonState() {
+        if (mFilterReview.isAnyItemSelected && reviewLength !in minLength..maxLength) {
+            enableSubmitButton()
+        } else {
+            disableSubmitButton()
+        }
+    }
+
+    fun updateReviewLength(reviewTextLength : Int) {
+        reviewLength = reviewTextLength
+        handleSubmitButtonState()
+    }
 
     fun disableSubmitButton() {
         mTxtFinished.setTextColor(MethodChecker.getColor(context,  com.tokopedia.unifyprinciples.R.color.Unify_NN400))

@@ -127,7 +127,9 @@ open class ShopPageTracking(
     fun sendScreenShopPage(
         shopId: String,
         isLogin: Boolean,
-        selectedTabName: String
+        selectedTabName: String,
+        campaignId: String,
+        variantId: String
     ) {
         val screenName = joinDash(SHOPPAGE, shopId)
         val loginNonLoginEventValue = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
@@ -139,15 +141,18 @@ open class ShopPageTracking(
         customDimension[ShopPageTrackingConstant.IS_LOGGED_IN_STATUS] = loginNonLoginEventValue
         customDimension[ShopPageTrackingConstant.PAGE_SOURCE] = pageSource
         customDimension[ShopPageTrackingConstant.SHOP_ID] = shopId
+        customDimension[ShopPageTrackingConstant.Key.CAMPAIGN_ID] = campaignId
+        customDimension[ShopPageTrackingConstant.Key.VARIANT_ID] = variantId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
-    fun sendScreenShopPage(shopId: String?, shopType: String, pageSource: String) {
+    fun sendOpenScreenAddProduct(shopId: String?, shopType: String) {
         val screenName = joinDash(SHOPPAGE, shopId)
         val customDimension: MutableMap<String, String> = HashMap()
         customDimension[ShopPageTrackingConstant.SHOP_TYPE] = shopType
         customDimension[ShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
-        customDimension[ShopPageTrackingConstant.PAGE_SOURCE] = pageSource
+        customDimension[ShopPageTrackingConstant.PAGE_SOURCE] =
+            ShopPageTrackingConstant.SCREEN_ADD_PRODUCT
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 

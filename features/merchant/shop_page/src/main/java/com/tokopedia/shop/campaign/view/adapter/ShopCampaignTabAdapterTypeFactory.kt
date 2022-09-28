@@ -23,14 +23,7 @@ import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleLis
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeProductListSellerEmptyListener
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
-import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCardDonationListener
-import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeDisplayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeEndlessProductListener
-import com.tokopedia.shop.home.view.listener.ShopHomeFlashSaleWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomePlayWidgetListener
-import com.tokopedia.shop.home.view.listener.ShopHomeShowcaseListWidgetListener
+import com.tokopedia.shop.home.view.listener.*
 import com.tokopedia.shop.home.view.model.BaseShopHomeWidgetUiModel
 import com.tokopedia.shop.product.view.viewholder.ShopProductSortFilterViewHolder
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
@@ -55,7 +48,8 @@ class ShopCampaignTabAdapterTypeFactory(
     private val thematicWidgetListener: ThematicWidgetViewHolder.ThematicWidgetListener,
     private val shopHomeProductListSellerEmptyListener: ShopHomeProductListSellerEmptyListener,
     private val widgetConfigListener: WidgetConfigListener,
-    private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener
+    private val bundlingParentListener: ShopCampaignProductBundleParentWidgetViewHolder.Listener,
+    private val shopHomeListener: ShopHomeListener
 ) : ShopHomeAdapterTypeFactory(
     listener,
     onMerchantVoucherListWidgetListener,
@@ -73,7 +67,8 @@ class ShopCampaignTabAdapterTypeFactory(
     multipleProductBundleListener,
     singleProductBundleListener,
     thematicWidgetListener,
-    shopHomeProductListSellerEmptyListener
+    shopHomeProductListSellerEmptyListener,
+    shopHomeListener
 ) {
 
     override fun type(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {

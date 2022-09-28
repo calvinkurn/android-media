@@ -26,7 +26,8 @@
                 android:padding="2dp"
                 android:visibility="visible"
                 tools:visibility="visible"
-                app:srcCompat="@drawable/ic_cod_logo"/>
+                app:srcCompat="@drawable/ic_cod_logo"
+                android:contentDescription="@string/content_desc_cod_icon" />
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/cod_title_text"
@@ -147,7 +148,8 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_check_cod"/>
+                    app:srcCompat="@drawable/ic_check_cod"
+                    android:contentDescription="@string/content_desc_check_icon_one"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_1"
@@ -174,7 +176,8 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_check_cod"/>
+                    app:srcCompat="@drawable/ic_check_cod"
+                    android:contentDescription="@string/content_desc_check_icon_two"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_2"
@@ -201,7 +204,8 @@
                     tools:visibility="visible"
                     android:layout_marginStart="@dimen/dp_18"
                     android:layout_centerVertical="true"
-                    app:srcCompat="@drawable/ic_check_cod"/>
+                    app:srcCompat="@drawable/ic_check_cod"
+                    android:contentDescription="@string/content_desc_check_icon_three"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tnc_decs_3"
@@ -249,11 +253,12 @@
                     android:id="@+id/checkbox_tnc"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="2dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/tnc_desc"
                     app:typographyType="body_3"
-                    android:layout_toEndOf="@id/cb_tnc"/>
+                    android:layout_toEndOf="@id/cb_tnc"
+                    android:layout_centerVertical="true"/>
 
             </RelativeLayout>
 

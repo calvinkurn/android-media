@@ -3,42 +3,18 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/Unify_Background">
+    android:background="@color/Unify_Background"
+    >
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_N700_96"
+    <include
+        android:id="@+id/view_play_widget_header"
+        layout="@layout/view_play_widget_header"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="heading_4"
-        app:typographyWeight="bold"
-        tools:text="Yuk nonton sekarang!"
-        />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_see_all"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:textColor="@color/Unify_G500"
-        app:layout_constraintBottom_toBottomOf="@id/tv_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:text="Lihat semua"
-        />
-
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:constraint_referenced_ids="tv_title, tv_see_all"
-        app:barrierDirection="bottom"
         />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -46,12 +22,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="@dimen/play_widget_dp_12"
         android:paddingBottom="@dimen/play_widget_dp_18"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/barrier_header"
+        app:layout_constraintTop_toBottomOf="@id/view_play_widget_header"
         tools:listitem="@layout/view_play_widget_card_small_banner"
         />
 

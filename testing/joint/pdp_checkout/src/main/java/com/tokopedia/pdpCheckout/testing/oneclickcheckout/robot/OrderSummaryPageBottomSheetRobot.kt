@@ -63,15 +63,6 @@ class OrderPriceSummaryBottomSheetRobot {
                 assertEquals(insurancePrice, (view as Typography).text)
             }
         }
-        onView(withId(R.id.tv_total_payment_fee_price_value)).check { view, noViewFoundException ->
-            noViewFoundException?.printStackTrace()
-            if (paymentFee == null) {
-                assertEquals(View.GONE, view.visibility)
-            } else {
-                assertEquals(View.VISIBLE, view.visibility)
-                assertEquals(paymentFee, (view as Typography).text)
-            }
-        }
         onView(withId(R.id.tv_total_payment_price_value)).check(matches(withText(totalPrice)))
     }
 

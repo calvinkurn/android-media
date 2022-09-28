@@ -12,7 +12,7 @@
     <FrameLayout
         android:id="@+id/feed_background_frame"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
+        android:layout_height="200dp"
         app:layout_scrollFlags="scroll|snap">
 
         <ImageView
@@ -46,7 +46,7 @@
             android:background="@color/Unify_G500"
             android:layout_width="match_parent"
             app:layout_scrollFlags="enterAlways"
-            android:layout_height="@dimen/dp_25"/>
+            android:layout_height="25dp"/>
 
         <FrameLayout
             android:id="@+id/toolbarParent"
@@ -64,7 +64,7 @@
             android:background="@color/Unify_G500"
             android:layout_width="match_parent"
             android:layout_marginTop="-5dp"
-            android:layout_height="@dimen/dp_25"/>
+            android:layout_height="25dp"/>
 
         <com.tokopedia.unifycomponents.TabsUnify
             android:id="@+id/tab_layout"
@@ -74,7 +74,7 @@
             app:layout_scrollFlags="enterAlways"
             app:tabMode="fixed"
             app:tabGravity="fill"
-            app:tabIndicatorHeight="@dimen/dp_1"
+            app:tabIndicatorHeight="1dp"
             app:tabSelectedTextColor="@color/Unify_GN500"
             app:tabTextColor="@color/Unify_N700_32"
             app:tabTextAppearance="@style/FeedTabLayoutTextStyle"
@@ -124,7 +124,7 @@
         app:srcCompat="@drawable/ic_feed_post_plus"
         />
 
-    <com.tokopedia.feedplus.view.customview.FeedFloatingButton
+    <com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
         android:id="@+id/feed_floating_button"
         android:visibility="gone"
         android:layout_width="wrap_content"

@@ -33,4 +33,8 @@
     <string name="dialog_title_coverage">Gagal Mengaktifkan Bayar di Tempat</string>
     <string name="dialog_description_coverage">Lokasi toko anda belum dapat mendukung layanan Bayar di Tempat</string>
     <string name="dialog_button_coverage">Ditutup</string>
+    <string name="content_desc_cod_icon">cod icon</string>
+    <string name="content_desc_check_icon_one">check icon one</string>
+    <string name="content_desc_check_icon_two">check icon two</string>
+    <string name="content_desc_check_icon_three">check icon three</string>
 </resources>

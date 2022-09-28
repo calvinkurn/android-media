@@ -31,13 +31,13 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     private var channelType: PlayChannelType = PlayChannelType.Unknown
     private var channelName = ""
 
-    override fun sendData(channelId: String, channelType: PlayChannelType, channelName: String) {
+    override fun sendDataNow(channelId: String, channelType: PlayChannelType, channelName: String) {
         this.channelId = channelId
         this.channelType = channelType
         this.channelName = channelName
     }
 
-    override fun impressAddressWidget() {
+    override fun impressAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -54,7 +54,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     /**
      * Button Ganti Alamat
      */
-    override fun impressChooseAddress() {
+    override fun impressChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_VIEW_CONTENT_IRIS,
@@ -67,7 +67,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickChooseAddress() {
+    override fun clickChooseAddressNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -83,7 +83,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
     /**
      * Click cek jangkauan
      */
-    override fun clickInfoAddressWidget() {
+    override fun clickInfoAddressWidgetNow() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
@@ -149,20 +149,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickGlobalToaster() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            mapOf(
-                KEY_EVENT to KEY_TRACK_CLICK_CONTENT,
-                KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                KEY_EVENT_ACTION to "click - lihat keranjang",
-                KEY_EVENT_LABEL to "$channelId - ${channelType.value}",
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-            )
-        )
-    }
-
-    override fun clickProductBottomSheet(
+    override fun clickProductBottomSheetNow(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         position: Int,
@@ -185,7 +172,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
             generateBaseTracking())
     }
 
-    override fun clickFeaturedProduct(featuredProduct: PlayProductUiModel.Product, position: Int) {
+    override fun clickFeaturedProductNow(featuredProduct: PlayProductUiModel.Product, position: Int) {
         trackingQueue.putEETracking(
             EventModel(
                 "productClick",
@@ -216,41 +203,37 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun impressProductBottomSheet(
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
-        sectionInfo: ProductSectionUiModel.Section,
+    override fun impressProductBottomSheetNow(
+        product: PlayProductUiModel.Product,
+        position: Int,
     ) {
-        if (products.isEmpty()) return
-
         trackingQueue.putEETracking(
             event = EventModel(
                 "productView",
                 KEY_TRACK_GROUP_CHAT_ROOM,
                 "view - now product bottomsheet",
-                "$channelId - ${products.first().first.id} - ${channelType.value}"
+                "$channelId - ${product.id} - ${channelType.value}"
             ),
             enhanceECommerceMap = hashMapOf(
                 "ecommerce" to hashMapOf(
                     "currencyCode" to "IDR",
                     "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        products.forEach {
-                            add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
-                        }
+                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
                     }
                 )
             ),
             customDimension =
-                hashMapOf(
-                    KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                    KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                    KEY_USER_ID to userId,
-                    KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
+            hashMapOf(
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            )
 
         )
     }
 
-    override fun impressFeaturedProduct(
+    override fun impressFeaturedProductNow(
         products: List<Pair<PlayProductUiModel.Product, Int>>,
     ) {
         if (products.isEmpty()) return
@@ -281,7 +264,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickBeli(
+    override fun clickBeliNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,
@@ -306,7 +289,7 @@ class PlayTokoNowAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickAtc(
+    override fun clickAtcNowProduct(
         product: PlayProductUiModel.Product,
         sectionInfo: ProductSectionUiModel.Section,
         cartId: String,

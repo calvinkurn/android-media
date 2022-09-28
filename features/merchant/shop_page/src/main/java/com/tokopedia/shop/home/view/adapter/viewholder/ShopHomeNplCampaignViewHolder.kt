@@ -1,38 +1,35 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
-
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.productcard.utils.getMaxHeightForGridView
-
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
+import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
 import com.tokopedia.shop.home.view.listener.ShopHomeCampaignNplWidgetListener
 import com.tokopedia.shop.home.view.model.BannerType
+import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.config.GlobalConfig
-import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
-import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
-import com.tokopedia.shop.home.view.model.ShopHomeCampaignCarouselClickableBannerAreaUiModel
-import com.tokopedia.unifycomponents.TimerUnify
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import java.math.RoundingMode
+import java.util.*
 
 /**
  * @author by alvarisi on 12/12/17.
@@ -73,7 +70,7 @@ class ShopHomeNplCampaignViewHolder(
     private val layoutRemindMeUnNotified: View? = viewBinding?.layoutRemindMeUnNotified?.root
     private val textTimeDescription: Typography? = viewBinding?.layoutTimer?.textTimeDescription
     private val layoutTimer: View? = viewBinding?.layoutTimer?.root
-    private val timer: TimerUnify? = viewBinding?.layoutTimer?.timer
+    private val timerUnify: TimerUnifySingle? = viewBinding?.layoutTimer?.nplTimer
     private val textDescription: Typography? = viewBinding?.textDescription
     private val textSeeAll: Typography? = viewBinding?.textSeeAll
     private val imageTnc: ImageView? = viewBinding?.imageTnc
@@ -155,9 +152,11 @@ class ShopHomeNplCampaignViewHolder(
                     adapter = productListCampaignAdapter
                     setHeightBasedOnProductCardMaxHeight(productList.map {
                         ShopPageHomeMapper.mapToProductCardCampaignModel(
-                                isHasAddToCartButton = false,
-                                hasThreeDots = false,
-                                shopHomeProductViewModel = it
+                            isHasAddToCartButton = false,
+                            hasThreeDots = false,
+                            shopHomeProductViewModel = it,
+                            widgetName = model.name,
+                            statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
                         )
                     })
                 } catch (throwable: Exception) {
@@ -285,51 +284,34 @@ class ShopHomeNplCampaignViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             textTimeDescription?.text = timeDescription
-            val currentTime = System.currentTimeMillis()
             layoutTimer?.show()
             if (timeCounter.toLong() != 0L) {
-                val remainingMilliseconds = when {
-                    isStatusCampaignUpcoming(statusCampaign) -> {
-                        val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate
-                                ?: "").time
-                        startDate - currentTime
+                timerUnify?.apply {
+                    when {
+                        isStatusCampaignUpcoming(statusCampaign) -> {
+                            val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time
+                            val calendar = Calendar.getInstance()
+                            calendar.time = Date(startDate)
+                            targetDate = calendar
+                        }
+                        isStatusCampaignOngoing(statusCampaign) -> {
+                            val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate ?: "").time
+                            val calendar = Calendar.getInstance()
+                            calendar.time = Date(endDate)
+                            targetDate = calendar
+                        }
                     }
-                    isStatusCampaignOngoing(statusCampaign) -> {
-                        val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate
-                                ?: "").time
-                        endDate - currentTime
+                    isShowClockIcon = false
+                    onFinish = {
+                        shopHomeCampaignNplWidgetListener.onTimerFinished(model)
                     }
-                    else -> {
-                        0
-                    }
+                    show()
                 }
-                setTimerData(remainingMilliseconds, model)
             } else {
-                timer?.gone()
+                timerUnify?.gone()
             }
         }else{
             layoutTimer?.gone()
-        }
-    }
-
-    private fun setTimerData(remainingMilliseconds: Long, model: ShopHomeNewProductLaunchCampaignUiModel) {
-        timer?.apply {
-            this.remainingMilliseconds = remainingMilliseconds
-            (hourView as? Typography)?.setWeight(Typography.BOLD)
-            (hourView as? Typography)?.setType(Typography.SMALL)
-            (minuteView as? Typography)?.setWeight(Typography.BOLD)
-            (minuteView as? Typography)?.setType(Typography.SMALL)
-            (secondView as? Typography)?.setWeight(Typography.BOLD)
-            (secondView as? Typography)?.setType(Typography.SMALL)
-            (colonHourView as? Typography)?.setWeight(Typography.BOLD)
-            (colonHourView as? Typography)?.setType(Typography.SMALL)
-            (colonMinuteView as? Typography)?.setWeight(Typography.BOLD)
-            (colonMinuteView as? Typography)?.setType(Typography.SMALL)
-            onFinish = {
-                if(remainingMilliseconds >= 0)
-                    shopHomeCampaignNplWidgetListener.onTimerFinished(model)
-            }
-            show()
         }
     }
 

@@ -17,6 +17,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.topchat.R
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestion
 import com.tokopedia.topchat.chatroom.domain.pojo.srw.ChatSmartReplyQuestionResponse
@@ -27,6 +28,7 @@ import com.tokopedia.topchat.chatroom.view.onboarding.SrwOnBoarding
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.data.Status
 import com.tokopedia.topchat.common.util.ViewUtil
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
 class SrwFrameLayout : FrameLayout {
@@ -45,6 +47,24 @@ class SrwFrameLayout : FrameLayout {
 
     private var bgExpanded: Drawable? = null
     private var onBoarding = SrwOnBoarding()
+    private var hasShownOnBoarding = false
+    private var itemDecoration = SrwItemDecoration(context)
+
+    /**
+     * To differentiate the SRW Tab and Bubble
+     */
+    var isSrwBubble: Boolean = true
+        set(value) {
+            field = value
+            initBackground()
+            itemDecoration.source = getSrwSource()
+        }
+    var onBoardingAnchor: View? = null
+
+    /**
+     * Force to hide, used when reply to specific bubble shown
+     */
+    var isForceToHide = false
 
     /**
      * Default state would be expanded
@@ -102,7 +122,7 @@ class SrwFrameLayout : FrameLayout {
     }
 
     fun isAllowToShow(): Boolean {
-        return chatSmartReplyQuestion.hasQuestion
+        return chatSmartReplyQuestion.hasQuestion && !isForceToHide
     }
 
     fun updateStatus(latestState: Resource<ChatSmartReplyQuestionResponse>) {
@@ -126,17 +146,67 @@ class SrwFrameLayout : FrameLayout {
     private fun initBackground() {
         bgExpanded = ViewUtil.generateBackgroundWithShadow(
             this,
-            com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_0,
-            R.dimen.dp_topchat_20,
-            R.dimen.dp_topchat_20,
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-            R.dimen.dp_topchat_2,
-            R.dimen.dp_topchat_2,
-            Gravity.CENTER
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
+            topLeftRadius = getTopLeftRadius(),
+            topRightRadius = getTopRightRadius(),
+            bottomLeftRadius = R.dimen.dp_topchat_20,
+            bottomRightRadius = R.dimen.dp_topchat_20,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            elevation = getElevationShadow(),
+            shadowRadius = getElevationShadow(),
+            strokeColor = getStrokeColor(),
+            strokeWidth = getStrokeWidth(),
+            shadowGravity = Gravity.CENTER
         )
         srwContentContainer?.background = bgExpanded
+    }
+
+    private fun getTopLeftRadius(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_20
+        } else {
+            R.dimen.dp_topchat_0
+        }
+    }
+
+    private fun getTopRightRadius(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_0
+        } else {
+            R.dimen.dp_topchat_20
+        }
+    }
+
+    private fun getElevationShadow(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_2
+        } else {
+            R.dimen.dp_topchat_0
+        }
+    }
+
+    private fun getStrokeColor(): Int {
+        return if (isSrwBubble) {
+            com.tokopedia.unifyprinciples.R.color.Unify_Background
+        } else {
+            com.tokopedia.unifyprinciples.R.color.Unify_NN50
+        }
+    }
+
+    private fun getStrokeWidth(): Int {
+        return if (isSrwBubble) {
+            R.dimen.dp_topchat_0
+        } else {
+            R.dimen.dp_topchat_1
+        }
+    }
+
+    private fun getSrwSource(): SrwItemDecoration.SrwItemSource {
+        return if (isSrwBubble) {
+            SrwItemDecoration.SrwItemSource.SRW_BUBBLE
+        } else {
+            SrwItemDecoration.SrwItemSource.TAB_LAYOUT
+        }
     }
 
     private fun initViewBind() {
@@ -170,7 +240,7 @@ class SrwFrameLayout : FrameLayout {
         rvSrw?.apply {
             setHasFixedSize(true)
             adapter = rvAdapter
-            addItemDecoration(SrwItemDecoration(context))
+            addItemDecoration(itemDecoration)
         }
     }
 
@@ -183,8 +253,12 @@ class SrwFrameLayout : FrameLayout {
         rvAdapter.updateSrwList(chatSmartReplyQuestion)
     }
 
-    private fun resetSrw() {
+    fun resetChatReplyQuestion() {
         chatSmartReplyQuestion = ChatSmartReplyQuestion()
+    }
+
+    fun resetSrw() {
+        resetChatReplyQuestion()
         rvAdapter.resetSrwQuestions()
     }
 
@@ -228,9 +302,18 @@ class SrwFrameLayout : FrameLayout {
         hideSrwContent()
     }
 
+    fun setSrwTitleVisibility(shouldShow: Boolean) {
+        titleContainer?.showWithCondition(shouldShow)
+    }
+
+    fun setContentMargin(left: Int = 0, top: Int = 0, right: Int = 0, bottom: Int = 0) {
+        val params = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
+        params.setMargins(left.toPx(), top.toPx(), right.toPx(), bottom.toPx())
+        srwContentContainer?.layoutParams = params
+    }
+
     private fun showSrwContent() {
-        val isPreviouslyVisible = srwContentContainer?.isVisible == true
-        if (!isPreviouslyVisible) {
+        if (!hasShownOnBoarding) {
             listener?.trackViewSrw()
             showOnBoardingSrw()
         } else {
@@ -242,11 +325,21 @@ class SrwFrameLayout : FrameLayout {
 
     private fun showOnBoardingSrw() {
         if (listener?.shouldShowOnBoarding() == true) {
-            titleContainer?.let {
-                onBoarding.show(context, it)
-
+            if (isSrwBubble) {
+                titleContainer?.let {
+                    showOnBoarding(it)
+                }
+            } else {
+                onBoardingAnchor?.let {
+                    showOnBoarding(it)
+                }
             }
         }
+    }
+
+    private fun showOnBoarding(view: View) {
+        onBoarding.show(context, view)
+        hasShownOnBoarding = true
     }
 
     private fun dismissOnBoarding() {

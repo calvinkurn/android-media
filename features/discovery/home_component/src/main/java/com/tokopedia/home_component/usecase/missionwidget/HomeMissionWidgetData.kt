@@ -34,6 +34,30 @@ class HomeMissionWidgetData {
         val appLink: String = "",
         @SerializedName("imageURL")
         @Expose
-        val imageURL: String = ""
+        val imageURL: String = "",
+        @SerializedName("pageName")
+        @Expose
+        val pageName: String = "",
+        @SerializedName("categoryID")
+        @Expose
+        val categoryID: String = "",
+        @SerializedName("productID")
+        @Expose
+        val productID: String = "",
+        @SerializedName("productName")
+        @Expose
+        val productName: String = "",
+        @SerializedName("recommendationType")
+        @Expose
+        val recommendationType: String = "",
+        @SerializedName("buType")
+        @Expose
+        val buType: String = "",
+        @SerializedName("isTopads")
+        @Expose
+        val isTopads: Boolean = false,
+        @SerializedName("isCarousel")
+        @Expose
+        val isCarousel: Boolean = false,
     )
 }

@@ -19,6 +19,7 @@ import com.tokopedia.shop.common.data.source.cloud.query.param.option.FilterOpti
 import com.tokopedia.shop.common.domain.interactor.GQLGetProductListUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.common.domain.interactor.GetAdminInfoShopLocationUseCase
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.domain.interactor.GetShopInfoTopAdsUseCase
 import com.tokopedia.shop.common.domain.interactor.UpdateProductStockWarehouseUseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -89,6 +90,9 @@ open class ProductManageViewModelTestFixture {
     @RelaxedMockK
     lateinit var clearUploadStatusUseCase: ClearUploadStatusUseCase
 
+    @RelaxedMockK
+    lateinit var getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase
+
     protected lateinit var viewModel: ProductManageViewModel
 
     @Before
@@ -114,6 +118,7 @@ open class ProductManageViewModelTestFixture {
                 getAdminInfoShopLocationUseCase,
                 getUploadStatusUseCase,
                 clearUploadStatusUseCase,
+                getMaxStockThresholdUseCase,
                 tickerStaticDataProvider,
                 CoroutineTestDispatchersProvider
         )

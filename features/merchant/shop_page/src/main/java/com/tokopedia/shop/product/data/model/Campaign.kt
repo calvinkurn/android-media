@@ -35,5 +35,14 @@ data class Campaign(
 
         @SerializedName("hide_gimmick")
         @Expose
-        val hideGimmick: Boolean = false
+        val hideGimmick: Boolean = false,
+
+        @SerializedName("custom_stock")
+        @Expose
+        val customStock: String = "",
+
+        @SerializedName("max_order")
+        @Expose
+        val maxOrder: Int = 0
+
 )

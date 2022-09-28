@@ -54,7 +54,7 @@
     <string name="text_purchase_no_pinpoint">Kamu belum set pinpoint lokasi</string>
     <string name="text_purchase_pinpoint_benefit">Untuk meningkatkan pengalaman  belanja kamu, set pinpoint terlebih dahulu, ya!</string>
     <string name="text_purchase_set_pinpoint">Set pin point</string>
-    <string name="text_purchase_success_notes">Sip! Catatan berhasil disimpan.</string>
+    <string name="text_purchase_success_notes">Sip, catatanmu tersimpan.</string>
     <string name="text_purchase_success_quantity">Quantity berhasil diubah</string>
     <string name="text_purchase_okay">Oke</string>
     <string name="text_purchase_failed_to_payment">Oops, gagal lanjut ke Pembayaran.</string>
@@ -115,6 +115,9 @@
     <string name="btn_confirm_order_change_merchant">Iya, Pesan</string>
     <string name="btn_cancel_order_change_merchant">Nggak Jadi</string>
     <string name="text_header_order_custom">Custom pesanan</string>
+    <string name="text_order_customization_total_order">Jumlah Pesanan:</string>
+    <string name="text_order_customization_total_price">Total Harga</string>
+    <string name="text_order_customization_note_optional">Opsional</string>
 
     <!-- Order Tracking -->
     <string name="order_tracking_invoice_number_label">No. Invoice</string>
@@ -148,8 +151,6 @@
     <string name="driver_call_disabled_title_bottomsheet">Oops, kamu tidak bisa telepon driver</string>
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
     <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>
-    <string name="global_error_order_tracking_primary_action_text">Balik</string>
-
 
     <!-- id -->
     <item name="product_ui_model" type="id" />

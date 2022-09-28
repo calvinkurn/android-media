@@ -13,9 +13,11 @@ class CampaignMainStockViewModel @Inject constructor(
 ): BaseViewModel(dispatchers.main) {
 
     private var variantStockAvailability: HashMap<String, Boolean> = hashMapOf()
+    private var variantStockExceeding: HashMap<String, Boolean> = hashMapOf()
 
     private val mShowStockInfoLiveData = MutableLiveData<Boolean>()
     private val mShouldDisplayVariantStockWarningLiveData = MutableLiveData<Boolean>()
+    private val mShouldEnableSaveButton = MutableLiveData<Boolean>()
 
     val shouldDisplayVariantStockWarningLiveData: LiveData<Boolean>
         get() = mShouldDisplayVariantStockWarningLiveData
@@ -23,18 +25,41 @@ class CampaignMainStockViewModel @Inject constructor(
     val showStockInfo: LiveData<Boolean>
         get() = mShowStockInfoLiveData
 
+    val shouldEnableSaveButton: LiveData<Boolean>
+        get() = mShouldEnableSaveButton
+
     fun setStockAvailability(sellableProductList: List<SellableStockProductUIModel>) {
         sellableProductList.forEach {
             val isStockEmpty = it.stock.toIntOrZero() == 0
             variantStockAvailability[it.productId] = isStockEmpty
+
+            val isStockExceeding = it.maxStock?.let { maxStock ->
+                it.stock.toIntOrZero() > maxStock
+            } ?: false
+            variantStockExceeding[it.productId] = isStockExceeding
         }
         setStockWarningAndInfo()
+        setSaveButton()
     }
 
-    fun setVariantStock(productId: String, stock: Int) {
+    fun setNonVariantStock(productId: String, stock: Int, maxStock: Int?) {
+        val isStockExceeding = maxStock?.let {
+            stock > it
+        } ?: false
+        variantStockExceeding[productId] = isStockExceeding
+        setSaveButton()
+    }
+
+    fun setVariantStock(productId: String, stock: Int, maxStock: Int? = null) {
         val isStockEmpty = stock == 0
         variantStockAvailability[productId] = isStockEmpty
         setStockWarningAndInfo()
+
+        val isStockExceeding = maxStock?.let {
+            stock > it
+        } ?: false
+        variantStockExceeding[productId] = isStockExceeding
+        setSaveButton()
     }
 
     private fun setShowStockInfo(isAllStockEmpty: Boolean) {
@@ -52,6 +77,14 @@ class CampaignMainStockViewModel @Inject constructor(
                 mShouldDisplayVariantStockWarningLiveData.postValue(isAllStockEmpty)
             }
             setShowStockInfo(isAllStockEmpty)
+        }
+    }
+
+    private fun setSaveButton() {
+        variantStockExceeding.any { it.value }.let { someStockExceedingThreshold ->
+            if (mShouldEnableSaveButton.value != !someStockExceedingThreshold) {
+                mShouldEnableSaveButton.value = !someStockExceedingThreshold
+            }
         }
     }
 }

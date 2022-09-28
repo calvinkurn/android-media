@@ -163,6 +163,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
+        if (shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            ordersItem.freeShippingMetadata = shipping.logisticPromoViewModel.freeShippingMetadata
+        }
 
         if (shipping.insurance.isCheckInsurance && shipping.insurance.insuranceData != null) {
             ordersItem.isInsurancePrice = 1
@@ -227,6 +230,9 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
 
         ordersItem.shippingId = shipping.getRealShipperId()
         ordersItem.spId = shipping.getRealShipperProductId()
+        if (shouldAddLogisticPromo && shipping.isApplyLogisticPromo && shipping.logisticPromoViewModel != null && shipping.logisticPromoShipping != null) {
+            ordersItem.freeShippingMetadata = shipping.logisticPromoViewModel.freeShippingMetadata
+        }
 
         ordersItem.codes = generateOrderPromoCodes(lastValidateUsePromoRequest, ordersItem.uniqueId, shipping, orderPromo, shouldAddLogisticPromo)
 
@@ -255,6 +261,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                     codes.remove(oldCode)
                 }
                 codes.add(logisticPromoUiModel.promoCode)
+                freeShippingMetadata = logisticPromoUiModel.freeShippingMetadata
             }
         }
     }

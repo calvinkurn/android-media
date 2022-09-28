@@ -19,18 +19,6 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="5" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/play_loader_count_down"
-        android:layout_width="@dimen/layout_lvl6"
-        android:layout_height="@dimen/layout_lvl6"
-        app:loader_type="circular_white"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_play_count_down_description"
         android:layout_width="0dp"

@@ -1,5 +1,6 @@
 package com.tokopedia.travel.passenger.domain
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -8,7 +9,7 @@ import javax.inject.Inject
 
 class GetContactListUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
 
-    suspend fun execute(query: String,
+    suspend fun execute(query: GqlQueryInterface,
                         product: String,
                         filterType: String = "")
             : List<TravelContactListModel.Contact> {

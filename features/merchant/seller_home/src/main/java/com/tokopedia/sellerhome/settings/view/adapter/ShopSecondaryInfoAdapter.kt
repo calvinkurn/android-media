@@ -3,19 +3,16 @@ package com.tokopedia.sellerhome.settings.view.adapter
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller.menu.common.constant.Constant
 import com.tokopedia.seller.menu.common.view.uimodel.UserShopInfoWrapper
-import com.tokopedia.seller.menu.common.view.uimodel.base.PowerMerchantProStatus
 import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
-import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.seller.menu.common.view.uimodel.shopinfo.ShopStatusUiModel
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.RmTransactionData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.settings.view.uimodel.secondaryinfo.widget.*
+import com.tokopedia.shop.common.view.model.TokoPlusBadgeUiModel
 
 class ShopSecondaryInfoAdapter(
     typeFactory: ShopSecondaryInfoAdapterTypeFactory,
@@ -74,23 +71,37 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    fun setFreeShippingData(state: SettingResponseState<Pair<Boolean, String>>) {
+    fun setFreeShippingData(state: SettingResponseState<TokoPlusBadgeUiModel>) {
         when (state) {
-            is SettingResponseState.SettingSuccess -> setFreeShippingSuccess(state)
-            is SettingResponseState.SettingError -> setFreeShippingError(state.throwable)
-            else -> setFreeShippingLoading()
+            is SettingResponseState.SettingSuccess -> {
+                val freeShipping = state.data.freeShipping
+                setOnFreeShippingPlusSuccess<FreeShippingWidgetUiModel>(freeShipping.status to freeShipping.badgeUrl)
+
+                val tokoPlus = state.data.tokoPlus
+                setOnFreeShippingPlusSuccess<TokoPlusWidgetUiModel>(tokoPlus.status to tokoPlus.badgeUrl)
+            }
+            is SettingResponseState.SettingError -> {
+                setOnFreeShippingPlusError<FreeShippingWidgetUiModel>(state.throwable)
+                setOnFreeShippingPlusError<TokoPlusWidgetUiModel>(state.throwable)
+            }
+            else -> {
+                setOnFreeShippingPlusLoading<FreeShippingWidgetUiModel>()
+                setOnFreeShippingPlusLoading<TokoPlusWidgetUiModel>()
+            }
         }
     }
 
-    private fun setFreeShippingSuccess(successState: SettingResponseState.SettingSuccess<Pair<Boolean, String>>) {
-        val (isActive, freeShippingUrl) = successState.data
+    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusSuccess(data: Pair<Boolean, String>) {
+        val (isActive, badgeUrl) = data
         visitables?.run {
-            indexOfFirst { it is FreeShippingWidgetUiModel }.let { index ->
+            indexOfFirst { it is T }.let { index ->
+                val model = T::class.java.newInstance()
+                if (isActive) {
+                    model.state = SettingResponseState.SettingSuccess(badgeUrl)
+                }
                 when {
                     index >= START_INDEX && isActive -> {
-                        this[index] = FreeShippingWidgetUiModel(
-                            SettingResponseState.SettingSuccess(freeShippingUrl)
-                        )
+                        this[index] = model
                         notifyItemChanged(index)
                     }
                     index >= START_INDEX && !isActive -> {
@@ -98,13 +109,7 @@ class ShopSecondaryInfoAdapter(
                         notifyItemRemoved(index)
                     }
                     isActive -> {
-                        addElement(
-                            FreeShippingWidgetUiModel(
-                                SettingResponseState.SettingSuccess(
-                                    freeShippingUrl
-                                )
-                            )
-                        )
+                        addElement(model)
                         notifyItemInserted(lastIndex)
                     }
                 }
@@ -112,32 +117,29 @@ class ShopSecondaryInfoAdapter(
         }
     }
 
-    private fun setFreeShippingError(throwable: Throwable) {
-        visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
+    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusError(throwable: Throwable) {
+        visitables?.indexOfFirst { it is T }?.let { index ->
+            val model = T::class.java.newInstance()
+            model.state = SettingResponseState.SettingError(throwable)
             if (index >= START_INDEX) {
-                visitables[index] =
-                    FreeShippingWidgetUiModel(SettingResponseState.SettingError(throwable))
+                visitables[index] = model
                 notifyItemChanged(index)
             } else {
-                visitables?.add(
-                    FreeShippingWidgetUiModel(
-                        SettingResponseState.SettingError(
-                            throwable
-                        )
-                    )
-                )
+                visitables?.add(model)
                 notifyItemInserted(lastIndex)
             }
         }
     }
 
-    private fun setFreeShippingLoading() {
-        visitables?.indexOfFirst { it is FreeShippingWidgetUiModel }?.let { index ->
+    private inline fun<reified T: ShopSecondaryInfoWidget<String>> setOnFreeShippingPlusLoading() {
+        visitables?.indexOfFirst { it is T }?.let { index ->
+            val model = T::class.java.newInstance()
+            model.state = SettingResponseState.SettingLoading
             if (index >= START_INDEX) {
-                visitables[index] = FreeShippingWidgetUiModel(SettingResponseState.SettingLoading)
+                visitables[index] = model
                 notifyItemChanged(index)
             } else {
-                visitables?.add(FreeShippingWidgetUiModel(SettingResponseState.SettingLoading))
+                visitables?.add(model)
                 notifyItemInserted(lastIndex)
             }
         }
@@ -246,7 +248,7 @@ class ShopSecondaryInfoAdapter(
             ReputationBadgeWidgetUiModel(SettingResponseState.SettingLoading),
             ShopFollowersWidgetUiModel(SettingResponseState.SettingLoading),
             FreeShippingWidgetUiModel(SettingResponseState.SettingLoading),
+            TokoPlusWidgetUiModel(SettingResponseState.SettingLoading)
         )
     }
-
 }

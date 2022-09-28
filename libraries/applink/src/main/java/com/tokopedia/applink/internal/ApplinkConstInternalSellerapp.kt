@@ -70,6 +70,9 @@ object ApplinkConstInternalSellerapp {
     const val VOUCHER_DETAIL = "$INTERNAL_SELLERAPP/voucher-detail"
     const val VOUCHER_PRODUCT_DETAIL = "$INTERNAL_SELLERAPP/voucher-product-detail/{voucher_id}/"
 
+    // Seller Shop Flash Sale - CampaignListActivity
+    const val SELLER_SHOP_FLASH_SALE = "$INTERNAL_SELLERAPP/shop-flash-sale/{filter_mode}/"
+
     // CampaignListActivity
     const val CAMPAIGN_LIST = "$INTERNAL_SELLERAPP/campaign-list"
 

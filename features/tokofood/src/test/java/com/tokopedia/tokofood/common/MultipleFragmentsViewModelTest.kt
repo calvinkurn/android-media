@@ -1,22 +1,28 @@
 package com.tokopedia.tokofood.common
 
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.TokoFoodCartUtil
 import com.tokopedia.tokofood.common.domain.param.RemoveCartTokoFoodParam
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodResponse
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFood
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodShop
 import com.tokopedia.tokofood.common.domain.response.MiniCartTokoFoodResponse
+import com.tokopedia.tokofood.common.minicartwidget.view.MiniCartUiModel
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.util.Result
 import com.tokopedia.tokofood.utils.JsonResourcesUtil
+import io.mockk.coEvery
 import io.mockk.coVerify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 
 @FlowPreview
 @ExperimentalCoroutinesApi
@@ -39,6 +45,56 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
             assertEquals(
                 expectedMiniCartUiModel,
                 (viewModel.miniCartFlow.value as? Result.Success)?.data
+            )
+        }
+    }
+
+    @Test
+    fun `when onSavedInstanceState, but cartListData is failure, the data cannot be saved but can be restorred as success`() {
+        runBlocking {
+            onLoadCartList_shouldThrow(MessageErrorException())
+
+            viewModel.loadInitial(SOURCE)
+
+            viewModel.onSavedInstanceState()
+            viewModel.onRestoreSavedInstanceState()
+
+            assert(
+                viewModel.miniCartFlow.value is Result.Success
+            )
+        }
+    }
+
+    @Test
+    fun `when onRestoreSavednstanceState, should get the mini cart ui state`() {
+        runBlocking {
+            val miniCartUiModel =
+                MiniCartUiModel(
+                    "shop test name"
+                )
+            coEvery<Any?> {
+                savedStateHandle.get(anyString())
+            } returns miniCartUiModel
+
+            viewModel.onRestoreSavedInstanceState()
+
+            assert(
+                (viewModel.miniCartFlow.value as? Result.Success)?.data is MiniCartUiModel
+            )
+        }
+    }
+
+    @Test
+    fun `when onRestoreSavednstanceState but saved state handle store wrong data, should get default mini cart ui state`() {
+        runBlocking {
+            coEvery<Any?> {
+                savedStateHandle.get(anyString())
+            } returns String.EMPTY
+
+            viewModel.onRestoreSavedInstanceState()
+
+            assert(
+                (viewModel.miniCartFlow.value as? Result.Success)?.data?.shopName?.isEmpty() == true
             )
         }
     }
@@ -83,14 +139,33 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
     @Test
     fun `when loadCartList should set cart data`() {
-        val cartListData = CheckoutTokoFood()
+        val shopId = "123"
+        val cartListData = CheckoutTokoFood(
+            data = CheckoutTokoFoodData(
+                shop = CheckoutTokoFoodShop(
+                    shopId = shopId
+                )
+            )
+        )
         viewModel.loadCartList(cartListData)
 
         assertEquals(cartListData.data, viewModel.cartDataFlow.value)
+        assertEquals(shopId, viewModel.shopId)
+        assert(viewModel.hasCartUpdatedIntoLatestState.value == true)
     }
 
     @Test
-    fun `when deleteProduct, should set ui event state to success delete`() {
+    fun `when loadCartList null, should set cart data null`() {
+        viewModel.loadCartList(null)
+
+        assertEquals(null, viewModel.cartDataFlow.value)
+        assertEquals(true, viewModel.hasCartUpdatedIntoLatestState.value)
+        assertEquals(String.EMPTY, viewModel.shopId)
+        assertEquals(UiEvent.EVENT_FAILED_LOAD_CART, viewModel.cartDataValidationFlow.value.state)
+    }
+
+    @Test
+    fun `when deleteProduct and should refresh cart, should load cart`() {
         runBlocking {
             val response = CartTokoFoodResponse(
                 status = TokoFoodCartUtil.SUCCESS_STATUS,
@@ -106,11 +181,12 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
 
             collectFromSharedFlow(
                 whenAction = {
-                    viewModel.deleteProduct(productId, cartId, SOURCE, shopId, false)
+                    viewModel.deleteProduct(productId, cartId, SOURCE, shopId, true)
                 },
                 then = {
-                    val expectedUiModelState = UiEvent.EVENT_SUCCESS_DELETE_PRODUCT
-                    assertEquals(expectedUiModelState, it)
+                    coVerify(exactly = 1) {
+                        loadCartTokoFoodUseCase.get()
+                    }
                 }
             )
         }
@@ -544,6 +620,24 @@ class MultipleFragmentsViewModelTest: MultipleFragmentsViewModelTestFixture() {
         }
     }
 
+    @Test
+    fun `when addToCart success but should show bottomsheet, should send phone verification event`() {
+        runBlocking {
+            val successResponse =
+                JsonResourcesUtil.createSuccessResponse<MiniCartTokoFoodResponse>(
+                    PURCHASE_SUCCESS_MINI_CART_JSON
+                )
+            onLoadCartList_shouldReturn(successResponse.miniCartTokofood)
+
+            val updateParam = UpdateParam()
+            onAddToCart_shouldReturn(updateParam, getPhoneVerificationAddToCartResponse())
+
+            viewModel.loadInitial(SOURCE)
+            viewModel.addToCart(updateParam, SOURCE)
+            val expectedUiEventState = UiEvent.EVENT_PHONE_VERIFICATION
+            assertEquals(expectedUiEventState, viewModel.cartDataValidationFlow.value.state)
+        }
+    }
 
     @Test
     fun `when addToCart failed, should set ui event state to failed add to cart`() {

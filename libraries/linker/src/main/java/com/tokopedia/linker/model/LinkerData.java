@@ -5,6 +5,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import androidx.annotation.Nullable;
+
 import com.tokopedia.linker.LinkerUtils;
 
 
@@ -84,6 +86,7 @@ public class LinkerData implements Parcelable {
     private String campaign;
     private boolean isAffiliate;
     private String additionalQueryParam;
+    private String linkAffiliateType;
 
     public String getCustmMsg() {
         return custmMsg;
@@ -141,6 +144,7 @@ public class LinkerData implements Parcelable {
         campaign = in.readString();
         isAffiliate = in.readByte() != 0;
         additionalQueryParam = in.readString();
+        linkAffiliateType = in.readString();
     }
 
     @Override
@@ -189,6 +193,7 @@ public class LinkerData implements Parcelable {
         dest.writeString(campaign);
         dest.writeByte((byte) (isAffiliate ? 1 : 0));
         dest.writeString(additionalQueryParam);
+        dest.writeString(linkAffiliateType);
     }
 
     @Override
@@ -661,6 +666,15 @@ public class LinkerData implements Parcelable {
         this.additionalQueryParam = additionalQueryParam;
     }
 
+    @Nullable
+    public String getLinkAffiliateType() {
+        return linkAffiliateType;
+    }
+
+    public void setLinkAffiliateType(String linkAffiliateType) {
+        this.linkAffiliateType = linkAffiliateType;
+    }
+
     public static class Builder {
         private String name;
         private String price;
@@ -707,6 +721,7 @@ public class LinkerData implements Parcelable {
         private String campaign;
         private boolean isAffiliate;
         private String additionalQueryParam;
+        private String linkAffiliateType;
 
         private Builder() {
         }
@@ -939,6 +954,11 @@ public class LinkerData implements Parcelable {
             return this;
         }
 
+        public Builder setLinkTypeAffiliate(String type) {
+            this.linkAffiliateType = type;
+            return this;
+        }
+
         public Builder but() {
             return getLinkerBuilder().setName(name).setPrice(price).setUri(uri).setDescription(description).setImgUri(imgUri).setShareUrl(shareUrl);
         }
@@ -989,6 +1009,7 @@ public class LinkerData implements Parcelable {
             linkerData.setCampaign(campaign);
             linkerData.setAffiliate(isAffiliate);
             linkerData.setAdditionalQueryParam(additionalQueryParam);
+            linkerData.setLinkAffiliateType(linkAffiliateType);
             return linkerData;
         }
 

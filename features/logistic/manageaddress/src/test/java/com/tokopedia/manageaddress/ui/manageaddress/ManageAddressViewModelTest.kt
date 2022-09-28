@@ -111,9 +111,9 @@ class ManageAddressViewModelTest {
     @Test
     fun `Set Default Address Success`() {
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any(), any())
         } answers  {
-            (thirdArg() as ((String) -> Unit)).invoke(success)
+            (arg(3) as ((String) -> Unit)).invoke(success)
         }
 
         manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
@@ -125,7 +125,7 @@ class ManageAddressViewModelTest {
     fun `Set Default Address Fail`() {
         val response = Throwable()
         every {
-            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any())
+            setDetaultPeopleAddressUseCase.execute(any(), any(), any(), any(), any())
         } answers {
             (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
@@ -138,12 +138,12 @@ class ManageAddressViewModelTest {
     @Test
     fun `Delete Address Success`() {
         every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
+            deletePeopleAddressUseCase.execute(any(), any(), any(), any())
         }answers {
-            (secondArg() as ((String) -> Unit)).invoke(success)
+            (arg(2) as ((String) -> Unit)).invoke(success)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
+        manageAddressViewModel.deletePeopleAddress("1")
 
         assertEquals(ManageAddressState.Success(success), manageAddressViewModel.resultRemovedAddress.value)
     }
@@ -152,12 +152,12 @@ class ManageAddressViewModelTest {
     fun `Delete Address Fail`() {
         val response = Throwable()
         every {
-            deletePeopleAddressUseCase.execute(any(), any(), any())
+            deletePeopleAddressUseCase.execute(any(), any(), any(), any())
         } answers {
-            (thirdArg() as ((Throwable) -> Unit)).invoke(response)
+            (lastArg() as ((Throwable) -> Unit)).invoke(response)
         }
 
-        manageAddressViewModel.deletePeopleAddress("1", -1, -1, true)
+        manageAddressViewModel.deletePeopleAddress("1")
 
         assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
     }

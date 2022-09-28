@@ -36,27 +36,23 @@ class TitleDataStoreImpl @Inject constructor(
         _observableTitle.value = PlayTitleUiModel.HasTitle(title)
     }
 
-    override suspend fun uploadTitle(channelId: String): NetworkResult<Unit> {
+    override suspend fun uploadTitle(channelId: String, title: String): NetworkResult<Unit> {
         return try {
-            uploadTitleToServer(channelId)
+            uploadTitleToServer(channelId, title)
+            setTitle(title)
             NetworkResult.Success(Unit)
         } catch (e: Throwable) {
             NetworkResult.Fail(e)
         }
     }
 
-    private suspend fun uploadTitleToServer(channelId: String) = withContext(dispatcher.io) {
-        val theTitle = when (val title = mTitle) {
-            PlayTitleUiModel.NoTitle -> ""
-            is PlayTitleUiModel.HasTitle -> title.title
-        }
-
+    private suspend fun uploadTitleToServer(channelId: String, title: String) = withContext(dispatcher.io) {
         updateChannelUseCase.apply {
             setQueryParams(
                     PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
                             channelId = channelId,
                             authorId = userSession.shopId,
-                            title = theTitle
+                            title = title
                     )
             )
         }

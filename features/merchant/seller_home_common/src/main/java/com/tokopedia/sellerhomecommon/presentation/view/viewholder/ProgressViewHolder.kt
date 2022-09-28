@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
@@ -21,6 +22,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.customview.ShopScorePMWi
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.NotificationUnify
+import timber.log.Timber
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -40,9 +42,6 @@ class ProgressViewHolder(
         ShcProgressCardWidgetBinding.bind(itemView)
     }
     private val errorStateBinding by lazy { binding.shcProgressErrorState }
-    private val commonErrorStateBinding by lazy {
-        errorStateBinding.shcProgressCommonErrorState
-    }
     private val loadingStateBinding by lazy { binding.shcProgressLoadingState }
 
     override fun bind(element: ProgressWidgetUiModel) {
@@ -102,7 +101,12 @@ class ProgressViewHolder(
     }
 
     private fun getPercentValue(value: Long, maxValue: Long): Int {
-        return value.times(MAX_VALUE).div(maxValue).toInt()
+        return try {
+            value.times(MAX_VALUE).div(maxValue).toInt()
+        } catch (e: ArithmeticException) {
+            Timber.e(e)
+            Int.ZERO
+        }
     }
 
     private fun setupLastUpdated(element: ProgressWidgetUiModel) {
@@ -171,8 +175,8 @@ class ProgressViewHolder(
         hideProgressLayout()
         hideShimmeringLayout()
         errorStateBinding.tvProgressTitleOnError.text = element.title
-        commonErrorStateBinding.imgWidgetOnError.loadImage(
-            com.tokopedia.globalerror.R.drawable.unify_globalerrors_connection
+        errorStateBinding.imgShcProgressWidgetOnError.loadImage(
+            com.tokopedia.globalerror.R.drawable.unify_globalerrors_404
         )
         showErrorLayout()
     }

@@ -10,8 +10,8 @@
     <!--    region header-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_img"
-        android:layout_width="@dimen/dp_64"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:loader_corner_radius="10dp"
@@ -47,7 +47,7 @@
     <!--    region shimmer item 1-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_1"
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:loader_corner_radius="10dp"
@@ -59,7 +59,7 @@
         android:id="@+id/loader_detail_item_value_1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginStart="32dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_1"
@@ -80,7 +80,7 @@
     <!--    region shimmer item 2-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_2"
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:loader_corner_radius="10dp"
@@ -92,7 +92,7 @@
         android:id="@+id/loader_detail_item_value_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginStart="32dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_2"
@@ -113,7 +113,7 @@
     <!--    region shimmer item 3-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_3"
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:loader_corner_radius="10dp"
@@ -125,7 +125,7 @@
         android:id="@+id/loader_detail_item_value_3"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginStart="32dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_3"
@@ -146,7 +146,7 @@
     <!--    region shimmer item 4-->
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_item_title_4"
-        android:layout_width="@dimen/dp_120"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         app:loader_corner_radius="10dp"
@@ -158,7 +158,7 @@
         android:id="@+id/loader_detail_item_value_4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_32"
+        android:layout_marginStart="32dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="@+id/loader_detail_item_title_4"
@@ -192,8 +192,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_detail_discussion_btn"
-        android:layout_width="@dimen/dp_96"
-        android:layout_height="@dimen/dp_32"
+        android:layout_width="96dp"
+        android:layout_height="32dp"
         android:layout_marginTop="16dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"

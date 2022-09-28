@@ -5,7 +5,6 @@ import android.os.Handler
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import android.view.View
-import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.shop.settings.R
@@ -49,9 +48,11 @@ class ShopSettingsNotesActivity : BaseSimpleActivity(),
         setContentView(binding?.root)
 
         window.decorView.setBackgroundColor(ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+
+        setUpActionBar()
     }
 
-    override fun setUpActionBar(toolbar: Toolbar?) {
+    private fun setUpActionBar() {
         binding?.appBarLayout?.toolbar?.apply {
             setTitleTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N700))
             setSupportActionBar(this)

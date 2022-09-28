@@ -36,6 +36,7 @@ data class PickerParam(
     fun isImageModeOnly() = modeType == ModeType.IMAGE_ONLY
     fun isVideoModeOnly() = modeType == ModeType.VIDEO_ONLY
     fun isCommonPageType() = pageType == PageType.COMMON
+    fun isGalleryPageType() = pageType == PageType.GALLERY
     fun ratioIsSquare() = cameraRatio == CameraRatio.Square
     fun isMultipleSelectionType() = isMultipleSelection
     fun isIncludeVideoFile() = modeType == ModeType.COMMON

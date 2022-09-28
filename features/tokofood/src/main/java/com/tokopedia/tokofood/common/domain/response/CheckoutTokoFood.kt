@@ -43,6 +43,10 @@ data class CheckoutTokoFood(
      */
     fun isEnabled(): Boolean = isSuccess() && data.errorTickers.top.message.isEmpty()
 
+    fun isEmptyProducts(): Boolean {
+        return data.availableSection.products.isEmpty() && data.unavailableSections.firstOrNull()?.products.isNullOrEmpty()
+    }
+
 }
 
 data class CheckoutTokoFoodData(
@@ -87,7 +91,6 @@ data class CheckoutTokoFoodData(
 
     fun isPromoPopupType(): Boolean = popupMessageType == POPUP_TYPE_PROMO
 
-
     fun getMiniCartUiModel(): MiniCartUiModel {
         val totalPrice =
             if (summaryDetail.details.isEmpty()) {
@@ -120,6 +123,10 @@ data class CheckoutTokoFoodData(
 
     fun getProductListFromCart(): List<CheckoutTokoFoodProduct> {
         return availableSection.products.plus(unavailableSections.firstOrNull()?.products.orEmpty())
+    }
+
+    fun getShouldShowMiniCart(): Boolean {
+        return shop.shopId.isNotBlank() && getProductListFromCart().isNotEmpty()
     }
 }
 

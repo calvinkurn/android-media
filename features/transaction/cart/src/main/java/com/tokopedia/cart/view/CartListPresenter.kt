@@ -22,7 +22,19 @@ import com.tokopedia.cart.view.analytics.EnhancedECommerceClickData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceData
 import com.tokopedia.cart.view.analytics.EnhancedECommerceProductData
 import com.tokopedia.cart.view.mapper.CartUiModelMapper
-import com.tokopedia.cart.view.subscriber.*
+import com.tokopedia.cart.view.subscriber.AddCartToWishlistSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartExternalSubscriber
+import com.tokopedia.cart.view.subscriber.AddToCartSubscriber
+import com.tokopedia.cart.view.subscriber.CartSeamlessLoginSubscriber
+import com.tokopedia.cart.view.subscriber.ClearRedPromosBeforeGoToCheckoutSubscriber
+import com.tokopedia.cart.view.subscriber.FollowShopSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecentViewSubscriber
+import com.tokopedia.cart.view.subscriber.GetRecommendationSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateAndReloadCartSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartAndValidateUseSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartCounterSubscriber
+import com.tokopedia.cart.view.subscriber.UpdateCartSubscriber
+import com.tokopedia.cart.view.subscriber.ValidateUseSubscriber
 import com.tokopedia.cart.view.uimodel.CartItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecentViewItemHolderData
 import com.tokopedia.cart.view.uimodel.CartRecommendationItemHolderData
@@ -70,10 +82,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.GetWishlistUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.data.WishlistV2Params
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
@@ -96,16 +104,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                                             private val undoDeleteCartUseCase: UndoDeleteCartUseCase,
                                             private val updateCartUseCase: UpdateCartUseCase,
                                             private val compositeSubscription: CompositeSubscription,
-                                            private val addWishListUseCase: AddWishListUseCase,
                                             private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
                                             private val addCartToWishlistUseCase: AddCartToWishlistUseCase,
-                                            private val removeWishListUseCase: RemoveWishListUseCase,
                                             private val deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
                                             private val updateAndReloadCartUseCase: UpdateAndReloadCartUseCase,
                                             private val userSessionInterface: UserSessionInterface,
                                             private val clearCacheAutoApplyStackUseCase: OldClearCacheAutoApplyStackUseCase,
                                             private val getRecentViewUseCase: GetRecommendationUseCase,
-                                            private val getWishlistUseCase: GetWishlistUseCase,
                                             private val getWishlistV2UseCase: GetWishlistV2UseCase,
                                             private val getRecommendationUseCase: GetRecommendationUseCase,
                                             private val addToCartUseCase: AddToCartUseCase,
@@ -174,8 +179,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     override fun detachView() {
         compositeSubscription.unsubscribe()
-        addWishListUseCase.unsubscribe()
-        removeWishListUseCase.unsubscribe()
         boAffordabilityJob?.cancel()
         coroutineContext.cancelChildren()
         view = null
@@ -772,10 +775,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
         }
     }
 
-    override fun processAddToWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
-    }
-
     override fun processRemoveFromWishlistV2(productId: String, userId: String, wishListActionListener: WishlistV2ActionListener) {
         launch(dispatchers.main) {
             deleteWishlistV2UseCase.setParams(productId, userId)
@@ -787,10 +786,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                 wishListActionListener.onErrorRemoveWishlist(error, productId)
             }
         }
-    }
-
-    override fun processRemoveFromWishlist(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     override fun processAddCartToWishlist(productId: String, cartId: String, isLastItem: Boolean, source: String, forceExpandCollapsedUnavailableItems: Boolean) {
@@ -1150,7 +1145,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
     private fun getCheckoutEnhancedECommerceProductCartMapData(cartItemHolderData: CartItemHolderData): EnhancedECommerceProductCartMapData {
         val enhancedECommerceProductCartMapData = EnhancedECommerceProductCartMapData().apply {
-            setDimension80(
+            setDimension38(
                     if (cartItemHolderData.trackerAttribution.isBlank()) {
                         EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
                     } else {
@@ -1182,13 +1177,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             setCartId(cartItemHolderData.cartId)
             setPromoCode(cartItemHolderData.promoCodes)
             setPromoDetails(cartItemHolderData.promoDetails)
-            setDimension83(
-                    when {
-                        cartItemHolderData.isFreeShippingExtra -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA
-                        cartItemHolderData.isFreeShipping -> EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR
-                        else -> EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER
-                    }
-            )
+            setDimension83(cartItemHolderData.freeShippingName)
             setDimension117(cartItemHolderData.bundleType)
             setDimension118(cartItemHolderData.bundleId)
             setCampaignId(cartItemHolderData.campaignId)
@@ -1345,22 +1334,6 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
                         .subscribeOn(schedulers.io)
                         .observeOn(schedulers.main)
                         .subscribe(GetRecentViewSubscriber(view))
-        )
-    }
-
-    override fun processGetWishlistData() {
-        val variables = HashMap<String, Any>()
-
-        variables[GetWishlistUseCase.PAGE] = GetWishlistUseCase.DEFAULT_PAGE
-        variables[GetWishlistUseCase.COUNT] = GetWishlistUseCase.DEFAULT_COUNT
-        variables[GetWishlistUseCase.FILTER] = mapOf(GetWishlistUseCase.SOURCE to GetWishlistUseCase.SOURCE_CART)
-
-        val requestParams = RequestParams.create()
-        requestParams.putAll(variables)
-
-        compositeSubscription.add(
-            getWishlistUseCase.createObservable(requestParams)
-                .subscribe(GetWishlistSubscriber(view))
         )
     }
 

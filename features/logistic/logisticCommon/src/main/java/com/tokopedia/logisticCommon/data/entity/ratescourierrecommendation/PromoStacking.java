@@ -82,6 +82,8 @@ public class PromoStacking {
     @SerializedName("texts")
     @Expose
     private Texts texts = new Texts();
+    @SerializedName("free_shipping_metadata")
+    private FreeShippingMetadata freeShippingMetadata = new FreeShippingMetadata();
 
     public Integer getIsPromo() {
         return isPromo;
@@ -257,5 +259,9 @@ public class PromoStacking {
 
     public Texts getTexts() {
         return texts;
+    }
+
+    public FreeShippingMetadata getFreeShippingMetadata() {
+        return freeShippingMetadata;
     }
 }

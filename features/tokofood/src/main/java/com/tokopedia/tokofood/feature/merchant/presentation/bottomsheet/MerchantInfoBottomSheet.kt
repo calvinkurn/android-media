@@ -15,6 +15,7 @@ class MerchantInfoBottomSheet : BottomSheetUnify() {
 
     companion object {
 
+        private const val TAG = "MerchantInfoBottomSheet"
         private const val MERCHANT_NAME = "MERCHANT_NAME"
         private const val MERCHANT_ADDRESS = "MERCHANT_ADDRESS"
         private const val MERCHANT_OPS_HOURS = "MERCHANT_OPS_HOURS"
@@ -86,6 +87,8 @@ class MerchantInfoBottomSheet : BottomSheetUnify() {
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, this::class.java.simpleName)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 }

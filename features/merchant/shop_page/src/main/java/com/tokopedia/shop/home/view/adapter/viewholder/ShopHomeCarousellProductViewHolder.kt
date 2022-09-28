@@ -12,13 +12,16 @@ import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselProductCardView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.R
+import com.tokopedia.shop.common.util.ShopUtilExt.isButtonAtcShown
 import com.tokopedia.shop.databinding.ItemShopHomeProductCarouselBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.listener.ShopHomeCarouselProductListener
+import com.tokopedia.shop.home.view.listener.ShopHomeListener
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeCarousellProductUiModel.Companion.IS_ATC
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
@@ -29,8 +32,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeCarousellProductViewHolder(
-        itemView: View,
-        val shopHomeCarouselProductListener: ShopHomeCarouselProductListener
+    itemView: View,
+    val shopHomeCarouselProductListener: ShopHomeCarouselProductListener,
+    private val shopHomeListener: ShopHomeListener
 ) : AbstractViewHolder<ShopHomeCarousellProductUiModel>(itemView) {
 
     companion object {
@@ -93,7 +97,8 @@ class ShopHomeCarousellProductViewHolder(
     private fun bindShopProductCarousel(shopHomeProductViewModelList: List<ShopHomeProductUiModel>) {
         recyclerView?.isNestedScrollingEnabled = false
         recyclerView?.bindCarouselProductCardViewGrid(
-                productCardModelList = shopHomeProductViewModelList.map {
+            scrollToPosition = getScrollPosition(),
+            productCardModelList = shopHomeProductViewModelList.map {
                     ShopPageHomeMapper.mapToProductCardModel(
                             isHasAtc(),
                             false,
@@ -105,20 +110,29 @@ class ShopHomeCarousellProductViewHolder(
                     override fun onItemAddToCart(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
                                 ?: return
-                        if (!isEtalaseCarousel()) {
-                            shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
-                                    adapterPosition,
-                                    carouselProductCardPosition,
-                                    shopHomeCarousellProductUiModel,
-                                    shopProductViewModel
+                        if (shopProductViewModel.isEnableDirectPurchase) {
+                            saveScrollPosition()
+                            shopHomeCarouselProductListener.onProductAtcDefaultClick(
+                                shopProductViewModel,
+                                shopProductViewModel.minimumOrder,
+                                shopHomeCarousellProductUiModel?.name.orEmpty()
                             )
                         } else {
-                            shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
+                            if (!isEtalaseCarousel()) {
+                                shopHomeCarouselProductListener.onCarouselProductItemClickAddToCart(
                                     adapterPosition,
                                     carouselProductCardPosition,
                                     shopHomeCarousellProductUiModel,
                                     shopProductViewModel
-                            )
+                                )
+                            } else {
+                                shopHomeCarouselProductListener.onCarouselProductShowcaseItemClickAddToCart(
+                                    adapterPosition,
+                                    carouselProductCardPosition,
+                                    shopHomeCarousellProductUiModel,
+                                    shopProductViewModel
+                                )
+                            }
                         }
                     }
 
@@ -144,6 +158,33 @@ class ShopHomeCarousellProductViewHolder(
                         }
                     }
                 },
+                carouselProductCardOnItemATCNonVariantClickListener = object : CarouselProductCardListener.OnATCNonVariantClickListener{
+                    override fun onATCNonVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int,
+                        quantity: Int
+                    ) {
+                        saveScrollPosition()
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                            ?: return
+                        shopHomeCarouselProductListener.onProductAtcNonVariantQuantityEditorChanged(
+                            shopProductViewModel,
+                            quantity,
+                            shopHomeCarousellProductUiModel?.name.orEmpty()
+                        )
+                    }
+                },
+                carouselProductCardOnItemAddVariantClickListener = object: CarouselProductCardListener.OnAddVariantClickListener{
+                    override fun onAddVariantClick(
+                        productCardModel: ProductCardModel,
+                        carouselProductCardPosition: Int
+                    ) {
+                        saveScrollPosition()
+                        val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
+                            ?: return
+                        shopHomeCarouselProductListener.onProductAtcVariantClick(shopProductViewModel)
+                    }
+                },
                 carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
                     override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
                         val shopProductViewModel = shopHomeProductViewModelList.getOrNull(carouselProductCardPosition)
@@ -163,6 +204,14 @@ class ShopHomeCarousellProductViewHolder(
                                     shopProductViewModel
                             )
                         }
+
+                        if (productCardModel.isButtonAtcShown()) {
+                            shopHomeCarouselProductListener.onImpressionProductAtc(
+                                shopProductViewModel,
+                                adapterPosition,
+                                shopHomeCarousellProductUiModel?.name.orEmpty()
+                            )
+                        }
                     }
 
                     override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
@@ -179,5 +228,16 @@ class ShopHomeCarousellProductViewHolder(
 
     private fun isHasAtc(): Boolean {
         return (shopHomeCarousellProductUiModel?.header?.isATC ?: 0) == IS_ATC
+    }
+
+    fun saveScrollPosition() {
+        shopHomeListener.getWidgetCarouselPositionSavedState().put(
+            adapterPosition,
+            recyclerView?.getCurrentPosition().orZero()
+        )
+    }
+
+    private fun getScrollPosition(): Int {
+        return shopHomeListener.getWidgetCarouselPositionSavedState().get(adapterPosition)
     }
 }

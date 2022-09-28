@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,8 +26,11 @@ import com.tokopedia.hotel.common.data.HotelTypeEnum
 import com.tokopedia.hotel.common.presentation.HotelBaseFragment
 import com.tokopedia.hotel.common.presentation.widget.RatingStarView
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlQuery
 import com.tokopedia.hotel.common.util.HotelStringUtils
+import com.tokopedia.hotel.common.util.QueryHotelNearbyLandmarks
+import com.tokopedia.hotel.common.util.QueryHotelPropertyDetail
+import com.tokopedia.hotel.common.util.QueryHotelPropertyReview
+import com.tokopedia.hotel.common.util.QueryHotelPropertyRoomList
 import com.tokopedia.hotel.common.util.TRACKING_HOTEL_PDP
 import com.tokopedia.hotel.databinding.FragmentHotelDetailBinding
 import com.tokopedia.hotel.globalsearch.presentation.activity.HotelGlobalSearchActivity
@@ -51,7 +55,12 @@ import com.tokopedia.hotel.hoteldetail.util.HotelShare
 import com.tokopedia.hotel.roomlist.data.model.HotelRoom
 import com.tokopedia.hotel.roomlist.presentation.activity.HotelRoomListActivity
 import com.tokopedia.imagepreviewslider.presentation.util.ImagePreviewSlider
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.createDefaultProgressDialog
+import com.tokopedia.kotlin.extensions.view.getDimens
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mapviewer.activity.MapViewerActivity
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
@@ -73,7 +82,6 @@ import javax.inject.Inject
 import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.round
-import android.widget.LinearLayout
 
 /**
  * @author by furqan on 22/04/19
@@ -173,17 +181,17 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
 
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    HotelGqlQuery.PROPERTY_DETAIL,
-                    HotelGqlQuery.PROPERTY_ROOM_LIST,
-                    HotelGqlQuery.PROPERTY_REVIEW,
-                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    QueryHotelPropertyDetail(), //HotelGqlQuery.PROPERTY_DETAIL,
+                    QueryHotelPropertyRoomList(), //HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    QueryHotelPropertyReview(), //HotelGqlQuery.PROPERTY_REVIEW,
+                    QueryHotelNearbyLandmarks(), //HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    HotelGqlQuery.PROPERTY_DETAIL,
-                    HotelGqlQuery.PROPERTY_REVIEW,
-                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    QueryHotelPropertyDetail(), //HotelGqlQuery.PROPERTY_DETAIL,
+                    QueryHotelPropertyReview(), //HotelGqlQuery.PROPERTY_REVIEW,
+                    QueryHotelNearbyLandmarks(), //HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
 
@@ -340,7 +348,7 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
                     hideRoomAvailableContainerBottom()
                     hideRoomNotAvailableContainerBottom()
                     detailViewModel.getRoomWithoutHotelData(
-                            HotelGqlQuery.PROPERTY_ROOM_LIST,
+                            QueryHotelPropertyRoomList(), //HotelGqlQuery.PROPERTY_ROOM_LIST,
                             hotelHomepageModel)
                 }
             }
@@ -780,17 +788,17 @@ class HotelDetailFragment : HotelBaseFragment(), HotelGlobalSearchWidget.GlobalS
         hideErrorView()
         if (isButtonEnabled) {
             detailViewModel.getHotelDetailData(
-                    HotelGqlQuery.PROPERTY_DETAIL,
-                    HotelGqlQuery.PROPERTY_ROOM_LIST,
-                    HotelGqlQuery.PROPERTY_REVIEW,
-                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    QueryHotelPropertyDetail(), //HotelGqlQuery.PROPERTY_DETAIL,
+                    QueryHotelPropertyRoomList(), //HotelGqlQuery.PROPERTY_ROOM_LIST,
+                    QueryHotelPropertyReview(), // HotelGqlQuery.PROPERTY_REVIEW,
+                    QueryHotelNearbyLandmarks(), //HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId,
                     hotelHomepageModel, source)
         } else {
             detailViewModel.getHotelDetailDataWithoutRoom(
-                    HotelGqlQuery.PROPERTY_DETAIL,
-                    HotelGqlQuery.PROPERTY_REVIEW,
-                    HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
+                    QueryHotelPropertyDetail(), //HotelGqlQuery.PROPERTY_DETAIL,
+                    QueryHotelPropertyReview(), //HotelGqlQuery.PROPERTY_REVIEW,
+                    QueryHotelNearbyLandmarks(), //HotelGqlQuery.HOTEL_NEARBY_LANDMARKS,
                     hotelHomepageModel.locId, source)
         }
     }

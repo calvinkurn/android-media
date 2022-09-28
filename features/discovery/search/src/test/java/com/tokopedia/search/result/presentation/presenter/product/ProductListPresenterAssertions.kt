@@ -9,7 +9,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselProduct
 import com.tokopedia.search.result.presentation.ProductListSectionContract
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.shouldBe
 import io.mockk.CapturingSlot
 import io.mockk.MockKVerificationScope

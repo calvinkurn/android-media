@@ -1,9 +1,20 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import com.google.gson.Gson
 import com.tokopedia.logisticCommon.data.constant.CourierConstant
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.*
-import com.tokopedia.logisticcart.shipping.model.*
-import java.util.*
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PreOrder
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.PromoStacking
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesDetailData
+import com.tokopedia.logisticcart.shipping.model.DynamicPriceModel
+import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.MerchantVoucherModel
+import com.tokopedia.logisticcart.shipping.model.PreOrderModel
+import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
+import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import javax.inject.Inject
 
 /**
@@ -50,7 +61,6 @@ class ShippingDurationConverter @Inject constructor() {
     private fun convertShippingDuration(ratesDetailData: RatesDetailData): List<ShippingDurationUiModel> {
         val serviceDataList = ratesDetailData.services
         val ratesId = ratesDetailData.ratesId
-        val isPromoStackingApplied = isPromoStackingApplied(ratesDetailData)
         // Check if has blackbox info
         var blackboxInfo = ""
         if (ratesDetailData.info != null && ratesDetailData.info.blackboxInfo != null &&
@@ -65,6 +75,7 @@ class ShippingDurationConverter @Inject constructor() {
             shippingDurationUiModel.etaErrorCode = serviceData.texts.errorCode
             val shippingCourierUiModels = convertToShippingCourierViewModel(shippingDurationUiModel,
                     serviceData.products, ratesId, blackboxInfo, convertToPreOrderModel(ratesDetailData.preOrder))
+            shippingDurationUiModel.serviceData.isUiRatesHidden = shippingDurationUiModel.serviceData.isUiRatesHidden || (shippingDurationUiModel.serviceData.selectedShipperProductId == 0 && shippingCourierUiModels.all { it.productData.isUiRatesHidden })
             shippingDurationUiModel.shippingCourierViewModelList = shippingCourierUiModels
             if (shippingCourierUiModels.isNotEmpty()) {
                 shippingDurationUiModels.add(shippingDurationUiModel)
@@ -140,6 +151,7 @@ class ShippingDurationConverter @Inject constructor() {
         if (promo == null || promo.isPromo != 1) return null
         val applied = promo.isApplied == 1
         val promoBadge = if (showPromoBadge) promo.imageUrl else ""
+        val gson = Gson()
         return LogisticPromoUiModel(
                 promo.promoCode, promo.title, promo.benefitDesc,
                 promo.shipperName, promo.serviceId, promo.shipperId,
@@ -147,7 +159,7 @@ class ShippingDurationConverter @Inject constructor() {
                 promo.promoTncHtml, applied, promoBadge, promo.discontedRate,
                 promo.shippingRate, promo.benefitAmount, promo.isDisabled, promo.isHideShipperName,
                 promo.cod, promo.eta, promo.texts.bottomSheet, promo.texts.chosenCourier,
-                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription)
+                promo.texts.tickerCourier, promo.isBebasOngkirExtra, promo.texts.bottomSheetDescription, gson.toJson(promo.freeShippingMetadata))
     }
 
     private fun convertToPreOrderModel(preOrder: PreOrder?): PreOrderModel? {
@@ -156,9 +168,5 @@ class ShippingDurationConverter @Inject constructor() {
                 preOrder.label,
                 preOrder.display
         )
-    }
-
-    private fun isPromoStackingApplied(ratesDetailData: RatesDetailData): Boolean {
-        return if (ratesDetailData.promoStacking == null) false else ratesDetailData.promoStacking.isApplied == 1
     }
 }

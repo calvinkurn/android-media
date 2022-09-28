@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/sfs_shape_shop_decor_background"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/imgIllustration"
+        android:layout_width="@dimen/sfs_fst_intro_image_width"
+        android:layout_height="@dimen/sfs_fst_intro_image_height"
+        android:layout_marginStart="@dimen/unify_space_24"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:gravity="center"
+        android:text="@string/sfs_fst_introduction_title"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imgIllustration"
+        app:typographyType="heading_2"
+        app:typographyWeight="bold" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_8"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/dp_4"
+        android:text="@string/sfs_fst_introduction_description"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpgTitle"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnCreateFlashSale"
+        android:layout_width="0dp"
+        app:unifyButtonSize="medium"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/sfs_start_create_flash_sale"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tpgDescription" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnLater"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonType="alternate"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:text="@string/sfs_later"
+        app:unifyButtonSize="medium"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCreateFlashSale" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpgSecondaryDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_24"
+        android:layout_marginEnd="@dimen/unify_space_16"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/unify_space_16"
+        android:lineSpacingExtra="@dimen/dp_4"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnLater"
+        app:typographyType="display_2"
+        app:typographyWeight="reguler"
+        tools:text="@string/sfs_placeholder_fst_introduction_secondary_description" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

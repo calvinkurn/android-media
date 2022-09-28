@@ -134,6 +134,11 @@ const val CART_REVAMP_V3_QUERY =
                       eligible
                       badge_url
                     }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
+                      badge_url
+                    }
                     preorder {
                       is_preorder
                       duration
@@ -337,12 +342,22 @@ const val CART_REVAMP_V3_QUERY =
                       is_parent
                       is_campaign_error
                       is_blacklisted
+                      ethical_drug {
+                        need_prescription
+                        icon_url
+                        text
+                      }
                       free_shipping {
                         eligible
                         badge_url
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       booking_stock
@@ -416,6 +431,11 @@ const val CART_REVAMP_V3_QUERY =
                     }
                     free_shipping_extra {
                       eligible
+                      badge_url
+                    }
+                    free_shipping_general {
+                      bo_name
+                      bo_type
                       badge_url
                     }
                     preorder {
@@ -593,6 +613,11 @@ const val CART_REVAMP_V3_QUERY =
                       }
                       free_shipping_extra {
                         eligible
+                        badge_url
+                      }
+                      free_shipping_general {
+                        bo_name
+                        bo_type
                         badge_url
                       }
                       booking_stock

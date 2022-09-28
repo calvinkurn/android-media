@@ -78,7 +78,6 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
         activity?.intent?.getStringExtra(EXTRA_SOURCE) ?: DEFAULT_SOURCE
     }
 
-
     private var binding by autoClearedNullable<FragmentCampaignStockBinding>()
 
     private var isVariant: Boolean? = null
@@ -157,6 +156,10 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
 
     override fun onVariantStatusChanged(productId: String, status: ProductStatus) {
         mViewModel.updateVariantIsActive(productId, status)
+    }
+
+    override fun setSaveButtonEnabled(isEnabled: Boolean) {
+        binding?.btnCampaignStockSave?.isEnabled = isEnabled
     }
 
     private fun observeLiveData() {
@@ -295,7 +298,7 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
                     setupVariantFragmentViewPager(getStockAllocationSummary, sellableStockProductUiModels, variantReservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
                 }
                 is NonVariantStockAllocationResult -> {
-                    setupNonVariantFragmentViewPager(getStockAllocationSummary, sellableStockProductUiModels, reservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
+                    setupNonVariantFragmentViewPager(maxStock, getStockAllocationSummary, sellableStockProductUiModels, reservedEventInfoUiModels, otherCampaignStockData, productManageAccess)
                 }
             }
         }
@@ -347,7 +350,8 @@ class CampaignStockFragment : BaseDaggerFragment(), CampaignStockListener {
         }
     }
 
-    private fun setupNonVariantFragmentViewPager(getStockAllocationSummary: GetStockAllocationSummary,
+    private fun setupNonVariantFragmentViewPager(maxStock: Int?,
+                                                 getStockAllocationSummary: GetStockAllocationSummary,
                                                  sellableProducts: ArrayList<SellableStockProductUIModel>,
                                                  reservedProducts: ArrayList<ReservedEventInfoUiModel>,
                                                  otherCampaignStockData: OtherCampaignStockData,

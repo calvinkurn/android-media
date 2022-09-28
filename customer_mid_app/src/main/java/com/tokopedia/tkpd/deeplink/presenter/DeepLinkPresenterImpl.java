@@ -92,6 +92,9 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String USER_ID_PARAM = "uid";
     private static final String ENV_PARAM = "t";
     private static final String ENV_VALUE = "android";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
+
+    private final int ONE = 1;
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -304,7 +307,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
         new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
                 newUri.toString(), "", "", "", userSession.isLoggedIn());
-        RouteManager.route(context, redirectionUrl);
+        if (redirectionUrl != null && !redirectionUrl.isEmpty()) {
+            RouteManager.route(context, redirectionUrl);
+        } else {
+            logRequest(uriData);
+            RouteManager.route(context, ApplinkConst.HOME);
+        }
+    }
+
+    private void logRequest(Uri uriData) {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "request");
+        map.put("uri", uriData.toString());
+        ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
     }
 
     private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
@@ -446,7 +461,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight(Uri uri, Bundle bundle) {
-        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        List<String> linkSegment = uri.getPathSegments();
+        if (linkSegment.size() > ONE) {
+            if (linkSegment.get(ONE).equals("invoice")) {
+                // eg : https://www.tokopedia.com/flight/invoice?id=xxxx
+                String applink = ApplinkConstInternalTravel.FLIGHT_ORDER_DETAIL.replace("{orderId}", uri.getQueryParameter("id"));
+                RouteManager.route(context, applink + "?" + "open_invoice=1");
+            } else {
+                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+            }
+        }else {
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        }
+        context.finish();
     }
 
     private void openProfile(List<String> linkSegment, Bundle bundle) {

@@ -5,7 +5,6 @@
     <application>
         <activity
             android:name="com.tokopedia.topupbills.telco.postpaid.activity.TelcoPostpaidActivity"
-            android:label="@string/digital_title_postpaid_page"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.WhiteUnify"

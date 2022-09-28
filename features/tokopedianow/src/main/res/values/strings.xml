@@ -49,6 +49,7 @@
     <string name="tokopedianow_search_bar_hint">Cari di Tokopedia NOW!</string>
     <string name="tokopedianow_lihat">Lihat</string>
     <string name="tokopedianow_all_products">Semua Produk</string>
+    <string name="tokopedianow_dynamic_header_subtitle_default_value">Berakhir dalam</string>
 
     <!-- Educational Information / USP -->
     <string name="tokopedianow_home_sharing_education_title"><![CDATA[<b>Ajak teman & tetanggamu</b>, biar ikut nikmati layanan <b>%1$s tiba</b> dan <b>gratis ongkir!</b>]]></string>
@@ -178,4 +179,5 @@
 
     <string name="tokopedianow_on_boarding_2h_toaster">Selamat menikmati layanan NOW! maks. 2 jam tiba!</string>
     <string name="tokopedianow_on_boarding_20m_toaster">Kamu sekarang berada di halaman khusus produk NOW! 20 menit tiba. Selamat belanja!</string>
+    <string name="tokopedianow_apply_filter_text">Tampilkan %s Barang</string>
 </resources>

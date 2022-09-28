@@ -44,7 +44,9 @@ object ViewUtil {
         @DimenRes strokeWidth: Int? = null,
         strokePaddingBottom: Int? = null,
         useViewPadding: Boolean = false,
-        pressedDrawable: Drawable? = null
+        pressedDrawable: Drawable? = null,
+        shadowTop: Int? = null,
+        isInsetElevation: Boolean = true
     ): Drawable? {
         if (view == null) return null
         val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
@@ -102,7 +104,7 @@ object ViewUtil {
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
             else -> {
-                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.top = shadowTop?: elevationValue
                 shadowDrawableRect.bottom = elevationValue * 2
                 DY = elevationValue / ELEVATION_VALUE_DIVIDER
             }
@@ -147,7 +149,13 @@ object ViewUtil {
         }
 
         val drawable = LayerDrawable(drawableLayer.toTypedArray())
-        drawable.setLayerInset(0, elevationValue, elevationValue, elevationValue, elevationValue)
+        if (isInsetElevation) {
+            drawable.setLayerInset(0,
+                elevationValue, elevationValue, elevationValue, elevationValue)
+        } else {
+            drawable.setLayerInset(0,
+                elevationValue, elevationValue, elevationValue, shadowDrawableRect.bottom)
+        }
 
         if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
             val strokeMargin = strokeWidthValue.toInt() / 2

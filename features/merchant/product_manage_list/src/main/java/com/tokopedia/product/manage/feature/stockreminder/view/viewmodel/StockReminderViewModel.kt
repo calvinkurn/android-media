@@ -11,14 +11,18 @@ import com.tokopedia.product.manage.feature.stockreminder.data.source.cloud.resp
 import com.tokopedia.product.manage.feature.stockreminder.domain.usecase.StockReminderDataUseCase
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.data.mapper.ProductStockReminderMapper
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class StockReminderViewModel @Inject constructor(
     private val stockReminderDataUseCase: StockReminderDataUseCase,
-    dispatchers: CoroutineDispatchers
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
+    private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
     val getProductLiveData: LiveData<Result<List<ProductStockReminderUiModel>>>
@@ -27,6 +31,8 @@ class StockReminderViewModel @Inject constructor(
         get() = getStockReminderMutableLiveData
     val createStockReminderLiveData: LiveData<Result<CreateStockReminderResponse>>
         get() = createStockReminderMutableLiveData
+    val maxStockLiveData: LiveData<Int?>
+        get() = maxStockMutableLiveData
     val showLoading: LiveData<Boolean>
         get() = _showLoading
 
@@ -36,6 +42,8 @@ class StockReminderViewModel @Inject constructor(
         MutableLiveData<Result<GetStockReminderResponse>>()
     private val createStockReminderMutableLiveData =
         MutableLiveData<Result<CreateStockReminderResponse>>()
+    private val maxStockMutableLiveData =
+        MutableLiveData<Int?>(null)
     private val _showLoading = MutableLiveData<Boolean>()
 
 
@@ -70,12 +78,25 @@ class StockReminderViewModel @Inject constructor(
         })
     }
 
-    fun getProduct(productId: String, warehouseId: String) {
+    fun getProduct(productId: String, warehouseId: String, shopId: String) {
         showLoading()
         launchCatchError(block = {
-            val response = stockReminderDataUseCase.executeGetProductStockReminder(productId, warehouseId)
-            val product = response.getProductV3
-            val data = ProductStockReminderMapper.mapToProductResult(product)
+            val response = withContext(dispatchers.io) {
+                val productDeferred = async {
+                    stockReminderDataUseCase.executeGetProductStockReminder(productId, warehouseId)
+                }
+                val maxStock = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
+                productDeferred.await().getProductV3 to maxStock.await()?.getMaxStockFromResponse()
+            }
+            val (product, maxStock) = response
+            val data = ProductStockReminderMapper.mapToProductResult(product, maxStock)
+            maxStockMutableLiveData.value = maxStock
             getProductMutableLiveData.postValue(Success(data))
             hideLoading()
         }) {

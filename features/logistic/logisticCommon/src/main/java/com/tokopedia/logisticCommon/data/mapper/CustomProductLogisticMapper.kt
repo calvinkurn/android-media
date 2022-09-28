@@ -6,20 +6,42 @@ import javax.inject.Inject
 
 class CustomProductLogisticMapper @Inject constructor() {
 
-    fun mapCPLData(response: GetCPLData): CustomProductLogisticModel {
+    fun mapCPLData(response: GetCPLData, productId: String, draftShipperServices: List<Long>? = null): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
-            cplProduct = mapCPLProduct(response.cplProduct)
+            cplProduct = mapCPLProduct(response.cplProduct, productId, draftShipperServices)
             shipperList = mapShipperList(response.shipperList)
         }
     }
 
-    fun mapCPLProduct(response: List<CPLProduct>): List<CPLProductModel> {
-        return response.map {
+    private fun mapCPLProduct(response: List<CPLProduct>, productId: String, draftShipperServices: List<Long>? = null): List<CPLProductModel> {
+        return if (response.isNotEmpty()) {
+            response.map {
+                CPLProductModel(
+                    productId = it.productId,
+                    cplStatus = draftShipperServices?.getCplStatus() ?: it.cplStatus,
+                    shipperServices = draftShipperServices ?: it.shipperServices
+                )
+            }
+        } else {
+            draftShipperServices?.mapCPLProductFromDraft(productId) ?: arrayListOf()
+        }
+    }
+
+    private fun List<Long>.mapCPLProductFromDraft(productId: String): List<CPLProductModel>  {
+        return arrayListOf(
             CPLProductModel(
-                it.productId,
-                it.cplStatus,
-                it.shipperServices
+                productId = productId.toLong(),
+                cplStatus = getCplStatus(),
+                shipperServices = this
             )
+        )
+    }
+
+    private fun List<Long>.getCplStatus(): Int {
+        return if (isNotEmpty()) {
+            CPL_CUSTOM_SHIPMENT_STATUS
+        } else {
+            CPL_STANDARD_SHIPMENT_STATUS
         }
     }
 
@@ -52,5 +74,10 @@ class CustomProductLogisticMapper @Inject constructor() {
                 it.uiHidden
             )
         }
+    }
+
+    companion object {
+        const val CPL_STANDARD_SHIPMENT_STATUS = 0
+        const val CPL_CUSTOM_SHIPMENT_STATUS = 1
     }
 }

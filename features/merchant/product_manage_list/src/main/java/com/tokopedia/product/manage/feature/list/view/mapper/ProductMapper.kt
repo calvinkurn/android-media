@@ -26,7 +26,8 @@ object ProductMapper {
     fun mapToUiModels(
         productList: List<Product>?,
         access: ProductManageAccess?,
-        multiSelectActive: Boolean
+        multiSelectActive: Boolean,
+        maxStock: Int?
     ): List<ProductUiModel> {
         return productList?.map {
             val minPrice = it.price?.min
@@ -63,7 +64,8 @@ object ProductMapper {
                 suspendLevel = it.suspendLevel,
                 hasStockAlert = it.hasStockAlert,
                 stockAlertActive = it.stockAlertActive,
-                stockAlertCount = it.stockAlertCount
+                stockAlertCount = it.stockAlertCount,
+                maxStock = maxStock
             )
         } ?: emptyList()
     }

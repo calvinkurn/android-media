@@ -11,14 +11,11 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.SearchInspira
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
+import com.tokopedia.search.result.product.separator.VerticalSeparable
 
-interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory> {
+interface InspirationWidgetVisitable: Visitable<ProductListTypeFactory>, VerticalSeparable {
 
     val data: InspirationWidgetDataView
-
-    val hasTopSeparator: Boolean
-
-    val hasBottomSeparator: Boolean
 
     companion object {
         private val showInspirationCardType = listOf(

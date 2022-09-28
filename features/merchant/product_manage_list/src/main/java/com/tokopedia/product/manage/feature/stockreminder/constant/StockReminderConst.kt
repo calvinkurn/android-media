@@ -9,4 +9,5 @@ object StockReminderConst {
     const val MINIMUM_STOCK_REMINDER = 5
     const val MAXIMUM_STOCK_REMINDER = 999999
     const val EMPTY_INPUT_STOCK = 0
+    const val MAXIMUM_LENGTH = 7
 }

@@ -10,7 +10,7 @@ import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf

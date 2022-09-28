@@ -83,6 +83,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
 ) {
 
     private var CHANNEL_LIMIT_FOR_PAGINATION = 1
+    private var currentHeaderDataModel: HomeHeaderDataModel? = null
     companion object{
         private const val TYPE_ATF_1 = "atf-1"
         private const val MINIMUM_BANNER_TO_SHOW = 1
@@ -167,10 +168,13 @@ class HomeDynamicChannelUseCase @Inject constructor(
                     /**
                      * Get header data
                      */
-                    val currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData(HomeHeaderDataModel())
-                    updateHeaderData(currentHeaderDataModel, dynamicChannelPlainResponse)
-
-                    emit(dynamicChannelPlainResponse)
+                    if(currentHeaderDataModel==null){
+                        currentHeaderDataModel = homeBalanceWidgetUseCase.onGetBalanceWidgetData()
+                    }
+                    currentHeaderDataModel?.let {
+                        updateHeaderData(it, dynamicChannelPlainResponse)
+                        emit(dynamicChannelPlainResponse)
+                    }
                 }
 
                 if (isCacheDc) {
@@ -675,7 +679,6 @@ class HomeDynamicChannelUseCase @Inject constructor(
      */
     fun updateHomeData(): Flow<Result<Any>> = flow{
         coroutineScope {
-
             /**
              * Remote config to disable pagination by request with param 0
              */
@@ -687,6 +690,7 @@ class HomeDynamicChannelUseCase @Inject constructor(
             val currentTimeMillisString = System.currentTimeMillis().toString()
             var currentToken = ""
             var isAtfSuccess = true
+            currentHeaderDataModel = null
 
             /**
              * 1. Provide initial HomeData
@@ -875,7 +879,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if (!isCacheExistForProcess) {
                         val dynamicChannelResponseValue = try {
-                            val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
+                            val dynamicChannelResponse = homeDynamicChannelsRepository.
+                            getRemoteData(
                                 Bundle().apply {
                                     putInt(
                                         HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION

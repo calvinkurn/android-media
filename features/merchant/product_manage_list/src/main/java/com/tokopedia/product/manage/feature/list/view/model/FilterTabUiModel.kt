@@ -9,12 +9,39 @@ import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductStat
 sealed class FilterTabUiModel(
     @StringRes val titleId: Int,
     open val count: Int = 0,
-    val status: ProductStatus? = null
+    val status: ProductStatus? = null,
+    open var isSelected: Boolean
 ) : Visitable<ProductFilterAdapterFactory> {
 
-    data class Active(override val count: Int): FilterTabUiModel(R.string.product_manage_filter_active, count, ProductStatus.ACTIVE)
-    data class InActive(override val count: Int): FilterTabUiModel(R.string.product_manage_filter_inactive, count, ProductStatus.INACTIVE)
-    data class Violation(override val count: Int): FilterTabUiModel(R.string.product_manage_filter_banned, count, ProductStatus.VIOLATION)
+    data class Active(
+        override val count: Int,
+        override var isSelected: Boolean = false
+    ) : FilterTabUiModel(
+        R.string.product_manage_filter_active,
+        count,
+        ProductStatus.ACTIVE,
+        isSelected
+    )
+
+    data class InActive(
+        override val count: Int,
+        override var isSelected: Boolean = false
+    ) : FilterTabUiModel(
+        R.string.product_manage_filter_inactive,
+        count,
+        ProductStatus.INACTIVE,
+        isSelected
+    )
+
+    data class Violation(
+        override val count: Int,
+        override var isSelected: Boolean = false
+    ) : FilterTabUiModel(
+        R.string.product_manage_filter_banned,
+        count,
+        ProductStatus.VIOLATION,
+        isSelected
+    )
 
     override fun type(typeFactory: ProductFilterAdapterFactory): Int {
         return typeFactory.type(this)

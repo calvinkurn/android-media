@@ -32,7 +32,6 @@ internal class HowToPayViewModelTest {
         viewModel = HowToPayViewModel(appLinkPaymentUseCase, useCase, getHowToPayInstructionsMapper)
     }
 
-
     @Test
     fun `getMutableLiveData success`() {
         val result = mockk<HowToPayGqlResponse>()
@@ -49,6 +48,24 @@ internal class HowToPayViewModelTest {
 
         viewModel.getGqlHtpInstructions(appLinkPaymentInfo)
         assert(viewModel.howToPayLiveData.value is Success)
+    }
+
+    @Test
+    fun `getMutableLiveData success condition fail`() {
+        val result = mockk<Throwable>()
+
+        coEvery { useCase.getGqlHowToPayInstruction(any(), any(), any()) }
+            .coAnswers {
+                firstArg<(HowToPayGqlResponse) -> Unit>().invoke(mockk())
+            }
+        coEvery { getHowToPayInstructionsMapper.getHowToPayInstruction(any(), any(), any()) }
+            .coAnswers {
+                thirdArg<(Throwable) -> Unit>().invoke(result)
+            }
+
+        viewModel.getGqlHtpInstructions(appLinkPaymentInfo)
+
+        assert(viewModel.howToPayLiveData.value is Fail)
     }
 
     @Test

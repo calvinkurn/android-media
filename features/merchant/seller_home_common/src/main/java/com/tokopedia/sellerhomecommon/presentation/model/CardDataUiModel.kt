@@ -16,7 +16,8 @@ data class CardDataUiModel(
     val secondaryDescription: String = "",
     val state: State = State.NORMAL,
     val value: String = "",
-    var previousValue: String? = null
+    var previousValue: String? = null,
+    val badgeImageUrl: String = ""
 ) : BaseDataUiModel, LastUpdatedDataInterface {
 
     override fun isWidgetEmpty(): Boolean {
@@ -26,6 +27,6 @@ data class CardDataUiModel(
     }
 
     enum class State {
-        NORMAL, WARNING, DANGER
+        NORMAL, WARNING, DANGER, GOOD, GOOD_PLUS, WARNING_PLUS, DANGER_PLUS
     }
 }

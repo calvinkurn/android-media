@@ -9,6 +9,9 @@ import com.google.gson.JsonParser;
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException;
 import com.tokopedia.analyticconstant.DataLayer;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase;
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.network.authentication.AuthHelper;
 import com.tokopedia.checkout.R;
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
@@ -96,6 +99,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
@@ -177,10 +181,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final UserSessionInterface userSessionInterface;
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
+    private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
     private final ExecutorSchedulers executorSchedulers;
 
+    private ShipmentUpsellModel shipmentUpsellModel = new ShipmentUpsellModel();
     private List<ShipmentCartItemModel> shipmentCartItemModelList;
     private ShipmentTickerErrorModel shipmentTickerErrorModel = new ShipmentTickerErrorModel();
     private TickerAnnouncementHolderData tickerAnnouncementHolderData = new TickerAnnouncementHolderData();
@@ -211,6 +217,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private String statusCode200 = "200";
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
+    private UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -230,6 +237,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
+                             GetPrescriptionIdsUseCase prescriptionIdsUseCase,
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
                              ExecutorSchedulers executorSchedulers,
@@ -251,6 +259,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerShipment = checkoutAnalytics;
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
+        this.prescriptionIdsUseCase = prescriptionIdsUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
         this.gson = gson;
         this.executorSchedulers = executorSchedulers;
@@ -449,7 +458,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                               String pageSource) {
         CheckoutRequest checkoutRequest = generateCheckoutRequest(
                 dataCheckoutRequests, shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId
+                listShipmentCrossSellModel, leasingId,uploadPrescriptionUiModel.getPrescriptionIds()
         );
         Map<String, Object> eeDataLayer = generateCheckoutAnalyticsDataLayer(checkoutRequest, step, pageSource);
         if (eeDataLayer != null) {
@@ -695,6 +704,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 .getRecipientAddressModel(cartShipmentAddressFormData);
         setRecipientAddressModel(newAddress);
 
+        this.shipmentUpsellModel = shipmentDataConverter.getShipmentUpsellModel(cartShipmentAddressFormData.getUpsell());
+
         if (cartShipmentAddressFormData.getDonation() != null) {
             ShipmentDonationModel shipmentDonationModel = shipmentDataConverter.getShipmentDonationModel(cartShipmentAddressFormData);
             shipmentDonationModel.setEnabled(!shipmentTickerErrorModel.isError());
@@ -735,6 +746,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         isShowOnboarding = cartShipmentAddressFormData.isShowOnboarding();
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
+
+        setUploadPrescriptionData(new UploadPrescriptionUiModel(
+                cartShipmentAddressFormData.getPrescriptionShowImageUpload(),
+                cartShipmentAddressFormData.getPrescriptionUploadText(),
+                cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
+                cartShipmentAddressFormData.getPrescriptionCheckoutId(),
+                new ArrayList<>(),0,"",false,
+                cartShipmentAddressFormData.getPrescriptionFrontEndValidation()
+        ));
+        fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionShowImageUpload(), cartShipmentAddressFormData.getPrescriptionCheckoutId());
     }
 
     public void setPurchaseProtection(boolean isPurchaseProtectionPage) {
@@ -751,7 +772,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         removeErrorShopProduct();
         CheckoutRequest checkoutRequest = generateCheckoutRequest(null,
                 shipmentDonationModel != null && shipmentDonationModel.isChecked() ? 1 : 0,
-                listShipmentCrossSellModel, leasingId
+                listShipmentCrossSellModel, leasingId, uploadPrescriptionUiModel.getPrescriptionIds()
         );
 
         if (checkoutRequest != null && checkoutRequest.getData() != null && checkoutRequest.getData().size() > 0) {
@@ -1192,13 +1213,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     enhancedECommerceProductCartMapData.setCodFlag(productDataCheckoutRequest.getCodFlag() != null ? productDataCheckoutRequest.getCodFlag() : "");
                                     enhancedECommerceProductCartMapData.setTokopediaCornerFlag(productDataCheckoutRequest.getTokopediaCornerFlag() != null ? productDataCheckoutRequest.getTokopediaCornerFlag() : "");
                                     enhancedECommerceProductCartMapData.setIsFulfillment(productDataCheckoutRequest.isFulfillment() != null ? productDataCheckoutRequest.isFulfillment() : "");
-                                    if (productDataCheckoutRequest.isFreeShippingExtra()) {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR_EXTRA);
-                                    } else if (productDataCheckoutRequest.isFreeShipping()) {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.VALUE_BEBAS_ONGKIR);
-                                    } else {
-                                        enhancedECommerceProductCartMapData.setDimension83(EnhancedECommerceProductCartMapData.DEFAULT_VALUE_NONE_OTHER);
-                                    }
+                                    enhancedECommerceProductCartMapData.setDimension83(productDataCheckoutRequest.getFreeShippingName());
                                     enhancedECommerceProductCartMapData.setCampaignId(String.valueOf(productDataCheckoutRequest.getCampaignId()));
                                     enhancedECommerceProductCartMapData.setPageSource(pageSource);
                                     enhancedECommerceProductCartMapData.setDimension117(productDataCheckoutRequest.getBundleType());
@@ -1429,7 +1444,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public CheckoutRequest generateCheckoutRequest(List<DataCheckoutRequest> analyticsDataCheckoutRequests,
                                                    int isDonation,
                                                    ArrayList<ShipmentCrossSellModel> listShipmentCrossSellModel,
-                                                   String leasingId) {
+                                                   String leasingId,
+                                                   ArrayList<String> prescriptionsIds) {
         if (analyticsDataCheckoutRequests == null && dataCheckoutRequestList == null) {
             getView().showToastError(getView().getActivityContext().getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short));
             return null;
@@ -1519,6 +1535,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
         if (leasingId != null && !leasingId.isEmpty()) {
             checkoutRequest.setLeasingId(Integer.parseInt(leasingId));
+        }
+
+        if(prescriptionsIds != null && !prescriptionsIds.isEmpty()){
+            checkoutRequest.setPrescriptionIds(prescriptionsIds);
         }
 
         return checkoutRequest;
@@ -2206,6 +2226,32 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
+    public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
+        if(!checkoutId.isEmpty() && isUploadPrescriptionNeeded){
+            compositeSubscription.add(prescriptionIdsUseCase
+                    .execute(checkoutId)
+                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>(){
+                        @Override
+                        public void onCompleted() { }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d(e);
+                        }
+
+                        @Override
+                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
+                            if(getPrescriptionIdsResponse.getDetailData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null){
+                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
+                            }
+                        }
+                    }));
+        }
+    }
+
+    @Override
     public void setLastApplyData(LastApplyUiModel lastApplyData) {
         this.lastApplyData = lastApplyData;
     }
@@ -2233,6 +2279,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public ValidateUsePromoRequest getLastValidateUseRequest() {
         return lastValidateUsePromoRequest;
+    }
+
+    @Override
+    public void setUploadPrescriptionData(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        this.uploadPrescriptionUiModel = uploadPrescriptionUiModel;
+    }
+
+    @Override
+    public UploadPrescriptionUiModel getUploadPrescriptionUiModel() {
+        return uploadPrescriptionUiModel;
     }
 
     private boolean isLastAppliedPromo(String promoCode) {
@@ -2343,5 +2399,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         addOnsDataModel.setAddOnsDataItemModelList(listAddOnDataItem);
         getView().updateAddOnsData(addOnsDataModel, identifier);
+    }
+
+    @Override
+    public ShipmentUpsellModel getShipmentUpsellModel() {
+        return shipmentUpsellModel;
     }
 }

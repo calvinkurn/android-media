@@ -54,6 +54,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
+    implementation rootProject.ext.playServicesDependencies.core
 
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase

@@ -44,6 +44,7 @@ import com.tokopedia.seller.menu.common.analytics.SettingTrackingListener
 import com.tokopedia.seller.menu.common.analytics.sendEventImpressionStatisticMenuItem
 import com.tokopedia.seller.menu.common.analytics.sendShopInfoImpressionData
 import com.tokopedia.seller.menu.common.constant.SellerBaseUrl
+import com.tokopedia.seller.menu.common.constant.SellerMenuFreeShippingUrl
 import com.tokopedia.seller.menu.common.exception.UserShopInfoException
 import com.tokopedia.seller.menu.common.view.typefactory.OtherMenuAdapterTypeFactory
 import com.tokopedia.seller.menu.common.view.uimodel.MenuItemUiModel
@@ -77,7 +78,6 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
-import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -253,14 +253,6 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
     }
 
     override fun getRecyclerViewResourceId(): Int = R.id.rv_sah_new_other_menu
-
-    override fun goToPrintingPage() {
-        val url = "${TokopediaUrl.getInstance().WEB}${SellerBaseUrl.PRINTING}"
-        val applink = String.format(SellerBaseUrl.APPLINK_FORMAT_ALLOW_OVERRIDE, ApplinkConst.WEBVIEW, false, url)
-        RouteManager.getIntent(context, applink)?.let {
-            context?.startActivity(it)
-        }
-    }
 
     override fun goToSettings() {
         startActivity(Intent(context, MenuSettingActivity::class.java))
@@ -476,6 +468,18 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         freeShippingTracker.trackFreeShippingImpression()
     }
 
+    override fun onTokoPlusClicked() {
+        NewOtherMenuTracking.sendEventClickTokoPlus()
+        RouteManager.route(
+            context, ApplinkConstInternalGlobal.WEBVIEW,
+            SellerMenuFreeShippingUrl.URL_PLUS_PAGE
+        )
+    }
+
+    override fun onTokoPlusImpressed() {
+        NewOtherMenuTracking.sendEventImpressionTokoPlus()
+    }
+
     private fun observeLiveData() {
         observeShopBadge()
         observeShopTotalFollowers()
@@ -491,6 +495,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         observeMultipleErrorToaster()
         observeToasterAlreadyShown()
         observeToggleTopadsCount()
+        observeIsShowTageCentralizePromo()
     }
 
     private fun observeShopBadge() {
@@ -651,6 +656,12 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         }
     }
 
+    private fun observeIsShowTageCentralizePromo() {
+        viewModel.isShowTagCentralizePromo.observe(viewLifecycleOwner) {
+           viewHolder?.setCentralizePromoTag(it)
+        }
+    }
+
     private fun goToReputationHistory() {
         val appLink = UriUtil.buildUriAppendParam(
             ApplinkConst.REPUTATION,
@@ -684,14 +695,14 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         val bottomSheetInfix: String
         val bottomSheetDescription: String
         if (isTopAdsActive) {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_active)
-            bottomSheetDescription = resources.getString(R.string.setting_topads_description_active)
+            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_active).orEmpty()
+            bottomSheetDescription = context?.resources?.getString(R.string.setting_topads_description_active).orEmpty()
         } else {
-            bottomSheetInfix = resources.getString(R.string.setting_topads_status_inactive)
+            bottomSheetInfix = context?.resources?.getString(R.string.setting_topads_status_inactive).orEmpty()
             bottomSheetDescription =
-                resources.getString(R.string.setting_topads_description_inactive)
+                context?.resources?.getString(R.string.setting_topads_description_inactive).orEmpty()
         }
-        val bottomSheetTitle = resources.getString(R.string.setting_topads_status, bottomSheetInfix)
+        val bottomSheetTitle = context?.resources?.getString(R.string.setting_topads_status, bottomSheetInfix).orEmpty()
         return topAdsBottomSheetView?.apply {
             findViewById<Typography>(R.id.topAdsBottomSheetTitle)?.text = bottomSheetTitle
             findViewById<TextView>(R.id.topAdsBottomSheetDescription)?.text = bottomSheetDescription
@@ -736,7 +747,7 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
         if (canShowToaster && !hasShownMultipleErrorToaster) {
             val errorMessage = context?.let {
                 ErrorHandler.getErrorMessage(it, throwable)
-            } ?: resources.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message)
+            } ?: context?.resources?.getString(com.tokopedia.seller.menu.common.R.string.setting_toaster_error_message).orEmpty()
             view?.showToasterError(errorMessage, onRetryAction)
         }
     }

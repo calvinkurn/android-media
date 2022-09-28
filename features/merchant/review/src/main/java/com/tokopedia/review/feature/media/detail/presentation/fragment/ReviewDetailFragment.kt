@@ -11,11 +11,13 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.common.extension.collectLatestWhenResumed
 import com.tokopedia.review.databinding.FragmentReviewDetailCommonBinding
 import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTracker
+import com.tokopedia.review.feature.media.detail.analytic.ReviewDetailTrackerConstant
 import com.tokopedia.review.feature.media.detail.di.ReviewDetailComponentInstance
 import com.tokopedia.review.feature.media.detail.di.qualifier.ReviewDetailViewModelFactory
 import com.tokopedia.review.feature.media.detail.presentation.bottomsheet.ExpandedReviewDetailBottomSheet
@@ -27,7 +29,6 @@ import com.tokopedia.review.feature.media.detail.presentation.widget.ReviewDetai
 import com.tokopedia.review.feature.media.gallery.detailed.di.qualifier.DetailedReviewMediaGalleryViewModelFactory
 import com.tokopedia.review.feature.media.gallery.detailed.domain.usecase.ToggleLikeReviewUseCase
 import com.tokopedia.review.feature.media.gallery.detailed.presentation.viewmodel.SharedReviewMediaGalleryViewModel
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
@@ -38,17 +39,12 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     companion object {
         private const val PARAM_PRODUCT_ID = "productId"
-        private const val GALLERY_SOURCE_CREDIBILITY_SOURCE = "gallery"
-        private const val READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE = "reading image preview"
 
         const val TAG = "ReviewDetailFragment"
     }
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
-
-    @Inject
-    lateinit var userSession: UserSessionInterface
 
     @Inject
     @ReviewDetailViewModelFactory
@@ -182,10 +178,13 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                 binding?.layoutReviewMediaGalleryReviewDetail?.gone()
             }
             is ReviewDetailFragmentUiState.Showing -> {
-                binding?.reviewDetailBasicInfo?.updateUi(
-                    uiState.basicInfoUiState,
-                    ReviewDetailBasicInfo.Source.REVIEW_DETAIL_FRAGMENT
-                )
+                binding?.reviewDetailBasicInfo?.apply {
+                    hideReviewerInfo()
+                    updateUi(
+                        uiState.basicInfoUiState,
+                        ReviewDetailBasicInfo.Source.REVIEW_DETAIL_FRAGMENT
+                    )
+                }
                 binding?.reviewDetailSupplementaryInfo?.updateUi(
                     uiState.supplementaryUiState,
                     ReviewDetailSupplementaryInfo.Source.REVIEW_DETAIL_FRAGMENT
@@ -197,9 +196,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
 
     private fun getCredibilitySource(): String {
         return if (sharedReviewMediaGalleryViewModel.isFromGallery()) {
-            GALLERY_SOURCE_CREDIBILITY_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_GALLERY
         } else {
-            READING_IMAGE_PREVIEW_CREDIBILITY_SOURCE
+            ReviewApplinkConst.REVIEW_CREDIBILITY_SOURCE_REVIEW_READING_IMAGE_PREVIEW
         }
     }
 
@@ -232,10 +231,6 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
     }
 
     private inner class ReviewDetailBasicInfoListener: ReviewDetailBasicInfo.Listener {
-        override fun onToggleExpandClicked() {
-            reviewDetailViewModel.toggleExpand()
-        }
-
         override fun onToggleLikeClicked() {
             val feedbackID = reviewDetailViewModel.getFeedbackID()
             val invertedLikeStatus = reviewDetailViewModel.getInvertedLikeStatus()
@@ -258,20 +253,21 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
             }
         }
 
-        override fun onGoToCredibilityClicked(userId: String, reviewerStatsSummary: String) {
+        override fun onGoToCredibilityClicked(
+            userId: String,
+            reviewerStatsSummary: String,
+            reviewerLabel: String
+        ) {
             val routed = RouteManager.route(
-                context,
-                Uri.parse(
+                context, Uri.parse(
                     UriUtil.buildUri(
                         ApplinkConstInternalMarketplace.REVIEW_CREDIBILITY,
                         userId,
                         getCredibilitySource()
                     )
-                ).buildUpon()
-                    .appendQueryParameter(
-                        PARAM_PRODUCT_ID, sharedReviewMediaGalleryViewModel.getProductId()
-                    ).build()
-                    .toString()
+                ).buildUpon().appendQueryParameter(
+                    PARAM_PRODUCT_ID, sharedReviewMediaGalleryViewModel.getProductId()
+                ).build().toString()
             )
             if (routed) {
                 ReviewDetailTracker.trackClickReviewerName(
@@ -280,7 +276,9 @@ class ReviewDetailFragment : BaseDaggerFragment(), CoroutineScope {
                     userId,
                     reviewerStatsSummary,
                     sharedReviewMediaGalleryViewModel.getProductId(),
-                    userSession.userId
+                    sharedReviewMediaGalleryViewModel.getUserID(),
+                    reviewerLabel,
+                    ReviewDetailTrackerConstant.TRACKER_ID_CLICK_REVIEWER_NAME_FROM_EXPANDED_REVIEW_DETAIL
                 )
             }
         }
