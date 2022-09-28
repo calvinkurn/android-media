@@ -59,6 +59,7 @@ import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.FragmentNewOtherMenuBinding
+import com.tokopedia.sellerhome.databinding.ItemSahNewOtherTotalTokomemberBinding
 import com.tokopedia.sellerhome.di.component.DaggerSellerHomeComponent
 import com.tokopedia.sellerhome.settings.analytics.SettingFreeShippingTracker
 import com.tokopedia.sellerhome.settings.analytics.SettingPerformanceTracker
@@ -84,6 +85,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import javax.inject.Inject
 
@@ -504,6 +506,10 @@ class OtherMenuFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeF
 
     override fun onTokoPlusImpressed() {
         NewOtherMenuTracking.sendEventImpressionTokoPlus()
+    }
+
+    override fun onImpressionTokoMember() {
+        SettingTokoMemberTracker.trackTokoMemberImpression()
     }
 
     private fun observeLiveData() {

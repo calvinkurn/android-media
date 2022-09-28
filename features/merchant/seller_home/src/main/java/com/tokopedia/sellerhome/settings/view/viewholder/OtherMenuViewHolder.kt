@@ -533,5 +533,6 @@ class OtherMenuViewHolder(
         fun onFreeShippingImpression()
         fun onTokoPlusClicked()
         fun onTokoPlusImpressed()
+        fun onImpressionTokoMember()
     }
 }

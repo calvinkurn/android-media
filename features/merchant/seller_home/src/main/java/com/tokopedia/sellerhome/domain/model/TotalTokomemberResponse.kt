@@ -5,38 +5,38 @@ import com.google.gson.annotations.SerializedName
 data class TotalTokomemberResponse(
 
 	@SerializedName("membershipGetSumUserCardMember")
-	val membershipGetSumUserCardMember: MembershipGetSumUserCardMember? = null
+	val membershipGetSumUserCardMember: MembershipGetSumUserCardMember? = MembershipGetSumUserCardMember()
 )
 
 data class SumUserCardMember(
 
 	@SerializedName("sumUserCardMember")
-	val sumUserCardMember: Long? = null,
+	val sumUserCardMember: Long? = 0,
 
 	@SerializedName("sumUserCardMemberStr")
-	val sumUserCardMemberStr: String? = null,
+	val sumUserCardMemberStr: String? = "",
 
 	@SerializedName("isShown")
-	val isShown: Boolean? = null,
+	val isShown: Boolean? = false,
 )
 
 data class ResultStatus(
 
 	@SerializedName("reason")
-	val reason: String? = null,
+	val reason: String? = "",
 
 	@SerializedName("code")
-	val code: String? = null,
+	val code: String? = "",
 
 	@SerializedName("message")
-	val message: List<String?>? = null
+	val message: List<String>? = emptyList()
 )
 
 data class MembershipGetSumUserCardMember(
 
 	@SerializedName("resultStatus")
-	val resultStatus: ResultStatus? = null,
+	val resultStatus: ResultStatus? = ResultStatus(),
 
 	@SerializedName("sumUserCardMember")
-	val sumUserCardMember: SumUserCardMember? = null
+	val sumUserCardMember: SumUserCardMember? = SumUserCardMember()
 )
