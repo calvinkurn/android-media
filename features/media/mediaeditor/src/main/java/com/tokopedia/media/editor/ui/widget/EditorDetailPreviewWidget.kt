@@ -62,9 +62,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         onCropFinish: (cropResult: Bitmap) -> Unit,
     ) {
         val bitmap = cropImageView.drawable.toBitmap()
-        val cropViewScale = getScale()
-        val cropViewScaleX = cropViewScale.first
-        val cropViewScaleY = cropViewScale.second
+
+        val totalRotateNumber = rotateNumber + initialRotateNumber
 
         val matrixImage = cropImageView.imageMatrix?.values()
         val translateX = matrixImage?.get(2) ?: 0f
@@ -98,14 +97,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 (cropRotateData.imageHeight * scalingSize).toInt()
             } else bitmap.height
 
-            val matrix = Matrix()
-            matrix.preScale(
-                cropViewScaleX,
-                cropViewScaleY
-            )
-
-            matrix.postRotate(abs(finalRotationDegree))
-
             val isRatioChange = rotateNumber % 2 != 0
             var finalWidth = imageWidth
             var finalHeight = imageHeight
@@ -116,61 +107,35 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             if(isRatioChange){
                 finalWidth = imageHeight
                 finalHeight = imageWidth
+
+                val sourceWidth = if(totalRotateNumber % 2 != 0) bitmap.height else bitmap.width
+                finalOffsetX = abs(sourceWidth - offsetY - imageHeight)
+                finalOffsetY = offsetX
             }
 
-            // set crop area on data that will be pass to landing pass for state
-            data.cropRotateValue = EditorCropRotateModel(
-                finalOffsetX,
-                finalOffsetY,
-                finalWidth,
-                finalHeight,
-                imageScale,
-                translateX,
-                translateY,
-                cropViewScaleX * scalingSize,
-                cropViewScaleY * scalingSize,
-                sliderValue,
-                rotateNumber + initialRotateNumber,
-                isRotate = isRotate,
-                isCrop = isCrop,
-                croppedSourceWidth = bitmap.width,
-                cropRatio = data.cropRotateValue.cropRatio
-            )
-
-            var cropSize = data.cropRotateValue.getOriginalCropSize()
+            val scale = getScale()
+            val scaleX = scale.first
+            val scaleY = scale.second
 
             onCropFinish(
-                // check if cropped area is larger then source, if yes then ignore crop
-                // on some cases the cropped is don't needed since user rotate back the image to 0 degree
-                if((cropSize.first + offsetX > bitmap.width) ||
-                    (cropSize.second + offsetY > bitmap.height) ||
-                    (imageWidth == bitmap.width && imageHeight == bitmap.height)
-                ){
-                    Bitmap.createBitmap(
-                        bitmap,
-                        0,
-                        0,
-                        bitmap.width,
-                        bitmap.height,
-                        matrix,
-                        true
-                    )
-                } else {
-                    val normalizeX =
-                        if (scaleX == -1f) bitmap.width - (offsetX + cropSize.first) else offsetX
-                    val normalizeY =
-                        if (scaleY == -1f) bitmap.height - (offsetY + cropSize.second) else offsetY
-
-                    Bitmap.createBitmap(
-                        bitmap,
-                        normalizeX,
-                        normalizeY,
-                        cropSize.first,
-                        cropSize.second,
-                        matrix,
-                        true
-                    )
-                }
+                getProcessedBitmap(
+                    bitmap,
+                    finalOffsetX,
+                    finalOffsetY,
+                    finalWidth,
+                    finalHeight,
+                    finalRotationDegree = finalRotationDegree,
+                    sliderValue = sliderValue,
+                    rotateNumber = totalRotateNumber,
+                    data = data,
+                    translateX,
+                    translateY,
+                    imageScale,
+                    isRotate = isRotate,
+                    isCrop = isCrop,
+                    scaleX,
+                    scaleY
+                )
             )
             return
         }
@@ -199,7 +164,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                             imageWidth, imageHeight,
                             finalRotationDegree = finalRotationDegree,
                             sliderValue = sliderValue,
-                            rotateNumber = rotateNumber + initialRotateNumber,
+                            rotateNumber = totalRotateNumber,
                             data = data,
                             translateX,
                             translateY,
@@ -207,7 +172,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                             isRotate = isRotate,
                             isCrop = isCrop,
                             scaleX,
-                            scaleY
+                            scaleY,
+                            isNormalizeY = true
                         )
                     )
                 }
@@ -236,7 +202,8 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         isRotate: Boolean,
         isCrop: Boolean,
         scaleX: Float,
-        scaleY: Float
+        scaleY: Float,
+        isNormalizeY: Boolean = false
     ): Bitmap {
         val originalWidth = originalBitmap.width
         val originalHeight = originalBitmap.height
@@ -260,10 +227,22 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                 true
             )
 
+        var normalizeX = offsetX
+        var normalizeY = offsetY
+
+        if (scaleX == -1f){
+            normalizeX = rotatedBitmap.width - (offsetX + imageWidth)
+        }
+
+        // used only on ucrop result re-cropped for get mirror effect
+        if (scaleY == -1f && isNormalizeY) {
+            normalizeY = rotatedBitmap.height - (offsetY + imageHeight)
+        }
+
         // set crop area on data that will be pass to landing pass for state
         data?.cropRotateValue = EditorCropRotateModel(
-            offsetX,
-            offsetY,
+            normalizeX,
+            normalizeY,
             imageWidth,
             imageHeight,
             imageScale,
@@ -278,11 +257,6 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
             croppedSourceWidth = originalWidth,
             cropRatio = data?.cropRotateValue?.cropRatio ?: Pair(0, 0)
         )
-
-        val normalizeX =
-            if (scaleX == -1f) rotatedBitmap.width - (offsetX + imageWidth) else offsetX
-        val normalizeY =
-            if (scaleY == -1f) rotatedBitmap.height - (offsetY + imageHeight) else offsetY
 
         return Bitmap.createBitmap(rotatedBitmap, normalizeX, normalizeY, imageWidth, imageHeight)
     }
