@@ -55,7 +55,6 @@ import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
@@ -73,12 +72,10 @@ import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
-import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
@@ -95,7 +92,6 @@ import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
 import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
-import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
@@ -103,8 +99,6 @@ import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_CODE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
@@ -137,7 +131,6 @@ import rx.Subscriber
 import rx.subscriptions.CompositeSubscription
 import java.io.File
 import java.lang.reflect.Type
-import java.util.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -153,7 +146,6 @@ class ChatbotPresenter @Inject constructor(
     private val sendChatRatingUseCase: SendChatRatingUseCase,
     private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-    private val leaveQueueUseCase: LeaveQueueUseCase,
     private val getTickerDataUseCase: GetTickerDataUseCase,
     private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
     private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
@@ -170,7 +162,6 @@ class ChatbotPresenter @Inject constructor(
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
-        const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SOURCE_TYPE = "Apps"
         const val SESSION_CHANGE = "31"
     }
@@ -258,9 +249,6 @@ class ChatbotPresenter @Inject constructor(
                         )
                         view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
                     }
-                    if (attachmentType == LIVE_CHAT_DIVIDER) {
-                        mappingQueueDivider(messageId, liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
-                    }
 
                     if (attachmentType == SESSION_CHANGE) {
                         val agentMode: ReplyBubbleAttributes = Gson().fromJson(
@@ -329,48 +317,9 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun mappingQueueDivider(messageId: String, liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
-        if (!isErrorOnLeaveQueue) {
-            val agentQueue = liveChatDividerAttribute.agentQueue
-            if (agentQueue?.type.equals(SHOW_TEXT)) {
-                view.isBackAllowed(false)
-            } else {
-                view.isBackAllowed(true)
-            }
-            val model = ConnectionDividerUiModel(
-                dividerMessage = agentQueue?.label,
-                isShowButton = true,
-                type = agentQueue?.type ?: SHOW_TEXT,
-                leaveQueue = leaveQueue()
-            )
-            view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
-        }
-    }
-
-    fun leaveQueue(): () -> Unit {
-        return {
-            leaveQueueUseCase.cancelJobs()
-            leaveQueueUseCase.execute(
-                ::onSuccessLeaveQueue,
-                ::onFailureLeaveQueue,
-                chatResponse.msgId,
-                Calendar.getInstance().timeInMillis.toString()
-            )
-        }
-    }
-
     private fun onError(): (Throwable) -> Unit {
         return {
             view.showErrorToast(it)
-        }
-    }
-
-    fun onSuccess(dividerTime: String = ""): (String) -> Unit {
-        return { str ->
-            if (view != null) {
-                view.isBackAllowed(true)
-                if (str == ERROR_CODE) isErrorOnLeaveQueue = true
-            }
         }
     }
 
@@ -782,16 +731,6 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun OnClickLeaveQueue(timestamp: String) {
-        leaveQueueUseCase.cancelJobs()
-        leaveQueueUseCase.execute(
-            ::onSuccessLeaveQueue,
-            ::onFailureLeaveQueue,
-            chatResponse.msgId,
-            timestamp
-        )
-    }
-
     override fun submitCsatRating(messageId: String, inputItem: InputItem) {
         submitCsatRatingUseCase.cancelJobs()
 
@@ -813,20 +752,6 @@ class ChatbotPresenter @Inject constructor(
             false,
             messageId,
             ChatbotConstant.NewRelic.KEY_CHATBOT_CSAT_RATING,
-            throwable
-        )
-    }
-
-    private fun onSuccessLeaveQueue(leaveQueueResponse: LeaveQueueResponse) {
-        leaveQueueResponse.postLeaveQueue?.leaveQueueHeader?.errorCode?.let { errorcode -> onSuccess(errorcode) }
-    }
-
-    private fun onFailureLeaveQueue(throwable: Throwable, messageId: String) {
-        view.showErrorToast(throwable)
-        ChatbotNewRelicLogger.logNewRelic(
-            false,
-            messageId,
-            ChatbotConstant.NewRelic.KEY_CHATBOT_LEAVE_QUEUE,
             throwable
         )
     }

@@ -44,10 +44,6 @@ interface ChatbotContract {
 
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 
-        fun isBackAllowed(isBackAllowed: Boolean)
-
-        fun onClickLeaveQueue()
-
         fun showErrorToast(it: Throwable)
 
         fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?)

@@ -1273,14 +1273,6 @@ class ChatbotFragment :
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
-    override fun isBackAllowed(isBackAllowed: Boolean) {
-        this.isBackAllowed = isBackAllowed
-    }
-
-    override fun onClickLeaveQueue() {
-        presenter.OnClickLeaveQueue(messageId)
-    }
-
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
@@ -1428,15 +1420,6 @@ class ChatbotFragment :
                 }
             )
         }
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (!isBackAllowed) {
-            presenter.OnClickLeaveQueue(Calendar.getInstance().timeInMillis.toString())
-            (activity as? ChatbotActivity)?.finish()
-            return true
-        }
-        return super.onBackPressed()
     }
 
     override fun onBottomSheetDismissListener(data: Intent) {

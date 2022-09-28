@@ -31,10 +31,6 @@ import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
 import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
-import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueData
-import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueHeader
-import com.tokopedia.chatbot.domain.pojo.leavequeue.LeaveQueueResponse
-import com.tokopedia.chatbot.domain.pojo.leavequeue.PostLeaveQueue
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
@@ -49,7 +45,6 @@ import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
 import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
-import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
@@ -75,7 +70,6 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -101,7 +95,6 @@ class ChatbotPresenterTest {
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
     private lateinit var uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
-    private lateinit var leaveQueueUseCase: LeaveQueueUseCase
     private lateinit var getTickerDataUseCase: GetTickerDataUseCase
     private lateinit var chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase
     private lateinit var chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
@@ -130,7 +123,6 @@ class ChatbotPresenterTest {
         sendChatRatingUseCase = mockk(relaxed = true)
         uploadImageUseCase = mockk(relaxed = true)
         submitCsatRatingUseCase = mockk(relaxed = true)
-        leaveQueueUseCase = mockk(relaxed = true)
         getTickerDataUseCase = mockk(relaxed = true)
         chipSubmitHelpfulQuestionsUseCase = mockk(relaxed = true)
         chipGetChatRatingListUseCase = mockk(relaxed = true)
@@ -151,7 +143,6 @@ class ChatbotPresenterTest {
                 sendChatRatingUseCase,
                 uploadImageUseCase,
                 submitCsatRatingUseCase,
-                leaveQueueUseCase,
                 getTickerDataUseCase,
                 chipSubmitHelpfulQuestionsUseCase,
                 chipGetChatRatingListUseCase,
@@ -273,147 +264,6 @@ class ChatbotPresenterTest {
 
         verify {
             view.onError(any())
-        }
-    }
-
-    @Test
-    fun `leaveQueue success`() {
-        val response = mockk<LeaveQueueResponse>(relaxed = true)
-        val leaveQueueHeader = mockk<LeaveQueueHeader>(relaxed = true)
-
-        every {
-            response.postLeaveQueue?.leaveQueueHeader
-        } returns leaveQueueHeader
-
-        coEvery {
-            leaveQueueUseCase.execute(captureLambda(), any(), any(), any())
-        } coAnswers {
-            firstArg<(LeaveQueueResponse) -> Unit>().invoke(response)
-        }
-
-        presenter.leaveQueue()
-
-        assertNotNull(leaveQueueHeader)
-    }
-
-    @Test
-    fun `leaveQueue failure`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-
-            every {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
-            }
-            presenter.leaveQueue().invoke()
-
-            verify { view.showErrorToast(any()) }
-        }
-    }
-
-    @Test
-    fun `OnClickLeaveQueue success`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-            every {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
-                    LeaveQueueResponse(
-                        postLeaveQueue = PostLeaveQueue(
-                            leaveQueueData = LeaveQueueData("Ok"),
-                            leaveQueueHeader = LeaveQueueHeader(200, "400", 1, "reason")
-                        )
-                    )
-                )
-            }
-
-            presenter.OnClickLeaveQueue("123456")
-
-            verify { presenter.onSuccess(any()) }
-        }
-    }
-
-    @Test
-    fun `OnClickLeaveQueue success with null errorCode`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-            every {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
-                    LeaveQueueResponse(
-                        postLeaveQueue = PostLeaveQueue(
-                            leaveQueueData = LeaveQueueData("Ok"),
-                            leaveQueueHeader = LeaveQueueHeader(200, null, 1, "reason")
-                        )
-                    )
-                )
-            }
-
-            presenter.OnClickLeaveQueue("123456")
-
-            verify(exactly = 0) { presenter.onSuccess(any()) }
-        }
-    }
-
-    @Test
-    fun `OnClickLeaveQueue success with null leaveQueueHeader`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-            every {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
-                    LeaveQueueResponse(
-                        postLeaveQueue = PostLeaveQueue(
-                            leaveQueueData = LeaveQueueData("Ok"),
-                            leaveQueueHeader = null
-                    )
-                )
-                )
-            }
-
-            presenter.OnClickLeaveQueue("123456")
-
-            verify(exactly = 0) { presenter.onSuccess(any()) }
-        }
-    }
-
-    @Test
-    fun `OnClickLeaveQueue success with null postLeaveQueue`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-            every {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                firstArg<(LeaveQueueResponse) -> Unit>().invoke(
-                    LeaveQueueResponse(
-                        postLeaveQueue = null
-                    )
-                )
-            }
-
-            presenter.OnClickLeaveQueue("123456")
-
-            verify(exactly = 0) { presenter.onSuccess(any()) }
-        }
-    }
-
-    @Test
-    fun `OnClickLeaveQueue failure`() {
-        runBlockingTest {
-            every { presenter.chatResponse.msgId } returns "1234"
-            coEvery {
-                leaveQueueUseCase.execute(any(), any(), any(), any())
-            } answers {
-                secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
-            }
-
-            presenter.OnClickLeaveQueue("123456")
-
-            verify { view.showErrorToast(any()) }
         }
     }
 
