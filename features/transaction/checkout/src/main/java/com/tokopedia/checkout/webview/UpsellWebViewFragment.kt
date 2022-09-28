@@ -47,6 +47,7 @@ class UpsellWebViewFragment: BaseSessionWebViewFragment() {
                 putExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, isPlusSelected)
             })
             activity?.finish()
+            return true
         }
         return super.shouldOverrideUrlLoading(webview, url)
     }

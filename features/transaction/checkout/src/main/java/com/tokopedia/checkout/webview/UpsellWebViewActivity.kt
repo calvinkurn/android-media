@@ -32,7 +32,7 @@ class UpsellWebViewActivity: BaseSimpleWebViewActivity() {
                 needLogin: Boolean = false,
                 title: String = ""
         ): Intent {
-            return Intent(context, BaseSimpleWebViewActivity::class.java).apply {
+            return Intent(context, UpsellWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())
                 putExtra(KEY_TITLEBAR, showToolbar)
                 putExtra(KEY_ALLOW_OVERRIDE, allowOverride)
