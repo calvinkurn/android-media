@@ -41,7 +41,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_LIST
 import com.tokopedia.promocheckout.common.view.model.PromoData
@@ -123,7 +122,7 @@ abstract class BaseTopupBillsFragment : BaseDaggerFragment() {
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
             when{
                 it.atcErrorPage.isShowErrorPage -> redirectToCart(categoryId.toString())
-                it.appLinkUrl.isEmpty() -> showErrorMessage(ResponseErrorException(it.atcErrorPage.subTitle.ifEmpty { it.title }))
+                it.appLinkUrl.isEmpty() -> showErrorMessage(MessageErrorException(it.atcErrorPage.subTitle.ifEmpty { it.title }))
                 else -> redirectErrorUnVerifiedNumber(it)
             }
             onLoadingAtc(false)
