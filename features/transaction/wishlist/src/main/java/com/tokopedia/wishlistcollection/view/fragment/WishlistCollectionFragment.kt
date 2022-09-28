@@ -516,13 +516,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    private fun showToaster(message: String, actionText: String, type: Int) {
-        val toasterSuccess = Toaster
-        view?.let { v ->
-            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, actionText).show()
-        }
-    }
-
     private fun finishRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
