@@ -1,8 +1,10 @@
 package com.tokopedia.report.view.activity
 
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Surface
@@ -11,14 +13,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.DaggerMerchantReportComponent
-import com.tokopedia.report.di.MerchantReportComponent
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
@@ -27,8 +27,7 @@ import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.collectLatest
 
-class ProductReportActivity : ComponentActivity(), HasComponent<MerchantReportComponent>,
-    ReportReasonAdapter.OnReasonClick {
+class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonClick {
 
     private val tracking by lazy { MerchantReportTracking() }
 
@@ -39,12 +38,17 @@ class ProductReportActivity : ComponentActivity(), HasComponent<MerchantReportCo
 
     private val productId by argsExtraString(ARG_PRODUCT_ID, "-1")
 
-    override fun getComponent(): MerchantReportComponent = DaggerMerchantReportComponent.builder()
-        .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-        .build()
+    private fun injectComponent() {
+        DaggerMerchantReportComponent.builder()
+            .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        injectComponent()
         super.onCreate(savedInstanceState)
+
 
         setContent {
             val uiState = viewModel.uiState.collectAsState()
@@ -91,14 +95,22 @@ class ProductReportActivity : ComponentActivity(), HasComponent<MerchantReportCo
 
     override fun gotoForm(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
-        startActivityForResult(
-            ProductReportFormActivity.createIntent(this, reason, productId),
-            REQUEST_CODE_FORM_SUBMIT
-        )
+        launcherGoToForm.launch(ProductReportFormActivity.createIntent(this, reason, productId))
+    }
+
+    private val launcherGoToForm =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+        }
+
+    override fun onBackPressed() {
+        viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
     }
 
     companion object {
         private const val ARG_PRODUCT_ID = "arg_product_id"
-        private const val REQUEST_CODE_FORM_SUBMIT = 100
     }
 }
