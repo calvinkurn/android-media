@@ -11,13 +11,13 @@ data class TotalTokomemberResponse(
 data class SumUserCardMember(
 
 	@SerializedName("sumUserCardMember")
-	val sumUserCardMember: Long? = null,
+	val sumUserCardMember: Long? = 0L,
 
 	@SerializedName("sumUserCardMemberStr")
-	val sumUserCardMemberStr: String? = null,
+	val sumUserCardMemberStr: String? = "0",
 
 	@SerializedName("isShown")
-	val isShown: Boolean? = null,
+	val isShown: Boolean? = false,
 )
 
 data class ResultStatus(
