@@ -1,23 +1,28 @@
 apply plugin: 'com.android.library'
-apply plugin: 'io.hansel.preprocessor.module'
-
-android {
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles 'proguard-rules.pro'
-        }
-    }
-}
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
     }
-    dependencies {
-        classpath rootProject.ext.miscDependencies.hansel
+}
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+
+    defaultConfig {
+        vectorDrawables.useSupportLibrary=vectorDrawable.toBoolean()
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
+        multiDexEnabled (project.hasProperty('coverage'))
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
 
