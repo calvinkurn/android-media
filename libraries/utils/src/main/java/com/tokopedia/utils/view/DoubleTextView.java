@@ -1,7 +1,11 @@
 package com.tokopedia.utils.view;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.text.method.LinkMovementMethod;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
@@ -33,6 +37,10 @@ public class DoubleTextView extends LinearLayout {
         topTextView = (TextView) layout.findViewById(R.id.top_text);
         bottomTextView = (TextView) layout.findViewById(R.id.bottom_text);
         llBottomTextView = layout.findViewById(R.id.ll_bottom_text);
+    }
+
+    public void setBottonTextViewGravity(int gravity) {
+        bottomTextView.setGravity(gravity);
     }
 
     public DoubleTextView(Context context, AttributeSet attrs) {
@@ -80,6 +88,12 @@ public class DoubleTextView extends LinearLayout {
         bottomTextView.setText(text);
     }
 
+    public void setBottomText(CharSequence spannableString) {
+        bottomTextView.setHighlightColor(Color.TRANSPARENT);
+        bottomTextView.setMovementMethod(LinkMovementMethod.getInstance());
+        bottomTextView.setText(spannableString, TextView.BufferType.SPANNABLE);
+    }
+
     @SuppressWarnings("unused")
     public void setBottomTextSize(float bottomTextSize) {
         this.bottomTextView.setTextSize(bottomTextSize);
@@ -93,9 +107,17 @@ public class DoubleTextView extends LinearLayout {
             bottomTextView.setTypeface(Typeface.DEFAULT);
     }
 
+    public void setBottomTextRightPadding(int left, int top, int right, int bottom) {
+        bottomTextView.setPadding(left, top, right, bottom);
+    }
+
     @SuppressWarnings("unused")
     public void setBottomTextColor(int bottomTextColor) {
         this.bottomTextView.setTextColor(bottomTextColor);
+    }
+
+    public void setBottomTextBackground(Drawable drawable) {
+        this.bottomTextView.setBackground(drawable);
     }
 
     public void setBottomGravity(int gravity) {
@@ -107,6 +129,28 @@ public class DoubleTextView extends LinearLayout {
     public void setBottomTextGravity(int gravity) {
         if (this.bottomTextView != null) {
             this.bottomTextView.setGravity(gravity);
+        }
+    }
+
+    public void setBottomLinearLayoutWeight(float layoutWeight) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.weight = layoutWeight;
+        llBottomTextView.setLayoutParams(params);
+    }
+
+    public void setMainLayoutTopMargin(int topMargin) {
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        params.setMargins(0, topMargin, 0, 0);
+        mainLayout.setLayoutParams(params);
+    }
+
+    public void setBottomTextBackgroundColor(int s) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            this.bottomTextView.getBackground().mutate().setTint(s);
+        } else {
+            this.bottomTextView.setBackgroundColor(s);
         }
     }
 }
