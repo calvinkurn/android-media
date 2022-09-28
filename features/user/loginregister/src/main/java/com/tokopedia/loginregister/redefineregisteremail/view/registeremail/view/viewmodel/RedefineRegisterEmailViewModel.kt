@@ -117,9 +117,7 @@ class RedefineRegisterEmailViewModel @Inject constructor(
 
     fun submitForm(email: String, password: String, name: String) {
         if (isAllDataValid()) {
-            if (_isLoading.value == false || _isLoading.value == null) {
-                validateUserData()
-            }
+            validateUserData()
         } else {
             validateEmail(email, false)
             validatePassword(password, false)
