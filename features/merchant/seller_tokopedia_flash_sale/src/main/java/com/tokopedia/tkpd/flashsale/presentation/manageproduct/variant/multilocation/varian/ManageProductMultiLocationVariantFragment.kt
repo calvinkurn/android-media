@@ -81,7 +81,7 @@ class ManageProductMultiLocationVariantFragment :
         }
     }
 
-    private fun setupPage(){
+    private fun setupPage() {
         setupButtonText()
         viewModel.product.value?.let {
             val variant = it.childProducts[variantPositionOnProduct]
@@ -147,11 +147,20 @@ class ManageProductMultiLocationVariantFragment :
         }
     }
 
-    override fun onDataInputChanged(index: Int, criteria: ReservedProduct.Product.ProductCriteria, discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup): ValidationResult {
+    override fun onDataInputChanged(
+        index: Int,
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup,
+    ): ValidationResult {
         viewModel.product.value?.let {
             val warehouses = inputAdapter.getDataList()
-            it.childProducts[variantPositionOnProduct].warehouses = warehouses
-            viewModel.setProduct(it, position = variantPositionOnProduct)
+            it.childProducts[variantPositionOnProduct].warehouses =
+                viewModel.reAssignMapWarehouse(warehouses, index)
+            viewModel.setProduct(
+                product = it,
+                positionOfVariant = variantPositionOnProduct,
+                positionOfWarehouse = index
+            )
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
@@ -172,19 +181,19 @@ class ManageProductMultiLocationVariantFragment :
         val product = viewModel.product.value
         val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product ?: return)
         val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
-        bSheet.setOnApplyClickListener{
+        bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             inputAdapter = ManageProductVariantMultiLocationAdapter().apply {
                 setDataList(appliedProduct.childProducts[variantPositionOnProduct])
                 setListener(this@ManageProductMultiLocationVariantFragment)
             }
             rvManageProductDetail?.adapter = inputAdapter
-            viewModel.setProduct(appliedProduct,variantPositionOnProduct)
+            viewModel.setProduct(appliedProduct, variantPositionOnProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
 
-    fun getIntentResult() : Intent {
+    fun getIntentResult(): Intent {
         val intent = Intent()
         val bundle = Bundle()
         bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)

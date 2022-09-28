@@ -150,7 +150,7 @@ data class ReservedProduct(
             val name: String,
             var stock: Long,
             var price: Long,
-            val discountSetup: DiscountSetup,
+            var discountSetup: DiscountSetup,
             val isDilayaniTokopedia: Boolean,
             var isToggleOn: Boolean,
             val isDisabled: Boolean,

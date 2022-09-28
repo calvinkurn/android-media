@@ -28,21 +28,20 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
         MutableLiveData()
-    private val productVariant: LiveData<ReservedProduct.Product.ChildProduct> get() = _productVariant
 
-    val enableBulkApply = Transformations.map(productVariant) {
+    val enableBulkApply = Transformations.map(_productVariant) {
         var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK
         it.warehouses.forEach { warehouse -> if (warehouse.isToggleOn) sizeOfToggleOn++ }
         sizeOfToggleOn >= MINIMUM_TO_SET_BULK
     }
 
-    val bulkApplyCaption = Transformations.map(productVariant) {
+    val bulkApplyCaption = Transformations.map(_productVariant) {
         errorMessageHelper.getBulkApplyCaption(it.warehouses)
     }
 
-    val isInputPageValid = Transformations.map(productVariant) {
+    val isInputPageValid = Transformations.map(product) {
         val criteria = it.productCriteria
-        val listOfSelectedProductVariant = it.warehouses
+        val listOfSelectedProductVariant = _productVariant.value?.warehouses.orEmpty()
             .filter { warehouse -> warehouse.isToggleOn }
 
         listOfSelectedProductVariant.all { warehouse ->
@@ -75,8 +74,52 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
     }
 
-    fun setProduct(product: ReservedProduct.Product, position: Int) {
+    fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int) {
         _product.value = product
-        _productVariant.value = product.childProducts[position]
+        _productVariant.value = product.childProducts[positionOfVariant]
+    }
+
+    fun setProduct(
+        product: ReservedProduct.Product,
+        positionOfVariant: Int,
+        positionOfWarehouse: Int
+    ) {
+        val variant = product.childProducts[positionOfVariant]
+        val reAssignMapWarehouse = reAssignMapWarehouse(variant.warehouses, positionOfWarehouse)
+        product.childProducts[positionOfVariant].warehouses = reAssignMapWarehouse
+
+        _product.value = product
+        _productVariant.value = variant
+    }
+
+    fun reAssignMapWarehouse(
+        warehouses: List<ReservedProduct.Product.Warehouse>,
+        positionWarehouse: Int
+    ): List<ReservedProduct.Product.Warehouse> {
+        val warehouse = warehouses[positionWarehouse]
+        warehouses.forEach {
+            if (it.isToggleOn && it.isDilayaniTokopedia) {
+                it.discountSetup.apply {
+                    price = warehouse.discountSetup.price
+                    discount = warehouse.discountSetup.discount
+                }
+            }
+        }
+        return warehouses
+    }
+
+    fun servedByTokopedia() : ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>>? {
+        val listOfDilayaniTokopedia: ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>> =
+            arrayListOf()
+        _productVariant.value?.warehouses.orEmpty().forEachIndexed { index, warehouse ->
+            if (warehouse.isToggleOn && warehouse.isDilayaniTokopedia) {
+                listOfDilayaniTokopedia.add(Pair(index, warehouse))
+            }
+        }
+
+        return if (listOfDilayaniTokopedia.size >= MINIMUM_TO_SET_BULK)
+            listOfDilayaniTokopedia
+        else
+            null
     }
 }

@@ -15,10 +15,10 @@ open class ManageProductVariantBaseViewHolder(
     private val listener: ManageProductVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
 
-    private fun Number?.toStringOrEmpty() =
+    fun Number?.toStringOrEmpty() =
         if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
 
-    private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
+    fun TextFieldUnify2.setTextIfNotFocus(text: String) {
         if (!editText.isFocused) {
             editText.setText(text)
         }
@@ -56,7 +56,7 @@ open class ManageProductVariantBaseViewHolder(
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setupListener(
         criteria: ReservedProduct.Product.ProductCriteria,
-        discount: ReservedProduct.Product.Warehouse.DiscountSetup?
+        discount: ReservedProduct.Product.Warehouse.DiscountSetup?,
     ) {
         textFieldPriceDiscountNominal.editText.afterTextChanged {
             discount?.price = it.digitsOnly()

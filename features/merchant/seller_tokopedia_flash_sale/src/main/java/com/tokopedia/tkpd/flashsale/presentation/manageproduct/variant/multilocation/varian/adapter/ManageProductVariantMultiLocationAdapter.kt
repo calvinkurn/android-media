@@ -7,16 +7,21 @@ import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailLocat
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 
-class ManageProductVariantMultiLocationAdapter: RecyclerView.Adapter<ManageProductVariantMultiLocationAdapter.CriteriaViewHolder>() {
+class ManageProductVariantMultiLocationAdapter :
+    RecyclerView.Adapter<ManageProductVariantMultiLocationAdapter.CriteriaViewHolder>() {
 
     private var productVariant: ReservedProduct.Product.ChildProduct? = null
     private var listener: ManageProductVariantAdapterListener? = null
+    private var binding: LayoutCampaignManageProductDetailLocationItemBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
-        val binding = LayoutCampaignManageProductDetailLocationItemBinding.inflate(LayoutInflater.from(parent.context),
-            parent, false)
-        return CriteriaViewHolder(binding, listener)
+        binding = LayoutCampaignManageProductDetailLocationItemBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent, false
+        )
+        return CriteriaViewHolder(binding!!, listener)
     }
 
     override fun getItemCount() = productVariant?.warehouses?.size.orZero()
@@ -32,6 +37,10 @@ class ManageProductVariantMultiLocationAdapter: RecyclerView.Adapter<ManageProdu
     fun setDataList(newData: ReservedProduct.Product.ChildProduct) {
         productVariant = newData
         notifyItemRangeChanged(Int.ZERO, newData.warehouses.size)
+    }
+
+    fun setDataList(position: Int, warehouse: ReservedProduct.Product.Warehouse) {
+        notifyItemChanged(position, warehouse)
     }
 
     fun getDataList() = productVariant?.warehouses.orEmpty()
@@ -55,18 +64,33 @@ class ManageProductVariantMultiLocationAdapter: RecyclerView.Adapter<ManageProdu
                 imageParentError.gone()
                 textParentTitle.text = selectedWarehouse.name
                 textParentOriginalPrice.text = selectedWarehouse.price.getCurrencyFormatted()
-                textParentTotalStock.text = root.context.getString(R.string.manageproductnonvar_stock_total_format, selectedWarehouse.stock)
+                textParentTotalStock.text = root.context.getString(
+                    R.string.manageproductnonvar_stock_total_format,
+                    selectedWarehouse.stock
+                )
                 switcherToggleParent.isChecked = selectedWarehouse.isToggleOn
                 switcherToggleParent.setOnClickListener {
                     selectedWarehouse.isToggleOn = switcherToggleParent.isChecked
                     binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
                     listener?.onDataInputChanged(adapterPosition, criteria, discount)
                 }
+                iconTkpd.isVisible = selectedWarehouse.isDilayaniTokopedia
             }
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
+                if (selectedWarehouse.isDilayaniTokopedia) {
+                    tickerPriceError.visible()
+                    tickerPriceError.tickerType = TYPE_ANNOUNCEMENT
+                    tickerPriceError.setTextDescription(
+                        String.format(
+                            binding.root.context.getString(
+                                R.string.stfs_text_ticker_warning
+                            )
+                        )
+                    )
+                }
             }
         }
     }
