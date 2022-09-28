@@ -1,4 +1,4 @@
-query GetAutoAds($shopId: String!, source: Int!){
+query GetAutoAds($shopId: String!, $source: Int!){
   topAdsGetAutoAdsV2(shopID: $shopId, source: $source){
     data {
       shopID
