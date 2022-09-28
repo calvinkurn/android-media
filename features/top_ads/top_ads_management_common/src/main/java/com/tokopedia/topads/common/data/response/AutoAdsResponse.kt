@@ -17,13 +17,13 @@ data class AutoAdsResponse(
                 @field:SerializedName("shopID")
                 val shopId: String = "0",
 
-                @field:SerializedName("status_desc")
+                @field:SerializedName("statusDesc")
                 val statusDesc: String = "",
 
-                @field:SerializedName("daily_usage")
+                @field:SerializedName("dailyUsage")
                 val dailyUsage: Int = 0,
 
-                @field:SerializedName("daily_budget")
+                @field:SerializedName("dailyBudget")
                 val dailyBudget: Int = 0,
 
                 @field:SerializedName("status")
