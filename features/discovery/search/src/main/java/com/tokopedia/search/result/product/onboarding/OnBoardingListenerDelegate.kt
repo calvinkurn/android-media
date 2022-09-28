@@ -26,10 +26,11 @@ class OnBoardingListenerDelegate @Inject constructor(
     }
 
     private var coachMark: CoachMark2? = null
+    private var shouldShowCoachmark = true
     private var firstProductPosition = -1
 
     fun showOnBoarding(firstProductPosition: Int) {
-        if (coachMark != null) return
+        if (coachMark != null || !shouldShowCoachmark) return
 
         this.firstProductPosition = firstProductPosition
 
@@ -39,6 +40,10 @@ class OnBoardingListenerDelegate @Inject constructor(
         recyclerViewUpdater.recyclerView?.postDelayed({
             showCoachmark(productWithBOELabel)
         }, ON_BOARDING_DELAY_MS)
+    }
+
+    fun dismissCoachmark() {
+        coachMark?.dismissCoachMark()
     }
 
     private fun getFirstProductWithBOELabel(firstProductPositionWithBOELabel: Int): View? {
@@ -55,7 +60,13 @@ class OnBoardingListenerDelegate @Inject constructor(
         val context = context ?: return
 
         coachMark = CoachMark2(context).apply {
-            setOnDismissListener { coachMark = null }
+            setOnDismissListener {
+                coachMark = null
+            }
+            onDismissListener = {
+                shouldShowCoachmark = false
+
+            }
         }
     }
 
