@@ -2,7 +2,6 @@ package com.tokopedia.developer_options.notification
 
 import android.app.Application
 import android.app.NotificationChannel
-import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
@@ -28,16 +27,15 @@ class DevOpsNotificationManager(
 
     fun start() {
         ProcessLifecycleOwner.get().lifecycle.addObserver(object : LifecycleObserver {
-            @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-            fun onAppBackgrounded() {
-                Log.d("MyApp", "App in background")
-                dismissNotification()
-            }
 
             @OnLifecycleEvent(Lifecycle.Event.ON_START)
             fun onAppForegrounded() {
-                Log.d("MyApp", "App in foreground")
                 showNotification()
+            }
+
+            @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+            fun onAppBackgrounded() {
+                dismissNotification()
             }
         })
     }
@@ -48,18 +46,18 @@ class DevOpsNotificationManager(
         }
 
         val pendingIntent = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
         val builder = NotificationCompat.Builder(application, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_developer_mode)
-            .setContentTitle("Tokopedia")
-            .setContentText("Click here to open Developer Options")
+            .setContentTitle(NOTIFICATION_TITLE)
+            .setContentText(NOTIFICATION_DESCRIPTION)
             .setContentIntent(pendingIntent)
             .setPriority(NotificationCompat.PRIORITY_LOW)
-            .setOngoing(true)
             .build()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = NAME
-            val descriptionText = DESCRIPTION
+            val name = CHANNEL_NAME
+            val descriptionText = CHANNEL_DESCRIPTION
             val importance = NotificationManager.IMPORTANCE_LOW
             val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
                 description = descriptionText
@@ -71,14 +69,17 @@ class DevOpsNotificationManager(
     }
 
     private fun dismissNotification() {
-        val notificationManager = NotificationManagerCompat.from(application)
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
     private companion object {
         const val NOTIFICATION_ID = 123213
-        const val NAME = "Tokopedia Developer Options"
-        const val DESCRIPTION = "Tokopedia Developer Options"
+
+        const val NOTIFICATION_TITLE = "Tokopedia"
+        const val NOTIFICATION_DESCRIPTION = "Click here to open Developer Options"
+
+        const val CHANNEL_NAME = "Tokopedia Developer Options"
+        const val CHANNEL_DESCRIPTION = "Tokopedia Developer Options"
         const val CHANNEL_ID = "DEV_OPS"
     }
 }
