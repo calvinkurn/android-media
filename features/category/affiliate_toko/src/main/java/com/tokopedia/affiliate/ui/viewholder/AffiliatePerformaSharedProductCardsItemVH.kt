@@ -83,12 +83,6 @@ class AffiliatePerformaSharedProductCardsItemVH(
             itemView.findViewById<Typography>(R.id.product_status)?.text =
                 getString(R.string.affiliate_date, formatDate(element.product.linkGeneratedAt))
             if (product.status == PRODUCT_ACTIVE) {
-                itemView.findViewById<ImageUnify>(R.id.status_bullet)?.setImageDrawable(
-                    MethodChecker.getDrawable(
-                        itemView.context,
-                        R.drawable.affiliate_circle_active
-                    )
-                )
                 itemView.findViewById<Typography>(R.id.product_status)?.setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
