@@ -219,8 +219,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun initListener() {
         binding?.btnSubmit?.setOnClickListener {
-            redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, paramIsRequiredInputPhone)
-            submitForm()
+            if (binding?.btnSubmit?.isLoading == false) {
+                redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(RedefineRegisterEmailAnalytics.ACTION_CLICK, paramIsRequiredInputPhone)
+                submitForm()
+            }
         }
     }
 
