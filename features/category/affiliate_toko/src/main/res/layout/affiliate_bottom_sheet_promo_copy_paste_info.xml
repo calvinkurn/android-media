@@ -36,7 +36,7 @@
         android:layout_marginTop="12dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/paste_info_title"
-        app:unify_image_url_src="https://i.ibb.co/xJdFLm0/image.png" />
+        app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/step1.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/paste_info_step_one"
@@ -64,7 +64,7 @@
         android:layout_marginTop="24dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/step_one_barrier"
-        app:unify_image_url_src="https://i.ibb.co/CHkTznZ/image.png" />
+        app:unify_image_url_src="https://images.tokopedia.net/img/affiliate/icon/step2.png" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/paste_info_step_two"
@@ -76,6 +76,5 @@
         app:layout_constraintStart_toEndOf="@id/paste_info_image_two"
         app:layout_constraintTop_toTopOf="@id/paste_info_image_two"
         app:typographyType="paragraph_2" />
-<!--    android:text="@string/paste_info_step_two"-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
