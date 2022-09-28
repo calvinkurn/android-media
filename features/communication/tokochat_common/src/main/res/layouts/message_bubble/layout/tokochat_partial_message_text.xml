@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    tools:parentTag="com.tokopedia.tokochat_common.view.customview.MessageChatLayout">
+    tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout">
 
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/message_icon"
@@ -45,7 +45,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="2dp"
             android:contentDescription="@null"
-            tools:srcCompat="@drawable/ic_tokochat_check_read_rounded_green" />
+            tools:srcCompat="@drawable/tokochat_ic_check_read_rounded_green" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/message_time_tv"

@@ -1,6 +1,6 @@
 package com.tokopedia.tokochat_common.util
 
-object ValueUtil {
+object TokoChatValueUtil {
     const val MILLISECONDS: Long = 1000000
     const val START_YEAR: Long = 1230768000
 

@@ -7,19 +7,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.tokochat_common.databinding.BaseFragmentTokoChatBinding
-import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
+import com.tokopedia.tokochat_common.databinding.TokoChatBaseFragmentBinding
+import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Use [com.tokopedia.tokochat_common.view.customview.layout.BaseTokoChatFragmentLayout]
  * inside your layout
  */
-abstract class BaseTokoChatFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
+abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragment() {
 
     protected var binding: viewBinding? by autoClearedNullable()
-    protected var baseBinding: BaseFragmentTokoChatBinding? by autoClearedNullable()
-    abstract var adapter: BaseTokoChatAdapter
+    protected var baseBinding: TokoChatBaseFragmentBinding? by autoClearedNullable()
+    abstract var adapter: TokoChatBaseAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +28,7 @@ abstract class BaseTokoChatFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     ): View? {
         binding = getViewBindingInflate(container)
         binding?.let {
-            baseBinding = BaseFragmentTokoChatBinding.bind(it.root)
+            baseBinding = TokoChatBaseFragmentBinding.bind(it.root)
         }
         return binding?.root
     }

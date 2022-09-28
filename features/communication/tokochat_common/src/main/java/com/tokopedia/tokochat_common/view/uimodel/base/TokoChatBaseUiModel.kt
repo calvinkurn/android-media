@@ -1,13 +1,13 @@
 package com.tokopedia.tokochat_common.view.uimodel.base
 
-import com.tokopedia.tokochat_common.util.ValueUtil.STATUS_DELETED
-import com.tokopedia.tokochat_common.util.ValueUtil.STATUS_NORMAL
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.STATUS_DELETED
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.STATUS_NORMAL
 import java.util.Calendar
 
 /**
  * TODO: Use general variable names for this class
  */
-open class BaseChatUiModel constructor(
+open class TokoChatBaseUiModel constructor(
     val messageId: String,
     var fromUserId: String,
     var fromRole: String,
@@ -54,11 +54,11 @@ open class BaseChatUiModel constructor(
     /**
      * Base builder for chat UI model
      * B: the Builder class that extend this builder class
-     * UI: the UiModel class that extend BaseChatUiModel
+     * UI: the UiModel class that extend TokoChatBaseUiModel
      */
     abstract class Builder<
         out B : Builder<B, UI>,
-        out UI : BaseChatUiModel
+        out UI : TokoChatBaseUiModel
         > {
 
         internal var messageId: String = ""

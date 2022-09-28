@@ -3,9 +3,9 @@ package com.tokopedia.tokochat_common.view.uimodel.base
 import java.text.SimpleDateFormat
 import java.util.*
 
-open class SendableUiModel constructor(
+open class TokoChatSendableBaseUiModel constructor(
     builder: Builder<*, *>
-) : BaseChatUiModel(builder) {
+) : TokoChatBaseUiModel(builder) {
 
     var startTime: String = builder.startTime
     var isRead: Boolean = builder.isRead
@@ -47,22 +47,22 @@ open class SendableUiModel constructor(
 
     abstract class Builder<
         out B : Builder<B, UI>,
-        out UI : SendableUiModel
-        > : BaseChatUiModel.Builder<B, UI>() {
+        out UI : TokoChatSendableBaseUiModel
+        > : TokoChatBaseUiModel.Builder<B, UI>() {
 
         internal var startTime: String = ""
         internal var isRead: Boolean = false
         internal var isDummy: Boolean = false
         internal var isSender: Boolean = true
 
-        fun withSafelySendableUiModel(msg: BaseChatUiModel): B {
-            if (msg is SendableUiModel) {
+        fun withSafelySendableUiModel(msg: TokoChatBaseUiModel): B {
+            if (msg is TokoChatSendableBaseUiModel) {
                 withSendableUiModel(msg)
             }
             return self()
         }
 
-        fun withSendableUiModel(msg: SendableUiModel): B {
+        fun withSendableUiModel(msg: TokoChatSendableBaseUiModel): B {
             withStartTime(msg.startTime)
             withIsRead(msg.isRead)
             withIsDummy(msg.isDummy)

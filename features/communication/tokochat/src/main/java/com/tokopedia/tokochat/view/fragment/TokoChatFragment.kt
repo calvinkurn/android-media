@@ -8,18 +8,18 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.tokochat_common.util.ValueUtil
-import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
-import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
-import com.tokopedia.tokochat_common.view.uimodel.MessageBubbleUiModel
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import javax.inject.Inject
 
-class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
+class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
     override fun getScreenName(): String = TAG
 
@@ -38,13 +38,13 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
     }
 
     private fun setupSenderDummyMessages() {
-        val message = MessageBubbleUiModel.Builder()
+        val message = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(true)
             .withIsRead(true)
             .withIsDummy(false)
             .withMsgId("123")
-            .withBubbleStatus(ValueUtil.STATUS_NORMAL)
+            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
             .withFromUid("123")
             .withFromRole("User")
             .withReplyTime("123123123")
@@ -55,7 +55,7 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
         adapter.addItem(message)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val deletedMessage = MessageBubbleUiModel.Builder()
+        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(true)
             .withIsRead(true)
@@ -65,7 +65,7 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
         adapter.addItem(deletedMessage)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val bannedMessage = MessageBubbleUiModel.Builder()
+        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(true)
             .withIsRead(true)
@@ -77,13 +77,13 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
     }
 
     private fun setupReceiverDummyMessages() {
-        val message = MessageBubbleUiModel.Builder()
+        val message = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(false)
             .withIsRead(false)
             .withIsDummy(false)
             .withMsgId("123")
-            .withBubbleStatus(ValueUtil.STATUS_NORMAL)
+            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
             .withFromUid("123")
             .withFromRole("User")
             .withReplyTime("123123123")
@@ -94,7 +94,7 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
         adapter.addItem(message)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val deletedMessage = MessageBubbleUiModel.Builder()
+        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(false)
             .withIsRead(true)
@@ -104,7 +104,7 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
         adapter.addItem(deletedMessage)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val bannedMessage = MessageBubbleUiModel.Builder()
+        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(false)
             .withIsRead(true)

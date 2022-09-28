@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     tools:parentTag="com.tokopedia.tokochat_common.view.customview.TokoChatMessageBubbleLayout">
 
-    <com.tokopedia.tokochat_common.view.customview.MessageChatLayout
+    <com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
         android:id="@+id/message_chat_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
