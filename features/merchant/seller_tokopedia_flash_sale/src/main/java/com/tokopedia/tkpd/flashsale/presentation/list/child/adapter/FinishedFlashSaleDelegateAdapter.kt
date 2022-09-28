@@ -104,7 +104,11 @@ class FinishedFlashSaleDelegateAdapter(private val onFlashSaleClicked : (Int) ->
             val wording =
                 binding.tpgDescription.context.getString(R.string.stfs_all_product_rejected_with_hyperlink)
             val hyperlink = binding.tpgDescription.context.getString(R.string.stfs_check_reason)
-            binding.tpgDescription.setHyperlinkText(wording, hyperlink)
+            binding.tpgDescription.setHyperlinkText(
+                wording,
+                hyperlink,
+                onHyperlinkClick = { onFlashSaleClicked(adapterPosition) }
+            )
         }
 
         private fun displaySoldProductPercentage(item: FinishedFlashSaleItem) {

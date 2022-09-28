@@ -299,7 +299,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
-        binding?.loader?.isVisible = isLoading
+        binding?.shimmer?.content?.isVisible = isLoading
         binding?.recyclerView?.isVisible = !isLoading
     }
 
