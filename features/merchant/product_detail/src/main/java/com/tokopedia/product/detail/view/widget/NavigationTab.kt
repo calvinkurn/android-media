@@ -50,6 +50,7 @@ class NavigationTab(
     private val onContentScrollListener = OnContentChangeListener()
 
     private var showJob: Job? = null
+    private var selectTabJob: Job? = null
 
     private var enableTabSelectedListener = true
     private var enableScrollUpListener = true
@@ -156,6 +157,11 @@ class NavigationTab(
         } else Int.ZERO
     }
 
+    override fun onDetachedFromWindow() {
+        showJob?.cancel()
+        selectTabJob?.cancel()
+        super.onDetachedFromWindow()
+    }
 
     data class Item(
         val label: String,
@@ -213,13 +219,16 @@ class NavigationTab(
         private var lastTimeClick = System.currentTimeMillis()
 
         override fun onTabSelected(tab: TabLayout.Tab) {
+            lastTimeClick = System.currentTimeMillis()
             selectTab(tab.position)
         }
 
         override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
         override fun onTabReselected(tab: TabLayout.Tab) {
-            selectTab(tab.position)
+            if (shouldProcessClick()) {
+                selectTab(tab.position)
+            }
         }
 
         private fun selectTab(position: Int) {
@@ -229,12 +238,15 @@ class NavigationTab(
         }
 
         private fun scrollToContent(tabPosition: Int) {
-            val position = items.getOrNull(tabPosition)?.getPosition() ?: -1
-            smoothScrollToPosition(position)
+            selectTabJob?.cancel()
+            selectTabJob = launch(Dispatchers.IO) {
+                val position = items.getOrNull(tabPosition)?.getPosition() ?: -1
+                smoothScrollToPosition(position)
+            }
         }
 
         private fun smoothScrollToPosition(position: Int) {
-            if (position == -1 || !shouldProcessClick()) return
+            if (position == -1) return
 
             recyclerView?.apply {
                 enableTouchScroll(false)
@@ -252,7 +264,6 @@ class NavigationTab(
             val currentTimeMillis = System.currentTimeMillis()
             val result = (currentTimeMillis - lastTimeClick) >= SELECT_TAB_THRESHOLD
             lastTimeClick = currentTimeMillis
-            println("vindo - $result")
             return result
         }
     }
@@ -286,7 +297,6 @@ class NavigationTab(
                 enableTabSelectedListener = true
             }
         }
-
     }
 
     private inner class SmoothScroller(context: Context) : LinearSmoothScroller(context) {
