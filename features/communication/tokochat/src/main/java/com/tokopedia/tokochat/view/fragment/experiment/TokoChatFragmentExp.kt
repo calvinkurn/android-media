@@ -134,7 +134,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "RB-140464-1881400"
+            "RB-186701-4154028"
         } else {
             text.toString()
         }
