@@ -282,12 +282,14 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         private var CATEGORIES_TOKOFOOD = ""
         private var CATEGORIES_PLUS = ""
 
-        private val LABEL_MP = "Belanja"
-        private val LABEL_DIGITAL = "Top-up & Tagihan"
-        private val LABEL_TRAVELENT = "Travel & Entertainment"
-        private val LABEL_KEUANGAN = "Keuangan"
-        private val LABEL_TOKOFOOD = "GoFood"
-        private val LABEL_PLUS = "Plus"
+        private val CATEGORY_GROUP_MP = "belanja"
+        private val CATEGORY_GROUP_RECHARGE = "recharge"
+        private val CATEGORY_GROUP_TRAVEL = "travel"
+        private val CATEGORY_GROUP_INVESTMENT = "investment"
+        private val CATEGORY_GROUP_TOKONOW = "tokonow"
+        private val CATEGORY_GROUP_GOTO_PLUS = "goto_plus"
+        private val CATEGORY_GROUP_TOKOFOOD = "tokofood"
+        private val CATEGORY_GROUP_OTHER = "other"
 
         @JvmStatic
         fun newInstance(bundle: Bundle): UohListFragment {
@@ -381,7 +383,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private fun checkLogin() {
         if (userSession.isLoggedIn) {
-            initialLoad()
+            loadFilters()
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
         }
@@ -417,7 +419,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN) {
             if (resultCode == Activity.RESULT_OK) {
-                initialLoad()
+                loadFilters()
             } else {
                 activity?.finish()
             }
@@ -439,7 +441,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             } else {
-                initialLoad()
+                loadFilters()
             }
         } else if (requestCode == EXTEND_ORDER_REQUEST_CODE) {
             val isOrderExtend = data?.getBooleanExtra(ApplinkConstInternalOrder.OrderExtensionKey.IS_ORDER_EXTENDED, true)
@@ -477,7 +479,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    private fun initialLoad() {
+    private fun loadFilters() {
         uohListViewModel.loadFilterCategory()
     }
 
@@ -1139,28 +1141,41 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private fun renderChipsFilterCategoryProducts(chips: ArrayList<SortFilterItem>, categoryDataList: List<UohFilterCategory.Data.UohFilterCategoryData.Category>) {
         _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
+        // below is applinks which available on uoh
+        var titleMP = ""
+        var titleDigital = ""
+        var titleTravel = ""
+        var titleInvestment = ""
+        var titleTokofood = ""
+        var titlePlus = ""
         categoryDataList.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, desc = category.description, type = 0))
 
             // update selected categories when one of uoh applink is opened
             when {
-                category.label.equals(LABEL_MP, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_MP, true) -> {
                     CATEGORIES_MP = category.value
+                    titleMP = category.label
                 }
-                category.label.equals(LABEL_DIGITAL, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_RECHARGE, true) -> {
                     CATEGORIES_DIGITAL = category.value
+                    titleDigital = category.label
                 }
-                category.label.equals(LABEL_TRAVELENT, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_TRAVEL, true) -> {
                     CATEGORIES_TRAVELENT = category.value
+                    titleTravel = category.label
                 }
-                category.label.equals(LABEL_KEUANGAN, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_INVESTMENT, true) -> {
                     CATEGORIES_KEUANGAN = category.value
+                    titleInvestment = category.label
                 }
-                category.label.equals(LABEL_TOKOFOOD, true) -> {
+                category.label.equals(CATEGORY_GROUP_TOKOFOOD, true) -> {
                     CATEGORIES_TOKOFOOD = category.value
+                    titleTokofood = category.label
                 }
-                category.label.equals(LABEL_PLUS, true) -> {
+                category.label.equals(CATEGORY_GROUP_GOTO_PLUS, true) -> {
                     CATEGORIES_PLUS = category.value
+                    titlePlus = category.label
                 }
             }
         }
@@ -1201,26 +1216,26 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     || filterStatus.equals(PARAM_UOH_PROCESSED, true)
                     || filterStatus.equals(PARAM_UOH_SENT, true)
                     || filterStatus.equals(PARAM_UOH_DELIVERED, true)) && !isReset) {
-                        chipCategoryProduct?.title = LABEL_MP
+                        chipCategoryProduct?.title = titleMP
 
         } else if (filterStatus.equals(PARAM_DIGITAL, true) && !isReset) {
-            chipCategoryProduct?.title = LABEL_DIGITAL
+            chipCategoryProduct?.title = titleDigital
 
         } else if ((filterStatus.equals(PARAM_EVENTS, true) || filterStatus.equals(PARAM_DEALS, true)
                     || filterStatus.equals(PARAM_PESAWAT, true) || filterStatus.equals(PARAM_HOTEL, true)
                     || filterStatus.equals(PARAM_TRAIN, true)
                     || filterStatus.equals(PARAM_TRAVEL_ENTERTAINMENT, true)) && !isReset) {
-            chipCategoryProduct?.title = LABEL_TRAVELENT
+            chipCategoryProduct?.title = titleTravel
 
         } else if ((filterStatus.equals(PARAM_GIFTCARDS, true) || filterStatus.equals(PARAM_INSURANCE, true) ||
                     filterStatus.equals(PARAM_MODALTOKO, true)) && !isReset) {
-            chipCategoryProduct?.title = LABEL_KEUANGAN
+            chipCategoryProduct?.title = titleInvestment
 
         } else if ((filterStatus.equals(PARAM_TOKOFOOD, true)) && !isReset) {
-            chipCategoryProduct?.title = LABEL_TOKOFOOD
+            chipCategoryProduct?.title = titleTokofood
 
         } else if ((filterStatus.equals(PARAM_PLUS, true)) && !isReset) {
-            chipCategoryProduct?.title = LABEL_PLUS
+            chipCategoryProduct?.title = titlePlus
         }
         chipCategoryProduct?.let { chips.add(it) }
     }
