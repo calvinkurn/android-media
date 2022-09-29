@@ -23,7 +23,7 @@ class PlayPreference @Inject constructor(
         private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
 
         private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
-        private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first"
+        private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with channelId
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
@@ -85,17 +85,17 @@ class PlayPreference @Inject constructor(
         ""
     )
 
-    fun setCoachMark(isFirstChannel: Boolean = false) { // first channel event
+    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String) { // first channel event
         if (variant == SWIPE_LIVE_ROOM_VARIANT && diffDay >= A_DAY_IN_MILLIS) {
             sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
         } else {
-            sharedPref.edit().putBoolean(SWIPE_LIVE_ROOM_DEFAULT, isFirstChannel).apply()
+            sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), isFirstChannel).apply()
         }
     }
 
-    fun isCoachMark(): Boolean {
+    fun isCoachMark(channelId: String): Boolean {
         return if (variant == SWIPE_LIVE_ROOM_VARIANT)
             diffDay >= A_DAY_IN_MILLIS
-        else sharedPref.getBoolean(SWIPE_LIVE_ROOM_DEFAULT, false)
+        else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), false)
     }
 }
