@@ -14,7 +14,11 @@ class TmShareBottomSheet:UniversalShareBottomSheet() {
         if(shareBottomSheetTitle.isNotEmpty()) setTitle(shareBottomSheetTitle)
         if(imgOptionsTitle.isNotEmpty()){
             val imgOptionsTitleTv:Typography = view.findViewById(com.tokopedia.universal_sharing.R.id.img_options_heading)
-            imgOptionsTitleTv.text = imgOptionsTitle
+            imgOptionsTitleTv.apply {
+                text = imgOptionsTitle
+                val color = resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                setTextColor(color)
+            }
         }
     }
 
