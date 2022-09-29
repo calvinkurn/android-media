@@ -5,7 +5,6 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
-import android.annotation.SuppressLint;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -72,7 +71,6 @@ import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
-import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
 import com.tokopedia.logisticCommon.data.constant.AddressConstant;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -136,6 +134,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldCl
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ClashingInfoDetailUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MvcShippingBenefitUiModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel;
@@ -160,7 +159,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -2649,6 +2647,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             for (OrdersItem order : lastValidateUsePromoRequest.getOrders()) {
                 if (order.getUniqueId().equals(uniqueId)) {
                     order.getCodes().remove(promoCode);
+                }
+            }
+        }
+        if (lastApplyData != null) {
+            for (LastApplyVoucherOrdersItemUiModel voucherOrder : lastApplyData.getVoucherOrders()) {
+                if (voucherOrder.getUniqueId().equals(uniqueId) && voucherOrder.getCode().equals(promoCode)) {
+                    lastApplyData.getVoucherOrders().remove(voucherOrder);
+                    break;
                 }
             }
         }

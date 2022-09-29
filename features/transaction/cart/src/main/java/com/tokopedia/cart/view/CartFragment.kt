@@ -1132,7 +1132,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                                             shopId = availableGroup.shop.shopId.toLongOrZero(),
                                             warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                             isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
+                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
                                         )
                                     )
                                     hasRedStatePromo = true
@@ -1172,7 +1172,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                                             shopId = availableGroup.shop.shopId.toLongOrZero(),
                                             warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                             isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
+                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
                                         )
                                     )
                                     hasRedStatePromo = true
@@ -1215,7 +1215,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                                             shopId = availableGroup.shop.shopId.toLongOrZero(),
                                             warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero(),
                                             isPo = availableGroup.shipmentInformation.preorder.isPreorder,
-                                            poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString(),
+                                            poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.let { poDuration -> poDuration.toString() } ?: "0",
                                         )
                                     )
                                     hasRedStatePromo = true
