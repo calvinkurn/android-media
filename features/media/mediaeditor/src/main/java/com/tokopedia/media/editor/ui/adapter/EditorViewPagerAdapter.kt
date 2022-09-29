@@ -28,6 +28,10 @@ import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.utils.isVideoFormat
 
+fun viewPagerTag(value: Int): String {
+    return "editor_viewpager_$value"
+}
+
 class EditorViewPagerAdapter(
     private val context: Context,
     private val editorList: List<EditorUiModel>
@@ -66,7 +70,7 @@ class EditorViewPagerAdapter(
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val layout = container.inflateLayout(R.layout.viewpager_main_editor)
-        layout.tag = "editor_viewpager_$position"
+        layout.tag = viewPagerTag(position)
 
         val uiModel = editorList[position]
         val filePath = uiModel.getImageUrl()

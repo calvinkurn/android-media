@@ -7,6 +7,7 @@ import android.widget.LinearLayout
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
+import com.tokopedia.media.editor.ui.adapter.viewPagerTag
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
 
@@ -57,7 +58,7 @@ class EditorViewPager(context: Context, attrSet: AttributeSet): ViewPager(contex
     }
 
     fun updateImage(index: Int, newImageUrl: String, onImageUpdated: () -> Unit = {}){
-        val layout = findViewWithTag<LinearLayout>("editor_viewpager_$index")
+        val layout = findViewWithTag<LinearLayout>(viewPagerTag(index))
         val view = layout.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl){
             listener(
