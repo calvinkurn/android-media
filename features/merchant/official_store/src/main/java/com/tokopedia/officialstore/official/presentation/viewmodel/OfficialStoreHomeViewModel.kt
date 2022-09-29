@@ -20,13 +20,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialStoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -71,7 +65,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
 
     companion object {
         private const val COUNTER_RECOM_TITLE_RENDERED = 1
-        const val TOP_ADS_SOURCE = "1"
+        const val TOP_ADS_SOURCE = "12"
         const val TOP_ADS_COUNT = 3
         const val TOP_ADS_DIMEN_ID = 3
     }
@@ -251,7 +245,13 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     fetchRecomWidgetData(it.channel.pageName,  it.channel.widgetParam, it.channel.id)
                 }
                 else if(it.channel.layout == DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL){
-                    getTopAdsBannerCarousel()
+                    getTopAdsBannerCarousel(
+                        OfficialTopAdsBannerDataModel(
+                        OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                            it.channel,0
+                        )
+                    )
+                    )
                 }
             }
         }) {
@@ -328,7 +328,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTopAdsBannerCarousel(){
+    private fun getTopAdsBannerCarousel(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel){
         launchCatchError(coroutineContext, block={
             val results = topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
@@ -340,6 +340,9 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     ""
                 )
             )
+            OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable){
+                _officialStoreLiveData.postValue(it)
+            }
         }){
 
         }

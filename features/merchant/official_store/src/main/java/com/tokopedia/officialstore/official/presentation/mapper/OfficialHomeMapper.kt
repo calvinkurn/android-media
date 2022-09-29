@@ -16,15 +16,10 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 object OfficialHomeMapper {
     const val BANNER_POSITION = 0
@@ -134,6 +129,16 @@ object OfficialHomeMapper {
                 DynamicChannelLayout.LAYOUT_MIX_TOP -> {
                     dcList.add(
                         MixTopDataModel(
+                            OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
+                                officialStore.channel,
+                                position
+                            )
+                        )
+                    )
+                }
+                DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL -> {
+                    dcList.add(
+                        OfficialTopAdsBannerDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
                                 position
@@ -272,6 +277,26 @@ object OfficialHomeMapper {
                 featuredShopDataModel.channelModel.verticalPosition = it.channelModel.verticalPosition
                 featuredShopDataModel.channelModel.channelHeader = it.channelModel.channelHeader
                 newList.add(featuredShopDataModel)
+            }
+            else {
+                newList.add(it)
+            }
+        }
+        action.invoke(newList)
+    }
+
+    fun updateTopAdsBanner(
+        officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel,
+        tdnBanner : ArrayList<TopAdsImageViewModel>,
+        currentList: List<Visitable<*>>,
+        action: (updatedList: MutableList<Visitable<*>>) -> Unit
+    ) {
+        val newList = mutableListOf<Visitable<*>>()
+        currentList.forEach {
+            if (it is OfficialTopAdsBannerDataModel && it.channelModel.id == officialTopAdsBannerDataModel.channelModel.id) {
+                officialTopAdsBannerDataModel.tdnBanner = tdnBanner
+                officialTopAdsBannerDataModel.channelModel.verticalPosition = it.channelModel.verticalPosition
+                newList.add(officialTopAdsBannerDataModel)
             }
             else {
                 newList.add(it)
