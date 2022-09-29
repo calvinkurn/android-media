@@ -14,7 +14,7 @@ class EditorUiModel(
     val isVideo: Boolean = isVideoFormat(originalUrl),
     var isAutoCropped: Boolean = false,
     var originalRatio: Float = 1f
-): Parcelable {
+) : Parcelable {
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {
             val index = (editList.size - 1) - backValue
@@ -29,40 +29,39 @@ class EditorUiModel(
     }
 
     fun isShowUndoButton(): Boolean {
-        return if (backValue >= UNDO_MAX_LIMIT) {
-            false
+        if (backValue >= UNDO_MAX_LIMIT) return false
+
+        return !isVideo && ((editList.size - backValue) > if (isAutoCropped) {
+            UNDO_LIMIT_AUTO_CROP
         } else {
-            !isVideo && (editList.size - backValue) > if (isAutoCropped)
-                UNDO_LIMIT_AUTO_CROP
-            else
-                UNDO_LIMIT_NON_CROP
-        }
+            UNDO_LIMIT_NON_CROP
+        })
     }
 
     fun isShowRedoButton(): Boolean {
         return (!isVideo && backValue != 0)
     }
 
-    fun getUndoStartIndex(): Int{
+    fun getUndoStartIndex(): Int {
         return editList.size - backValue
     }
 
-    fun getRedoStartIndex(): Int{
+    fun getRedoStartIndex(): Int {
         return (editList.size - 1) - backValue
     }
 
-    fun getFilteredStateList(): List<EditorDetailUiModel>{
+    fun getFilteredStateList(): List<EditorDetailUiModel> {
         val maxStateLimit = (editList.size - 1) - backValue
         var minStateLimit = 0
         removeBackgroundStartState?.let {
-            if(maxStateLimit < it) {
+            if (maxStateLimit < it) {
                 // get bottom limit from another remove background state if any.
-                editList.subList(0, maxStateLimit+1).apply {
+                editList.subList(0, maxStateLimit + 1).apply {
                     val list = this
                     if (list.isEmpty()) return@let
 
-                    for (i in (list.size - 1) downTo 0){
-                        if(this[i].isToolRemoveBackground()){
+                    for (i in (list.size - 1) downTo 0) {
+                        if (this[i].isToolRemoveBackground()) {
                             minStateLimit = i
                             return@let
                         }
