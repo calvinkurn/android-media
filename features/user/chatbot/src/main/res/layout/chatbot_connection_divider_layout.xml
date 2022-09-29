@@ -7,11 +7,11 @@
 
     <View
         android:id="@+id/view_left"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_1"
+        android:layout_width="@dimen/dp_chatbot_50"
+        android:layout_height="@dimen/dp_chatbot_1"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
-        android:background="@color/grey_350"
+        android:background="@color/Unify_N150"
         app:layout_constraintBottom_toBottomOf="@+id/chatbot_tv_divider_message"
         app:layout_constraintEnd_toStartOf="@+id/chatbot_tv_divider_message"
         app:layout_constraintHorizontal_chainStyle="spread_inside"
@@ -36,27 +36,24 @@
 
     <View
         android:id="@+id/view_right"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_1"
+        android:layout_width="50dp"
+        android:layout_height="1dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:background="@color/grey_350"
-        app:layout_constraintBottom_toBottomOf="@+id/chatbot_tv_divider_message"
+        android:background="@color/Unify_N150"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/chatbot_tv_divider_message"
-        app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+        app:layout_constraintTop_toBottomOf="@+id/guideline2"
+        app:layout_constraintBottom_toBottomOf="@+id/chatbot_tv_divider_message" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/chatbot_tv_divider_button"
-        android:layout_width="@dimen/dp_130"
+        android:layout_width="@dimen/dp_chatbot_130"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/ineractive_button_background"
         android:gravity="center"
         android:text="@string/cb_bot_leave_queue"
-        app:typographyType="display_2"
-        android:textColor="@color/tkpd_main_green"
-        app:layout_constraintBottom_toBottomOf="@+id/guideline3"
+        android:textColor="@color/Unify_G400"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chatbot_tv_divider_message" />
@@ -73,6 +70,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_end="40dp" />
+        app:layout_constraintGuide_end="40dp"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
