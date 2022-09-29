@@ -38,9 +38,7 @@ class ToolsUiComponent constructor(
 
     @SuppressLint("NotifyDataSetChanged")
     fun setupActiveTools(editorUiModel: EditorUiModel) {
-        adapter.stateList = editorUiModel.getFilteredStateList().toMutableList()
-        adapter.isAutoCropped = editorUiModel.isAutoCropped
-        adapter.notifyDataSetChanged()
+        adapter.setupActiveTools(editorUiModel)
     }
 
     override fun onItemClicked(type: Int) {

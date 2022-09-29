@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.uimodel.ToolUiModel
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.NotificationUnify
@@ -22,13 +22,20 @@ class EditorToolAdapter constructor(
     private val listener: EditorToolViewHolder.Listener
 ) : RecyclerView.Adapter<EditorToolViewHolder>() {
 
-    var stateList: List<EditorDetailUiModel>? = null
-    var isAutoCropped: Boolean = false
+    private var stateList: List<EditorDetailUiModel>? = null
+    private var isAutoCropped: Boolean = false
 
     @SuppressLint("NotifyDataSetChanged")
     fun addItem(items: List<ToolUiModel>) {
         tools.clear()
         tools.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun setupActiveTools(editorUiModel: EditorUiModel) {
+        stateList = editorUiModel.getFilteredStateList().toMutableList()
+        isAutoCropped = editorUiModel.isAutoCropped
         notifyDataSetChanged()
     }
 
