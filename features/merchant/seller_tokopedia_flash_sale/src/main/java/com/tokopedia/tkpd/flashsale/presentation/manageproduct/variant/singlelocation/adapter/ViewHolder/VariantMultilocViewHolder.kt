@@ -37,6 +37,9 @@ class VariantMultilocViewHolder(
                 item.warehouses.count()
             )
 
+            switcherToggleParent.isChecked = item.isToggleOn
+            binding.containerProductChild.isVisible = item.isToggleOn
+
             switcherToggleParent.setOnClickListener {
                 item.isToggleOn = switcherToggleParent.isChecked
                 binding.containerProductChild.isVisible = item.isToggleOn

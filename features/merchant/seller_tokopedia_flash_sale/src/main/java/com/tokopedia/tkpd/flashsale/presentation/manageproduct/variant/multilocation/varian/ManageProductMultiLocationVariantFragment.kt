@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
@@ -20,6 +21,9 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyM
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantMultiLocationAdapter
+import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import javax.inject.Inject
 
 class ManageProductMultiLocationVariantFragment :
@@ -153,19 +157,21 @@ class ManageProductMultiLocationVariantFragment :
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup,
     ): ValidationResult {
         viewModel.product.value?.let {
+            val variant = it.childProducts[variantPositionOnProduct]
             val warehouses = inputAdapter.getDataList()
-            it.childProducts[variantPositionOnProduct].warehouses =
+            variant.warehouses =
                 viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(warehouses, index)
             viewModel.setProduct(
                 product = it,
                 positionOfVariant = variantPositionOnProduct,
             )
 
-            val listServedByTokopedia =viewModel.findPositionOfProductServedByTokopediaToRegister(warehouses)
-            listServedByTokopedia?.forEach { warehouse ->
-                val (positionOnItem, dataWarehouse) = warehouse
-                if(positionOnItem != index){
-                    rvManageProductDetail?.post {
+            if(variant.warehouses[index].isDilayaniTokopedia) {
+                val listServedByTokopedia =
+                    viewModel.findPositionOfProductServedByTokopediaToRegister(warehouses)
+                listServedByTokopedia?.forEach { warehouse ->
+                    val (positionOnItem, dataWarehouse) = warehouse
+                    if (positionOnItem != index) {
                         inputAdapter.setDataList(positionOnItem, dataWarehouse)
                     }
                 }
@@ -203,16 +209,56 @@ class ManageProductMultiLocationVariantFragment :
                 setDataList(appliedProduct.childProducts[variantPositionOnProduct])
                 setListener(this@ManageProductMultiLocationVariantFragment)
             }
+            showMessageToaster(appliedProduct)
             rvManageProductDetail?.adapter = inputAdapter
             viewModel.setProduct(appliedProduct, variantPositionOnProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
 
+    private fun showMessageToaster(product: ReservedProduct.Product) {
+        val variantProduct = product.childProducts[variantPositionOnProduct]
+        val warehouseToRegister = viewModel.findToggleOnInWarehouse(variantProduct)
+        warehouseToRegister.forEach { warehouse ->
+            val isValidate =
+                viewModel.validateInput(product.productCriteria, warehouse.discountSetup)
+            if (!isValidate.isAllFieldValid()) {
+                showToasterError()
+                return
+            }
+        }
+        showToasterValid()
+    }
+
+    private fun showToasterError() {
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.stfs_toaster_error),
+                Snackbar.LENGTH_LONG,
+                TYPE_ERROR,
+                getString(R.string.stfs_toaster_ok)
+            ).show()
+        }
+    }
+
+    private fun showToasterValid() {
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.stfs_toaster_valid),
+                Snackbar.LENGTH_LONG,
+                TYPE_NORMAL,
+                getString(R.string.stfs_toaster_ok)
+            ).show()
+        }
+    }
+
     fun getIntentResult(): Intent {
         val intent = Intent()
         val bundle = Bundle()
-        bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
+        val product = viewModel.setToggleOnOrOf(viewModel.product.value, variantPositionOnProduct)
+        bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
         intent.putExtras(bundle)
         return intent
     }

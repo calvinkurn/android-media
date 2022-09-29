@@ -40,19 +40,20 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         errorMessageHelper.getBulkApplyCaption(it.warehouses)
     }
 
-    val isInputPageValid = Transformations.map(product) {
+    val isInputPageValid = Transformations.map(_product) {
         val criteria = it.productCriteria
-        val listOfSelectedProductVariant = _productVariant.value?.warehouses.orEmpty()
+        val listOfSelectedProductVariant = it.childProducts[variantPositionOnProduct].warehouses
             .filter { warehouse -> warehouse.isToggleOn }
 
-        listOfSelectedProductVariant.all { warehouse ->
-            validateInput(
+        return@map listOfSelectedProductVariant.any {
+            return@map validateInput(
                 criteria,
-                warehouse.discountSetup
+                it.discountSetup
             ).isAllFieldValid()
         }
-            .and(listOfSelectedProductVariant.size.isMoreThanZero())
     }
+
+    var variantPositionOnProduct : Int = 0
 
     fun validateInput(
         criteria: ReservedProduct.Product.ProductCriteria,
@@ -136,6 +137,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int) {
         _product.value = product
+        variantPositionOnProduct = positionOfVariant
         _productVariant.value = product.childProducts[positionOfVariant]
     }
 
@@ -168,5 +170,18 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
             listOfServedByTokopedia
         else
             null
+    }
+
+    fun setToggleOnOrOf(product : ReservedProduct.Product?, positionOfVariant : Int) : ReservedProduct.Product? {
+        return if(product != null) {
+            val variant = product.childProducts[positionOfVariant]
+            val isToggleOn = findToggleOnInWarehouse(variant).size.isMoreThanZero()
+            variant.isToggleOn = isToggleOn
+             product
+        } else null
+    }
+
+    fun findToggleOnInWarehouse(variant : ReservedProduct.Product.ChildProduct) : List<ReservedProduct.Product.Warehouse>{
+        return variant.warehouses.filter { it.isToggleOn }
     }
 }

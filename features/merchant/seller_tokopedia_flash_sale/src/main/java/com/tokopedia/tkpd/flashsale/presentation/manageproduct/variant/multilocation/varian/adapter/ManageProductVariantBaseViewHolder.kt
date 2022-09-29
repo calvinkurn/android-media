@@ -46,24 +46,24 @@ open class ManageProductVariantBaseViewHolder(
     ) {
         discount?.let {
             val validationResult = listener?.onDataInputChanged(adapterPosition, criteria, it)
-            textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
-            textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
-            textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
-            textFieldPriceDiscountNominal.setMessage(validationResult?.priceMessage.orEmpty())
-            textFieldPriceDiscountPercentage.setMessage(validationResult?.pricePercentMessage.orEmpty())
+            this.textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
+            this.textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
+            this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
+            this.textFieldPriceDiscountNominal.setMessage(validationResult?.priceMessage.orEmpty())
+            this.textFieldPriceDiscountPercentage.setMessage(validationResult?.pricePercentMessage.orEmpty())
         }
     }
 
     private fun LayoutCampaignManageProductDetailInformationBinding.setupInitialFieldMessage(
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
-        textQuantityEditorSubTitle.text = root.context.getString(R.string.manageproductnonvar_stock_subtitle, criteria.minCustomStock, criteria.maxCustomStock)
-        textFieldPriceDiscountNominal.setMessage(root.context.getString(
+        this.textQuantityEditorSubTitle.text = root.context.getString(R.string.manageproductnonvar_stock_subtitle, criteria.minCustomStock, criteria.maxCustomStock)
+        this.textFieldPriceDiscountNominal.setMessage(root.context.getString(
             R.string.manageproductnonvar_range_message_format,
             criteria.minFinalPrice.getCurrencyFormatted(),
             criteria.maxFinalPrice.getCurrencyFormatted()
         ))
-        textFieldPriceDiscountPercentage.setMessage(root.context.getString(
+        this.textFieldPriceDiscountPercentage.setMessage(root.context.getString(
             R.string.manageproductnonvar_range_message_format,
             criteria.minDiscount.getPercentFormatted(),
             criteria.maxDiscount.getPercentFormatted()
@@ -80,61 +80,62 @@ open class ManageProductVariantBaseViewHolder(
 
         listenerOfEditTextDiscountNominal = EditTextWatcher{
             discount?.price = it.digitsOnly()
-            textFieldPriceDiscountPercentage.setTextIfNotFocus(
+            this.textFieldPriceDiscountPercentage.setTextIfNotFocus(
                 listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
             )
             triggerListener(criteria, discount)
         }
-        textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerOfEditTextDiscountNominal)
-        textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
+        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerOfEditTextDiscountNominal)
+        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
 
         listenerOfEditTextDiscountPercent = EditTextWatcher{
             discount?.discount = it.digitsOnly().toInt()
-            textFieldPriceDiscountNominal.setTextIfNotFocus(
+            this.textFieldPriceDiscountNominal.setTextIfNotFocus(
                 listener?.calculatePrice(it.digitsOnly(), adapterPosition).toLongOrZero().getNumberFormatted()
             )
             triggerListener(criteria, discount)
         }
-        textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerOfEditTextDiscountPercent)
-        textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
+        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerOfEditTextDiscountPercent)
+        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
 
         listenerQty = EditTextWatcher{
             discount?.stock = it.digitsOnly()
             triggerListener(criteria, discount)
         }
-        quantityEditor.editText.addTextChangedListener(listenerQty)
+        this.quantityEditor.editText.addTextChangedListener(listenerQty)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.clearListener() {
-        textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerOfEditTextDiscountNominal)
-        textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerOfEditTextDiscountPercent)
-        textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
-        textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
-        quantityEditor.editText.removeTextChangedListener(listenerQty)
+        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerOfEditTextDiscountNominal)
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerOfEditTextDiscountPercent)
+        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
+        this.quantityEditor.editText.removeTextChangedListener(listenerQty)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setupInputField(
         criteria: ReservedProduct.Product.ProductCriteria,
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?
     ) {
-        periodSection.gone()
-        tickerPriceError.gone()
-        textFieldPriceDiscountNominal.editText.setText(discount?.price.orZero().getNumberFormatted())
-        textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
-        quantityEditor.editText.setText(discount?.stock?.orZero().toString())
-        textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
+        this.periodSection.gone()
+        this.tickerPriceError.gone()
+        this.textFieldPriceDiscountNominal.editText.setText(discount?.price.orZero().getNumberFormatted())
+        this.textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
+        this.quantityEditor.editText.setText(discount?.stock?.orZero().toString())
+        this.textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         val validationResult =
             discount?.let { listener?.validationItem(criteria, it) }
-        textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
-        textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
+        this.textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
+        this.textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
+        this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
 
         setupInitialFieldMessage(criteria)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setTicker(context: Context) {
-        tickerPriceError.visible()
-        tickerPriceError.tickerType = Ticker.TYPE_ANNOUNCEMENT
-        tickerPriceError.setTextDescription(
+        this.tickerPriceError.visible()
+        this.tickerPriceError.tickerType = Ticker.TYPE_ANNOUNCEMENT
+        this.tickerPriceError.setTextDescription(
             String.format(
                 context.getString(
                     R.string.stfs_text_ticker_warning

@@ -9,7 +9,8 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyProductWithoutVariant
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyChildsProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehouseDummy
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehousesDilayaniTokopedia
 import com.tokopedia.unit.test.ext.getOrAwaitValue
@@ -54,8 +55,8 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `set Product and variant into viewModel`() {
-        val dummyData = DataDummyOfVariantMultiLocationType.createDummyProduct()
-        val target = DataDummyOfVariantMultiLocationType.createDummyChildsProduct()
+        val dummyData = createDummyProduct()
+        val target = DataDummyOfVariantMultiLocationType.createDummyChildsProduct(false)
         val positionTarget = 0
         viewModel.setProduct(dummyData, positionTarget)
         val dataProductInViewModel = viewModel.product.value
@@ -280,17 +281,8 @@ class ManageProductMultiLocationVariantViewModelTest {
     }
 
     @Test
-    fun `isInputPageValid test when no variant in data`() {
-        val dummyProduct = createDummyProductWithoutVariant()
-        val targetPositionOfProduct = 0
-        viewModel.setProduct(dummyProduct, targetPositionOfProduct)
-        val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
-        Assert.assertFalse(actualResult)
-    }
-
-    @Test
     fun `find Position of Product Served By Tokopedia To Register but the result is null`() {
-        val dummyProduct = createWarehouseDummy()
+        val dummyProduct = createWarehouseDummy(false)
         val actualResult = viewModel.findPositionOfProductServedByTokopediaToRegister(dummyProduct)
         Assert.assertNull(actualResult)
     }
@@ -467,16 +459,37 @@ class ManageProductMultiLocationVariantViewModelTest {
         Assert.assertFalse(validateActualResult.isStockError)
     }
 
+    @Test
+    fun `find toggle on productlist`() {
+        val dummyProduct = createDummyProduct(true)
+        val actualResult = viewModel.setToggleOnOrOf(dummyProduct, 0)
+        Assert.assertNotNull(actualResult)
+    }
+
+    @Test
+    fun `find toggle on productlist null`() {
+        val dummyProduct = null
+        val actualResult = viewModel.setToggleOnOrOf(dummyProduct, 0)
+        Assert.assertNull(actualResult)
+    }
+
+    @Test
+    fun `find toggle on productlist toggle off`() {
+        val dummyProduct = createDummyChildsProduct(false)[0]
+        val actualResult = viewModel.findToggleOnInWarehouse(dummyProduct)
+        Assert.assertEquals(0, actualResult.size)
+    }
+
     private fun setDummyChild(
-        start: Int,
-        end: Int,
+        startPosition: Int,
+        endPosition: Int,
         price: Long,
         stock: Long,
         discount: Int
     ): ReservedProduct.Product {
-        val dummyData = DataDummyOfVariantMultiLocationType.createDummyProduct()
+        val dummyData = createDummyProduct()
         val dummyChild = dummyData.childProducts[0]
-        for (i in start..end) {
+        for (i in startPosition..endPosition) {
             dummyChild.warehouses[i].apply {
                 isToggleOn = true
                 discountSetup.apply {
@@ -491,7 +504,7 @@ class ManageProductMultiLocationVariantViewModelTest {
     }
 
     private fun setValueOfProductAndVariantAttribute(isToggleOn: Boolean = false) {
-        val dummyData = DataDummyOfVariantMultiLocationType.createDummyProduct()
+        val dummyData = createDummyProduct()
         val positionTarget = 0
         dummyData.childProducts[positionTarget].warehouses.forEach { it.isToggleOn = isToggleOn }
         viewModel.setProduct(dummyData, positionTarget)

@@ -3,9 +3,9 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multiloc
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 
 object DataDummyOfVariantMultiLocationType {
-    fun createDummyProduct(): ReservedProduct.Product {
+    fun createDummyProduct(isWarehouseToggleOn : Boolean = false): ReservedProduct.Product {
         return ReservedProduct.Product(
-            childProducts = createDummyChildsProduct(),
+            childProducts = createDummyChildsProduct(isWarehouseToggleOn),
             isMultiWarehouse = false,
             isParentProduct = true,
             name = "Judul Produk Bisa Sepanjang Dua Baris Kebawah",
@@ -32,36 +32,7 @@ object DataDummyOfVariantMultiLocationType {
         )
     }
 
-    fun createDummyProductWithoutVariant(): ReservedProduct.Product {
-        return ReservedProduct.Product(
-            childProducts = listOf(),
-            isMultiWarehouse = false,
-            isParentProduct = true,
-            name = "Judul Produk Bisa Sepanjang Dua Baris Kebawah",
-            picture = "https://placekitten.com/100/100",
-            price = ReservedProduct.Product.Price(
-                price = 5000,
-                lowerPrice = 4000,
-                upperPrice = 6000
-            ),
-            productCriteria = ReservedProduct.Product.ProductCriteria(
-                criteriaId = 0,
-                maxCustomStock = 100,
-                maxDiscount = 70,
-                maxFinalPrice = 6000,
-                minCustomStock = 11,
-                minDiscount = 10,
-                minFinalPrice = 2000
-            ),
-            productId = 0,
-            sku = "SK-0918",
-            stock = 30,
-            url = "",
-            warehouses = listOf()
-        )
-    }
-
-    fun createDummyChildsProduct(): List<ReservedProduct.Product.ChildProduct> {
+    fun createDummyChildsProduct(isWarehouseToggleOn : Boolean): List<ReservedProduct.Product.ChildProduct> {
         val childsProduct: MutableList<ReservedProduct.Product.ChildProduct> = mutableListOf()
         for (child in 1 until 6) {
             val childProduct = ReservedProduct.Product.ChildProduct(
@@ -90,14 +61,14 @@ object DataDummyOfVariantMultiLocationType {
                 sku = "SKU-$child",
                 stock = 80,
                 url = "",
-                warehouses = createWarehouseDummy()
+                warehouses = createWarehouseDummy(isWarehouseToggleOn)
             )
             childsProduct.add(childProduct)
         }
         return childsProduct
     }
 
-    fun createWarehouseDummy(): List<ReservedProduct.Product.Warehouse> {
+    fun createWarehouseDummy(isWarehouseToggleOn : Boolean): List<ReservedProduct.Product.Warehouse> {
         val listWarehouse = arrayListOf<ReservedProduct.Product.Warehouse>()
         for (child in 1 until 6) {
             val warehouse = ReservedProduct.Product.Warehouse(
@@ -111,7 +82,7 @@ object DataDummyOfVariantMultiLocationType {
                     stock = (10 * child).toLong()
                 ),
                 isDilayaniTokopedia = false,
-                isToggleOn = false,
+                isToggleOn = isWarehouseToggleOn,
                 isDisabled = false,
                 disabledReason = ""
             )
