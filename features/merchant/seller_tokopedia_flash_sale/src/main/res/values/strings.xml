@@ -221,6 +221,8 @@
     <string name="bulk_apply_title">Atur Sekaligus</string>
     <string name="bulk_apply_text_stock">Stok Campaign</string>
     <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+    <string name="stfs_success_bulk_apply_label">Info produk sudah diubah.</string>
+    <string name="stfs_oke_label">Oke</string>
 
 
     <!--    Manage product list-->

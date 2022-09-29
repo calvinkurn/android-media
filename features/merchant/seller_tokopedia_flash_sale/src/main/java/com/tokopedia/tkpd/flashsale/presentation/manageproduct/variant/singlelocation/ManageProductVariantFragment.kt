@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -24,6 +25,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.Validatio
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION
+import timber.log.Timber
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -130,6 +132,10 @@ class ManageProductVariantFragment :
         bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             setProductListData(appliedProduct)
+            buttonSubmit.showToaster(
+                getString(R.string.stfs_success_bulk_apply_label),
+                getString(R.string.stfs_oke_label)
+            )
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -140,8 +146,9 @@ class ManageProductVariantFragment :
         }
     }
 
-    private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
+    private fun setWidgetBulkApplyState() {
         var activeVariantCount = Int.ZERO
+        val items = viewModel.getProductData().childProducts
         items.filter { it.isToggleOn }.map {
             activeVariantCount++
         }
@@ -179,6 +186,7 @@ class ManageProductVariantFragment :
         if (selectedItem != null) {
             viewModel.validateInputPage(selectedItem.productCriteria)
         }
+        setWidgetBulkApplyState()
 
         return viewModel.validateInput(
             criteria = product.productCriteria,
@@ -188,8 +196,7 @@ class ManageProductVariantFragment :
 
     override fun onToggleSwitch(index: Int, isChecked: Boolean) {
         viewModel.setItemToggleValue(index, isChecked)
-        val product = viewModel.getProductData()
-        setWidgetBulkApplyState(product.childProducts)
+        setWidgetBulkApplyState()
     }
 
     override fun onDiscountChange(index: Int, priceValue: Long, discountValue: Int) {
@@ -223,11 +230,12 @@ class ManageProductVariantFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION ->{
+        when (requestCode) {
+            REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val appliedProduct =
                         data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+                    Timber.tag("Masuk").d(appliedProduct.toString())
                     if (appliedProduct != null) {
                         setProductListData(appliedProduct)
                         viewModel.validateInputPage(appliedProduct.productCriteria)

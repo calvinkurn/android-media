@@ -17,49 +17,66 @@ class VariantMultilocViewHolder(
 
     fun bind(
         product: ReservedProduct.Product,
-        item: ReservedProduct.Product.ChildProduct
+        selectedChildProduct: ReservedProduct.Product.ChildProduct
     ) {
-        val discount = item.warehouses.firstOrNull()?.discountSetup
+        val discount = selectedChildProduct.warehouses.firstOrNull()?.discountSetup
         binding.containerLayoutProductParent.apply {
             textParentErrorMessage.gone()
             imageParentError.gone()
-
-            textParentTitle.text = item.name
+            textParentTitle.text = selectedChildProduct.name
             textParentOriginalPrice.text = root.context.getString(
                 R.string.stfs_avp_price_range_placeholder,
-                item.price.lowerPrice.getCurrencyFormatted(),
-                item.price.upperPrice.getCurrencyFormatted()
+                selectedChildProduct.price.lowerPrice.getCurrencyFormatted(),
+                selectedChildProduct.price.upperPrice.getCurrencyFormatted()
             )
-
             textParentTotalStock.text = root.context.getString(
                 R.string.stfs_avp_stock_placeholder,
-                item.stock,
-                item.warehouses.count()
+                selectedChildProduct.stock,
+                selectedChildProduct.warehouses.count()
             )
 
-            switcherToggleParent.setOnClickListener {
-                item.isToggleOn = switcherToggleParent.isChecked
-                binding.containerProductChild.isVisible = item.isToggleOn
-                listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                discount?.let { it ->
-                    listener?.onDataInputChanged(
-                        adapterPosition,
-                        product, it
-                    )
+            switcherToggleParent.apply {
+                isChecked = selectedChildProduct.isToggleOn
+                setOnClickListener {
+                    selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
+                    binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
+                    listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
+                    discount?.let { disc ->
+                        listener?.onDataInputChanged(
+                            adapterPosition,
+                            product, disc
+                        )
+                    }
                 }
             }
+            binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
         }
 
         binding.containerLayoutProductInformationLocation.apply {
-            if (getFilledWarehousesCount(item).isMoreThanZero()) {
+            if (getFilledWarehousesCount(selectedChildProduct).isMoreThanZero()) {
                 textInformationLocationSubTitle.text = root.context.getString(
                     R.string.stfs_avp_location_placeholder,
-                    getFilledWarehousesCount(item)
+                    getFilledWarehousesCount(selectedChildProduct)
                 )
             }
             container.setOnClickListener {
                 listener?.onMultiWarehouseClicked(adapterPosition)
             }
+        }
+        triggerListener(product, selectedChildProduct, discount)
+    }
+
+    private fun triggerListener(
+        product: ReservedProduct.Product,
+        selectedChildProduct: ReservedProduct.Product.ChildProduct,
+        discount: ReservedProduct.Product.Warehouse.DiscountSetup?
+    ) {
+        discount?.let { disc ->
+            selectedChildProduct.warehouses
+                .filter { warehouse -> warehouse.isToggleOn }
+                .forEach { _ ->
+                    listener?.onDataInputChanged(adapterPosition, product, disc)
+                }
         }
     }
 
