@@ -405,6 +405,11 @@ class ProductTagViewModel @AssistedInject constructor(
                     else currSelectedProduct
                 }
 
+                if(currSelectedProduct.size != newSelectedProduct.size &&
+                    newSelectedProduct.size == maxSelectedProduct) {
+                    _uiEvent.emit(ProductTagUiEvent.MaxSelectedProductReached)
+                }
+
                 _selectedProduct.value = newSelectedProduct
             }
             else {

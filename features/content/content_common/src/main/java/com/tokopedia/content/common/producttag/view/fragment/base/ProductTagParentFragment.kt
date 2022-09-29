@@ -226,6 +226,9 @@ class ProductTagParentFragment @Inject constructor(
                             clickListener = { view -> it.action?.invoke() }
                         ).show()
                     }
+                    ProductTagUiEvent.MaxSelectedProductReached -> {
+                        mListener?.onMaxSelectedProductReached()
+                    }
                 }
             }
         }
@@ -534,6 +537,7 @@ class ProductTagParentFragment @Inject constructor(
     interface Listener {
         fun onCloseProductTag()
         fun onFinishProductTag(products: List<SelectedProductUiModel>)
+        fun onMaxSelectedProductReached()
     }
 
     interface DataSource {

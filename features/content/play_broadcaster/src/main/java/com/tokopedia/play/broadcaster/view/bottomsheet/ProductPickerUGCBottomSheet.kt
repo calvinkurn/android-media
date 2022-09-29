@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
@@ -68,6 +69,14 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             )
 
             viewModel.submitAction(ProductSetupAction.SaveProducts)
+        }
+
+        override fun onMaxSelectedProductReached() {
+            toaster.showToaster(
+                message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
+                actionLabel = getString(R.string.play_ok),
+                actionListener = { toaster.dismissToaster() },
+            )
         }
     }
 

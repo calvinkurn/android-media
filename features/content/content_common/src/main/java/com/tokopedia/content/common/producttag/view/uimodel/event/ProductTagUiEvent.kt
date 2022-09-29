@@ -20,6 +20,8 @@ sealed interface ProductTagUiEvent {
     data class SetProductFilterProductCount(val result: NetworkResult<String>) : ProductTagUiEvent
     data class SetShopFilterProductCount(val result: NetworkResult<String>) : ProductTagUiEvent
 
+    object MaxSelectedProductReached : ProductTagUiEvent
+
     data class HitGlobalSearchProductTracker(
         val header: SearchHeaderUiModel,
         val param: SearchParamUiModel,

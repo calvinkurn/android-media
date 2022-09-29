@@ -19,6 +19,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -71,6 +72,10 @@ class ContentProductTagSampleActivity : BaseActivity() {
                     override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
                         Log.d("<LOG>", products.toString())
                         closeFragment()
+                    }
+
+                    override fun onMaxSelectedProductReached() {
+                        Log.d("<LOG>", "Kamu udah pilih ${getMaxSelectedProduct()} produk.")
                     }
                 })
 
