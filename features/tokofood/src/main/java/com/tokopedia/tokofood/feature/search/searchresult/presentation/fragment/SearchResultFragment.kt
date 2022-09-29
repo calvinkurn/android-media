@@ -143,7 +143,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onResume() {
         super.onResume()
-        refreshAddressData()
+        refreshAddressData(false)
     }
 
     override fun getScreenName(): String = ""
@@ -492,12 +492,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
-    private fun refreshAddressData() {
+    private fun refreshAddressData(shouldSearch: Boolean = true) {
         if (isChooseAddressWidgetDataUpdated()) {
             setLocalCacheModel()
             updateAddressWidget()
         }
-        viewModel.getInitialMerchantSearchResult(searchParameter)
+        if (shouldSearch) {
+            viewModel.getInitialMerchantSearchResult(searchParameter)
+        }
     }
 
     private fun setLocalCacheModel() {
