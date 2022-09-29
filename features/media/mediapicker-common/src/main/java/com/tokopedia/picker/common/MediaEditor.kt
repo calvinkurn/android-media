@@ -7,16 +7,24 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMedia.INTERNAL_MEDIA_E
 
 object MediaEditor {
 
-    fun intent(context: Context, param: EditorParam.() -> Unit = {}, imageList: List<String>): Intent {
+    fun intent(
+        context: Context,
+        imageList: List<String>,
+        param: EditorParam.() -> Unit = {}
+    ): Intent {
         val editorParam = EditorParam().apply(param)
-        return generateIntent(context, editorParam, imageList)
+        return generateIntent(context, imageList, editorParam)
     }
 
-    fun intent(context: Context, param: EditorParam, imageList: List<String>): Intent {
-        return generateIntent(context, param, imageList)
+    fun intent(context: Context, imageList: List<String>, param: EditorParam): Intent {
+        return generateIntent(context, imageList, param)
     }
 
-    private fun generateIntent(context: Context, editorParam: EditorParam, imageList: List<String>): Intent{
+    private fun generateIntent(
+        context: Context,
+        imageList: List<String>,
+        editorParam: EditorParam
+    ): Intent {
         val editorImageSource = EditorImageSource(imageList)
 
         return RouteManager.getIntent(context, INTERNAL_MEDIA_EDITOR).apply {

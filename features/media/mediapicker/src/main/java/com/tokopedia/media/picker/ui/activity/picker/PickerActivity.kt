@@ -260,7 +260,7 @@ open class PickerActivity : BaseActivity()
 
     private fun onEditorIntent(data: PickerResult) {
         editorParam?.let {
-            val intent = MediaEditor.intent(this, it, data.originalPaths)
+            val intent = MediaEditor.intent(this, data.originalPaths, it)
             startActivityForResult(intent, REQUEST_EDITOR_PAGE)
         }
     }
