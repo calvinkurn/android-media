@@ -1,38 +1,31 @@
 package com.tokopedia.macrobenchmark_util.env.interceptor.mock
 
 import android.content.Context
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import com.tokopedia.graphql.interceptor.dataStore
+import android.content.SharedPreferences
 import com.tokopedia.macrobenchmark_util.env.mock.MockModelConfig
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.runBlocking
 
 object MockDataHelper {
     fun setMock(context: Context, responseConfigs: List<MockModelConfig>) {
-        runBlocking {
-            resetMock(context)
-            responseConfigs.forEach {
-                it.getResponseList().forEach {
-                    addMock(context, it.key, it.value.value)
-                }
+        val sharedPref = context.getSharedPreferences(
+            "mock_response", Context.MODE_PRIVATE)
+        resetMock(sharedPref)
+        responseConfigs.forEach {
+            it.getResponseList().forEach {
+                addMock(it.key, it.value.value, sharedPref)
             }
         }
     }
 
-    suspend fun resetMock(context: Context) {
-        context.dataStore.edit { mock_response ->
-            mock_response.clear()
+    fun resetMock(sharedPreferences: SharedPreferences) {
+        with(sharedPreferences.edit()) {
+            clear()
+            apply()
         }
     }
-    suspend fun addMock(context: Context, gqlKey: String, response: String) {
-        context.dataStore.edit { mock_response ->
-            mock_response[stringPreferencesKey(gqlKey)] = response
+    fun addMock(gqlKey: String, response: String, sharedPreferences: SharedPreferences) {
+        with(sharedPreferences.edit()) {
+            putString(gqlKey, response)
+            apply()
         }
-        context.dataStore.data
-            .map { preferences ->
-                // No type safety.
-            }.first()
     }
 }

@@ -34,12 +34,8 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation projectOrAar(rootProject.ext.libraries.graphql)
 
-    implementation rootProject.ext.miscDependencies.dataStorePreferences
-    implementation rootProject.ext.miscDependencies.dataStoreCore
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
-
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.supportLibDependencies.appCompactV7

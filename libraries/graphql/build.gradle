@@ -73,8 +73,6 @@ dependencies {
     }
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.mockk
-    implementation rootProject.ext.miscDependencies.dataStorePreferences
-    implementation rootProject.ext.miscDependencies.dataStoreCore
 }
 
 project.ext {

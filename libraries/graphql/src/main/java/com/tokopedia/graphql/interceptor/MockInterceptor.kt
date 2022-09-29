@@ -2,12 +2,6 @@ package com.tokopedia.graphql.interceptor
 
 import android.content.Context
 import androidx.annotation.Keep
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -17,19 +11,14 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "mock_response")
-
 @Keep
 class MockInterceptor(val applicationContext: Context) : Interceptor {
+    val sharedPref = applicationContext.getSharedPreferences(
+        "mock_response", Context.MODE_PRIVATE)
 
     fun getMockResponse(gqlKey: String): String {
         val value = runBlocking {
-            val mockResponse = applicationContext?.dataStore?.data?.let {
-                it.map { preferences ->
-                    // No type safety.
-                    preferences[stringPreferencesKey(gqlKey)] ?: ""
-                }.first()
-            }
+            val mockResponse = sharedPref.getString(gqlKey, "")
             return@runBlocking mockResponse
         }
         return value?:""
