@@ -46,7 +46,6 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         shopId = userSessionInterface.shopId.toIntOrZero()
-        initInjector()
     }
 
     override fun initInjector() {
@@ -87,7 +86,9 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
                     setupRecyclerView()
                     tmMemberViewModel.mapInitialMemberList()
                 }
-                else -> {}
+                else -> {
+                    flipper.displayedChild  = 0
+                }
             }
         }
 
@@ -164,6 +165,11 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
             flipper = it.findViewById(R.id.member_list_flipper)
             tmMemberListRv = it.findViewById(R.id.tm_member_list_recycler_view)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeRvScrollListener()
     }
 
 
