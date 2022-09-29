@@ -1148,6 +1148,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         var titleInvestment = ""
         var titleTokofood = ""
         var titlePlus = ""
+
+        if (arguments?.getString(SOURCE_FILTER) != null) {
+            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
+        }
+
         categoryDataList.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, desc = category.description, type = 0))
 
