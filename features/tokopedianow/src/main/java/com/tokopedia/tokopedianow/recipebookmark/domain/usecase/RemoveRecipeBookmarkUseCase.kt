@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipebookmark.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.RemoveRecipeBookmarkQuery
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.RemoveRecipeBookmarkQuery.PARAM_RECIPE_ID
@@ -29,6 +30,13 @@ class RemoveRecipeBookmarkUseCase @Inject constructor(
         graphql.setRequestParams(RequestParams.create().apply {
             putString(PARAM_RECIPE_ID, recipeId)
         }.parameters)
-        return graphql.executeOnBackground().tokonowRemoveRecipeBookmark
+
+        val response = graphql.executeOnBackground().tokonowRemoveRecipeBookmark
+
+        return if(response.header.success) {
+            response
+        } else {
+            throw MessageErrorException(response.header.message)
+        }
     }
 }

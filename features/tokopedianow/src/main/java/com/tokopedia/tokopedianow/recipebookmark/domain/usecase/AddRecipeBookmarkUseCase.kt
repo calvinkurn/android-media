@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.recipebookmark.domain.usecase
 
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.AddRecipeBookmarkQuery
 import com.tokopedia.tokopedianow.recipebookmark.domain.query.AddRecipeBookmarkQuery.PARAM_RECIPE_ID
@@ -29,6 +30,13 @@ class AddRecipeBookmarkUseCase @Inject constructor(
         graphql.setRequestParams(RequestParams.create().apply {
             putString(PARAM_RECIPE_ID, recipeId)
         }.parameters)
-        return graphql.executeOnBackground().tokonowAddRecipeBookmark
+
+        val response = graphql.executeOnBackground().tokonowAddRecipeBookmark
+
+        return if (response.header.success) {
+            response
+        } else {
+            throw MessageErrorException(response.header.message)
+        }
     }
 }

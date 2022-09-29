@@ -122,47 +122,30 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     fun addRecipeBookmark(recipeId: String, position: Int, title: String) {
-        val isRemoving = false
-        var isSuccess = false
         launchCatchError(block = {
-            val response = addRecipeBookmarkUseCase.execute(
+            addRecipeBookmarkUseCase.execute(
                 recipeId = recipeId
             )
 
-            isSuccess = response.header.success
-            if (isSuccess) {
-                _showBookmarkToaster.postValue(
-                    ToasterUiModel(
-                        isRemoving = isRemoving,
-                        position = position,
-                        model = ToasterModel(
-                            title = title,
-                            recipeId = recipeId,
-                            isSuccess = isSuccess
-                        )
+            _showBookmarkToaster.postValue(
+                ToasterUiModel(
+                    isRemoving = false,
+                    position = position,
+                    model = ToasterModel(
+                        title = title,
+                        recipeId = recipeId,
+                        isSuccess = true
                     )
                 )
-            } else {
-                _showBookmarkToaster.postValue(
-                    ToasterUiModel(
-                        isRemoving = isRemoving,
-                        position = position,
-                        model = ToasterModel(
-                            message = response.header.message,
-                            recipeId = recipeId,
-                            isSuccess = isSuccess
-                        )
-                    )
-                )
-            }
+            )
         }) {
             _showBookmarkToaster.postValue(
                 ToasterUiModel(
-                    isRemoving = isRemoving,
+                    isRemoving = false,
                     position = position,
                     model = ToasterModel(
                         recipeId = recipeId,
-                        isSuccess = isSuccess
+                        isSuccess = false
                     )
                 )
             )
@@ -170,42 +153,27 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     fun removeRecipeBookmark(recipeId: String, position: Int, title: String) {
-        val isRemoving = true
-        var isSuccess = false
         launchCatchError(block = {
-            val response = removeRecipeBookmarkUseCase.execute(
+            removeRecipeBookmarkUseCase.execute(
                 recipeId = recipeId
             )
 
-            isSuccess = response.header.success
-            if (isSuccess) {
-                _showBookmarkToaster.postValue(ToasterUiModel(
-                    isRemoving = isRemoving,
-                    position = position,
-                    model = ToasterModel(
-                        title = title,
-                        recipeId = recipeId,
-                        isSuccess = isSuccess
-                    )
-                ))
-            } else {
-                _showBookmarkToaster.postValue(ToasterUiModel(
-                    isRemoving = isRemoving,
-                    position = position,
-                    model = ToasterModel(
-                        message = response.header.message,
-                        recipeId = recipeId,
-                        isSuccess = isSuccess
-                    )
-                ))
-            }
+            _showBookmarkToaster.postValue(ToasterUiModel(
+                isRemoving = true,
+                position = position,
+                model = ToasterModel(
+                    title = title,
+                    recipeId = recipeId,
+                    isSuccess = true
+                )
+            ))
         }) {
             _showBookmarkToaster.value = ToasterUiModel(
-                isRemoving = isRemoving,
+                isRemoving = true,
                 position = position,
                 model = ToasterModel(
                     recipeId = recipeId,
-                    isSuccess = isSuccess
+                    isSuccess = false
                 )
             )
         }
