@@ -112,7 +112,7 @@ class SwitchAccountUGCRobot(
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.content.common.R.id.img_content_creator_expand)
         ).perform(ViewActions.click())
-        delay(1000L)
+        delay(500L)
     }
 
     fun onClickAccountFromBottomSheet() = chainable {
@@ -123,28 +123,27 @@ class SwitchAccountUGCRobot(
                 1, ViewActions.click()
             )
         )
-        delay(1000L)
     }
 
     fun onClickAccountFromBottomSheetAndHaveDraft() = chainable {
+        delay(500L)
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_primary)
         ).check(matches(ViewMatchers.isCompletelyDisplayed()))
-        delay(1000L)
     }
 
     fun onClickCancelSwitchWhenHavingDraft() = chainable {
+        delay(500L)
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_primary)
         ).perform(ViewActions.click())
-        delay(1000L)
     }
 
     fun onClickConfirmSwitchWhenHavingDraft() = chainable {
+        delay(500L)
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_secondary_long)
         ).perform(ViewActions.click())
-        delay(1000L)
     }
 
     private fun chainable(fn: () -> Unit): SwitchAccountUGCRobot {
