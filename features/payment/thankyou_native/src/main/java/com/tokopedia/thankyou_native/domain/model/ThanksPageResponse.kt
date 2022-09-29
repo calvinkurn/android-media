@@ -98,6 +98,8 @@ data class ThanksPageData(
     var paymentMethodCount: Int,
     // parse config flag json
     var configFlagData: ConfigFlag? = null,
+    // parse gyro data json
+    var gyroData: @RawValue MutableMap<String,Any?>? = null,
 ) : Parcelable
 
 
@@ -139,8 +141,8 @@ data class CustomDataOther(
     val isEnjoyPLus: String?,
     @SerializedName("custom_illustration")
     val customIllustration: String?,
-    @SerializedName("is_plus_transaction")
-    val isPlusTransaction: String?
+    @SerializedName("validate_engine_data")
+    val gyroData: String?
 ) : Parcelable
 
 @Parcelize
