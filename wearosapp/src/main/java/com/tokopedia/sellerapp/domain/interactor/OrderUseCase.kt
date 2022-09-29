@@ -4,7 +4,7 @@ import com.tokopedia.sellerapp.domain.model.OrderModel
 import kotlinx.coroutines.flow.Flow
 
 interface OrderUseCase {
-    fun getOrderList() : Flow<List<OrderModel>>
-    fun getCount() : Flow<Pair<String, Int>>
+    fun getOrderList(dataKey: String) : Flow<List<OrderModel>>
+    fun getCount(dataKey: String) : Flow<Pair<String, Int>>
     suspend fun sendRequest() { }
 }

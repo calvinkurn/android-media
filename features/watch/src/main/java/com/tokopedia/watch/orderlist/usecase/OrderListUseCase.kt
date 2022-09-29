@@ -34,8 +34,8 @@ class GetOrderListUseCase(
             OrderListQuery.GQL_QUERY,
             OrderListModel::class.java,
             createParams(
-                "01/04/2022",
-                "27/07/2022",
+                "01/01/2022",
+                "27/09/2022",
                 220,
                 0
             ).parameters
@@ -43,6 +43,7 @@ class GetOrderListUseCase(
     }
 
     companion object {
+        private val ORDER_STATUS_LIST = listOf(220, 221, 450, 501, 520)
         private const val ORDER_LIST_QUERY = """
             query OrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {
@@ -73,7 +74,7 @@ class GetOrderListUseCase(
                 startDate = startDateFmt,
                 endDate = endDateFmt,
                 sortBy = sortBy,
-                statusList = listOf(),
+                statusList = ORDER_STATUS_LIST,
             )
             return RequestParams.create().apply {
                 putObject("input", input)

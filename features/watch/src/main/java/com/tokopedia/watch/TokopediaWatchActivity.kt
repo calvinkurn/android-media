@@ -4,7 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.wearable.*
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.DataClient
+import com.google.android.gms.wearable.DataEventBuffer
+import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.DataEvent
+import com.google.android.gms.wearable.DataMapItem
 import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -18,16 +24,24 @@ import com.tokopedia.watch.listenerservice.DataLayerServiceListener
 import com.tokopedia.watch.orderlist.mapper.OrderListMapper
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
+import com.tokopedia.watch.ordersummary.mapper.SummaryMapper
+import com.tokopedia.watch.ordersummary.model.SummaryDataModel
+import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
 import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
 import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener {
@@ -97,6 +111,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
             }
         }
 
+        getSummaryData()
         getOrderList()
 
         checkIfPhoneHasApp()
@@ -240,6 +255,19 @@ class TokopediaWatchActivity : AppCompatActivity(),
         useCase.execute(RequestParams(), getLoadOrderListDataSubscriber())
     }
 
+    private fun getSummaryData() {
+        if (!userSession.isLoggedIn) {
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
+        }
+
+        val useCase = GetSummaryUseCase(
+            GraphqlUseCase(),
+            SummaryMapper()
+        )
+
+        useCase.execute(RequestParams(), getLoadSummaryDataSubscriber())
+    }
+
     private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
         return object: Subscriber<OrderListModel>() {
             override fun onCompleted() {
@@ -254,6 +282,26 @@ class TokopediaWatchActivity : AppCompatActivity(),
                 sendMessageToWatch(
                     DataLayerServiceListener.GET_ORDER_LIST_PATH,
                     Gson().toJson(orderListModel)
+                )
+            }
+        }
+    }
+
+    private fun getLoadSummaryDataSubscriber(): Subscriber<SummaryDataModel> {
+        return object: Subscriber<SummaryDataModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+
+            override fun onNext(summaryDataModel: SummaryDataModel) {
+                Log.d(TAG, "SUMMARY DATA: ${Gson().toJson(summaryDataModel)}")
+                sendMessageToWatch(
+                    DataLayerServiceListener.GET_SUMMARY_PATH,
+                    Gson().toJson(summaryDataModel)
                 )
             }
         }
@@ -281,5 +329,4 @@ class TokopediaWatchActivity : AppCompatActivity(),
             }
         }
     }
-
 }

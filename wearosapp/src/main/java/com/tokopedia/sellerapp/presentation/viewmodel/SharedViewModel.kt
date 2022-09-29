@@ -4,35 +4,39 @@ import android.content.Intent
 import android.net.Uri
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
-import com.tokopedia.sellerapp.domain.interactor.NewOrderUseCase
-import com.tokopedia.sellerapp.domain.interactor.ReadyToDeliverOrderUseCase
+import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.guava.await
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 @HiltViewModel
 class SharedViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val newOrderUseCase: NewOrderUseCase,
-    private val readyToDeliverOrderUseCase: ReadyToDeliverOrderUseCase,
+    private val orderUseCaseImpl: OrderUseCaseImpl,
+    private val getSummaryUseCase: GetSummaryUseCase,
     private val capabilityClient: CapabilityClient,
     private val remoteActivityHelper: RemoteActivityHelper,
 ) : BaseViewModel(dispatchers.io) {
@@ -42,28 +46,16 @@ class SharedViewModel @Inject constructor(
         private const val INDEX_NOT_FOUND = -1
     }
 
-    val homeMenu: StateFlow<List<MenuItem>> = merge(
-        newOrderUseCase.getCount(),
-        readyToDeliverOrderUseCase.getCount()
-    ).map {
-        getUpdatedMenuCounter(it.first, it.second)
+    val homeMenu: StateFlow<List<MenuItem>> = getSummaryUseCase.getMenuItemCounter().map {
+        getUpdatedMenuCounter(it)
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = generateInitialMenu()
     )
 
-    val newOrderList: StateFlow<UiState<List<OrderModel>>> = newOrderUseCase.getOrderList().map {
-        UiState.Success(data = it)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
-        initialValue = UiState.Idle()
-    )
-
-    val readyToDeliverOrderList: StateFlow<UiState<List<OrderModel>>> = readyToDeliverOrderUseCase.getOrderList().map {
-        UiState.Success(data = it)
-    }.stateIn(
+    private val _orderList = MutableStateFlow<UiState<List<OrderModel>>>(UiState.Loading())
+    val orderList : StateFlow<UiState<List<OrderModel>>> = _orderList.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
         initialValue = UiState.Idle()
@@ -72,6 +64,16 @@ class SharedViewModel @Inject constructor(
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
+
+    fun getOrderList(dataKey: String) {
+        viewModelScope.launch {
+            _orderList.emitAll(
+                orderUseCaseImpl.getOrderList(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
 
     fun sendRequest() {
         launchCatchError(block = {
@@ -87,11 +89,16 @@ class SharedViewModel @Inject constructor(
         })
     }
 
-    private fun getUpdatedMenuCounter(title: String, count: Int) : List<MenuItem> {
+    private fun getUpdatedMenuCounter(listSummary: List<SummaryModel>) : List<MenuItem> {
         return homeMenu.value.toMutableList().apply {
-            val index = indexOfFirst { it.title == title }
-            if(index != INDEX_NOT_FOUND){
-                this[index] = this[index].copy(unreadCount = count)
+            listSummary.forEach { summaryModel ->
+                val index = indexOfFirst { it.title == summaryModel.title }
+                if(index != INDEX_NOT_FOUND){
+                    this[index] = this[index].copy(
+                        unreadCount = summaryModel.counter.toIntOrZero(),
+                        dataKey = summaryModel.dataKey
+                    )
+                }
             }
         }
     }

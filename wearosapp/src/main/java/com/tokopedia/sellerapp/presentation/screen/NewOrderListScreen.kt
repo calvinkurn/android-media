@@ -36,19 +36,26 @@ import com.tokopedia.unifyprinciples.Typography
 @Composable
 fun NewOrderListScreen(
     sharedViewModel: SharedViewModel,
+    dataKey: String
 ) {
-    getNewOrderListData(sharedViewModel)
+    getNewOrderListData(sharedViewModel, dataKey)
     CreateScreenScaffold(sharedViewModel)
 }
 
-fun getNewOrderListData(sharedViewModel: SharedViewModel) {
-    sharedViewModel.readyToDeliverOrderList
+fun getNewOrderListData(
+    sharedViewModel: SharedViewModel,
+    dataKey: String
+) {
+    sharedViewModel.getOrderList(dataKey)
 }
 
 @Composable
-fun CreateScreenScaffold(sharedViewModel: SharedViewModel) {
+fun CreateScreenScaffold(
+    sharedViewModel: SharedViewModel,
+) {
     Scaffold {
-        val orderList by sharedViewModel.readyToDeliverOrderList.collectAsState()
+        val orderList by sharedViewModel.orderList.collectAsState()
+
         when (orderList) {
             is UiState.Success -> {
                 CreateListNewOrder(orderList)

@@ -2,7 +2,9 @@ package com.tokopedia.sellerapp.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
-import com.tokopedia.sellerapp.data.mapper.OrderDataMapper.mapMessageDataToModel
+import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
+import com.tokopedia.sellerapp.data.mapper.OrderDataMapper
+import com.tokopedia.sellerapp.data.mapper.SummaryDataMapper
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -11,6 +13,7 @@ import kotlin.coroutines.CoroutineContext
 open class WearCacheActionImpl(
     private val dispatchers: CoroutineDispatchers,
     private val orderRoomDatasource: OrderRoomDatasource,
+    private val summaryRoomDatasource: SummaryRoomDatasource,
 ) : WearCacheAction, CoroutineScope {
 
     private val job = Job()
@@ -19,13 +22,13 @@ open class WearCacheActionImpl(
 
     override fun saveOrderListToCache(message: String) {
         launch {
-            orderRoomDatasource.saveOrderList(message.mapMessageDataToModel())
+            orderRoomDatasource.saveOrderList(OrderDataMapper.mapMessageDataToModel(message))
         }
     }
 
-    override fun saveOrderSummaryToCache(message: String) {
+    override fun saveSummaryToCache(message: String) {
         launch {
-            //to be added
+            summaryRoomDatasource.saveSummary(SummaryDataMapper.mapMessageDataToModel(message))
         }
     }
 }
