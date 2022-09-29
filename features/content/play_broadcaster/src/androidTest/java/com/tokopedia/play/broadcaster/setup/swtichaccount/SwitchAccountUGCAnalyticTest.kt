@@ -64,9 +64,7 @@ class SwitchAccountUGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickDropDownAccount() {
-        val robot = createRobot()
-
-        robot.onClickDropDownAccount()
+        createRobot().onClickDropDownAccount()
 
         ViewMatchers.assertThat(
             cassavaTestRule.validate(analyticFile),
@@ -76,9 +74,7 @@ class SwitchAccountUGCAnalyticTest {
 
     @Test
     fun testAnalytic_clickAccountFromBottomSheet() {
-        val robot = createRobot()
-
-        robot.onClickDropDownAccount()
+        createRobot().onClickDropDownAccount()
             .onClickAccountFromBottomSheet()
 
         ViewMatchers.assertThat(
@@ -93,9 +89,7 @@ class SwitchAccountUGCAnalyticTest {
             mockDataStore.getSetupDataStore().getTitle()
         } returns PlayTitleUiModel.HasTitle("Title")
 
-        val robot = createRobot()
-
-        robot.onClickDropDownAccount()
+        createRobot().onClickDropDownAccount()
             .onClickAccountFromBottomSheet()
             .onClickAccountFromBottomSheetAndHaveDraft()
 
@@ -111,9 +105,7 @@ class SwitchAccountUGCAnalyticTest {
             mockDataStore.getSetupDataStore().getTitle()
         } returns PlayTitleUiModel.HasTitle("Title")
 
-        val robot = createRobot()
-
-        robot.onClickDropDownAccount()
+        createRobot().onClickDropDownAccount()
             .onClickAccountFromBottomSheet()
             .onClickAccountFromBottomSheetAndHaveDraft()
             .onClickCancelSwitchWhenHavingDraft()
@@ -130,9 +122,7 @@ class SwitchAccountUGCAnalyticTest {
             mockDataStore.getSetupDataStore().getTitle()
         } returns PlayTitleUiModel.HasTitle("Title")
 
-        val robot = createRobot()
-
-        robot.onClickDropDownAccount()
+        createRobot().onClickDropDownAccount()
             .onClickAccountFromBottomSheet()
             .onClickAccountFromBottomSheetAndHaveDraft()
             .onClickConfirmSwitchWhenHavingDraft()
