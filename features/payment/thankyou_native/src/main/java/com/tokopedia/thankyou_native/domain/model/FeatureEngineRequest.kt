@@ -45,5 +45,12 @@ data class FeatureEngineRequestParameters(
         var gyroData: @RawValue Map<String,Any?>? = null,
 )
 
+class FeatureEngineMapRequestParameters(
+    vararg input : Map<String,Any?>
+){
+
+
+}
+
 class FeatureEngineRequestOperators
 class FeatureEngineRequestThresholds
