@@ -3,6 +3,7 @@ package com.tokopedia.filter.bottomsheet
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -21,6 +22,7 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
 
         val sortFilterList = this.sortFilterList!!
         val selectedFilter = dynamicFilterModel.data.filter[0] // Just choose any filter
+        val priceRangeFoodFilter = dynamicFilterModel.data.filter[12]
         val filterViewModel = sortFilterList.findFilterViewModel(selectedFilter)
                 ?: throw AssertionError("Cannot find selected filter ${selectedFilter.title} in Sort Filter List")
         val clickedOptionViewModel = filterViewModel.optionViewModelList.findLast {
@@ -35,6 +37,7 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         `Then assert map parameter values contains the clicked option`(existingMapParameter, selectedOptionViewModel)
         `Then assert map parameter contains origin_filter=filter`()
         `Then assert ACTIVE filter map parameter contains the clicked option`(selectedOptionViewModel)
+        `Then assert option list doesn't sort by selected or name`(priceRangeFoodFilter.options)
     }
 
     private fun getSelectedOptionViewModel(
@@ -409,5 +412,19 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         val allOptionViewModelListIsSelected = allOptionViewModelList
             .all { it.isSelected }
         assertTrue(allOptionViewModelListIsSelected)
+    }
+
+    private fun `Then assert option list doesn't sort by selected or name`(
+        options: List<Option>
+    ) {
+        this.sortFilterList?.filterIsInstance<PriceRangeFilterCheckboxDataView>()?.forEach { visitable ->
+            visitable.optionViewModelList.forEachIndexed { index, optionViewModel ->
+                assert(options[index].name == optionViewModel.option.name)
+                assert(options[index].description == optionViewModel.option.description)
+                assert(options[index].key == optionViewModel.option.key)
+                assert(options[index].value == optionViewModel.option.value)
+                assert(options[index].inputType == optionViewModel.option.inputType)
+            }
+        }
     }
 }
