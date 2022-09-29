@@ -7,7 +7,6 @@ import android.graphics.Color
 import android.graphics.Matrix
 import android.net.Uri
 import android.util.AttributeSet
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
@@ -38,7 +37,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         initListener(listener)
     }
 
-    fun setOverlayRotate(){
+    fun setOverlayRotate() {
         overlayView.apply {
             setDimmedColor(
                 ContextCompat.getColor(
@@ -114,9 +113,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
                     )
                 }
 
-                override fun onCropFailure(t: Throwable) {
-                    Toast.makeText(context, "Crop Error - ${t.message}", Toast.LENGTH_LONG).show()
-                }
+                override fun onCropFailure(t: Throwable) {}
             }
         )
     }
@@ -154,19 +151,19 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         )
 
         val rotatedBitmap = Bitmap.createBitmap(
-                originalBitmap,
-                0,
-                0,
-                originalWidth,
-                originalHeight,
-                matrix,
-                true
-            )
+            originalBitmap,
+            0,
+            0,
+            originalWidth,
+            originalHeight,
+            matrix,
+            true
+        )
 
         var normalizeX = offsetX
         var normalizeY = offsetY
 
-        if (scaleX == -1f){
+        if (scaleX == -1f) {
             normalizeX = rotatedBitmap.width - (offsetX + imageWidth)
         }
 
