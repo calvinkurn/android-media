@@ -13,7 +13,7 @@ import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkModel
+import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
 import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.min
@@ -137,7 +137,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             it.textColorDark = isDark
             it.watermarkType = watermarkType
         } ?: kotlin.run {
-            detailUiModel?.watermarkMode = EditorWatermarkModel(watermarkType, isDark)
+            detailUiModel?.watermarkMode = EditorWatermarkUiModel(watermarkType, isDark)
         }
 
         return result

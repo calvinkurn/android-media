@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class EditorWatermarkModel(
+data class EditorWatermarkUiModel(
     var watermarkType: Int,
     var textColorDark: Boolean
 ): Parcelable
