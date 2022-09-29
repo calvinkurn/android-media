@@ -3,6 +3,7 @@ package com.tokopedia.epharmacy.usecase
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
 import android.util.Base64
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.common.network.coroutines.repository.RestRepository
@@ -44,33 +45,30 @@ class UploadPrescriptionUseCase @Inject constructor(
     }
 
     private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false): String {
+        var prescriptionImageBitmap: Bitmap? = null
+        var compressedUri : Uri? = null
         return try {
-            var prescriptionImageBitmap: Bitmap? = null
-            prescriptionImageBitmap = if(compress){
-                val compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
-                logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
-                BitmapFactory.decodeFile(compressedUri?.path)
-            }else {
-                logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
-                BitmapFactory.decodeFile(localFilePath)
-            }
+            compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
+            logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
+            prescriptionImageBitmap = BitmapFactory.decodeFile(compressedUri?.path)
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-            prescriptionImageBitmap.compress(
+            prescriptionImageBitmap?.compress(
                 Bitmap.CompressFormat.JPEG,
                 getImageQualitySafeFix(),
                 prescriptionByteArrayOutputStream
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-            prescriptionImageBitmap.recycle()
+            prescriptionImageBitmap?.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
+            prescriptionImageBitmap?.recycle()
             logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}")
             when(e){
                 is NullPointerException -> {
-                    if(!compress){
-                        getBase64OfPrescriptionImage(localFilePath, true)
+                    if(!compress && compressedUri != null){
+                        getBase64OfPrescriptionImage(compressedUri.path ?: "", true)
                     }
                     EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
                 }
