@@ -430,8 +430,8 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
         val selectedOptionViewModel = getSelectedOptionViewModel(priceRangeFilter, clickedOptionViewModel)
 
         val priceRangeFilterCheckboxDataView = this.sortFilterList!!.filterIsInstance<PriceRangeFilterCheckboxDataView>().first()
-        val optionViewModels = priceRangeFilterCheckboxDataView.optionViewModelList.filterIndexed { index, item ->
-            item.option.description == selectedFilter.options[index].description
+        val optionViewModels = selectedFilter.options.take(priceRangeFilterCheckboxDataView.optionViewModelList.size).filterIndexed { index, item ->
+            priceRangeFilterCheckboxDataView.optionViewModelList[index].option.description == item.description
         }
 
         `Then assert option selected state`(selectedOptionViewModel, true)
@@ -443,12 +443,12 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
     }
 
     private fun `Then assert option list doesn't sort by selected or name`(
-        optionViewModels: List<OptionViewModel>
+        options: List<Option>
     ) {
         this.sortFilterList?.filterIsInstance<PriceRangeFilterCheckboxDataView>()?.first().let { visitable ->
-            assertEquals(visitable?.optionViewModelList?.size, optionViewModels.size)
+            assertEquals(visitable?.optionViewModelList?.size, options.size)
             visitable?.optionViewModelList?.forEachIndexed { index, item ->
-                val option = optionViewModels[index].option
+                val option = options[index]
                 assertEquals(option.name, item.option.name)
                 assertEquals(option.description, item.option.description)
                 assertEquals(option.key, item.option.key)
