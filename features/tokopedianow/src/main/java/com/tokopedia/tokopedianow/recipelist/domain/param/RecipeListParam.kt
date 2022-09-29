@@ -71,4 +71,8 @@ class RecipeListParam {
             queryParamsMap[key] = value
         }
     }
+
+    fun getValue(key: String): String {
+        return queryParamsMap[key].orEmpty()
+    }
 }
