@@ -326,6 +326,7 @@ dependencies {
     }
     implementation rootProject.ext.playServicesDependencies.location
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.miscDependencies.chuckMqtt
     implementation rootProject.ext.supportLibDependencies.design
     implementation rootProject.ext.supportLibDependencies.cardViewV7
     implementation rootProject.ext.networkDependencies.retrofit
