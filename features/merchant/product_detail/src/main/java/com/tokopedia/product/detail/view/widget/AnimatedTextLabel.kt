@@ -3,6 +3,8 @@ package com.tokopedia.product.detail.view.widget
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -14,6 +16,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.utils.ActivityLifecycleCallbacksAdapter
 import com.tokopedia.product.detail.databinding.AnimatedTextLabelBinding
 import com.tokopedia.unifyprinciples.Typography
 
@@ -40,6 +43,17 @@ class AnimatedTextLabel : FrameLayout {
 
     private var previousText: String = ""
 
+    private val activityLifeCycle = object: ActivityLifecycleCallbacksAdapter() {
+        override fun onActivityDestroyed(activity: Activity) {
+            if (context == activity) {
+                animationHelper?.clear()
+                animationHelper = null
+                _binding = null
+                unregisterActivityLifecycleCallback()
+            }
+        }
+    }
+
     constructor(context: Context) : super(context) {
         initView()
     }
@@ -57,6 +71,8 @@ class AnimatedTextLabel : FrameLayout {
     }
 
     private fun initView() {
+        registerActivityLifecycleCallback()
+
         _binding = AnimatedTextLabelBinding.bind(
             LayoutInflater.from(context).inflate(R.layout.animated_text_label, this)
         )
@@ -64,11 +80,14 @@ class AnimatedTextLabel : FrameLayout {
         animationHelper = TextLabelAnimator(containerAnimatedLabel, txtAnimatedLabel)
     }
 
-    override fun onViewRemoved(child: View?) {
-        animationHelper?.clear()
-        animationHelper = null
-        _binding = null
-        super.onViewRemoved(child)
+    private fun registerActivityLifecycleCallback() {
+        (context.applicationContext as Application)
+            .registerActivityLifecycleCallbacks(activityLifeCycle)
+    }
+
+    private fun unregisterActivityLifecycleCallback() {
+        (context.applicationContext as Application)
+            .unregisterActivityLifecycleCallbacks(activityLifeCycle)
     }
 
     fun getCurrentText(): String {
@@ -136,7 +155,7 @@ class TextLabelAnimator(
     companion object {
         private const val IDLE_DURATION = 3000L
         private const val AFTER_SWIPE_DURATION = 100L
-        private const val ALPHA_MEDIUM_DURATION = 400L
+        private const val ALPHA_MEDIUM_DURATION = 2000L
         private const val ALPHA_SHORT_DURATION = 250L
         private const val ALPHA_MIN = 0f
         private const val ALPHA_MAX = 1f
