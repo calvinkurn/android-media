@@ -4,12 +4,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataEvent
 import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.DataMapItem
-import com.google.android.gms.wearable.PutDataMapRequest
 import com.google.android.gms.wearable.Wearable
+import com.google.android.gms.wearable.PutDataMapRequest
+import com.google.android.gms.wearable.DataEvent
+import com.google.android.gms.wearable.DataMapItem
 import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -29,6 +30,10 @@ import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.Dispatchers
+import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
+import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -36,7 +41,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener {
@@ -57,6 +62,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
     private val nodeClient by lazy { Wearable.getNodeClient(this) }
     private val messageClient by lazy { Wearable.getMessageClient(this) }
     private val dataClient: DataClient by lazy { Wearable.getDataClient(this) }
+    private val capabilityClient: CapabilityClient by lazy { Wearable.getCapabilityClient(this) }
 
     private val _activityLog = MutableStateFlow(mutableListOf<String>())
     private val activityLog: StateFlow<List<String>> = _activityLog
@@ -107,6 +113,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
         getSummaryData()
         getOrderList()
+
+        checkIfPhoneHasApp()
     }
 
     private fun sendDataToWatch() {
@@ -295,6 +303,29 @@ class TokopediaWatchActivity : AppCompatActivity(),
                     DataLayerServiceListener.GET_SUMMARY_PATH,
                     Gson().toJson(summaryDataModel)
                 )
+            }
+        }
+    }
+
+    private fun checkIfPhoneHasApp() {
+        lifecycleScope.launch {
+            try {
+                val capabilityInfo = capabilityClient
+                    .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                    .await()
+
+                withContext(Dispatchers.Main) {
+                    // There should only ever be one phone in a node set (much less w/ the correct
+                    // capability), so I am just grabbing the first one (which should be the only one).
+                    val nodes = capabilityInfo.nodes
+                    val androidPhoneNodeWithApp =
+                        nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
+                    tv_companion_app.setText((androidPhoneNodeWithApp != null).toString())
+                }
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+            } catch (throwable: Throwable) {
+
             }
         }
     }

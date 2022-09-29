@@ -4,6 +4,7 @@ import NewOrderSummaryScreen
 import SplashScreen
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
+import com.tokopedia.sellerapp.presentation.screen.AppNotInstalledScreen
 import com.tokopedia.sellerapp.presentation.screen.HomeScreen
 import com.tokopedia.sellerapp.presentation.screen.NewOrderDetailScreen
 import com.tokopedia.sellerapp.presentation.screen.NewOrderListScreen
@@ -15,12 +16,14 @@ import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
 
 fun NavGraphBuilder.splashComposable(
-    navigateToHomeScreen: () -> Unit
+    navigateToHomeScreen: () -> Unit,
+    navigateToAppNotInstalledScreen: () -> Unit,
+    sharedViewModel: SharedViewModel,
 ) {
     composable(
         route = ScreenConstant.SPLASH_SCREEN
     ) {
-        SplashScreen(navigateToHomeScreen)
+        SplashScreen(navigateToHomeScreen, navigateToAppNotInstalledScreen, sharedViewModel)
     }
 }
 
@@ -66,5 +69,15 @@ fun NavGraphBuilder.newOrderSummaryScreenComposable(
             navigateToNewOrderList = navigateToNewOrderList,
             dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
         )
+    }
+}
+
+fun NavGraphBuilder.appNotInstalledScreenComposable(
+    sharedViewModel: SharedViewModel,
+) {
+    composable(
+        route = ScreenConstant.APP_NOT_INSTALLED_SCREEN
+    ) {
+        AppNotInstalledScreen(sharedViewModel)
     }
 }
