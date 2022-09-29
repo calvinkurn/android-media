@@ -16,16 +16,16 @@ class DrawerUiComponent constructor(
 
     private val lstThumbnail: RecyclerView = findViewById(R.id.lst_thumbnail)
 
-    private lateinit var drawerAdapter: ThumbnailDrawerAdapter
+    private val drawerAdapter: ThumbnailDrawerAdapter by lazy {
+        ThumbnailDrawerAdapter(listener = this)
+    }
 
     fun getCurrentIndex(): Int {
-        return if (::drawerAdapter.isInitialized) drawerAdapter.getCurrentIndex() else -1
+        return drawerAdapter.getCurrentIndex()
     }
 
     fun refreshItem(updateIndex: Int, newData: List<EditorUiModel>) {
-        if (::drawerAdapter.isInitialized) {
-            drawerAdapter.updateData(updateIndex, newData)
-        }
+        drawerAdapter.updateData(updateIndex, newData)
     }
 
     fun clickIndex(index: Int) {
@@ -36,10 +36,8 @@ class DrawerUiComponent constructor(
         listener.onThumbnailDrawerClicked(originalUrl, resultUrl, clickedIndex)
     }
 
-    fun setupRecyclerView(newData: List<EditorUiModel>) {
-        if (!::drawerAdapter.isInitialized) {
-            drawerAdapter = ThumbnailDrawerAdapter(newData, this)
-        }
+    fun setupView(newData: List<EditorUiModel>) {
+        drawerAdapter.setData(newData)
 
         with(lstThumbnail) {
             layoutManager = LinearLayoutManager(

@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,24 +9,30 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.media.editor.R
-import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.loader.loadImage
-import javax.inject.Inject
 
 class ThumbnailDrawerAdapter constructor(
-    private var dataCollection: List<EditorUiModel>,
+    private var dataCollection: MutableList<EditorUiModel> = mutableListOf(),
     private val listener: Listener
 ) : RecyclerView.Adapter<ThumbnailDrawerViewHolder>() {
 
     private var itemSelectedIndex = 0
 
-    fun getCurrentIndex(): Int{
+    @SuppressLint("NotifyDataSetChanged")
+    fun setData(elements: List<EditorUiModel>) {
+        dataCollection.clear()
+        dataCollection.addAll(elements)
+
+        notifyDataSetChanged()
+    }
+
+    fun getCurrentIndex(): Int {
         return itemSelectedIndex
     }
 
     fun updateData(index: Int, newData: List<EditorUiModel>) {
-        dataCollection = newData
+        dataCollection = newData.toMutableList()
         notifyItemChanged(index)
     }
 
@@ -40,8 +47,13 @@ class ThumbnailDrawerAdapter constructor(
         val isSelected = itemSelectedIndex == position
         holder.setThumbnailSelected(isSelected)
 
-        val editedUrl = if(item.editList.isNotEmpty()) item.editList.last().resultUrl else null
-        if(isSelected) listener.onItemClicked(
+        val editedUrl = if (item.editList.isNotEmpty()) {
+            item.editList.last().resultUrl
+        } else {
+            null
+        }
+
+        if (isSelected) listener.onItemClicked(
             item.getOriginalUrl(),
             editedUrl,
             position
@@ -79,7 +91,8 @@ class ThumbnailDrawerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     fun setThumbnailSelected(isSelected: Boolean) {
         if (isSelected) {
-            val paddingSize = context.resources.getDimension(R.dimen.editor_thumbnail_selected_padding).toInt()
+            val paddingSize =
+                context.resources.getDimension(R.dimen.editor_thumbnail_selected_padding).toInt()
             val backgroundAsset = MethodChecker.getDrawable(
                 context,
                 R.drawable.editor_rect_green_selected_thumbnail

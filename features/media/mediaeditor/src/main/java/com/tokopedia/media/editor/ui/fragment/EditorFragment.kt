@@ -277,7 +277,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     private fun observeEditorParam() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             editorToolComponent.setupView(it.editorToolsList)
-            thumbnailDrawerComponent.setupRecyclerView(viewModel.editStateList.values.toList())
+            thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
 
             if (it.autoCropRatio != null) {
                 startAutoCrop()
