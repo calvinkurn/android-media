@@ -5,18 +5,25 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
+import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
+import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
@@ -70,13 +77,32 @@ internal open class ProductListPresenterTestFixtures {
 
         override fun computation() = Schedulers.immediate()
     }
-    protected open val sameSessionRecommendationPresenterDelegate= mockk<SameSessionRecommendationPresenterDelegate>(relaxed = true)
+    protected val recyclerViewUpdater = mockk<RecyclerViewUpdater>(relaxed = true)
+    protected val sameSessionRecommendationUseCase =
+        mockk<UseCase<SearchSameSessionRecommendationModel>>(relaxed = true)
+    protected val filterController = mockk<FilterController>(relaxed = true)
+    protected val sameSessionRecommendationPreference =
+        mockk<SameSessionRecommendationPreference>(relaxed = true)
+    protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
+    protected val productListAdapter = mockk<ProductListAdapter>(relaxed = true)
+    protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
+
+    protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
         val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
         val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+        sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
+            recyclerViewUpdater,
+            requestParamsGenerator,
+            sameSessionRecommendationUseCase,
+            filterController,
+            sameSessionRecommendationPreference,
+            queryKeyProvider,
+            searchParameterProvider,
+        )
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,

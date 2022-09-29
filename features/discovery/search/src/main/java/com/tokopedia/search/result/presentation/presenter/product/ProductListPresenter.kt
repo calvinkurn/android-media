@@ -265,7 +265,6 @@ class ProductListPresenter @Inject constructor(
     override fun clearData() {
         postProcessingFilter.resetCount()
         paginationImpl.clearData()
-        sameSessionRecommendationPresenterDelegate.clear()
     }
 
     override fun onViewCreated() {
@@ -434,7 +433,6 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.addProductList(loadMoreVisitableList)
-        sameSessionRecommendationPresenterDelegate.restoreSameSessionRecommendation()
         if (hasNextPage()) view.addLoading()
         view.updateScrollListener()
     }
@@ -1053,7 +1051,6 @@ class ProductListPresenter @Inject constructor(
 
         view.removeLoading()
         view.setProductList(list)
-        sameSessionRecommendationPresenterDelegate.restoreSameSessionRecommendation()
         view.backToTop()
         if (hasNextPage())
             view.addLoading()

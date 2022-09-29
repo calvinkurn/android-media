@@ -1,23 +1,16 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
-import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
-import com.tokopedia.search.result.product.QueryKeyProvider
-import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConst.IRRELEVANT_RECOMMENDATION_ID
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.shouldBe
-import com.tokopedia.usecase.UseCase
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
@@ -25,7 +18,6 @@ import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert
-import org.junit.Before
 import org.junit.Test
 import rx.Subscriber
 
@@ -37,16 +29,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     private val emptySameSessionRecommendationResponseJSON =
         "searchproduct/samesessionrecommendation/empty-same-session-recommendation.json"
 
-    private val recyclerViewUpdater = mockk<RecyclerViewUpdater>(relaxed = true)
-    private val sameSessionRecommendationUseCase =
-        mockk<UseCase<SearchSameSessionRecommendationModel>>(relaxed = true)
-    private val filterController = mockk<FilterController>(relaxed = true)
-    private val sameSessionRecommendationPreference =
-        mockk<SameSessionRecommendationPreference>(relaxed = true)
-    private val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
-    private val productListAdapter = mockk<ProductListAdapter>(relaxed = true)
-
-    override lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
+    private val searchParameter = mockk<SearchParameter>(relaxed = true)
+    private val searchParameterMap = mutableMapOf(
+        SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
+    )
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>>
@@ -54,21 +40,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private val recommendationSlot = slot<SameSessionRecommendationDataView>()
     private val selectedVisitableSlot = slot<Visitable<*>>()
-    private val targetPositionSlot = slot<Int>()
-
-    @Before
-    override fun setUp() {
-        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
-        sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
-            recyclerViewUpdater,
-            requestParamsGenerator,
-            sameSessionRecommendationUseCase,
-            filterController,
-            sameSessionRecommendationPreference,
-            queryKeyProvider,
-        )
-        super.setUp()
-    }
 
     @Test
     fun `Product click return empty recommendation`() {
@@ -77,7 +48,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val emptySameSessionRecommendation =
             emptySameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
         `Given view already load data`(lowIntentionKeywordResponse)
-        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(emptySameSessionRecommendation)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            emptySameSessionRecommendation
+        )
+        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
         `Given filter controller has no active filter`()
@@ -99,7 +73,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val sameSessionRecommendation =
             sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
         `Given view already load data`(lowIntentionKeywordResponse)
-        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(sameSessionRecommendation)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
         `Given filter controller has no active filter`()
@@ -121,10 +98,39 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val sameSessionRecommendation =
             sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
         `Given view already load data`(lowIntentionKeywordResponse)
-        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(sameSessionRecommendation)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
         `Given filter controller has active filter`()
+        `Given queryKeyProvider queryKey return empty string`()
+
+        val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
+        val productItemDataView = visitableList[productItemDataViewIndex] as ProductItemDataView
+
+        `When product item is clicked`(productItemDataView, productItemDataViewIndex)
+
+        `Then verify same session recommendation API not called`()
+        `Then verify no recommendationItem added`()
+    }
+
+    @Test
+    fun `Product click with non-default sorting will not call recommendation use case`() {
+        val lowIntentionKeywordResponse =
+            searchProductLowIntentKeywordResponseJSON.jsonToObject<SearchProductModel>()
+        val sameSessionRecommendation =
+            sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
+        `Given view already load data`(lowIntentionKeywordResponse)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given searchParameterProvider getSearchParameter will return searchParameter`()
+        `Given recyclerViewUpdater`()
+        `Given same session recommendation preference will return empty`()
+        `Given filter controller has no active filter`()
+        `Given searchParameter return non-default sorting`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -143,7 +149,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         val sameSessionRecommendation =
             sameSessionRecommendationResponseJSON.jsonToObject<SearchSameSessionRecommendationModel>()
         `Given view already load data`(lowIntentionKeywordResponse)
-        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(sameSessionRecommendation)
+        `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
+            sameSessionRecommendation
+        )
+        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return non-empty`()
         `Given filter controller has no active filter`()
@@ -176,6 +185,15 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
                 searchSameSessionRecommendationModel
             )
         }
+    }
+
+    private fun `Given searchParameterProvider getSearchParameter will return searchParameter`() {
+        every {
+            searchParameterProvider.getSearchParameter()
+        } returns searchParameter
+        every {
+            searchParameter.getSearchParameterMap()
+        } returns searchParameterMap
     }
 
     private fun `Given same session recommendation preference will return non-empty`() {
@@ -215,12 +233,19 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Given recyclerViewUpdater addSameSessionRecommendation`() {
         every {
-            recyclerViewUpdater.insertItemAfter(capture(recommendationSlot), capture(selectedVisitableSlot))
+            recyclerViewUpdater.insertItemAfter(
+                capture(recommendationSlot),
+                capture(selectedVisitableSlot)
+            )
         } just runs
     }
 
     private fun `Given queryKeyProvider queryKey return empty string`() {
         every { queryKeyProvider.queryKey } returns ""
+    }
+
+    private fun `Given searchParameter return non-default sorting`() {
+        searchParameterMap[SearchApiConst.OB] = ""
     }
 
     private fun `When product item is clicked`(
@@ -236,7 +261,10 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     ) {
         verify {
             productListAdapter.removeLastSameSessionRecommendation()
-            recyclerViewUpdater.insertItemAfter(recommendationSlot.captured, selectedVisitableSlot.captured)
+            recyclerViewUpdater.insertItemAfter(
+                recommendationSlot.captured,
+                selectedVisitableSlot.captured
+            )
         }
         Assert.assertEquals(expectedSelectedProduct, selectedVisitableSlot.captured)
         expectedRecommendation.assertRecommendation(recommendationSlot.captured)

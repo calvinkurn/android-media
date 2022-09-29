@@ -64,9 +64,6 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
             || !isHideRecommendationExceedThreshold
 
     private var currentRecommendation: SameSessionRecommendationDataView? = null
-    private var currentRecommendationPosition: Int = -1
-
-    private var isCurrentRecommendationRestored: Boolean = false
 
     fun requestSameSessionRecommendation(
         item: ProductItemDataView,
@@ -118,25 +115,6 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         )
     }
 
-    fun restoreSameSessionRecommendation() {
-        if (isCurrentRecommendationRestored) return
-        if (isAnyFilterOrSortActive) return
-
-        if (currentRecommendationPosition == -1) return
-        val recommendation = currentRecommendation ?: return
-
-        val adapterItemCount = recyclerViewUpdater.productListAdapter?.itemCount ?: 0
-
-        if (adapterItemCount < currentRecommendationPosition) return
-
-        recyclerViewUpdater.insertItemAtIndex(recommendation, currentRecommendationPosition)
-        isCurrentRecommendationRestored = true
-    }
-
-    fun clear() {
-        isCurrentRecommendationRestored = false
-    }
-
     private fun removePreviousSameSessionRecommendation() {
         recyclerViewUpdater.productListAdapter?.removeLastSameSessionRecommendation()
     }
@@ -145,7 +123,6 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         recommendation: SameSessionRecommendationDataView,
         selectedProduct: ProductItemDataView,
     ) {
-        currentRecommendationPosition =
             recyclerViewUpdater.insertItemAfter(recommendation, selectedProduct)
     }
 

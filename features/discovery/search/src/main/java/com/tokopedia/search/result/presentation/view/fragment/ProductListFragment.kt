@@ -210,6 +210,7 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
 
+    @Suppress("LateinitUsage")
     @Inject
     lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
 
