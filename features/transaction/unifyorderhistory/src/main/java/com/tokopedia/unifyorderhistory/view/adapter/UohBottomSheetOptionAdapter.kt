@@ -59,6 +59,13 @@ class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
                        } else {
                            binding.labelOption.text = filterBundle.value
                        }
+
+                       if (filterType == UohConsts.TYPE_FILTER_PRODUCT && filterBundle.desc.isNotEmpty()) {
+                           binding.desc.visible()
+                           binding.desc.text = filterBundle.desc
+                       } else {
+                           binding.desc.gone()
+                       }
                    }
                } else if (filterBundle.type == 1) {
                    binding.run {

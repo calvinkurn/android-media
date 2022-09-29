@@ -251,7 +251,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var orderIdNeedUpdated = ""
     private var currIndexNeedUpdate = -1
     private var isFilterClicked = false
-    private var isFirstLoad = false
+    private var isFirstLoad = true
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
@@ -482,7 +482,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun initialLoadOrderHistoryList() {
-        isFirstLoad = true
         if (arguments?.getString(SOURCE_FILTER) != null) {
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
             if (filterStatus.isNotEmpty()) {
@@ -818,9 +817,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    if (!isFilterClicked && currPage == 1) {
+                    /*if (!isFilterClicked && currPage == 1) {
                         renderChipsFilter(it.data.v2Filters, it.data.categories)
-                    }
+                    }*/
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
                             currPage += 1
@@ -1141,7 +1140,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         _arrayListCategoryProductFilterBundle.clear()
         _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = "", value = ALL_PRODUCTS, type = 0))
         categoryDataList.forEach { category ->
-            _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, type = 0))
+            _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, desc = category.description, type = 0))
 
             // update selected categories when one of uoh applink is opened
             when {
