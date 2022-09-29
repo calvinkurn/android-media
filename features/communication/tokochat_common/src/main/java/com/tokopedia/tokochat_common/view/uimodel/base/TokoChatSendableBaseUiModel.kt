@@ -12,29 +12,8 @@ open class TokoChatSendableBaseUiModel constructor(
     var isDummy: Boolean = builder.isDummy
     val isSender: Boolean = builder.isSender
 
-    var isShowRole = true
-
-    init {
-        this.fromRole = checkRole(fromRole)
-    }
-
-    private fun checkRole(fromRole: String): String {
-        val v = fromRole.toIntOrNull()
-        return when (v) {
-            null -> fromRole
-            else -> {
-                return when (v > listRole.size) {
-                    true -> fromRole
-                    else -> listRole[v - 1]
-                }
-            }
-        }
-    }
-
     companion object {
         val START_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-
-        val listRole = arrayListOf("Buyer", "Shop Owner", "Shop Admin", "Administrator")
 
         fun generateStartTime(): String {
             val date = SimpleDateFormat(

@@ -91,9 +91,9 @@ class TokoChatMessageChatLayout : ViewGroup {
         )?.apply {
             try {
                 showCheckMark =
-                    getBoolean(R.styleable.TokoChatMessageChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokochatShowCheckMark, DEFAULT_SHOW_CHECK_MARK)
                 useMaxWidth =
-                    getBoolean(R.styleable.TokoChatMessageChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokochatUseMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -203,7 +203,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         val textColor = if (msg.isDeleted() || msg.isBanned()) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN800
         }
         message?.setTextColor(MethodChecker.getColor(context, textColor))
     }

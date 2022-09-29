@@ -119,7 +119,6 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     }
 
     private fun bindMargin(message: TokoChatMessageBubbleBaseUiModel) {
-//        if (adapterListener.isOpposite(adapterPosition, message.isSender)) {
         if (message.isSender) {
             binding?.tokochatLayoutBubbleContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
         } else {

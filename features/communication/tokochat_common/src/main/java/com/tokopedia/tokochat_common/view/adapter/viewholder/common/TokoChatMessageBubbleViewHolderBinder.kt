@@ -10,6 +10,10 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MILLISECONDS
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.customview.TokoChatMessageChatLayout
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
@@ -24,13 +28,13 @@ object TokoChatMessageBubbleViewHolderBinder {
             TokoChatViewUtil.generateBackgroundWithShadow(
                 view = view,
                 backgroundColor = R.color.tokochat_dms_right_button_pressed,
-                topLeftRadius = R.dimen.tokochat_20dp,
-                topRightRadius = R.dimen.tokochat_0dp,
-                bottomLeftRadius = R.dimen.tokochat_20dp,
-                bottomRightRadius = R.dimen.tokochat_20dp,
-                shadowColor = R.color.tokochat_dms_chat_bubble_shadow,
-                elevation = R.dimen.tokochat_2dp,
-                shadowRadius = R.dimen.tokochat_1dp,
+                topLeftRadiusValue = TWENTY_DP,
+                topRightRadiusValue = ZERO_DP,
+                bottomLeftRadiusValue = TWENTY_DP,
+                bottomRightRadiusValue = TWENTY_DP,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_20,
+                elevationValue = TWO_DP,
+                shadowRadiusValue = ONE_DP,
                 shadowGravity = Gravity.CENTER
             )
         } else {
@@ -38,14 +42,14 @@ object TokoChatMessageBubbleViewHolderBinder {
         }
         return TokoChatViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = R.color.tokochat_bg_dms_right_bubble,
-            topLeftRadius = R.dimen.tokochat_20dp,
-            topRightRadius = R.dimen.tokochat_0dp,
-            bottomLeftRadius = R.dimen.tokochat_20dp,
-            bottomRightRadius = R.dimen.tokochat_20dp,
-            shadowColor = R.color.tokochat_dms_chat_bubble_shadow,
-            elevation = R.dimen.tokochat_2dp,
-            shadowRadius = R.dimen.tokochat_1dp,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_GN50,
+            topLeftRadiusValue = TWENTY_DP,
+            topRightRadiusValue = ZERO_DP,
+            bottomLeftRadiusValue = TWENTY_DP,
+            bottomRightRadiusValue = TWENTY_DP,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_20,
+            elevationValue = TWO_DP,
+            shadowRadiusValue = ONE_DP,
             shadowGravity = Gravity.CENTER,
             pressedDrawable = pressedBackground
         )
@@ -59,13 +63,13 @@ object TokoChatMessageBubbleViewHolderBinder {
             TokoChatViewUtil.generateBackgroundWithShadow(
                 view = view,
                 backgroundColor = R.color.tokochat_dms_left_button_pressed,
-                topLeftRadius = R.dimen.tokochat_0dp,
-                topRightRadius = R.dimen.tokochat_20dp,
-                bottomLeftRadius = R.dimen.tokochat_20dp,
-                bottomRightRadius = R.dimen.tokochat_20dp,
-                shadowColor = R.color.tokochat_dms_chat_bubble_shadow,
-                elevation = R.dimen.tokochat_2dp,
-                shadowRadius = R.dimen.tokochat_1dp,
+                topLeftRadiusValue = ZERO_DP,
+                topRightRadiusValue = TWENTY_DP,
+                bottomLeftRadiusValue = TWENTY_DP,
+                bottomRightRadiusValue = TWENTY_DP,
+                shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_20,
+                elevationValue = TWO_DP,
+                shadowRadiusValue = ONE_DP,
                 shadowGravity = Gravity.CENTER
             )
         } else {
@@ -73,14 +77,14 @@ object TokoChatMessageBubbleViewHolderBinder {
         }
         return TokoChatViewUtil.generateBackgroundWithShadow(
             view = view,
-            backgroundColor = R.color.tokochat_bg_dms_left_bubble,
-            topLeftRadius = R.dimen.tokochat_1dp,
-            topRightRadius = R.dimen.tokochat_20dp,
-            bottomLeftRadius = R.dimen.tokochat_20dp,
-            bottomRightRadius = R.dimen.tokochat_20dp,
-            shadowColor = R.color.tokochat_dms_chat_bubble_shadow,
-            elevation = R.dimen.tokochat_2dp,
-            shadowRadius = R.dimen.tokochat_1dp,
+            backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_NN0,
+            topLeftRadiusValue = ONE_DP,
+            topRightRadiusValue = TWENTY_DP,
+            bottomLeftRadiusValue = TWENTY_DP,
+            bottomRightRadiusValue = TWENTY_DP,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_20,
+            elevationValue = TWO_DP,
+            shadowRadiusValue = ONE_DP,
             shadowGravity = Gravity.CENTER,
             pressedDrawable = pressedBackground
         )
