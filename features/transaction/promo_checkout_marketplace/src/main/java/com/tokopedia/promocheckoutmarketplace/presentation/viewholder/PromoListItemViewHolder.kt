@@ -696,16 +696,20 @@ class PromoListItemViewHolder(
 
     private fun adjustConstraints(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
-            val layoutParams = containerPromoTitle.layoutParams as ViewGroup.MarginLayoutParams
+            val titleLayoutParams = containerPromoTitle.layoutParams as ViewGroup.MarginLayoutParams
+            val timeLayoutParams = containerTimeValidity.layoutParams as ViewGroup.MarginLayoutParams
             if (!promoHighlightIdentifier.isVisible && !textPromoCodeInfo.isVisible && !containerPromoInfoList.isVisible &&
                 !textTimeValidity.isVisible && !buttonPromoDetail.isVisible && !containerUserValidity.isVisible &&
                 !containerErrorInfo.isVisible
             ) {
-                layoutParams.topMargin = 2.dpToPx(root.context.resources.displayMetrics)
+                titleLayoutParams.topMargin = 8.dpToPx(root.context.resources.displayMetrics)
+                timeLayoutParams.topMargin = 10.dpToPx(root.context.resources.displayMetrics)
             } else {
-                layoutParams.topMargin = 0
+                titleLayoutParams.topMargin = 0
+                timeLayoutParams.topMargin = 6.dpToPx(root.context.resources.displayMetrics)
             }
-            containerPromoTitle.layoutParams = layoutParams
+            containerPromoTitle.layoutParams = titleLayoutParams
+            containerTimeValidity.layoutParams = timeLayoutParams
         }
     }
 }
