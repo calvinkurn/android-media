@@ -213,7 +213,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onSwipeNextPage() {
-        playPreference.setCoachMark(channelId = startChannelId)
+        playPreference.setCoachMark(channelId = startChannelId, userId = viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -284,7 +284,7 @@ class PlayActivity : BaseActivity(),
     private fun observeFirstChannelEvent() {
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
-            playPreference.setCoachMark(true, channelId = startChannelId)
+            playPreference.setCoachMark(true, channelId = startChannelId, userId = viewModel.userId)
         })
     }
 

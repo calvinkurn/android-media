@@ -80,7 +80,7 @@ class PlayPreference @Inject constructor(
 
     private fun getDiffDay(channelId: String) = currentTime - getLastVisit(channelId)
 
-    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String) { // first channel event
+    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String, userId: String) { // first channel event
         if (variant == SWIPE_LIVE_ROOM_VARIANT && getDiffDay(channelId) >= A_DAY_IN_MILLIS) {
             sharedPref.edit().putLong(String.format(SWIPE_ONBOARDING, channelId), System.currentTimeMillis()).apply()
         } else {
@@ -88,7 +88,7 @@ class PlayPreference @Inject constructor(
         }
     }
 
-    fun isCoachMark(channelId: String): Boolean {
+    fun isCoachMark(channelId: String,  userId: String): Boolean {
         return if (variant == SWIPE_LIVE_ROOM_VARIANT)
             getDiffDay(channelId) >= A_DAY_IN_MILLIS
         else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), false)
