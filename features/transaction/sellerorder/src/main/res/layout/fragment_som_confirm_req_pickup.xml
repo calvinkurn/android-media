@@ -249,6 +249,17 @@
                                     app:layout_constraintStart_toEndOf="@+id/tv_invoice_number"
                                     app:layout_constraintTop_toTopOf="@+id/tv_invoice_number" />
 
+                                <View
+                                    android:id="@+id/mask_trigger_invoice_number"
+                                    android:layout_width="0dp"
+                                    android:layout_height="0dp"
+                                    android:background="?android:selectableItemBackground"
+                                    android:hapticFeedbackEnabled="true"
+                                    app:layout_constraintBottom_toBottomOf="@id/tv_invoice_number"
+                                    app:layout_constraintEnd_toEndOf="@id/btn_copy_invoice_number"
+                                    app:layout_constraintStart_toStartOf="@id/tv_invoice_number"
+                                    app:layout_constraintTop_toTopOf="@id/btn_copy_invoice_number" />
+
                                 <com.tokopedia.unifycomponents.DividerUnify
                                     android:id="@+id/divider_2"
                                     android:layout_width="match_parent"

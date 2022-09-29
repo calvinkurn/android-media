@@ -15,9 +15,11 @@ object SomConfirmReqPickupQuery: GqlQueryInterface {
                 title
                 address
                 phone
+                
               }
               detail{
                 title
+                invoice
                 shippers{
                   name
                   service

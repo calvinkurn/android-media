@@ -16,7 +16,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
@@ -212,6 +211,8 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
+            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.pickupLocation.invoice)
+
             if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
                 val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
                 ivCourier.loadImageWithoutPlaceholder(shipper.courierImg)
@@ -230,10 +231,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
                     tvCourierNotes.text = getString(R.string.courier_option_schedule, confirmReqPickupResponse.dataSuccess.detail.orchestraPartner)
                 }
 
-                /**
-                 * DUMMY TEMPORARY For dev. change parameter with invoice number. wait contract BE
-                 */
-                initViewInvoiceNumber("INV/20161025/XVI/X/55069657")
+
             }
 
             if (confirmReqPickupResponse.dataSuccess.notes.listNotes.isNotEmpty()) {
@@ -395,10 +393,10 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
     }
 
-    private fun initViewInvoiceNumber(invoiceNumber: String){
-        if(!invoiceNumber.isNullOrEmpty()){
+    private fun setInvoiceNumber(invoiceNumber: String){
+        if(invoiceNumber.isNotEmpty()){
             binding?.tvInvoiceNumber?.text = invoiceNumber
-            binding?.btnCopyInvoiceNumber?.setOnClickListener{
+            binding?.maskTriggerInvoiceNumber?.setOnClickListener{
                 onTextCopied(getString(R.string.invoice_label), invoiceNumber)
             }
         }else{
