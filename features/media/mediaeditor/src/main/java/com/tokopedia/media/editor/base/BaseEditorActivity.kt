@@ -13,7 +13,15 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
     abstract fun initInjector()
     abstract fun onHeaderActionClick()
 
-    private lateinit var unifyToolbar: HeaderUnify
+    private val unifyToolbar: HeaderUnify by lazy {
+        HeaderUnify(this)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        initViewModel()
+        initBundle(savedInstanceState)
+    }
 
     protected open fun fragmentProvider(): EditorFragmentProvider {
         return EditorFragmentProviderImpl(
@@ -22,34 +30,24 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
         )
     }
 
-    fun setHeader(title: CharSequence, actionText: CharSequence? = null){
+    fun setHeader(title: CharSequence, actionText: CharSequence? = null) {
         clearOldToolbar()
 
-        if (::unifyToolbar.isInitialized){
-            setSupportActionBar( unifyToolbar )
+        setSupportActionBar(unifyToolbar)
 
-            supportActionBar?.setDisplayHomeAsUpEnabled(true)
-            unifyToolbar.title = title
-            unifyToolbar.isShowBackButton = true
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        unifyToolbar.title = title
+        unifyToolbar.isShowBackButton = true
 
-            if(!actionText.isNullOrEmpty()){
-                unifyToolbar.actionText = actionText!!
-                unifyToolbar.actionTextView?.setOnClickListener {
-                    onHeaderActionClick()
-                }
+        if (!actionText.isNullOrEmpty()) {
+            unifyToolbar.actionText = actionText
+            unifyToolbar.actionTextView?.setOnClickListener {
+                onHeaderActionClick()
             }
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModel()
-        initBundle(savedInstanceState)
-
-        unifyToolbar = HeaderUnify(this)
-    }
-
-    private fun clearOldToolbar(){
+    private fun clearOldToolbar() {
         val parent = toolbar.parent as ViewGroup
         parent.removeView(toolbar)
         parent.addView(unifyToolbar, 0)
