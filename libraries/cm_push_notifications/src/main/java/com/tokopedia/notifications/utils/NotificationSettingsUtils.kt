@@ -45,8 +45,9 @@ class NotificationSettingsUtils(private val context: Context) {
     fun sendNotificationPromptEvent() {
         if(Build.VERSION.SDK_INT >= sdkLevel33) {
             try {
-                NotificationSettingsGtmEvents(userSession).sendPromptImpressionEvent(context)
-            } catch (e: Exception) {
+                NotificationSettingsGtmEvents(userSession, context).updateFrequency()
+                NotificationSettingsGtmEvents(userSession, context).sendPromptImpressionEvent(context)
+            } catch (_: Exception) {
             }
         }
     }
@@ -59,8 +60,8 @@ class NotificationSettingsUtils(private val context: Context) {
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 try {
-                    NotificationSettingsGtmEvents(userSession).sendActionAllowEvent(context)
-                } catch (e: Exception) {
+                    NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
+                } catch (_: Exception) {
                 }
 
             } else if (ContextCompat.checkSelfPermission(
@@ -69,10 +70,10 @@ class NotificationSettingsUtils(private val context: Context) {
                 ) == PackageManager.PERMISSION_DENIED
             ) {
                 try {
-                    NotificationSettingsGtmEvents(userSession).sendActionNotAllowEvent(
+                    NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(
                         context
                     )
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                 }
             }
         }
