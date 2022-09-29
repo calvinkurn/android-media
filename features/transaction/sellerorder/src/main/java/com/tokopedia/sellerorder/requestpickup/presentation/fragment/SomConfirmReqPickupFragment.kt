@@ -211,7 +211,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         binding?.run {
             shopAddress.text = confirmReqPickupResponse.dataSuccess.pickupLocation.address
             shopPhone.text = confirmReqPickupResponse.dataSuccess.pickupLocation.phone
-            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.pickupLocation.invoice)
+            setInvoiceNumber(confirmReqPickupResponse.dataSuccess.detail.invoice)
 
             if (confirmReqPickupResponse.dataSuccess.detail.listShippers.isNotEmpty()) {
                 val shipper = confirmReqPickupResponse.dataSuccess.detail.listShippers[0]
@@ -407,8 +407,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
     private fun onTextCopied(label: String, str: String) {
         val clipboardManager = context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         clipboardManager.setPrimaryClip(ClipData.newPlainText(label, str))
-        Toaster.build(requireView(), "Nomor resi berhasil tersalin.", Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL)
-            .show()
+        Toaster.build(requireView(), getString(R.string.success_invoice_copied), Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL).show()
     }
 
 }

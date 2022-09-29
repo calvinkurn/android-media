@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.sellerorder.list.presentation.activities.SomListActivity
+import com.tokopedia.sellerorder.requestpickup.presentation.activity.SomConfirmReqPickupActivity
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
@@ -37,7 +39,8 @@ class MainActivity : AppCompatActivity() {
             testapp_environment?.setBackgroundColor(Color.parseColor("#27ae60"))
         }
 
-        toggle_dark_mode.isChecked = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+        toggle_dark_mode.isChecked =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
         toggle_dark_mode.setOnCheckedChangeListener { _: CompoundButton?, state: Boolean ->
             AppCompatDelegate.setDefaultNightMode(if (state) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO)
         }
@@ -93,8 +96,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if(userSession.isLoggedIn) {
-            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+        if (userSession.isLoggedIn) {
+            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
             loginButton?.text = "Logged in as:\n${identity}"
             logoutButton.visibility = View.VISIBLE
         } else {
@@ -108,6 +111,7 @@ class MainActivity : AppCompatActivity() {
         setLoginStatus()
     }
 
+
     private fun goTo() {
         /* @example: open groupchat module;
          * startActivity(PlayActivity.getCallingIntent(this, "668", true))
@@ -116,12 +120,22 @@ class MainActivity : AppCompatActivity() {
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
         val appLink = etAppLink.text.toString()
-        if(appLink.isNotBlank())
+        if (appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
+//        startActivity(Intent(this,SomListActivity::class.java))
+
+        Intent(this, SomConfirmReqPickupActivity::class.java).apply {
+            putExtra("order_id", "TKPD-1WZZ1DC-222")
+            startActivity(this)
+        }
     }
 
     private fun getDefaultAppLink(): String {
+//        003074363201
+//        TKPD-1WZZ1DC-222
+//        tokopedia://shipping/tracking/1316295922?url_live_tracking=&caller=seller
+//        tokopedia-android-internal://logistic/shipping-confirmation/1316295922
         /*
          * Put your default applink here
          */
