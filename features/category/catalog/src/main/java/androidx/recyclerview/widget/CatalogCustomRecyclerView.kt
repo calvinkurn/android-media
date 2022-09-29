@@ -13,32 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package androidx.recyclerview.widget
 
+import android.content.Context
+import android.util.AttributeSet
+import android.widget.OverScroller
 
-package androidx.recyclerview.widget;
+open class CatalogCustomRecyclerView : RecyclerView {
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int) : super(context, attrs, defStyle)
 
-import android.content.Context;
-import android.util.AttributeSet;
-import android.widget.OverScroller;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-public class CatalogCustomRecyclerView extends RecyclerView {
-
-    public CatalogCustomRecyclerView(@NonNull Context context) {
-        super(context);
-    }
-
-    public CatalogCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public CatalogCustomRecyclerView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    public OverScroller getOverScroller() {
-        return mViewFlinger.mOverScroller;
-    }
+    val overScroller: OverScroller
+        get() = mViewFlinger.mOverScroller
 }
