@@ -2,37 +2,34 @@ package com.tokopedia.universal_sharing.model
 
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 
-fun ImagePolicyResponse.generateToPDP(
-    isBebasOngkir: String,
-    bebasOngkirType: String,
-    productImageUrl: String,
-    productPrice: String,
-    productRating: String,
-    productTitle: String,
-    platform: String
+private fun ImagePolicyResponse.generateToPDP(
+    data: PdpParamModel
 ): ArrayList<ImageGeneratorRequestData> {
-    return ArrayList(response.map { imagePolicy ->
+    return ArrayList(response.args.map { imagePolicy ->
         when (imagePolicy.key) {
             ImageGeneratorConstants.ImageGeneratorKeys.IS_BEBAS_ONGKIR -> {
-                imagePolicy.toRequestParam(isBebasOngkir)
+                imagePolicy.toRequestParam(data.isBebasOngkir.toString())
             }
             ImageGeneratorConstants.ImageGeneratorKeys.BEBAS_ONGKIR_TYPE -> {
-                imagePolicy.toRequestParam(bebasOngkirType)
+                imagePolicy.toRequestParam(data.bebasOngkirType)
             }
             ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
-                imagePolicy.toRequestParam(productImageUrl)
+                imagePolicy.toRequestParam(data.productImageUrl)
             }
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_TITLE -> {
-                imagePolicy.toRequestParam(productPrice)
+                imagePolicy.toRequestParam(data.productPrice.toString())
             }
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_RATING -> {
-                imagePolicy.toRequestParam(productRating)
+                imagePolicy.toRequestParam(data.productRating.toString())
             }
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE -> {
-                imagePolicy.toRequestParam(productTitle)
+                imagePolicy.toRequestParam(data.productPrice.toString())
             }
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL -> {
-                imagePolicy.toRequestParam(platform)
+                imagePolicy.toRequestParam(data.productImageUrl)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
+                imagePolicy.toRequestParam(data.platform)
             }
             else -> {
                 imagePolicy.toRequestParam("")
@@ -40,4 +37,14 @@ fun ImagePolicyResponse.generateToPDP(
 
         }
     })
+}
+
+fun ImagePolicyResponse.generateImageGeneratorParam(data: ImageGeneratorParamModel): ArrayList<ImageGeneratorRequestData> {
+    return when (data) {
+        is PdpParamModel -> {
+            this.generateToPDP(data)
+        } else -> {
+            throw Exception("model is not ImageGeneratorParamModel type")
+        }
+    }
 }

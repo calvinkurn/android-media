@@ -11,12 +11,14 @@ import javax.inject.Inject
 class ImagePolicyUseCase @Inject constructor(private val graphqlRepository: GraphqlRepository) : CoroutineUseCase<String, ImagePolicyResponse>(Dispatchers.IO) {
     override fun graphqlQuery(): String {
         return """
-              imagenerator_policy(${'$'}sourceID:String!) {
-                args {
-                  key
-                  type
-                  required
-                }
+              query imagenerator_policy(${'$'}sourceID:String!) {
+                  imagenerator_policy(sourceID: ${'$'}sourceID) {
+                    args {
+                        key
+                        type
+                        required
+                    }
+                  }
               }
         """.trimIndent()
     }

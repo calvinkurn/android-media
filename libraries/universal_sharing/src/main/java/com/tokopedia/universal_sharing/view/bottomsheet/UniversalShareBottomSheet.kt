@@ -44,9 +44,12 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
+import com.tokopedia.universal_sharing.usecase.ImagePolicyUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -62,6 +65,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -323,6 +327,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private var onViewReadyAction: (() -> Unit)? = null
+
+    private var  imageGeneratorParam: ImageGeneratorParamModel? = null
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -965,7 +971,10 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         if (getImageFromMedia) {
             when (sourceId) {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
-
+                    lifecycleScope.launch {
+                        val listOfParams = executeImagePolicyUseCase(sourceId, shareModel.platform)
+                        executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+                    }
                 }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
@@ -1119,15 +1128,26 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         })
     }
 
-    private fun executeImagePolicyUseCase(sourceId: String) {
-        lifecycleScope.launch(Dispatchers.IO) {
-
+    private suspend fun executeImagePolicyUseCase(sourceId: String, platform: String): ArrayList<ImageGeneratorRequestData> {
+        if (imageGeneratorParam == null) throw Exception("image generator param is null")
+        imageGeneratorParam?.apply {
+            this.platform = platform
         }
+        val result = lifecycleScope.async(Dispatchers.IO) {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val param = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            return@async param
+        }.await()
+        return result
     }
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
         savedImagePath = "{media_image}"
+    }
+
+    fun setImageGeneratorParam(param: ImageGeneratorParamModel) {
+        imageGeneratorParam = param
     }
 
     fun setMediaPageSourceId(pageSourceId: String) {

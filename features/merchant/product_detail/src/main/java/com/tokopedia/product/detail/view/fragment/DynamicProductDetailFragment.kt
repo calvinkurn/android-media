@@ -162,6 +162,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadyHit
 import com.tokopedia.product.detail.data.util.DynamicProductDetailAlreadySwipe
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateAffiliateShareData
+import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateImageGeneratorData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateProductShareData
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.generateUserLocationRequestRates
 import com.tokopedia.product.detail.data.util.DynamicProductDetailMapper.zeroIfEmpty
@@ -259,6 +260,7 @@ import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
@@ -3422,13 +3424,15 @@ open class DynamicProductDetailFragment :
                 if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData =
                 generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
-            checkAndExecuteReferralAction(productData, affiliateData)
+            val pdpImageGeneratorParam = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
+            checkAndExecuteReferralAction(productData, affiliateData, pdpImageGeneratorParam)
         }
     }
 
     private fun checkAndExecuteReferralAction(
         productData: ProductData,
-        affiliateData: AffiliatePDPInput
+        affiliateData: AffiliatePDPInput,
+        imageGeneratorData: PdpParamModel
     ) {
         val fireBaseRemoteMsgGuest =
             remoteConfig.getString(RemoteConfigKey.fireBaseGuestShareMsgKey, "")
@@ -3440,17 +3444,18 @@ open class DynamicProductDetailFragment :
             val fireBaseRemoteMsg = remoteConfig.getString(RemoteConfigKey.fireBaseShareMsgKey, "")
                 ?: ""
             if (!TextUtils.isEmpty(fireBaseRemoteMsg) && fireBaseRemoteMsg.contains(ProductData.PLACEHOLDER_REFERRAL_CODE)) {
-                doReferralShareAction(productData, fireBaseRemoteMsg, affiliateData)
+                doReferralShareAction(productData, fireBaseRemoteMsg, affiliateData, imageGeneratorData)
                 return
             }
         }
-        executeProductShare(productData, affiliateData)
+        executeProductShare(productData, affiliateData, imageGeneratorData)
     }
 
     private fun doReferralShareAction(
         productData: ProductData,
         fireBaseRemoteMsg: String,
-        affiliateData: AffiliatePDPInput
+        affiliateData: AffiliatePDPInput,
+        imageGeneratorData: PdpParamModel
     ) {
         val actionCreator = object : ActionCreator<String, Int> {
             override fun actionSuccess(actionId: Int, dataObj: String) {
@@ -3462,11 +3467,11 @@ open class DynamicProductDetailFragment :
                         )
                     DynamicProductDetailTracking.Moengage.sendMoEngagePDPReferralCodeShareEvent()
                 }
-                executeProductShare(productData, affiliateData)
+                executeProductShare(productData, affiliateData, imageGeneratorData)
             }
 
             override fun actionError(actionId: Int, dataObj: Int?) {
-                executeProductShare(productData, affiliateData)
+                executeProductShare(productData, affiliateData, imageGeneratorData)
             }
         }
         val referralAction = ReferralAction<Context, String, Int, String, String, String, Context>()
@@ -3486,7 +3491,7 @@ open class DynamicProductDetailFragment :
 
     }
 
-    private fun executeProductShare(productData: ProductData, affiliateData: AffiliatePDPInput) {
+    private fun executeProductShare(productData: ProductData, affiliateData: AffiliatePDPInput, imageGeneratorData: PdpParamModel) {
         val enablePdpCustomSharing = remoteConfig.getBoolean(
             REMOTE_CONFIG_KEY_ENABLE_PDP_CUSTOM_SHARING,
             REMOTE_CONFIG_DEFAULT_ENABLE_PDP_CUSTOM_SHARING
@@ -3496,7 +3501,7 @@ open class DynamicProductDetailFragment :
                 ?.replace("(\r\n|\n)".toRegex(), " ")
                 ?: ""
             productData.productShareDescription = "$description..."
-            executeUniversalShare(productData, affiliateData)
+            executeUniversalShare(productData, affiliateData, imageGeneratorData)
         } else {
             executeNativeShare(productData)
         }
@@ -3512,7 +3517,7 @@ open class DynamicProductDetailFragment :
         }, true)
     }
 
-    private fun executeUniversalShare(productData: ProductData, affiliateData: AffiliatePDPInput) {
+    private fun executeUniversalShare(productData: ProductData, affiliateData: AffiliatePDPInput, imageGeneratorData: PdpParamModel) {
         activity?.let {
             val imageUrls = pdpUiUpdater?.mediaMap?.listOfMedia
                 ?.filter { it.type == ProductMediaDataModel.IMAGE_TYPE }
@@ -3530,7 +3535,8 @@ open class DynamicProductDetailFragment :
                     showLoadingUniversalShare()
                 },
                 postBuildImg = { hideProgressDialog() },
-                screenshotDetector
+                screenshotDetector,
+                imageGeneratorData
             )
         }
     }
