@@ -28,6 +28,7 @@
         android:textSize="16sp"
         android:textColor="@color/Unify_Static_White"
         app:typographyType="display_1"
+        app:typographyWeight="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_action"
         app:layout_constraintTop_toTopOf="parent"
