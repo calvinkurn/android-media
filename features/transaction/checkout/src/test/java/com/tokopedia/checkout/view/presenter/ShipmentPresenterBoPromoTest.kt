@@ -54,7 +54,6 @@ import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
