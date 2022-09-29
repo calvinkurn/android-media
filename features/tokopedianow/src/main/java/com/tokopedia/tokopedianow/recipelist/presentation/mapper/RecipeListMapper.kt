@@ -11,6 +11,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiM
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.model.GetRecipeListResponse
 
 object RecipeListMapper {
@@ -80,5 +81,14 @@ object RecipeListMapper {
 
     fun MutableList<Visitable<*>>.removeLoadMoreItem() {
         removeFirst { it is LoadingMoreModel }
+    }
+
+    fun MutableList<Visitable<*>>.addEmptyStateItem(isFilterSelected: Boolean, title: String) {
+        add(
+            RecipeEmptyStateUiModel(
+                isFilterSelected = isFilterSelected,
+                title = title
+            )
+        )
     }
 }
