@@ -60,4 +60,7 @@
     <color name="contact_us_r_400">#ff5c84</color>
     <color name="contact_us_grey_200">#f1f1f1</color>
     <color name="contact_us_black_38">#60000000</color>
+
+    <color name="contact_us_dms_divider">#E5E7E9</color>
+    <color name="contact_us_reaction_green">#03AC0E</color>
 </resources>
