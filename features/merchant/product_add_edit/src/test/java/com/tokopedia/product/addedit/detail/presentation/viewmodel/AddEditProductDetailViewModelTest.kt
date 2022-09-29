@@ -2102,6 +2102,18 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `when shop tier is zero expect getting the commission rate from shop tier 999 - CE version`() {
+        val commissionRules = listOf(
+            CommissionRule(shopType = 999, commissionRate = 2.5),
+            CommissionRule(shopType = 2, commissionRate = 3.5)
+        )
+        val shopType = 0
+        val expectedResult = 2.5
+        val actualResult = viewModel.getCommissionRate(commissionRules, shopType)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
     fun `getShopInfo should return expected data when request params is provided`() = coroutineTestRule.runBlockingTest {
         coEvery {
             getShopInfoUseCase.executeOnBackground()
@@ -2165,6 +2177,14 @@ class AddEditProductDetailViewModelTest {
         viewModel.getCommissionInfo(1)
         val resultErrorMessage = viewModel.commissionInfoError.getOrAwaitValue()
         assertEquals(expectedErrorMessage, resultErrorMessage.localizedMessage)
+    }
+
+    @Test
+    fun `get commission info variables in viewmodel should have expected default values`() {
+        assertFalse(viewModel.isSavingPriceAdjustment)
+        assertFalse(viewModel.isPriceSuggestionRangeEmpty)
+        assertFalse(viewModel.isFreeOfServiceFee)
+        assertEquals(0,viewModel.shopTier)
     }
 
     private fun getIsTheLastOfWholeSaleTestResult(

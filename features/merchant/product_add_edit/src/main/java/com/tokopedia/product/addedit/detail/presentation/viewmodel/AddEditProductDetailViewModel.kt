@@ -884,6 +884,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     }
 
     fun getCommissionRate(commissionRules: List<CommissionRule>, shopTier: Int): Double {
+        // shop service regular merchant id is 0; while in commission engine regular merchant id is 999
+        // therefore we need to convert it first before getting the commission rate from commission engine service
         val shopType = if (shopTier == ShopStatusLevelDef.LEVEL_REGULAR) GET_COMMISSION_ENGINE_REGULAR_MERCHANT else shopTier
         return commissionRules.firstOrNull { it.shopType == shopType }?.commissionRate.orZero()
     }
