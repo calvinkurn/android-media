@@ -395,7 +395,7 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
 
     private fun setInvoiceNumber(invoiceNumber: String) {
         if (invoiceNumber.isNotEmpty()) {
-            binding?.tvInvoiceNumber?.text = invoiceNumber
+            binding?.tvInvoiceNumber?.text = HtmlLinkHelper(requireContext(), "<b>${invoiceNumber}</b>").spannedString
             binding?.maskTriggerInvoiceNumber?.setOnClickListener {
                 onTextCopied(getString(R.string.invoice_label), invoiceNumber)
             }
