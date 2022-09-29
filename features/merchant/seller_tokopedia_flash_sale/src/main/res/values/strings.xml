@@ -261,5 +261,9 @@
     <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
     <string name="stfs_title_qty_editor_title">Stok Campaign</string>
     <string name="stfs_text_button_save">Simpan</string>
+    <string name="stfs_text_ticker_warning">Harga diskon di semua lokasi Dilayani Tokopedia wajib sama. Harga akan disamakan secara otomatis, ya.</string>
+    <string name="stfs_toaster_error">Beberapa info produk gagal disimpan. Periksa kembali daftar produkmu, ya.</string>
+    <string name="stfs_toaster_valid">Info produk sudah diubah.</string>
+    <string name="stfs_toaster_ok">Oke</string>
 
 </resources>
