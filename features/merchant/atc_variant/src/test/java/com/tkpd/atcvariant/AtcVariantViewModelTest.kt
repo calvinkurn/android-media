@@ -20,7 +20,6 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
@@ -445,74 +444,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         viewModel.onVariantClicked(true, warnaId, unguId, "image variant", 1)
 
         assertRestrictionData(assertSuccess = false)
-    }
-    //endregion
-
-    //region wishlist or ingatkan saya clicked
-    @Test
-    fun `on success clicked ingatkan saya`() {
-        //fulfill cart redirection data
-        `render initial variant with given child id not buyable and hit gql tokonow`()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
-
-        assertButton(false,
-                "check_wishlist",
-                "secondary_grays",
-                "Cek wishlist kamu ya")
-        Assert.assertTrue(viewModel.addWishlistResult.value is Success)
-    }
-
-    @Test
-    fun `on success clicked ingatkan saya with empty data`() {
-        decideFailValueHitGqlAggregator()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
-
-        assertButton(false, null, null, null)
-        Assert.assertTrue(viewModel.addWishlistResult.value is Success)
-    }
-
-    @Test
-    fun `on fail clicked ingatkan saya`() {
-        //fulfill cart redirection data
-        `render initial variant with given child id not buyable and hit gql tokonow`()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList("gagal", productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, false)
-
-        assertButton(false,
-                "remind_me",
-                "secondary_green",
-                "Ingatkan Saya")
-
-        Assert.assertTrue(viewModel.addWishlistResult.value is Fail)
     }
     //endregion
 

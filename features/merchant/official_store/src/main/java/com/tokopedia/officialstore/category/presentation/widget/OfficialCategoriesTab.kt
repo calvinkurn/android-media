@@ -12,13 +12,12 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.officialstore.R
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import java.util.*
 
 
 class OfficialCategoriesTab(context: Context,
@@ -35,6 +34,19 @@ class OfficialCategoriesTab(context: Context,
     private var animationCollapse: ValueAnimator ?= null
 
     private var isExpand = true
+
+    companion object {
+        private const val START_EXPAND_DP = 32
+        private const val DURATION_TIME_EXPAND_COLLAPSE: Long = 300
+    }
+
+    fun setMeasuredHeight() {
+        tabMaxHeight = this.measuredHeight
+    }
+
+    fun getMeasureHeight(): Int {
+        return tabMaxHeight
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     fun setup(viewPager: ViewPager, tabItemDataList: List<CategoriesItemTab>) {
@@ -65,7 +77,6 @@ class OfficialCategoriesTab(context: Context,
 
 
     private fun initResources() {
-        tabMaxHeight = resources.getDimensionPixelSize(R.dimen.os_tab_max_height)
         tabMinHeight = resources.getDimensionPixelSize(R.dimen.os_tab_min_height)
     }
 
@@ -77,16 +88,14 @@ class OfficialCategoriesTab(context: Context,
         }
     }
 
-    private fun startTabHeightExpandAnimation(appBarLayout: AppBarLayout) {
-        expandAllTab()
-        if (layoutParams.height != tabMaxHeight) {
-            appBarLayout.setExpanded(true)
-        }
-    }
-
     private fun expandAllTab() {
         if(animationExpand == null)
-            animationExpand = getValueAnimator(32.dp.toFloat(), 64.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            animationExpand = getValueAnimator(
+                START_EXPAND_DP.dp.toFloat(),
+                tabMaxHeight.toFloat(),
+                DURATION_TIME_EXPAND_COLLAPSE,
+                AccelerateDecelerateInterpolator()
+            ) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
@@ -119,14 +128,19 @@ class OfficialCategoriesTab(context: Context,
 
     private fun collapseAllTab() {
         if(animationCollapse == null) animationCollapse =
-            getValueAnimator(64.dp.toFloat(), 32.dp.toFloat(), 300, AccelerateDecelerateInterpolator()) {
+            getValueAnimator(
+                tabMaxHeight.toFloat(),
+                START_EXPAND_DP.dp.toFloat(),
+                DURATION_TIME_EXPAND_COLLAPSE,
+                AccelerateDecelerateInterpolator()
+            ) {
                 if (this.layoutParams != null) {
                     val params: ViewGroup.LayoutParams = layoutParams
                     params.height = it.toInt()
                     requestLayout()
                 }
             }
-        if(this.measuredHeight == 64.dp) {
+        if (this.measuredHeight >= tabMaxHeight) {
             animationCollapse?.start()
             isExpand = false
             for (i in 0 until tabCount) {
@@ -158,7 +172,6 @@ class OfficialCategoriesTab(context: Context,
     }
 
     private fun setupListener() {
-
         addOnTabSelectedListener(object : OnTabSelectedListener {
             override fun onTabReselected(tab: Tab) {
                 tab.customView?.apply {
@@ -167,7 +180,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_P600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -182,7 +195,7 @@ class OfficialCategoriesTab(context: Context,
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_N700_96
+                                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
                             )
                         )
                         setWeight(Typography.REGULAR)
@@ -192,12 +205,13 @@ class OfficialCategoriesTab(context: Context,
 
             override fun onTabSelected(tab: Tab) {
                 tab.customView?.apply {
-                    this.findViewById<ImageView>(R.id.image_view_category_icon)?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
+                    this.findViewById<ImageUnify>(R.id.image_view_category_icon)
+                        ?.loadImageWithCache(categoriesItemTab[tab.position].iconUrl)
                     this.findViewById<Typography>(R.id.text_view_category_title)?.apply {
                         setTextColor(
                             MethodChecker.getColor(
                                 context,
-                                R.color.Unify_P600
+                                com.tokopedia.unifyprinciples.R.color.Unify_P600
                             )
                         )
                         setWeight(Typography.BOLD)
@@ -208,11 +222,12 @@ class OfficialCategoriesTab(context: Context,
         })
     }
 
+    @SuppressLint("ResourcePackage")
     private fun getTabView(context: Context, position: Int): View {
         val view = LayoutInflater.from(context).inflate(R.layout.view_official_store_category, null)
         with(view) {
             val image_view_category_icon =
-                view?.findViewById<ImageView>(R.id.image_view_category_icon)
+                view?.findViewById<ImageUnify>(R.id.image_view_category_icon)
             val text_view_category_title =
                 view?.findViewById<Typography>(R.id.text_view_category_title)
             val tab_category_container =
@@ -225,15 +240,6 @@ class OfficialCategoriesTab(context: Context,
                 R.drawable.ic_loading_image
             )
             text_view_category_title?.text = categoriesItemTab[position].title
-            tab_category_container?.afterMeasured {
-                categoriesItemTab[position].currentWidth = width
-                categoriesItemTab[position].minWidth = width
-                categoriesItemTab[position].maxWidth = width + 32.dp
-
-                categoriesItemTab[position].currentHeight = height
-                categoriesItemTab[position].minHeight = height - 32.dp
-                categoriesItemTab[position].maxHeight = height
-            }
         }
         return view
     }
@@ -265,11 +271,5 @@ class OfficialCategoriesTab(context: Context,
             val title: String,
             val iconUrl: String,
             val inactiveIconUrl: String,
-            var currentWidth: Int = 64.dp,
-            var currentHeight: Int = 64.dp,
-            var minWidth: Int = 64.dp,
-            var maxWidth: Int = 64.dp,
-            var minHeight: Int = 64.dp,
-            var maxHeight: Int = 64.dp
     )
 }
