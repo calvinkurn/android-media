@@ -83,14 +83,14 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                 productPrice.text = feedDetailProductModel.product.priceMaskedFmt
                 productTag.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                    text = feedDetailProductModel.originalPriceFmt
+                    text = feedDetailProductModel.priceFmt
                 }
             } else {
                 if (feedDetailProductModel.isDiscount) {
                     discountLabel.text = feedDetailProductModel.discountFmt
                     productTag.apply {
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                        text = feedDetailProductModel.originalPriceFmt
+                        text = feedDetailProductModel.priceFmt
                     }
                     productPrice.text = feedDetailProductModel.priceDiscountFmt
                 } else {
