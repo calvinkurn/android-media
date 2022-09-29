@@ -21,7 +21,7 @@ import com.tokopedia.developer_options.config.DevOptConfig
 /**
  * Created By : Jonathan Darwin on September 28, 2022
  */
-class DevOpsNotificationManager(
+class DevOptNotificationManager(
     private val application: Application
 ) {
     private val notificationManager = NotificationManagerCompat.from(application)

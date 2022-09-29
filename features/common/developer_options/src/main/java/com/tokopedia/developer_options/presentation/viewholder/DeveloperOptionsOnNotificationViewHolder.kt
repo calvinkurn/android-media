@@ -7,7 +7,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.developer_options.R
 import com.tokopedia.developer_options.config.DevOptConfig
-import com.tokopedia.developer_options.notification.DevOpsNotificationManager
+import com.tokopedia.developer_options.notification.DevOptNotificationManager
 import com.tokopedia.developer_options.presentation.model.DeveloperOptionsOnNotificationUiModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
@@ -25,7 +25,7 @@ class DeveloperOptionsOnNotificationViewHolder(
 
     private val context = itemView.context
 
-    private val notificationManager = DevOpsNotificationManager(context.applicationContext as Application)
+    private val notificationManager = DevOptNotificationManager(context.applicationContext as Application)
 
     override fun bind(element: DeveloperOptionsOnNotificationUiModel) {
 
