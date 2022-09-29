@@ -13,7 +13,8 @@ data class UpcomingFlashSaleItem(
     val formattedEndDate: String,
     val endDate : Date,
     val quotaUsagePercentage: Int,
-    val submissionEndDate: Date
+    val submissionEndDate: Date,
+    val useMultiLocation: Boolean
 ) : DelegateAdapterItem {
     override fun id() = id
 }
