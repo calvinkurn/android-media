@@ -646,7 +646,7 @@ class ShipmentPresenterBoPromoTest {
     }
 
     @Test
-    fun `WHEN clear order from last validate use with valid unique id with valid promo code THEN remove matching last apply order`() {
+    fun `WHEN clear order from last validate use with valid unique id and valid promo code THEN remove matching last apply order`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
@@ -668,7 +668,7 @@ class ShipmentPresenterBoPromoTest {
     }
 
     @Test
-    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN don't clear last validate use promo code`() {
+    fun `WHEN clear order from last validate use with valid unique id and invalid promo code THEN don't clear last validate use promo code`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
