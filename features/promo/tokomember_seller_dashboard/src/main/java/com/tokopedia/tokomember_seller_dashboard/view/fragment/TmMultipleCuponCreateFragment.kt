@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -1409,8 +1410,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             tmCouponStartTimeUnix = startTime
                             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                             tmCouponStartTimeUnix?.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
-                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
-                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toIntOrZero())
+                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toIntOrZero())
                             updatedStartTimeCoupon = tmCouponStartTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
@@ -1422,8 +1423,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             tmCouponEndTimeUnix = startTime
                             val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                             tmCouponEndTimeUnix?.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
-                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
-                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toIntOrZero())
+                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toIntOrZero())
                             updatedEndTimeCoupon = tmCouponEndTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
