@@ -15,6 +15,7 @@ import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
 import com.tokopedia.url.TokopediaUrl
 import java.io.ByteArrayOutputStream
+import java.lang.NullPointerException
 import java.lang.reflect.Type
 import javax.inject.Inject
 
@@ -53,7 +54,14 @@ class UploadPrescriptionUseCase @Inject constructor(
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             "${IMAGE_DATA_PREFIX}${encodedString}"
         }catch (e : Exception){
-            EPharmacyUtils.logException(e)
+            when(e){
+                is NullPointerException -> {
+                    EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
+                }
+                else -> {
+                    EPharmacyUtils.logException(e)
+                }
+            }
             ""
         }
     }

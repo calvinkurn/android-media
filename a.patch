@@ -13,10 +13,10 @@ index 451520d1e48e..2e0b2ed13c24 100644
 +/robust/
 \ No newline at end of file
 diff --git a/build.gradle b/build.gradle
-index 22c388c24679..b7ea1cc08158 100644
+index 22c388c24679..76afbf0d41fe 100644
 --- a/build.gradle
 +++ b/build.gradle
-@@ -24,15 +24,19 @@ buildscript {
+@@ -24,15 +24,16 @@ buildscript {
                  username = "${gcp_artifactory_username}"
                  password = "${gcp_artifactory_password}"
              }
@@ -29,16 +29,13 @@ index 22c388c24679..b7ea1cc08158 100644
 +        classpath ('com.android.tools.build:gradle:7.0.4') {
              exclude module: 'proguard-gradle'
          }
-+//        classpath ('com.android.tools.build:gradle:4.2.1') {
-+//            exclude module: 'proguard-gradle'
-+//        }
          classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
 -        classpath('net.sf.proguard:proguard-gradle:6.0') {
 +        classpath('net.sf.proguard:proguard-gradle:6.0.3') {
              force = true
          }
          classpath("org.jfrog.buildinfo:build-info-extractor-gradle:4.18.2") {
-@@ -48,7 +52,7 @@ buildscript {
+@@ -48,7 +49,7 @@ buildscript {
          classpath 'com.tokopedia.patch:core:1.0.0'
          classpath 'org.javassist:javassist:3.20.0-GA'
          classpath "androidx.benchmark:benchmark-gradle-plugin:1.0.0"
@@ -47,7 +44,7 @@ index 22c388c24679..b7ea1cc08158 100644
          classpath "com.newrelic.agent.android:agent-gradle-plugin:$newRelicVersion"
          classpath "com.gradle:gradle-enterprise-gradle-plugin:3.6.3"
          classpath "gradle.plugin.org.gradle.android:android-cache-fix-gradle-plugin:2.4.4"
-@@ -66,11 +70,11 @@ apply from: 'buildproj.gradle'
+@@ -66,12 +67,6 @@ apply from: 'buildproj.gradle'
  
  apply from: "$rootDir/tools/set_debug_tools.gradle"
  
@@ -56,16 +53,12 @@ index 22c388c24679..b7ea1cc08158 100644
 -        project.apply plugin: "org.gradle.android.cache-fix"
 -    }
 -}
-+//subprojects{
-+//    plugins.withType(com.android.build.gradle.BasePlugin) {
-+//        project.apply plugin: "org.gradle.android.cache-fix"
-+//    }
-+//}
- 
+-
  //Installing Git Hooks
  task installGitHooks {
+     doLast {
 diff --git a/buildconfig/dependencies/dependencies.gradle b/buildconfig/dependencies/dependencies.gradle
-index edcd41a4ba10..60e35c132858 100755
+index 3c7b4c2c0f31..698b20773f39 100755
 --- a/buildconfig/dependencies/dependencies.gradle
 +++ b/buildconfig/dependencies/dependencies.gradle
 @@ -1,6 +1,6 @@
@@ -113,7 +106,7 @@ index edcd41a4ba10..60e35c132858 100755
              autopatchbase         : "com.tokopedia.patch:core:1.0.0",
              apacheLang            : "org.apache.commons:commons-lang3:3.0",
 diff --git a/buildconfig/kotlin/core-module.gradle b/buildconfig/kotlin/core-module.gradle
-index 8911910e8e55..6c1565f7c278 100644
+index 8911910e8e55..1ea3707def9d 100644
 --- a/buildconfig/kotlin/core-module.gradle
 +++ b/buildconfig/kotlin/core-module.gradle
 @@ -25,12 +25,12 @@ android {
@@ -128,12 +121,12 @@ index 8911910e8e55..6c1565f7c278 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
 diff --git a/buildconfig/kotlin/module.gradle b/buildconfig/kotlin/module.gradle
-index 91ddcd4edaff..609fe30383bb 100644
+index 91ddcd4edaff..ed4bc62d0a06 100644
 --- a/buildconfig/kotlin/module.gradle
 +++ b/buildconfig/kotlin/module.gradle
 @@ -42,12 +42,12 @@ android {
@@ -148,7 +141,7 @@ index 91ddcd4edaff..609fe30383bb 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
@@ -195,7 +188,7 @@ index 49a9bdc34888..917ce6e9e9a9 100644
          maven {
              url "https://jitpack.io"
 diff --git a/customer_mid_app/build.gradle b/customer_mid_app/build.gradle
-index 9e2f06e131b4..c6f528e51cf5 100644
+index 5dfe369b27fa..96f6bc48990c 100644
 --- a/customer_mid_app/build.gradle
 +++ b/customer_mid_app/build.gradle
 @@ -29,8 +29,8 @@ android {
@@ -209,7 +202,7 @@ index 9e2f06e131b4..c6f528e51cf5 100644
      }
      packagingOptions {
          exclude 'META-INF/**'
-@@ -100,6 +100,7 @@ dependencies {
+@@ -98,6 +98,7 @@ dependencies {
      implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
      implementation projectOrAar(rootProject.ext.libraries.videoplayer)
      implementation projectOrAar(rootProject.ext.libraries.websocket)
@@ -218,10 +211,10 @@ index 9e2f06e131b4..c6f528e51cf5 100644
      implementation projectOrAar(rootProject.ext.features.csat_rating)
      implementation projectOrAar(rootProject.ext.features.resourcesCommon)
 diff --git a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
-index 9c91175c8dc2..6282ebcc255c 100644
+index 2ad50271a6a3..0605dc3e3c3c 100644
 --- a/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
 +++ b/customer_mid_app/src/main/java/com/tokopedia/tkpd/app/ConsumerMainApplication.java
-@@ -89,6 +89,7 @@ import com.tokopedia.unifyprinciples.Typography;
+@@ -90,6 +90,7 @@ import com.tokopedia.unifyprinciples.Typography;
  import com.tokopedia.url.TokopediaUrl;
  import com.tokopedia.weaver.WeaveInterface;
  import com.tokopedia.weaver.Weaver;
@@ -229,7 +222,7 @@ index 9c91175c8dc2..6282ebcc255c 100644
  
  import org.jetbrains.annotations.NotNull;
  
-@@ -155,6 +156,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication
+@@ -159,6 +160,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication
          com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
          createAndCallPreSeq();
          super.onCreate();
@@ -238,7 +231,7 @@ index 9c91175c8dc2..6282ebcc255c 100644
          initializeAbTestVariant();
          createAndCallFetchAbTest();
 diff --git a/customerapp/build.gradle b/customerapp/build.gradle
-index e630191ba73d..15d91772248c 100644
+index e630191ba73d..4caf6c0a486f 100644
 --- a/customerapp/build.gradle
 +++ b/customerapp/build.gradle
 @@ -3,6 +3,7 @@ apply plugin: 'embrace-swazzler'
@@ -270,7 +263,7 @@ index e630191ba73d..15d91772248c 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      configurations.all {
@@ -372,30 +365,12 @@ index fdbaafb2bed8..36f67f923ca8 100644
 +}
 \ No newline at end of file
 diff --git a/customerapp/src/main/res/xml/network_security_config.xml b/customerapp/src/main/res/xml/network_security_config.xml
-index 28d9341a3d24..ba217bdebd41 100644
+index 28d9341a3d24..f57fd3f1d8e9 100644
 --- a/customerapp/src/main/res/xml/network_security_config.xml
 +++ b/customerapp/src/main/res/xml/network_security_config.xml
-@@ -7,6 +7,11 @@
-             <certificates src="user" />
-         </trust-anchors>
-     </debug-overrides>
-+    <base-config cleartextTrafficPermitted="true">
-+        <trust-anchors>
-+            <certificates src="system" />
-+        </trust-anchors>
-+    </base-config>
-     <domain-config cleartextTrafficPermitted="true">
-         <domain includeSubdomains="false">localhost</domain>
-         <domain includeSubdomains="true">172.31.2.144</domain>
-@@ -22,5 +27,10 @@
-         <domain includeSubdomains="false">apigw.xl.co.id</domain>
+@@ -23,4 +23,4 @@
          <domain includeSubdomains="false">autohe.xl.co.id</domain>
          <domain includeSubdomains="false">gateway.egw.xl.co.id</domain>
-+        <domain includeSubdomains="true">https://hansel-testsdk.tokopedia.com</domain>
-+        <trust-anchors>
-+            <certificates src="user"/>
-+            <certificates src="system"/>
-+        </trust-anchors>
      </domain-config>
 -</network-security-config>
 \ No newline at end of file
@@ -571,7 +546,7 @@ index 079de25b34a4..e451760a4378 100644
      flavorDimensions "tier", "client"
  
 diff --git a/dynamic-features/base/df_base/build.gradle b/dynamic-features/base/df_base/build.gradle
-index 78e0ad3468c2..72e5934bb3b0 100644
+index fee3185b0b64..248a375e3318 100644
 --- a/dynamic-features/base/df_base/build.gradle
 +++ b/dynamic-features/base/df_base/build.gradle
 @@ -1,6 +1,7 @@
@@ -621,10 +596,18 @@ index e30e53311488..b40cf40dc624 100644
  
  dependencies {
 diff --git a/dynamic-features/common/df_alpha_testing/build.gradle b/dynamic-features/common/df_alpha_testing/build.gradle
-index fad66fcdd64b..e1c8fe7ee2c3 100644
+index fad66fcdd64b..d780f912292d 100644
 --- a/dynamic-features/common/df_alpha_testing/build.gradle
 +++ b/dynamic-features/common/df_alpha_testing/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+ 
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -715,6 +698,18 @@ index 8d039c791be1..e32814956c9e 100644
      // Specifies 4 flavor dimensions.
      flavorDimensions "tier", "client"
  
+diff --git a/dynamic-features/digital/df_digital/build.gradle b/dynamic-features/digital/df_digital/build.gradle
+index 04921360a912..c66b21684733 100644
+--- a/dynamic-features/digital/df_digital/build.gradle
++++ b/dynamic-features/digital/df_digital/build.gradle
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+ 
+ buildscript {
+     repositories {
 diff --git a/dynamic-features/entertainment/df_entertainment/build.gradle b/dynamic-features/entertainment/df_entertainment/build.gradle
 index e1a325a43b02..906f7338784c 100644
 --- a/dynamic-features/entertainment/df_entertainment/build.gradle
@@ -766,10 +761,18 @@ index 81c69a5b9606..d99309c3aaf9 100644
      flavorDimensions "tier", "client"
  
 diff --git a/dynamic-features/merchant/df_merchant_nonlogin/build.gradle b/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
-index 700870c0e094..b07781ea5d6c 100644
+index 700870c0e094..4a11e3f6e572 100644
 --- a/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
 +++ b/dynamic-features/merchant/df_merchant_nonlogin/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+ 
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -933,6 +936,18 @@ index 47209140bb9b..357374b726e4 100644
      // Specifies 4 flavor dimensions.
      flavorDimensions "tier", "client"
  
+diff --git a/dynamic-features/tokofood/df_tokofood/build.gradle b/dynamic-features/tokofood/df_tokofood/build.gradle
+index 71107832d292..818787906c18 100644
+--- a/dynamic-features/tokofood/df_tokofood/build.gradle
++++ b/dynamic-features/tokofood/df_tokofood/build.gradle
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+ 
+ buildscript {
+     repositories {
 diff --git a/dynamic-features/tokopedianow/df_tokopedianow/build.gradle b/dynamic-features/tokopedianow/df_tokopedianow/build.gradle
 index 4232500d80d3..b2f5d7c014f3 100644
 --- a/dynamic-features/tokopedianow/df_tokopedianow/build.gradle
@@ -984,10 +999,18 @@ index d2eebf8e610e..0b6cd964fdc4 100644
      flavorDimensions "tier", "client"
  
 diff --git a/dynamic-features/travel/df_travel_lib/build.gradle b/dynamic-features/travel/df_travel_lib/build.gradle
-index ec21958bea16..db5172d6f819 100644
+index ec21958bea16..2943a6ae5564 100644
 --- a/dynamic-features/travel/df_travel_lib/build.gradle
 +++ b/dynamic-features/travel/df_travel_lib/build.gradle
-@@ -28,6 +28,12 @@ android {
+@@ -1,6 +1,7 @@
+ apply plugin: 'com.android.dynamic-feature'
+ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+ apply plugin: 'io.hansel.preprocessor.feature'
++apply plugin: 'robust'
+ 
+ buildscript {
+     repositories {
+@@ -28,6 +29,12 @@ android {
          targetSdkVersion rootProject.ext.targetSdkVersion
      }
  
@@ -1051,7 +1074,7 @@ index f1d5375c04fe..a2921e814c5e 100644
      flavorDimensions "tier", "client"
  
 diff --git a/features/communication/attachvoucher/build.gradle b/features/communication/attachvoucher/build.gradle
-index 9dbcdc1dcc2e..84cf831de918 100755
+index 9dbcdc1dcc2e..53804589944b 100755
 --- a/features/communication/attachvoucher/build.gradle
 +++ b/features/communication/attachvoucher/build.gradle
 @@ -21,11 +21,12 @@ android {
@@ -1066,12 +1089,12 @@ index 9dbcdc1dcc2e..84cf831de918 100755
 +
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/features/communication/inbox/build.gradle b/features/communication/inbox/build.gradle
-index 021099840896..dfed41d4ee94 100644
+index f5bc8ba46777..9e8d144ecf06 100644
 --- a/features/communication/inbox/build.gradle
 +++ b/features/communication/inbox/build.gradle
 @@ -26,11 +26,11 @@ android {
@@ -1090,7 +1113,7 @@ index 021099840896..dfed41d4ee94 100644
  }
  
 diff --git a/features/communication/orderhistory/build.gradle b/features/communication/orderhistory/build.gradle
-index 9e8f48b99a5d..bd07385e9525 100644
+index 00869f69f0bb..35135da579ac 100644
 --- a/features/communication/orderhistory/build.gradle
 +++ b/features/communication/orderhistory/build.gradle
 @@ -20,7 +20,7 @@ android {
@@ -1103,7 +1126,7 @@ index 9e8f48b99a5d..bd07385e9525 100644
  
      buildFeatures {
 diff --git a/features/communication/topchat/build.gradle b/features/communication/topchat/build.gradle
-index 77a2ab31b6e5..8581b852abc2 100644
+index 53ab9af08531..551f4b002f47 100644
 --- a/features/communication/topchat/build.gradle
 +++ b/features/communication/topchat/build.gradle
 @@ -31,11 +31,11 @@ android {
@@ -1122,7 +1145,7 @@ index 77a2ab31b6e5..8581b852abc2 100644
      sourceSets {
          test {
 diff --git a/features/content/feed/src/main/java/com/tokopedia/feedplus/view/fragment/FeedPlusContainerFragment.kt b/features/content/feed/src/main/java/com/tokopedia/feedplus/view/fragment/FeedPlusContainerFragment.kt
-index b280e6eef3da..8d1354a79de6 100644
+index aa1f16936617..d1368e44194d 100644
 --- a/features/content/feed/src/main/java/com/tokopedia/feedplus/view/fragment/FeedPlusContainerFragment.kt
 +++ b/features/content/feed/src/main/java/com/tokopedia/feedplus/view/fragment/FeedPlusContainerFragment.kt
 @@ -10,6 +10,7 @@ import android.util.Log
@@ -1133,7 +1156,7 @@ index b280e6eef3da..8d1354a79de6 100644
  import androidx.appcompat.widget.Toolbar
  import androidx.lifecycle.Observer
  import androidx.lifecycle.ViewModelProvider
-@@ -90,6 +91,7 @@ import com.tokopedia.feedcomponent.R as feedComponentR
+@@ -88,6 +89,7 @@ import com.tokopedia.feedcomponent.R as feedComponentR
  private const val FEED_PAGE = "feed"
  private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
  
@@ -1173,7 +1196,7 @@ index af5091b055a4..784df3788d59 100644
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/content/play/build.gradle b/features/content/play/build.gradle
-index c30e358ecbcf..267961a5a788 100644
+index c30e358ecbcf..c698f740aabf 100644
 --- a/features/content/play/build.gradle
 +++ b/features/content/play/build.gradle
 @@ -26,7 +26,7 @@ android {
@@ -1181,12 +1204,12 @@ index c30e358ecbcf..267961a5a788 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      defaultConfig {
 diff --git a/features/content/play_broadcaster/build.gradle b/features/content/play_broadcaster/build.gradle
-index 083153b1aaa7..f50ad5fbaa06 100644
+index 083153b1aaa7..5a99b54582fa 100644
 --- a/features/content/play_broadcaster/build.gradle
 +++ b/features/content/play_broadcaster/build.gradle
 @@ -15,12 +15,12 @@ buildscript {
@@ -1201,12 +1224,12 @@ index 083153b1aaa7..f50ad5fbaa06 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      defaultConfig {
 diff --git a/features/content/play_common/build.gradle b/features/content/play_common/build.gradle
-index d86c7c20bc23..288a63dcec23 100644
+index 55e3e1543d66..4fdea99c1207 100644
 --- a/features/content/play_common/build.gradle
 +++ b/features/content/play_common/build.gradle
 @@ -4,12 +4,12 @@ apply plugin: 'io.hansel.preprocessor.module'
@@ -1221,7 +1244,7 @@ index d86c7c20bc23..288a63dcec23 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      buildFeatures {
@@ -1246,7 +1269,7 @@ index 83588b829731..d6a1cf2be01e 100644
  }
  
 diff --git a/features/discovery/autocomplete/build.gradle b/features/discovery/autocomplete/build.gradle
-index 954cbb13b68e..3133de114d2c 100644
+index 954cbb13b68e..bff51f9981d9 100644
 --- a/features/discovery/autocomplete/build.gradle
 +++ b/features/discovery/autocomplete/build.gradle
 @@ -25,7 +25,7 @@ android {
@@ -1254,12 +1277,12 @@ index 954cbb13b68e..3133de114d2c 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/features/discovery/autocomplete_component/build.gradle b/features/discovery/autocomplete_component/build.gradle
-index 17bc86267881..a345aaabdd15 100644
+index 2d7b787e6191..3561f316dc3c 100644
 --- a/features/discovery/autocomplete_component/build.gradle
 +++ b/features/discovery/autocomplete_component/build.gradle
 @@ -31,7 +31,7 @@ android {
@@ -1267,7 +1290,7 @@ index 17bc86267881..a345aaabdd15 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      buildFeatures {
@@ -1315,21 +1338,10 @@ index 03d7f6cae4a2..a09528cd0d7a 100644
  }
  
 diff --git a/features/discovery/global_nav_widget/build.gradle b/features/discovery/global_nav_widget/build.gradle
-index 2570b0bfa09b..c88241fc4bf3 100644
+index 2570b0bfa09b..1bd1826d6f5c 100644
 --- a/features/discovery/global_nav_widget/build.gradle
 +++ b/features/discovery/global_nav_widget/build.gradle
-@@ -5,9 +5,24 @@ apply from: "$rootProject.projectDir/buildconfig/module.gradle"
- apply plugin: 'io.hansel.preprocessor.module'
- 
- android {
-+    compileOptions {
-+        sourceCompatibility JavaVersion.VERSION_11
-+        targetCompatibility JavaVersion.VERSION_11
-+    }
-+    // For Kotlin projects
-+    kotlinOptions {
-+        jvmTarget = "11"
-+    }
+@@ -8,6 +8,13 @@ android {
      buildFeatures {
          viewBinding true
      }
@@ -1344,7 +1356,7 @@ index 2570b0bfa09b..c88241fc4bf3 100644
  repositories {
      maven { url 'https://maven-hansel.tokopedia.com/maven' }
 diff --git a/features/discovery/home/build.gradle b/features/discovery/home/build.gradle
-index 8672d37c327d..0bbf1b9737b0 100644
+index a22b23dd34ee..1f9e4cd73a91 100644
 --- a/features/discovery/home/build.gradle
 +++ b/features/discovery/home/build.gradle
 @@ -29,7 +29,7 @@ android {
@@ -1352,12 +1364,12 @@ index 8672d37c327d..0bbf1b9737b0 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      defaultConfig {
 diff --git a/features/discovery/home_component/build.gradle b/features/discovery/home_component/build.gradle
-index a840f500506f..25ba499ae070 100644
+index a840f500506f..186fc6dba83f 100644
 --- a/features/discovery/home_component/build.gradle
 +++ b/features/discovery/home_component/build.gradle
 @@ -27,7 +27,7 @@ android {
@@ -1365,12 +1377,12 @@ index a840f500506f..25ba499ae070 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/discovery/home_nav/build.gradle b/features/discovery/home_nav/build.gradle
-index 95e4c861c241..a24fa684c54b 100644
+index 95e4c861c241..6624879002ff 100644
 --- a/features/discovery/home_nav/build.gradle
 +++ b/features/discovery/home_nav/build.gradle
 @@ -23,16 +23,16 @@ android{
@@ -1378,7 +1390,7 @@ index 95e4c861c241..a24fa684c54b 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -1394,7 +1406,7 @@ index 95e4c861c241..a24fa684c54b 100644
      dependencies {
          classpath rootProject.ext.miscDependencies.hansel
 diff --git a/features/discovery/recentview/build.gradle b/features/discovery/recentview/build.gradle
-index 57c217f2bc82..58388faea17a 100644
+index 6e479ddfbea0..ce287bf6b98b 100644
 --- a/features/discovery/recentview/build.gradle
 +++ b/features/discovery/recentview/build.gradle
 @@ -23,7 +23,7 @@ buildscript {
@@ -1402,12 +1414,12 @@ index 57c217f2bc82..58388faea17a 100644
  android {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/discovery/search/build.gradle b/features/discovery/search/build.gradle
-index d19832b47c11..c1b1e696442c 100644
+index d19832b47c11..2b32c6ac5c9b 100644
 --- a/features/discovery/search/build.gradle
 +++ b/features/discovery/search/build.gradle
 @@ -30,7 +30,7 @@ android {
@@ -1415,12 +1427,12 @@ index d19832b47c11..c1b1e696442c 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      defaultConfig {
 diff --git a/features/entertainment/deals/build.gradle b/features/entertainment/deals/build.gradle
-index 720e2d1b27d1..84c738826478 100644
+index 0cd309c8c88d..255351644a2e 100644
 --- a/features/entertainment/deals/build.gradle
 +++ b/features/entertainment/deals/build.gradle
 @@ -31,11 +31,11 @@ android {
@@ -1439,7 +1451,7 @@ index 720e2d1b27d1..84c738826478 100644
  }
  
 diff --git a/features/fintech/pdp_fintech_widget/build.gradle b/features/fintech/pdp_fintech_widget/build.gradle
-index 87d11894b74b..29c706d28f77 100644
+index 87d11894b74b..ad43667a22bb 100644
 --- a/features/fintech/pdp_fintech_widget/build.gradle
 +++ b/features/fintech/pdp_fintech_widget/build.gradle
 @@ -19,11 +19,11 @@ buildscript {
@@ -1453,7 +1465,7 @@ index 87d11894b74b..29c706d28f77 100644
      }
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      buildFeatures {
@@ -1473,7 +1485,7 @@ index 22b55f658478..02e2002898c3 100644
  }
  
 diff --git a/features/home/searchbar/build.gradle b/features/home/searchbar/build.gradle
-index 5ebddf80c859..64871f599bbb 100644
+index 5ebddf80c859..578ecb4070a1 100644
 --- a/features/home/searchbar/build.gradle
 +++ b/features/home/searchbar/build.gradle
 @@ -30,12 +30,12 @@ android {
@@ -1488,12 +1500,12 @@ index 5ebddf80c859..64871f599bbb 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/features/media/live-broadcaster/build.gradle b/features/media/live-broadcaster/build.gradle
-index 24670f2dc713..2f1da40c81f0 100644
+index 24670f2dc713..10f54d4b20aa 100644
 --- a/features/media/live-broadcaster/build.gradle
 +++ b/features/media/live-broadcaster/build.gradle
 @@ -11,12 +11,12 @@ kapt {
@@ -1508,7 +1520,7 @@ index 24670f2dc713..2f1da40c81f0 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      buildTypes {
@@ -1533,7 +1545,7 @@ index abd430eda8db..95ad892be0f2 100644
  
      testOptions {
 diff --git a/features/media/mediapicker/build.gradle b/features/media/mediapicker/build.gradle
-index d170f3e20a7f..da7f1bf8d3ab 100644
+index d170f3e20a7f..a8eced30be67 100644
 --- a/features/media/mediapicker/build.gradle
 +++ b/features/media/mediapicker/build.gradle
 @@ -33,12 +33,12 @@ android {
@@ -1548,12 +1560,12 @@ index d170f3e20a7f..da7f1bf8d3ab 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      sourceSets {
 diff --git a/features/merchant/brandlist/build.gradle b/features/merchant/brandlist/build.gradle
-index d1db755690a6..16dc91214959 100644
+index d1db755690a6..cd5c1bda8c84 100644
 --- a/features/merchant/brandlist/build.gradle
 +++ b/features/merchant/brandlist/build.gradle
 @@ -24,7 +24,7 @@ android {
@@ -1561,12 +1573,12 @@ index d1db755690a6..16dc91214959 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/features/merchant/official_store/build.gradle b/features/merchant/official_store/build.gradle
-index 428bf085bbed..b37d98633d81 100644
+index fd0f70efc25b..030b93abbf1a 100644
 --- a/features/merchant/official_store/build.gradle
 +++ b/features/merchant/official_store/build.gradle
 @@ -26,7 +26,7 @@ android {
@@ -1574,7 +1586,7 @@ index 428bf085bbed..b37d98633d81 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -1612,7 +1624,7 @@ index 5a85fb81aca7..0e714fd58430 100644
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/ordermanagement/snapshot/build.gradle b/features/ordermanagement/snapshot/build.gradle
-index e24e447e4442..5a9727077f5d 100644
+index e24e447e4442..9210b13d22cf 100644
 --- a/features/ordermanagement/snapshot/build.gradle
 +++ b/features/ordermanagement/snapshot/build.gradle
 @@ -22,7 +22,7 @@ android {
@@ -1620,12 +1632,12 @@ index e24e447e4442..5a9727077f5d 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/payment/gopay.kyc/build.gradle b/features/payment/gopay.kyc/build.gradle
-index 31023fdc74cb..8bc7a5b83762 100644
+index 31023fdc74cb..0752ae30f2db 100644
 --- a/features/payment/gopay.kyc/build.gradle
 +++ b/features/payment/gopay.kyc/build.gradle
 @@ -19,12 +19,12 @@ buildscript {
@@ -1640,12 +1652,12 @@ index 31023fdc74cb..8bc7a5b83762 100644
      // For Kotlin projects
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/payment/pms/build.gradle b/features/payment/pms/build.gradle
-index 1d74fccc9048..7964698b0df6 100644
+index 1d74fccc9048..7e092f98cf57 100644
 --- a/features/payment/pms/build.gradle
 +++ b/features/payment/pms/build.gradle
 @@ -20,12 +20,12 @@ buildscript {
@@ -1660,7 +1672,7 @@ index 1d74fccc9048..7964698b0df6 100644
      // For Kotlin projects
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
@@ -1722,7 +1734,7 @@ index 487dcfe6e4d9..d7191e9b1be1 100644
  }
  
 diff --git a/features/recharge/recharge_component/build.gradle b/features/recharge/recharge_component/build.gradle
-index 7b04292b9549..9d240440018c 100644
+index 7b04292b9549..ac509ddc5731 100644
 --- a/features/recharge/recharge_component/build.gradle
 +++ b/features/recharge/recharge_component/build.gradle
 @@ -27,7 +27,7 @@ android {
@@ -1730,7 +1742,7 @@ index 7b04292b9549..9d240440018c 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
@@ -1812,7 +1824,7 @@ index 79de6e96bd8b..835715827559 100644
      buildFeatures {
          viewBinding true
 diff --git a/features/transaction/buyerorder/build.gradle b/features/transaction/buyerorder/build.gradle
-index e16fc8158d48..d00242b6e86b 100644
+index 315c2ba8548a..b24715df2fe8 100644
 --- a/features/transaction/buyerorder/build.gradle
 +++ b/features/transaction/buyerorder/build.gradle
 @@ -21,7 +21,7 @@ android {
@@ -1820,12 +1832,12 @@ index e16fc8158d48..d00242b6e86b 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/transaction/checkout/build.gradle b/features/transaction/checkout/build.gradle
-index e825235d6b56..a923ca49e162 100644
+index e825235d6b56..fc4c29b23eda 100644
 --- a/features/transaction/checkout/build.gradle
 +++ b/features/transaction/checkout/build.gradle
 @@ -25,7 +25,7 @@ android {
@@ -1833,12 +1845,12 @@ index e825235d6b56..a923ca49e162 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
 diff --git a/features/transaction/unifyorderhistory/build.gradle b/features/transaction/unifyorderhistory/build.gradle
-index b29ed9fb645c..ed11ca379ac5 100644
+index b29ed9fb645c..de996a2b88c5 100644
 --- a/features/transaction/unifyorderhistory/build.gradle
 +++ b/features/transaction/unifyorderhistory/build.gradle
 @@ -29,7 +29,7 @@ android {
@@ -1846,12 +1858,12 @@ index b29ed9fb645c..ed11ca379ac5 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/transaction/wishlist/build.gradle b/features/transaction/wishlist/build.gradle
-index 99bdff26deda..cf55ec1360b8 100644
+index 99bdff26deda..fb2ca745edba 100644
 --- a/features/transaction/wishlist/build.gradle
 +++ b/features/transaction/wishlist/build.gradle
 @@ -25,7 +25,7 @@ android {
@@ -1859,12 +1871,12 @@ index 99bdff26deda..cf55ec1360b8 100644
      }
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
      defaultConfig {
          multiDexEnabled true
 diff --git a/features/transaction/wishlist_common/build.gradle b/features/transaction/wishlist_common/build.gradle
-index 6aade40edafd..f88939ec11cb 100644
+index 5c18033b73bb..4d53825e0634 100644
 --- a/features/transaction/wishlist_common/build.gradle
 +++ b/features/transaction/wishlist_common/build.gradle
 @@ -24,8 +24,12 @@ android {
@@ -1943,7 +1955,7 @@ index 5373dec2c68a..4df544c7ec1e 100644
              isReturnToHome = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, true) as Boolean
              isClearDataOnly = intent.extras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_CLEAR_DATA_ONLY, false) as Boolean
 diff --git a/features/user/settingnotif/build.gradle b/features/user/settingnotif/build.gradle
-index cf5d8f4b2502..ab9427d7a7d8 100644
+index cf5d8f4b2502..204a4ae5346d 100644
 --- a/features/user/settingnotif/build.gradle
 +++ b/features/user/settingnotif/build.gradle
 @@ -8,12 +8,12 @@ repositories {
@@ -1958,7 +1970,7 @@ index cf5d8f4b2502..ab9427d7a7d8 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -2003,18 +2015,9 @@ index 8840918e64c2..21f2c0ac4fa9 100644
          viewBinding true
      }
 diff --git a/gradle.properties b/gradle.properties
-index a564b1025768..38107b4e26b0 100644
+index a564b1025768..a44f10ff16d9 100644
 --- a/gradle.properties
 +++ b/gradle.properties
-@@ -13,7 +13,7 @@
- # http://www.gradle.org/docs/current/userguide/multi_project_builds.html#sec:decoupled_projects
- org.gradle.daemon=true
- org.gradle.parallel=true
--org.gradle.jvmargs=-Xmx12G -XX:+HeapDumpOnOutOfMemoryError
-+org.gradle.jvmargs=-Xmx14G -XX:+HeapDumpOnOutOfMemoryError
- # Set this in gradle.properties‹
- org.gradle.caching=true
- ci_username=dev_apps
 @@ -25,7 +25,6 @@ authToken=jp_sv3sov9akgpn22fa8m97u7milt
  enableStability=false
  android.useAndroidX=true
@@ -2059,7 +2062,7 @@ index 000000000000..54afd04b92c4
 +    </exceptPackname>
 +</resources>
 diff --git a/libraries/akamai_bot_lib/build.gradle b/libraries/akamai_bot_lib/build.gradle
-index f7610db75949..7c9c1d5977ef 100644
+index f7610db75949..e2a07de04680 100644
 --- a/libraries/akamai_bot_lib/build.gradle
 +++ b/libraries/akamai_bot_lib/build.gradle
 @@ -13,6 +13,16 @@ buildscript {
@@ -2072,7 +2075,7 @@ index f7610db75949..7c9c1d5977ef 100644
 +        targetCompatibility JavaVersion.VERSION_11
 +    }
 +    kotlinOptions {
-+        jvmTarget = '11'
++        jvmTarget = JavaVersion.VERSION_11
 +    }
 +}
 +
@@ -2080,7 +2083,7 @@ index f7610db75949..7c9c1d5977ef 100644
      implementation fileTree(dir: 'libs', include: ['*.jar'])
      implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 diff --git a/libraries/analytics_debugger/build.gradle b/libraries/analytics_debugger/build.gradle
-index 5c8fcf7abc37..5e4e42edea44 100644
+index fc6d55f52ab9..170dad8ed140 100644
 --- a/libraries/analytics_debugger/build.gradle
 +++ b/libraries/analytics_debugger/build.gradle
 @@ -14,7 +14,7 @@ buildscript {
@@ -2088,7 +2091,7 @@ index 5c8fcf7abc37..5e4e42edea44 100644
  android {
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
      buildFeatures {
          viewBinding true
@@ -2108,7 +2111,7 @@ index af374bfd8a80..b46d1f9dc5a2 100644
  }
  
 diff --git a/libraries/applink/build.gradle b/libraries/applink/build.gradle
-index d02aa1a056dc..89401d75e609 100644
+index d02aa1a056dc..f001b608d4b2 100644
 --- a/libraries/applink/build.gradle
 +++ b/libraries/applink/build.gradle
 @@ -15,12 +15,12 @@ buildscript {
@@ -2123,12 +2126,12 @@ index d02aa1a056dc..89401d75e609 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/libraries/composite_lib/analytic_param/build.gradle b/libraries/composite_lib/analytic_param/build.gradle
-index ae2d7cc2eec7..8fb97c7029b0 100644
+index ae2d7cc2eec7..d2ca05880eed 100644
 --- a/libraries/composite_lib/analytic_param/build.gradle
 +++ b/libraries/composite_lib/analytic_param/build.gradle
 @@ -7,8 +7,8 @@ dependencies {
@@ -2137,8 +2140,8 @@ index ae2d7cc2eec7..8fb97c7029b0 100644
  
 -sourceCompatibility = "7"
 -targetCompatibility = "7"
-+sourceCompatibility = "11"
-+targetCompatibility = "11"
++sourceCompatibility = JavaVersion.VERSION_11
++targetCompatibility = JavaVersion.VERSION_11
  buildscript {
      repositories {
          google()
@@ -2147,18 +2150,18 @@ index ae2d7cc2eec7..8fb97c7029b0 100644
  compileKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  compileTestKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/libraries/composite_lib/analytic_testapp/build.gradle b/libraries/composite_lib/analytic_testapp/build.gradle
-index 10a2eb3ba0b8..ff86be0af6de 100644
+index 10a2eb3ba0b8..13d013d3e8fd 100644
 --- a/libraries/composite_lib/analytic_testapp/build.gradle
 +++ b/libraries/composite_lib/analytic_testapp/build.gradle
 @@ -24,8 +24,8 @@ android {
@@ -2167,13 +2170,13 @@ index 10a2eb3ba0b8..ff86be0af6de 100644
      compileOptions {
 -        sourceCompatibility 1.8
 -        targetCompatibility 1.8
-+        sourceCompatibility 11
-+        targetCompatibility 11
++        sourceCompatibility JavaVersion.VERSION_11
++        targetCompatibility JavaVersion.VERSION_11
      }
  }
  
 diff --git a/libraries/composite_lib/annotation_processor_analytic/build.gradle b/libraries/composite_lib/annotation_processor_analytic/build.gradle
-index 735619166126..8ada8cf9d4bc 100644
+index 735619166126..0e83ad684be0 100644
 --- a/libraries/composite_lib/annotation_processor_analytic/build.gradle
 +++ b/libraries/composite_lib/annotation_processor_analytic/build.gradle
 @@ -6,8 +6,8 @@ dependencies {
@@ -2182,8 +2185,8 @@ index 735619166126..8ada8cf9d4bc 100644
  
 -sourceCompatibility = "8"
 -targetCompatibility = "8"
-+sourceCompatibility = "11"
-+targetCompatibility = "11"
++sourceCompatibility = JavaVersion.VERSION_11
++targetCompatibility = JavaVersion.VERSION_11
  
  buildscript {
      repositories {
@@ -2192,13 +2195,13 @@ index 735619166126..8ada8cf9d4bc 100644
  compileKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  compileTestKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -2215,7 +2218,7 @@ index e207d9cb9524..b42b42ccf7a5 100644
      }
      dependencies {
 diff --git a/libraries/composite_lib/buildSrc/build.gradle b/libraries/composite_lib/buildSrc/build.gradle
-index 55cd5122c34f..f06e7dff597f 100644
+index 55cd5122c34f..7699f1039ddf 100644
 --- a/libraries/composite_lib/buildSrc/build.gradle
 +++ b/libraries/composite_lib/buildSrc/build.gradle
 @@ -32,8 +32,8 @@ task createClasspathManifest {
@@ -2224,13 +2227,13 @@ index 55cd5122c34f..f06e7dff597f 100644
  
 -compileKotlin { kotlinOptions { jvmTarget = "1.8" } }
 -compileTestKotlin { kotlinOptions { jvmTarget = "1.8" } }
-+compileKotlin { kotlinOptions { jvmTarget = "11" } }
-+compileTestKotlin { kotlinOptions { jvmTarget = "11" } }
++compileKotlin { kotlinOptions { jvmTarget = JavaVersion.VERSION_11 } }
++compileTestKotlin { kotlinOptions { jvmTarget = JavaVersion.VERSION_11 } }
  
  dependencies {
      testRuntimeOnly files(createClasspathManifest)
 diff --git a/libraries/composite_lib/gqlquery_annotation/build.gradle b/libraries/composite_lib/gqlquery_annotation/build.gradle
-index 674677a9aa32..094c64baf021 100644
+index 674677a9aa32..fedc9a3a5951 100644
 --- a/libraries/composite_lib/gqlquery_annotation/build.gradle
 +++ b/libraries/composite_lib/gqlquery_annotation/build.gradle
 @@ -18,17 +18,17 @@ buildscript {
@@ -2238,25 +2241,25 @@ index 674677a9aa32..094c64baf021 100644
  compileKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  compileTestKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 -sourceCompatibility = "8"
 -targetCompatibility = "8"
-+sourceCompatibility = "11"
-+targetCompatibility = "11"
++sourceCompatibility = JavaVersion.VERSION_11
++targetCompatibility = JavaVersion.VERSION_11
  
  project.ext {
      artifactId = 'gqlquery_annotation'
 diff --git a/libraries/composite_lib/gqlquery_annotation_processor/build.gradle b/libraries/composite_lib/gqlquery_annotation_processor/build.gradle
-index fada56be4605..2a9c27392313 100644
+index fada56be4605..0b814547bb6b 100644
 --- a/libraries/composite_lib/gqlquery_annotation_processor/build.gradle
 +++ b/libraries/composite_lib/gqlquery_annotation_processor/build.gradle
 @@ -20,17 +20,17 @@ dependencies {
@@ -2265,19 +2268,19 @@ index fada56be4605..2a9c27392313 100644
  
 -sourceCompatibility = "8"
 -targetCompatibility = "8"
-+sourceCompatibility = "11"
-+targetCompatibility = "11"
++sourceCompatibility = JavaVersion.VERSION_11
++targetCompatibility = JavaVersion.VERSION_11
  
  compileKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  compileTestKotlin {
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -2294,7 +2297,7 @@ index 54be78ca0d61..1d853b73ae02 100644
          credentials {
              username = "${ci_username}"
 diff --git a/libraries/device_info/build.gradle b/libraries/device_info/build.gradle
-index 63687d04d0c9..00de3a93aa2b 100644
+index 63687d04d0c9..9df6ed014933 100644
 --- a/libraries/device_info/build.gradle
 +++ b/libraries/device_info/build.gradle
 @@ -18,12 +18,12 @@ android {
@@ -2309,7 +2312,7 @@ index 63687d04d0c9..00de3a93aa2b 100644
  
      kotlinOptions {
 -        jvmTarget = JavaVersion.VERSION_1_8.toString()
-+        jvmTarget = JavaVersion.VERSION_11.toString()
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
@@ -2339,7 +2342,7 @@ index c96622d473d0..0dd9ee6159c9 100644
          private set
  
 diff --git a/libraries/inappupdate/build.gradle b/libraries/inappupdate/build.gradle
-index 52bdee2ecd2f..1d034439b0e2 100644
+index 52bdee2ecd2f..897e82e4daf8 100644
 --- a/libraries/inappupdate/build.gradle
 +++ b/libraries/inappupdate/build.gradle
 @@ -13,6 +13,16 @@ buildscript {
@@ -2352,7 +2355,7 @@ index 52bdee2ecd2f..1d034439b0e2 100644
 +        targetCompatibility JavaVersion.VERSION_11
 +    }
 +    kotlinOptions {
-+        jvmTarget = '11'
++        jvmTarget = JavaVersion.VERSION_11
 +    }
 +}
 +
@@ -2360,7 +2363,7 @@ index 52bdee2ecd2f..1d034439b0e2 100644
      implementation rootProject.ext.playServicesDependencies.core
      implementation projectOrAar(rootProject.ext.libraries.logger)
 diff --git a/libraries/logger/build.gradle b/libraries/logger/build.gradle
-index 1a7dc6c52ac4..34cf147c0eac 100644
+index 1a7dc6c52ac4..08f86e537cab 100644
 --- a/libraries/logger/build.gradle
 +++ b/libraries/logger/build.gradle
 @@ -34,6 +34,16 @@ dependencies {
@@ -2373,7 +2376,7 @@ index 1a7dc6c52ac4..34cf147c0eac 100644
 +        targetCompatibility JavaVersion.VERSION_11
 +    }
 +    kotlinOptions {
-+        jvmTarget = '11'
++        jvmTarget = JavaVersion.VERSION_11
 +    }
 +}
 +
@@ -2381,7 +2384,7 @@ index 1a7dc6c52ac4..34cf147c0eac 100644
      artifactId = 'logger'
      groupId = 'com.tokopedia.library'
 diff --git a/libraries/macrobenchmark/build.gradle b/libraries/macrobenchmark/build.gradle
-index 9f2f02e96b6b..c786b2dcd12e 100644
+index 9f2f02e96b6b..579a4f99c98d 100644
 --- a/libraries/macrobenchmark/build.gradle
 +++ b/libraries/macrobenchmark/build.gradle
 @@ -17,11 +17,11 @@ android {
@@ -2395,7 +2398,7 @@ index 9f2f02e96b6b..c786b2dcd12e 100644
      }
      kotlinOptions {
 -        jvmTarget = '1.8'
-+        jvmTarget = '11'
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      signingConfigs {
@@ -2413,7 +2416,7 @@ index 2a776a485228..e4125b657e46 100644
 +    </entry>
  </defaultsMap>
 diff --git a/libraries/tokopatch/build.gradle b/libraries/tokopatch/build.gradle
-index 59135ab9363d..be0d5fa5aaef 100644
+index 59135ab9363d..e25a52179e2d 100644
 --- a/libraries/tokopatch/build.gradle
 +++ b/libraries/tokopatch/build.gradle
 @@ -19,12 +19,12 @@ android {
@@ -2428,12 +2431,12 @@ index 59135ab9363d..be0d5fa5aaef 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      buildTypes {
 diff --git a/libraries/track/build.gradle b/libraries/track/build.gradle
-index a04279944785..ec4951835687 100644
+index a04279944785..05819533e0b3 100644
 --- a/libraries/track/build.gradle
 +++ b/libraries/track/build.gradle
 @@ -23,4 +23,15 @@ project.ext {
@@ -2451,12 +2454,12 @@ index a04279944785..ec4951835687 100644
 +    }
 +
 +    kotlinOptions {
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
 +    }
 +}
 \ No newline at end of file
 diff --git a/libraries/utils/build.gradle b/libraries/utils/build.gradle
-index 7051bfc4bf2a..d650b36fd084 100644
+index 7051bfc4bf2a..639c06f67204 100644
 --- a/libraries/utils/build.gradle
 +++ b/libraries/utils/build.gradle
 @@ -40,8 +40,11 @@ android {
@@ -2469,12 +2472,12 @@ index 7051bfc4bf2a..d650b36fd084 100644
 +        targetCompatibility JavaVersion.VERSION_11
 +    }
 +    kotlinOptions {
-+        jvmTarget = '11'
++        jvmTarget = JavaVersion.VERSION_11
      }
  }
  
 diff --git a/sellerapp/build.gradle b/sellerapp/build.gradle
-index cced8c49cd43..4d227bc7b103 100644
+index 50c774a7d5ca..119fa86c5c5d 100644
 --- a/sellerapp/build.gradle
 +++ b/sellerapp/build.gradle
 @@ -1,7 +1,4 @@
@@ -2574,27 +2577,12 @@ index 03dc388a011f..07849239a395 100644
 +-keep class kotlin.coroutines.Continuation
 \ No newline at end of file
 diff --git a/sellerapp/src/main/res/xml/network_security_config.xml b/sellerapp/src/main/res/xml/network_security_config.xml
-index 036ee343cd75..03a4d0035348 100644
+index 036ee343cd75..056ce9fdd2f2 100644
 --- a/sellerapp/src/main/res/xml/network_security_config.xml
 +++ b/sellerapp/src/main/res/xml/network_security_config.xml
-@@ -7,9 +7,19 @@
-             <certificates src="user" />
-         </trust-anchors>
-     </debug-overrides>
-+    <base-config cleartextTrafficPermitted="true">
-+        <trust-anchors>
-+            <certificates src="system" />
-+        </trust-anchors>
-+    </base-config>
-     <domain-config cleartextTrafficPermitted="true">
-         <domain includeSubdomains="false">localhost</domain>
+@@ -12,4 +12,4 @@
          <domain includeSubdomains="true">172.31.2.144</domain>
          <domain includeSubdomains="true">gjk.io</domain>
-+        <domain includeSubdomains="true">https://hansel-testsdk.tokopedia.com</domain>
-+        <trust-anchors>
-+            <certificates src="user"/>
-+            <certificates src="system"/>
-+        </trust-anchors>
      </domain-config>
 -</network-security-config>
 \ No newline at end of file
@@ -2618,7 +2606,7 @@ index 8accddbc235f..abc39256151a 100644
  }
  
 diff --git a/testapp/build.gradle b/testapp/build.gradle
-index b73b5ecf5f6f..0bf388750cca 100644
+index fa6a893405cf..b65f8d0dfc6d 100644
 --- a/testapp/build.gradle
 +++ b/testapp/build.gradle
 @@ -68,8 +68,8 @@ android {
@@ -2633,7 +2621,7 @@ index b73b5ecf5f6f..0bf388750cca 100644
  }
  dependencies {
 diff --git a/testing/joint/dg_transaction/build.gradle b/testing/joint/dg_transaction/build.gradle
-index 935538b6682b..e05926d31e68 100644
+index 935538b6682b..a79680f89a4a 100644
 --- a/testing/joint/dg_transaction/build.gradle
 +++ b/testing/joint/dg_transaction/build.gradle
 @@ -11,7 +11,7 @@ android {
@@ -2641,12 +2629,12 @@ index 935538b6682b..e05926d31e68 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
 diff --git a/testing/joint/inactivephone_otp/build.gradle b/testing/joint/inactivephone_otp/build.gradle
-index 733bf291bb0e..00a4bfa821f3 100644
+index 733bf291bb0e..a0305d2a24c8 100644
 --- a/testing/joint/inactivephone_otp/build.gradle
 +++ b/testing/joint/inactivephone_otp/build.gradle
 @@ -10,7 +10,7 @@ android {
@@ -2654,12 +2642,12 @@ index 733bf291bb0e..00a4bfa821f3 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
 diff --git a/testing/joint/pdp_checkout/build.gradle b/testing/joint/pdp_checkout/build.gradle
-index 6e50acddfc38..e48160514d88 100644
+index 6e50acddfc38..d9fb49646fdd 100644
 --- a/testing/joint/pdp_checkout/build.gradle
 +++ b/testing/joint/pdp_checkout/build.gradle
 @@ -10,7 +10,7 @@ android {
@@ -2667,7 +2655,7 @@ index 6e50acddfc38..e48160514d88 100644
  
      kotlinOptions {
 -        jvmTarget = "1.8"
-+        jvmTarget = "11"
++        jvmTarget = JavaVersion.VERSION_11
      }
  
      testOptions {
