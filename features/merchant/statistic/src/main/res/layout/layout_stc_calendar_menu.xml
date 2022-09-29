@@ -12,5 +12,5 @@
         android:clickable="false"
         android:background="?android:attr/selectableItemBackgroundBorderless"
         app:icon_name="CALENDAR"
-        app:icon_color_light_enable="@color/Unify_NN700"/>
+        app:icon_color_light_enable="@color/stc_dms_calendar_icon"/>
 </LinearLayout>
