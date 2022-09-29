@@ -32,7 +32,7 @@ data class PostDataModel(
     @SerializedName("showWidget")
     val showWidget: Boolean = true,
     @SerializedName("widgetDataSign")
-    val widgetDataSign: String = String.EMPTY
+    val widgetDataSign: String = String.EMPTY,
 )
 
 data class PostItemDataModel(

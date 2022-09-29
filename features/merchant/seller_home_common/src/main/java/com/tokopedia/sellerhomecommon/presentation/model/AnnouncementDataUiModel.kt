@@ -13,7 +13,7 @@ data class AnnouncementDataUiModel(
     val title: String = "",
     val appLink: String = "",
     val imgUrl: String = "",
-    val widgetDataSign: String = ""
+    val widgetDataSign: String = "",
 ) : BaseDataUiModel {
 
     override fun isWidgetEmpty(): Boolean {

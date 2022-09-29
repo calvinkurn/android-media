@@ -40,7 +40,7 @@ sealed class PostItemUiModel(
         textEmphasizeType,
         isPinned,
         isChecked,
-        postItemId
+        postItemId,
     ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {
@@ -70,7 +70,7 @@ sealed class PostItemUiModel(
         textEmphasizeType,
         isPinned,
         isChecked,
-        postItemId
+        postItemId,
     ) {
 
         override fun type(typeFactory: PostListAdapterTypeFactory): Int {

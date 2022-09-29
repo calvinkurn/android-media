@@ -15,7 +15,7 @@ data class PostListDataUiModel(
     val emphasizeType: Int = IMAGE_EMPHASIZED,
     val postPagers: List<PostListPagerUiModel> = emptyList(),
     val cta: PostCtaDataUiModel = PostCtaDataUiModel(),
-    val widgetDataSign: String = String.EMPTY
+    val widgetDataSign: String = String.EMPTY,
 ) : BaseDataUiModel, LastUpdatedDataInterface {
 
     companion object {

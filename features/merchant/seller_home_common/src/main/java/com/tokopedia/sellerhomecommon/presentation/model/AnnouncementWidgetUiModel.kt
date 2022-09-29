@@ -32,7 +32,7 @@ data class AnnouncementWidgetUiModel(
     override val isDismissible: Boolean = false,
     override var dismissibleState: DismissibleState = DismissibleState.NONE,
     override val dismissToken: String = String.EMPTY,
-    override var shouldShowDismissalTimer: Boolean = false
+    override var shouldShowDismissalTimer: Boolean = false,
 ) : BaseDismissibleWidgetUiModel<AnnouncementDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
