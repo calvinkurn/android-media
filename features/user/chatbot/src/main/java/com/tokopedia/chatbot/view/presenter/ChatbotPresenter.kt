@@ -121,7 +121,6 @@ import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.websocket.RxWebSocket
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -470,7 +469,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendReadEvent(messageId: String) {
-        RxWebSocket.send(
+        chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.getReadMessage(messageId),
             listInterceptor
         )
@@ -546,7 +545,7 @@ class ChatbotPresenter @Inject constructor(
         usedBy: String
     ) {
         if (!isArticleEntry) {
-            RxWebSocket.send(
+            chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamSendInvoice(
                     messageId,
                     invoiceLinkPojo,
@@ -556,7 +555,7 @@ class ChatbotPresenter @Inject constructor(
                 listInterceptor
             )
         } else {
-            RxWebSocket.send(
+            chatbotWebSocket.send(
                 ChatbotSendableWebSocketParam.generateParamInvoiceSendByArticle(
                     messageId,
                     invoiceLinkPojo,
@@ -574,7 +573,7 @@ class ChatbotPresenter @Inject constructor(
         startTime: String,
         opponentId: String
     ) {
-        RxWebSocket.send(
+        chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendQuickReply(
                 messageId,
                 quickReply,
@@ -593,7 +592,7 @@ class ChatbotPresenter @Inject constructor(
         event: String,
         usedBy: String
     ) {
-        RxWebSocket.send(
+        chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendQuickReplyEventArticle(
                 messageId,
                 quickReply,
