@@ -20,8 +20,8 @@ class PlayPreference @Inject constructor(
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
-        private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
 
+        private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
         private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
         private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with channelId
     }
@@ -71,23 +71,18 @@ class PlayPreference @Inject constructor(
     private val currentTime: Long
         get() = System.currentTimeMillis()
 
-    private val diffDay: Long
-        get() {
-            return currentTime - lastVisit
-        }
-
-    private val lastVisit: Long
-        get() =
-            sharedPref.getLong(SWIPE_ONBOARDING, currentTime)
-
     private val variant = RemoteConfigInstance.getInstance().abTestPlatform.getString(
         RollenceKey.SWIPE_LIVE_ROOM,
         ""
     )
 
+    private fun getLastVisit(channelId: String) = sharedPref.getLong(String.format(SWIPE_ONBOARDING, channelId), currentTime)
+
+    private fun getDiffDay(channelId: String) = currentTime - getLastVisit(channelId)
+
     fun setCoachMark(isFirstChannel: Boolean = false, channelId: String) { // first channel event
-        if (variant == SWIPE_LIVE_ROOM_VARIANT && diffDay >= A_DAY_IN_MILLIS) {
-            sharedPref.edit().putLong(SWIPE_ONBOARDING, System.currentTimeMillis()).apply()
+        if (variant == SWIPE_LIVE_ROOM_VARIANT && getDiffDay(channelId) >= A_DAY_IN_MILLIS) {
+            sharedPref.edit().putLong(String.format(SWIPE_ONBOARDING, channelId), System.currentTimeMillis()).apply()
         } else {
             sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), isFirstChannel).apply()
         }
@@ -95,7 +90,7 @@ class PlayPreference @Inject constructor(
 
     fun isCoachMark(channelId: String): Boolean {
         return if (variant == SWIPE_LIVE_ROOM_VARIANT)
-            diffDay >= A_DAY_IN_MILLIS
+            getDiffDay(channelId) >= A_DAY_IN_MILLIS
         else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), false)
     }
 }
