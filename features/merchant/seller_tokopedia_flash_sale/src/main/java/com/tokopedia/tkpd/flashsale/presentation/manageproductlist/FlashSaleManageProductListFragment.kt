@@ -273,7 +273,6 @@ class FlashSaleManageProductListFragment :
             CampaignDetailActivity.start(
                 it,
                 campaignId.toLongOrZero(),
-                tabName,
                 totalSubmittedProduct
             )
             finishPage()

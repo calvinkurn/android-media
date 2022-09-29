@@ -104,6 +104,7 @@
     <string name="commonbs_field_limited">Dibatasi</string>
 
     <!--    CDP-->
+    <string name="fs_tkpd_detail_title">Campaign Detail</string>
     <string name="stfs_bottom_sheet_register_period_label">Periode Pendaftaran</string>
     <string name="stfs_bottom_sheet_add_product_label">Tambah Produk</string>
     <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>

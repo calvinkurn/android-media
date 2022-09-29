@@ -44,7 +44,6 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleLis
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.TabConfig
-import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -507,8 +506,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         context?.let {
             CampaignDetailActivity.start(
                 it,
-                selectedFlashSaleId as Long,
-                tabName
+                selectedFlashSaleId as Long
             )
         }
     }

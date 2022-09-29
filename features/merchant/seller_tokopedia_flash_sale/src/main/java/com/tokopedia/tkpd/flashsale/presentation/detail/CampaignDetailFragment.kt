@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
@@ -62,11 +63,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
-        fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
+        fun newInstance(flashSaleId: Long): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
-            bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             fragment.arguments = bundle
             return fragment
         }
@@ -100,7 +100,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
     private val flashSaleId by lazy {
-        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
+        if (appLinkData?.lastPathSegment?.isNotEmpty() == true) {
+            appLinkData.lastPathSegment?.toLong().orZero()
+        } else {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        }
     }
 
     private val productAdapter by lazy {
@@ -167,7 +172,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     setupView(flashSale.data)
                 }
                 is Fail -> {
-                    showGlobalError()
+                    doOnDelayFinished(DELAY) {
+                        showGlobalError()
+                    }
                 }
             }
         }
@@ -613,8 +620,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToChooseProductPage() {
-        ChooseProductActivity.start(context ?: return, flashSaleId,
-            viewModel.getTabName())
+        ChooseProductActivity.start(
+            context ?: return, flashSaleId,
+            viewModel.getTabName()
+        )
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
