@@ -1,6 +1,8 @@
 package com.tokopedia.sellerapp.di
 
 import android.content.Context
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.CapabilityClient
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
@@ -36,6 +38,16 @@ class WearModule {
     fun provideNodeClient(
         @ApplicationContext context: Context
     ): NodeClient = Wearable.getNodeClient(context)
+
+    @Provides
+    fun provideCapabilityClient(
+        @ApplicationContext context: Context
+    ): CapabilityClient = Wearable.getCapabilityClient(context)
+
+    @Provides
+    fun provideRemoteActivityHelper(
+        @ApplicationContext context: Context
+    ): RemoteActivityHelper = RemoteActivityHelper(context)
 
     @Provides
     fun provideWearCacheActionImpl(
