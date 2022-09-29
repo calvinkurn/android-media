@@ -1100,7 +1100,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     private fun checkGoToShipment(message: String?) {
         if (message.isNullOrEmpty()) {
             var hasRedStatePromo = false
-            val redStatePromo = ArrayList<String>()
             val redStateGlobalPromo = ArrayList<String>()
             val clearOrders = ArrayList<ClearPromoOrder>()
             val cartListData = dPresenter.getCartListData()

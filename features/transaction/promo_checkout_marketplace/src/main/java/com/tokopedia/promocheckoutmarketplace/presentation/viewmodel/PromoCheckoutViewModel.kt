@@ -56,9 +56,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
                                                  private val analytics: PromoCheckoutAnalytics)
     : BaseViewModel(dispatcher) {
 
-    // TEMPORARY, remove in PR
-    var bboPromoCodes: ArrayList<String> = ArrayList()
-
     // Fragment UI Model. Store UI model and state on fragment level
     private val _fragmentUiModel = MutableLiveData<FragmentUiModel>()
     val fragmentUiModel: LiveData<FragmentUiModel>
@@ -655,7 +652,6 @@ class PromoCheckoutViewModel @Inject constructor(dispatcher: CoroutineDispatcher
         // Invalid promo code is promo code from outside promo page (cart/checkout) which previously selected,
         // but become invalid or not selected on promo page, except promo BBO
         removeInvalidPromoCode(validateUsePromoRequest, selectedPromoList, bboPromoCodes)
-        this.bboPromoCodes = bboPromoCodes
 
         validateUsePromoRequest.skipApply = 0
 

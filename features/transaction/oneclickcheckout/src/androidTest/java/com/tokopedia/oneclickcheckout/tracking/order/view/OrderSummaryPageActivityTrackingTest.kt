@@ -116,35 +116,6 @@ class OrderSummaryPageActivityTrackingTest {
         activityRule.activity.finishAndRemoveTask()
     }
 
-//    Irrelevant flow
-//    @Test
-//    fun performOrderSummaryPagePromoRedStateTrackingActions() {
-//        cartInterceptor.customGetOccCartResponsePath = GET_OCC_CART_PAGE_LAST_APPLY_WITH_LOW_MAXIMUM_PAYMENT_REVAMP_RESPONSE_PATH
-//        promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_FULL_APPLIED_RESPONSE
-//        activityRule.launchActivity(null)
-//        performOrderSummaryPageBackAction()
-//        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
-//
-//        orderSummaryPage {
-//            promoInterceptor.customValidateUseResponsePath = VALIDATE_USE_PROMO_REVAMP_CASHBACK_RED_STATE_RESPONSE
-//            clickAddProductQuantity()
-//
-//            clickButtonPromo()
-//
-//            checkoutInterceptor.customCheckoutResponsePath = CHECKOUT_EMPTY_STOCK_RESPONSE_PATH
-//            pay()
-//            clickButtonContinueWithRedPromo()
-//            closeBottomSheet()
-//
-//            checkoutInterceptor.customCheckoutResponsePath = null
-//            pay()
-//            clickButtonContinueWithRedPromo()
-//        }
-//
-//        assertThat(cassavaTestRule.validate(ANALYTIC_VALIDATOR_PROMO_RED_STATE_QUERY_FILE_NAME), hasAllSuccess())
-//        activityRule.activity.finishAndRemoveTask()
-//    }
-
     private fun performOrderSummaryPageBackAction() {
         // prevent press back on non-root activity
         val activity = activityRule.activity
