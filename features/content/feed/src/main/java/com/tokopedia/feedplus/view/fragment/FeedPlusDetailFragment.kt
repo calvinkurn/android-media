@@ -552,54 +552,22 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         )
 
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                feedViewModel.addWishlistV2(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccessV2,
-                    it
-                )
-            } else {
-                feedViewModel.addWishlist(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccess,
-                    it
-                )
-            }
+            feedViewModel.addWishlistV2(
+                postId,
+                productId,
+                shopId,
+                0,
+                type,
+                isFollowed,
+                ::onWishListFail,
+                ::onWishListSuccessV2,
+                it
+            )
         }
     }
 
     private fun onWishListFail(s: String) {
         showToast(s, Toaster.TYPE_ERROR)
-    }
-
-    private fun onWishListSuccess(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        Toaster.build(
-            requireView(),
-            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL,
-            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }).show()
     }
 
     private fun onWishListSuccessV2(
