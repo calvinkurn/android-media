@@ -14,9 +14,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
 import kotlin.math.roundToInt
@@ -77,13 +75,14 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             productImage.setImageUrl(feedDetailProductModel.imgUrl)
             productName.text = MethodChecker.fromHtml(feedDetailProductModel.text)
 
-            discountLayout.showWithCondition(feedDetailProductModel.isDiscount)
+            discountLayout.showWithCondition(feedDetailProductModel.isDiscount || feedDetailProductModel.isUpcoming)
             discountLabel.showWithCondition(feedDetailProductModel.isDiscount)
             if (feedDetailProductModel.isUpcoming) {
                 productPrice.text = feedDetailProductModel.product.priceMaskedFmt
                 productTag.apply {
                     paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                     text = feedDetailProductModel.priceFmt
+                    discountLabel.hide()
                 }
             } else {
                 if (feedDetailProductModel.isDiscount) {
@@ -92,6 +91,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
                         text = feedDetailProductModel.priceFmt
                     }
+                    discountLabel.show()
                     productPrice.text = feedDetailProductModel.priceDiscountFmt
                 } else {
                     productPrice.text = feedDetailProductModel.priceFmt
