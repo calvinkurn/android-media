@@ -303,7 +303,7 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
-        private const val TOOLBAR_TRANSITION_START = 100
+        private const val TOOLBAR_TRANSITION_START = 1
         private const val TOOLBAR_TRANSITION_RANGES = 50
 
         fun newInstance(
