@@ -1292,13 +1292,18 @@ class PlayViewModel @AssistedInject constructor(
         this._partnerInfo.value = partnerInfo
     }
 
+    private var coachmarkJob: Job? = null
+
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
         playAnalytic.screenWithSwipeCoachMark(isShown = playPreference.isCoachMark(), channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
         if (playPreference.isCoachMark() && !videoMetaInfo.videoPlayer.isYouTube) {
-            viewModelScope.launch(dispatchers.main) {
+            coachmarkJob?.cancel()
+            coachmarkJob = viewModelScope.launch(dispatchers.main) {
                 delay(ONBOARDING_DELAY)
                 _observableOnboarding.value = Event(Unit)
             }
+        } else {
+            coachmarkJob?.cancel()
         }
     }
 
