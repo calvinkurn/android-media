@@ -40,6 +40,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     private val analytic: ProductPickerUGCAnalytic,
 ) : BaseProductSetupBottomSheet() {
 
+    private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.play_dp_50) ?: 0 }
+
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
     private val binding: BottomSheetPlayUgcProductPickerBinding
         get() = _binding!!
@@ -76,6 +78,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                 message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
                 actionLabel = getString(R.string.play_ok),
                 actionListener = { toaster.dismissToaster() },
+                bottomMargin = offsetToaster,
             )
         }
     }
@@ -214,6 +217,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                         toaster.showError(
                             err = it.error,
                             customErrMessage = it.error.message,
+                            bottomMargin = offsetToaster,
                         )
                     }
                     else -> {}
