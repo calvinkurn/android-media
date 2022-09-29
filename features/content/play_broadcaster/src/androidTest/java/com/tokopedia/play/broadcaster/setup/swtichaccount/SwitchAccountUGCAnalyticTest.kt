@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -30,7 +31,7 @@ class SwitchAccountUGCAnalyticTest {
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
 
-    private val mockDispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
+    private val mockDispatcher: CoroutineDispatchers = CoroutineTestDispatchersProvider
     private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
     private val mockConfigStore: HydraConfigStore = mockk(relaxed = true)
