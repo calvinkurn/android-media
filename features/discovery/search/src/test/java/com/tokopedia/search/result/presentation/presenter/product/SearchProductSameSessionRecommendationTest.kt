@@ -213,27 +213,17 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
     }
 
     private fun `Given recyclerViewUpdater`() {
-        `Given recyclerViewUpdater productListAdapter`()
-        `Given productListAdapter return item count`()
-        `Given productListAdapter itemList return visitableList`()
+        `Given viewUpdater itemCount return visitableList size`()
         `Given recyclerViewUpdater addSameSessionRecommendation`()
     }
 
-    private fun `Given recyclerViewUpdater productListAdapter`() {
-        every { recyclerViewUpdater.productListAdapter } returns productListAdapter
-    }
-
-    private fun `Given productListAdapter return item count`() {
-        every { productListAdapter.itemCount } returns visitableList.size
-    }
-
-    private fun `Given productListAdapter itemList return visitableList`() {
-        every { productListAdapter.itemList } returns visitableList.toMutableList()
+    private fun `Given viewUpdater itemCount return visitableList size`() {
+        every { viewUpdater.itemCount } returns visitableList.size
     }
 
     private fun `Given recyclerViewUpdater addSameSessionRecommendation`() {
         every {
-            recyclerViewUpdater.insertItemAfter(
+            viewUpdater.insertItemAfter(
                 capture(recommendationSlot),
                 capture(selectedVisitableSlot)
             )
@@ -260,8 +250,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         expectedSelectedProduct: Visitable<*>,
     ) {
         verify {
-            productListAdapter.removeLastSameSessionRecommendation()
-            recyclerViewUpdater.insertItemAfter(
+            viewUpdater.removeFirstItemWithCondition(any())
+            viewUpdater.insertItemAfter(
                 recommendationSlot.captured,
                 selectedVisitableSlot.captured
             )
@@ -307,8 +297,8 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Then verify no recommendationItem added`() {
         verify(exactly = 0) {
-            productListAdapter.removeLastSameSessionRecommendation()
-            recyclerViewUpdater.insertItemAfter(any(), any())
+            viewUpdater.removeFirstItemWithCondition(any())
+            viewUpdater.insertItemAfter(any(), any())
         }
     }
 

@@ -18,13 +18,6 @@ class SameSessionRecommendationProductViewHolder(
     view: View,
     private val inspirationCarouselListener: InspirationCarouselListener,
 ) : AbstractViewHolder<InspirationCarouselDataView.Option.Product>(view) {
-    companion object {
-
-        @LayoutRes
-        @JvmField
-        val LAYOUT = R.layout.search_result_same_session_recommendation_product_layout
-    }
-
     private var binding: SearchResultSameSessionRecommendationProductLayoutBinding? by viewBinding()
 
     override fun bind(element: InspirationCarouselDataView.Option.Product) {
@@ -88,5 +81,11 @@ class SameSessionRecommendationProductViewHolder(
 
     override fun onViewRecycled() {
         binding?.productCardView?.recycle()
+    }
+
+    companion object {
+        @LayoutRes
+        @JvmField
+        val LAYOUT = R.layout.search_result_same_session_recommendation_product_layout
     }
 }

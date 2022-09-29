@@ -13,13 +13,6 @@ class SameSessionRecommendationFeedbackItemViewHolder(
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
     view: View,
 ) : RecyclerView.ViewHolder(view) {
-
-    companion object {
-        @LayoutRes
-        @JvmField
-        val LAYOUT = R.layout.search_result_same_session_recommendation_feedback_layout
-    }
-
     private var binding: SearchResultSameSessionRecommendationFeedbackLayoutBinding? by viewBinding()
 
     fun bind(element: SameSessionRecommendationDataView.Feedback.FeedbackItem) {
@@ -33,4 +26,9 @@ class SameSessionRecommendationFeedbackItemViewHolder(
         }
     }
 
+    companion object {
+        @LayoutRes
+        @JvmField
+        val LAYOUT = R.layout.search_result_same_session_recommendation_feedback_layout
+    }
 }

@@ -4,7 +4,7 @@
 
     <gradient
         android:angle="270"
-        android:endColor="@color/search_dms_same_session_recommendation_widget_gradient_end_color"
+        android:endColor="@color/Unify_BN50"
         android:startColor="@color/search_dms_same_session_recommendation_widget_gradient_start_color" />
 
 </shape>

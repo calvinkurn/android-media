@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultSameSessionRecommendationLayoutBinding
+import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -26,12 +27,6 @@ class SameSessionRecommendationViewHolder(
     private val inspirationCarouselListener: InspirationCarouselListener,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
 ) : AbstractViewHolder<SameSessionRecommendationDataView>(view) {
-    companion object {
-        @JvmField
-        @LayoutRes
-        val LAYOUT = R.layout.search_result_same_session_recommendation_layout
-    }
-
     private var binding: SearchResultSameSessionRecommendationLayoutBinding? by viewBinding()
     private val context: Context?
         get() = itemView.context
@@ -76,7 +71,7 @@ class SameSessionRecommendationViewHolder(
             val typeFactory = SameSessionRecommendationProductTypeFactory(
                 inspirationCarouselListener
             )
-            adapter = SameSessionRecommendationProductAdapter(typeFactory).apply {
+            adapter = InspirationCarouselOptionAdapter(typeFactory).apply {
                 clearData()
                 addAll(products)
             }
@@ -190,4 +185,9 @@ class SameSessionRecommendationViewHolder(
         groupSameSessionRecommendationSelectedFeedback.visible()
     }
 
+    companion object {
+        @JvmField
+        @LayoutRes
+        val LAYOUT = R.layout.search_result_same_session_recommendation_layout
+    }
 }

@@ -20,7 +20,6 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.inspirationwidget.card.SmallGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 
 class ProductListAdapter(
         private val itemChangeView: OnItemChangeView,
@@ -241,9 +240,8 @@ class ProductListAdapter(
         notifyItemRangeRemoved(index, 1)
     }
 
-    fun removeLastSameSessionRecommendation() {
-        val lastSameSessionRecommendationIndex = list.indexOfFirst { it is SameSessionRecommendationDataView }
-        removeItem(lastSameSessionRecommendationIndex)
+    fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean) {
+        removeItem(list.indexOfFirst { condition(it) })
     }
 
     fun insertItemAfter(visitable: Visitable<*>, previousVisitable: Visitable<*>) : Int {
@@ -253,11 +251,6 @@ class ProductListAdapter(
         list.add(targetIndex, visitable)
         notifyItemInserted(targetIndex)
         return targetIndex
-    }
-
-    fun insertItemAtIndex(visitable: Visitable<*>, index: Int) {
-        list.add(index, visitable)
-        notifyItemInserted(index)
     }
 
     interface OnItemChangeView {
