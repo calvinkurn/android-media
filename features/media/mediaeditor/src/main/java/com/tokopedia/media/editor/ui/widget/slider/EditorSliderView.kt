@@ -5,11 +5,9 @@ import android.content.Context
 import android.os.Handler
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import com.tokopedia.media.editor.databinding.MediaEditorSliderLayoutBinding
 import kotlin.math.round
 
@@ -22,7 +20,6 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     private val sliderThumb: View = binding.sliderThumb
     private val sliderTrack: View = binding.sliderTrack
     private val trackViewActiveSliderView: EditorTrackSliderView = binding.sliderTrackActive
-    private val sliderWrapper: ConstraintLayout = binding.sliderWrapper
     private val sliderCenterIndicator: View = binding.sliderCenterIndicator
     private val sliderText: AppCompatTextView = binding.sliderText
 
@@ -170,7 +167,7 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
         currentStepIndex: Int,
         previousValue: Float
     ) {
-        if(sliderHandler == null) sliderHandler = Handler()
+        if (sliderHandler == null) sliderHandler = Handler()
         sliderHandler?.removeCallbacksAndMessages(null)
         sliderHandler?.postDelayed({
             if (currentValue == previousValue) {
@@ -185,13 +182,13 @@ class EditorSliderView(context: Context, attributeSet: AttributeSet) :
     }
 
     private fun stepToValue(stepIndex: Int): Float {
-        val standarizeStep = (stepIndex - (sliderStepNumber / 2))
-        return ((standarizeStep * sliderStepValue) + sliderStartValue).toFloat()
+        val standardizeStep = (stepIndex - (sliderStepNumber / 2))
+        return ((standardizeStep * sliderStepValue) + sliderStartValue).toFloat()
     }
 
-    private fun xToStep(xKoor: Float): Int {
+    private fun xToStep(xCoordinate: Float): Int {
         val stepSize = (sliderWidth - thumbWidth) / sliderStepNumber
-        return (round(xKoor / stepSize).toInt())
+        return (round(xCoordinate / stepSize).toInt())
     }
 
     companion object {
