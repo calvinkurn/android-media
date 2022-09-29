@@ -54,14 +54,6 @@ android {
 }
 
 dependencies {
-    implementation files('libs/courier-client-0.0.2-release.aar')
-
-    implementation "com.gojek.courier:chuck-mqtt:0.0.9"
-    implementation "com.gojek.courier:timer-pingsender:0.0.9"
-    implementation "com.gojek.courier:courier-message-adapter-gson:0.0.9"
-    implementation "com.gojek.courier:courier-stream-adapter-rxjava:0.0.9"
-    implementation "com.gojek.courier:courier-auth-http:0.0.9"
-
     implementation projectOrAar(rootProject.ext.features.tokochat_common)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
@@ -99,7 +91,15 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    // Gojek dependencies
     implementation rootProject.ext.miscDependencies.conversation
+    implementation rootProject.ext.miscDependencies.chuckMqtt
+    implementation rootProject.ext.miscDependencies.timerPingSender
+    implementation rootProject.ext.miscDependencies.courierMessageAdapter
+    implementation rootProject.ext.miscDependencies.courierStreamAdapter
+    implementation rootProject.ext.miscDependencies.courierAuth
+    implementation files('libs/courier-client-0.0.2-release.aar')
+
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
