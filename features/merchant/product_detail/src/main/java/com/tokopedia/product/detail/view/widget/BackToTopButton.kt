@@ -7,10 +7,9 @@ import android.view.View
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.databinding.WidgetBackToTopBinding
-import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 
 class BackToTopButton(
@@ -23,6 +22,7 @@ class BackToTopButton(
         private const val BUTTON_POSITION = 0
 
         private const val BUTTON_ANIMATION_DURATION = 265L
+        private const val BACK_TO_TOP_SHOW_THRESHOLD = 75f
     }
 
     private val binding = WidgetBackToTopBinding.inflate(LayoutInflater.from(context))
@@ -39,8 +39,6 @@ class BackToTopButton(
     private var isVisible = false
     private var enableClick = true
     private var enableBlockingTouch = true
-
-    private val mediaHeight by lazy { calculateMediaHeightOffsetY() }
 
     init {
         addView(view)
@@ -105,14 +103,6 @@ class BackToTopButton(
         }
     }
 
-    private fun calculateMediaHeightOffsetY(): Int {
-        return if (config is ProductDetailNavigation.Configuration.Navbar4) {
-            val mediaHeight =
-                recyclerView?.findViewHolderForAdapterPosition(Int.ZERO)?.itemView?.height.orZero()
-            (mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE).toInt()
-        } else Int.ZERO
-    }
-
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -126,14 +116,11 @@ class BackToTopButton(
         }
 
         private fun resolveButtonVisibility(recyclerView: RecyclerView) {
-            val mediaOffsetY = mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
-            if (calculateFirstVisibleItemPosition(
-                    recyclerView,
-                    config?.offsetY.orZero() + mediaOffsetY.toInt()
-                ) == 0
-            ) {
-                toggle(false)
-            } else toggle(true)
+            val shouldHide = if (config is ProductDetailNavigation.Configuration.Navbar4) {
+                val scrollOffset = recyclerView.computeVerticalScrollOffset()
+                scrollOffset < BACK_TO_TOP_SHOW_THRESHOLD.toPx().toInt()
+            } else calculateFirstVisibleItemPosition(recyclerView, config?.offsetY.orZero()) == 0
+            toggle(!shouldHide)
         }
     }
 

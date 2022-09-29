@@ -8,11 +8,10 @@ import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.tabs.TabLayout
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.product.detail.databinding.WidgetNavigationTabBinding
-import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE
 import com.tokopedia.product.detail.view.widget.ProductDetailNavigation.Companion.calculateFirstVisibleItemPosition
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,6 +29,7 @@ class NavigationTab(
         private const val NAVIGATION_ANIMATION_DURATION = 300L
         private const val NAVIGATION_DELAYED_SHOW_DURATION = 2000L
         private const val SELECT_TAB_THRESHOLD = 300L
+        private const val NAVIGATION_SHOW_THRESHOLD = 75f
     }
 
     private val binding = WidgetNavigationTabBinding.inflate(LayoutInflater.from(context))
@@ -58,8 +58,6 @@ class NavigationTab(
     private var impressNavigation = false
     private var isVisible = false
     private var enableBlockingTouch = true
-
-    private val mediaHeightOffsetY by lazy { calculateMediaHeightOffsetY() }
 
     init {
         addView(view)
@@ -149,14 +147,6 @@ class NavigationTab(
         } else recyclerView?.suppressLayout(false)
     }
 
-    private fun calculateMediaHeightOffsetY(): Int {
-        return if (config is ProductDetailNavigation.Configuration.Navbar4) {
-            val mediaHeight =
-                recyclerView?.findViewHolderForAdapterPosition(Int.ZERO)?.itemView?.height.orZero()
-            (mediaHeight * NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE).toInt()
-        } else Int.ZERO
-    }
-
     override fun onDetachedFromWindow() {
         showJob?.cancel()
         selectTabJob?.cancel()
@@ -181,7 +171,7 @@ class NavigationTab(
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (enableScrollUpListener && (getFirstVisibleItemPosition(recyclerView) == 0 || dy < 0)) {
+            if (enableScrollUpListener && (shouldHide(recyclerView) || dy < 0)) {
                 toggle(false)
             } else {
                 toggle(true)
@@ -191,7 +181,7 @@ class NavigationTab(
         private fun getFirstVisibleItemPosition(recyclerView: RecyclerView): Int {
             return calculateFirstVisibleItemPosition(
                 recyclerView,
-                offsetY = config?.offsetY.orZero() + mediaHeightOffsetY
+                offsetY = config?.offsetY.orZero()
             )
         }
 
@@ -207,10 +197,16 @@ class NavigationTab(
 
         private fun showHide(recyclerView: RecyclerView) {
             showJob?.cancel()
-            val firstPosition = getFirstVisibleItemPosition(recyclerView)
-            if (firstPosition == 0) {
+            if (shouldHide(recyclerView)) {
                 toggle(false)
             } else if (!isVisible) delayedShow()
+        }
+
+        private fun shouldHide(recyclerView: RecyclerView): Boolean {
+            return if (config is ProductDetailNavigation.Configuration.Navbar4) {
+                val scrollOffset = recyclerView.computeVerticalScrollOffset()
+                scrollOffset < NAVIGATION_SHOW_THRESHOLD.toPx().toInt()
+            } else getFirstVisibleItemPosition(recyclerView) == 0
         }
     }
 
@@ -251,6 +247,7 @@ class NavigationTab(
             recyclerView?.apply {
                 enableTouchScroll(false)
                 smoothScroller.targetPosition = position
+                enableScrollUpListener = position == 0
                 layoutManager?.startSmoothScroll(smoothScroller)
             }
         }
@@ -289,9 +286,13 @@ class NavigationTab(
             )
             val indexTab = if (firstVisibleItemPosition == 0) 0
             else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
+            changeTab(indexTab)
+        }
 
-            pdpNavTab.tabLayout.getTabAt(indexTab)?.run {
-                if (isSelected) return
+        private fun changeTab(position: Int) {
+            if (position == -1) return
+            pdpNavTab.tabLayout.getTabAt(position)?.run {
+                if (isSelected) return@run
                 enableTabSelectedListener = false
                 select()
                 enableTabSelectedListener = true
@@ -316,7 +317,6 @@ class NavigationTab(
 
         override fun onStart() {
             super.onStart()
-            enableScrollUpListener = false
             enableContentChangeListener = false
         }
 

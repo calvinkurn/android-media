@@ -53,8 +53,8 @@ class ProductDetailNavigation(
         }
 
         private fun checkViewHeight(layoutManager: CenterLayoutManager, position: Int): Int {
-            val itemView = layoutManager.findViewByPosition(position)
-            val height = itemView?.height.orZero()
+            val itemView = layoutManager.findViewByPosition(position) ?: return position - 1
+            val height = itemView.height.orZero()
             return if (height == 0) {
                 checkViewHeight(layoutManager, position + 1)
             } else position
