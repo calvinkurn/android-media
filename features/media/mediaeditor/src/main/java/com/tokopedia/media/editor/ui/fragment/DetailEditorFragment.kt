@@ -171,7 +171,7 @@ class DetailEditorFragment @Inject constructor(
             data.resultUrl?.let { it ->
                 removeBackgroundType = removeBgType
 
-                if (removeBgType == RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_ORI) {
+                if (removeBgType == RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_DEFAULT) {
                     loadImageWithEmptyTarget(requireContext(),
                         it,
                         {},

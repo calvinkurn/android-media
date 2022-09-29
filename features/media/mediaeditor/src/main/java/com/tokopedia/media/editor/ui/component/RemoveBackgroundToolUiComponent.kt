@@ -16,12 +16,13 @@ class RemoveBackgroundToolUiComponent constructor(
     private val btnRemoveBgWhite: AppCompatImageView = findViewById(R.id.remove_bg_white_btn)
     private val btnRemoveBgGray: AppCompatImageView = findViewById(R.id.remove_bg_gray_btn)
 
-    private val backgroundDrawable = ContextCompat.getDrawable(context, R.drawable.editor_rect_green_selected_thumbnail)
+    private val backgroundDrawable =
+        ContextCompat.getDrawable(context, R.drawable.editor_rect_green_selected_thumbnail)
 
     init {
         btnRemoveBgOriginal.setOnClickListener {
-            listener.onRemoveBackgroundClicked(REMOVE_BG_TYPE_ORI)
-            setButtonActive(REMOVE_BG_TYPE_ORI)
+            listener.onRemoveBackgroundClicked(REMOVE_BG_TYPE_DEFAULT)
+            setButtonActive(REMOVE_BG_TYPE_DEFAULT)
         }
 
         btnRemoveBgWhite.setOnClickListener {
@@ -34,16 +35,16 @@ class RemoveBackgroundToolUiComponent constructor(
             setButtonActive(REMOVE_BG_TYPE_GRAY)
         }
 
-        setButtonActive(REMOVE_BG_TYPE_ORI)
+        setButtonActive(REMOVE_BG_TYPE_DEFAULT)
     }
 
     fun setupView() {
         container().show()
     }
 
-    private fun setButtonActive(buttonIndex: Int){
-        when(buttonIndex){
-            REMOVE_BG_TYPE_ORI -> {
+    private fun setButtonActive(buttonIndex: Int) {
+        when (buttonIndex) {
+            REMOVE_BG_TYPE_DEFAULT -> {
                 btnRemoveBgOriginal.background = backgroundDrawable
                 btnRemoveBgWhite.background = null
                 btnRemoveBgGray.background = null
@@ -65,8 +66,8 @@ class RemoveBackgroundToolUiComponent constructor(
         fun onRemoveBackgroundClicked(removeBgType: Int)
     }
 
-    companion object{
-        const val REMOVE_BG_TYPE_ORI = 0
+    companion object {
+        const val REMOVE_BG_TYPE_DEFAULT = 0
         const val REMOVE_BG_TYPE_WHITE = 1
         const val REMOVE_BG_TYPE_GRAY = 2
     }
