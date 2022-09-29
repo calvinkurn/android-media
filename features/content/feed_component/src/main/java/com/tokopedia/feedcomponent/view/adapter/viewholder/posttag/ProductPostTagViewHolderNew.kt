@@ -76,8 +76,8 @@ class ProductPostTagViewHolderNew(
         addToWishlistBtn = itemView.findViewById(R.id.button_add_to_wishlist)
         addToWishlistBtnIcon = itemView.findViewById(R.id.image_add_to_wishlist)
         label.showWithCondition(item.isDiscount && item.isUpcoming.not())
-        productTag.showWithCondition(item.isDiscount)
-        discountlayout.showWithCondition(item.isDiscount)
+        productTag.showWithCondition(item.isDiscount || item.isUpcoming)
+        discountlayout.showWithCondition(item.isDiscount || item.isUpcoming)
         if (item.isUpcoming) {
             productPrice.text = item.product.priceMaskedFmt
             productTag.apply {
