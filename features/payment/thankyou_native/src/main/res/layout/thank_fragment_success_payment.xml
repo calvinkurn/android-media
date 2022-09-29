@@ -107,7 +107,7 @@
                     android:maxLines="1"
                     android:textColor="@color/Unify_NN950"
                     app:layout_constraintBottom_toTopOf="@id/tvPaymentMethodCount"
-                    app:layout_constraintEnd_toStartOf="@+id/tvTotalAmount"
+                    app:layout_constraintEnd_toStartOf="@+id/midGuideline"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/ivPayment"
                     app:layout_constraintTop_toTopOf="parent"
@@ -122,10 +122,10 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/spacing_lvl3"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textColor="@color/Unify_NN600"
                     app:layout_constraintBottom_toTopOf="@+id/bottomBarrier"
-                    app:layout_constraintEnd_toStartOf="@+id/tvTotalAmount"
+                    app:layout_constraintEnd_toStartOf="@+id/midGuideline"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintStart_toEndOf="@+id/ivPayment"
                     app:layout_constraintTop_toBottomOf="@+id/tv_payment_method"
@@ -165,7 +165,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/unify_space_16"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:paddingStart="@dimen/spacing_lvl3"
                     android:textColor="@color/Unify_NN600"
                     android:visibility="visible"
@@ -173,6 +173,9 @@
                     app:layout_constraintEnd_toEndOf="@id/ivPaymentDetailIcon"
                     app:layout_constraintHorizontal_bias="0"
                     app:layout_constraintTop_toBottomOf="@+id/tvTotalAmount"
+                    app:layout_constraintStart_toEndOf="@id/midGuideline"
+                    android:ellipsize="end"
+                    android:textAlignment="viewEnd"
                     app:typographyType="paragraph_3"
                     tools:text="Cicilan X3" />
 
@@ -194,6 +197,14 @@
                     android:orientation="horizontal"
                     app:barrierDirection="bottom"
                     app:constraint_referenced_ids="ivPayment, tvPaymentMethodCount, tvInstallmentInfo" />
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/midGuideline"
+                    android:layout_width="1dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.6"
+                    />
 
                 <com.tokopedia.unifycomponents.DividerUnify
                     android:id="@+id/dividerSeparator"
