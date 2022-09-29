@@ -140,6 +140,8 @@ data class CustomDataOther(
     val trackingData: String?,
     @SerializedName("is_enjoy_plus_benefit")
     val isEnjoyPLus: String?,
+    @SerializedName("is_plus_transaction")
+    val isPlusTransaction:String?,
     @SerializedName("custom_illustration")
     val customIllustration: String?,
     @SerializedName("validate_engine_data")
