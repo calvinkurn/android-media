@@ -440,7 +440,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                         onSuccessLoadDetailFilter(event.data)
                     }
                     TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT -> {
-                        updateAddressWidget()
                         refreshAddressData()
                     }
                     TokofoodSearchUiEvent.EVENT_FAILED_LOAD_DETAIL_FILTER -> {
@@ -496,6 +495,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun refreshAddressData() {
         if (isChooseAddressWidgetDataUpdated()) {
             setLocalCacheModel()
+            updateAddressWidget()
         }
         viewModel.getInitialMerchantSearchResult(searchParameter)
     }
@@ -683,7 +683,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_success_change_address).orEmpty(),
                 getOkayMessage()
             )
-            updateAddressWidget()
             refreshAddressData()
         }
     }
@@ -705,7 +704,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 addressDataModel.serviceType
             )
         }
-        updateAddressWidget()
         refreshAddressData()
     }
 
