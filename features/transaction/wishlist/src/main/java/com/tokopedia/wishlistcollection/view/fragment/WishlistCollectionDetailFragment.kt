@@ -1143,11 +1143,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     addressId = address.address_id
                 )
         }
-        var inCollection = ""
+        /*var inCollection = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = PARAM_INSIDE_COLLECTION
         }
-        paramGetCollectionItems.inCollection = inCollection
+        paramGetCollectionItems.inCollection = inCollection*/
         paramGetCollectionItems.page = currPage
         wishlistCollectionDetailViewModel.getWishlistCollectionItems(
             paramGetCollectionItems, wishlistPref?.getTypeLayout(),
@@ -1370,11 +1370,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramGetCollectionItems = GetWishlistCollectionItemsParams()
-                    var inCollection = ""
+                    /*var inCollection = ""
                     if (collectionId.isNotEmpty() && collectionId != "0") {
                         inCollection = "inside"
                     }
-                    paramGetCollectionItems.inCollection = inCollection
+                    paramGetCollectionItems.inCollection = inCollection*/
                     paramGetCollectionItems.collectionId = collectionId
                     if (searchQuery.isNotEmpty()) paramGetCollectionItems.query = searchQuery
                     doRefresh()
@@ -2338,11 +2338,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailSortFilter.run {
                 resetAllFilters()
                 paramGetCollectionItems = GetWishlistCollectionItemsParams()
-                var inCollection = ""
+                /*var inCollection = ""
                 if (collectionId.isNotEmpty() && collectionId != "0") {
                     inCollection = "inside"
                 }
-                paramGetCollectionItems.inCollection = inCollection
+                paramGetCollectionItems.inCollection = inCollection*/
                 if (collectionId != "0") {
                     paramGetCollectionItems.collectionId = collectionId
                 }
