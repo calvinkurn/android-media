@@ -24,7 +24,7 @@
         <item name="actionMenuTextColor">@color/Unify_Background</item>
         <item name="android:spinnerItemStyle">?android:attr/spinnerItemStyle</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <item name="actionModeBackground">@color/tkpd_main_green</item>
+        <item name="actionModeBackground">@color/navigation_dms_tkpd_main_green</item>
         <item name="android:actionModeBackground">@color/navigation_dms_tkpd_main_green</item>
         <item name="android:actionModeSplitBackground">@color/navigation_dms_tkpd_main_green</item>
         <item name="android:windowBackground">@color/Unify_NN50</item>
