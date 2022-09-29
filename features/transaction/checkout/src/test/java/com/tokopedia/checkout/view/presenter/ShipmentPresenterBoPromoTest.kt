@@ -36,6 +36,8 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldCl
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.SuccessDataUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.MessageUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoCheckoutVoucherOrdersItemUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
@@ -303,7 +305,7 @@ class ShipmentPresenterBoPromoTest {
         verifyOrder {
             view.getShipmentCartItemModelAdapterPositionByUniqueId(any())
             view.getShipmentCartItemModel(any())
-            view.resetCourier(Mockito.anyInt())
+            view.resetCourier(any<Int>())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
         }
@@ -336,7 +338,7 @@ class ShipmentPresenterBoPromoTest {
             view.getShipmentCartItemModel(any())
         }
         verify(inverse = true) {
-            view.resetCourier(Mockito.anyInt())
+            view.resetCourier(any<Int>())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
         }
@@ -369,7 +371,7 @@ class ShipmentPresenterBoPromoTest {
             view.getShipmentCartItemModel(any())
         }
         verify(inverse = true) {
-            view.resetCourier(Mockito.anyInt())
+            view.resetCourier(any<Int>())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
         }
@@ -402,7 +404,7 @@ class ShipmentPresenterBoPromoTest {
             view.getShipmentCartItemModel(any())
         }
         verify(inverse = true) {
-            view.resetCourier(Mockito.anyInt())
+            view.resetCourier(any<Int>())
             presenter.clearOrderPromoCodeFromLastValidateUseRequest(any(), any())
             view.onNeedUpdateViewItem(any())
         }
@@ -644,7 +646,29 @@ class ShipmentPresenterBoPromoTest {
     }
 
     @Test
-    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN clear last validate use promo code`() {
+    fun `WHEN clear order from last validate use with valid unique id with valid promo code THEN remove matching last apply order`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
+        presenter.lastApplyData = LastApplyUiModel(
+            voucherOrders = mutableListOf(
+                LastApplyVoucherOrdersItemUiModel(
+                    code = "TESTBO",
+                    uniqueId = "111-111-111"
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastApplyData.voucherOrders.isEmpty())
+    }
+
+    @Test
+    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN don't clear last validate use promo code`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
@@ -671,6 +695,30 @@ class ShipmentPresenterBoPromoTest {
     }
 
     @Test
+    fun `WHEN clear order from last validate use with valid unique id with invalid promo code THEN don't clear last apply order`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
+        presenter.lastApplyData = LastApplyUiModel(
+            voucherOrders = listOf(
+                LastApplyVoucherOrdersItemUiModel(
+                    uniqueId = "111-111-111",
+                    code = "TESTNONBO"
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastApplyData.voucherOrders.size == 1)
+        assert(presenter.lastApplyData.voucherOrders[0].uniqueId == "111-111-111")
+        assert(presenter.lastApplyData.voucherOrders[0].code == "TESTNONBO")
+    }
+
+    @Test
     fun `WHEN clear order from last validate use with invalid unique id THEN do nothing`() {
         // Given
         val uniqueId = "111-111-111"
@@ -681,7 +729,7 @@ class ShipmentPresenterBoPromoTest {
                 orders = listOf(
                     OrdersItem(
                         uniqueId = "222-222-222",
-                        codes = mutableListOf("TESTBO")
+                        codes = mutableListOf("TESTNONBO")
                     )
                 )
             )
@@ -693,36 +741,65 @@ class ShipmentPresenterBoPromoTest {
         // Then
         assert(presenter.lastValidateUseRequest.orders.size == 1)
         assert(presenter.lastValidateUseRequest.orders[0].uniqueId == "222-222-222")
+        assert(presenter.lastValidateUseRequest.orders[0].codes[0] == "TESTNONBO")
     }
 
     @Test
-    fun `WHEN clear order from last validate use with last validate use null THEN do nothing`() {
+    fun `WHEN clear order from last apply with invalid unique id THEN do nothing`() {
+        // Given
+        val uniqueId = "111-111-111"
+        val promoCode = "TESTBO"
+
+        presenter.lastApplyData = LastApplyUiModel(
+            voucherOrders = listOf(
+                LastApplyVoucherOrdersItemUiModel(
+                    uniqueId = "222-222-222",
+                    code = "TESTNONBO"
+                )
+            )
+        )
+
+        // When
+        presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
+
+        // Then
+        assert(presenter.lastApplyData.voucherOrders.size == 1)
+        assert(presenter.lastApplyData.voucherOrders[0].uniqueId == "222-222-222")
+        assert(presenter.lastApplyData.voucherOrders[0].code == "TESTNONBO")
+    }
+
+    @Test
+    fun `WHEN clear order from last validate use with last validate use and last apply null THEN do nothing`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
         presenter.setLatValidateUseRequest(null)
+        presenter.lastApplyData = null
 
         // When
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
         assert(presenter.lastValidateUseRequest == null)
+        assert(presenter.lastApplyData == null)
     }
 
     @Test
-    fun `WHEN clear order from last validate use with last validate use empty THEN do nothing`() {
+    fun `WHEN clear order from last validate use with last validate use and last apply order empty THEN do nothing`() {
         // Given
         val uniqueId = "111-111-111"
         val promoCode = "TESTBO"
 
         presenter.setLatValidateUseRequest(ValidateUsePromoRequest(orders = emptyList()))
+        presenter.lastApplyData = LastApplyUiModel(voucherOrders = emptyList())
 
         // When
         presenter.clearOrderPromoCodeFromLastValidateUseRequest(uniqueId, promoCode)
 
         // Then
         assert(presenter.lastValidateUseRequest.orders.isEmpty())
+        assert(presenter.lastApplyData.voucherOrders.isEmpty())
     }
 
     // Test ShipmentPresenter.validateBoPromo()
