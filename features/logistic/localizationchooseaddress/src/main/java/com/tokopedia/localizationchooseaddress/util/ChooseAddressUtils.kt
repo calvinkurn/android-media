@@ -260,12 +260,6 @@ object ChooseAddressUtils {
         return isGpsOn
     }
 
-
-    fun isRefreshTokonowRollenceActive() : Boolean {
-        val rollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.LCA_REFRESH, "")
-        return rollenceValue == RollenceKey.LCA_REFRESH
-    }
-
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
     fun isLocationEnabled(context: Context): Boolean {
