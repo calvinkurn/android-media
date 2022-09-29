@@ -155,7 +155,7 @@ class TextLabelAnimator(
     companion object {
         private const val IDLE_DURATION = 3000L
         private const val AFTER_SWIPE_DURATION = 100L
-        private const val ALPHA_MEDIUM_DURATION = 2000L
+        private const val ALPHA_MEDIUM_DURATION = 400L
         private const val ALPHA_SHORT_DURATION = 250L
         private const val ALPHA_MIN = 0f
         private const val ALPHA_MAX = 1f
