@@ -11,6 +11,8 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter;
 import com.tokopedia.abstraction.base.view.widget.TouchViewPager;
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper;
 import com.tokopedia.common.network.data.model.RestResponse;
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.digital_deals.R;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealDetailsUseCase;
 import com.tokopedia.digital_deals.domain.getusecase.GetDealLikesUseCase;
@@ -19,7 +21,6 @@ import com.tokopedia.digital_deals.domain.getusecase.GetSearchNextUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqEventUseCase;
 import com.tokopedia.digital_deals.domain.postusecase.PostNsqTravelDataUseCase;
 import com.tokopedia.digital_deals.view.contractor.DealDetailsContract;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqEntertainmentModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqMessage;
@@ -27,7 +28,6 @@ import com.tokopedia.digital_deals.view.model.nsqevents.NsqRecentDataModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqRecentSearchModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqServiceModel;
 import com.tokopedia.digital_deals.view.model.nsqevents.NsqTravelRecentSearchModel;
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse;
 import com.tokopedia.digital_deals.view.model.response.EventContentData;
 import com.tokopedia.digital_deals.view.model.response.GetLikesResponse;
 import com.tokopedia.digital_deals.view.model.response.SearchResponse;
@@ -133,7 +133,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                Type token = new TypeToken<DataResponse<com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse>>() {
+                Type token = new TypeToken<DataResponse<DealsDetailsResponse>>() {
                 }.getType();
                 RestResponse restResponse = typeRestResponseMap.get(token);
                 DataResponse data = restResponse.getData();
@@ -212,7 +212,7 @@ public class DealDetailsPresenter extends BaseDaggerPresenter<DealDetailsContrac
 
             @Override
             public void onNext(Map<Type, RestResponse> typeRestResponseMap) {
-                if ((dealsDetailsResponse.customText1 & SALAM_VALUE) <= SALAM_INDICATOR){
+                if ((dealsDetailsResponse.getCustomText1() & SALAM_VALUE) <= SALAM_INDICATOR){
                     Type token = new TypeToken<DataResponse<SearchResponse>>() {
                     }.getType();
                     RestResponse restResponse = typeRestResponseMap.get(token);

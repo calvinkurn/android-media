@@ -16,9 +16,7 @@ import javax.inject.Inject
 
 class GetCampaignPrerequisiteDataUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase,
-    private val getSellerCampaignAttributeUseCase: GetSellerCampaignAttributeUseCase,
-    private val dateManager: DateManager
+    private val getSellerCampaignListUseCase: GetSellerCampaignListUseCase
 ) : GraphqlUseCase<ShareComponentMetadata>(repository) {
 
     companion object {
@@ -34,20 +32,10 @@ class GetCampaignPrerequisiteDataUseCase @Inject constructor(
                     statusId = listOf(CampaignStatus.DRAFT.id)
                 )
             }
-            val remainingQuotaDeferred = async {
-                getSellerCampaignAttributeUseCase.execute(
-                    month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
-                )
-            }
 
             val campaignDrafts = campaignDraftDeferred.await()
-            val remainingQuota = remainingQuotaDeferred.await()
 
-            CampaignPrerequisiteData(
-                campaignDrafts.campaigns,
-                remainingQuota.remainingCampaignQuota,
-            )
+            CampaignPrerequisiteData(campaignDrafts.campaigns)
         }
     }
 

@@ -599,9 +599,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
         setInitialValue()
         loadOrderHistoryList("")
-        if (!paramUohOrder.hasActiveFilter()) {
-            uohListViewModel.loadPmsCounter(userSession.shopId)
-        }
     }
 
     private fun setInitialValue() {
@@ -775,6 +772,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             paramUohOrder.page = currPage
         }
         uohListViewModel.loadOrderList(paramUohOrder)
+        if (!paramUohOrder.hasActiveFilter()) {
+            uohListViewModel.loadPmsCounter(userSession.shopId)
+        }
     }
 
     private fun loadRecommendationList() {

@@ -16,7 +16,6 @@ import com.tokopedia.analyticsdebugger.cassava.domain.ValidationResultUseCase
 import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -54,9 +53,6 @@ internal fun sendTestResult(journeyId: String, testResult: List<Validator>) {
 
 private fun getCassavaApi(): CassavaApi {
     val okHttpClient = OkHttpClient.Builder()
-        .addInterceptor(HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        })
         .build()
     val retrofit = Retrofit.Builder()
         .addConverterFactory(
