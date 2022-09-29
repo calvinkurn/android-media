@@ -1,6 +1,6 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
-import com.google.gson.annotations.SerializedName
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import java.util.Date
 
@@ -26,7 +26,8 @@ data class FlashSale(
     val useMultiLocation: Boolean,
     val formattedDate: FormattedDate,
     val status: FlashSaleStatus,
-    val productCriteria: List<ProductCriteria>
+    val productCriteria: List<ProductCriteria>,
+    val tabName: FlashSaleListPageTab
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,

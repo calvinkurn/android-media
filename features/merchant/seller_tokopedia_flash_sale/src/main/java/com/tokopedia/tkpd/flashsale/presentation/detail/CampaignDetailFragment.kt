@@ -31,11 +31,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
@@ -56,10 +52,6 @@ import javax.inject.Inject
 class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val UPCOMING_TAB = "upcoming"
-        private const val REGISTERED_TAB = "registered"
-        private const val ONGOING_TAB = "ongoing"
-        private const val FINISHED_TAB = "finished"
         private const val PAGE_SIZE = 10
         private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
@@ -109,10 +101,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val flashSaleId by lazy {
         arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
-    }
-
-    private val tabName by lazy {
-        arguments?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
     }
 
     private val productAdapter by lazy {
@@ -238,7 +226,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 it,
                 reservationId,
                 campaignId,
-                tabName
+                viewModel.getTabName()
             )
         }
     }
@@ -291,19 +279,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupView(flashSale: FlashSale) {
         setupHeader(flashSale)
-        when (tabName) {
-            UPCOMING_TAB -> setupUpcoming(flashSale)
-            REGISTERED_TAB -> {
+        when (flashSale.tabName) {
+            FlashSaleListPageTab.UPCOMING -> setupUpcoming(flashSale)
+            FlashSaleListPageTab.REGISTERED -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupRegistered(flashSale)
             }
-            ONGOING_TAB -> {
+            FlashSaleListPageTab.ONGOING -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupOngoing(flashSale)
             }
-            FINISHED_TAB -> {
+            FlashSaleListPageTab.FINISHED -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupFinished(flashSale)
@@ -625,7 +613,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun navigateToChooseProductPage() {
-        ChooseProductActivity.start(context ?: return, flashSaleId, tabName)
+        ChooseProductActivity.start(context ?: return, flashSaleId,
+            viewModel.getTabName())
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {

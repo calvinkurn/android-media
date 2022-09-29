@@ -3,7 +3,6 @@ package com.tokopedia.tkpd.flashsale.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
@@ -26,7 +25,8 @@ class  GetFlashSaleDetailForSellerUseCase @Inject constructor(
                 offset = FIRST_PAGE,
                 rows = ONE,
                 campaignIds = listOf(campaignId),
-                requestProductMetaData = true
+                requestProductMetaData = true,
+                checkProductEligibility = true
             )
             val campaignList = getFlashSaleListForSellerUseCase.execute(
                 params

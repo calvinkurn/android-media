@@ -47,6 +47,8 @@ data class GetFlashSaleListForSellerRequest(
         @SerializedName("highlight_recommendation")
         val highlightRecommendation: Boolean = false,
         @SerializedName("product_meta")
-        val productMeta: Boolean = false
+        val productMeta: Boolean = false,
+        @SerializedName("check_product_eligibility")
+        val checkProductEligibility: Boolean = false
     )
 }

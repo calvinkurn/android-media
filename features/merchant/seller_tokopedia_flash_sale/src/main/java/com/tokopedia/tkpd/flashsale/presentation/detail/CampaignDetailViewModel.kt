@@ -12,6 +12,7 @@ import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
 import com.tokopedia.tkpd.flashsale.domain.entity.*
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
@@ -69,6 +70,7 @@ class CampaignDetailViewModel @Inject constructor(
         get() = _error
 
     private var campaignStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
+    private var tabName = FlashSaleListPageTab.UPCOMING
     private var selectedItems = mutableListOf<Pair<Long, Long>>()
     private var isOnCheckboxState = false
     private var isTriggeredFromDelete = false
@@ -79,6 +81,10 @@ class CampaignDetailViewModel @Inject constructor(
         private const val ADD_PRODUCT_TITLE = "Tambah Produk"
         private const val SELECTION_PROCESS_TITLE = "Proses Seleksi"
         private const val ACTIVE_PROMOTION_TITLE = "Promosi Aktif"
+        private const val UPCOMING_TAB = "upcoming"
+        private const val REGISTERED_TAB = "registered"
+        private const val ONGOING_TAB = "ongoing"
+        private const val FINISHED_TAB = "finished"
     }
 
     fun register(campaignId: Long) {
@@ -101,6 +107,7 @@ class CampaignDetailViewModel @Inject constructor(
                     campaignId = campaignId
                 )
                 campaignStatus = result.status
+                tabName = result.tabName
                 _campaign.postValue(Success(result))
             },
             onError = { error ->
@@ -445,6 +452,15 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun getCampaignStatus(): FlashSaleStatus {
         return this.campaignStatus
+    }
+
+    fun getTabName(): String {
+        return when (this.tabName) {
+            FlashSaleListPageTab.UPCOMING -> UPCOMING_TAB
+            FlashSaleListPageTab.REGISTERED -> REGISTERED_TAB
+            FlashSaleListPageTab.ONGOING -> ONGOING_TAB
+            FlashSaleListPageTab.FINISHED -> FINISHED_TAB
+        }
     }
 
     fun getAddProductButtonVisibility(): Boolean {

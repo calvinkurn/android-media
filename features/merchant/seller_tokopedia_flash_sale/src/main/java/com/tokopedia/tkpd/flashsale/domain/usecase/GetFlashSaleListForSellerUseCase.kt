@@ -11,7 +11,6 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerRequest
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import javax.inject.Inject
@@ -106,14 +105,22 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
     }
 
     private fun buildRequest(param: Param): GraphqlRequest {
-        val requestHeader = CampaignParticipationRequestHeader(usecase = "campaign_list_${param.tabName}")
+        val requestHeader =
+            CampaignParticipationRequestHeader(usecase = "campaign_list_${param.tabName}")
         val payload = GetFlashSaleListForSellerRequest(
             requestHeader,
             param.tabName,
             GetFlashSaleListForSellerRequest.Pagination(param.rows, param.offset),
-            GetFlashSaleListForSellerRequest.Filter(param.campaignIds, param.categoryIds, param.statusIds),
+            GetFlashSaleListForSellerRequest.Filter(
+                param.campaignIds,
+                param.categoryIds,
+                param.statusIds
+            ),
             GetFlashSaleListForSellerRequest.Sort(param.sortOrderBy, param.sortOrderRule),
-            GetFlashSaleListForSellerRequest.AdditionalParam(productMeta = param.requestProductMetaData)
+            GetFlashSaleListForSellerRequest.AdditionalParam(
+                productMeta = param.requestProductMetaData,
+                checkProductEligibility = param.checkProductEligibility
+            )
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
@@ -134,7 +141,8 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
         val statusIds: List<String> = listOf(FlashSaleStatus.DEFAULT.id),
         val sortOrderBy: String = "DEFAULT_VALUE_PLACEHOLDER",
         val sortOrderRule: String = "ASC",
-        val requestProductMetaData: Boolean = false
+        val requestProductMetaData: Boolean = false,
+        val checkProductEligibility: Boolean = true
     )
 
 }
