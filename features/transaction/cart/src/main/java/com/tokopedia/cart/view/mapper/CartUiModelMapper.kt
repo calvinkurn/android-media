@@ -170,7 +170,7 @@ object CartUiModelMapper {
                 }
                 warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
                 isPo = availableGroup.shipmentInformation.preorder.isPreorder
-                poDuration = availableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString()
+                poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
                 boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
                     it.uniqueId == cartString && it.shippingId > 0 &&
                     it.spId > 0 && it.type == "logistic"
@@ -290,7 +290,7 @@ object CartUiModelMapper {
                     isError = true
                     warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
                     isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
-                    poDuration = unavailableGroup.cartDetails[0].products[0].productPreorder.durationDay.toString()
+                    poDuration = unavailableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
                 }
                 unavailableSectionList.add(shopUiModel)
             }
