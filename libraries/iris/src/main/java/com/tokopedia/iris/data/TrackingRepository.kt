@@ -89,7 +89,7 @@ class TrackingRepository(
     }
 
     private fun setEmbraceLog(queryName: String, queryParam: String) {
-        if(firebaseRemoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
+        if(getRemoteConfig()?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
             Log.e("Hii", "Inside Embrace")
             val embraceMap = mapOf(
                 "queryName" to queryName,
