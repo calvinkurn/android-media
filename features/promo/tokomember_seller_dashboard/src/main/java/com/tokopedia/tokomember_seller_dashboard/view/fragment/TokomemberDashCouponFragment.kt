@@ -48,15 +48,15 @@ import com.tokopedia.tokomember_seller_dashboard.util.LOADED
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
+import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
-import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TmShareBottomSheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import kotlinx.android.synthetic.main.tm_dash_coupon_fragment.viewFlipperCoupon
@@ -73,7 +73,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     private var currentPage = 1
     private var perPage = 10
     private var tmCouponDetailCallback:TmCouponDetailCallback?=null
-    private var shareBottomSheet:UniversalShareBottomSheet?=null
+    private var shareBottomSheet:TmShareBottomSheet?=null
     private var voucherShareData:VouchersItem?=null
     private var showButton: Boolean = true
     private var filterStatus: SortFilterItem? = null
@@ -501,7 +501,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             }
         }
         shareBmThumbnailTitle = data.voucherName ?: ""
-        shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        shareBottomSheet = TmShareBottomSheet().apply {
             init(this@TokomemberDashCouponFragment)
             setMetaData(
                 tnTitle = shareBmThumbnailTitle,
@@ -510,9 +510,10 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
             )
             setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else TmDashCouponDetailFragment.AVATAR_IMAGE)
         }
+        val bottomSheetTitle = context?.resources?.getString(R.string.tm_share_bottomsheet_title).orEmpty()
+        shareBottomSheet?.setTmShareBottomSheetTitle(bottomSheetTitle)
+        shareBottomSheet?.setTmShareBottomImgOptionsTitle(context?.resources?.getString(R.string.tm_share_bottomsheet_img_options_title).orEmpty())
         shareBottomSheet?.show(childFragmentManager,this,null)
-        val bottomSheetTitle = requireContext().resources.getString(R.string.tm_share_bottomsheet_title)
-        shareBottomSheet?.setBottomSheetTitle(bottomSheetTitle)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

@@ -33,6 +33,7 @@ import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDa
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
+import com.tokopedia.tokomember_seller_dashboard.view.customview.TmShareBottomSheet
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponDetailViewModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -40,7 +41,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
@@ -54,7 +54,7 @@ import kotlin.math.roundToInt
 class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallback,ShareBottomsheetListener {
 
     private var voucherId:Int = 0
-    private var shareBottomSheet : UniversalShareBottomSheet?=null
+    private var shareBottomSheet : TmShareBottomSheet?=null
 
 
     private lateinit var header:HeaderUnify
@@ -517,7 +517,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
            }
             shareBmThumbnailTitle = it.voucherName ?: ""
         }
-        shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+        shareBottomSheet = TmShareBottomSheet().apply {
             init(this@TmDashCouponDetailFragment)
             setMetaData(
                 tnTitle = shareBmThumbnailTitle,
@@ -526,10 +526,10 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             )
             setOgImageUrl(if(couponImages.isNotEmpty()) couponImages[0] else AVATAR_IMAGE)
         }
+        val bottomSheetTitle = context?.resources?.getString(R.string.tm_share_bottomsheet_title).orEmpty()
+        shareBottomSheet?.setTmShareBottomSheetTitle(bottomSheetTitle)
+        shareBottomSheet?.setTmShareBottomImgOptionsTitle(context?.resources?.getString(R.string.tm_share_bottomsheet_img_options_title).orEmpty())
         shareBottomSheet?.show(childFragmentManager,this,null)
-        val bottomSheetTitle = requireContext().resources.getString(R.string.tm_share_bottomsheet_title)
-        shareBottomSheet?.setBottomSheetTitle(bottomSheetTitle)
-
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {
