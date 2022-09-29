@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchPriceRangeBinding
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 import java.lang.StringBuilder
 
 class QuickPriceRangeFilterItemViewHolder(
@@ -15,7 +15,7 @@ class QuickPriceRangeFilterItemViewHolder(
     private val quickPriceRangeFilterListener: QuickPriceRangeFilterListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(item: TokofoodOptionUiModel, priceRangeSize: Int) {
+    fun bind(item: PriceRangeFilterCheckboxItemUiModel, priceRangeSize: Int) {
         with(binding) {
             tvTokofoodPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
@@ -24,7 +24,7 @@ class QuickPriceRangeFilterItemViewHolder(
         }
     }
 
-    private fun bindCheckboxPriceRange(item: TokofoodOptionUiModel) {
+    private fun bindCheckboxPriceRange(item: PriceRangeFilterCheckboxItemUiModel) {
         with(binding.checkboxTokofoodPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected
@@ -43,7 +43,7 @@ class QuickPriceRangeFilterItemViewHolder(
     }
 
     private fun getPriceLevelString(
-        item: TokofoodOptionUiModel,
+        item: PriceRangeFilterCheckboxItemUiModel,
         priceRangeSize: Int
     ): String {
         val priceBuilder = StringBuilder()

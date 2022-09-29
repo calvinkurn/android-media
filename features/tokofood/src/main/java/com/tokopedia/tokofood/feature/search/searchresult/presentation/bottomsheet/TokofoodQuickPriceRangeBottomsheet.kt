@@ -19,7 +19,6 @@ import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.p
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.pricerangecheckbox.QuickPriceRangeItemAdapter
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -86,7 +85,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), QuickPriceRangeFi
     }
 
     override fun onPriceRangeFilterCheckboxItemClicked(
-        uiModel: TokofoodOptionUiModel,
+        uiModel: PriceRangeFilterCheckboxItemUiModel,
         isChecked: Boolean
     ) {
         viewModel.setPriceRangeUiModel(uiModel, isChecked)
@@ -165,7 +164,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), QuickPriceRangeFi
 
     private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
         val optionViewModelList = uiModels.map {
-            TokofoodOptionUiModel(option = it.option).apply {
+            PriceRangeFilterCheckboxItemUiModel(option = it.option).apply {
                 isSelected = it.isSelected
             }
         }
