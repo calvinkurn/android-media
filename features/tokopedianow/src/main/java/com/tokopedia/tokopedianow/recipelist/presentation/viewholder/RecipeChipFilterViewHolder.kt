@@ -29,7 +29,12 @@ class RecipeChipFilterViewHolder(
     }
 
     private fun renderText(chip: RecipeChipFilterUiModel) {
-        binding?.chip?.chipText = chip.title
+        val chipText = if (chip.type == MORE_FILTER) {
+            itemView.context.getString(R.string.tokopedianow_filter)
+        } else {
+            chip.title
+        }
+        binding?.chip?.chipText = chipText
     }
 
     private fun renderIcon(chip: RecipeChipFilterUiModel) {

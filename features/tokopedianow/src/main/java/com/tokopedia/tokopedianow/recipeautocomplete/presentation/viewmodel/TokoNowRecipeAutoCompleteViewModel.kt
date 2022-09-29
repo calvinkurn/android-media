@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TITLE
 import javax.inject.Inject
 
 class TokoNowRecipeAutoCompleteViewModel @Inject constructor(
@@ -17,7 +18,7 @@ class TokoNowRecipeAutoCompleteViewModel @Inject constructor(
 
     fun submitSearch(title: String) {
         val getRecipeListParam = RecipeListParam()
-        getRecipeListParam.title = title
+        getRecipeListParam.queryParamsMap[PARAM_TITLE] = title
         val queryParamsGenerated = getRecipeListParam.generateQueryParams()
         val queryParams = queryParamsGenerated.ifBlank { "" }
         _recipeListParam.value = "?${queryParams}"

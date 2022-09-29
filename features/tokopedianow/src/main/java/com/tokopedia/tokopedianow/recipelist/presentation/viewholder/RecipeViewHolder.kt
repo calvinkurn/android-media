@@ -49,7 +49,7 @@ class RecipeViewHolder(
     }
 
     private fun renderLabel(recipe: RecipeUiModel) {
-        val tagAdapter = TagAdapter(recipe.labels)
+        val tagAdapter = TagAdapter(recipe.tags)
         binding?.rvTags?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.HORIZONTAL,

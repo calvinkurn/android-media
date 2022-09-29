@@ -12,16 +12,19 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToSortBy
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TITLE
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
-import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addFilterItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addHeaderItem
+import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addQuickFilterItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeCount
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.removeHeaderItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.removeLoadMoreItem
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
-abstract class BaseTokoNowRecipeListViewModel(
+open class BaseTokoNowRecipeListViewModel(
     private val getRecipeListUseCase: GetRecipeListUseCase,
     private val addressData: TokoNowLocalAddress,
     dispatchers: CoroutineDispatchers
@@ -52,17 +55,19 @@ abstract class BaseTokoNowRecipeListViewModel(
     private var visitableItems = mutableListOf<Visitable<*>>()
     private var hasNext = false
 
-    protected var getRecipeListParam = RecipeListParam()
+    protected val getRecipeListParam = RecipeListParam()
 
     var selectedFilters = emptyList<SelectedFilter>()
+        private set
     var enableHeaderBackground: Boolean = true
 
-    abstract val sourcePage: String
+    open val sourcePage: String = ""
 
     fun onViewCreated() {
         resetVisitableItems()
         showHideBackground()
-        addFilterItems()
+        addQuickFilterItems()
+        updateVisitableItems()
     }
 
     fun getRecipeList() {
@@ -77,7 +82,7 @@ abstract class BaseTokoNowRecipeListViewModel(
             visitableItems.addRecipeCount(response)
             visitableItems.addRecipeItems(response)
 
-            _visitableList.postValue(visitableItems)
+            updateVisitableItems()
             hideProgressBar()
         }) {
             hideHeaderBackground()
@@ -98,8 +103,8 @@ abstract class BaseTokoNowRecipeListViewModel(
         selectedFilters = filters
 
         getRecipeListParam.apply {
-            this.sortBy = sortBy
-            this.ingredientID = ingredientID
+            queryParamsMap[PARAM_SORT_BY] = sortBy
+            queryParamsMap[PARAM_INGREDIENT_ID] = ingredientID
         }
 
         refreshPage()
@@ -112,7 +117,7 @@ abstract class BaseTokoNowRecipeListViewModel(
     }
 
     fun setKeywordToSearchbar() {
-        _searchKeyword.postValue(if (getRecipeListParam.title.isNullOrBlank()) "" else getRecipeListParam.title)
+        _searchKeyword.postValue(getRecipeListParam.queryParamsMap.getOrElse(PARAM_TITLE) { "" })
     }
 
     private fun loadMoreRecipe() {
@@ -129,7 +134,7 @@ abstract class BaseTokoNowRecipeListViewModel(
             visitableItems.addRecipeItems(response)
 
             _removeScrollListener.postValue(!hasNext)
-            _visitableList.postValue(visitableItems)
+            updateVisitableItems()
             hideLoadMoreProgressBar()
         }) {
             hideLoadMoreProgressBar()
@@ -144,8 +149,8 @@ abstract class BaseTokoNowRecipeListViewModel(
         }
     }
 
-    private fun addFilterItems() {
-        visitableItems.addFilterItems()
+    private fun addQuickFilterItems() {
+        visitableItems.addQuickFilterItems()
     }
 
     private fun resetPageParam() {
@@ -153,14 +158,13 @@ abstract class BaseTokoNowRecipeListViewModel(
     }
 
     private fun showError() {
-        visitableItems.clear()
-        visitableItems.add(TokoNowServerErrorUiModel)
-        _visitableList.postValue(visitableItems)
+        resetVisitableItems()
+        addServerErrorItem()
+        updateVisitableItems()
     }
 
     private fun resetVisitableItems() {
         visitableItems.clear()
-        _visitableList.postValue(visitableItems)
     }
 
     private fun showProgressBar() {
@@ -172,12 +176,28 @@ abstract class BaseTokoNowRecipeListViewModel(
     }
 
     private fun showLoadMoreProgressBar() {
-        visitableItems.add(LoadingMoreModel())
-        _visitableList.postValue(visitableItems)
+        addLoadMoreProgressBar()
+        updateVisitableItems()
     }
 
     private fun hideLoadMoreProgressBar() {
+        removeLoadMoreProgressBar()
+        updateVisitableItems()
+    }
+
+    private fun addServerErrorItem() {
+        visitableItems.add(TokoNowServerErrorUiModel)
+    }
+
+    private fun addLoadMoreProgressBar() {
+        visitableItems.add(LoadingMoreModel())
+    }
+
+    private fun removeLoadMoreProgressBar() {
         visitableItems.removeLoadMoreItem()
+    }
+
+    private fun updateVisitableItems() {
         _visitableList.postValue(visitableItems)
     }
 
@@ -192,8 +212,8 @@ abstract class BaseTokoNowRecipeListViewModel(
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
-        val isLoading = visitableItems.firstOrNull { it is LoadingMoreModel } != null
+        val notLoading = visitableItems.firstOrNull { it is LoadingMoreModel } == null
         val scrolledToBottom = lastVisibleItemIndex == visitableItems.count() - DEFAULT_INDEX
-        return scrolledToBottom && !isLoading && hasNext && visitableItems.isNotEmpty()
+        return scrolledToBottom && notLoading && hasNext
     }
 }
