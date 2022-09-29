@@ -56,7 +56,8 @@ object DeeplinkMapperUoh {
                 d.startsWith(OMS_ORDER_DETAIL) ||
                 td == TRAVEL_AND_ENTERTAINMENT_ORDER ||
                 td == PURCHASE_ONGOING ||
-                td == TOKOFOOD_ORDER
+                td == TOKOFOOD_ORDER ||
+                td == TOKOPEDIA_PLUS_ORDER
     }
 
     private fun trimDeeplink(deeplink: String): String {

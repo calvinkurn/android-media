@@ -1174,11 +1174,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     CATEGORIES_KEUANGAN = category.value
                     titleInvestment = category.label
                 }
-                category.label.equals(CATEGORY_GROUP_TOKOFOOD, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_TOKOFOOD, true) -> {
                     CATEGORIES_TOKOFOOD = category.value
                     titleTokofood = category.label
                 }
-                category.label.equals(CATEGORY_GROUP_GOTO_PLUS, true) -> {
+                category.categoryGroup.equals(CATEGORY_GROUP_GOTO_PLUS, true) -> {
                     CATEGORIES_PLUS = category.value
                     titlePlus = category.label
                 }
