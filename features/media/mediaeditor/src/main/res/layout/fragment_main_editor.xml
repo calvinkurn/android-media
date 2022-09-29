@@ -55,7 +55,7 @@
         tools:text="Undo / Redo Toast"
         tools:visibility="visible"/>
 
-    <com.tokopedia.media.editor.ui.component.EditorViewPager
+    <com.tokopedia.media.editor.ui.widget.EditorViewPager
         android:elevation="1dp"
         android:id="@+id/view_pager"
         android:layout_width="match_parent"

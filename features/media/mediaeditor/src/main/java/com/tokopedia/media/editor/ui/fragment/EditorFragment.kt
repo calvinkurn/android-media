@@ -19,7 +19,7 @@ import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.main.EditorViewModel
 import com.tokopedia.media.editor.ui.component.DrawerUiComponent
-import com.tokopedia.media.editor.ui.component.EditorViewPager
+import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
