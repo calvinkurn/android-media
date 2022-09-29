@@ -4,6 +4,7 @@ import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
 import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
+import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -635,5 +636,52 @@ class DeepLinkMapperFromHttpTest: DeepLinkMapperTestFixture() {
     fun `check link url of searching something on now page should be equal to the actual`() {
         val expectedDeepLink = "${ApplinkConstInternalTokopediaNow.SEARCH}?q=jj%20royal"
         assertEqualsDeepLinkMapper(DeepLinkUrlConstant.TOKOPEDIANOW_SEARCH_LINK_URL, expectedDeepLink)
+    }
+
+    @Test
+    fun `check amp find url with search query should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/amp/find/3-ply-masker",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check find appLink with search query then should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/find/3-ply-masker",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `check find appLink with query and city then should return tokopedia internal search in customerapp`() {
+        val expectedDeepLink =
+            ApplinkConstInternalDiscovery.SEARCH_RESULT +
+                "?q=3%20ply%20masker%20di%20dki%20jakarta" +
+                "&navsource=find"
+
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/find/3-ply-masker/c/dki-jakarta",
+            expectedDeepLink
+        )
+    }
+
+    @Test
+    fun `non-find url containing find word should not redirect to search`() {
+        assertEqualsDeepLinkMapper(
+            "https://www.tokopedia.com/findustri/plat-besi-5mm-steel-plate-harga-per-1-cm2",
+            ""
+        )
     }
 }

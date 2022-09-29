@@ -2,6 +2,7 @@ package com.tokopedia.common_digital.atc.data.gql.response
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_digital.atc.data.response.AtcErrorPage
 
 /**
  * @author Created By : Muhammad Furqan on Aug 5, 2022
@@ -129,5 +130,11 @@ class RechargeATCError(
     val status: String = "",
     @SerializedName("title")
     @Expose
-    val title: String = ""
+    val title: String = "",
+    @SerializedName("applink_url")
+    @Expose
+    val applinkUrl: String = "",
+    @SerializedName("atc_error_page")
+    @Expose
+    val atcErrorPage: AtcErrorPage = AtcErrorPage()
 )
