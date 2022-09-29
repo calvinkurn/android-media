@@ -13,9 +13,11 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
+import com.tokopedia.tokofood.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
+import com.tokopedia.tokofood.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.databinding.FragmentInitialStateFoodBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
@@ -84,6 +86,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
         updateLocalCacheModelData()
         observeGetInitialState()
         observeRemoveRecentSearch()
+        hideKeyboardOnTouchListener()
     }
 
     override fun onDestroyView() {
@@ -110,10 +113,12 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun onGoToHome() {
         navigateToNewFragment(TokoFoodHomeFragment.createInstance())
+        initialStateViewUpdateListener?.hideKeyboard()
     }
 
     override fun onChipsClicked(data: ChipsPopularSearch) {
         initialStateViewUpdateListener?.setKeywordSearchBarView(data.title)
+        initialStateViewUpdateListener?.hideKeyboard()
         analytics.clickTopKeyword(keyword)
     }
 
@@ -152,6 +157,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     override fun onRecentSearchItemClicked(title: String) {
         initialStateViewUpdateListener?.setKeywordSearchBarView(title)
         analytics.clickSearchHistory(keyword)
+        initialStateViewUpdateListener?.hideKeyboard()
     }
 
     override fun onImpressionRecentSearch(item: RecentSearchItemUiModel, position: Int) {
@@ -186,6 +192,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
         binding?.rvSearchInitialState?.run {
             layoutManager = LinearLayoutManager(context)
             adapter = initialSearchAdapter
+            addOnScrollListener(OnScrollListenerSearch(this))
         }
     }
 
