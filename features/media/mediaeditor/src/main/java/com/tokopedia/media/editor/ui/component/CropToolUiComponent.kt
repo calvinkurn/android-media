@@ -22,8 +22,8 @@ class CropToolUiComponent constructor(
 
     private val viewRefList = mutableListOf<Pair<View, Typography>>()
 
-    private val activeColor = ContextCompat.getColor(this.context, unifyR.color.Unify_GN500)
-    private val inactiveColor = ContextCompat.getColor(this.context, unifyR.color.Unify_NN950)
+    private val activeColor = ContextCompat.getColor(context, unifyR.color.Unify_GN500)
+    private val inactiveColor = ContextCompat.getColor(context, unifyR.color.Unify_NN950)
 
     private var availableRatio = arrayListOf<ImageRatioType>()
 
@@ -36,7 +36,7 @@ class CropToolUiComponent constructor(
                         true
                     )
                 )
-            } ?: kotlin.run {
+            } ?: run {
                 editorParam?.ratioList?.let {
                     availableRatio = it
                     it.forEachIndexed { index, ratio ->
@@ -91,7 +91,11 @@ class CropToolUiComponent constructor(
                 }
 
                 val boxCropText = findViewById<Typography>(editorR.id.text_crop)
-                boxCropText.text = "${imageRatio.getRatioX()}:${imageRatio.getRatioY()}"
+                boxCropText.text = context.getString(
+                    editorR.string.editor_tool_crop_box_text_format,
+                    imageRatio.getRatioX(),
+                    imageRatio.getRatioY()
+                )
 
                 viewRefList.add(Pair(boxCrop, boxCropText))
 
