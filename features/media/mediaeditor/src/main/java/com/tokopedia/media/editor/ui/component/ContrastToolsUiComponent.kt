@@ -24,7 +24,7 @@ class ContrastToolsUiComponent constructor(
         )
         contrastSliderViewView.listener = this
         contrastSliderViewView.isValueUpdateDelay = true
-        contrastSliderViewView.delayTime = 100L
+        contrastSliderViewView.delayTime = CONTRAST_SLIDER_DELAY_TIME
     }
 
     override fun valueUpdated(step: Int, value: Float) {
@@ -42,6 +42,7 @@ class ContrastToolsUiComponent constructor(
         private const val CONTRAST_SLIDER_RANGE = 100
         private const val CONTRAST_SLIDER_STEP_VALUE = 1
         private const val CONTRAST_SLIDER_START_VALUE = 0
+        private const val CONTRAST_SLIDER_DELAY_TIME = 100L
 
         /**
          * convert slider value -100...100 to contrast value 0...3
