@@ -79,13 +79,14 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
              shipmentDetailData: ShipmentDetailData,
              selectedServiceId: Int,
              shopShipmentList: List<ShopShipment>,
-             recipientAddressModel: RecipientAddressModel,
-             cartPosition: Int, codHistory: Int,
-             isLeasing: Boolean, pslCode: String,
+             recipientAddressModel: RecipientAddressModel? = null,
+             cartPosition: Int, codHistory: Int = -1,
+             isLeasing: Boolean = false, pslCode: String = "",
              products: ArrayList<Product>, cartString: String,
              isDisableOrderPrioritas: Boolean,
-             isTradeInDropOff: Boolean, isFulFillment: Boolean,
-             preOrderTime: Int, mvc: String) {
+             isTradeInDropOff: Boolean = false,
+             isFulFillment: Boolean = false, preOrderTime: Int = -1,
+             mvc: String = "", isOcc: Boolean) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
         initData(shipmentDetailData, selectedServiceId, shopShipmentList, recipientAddressModel,
@@ -93,7 +94,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 isDisableOrderPrioritas, isTradeInDropOff, isFulFillment, preOrderTime, mvc)
         initBottomSheet(activity)
         initView(activity)
-        isOcc = false
+        this.isOcc = isOcc
         bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
     }
 
@@ -119,7 +120,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
-    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
+    private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
         bundle = Bundle()
         bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
         bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
@@ -136,53 +137,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
         bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
         bundle?.putString(ARGUMENT_MVC, mvc)
-    }
-
-    /* OCC */
-    fun show(
-        activity: Activity,
-        fragmentManager: FragmentManager,
-        shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
-        shippingRecommendationData: ShippingRecommendationData,
-        cartPosition: Int,
-        isDisableOrderPrioritas: Boolean
-    ) {
-        this.activity = activity
-        this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener
-        initBottomSheet(activity, shippingRecommendationData)
-        initView(activity)
-        initData(cartPosition, isDisableOrderPrioritas)
-        bottomSheet?.show(fragmentManager, this.javaClass.simpleName)
-    }
-
-    private fun initBottomSheet(activity: Activity, shippingRecommendationData: ShippingRecommendationData) {
-        bottomSheet = BottomSheetUnify().apply {
-            showCloseIcon = true
-            setTitle(activity.getString(R.string.title_bottomsheet_shipment_duration))
-            clearContentPadding = true
-            customPeekHeight = Resources.getSystem().displayMetrics.heightPixels / 2
-            isDragable = true
-            isHideable = true
-            setShowListener {
-                presenter?.attachView(this@ShippingDurationBottomsheet)
-                hideLoading()
-                setupRecyclerView(mCartPosition)
-                showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
-            }
-            setOnDismissListener {
-                presenter?.detachView()
-            }
-            setCloseClickListener {
-                shippingDurationBottomsheetListener?.onShippingDurationButtonCloseClicked()
-                dismiss()
-            }
-        }
-    }
-
-    private fun initData(cartPosition: Int, isDisableOrderPrioritas: Boolean) {
-        mCartPosition = cartPosition
-        this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.isOcc = true
     }
 
     private fun initializeInjector() {
@@ -229,7 +183,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val isFulfillment = bundle!!.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = bundle!!.getInt(ARGUMENT_PO_TIME)
             presenter!!.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress!!, isFulfillment, preOrderTime, mvc)
+                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc, isOcc)
         }
     }
 

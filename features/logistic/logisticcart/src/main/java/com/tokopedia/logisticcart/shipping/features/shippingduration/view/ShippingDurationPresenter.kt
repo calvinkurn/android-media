@@ -35,16 +35,17 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
     /**
      * Calls rates
      */
-    override fun loadCourierRecommendation(shipmentDetailData: ShipmentDetailData,
-                                           selectedServiceId: Int,
-                                           shopShipmentList: List<ShopShipment>,
-                                           codHistory: Int, isCorner: Boolean,
-                                           isLeasing: Boolean, pslCode: String,
-                                           products: List<Product>, cartString: String,
-                                           isTradeInDropOff: Boolean,
-                                           recipientAddressModel: RecipientAddressModel,
-                                           isFulfillment: Boolean, preOrderTime: Int,
-                                           mvc: String) {
+    override fun loadCourierRecommendation(
+        shipmentDetailData: ShipmentDetailData,
+        selectedServiceId: Int,
+        shopShipmentList: List<ShopShipment>,
+        codHistory: Int, isCorner: Boolean,
+        isLeasing: Boolean, pslCode: String,
+        products: List<Product>, cartString: String,
+        isTradeInDropOff: Boolean,
+        recipientAddressModel: RecipientAddressModel?,
+        isFulfillment: Boolean, preOrderTime: Int,
+        mvc: String, isOcc: Boolean) {
         if (view != null) {
             view!!.showLoading()
             val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -54,7 +55,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                 selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
             loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc)
+                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, isOcc)
         }
     }
 
@@ -62,13 +63,14 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                              isCorner: Boolean, isLeasing: Boolean,
                              shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
                              shippingParam: ShippingParam, pslCode: String,
-                             mvc: String) {
+                             mvc: String, isOcc: Boolean) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
                 .isLeasing(isLeasing)
                 .promoCode(pslCode)
                 .mvc(mvc)
+                .isOcc(isOcc)
                 .build()
         val observable: Observable<ShippingRecommendationData> = if (isRatesTradeInApi) {
             ratesApiUseCase.execute(param)
@@ -124,7 +126,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                  products: List<Product>,
                                  cartString: String,
                                  isTradeInDropOff: Boolean,
-                                 recipientAddressModel: RecipientAddressModel): ShippingParam {
+                                 recipientAddressModel: RecipientAddressModel?): ShippingParam {
         val shippingParam = ShippingParam()
         shippingParam.originDistrictId = shipmentDetailData.shipmentCartData!!.originDistrictId
         shippingParam.originPostalCode = shipmentDetailData.shipmentCartData!!.originPostalCode
@@ -150,7 +152,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         shippingParam.preOrderDuration = shipmentDetailData.shipmentCartData!!.preOrderDuration
         shippingParam.isFulfillment = shipmentDetailData.shipmentCartData!!.isFulfillment
         shippingParam.boMetadata = shipmentDetailData.shipmentCartData!!.boMetadata
-        if (isTradeInDropOff && recipientAddressModel.locationDataModel != null) {
+        if (isTradeInDropOff && recipientAddressModel?.locationDataModel != null) {
             shippingParam.destinationDistrictId = recipientAddressModel.locationDataModel.district
             shippingParam.destinationPostalCode = recipientAddressModel.locationDataModel.postalCode
             shippingParam.destinationLatitude = recipientAddressModel.locationDataModel.latitude

@@ -26,7 +26,7 @@ interface ShippingDurationContract {
                                       shopShipmentList: List<ShopShipment>, codHistory: Int,
                                       isCorner: Boolean, isLeasing: Boolean, pslCode: String,
                                       products: List<Product>, cartString: String, isTradeInDropOff: Boolean,
-                                      recipientAddressModel: RecipientAddressModel, isFulfillment: Boolean, preOrderTime: Int, mvc: String)
+                                      recipientAddressModel: RecipientAddressModel?, isFulfillment: Boolean, preOrderTime: Int, mvc: String, isOcc: Boolean)
 
         fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
         fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?

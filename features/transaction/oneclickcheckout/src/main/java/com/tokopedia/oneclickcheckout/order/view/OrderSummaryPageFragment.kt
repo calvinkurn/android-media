@@ -60,9 +60,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.Shippi
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.ShippingDurationBottomsheetListener
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
-import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.oneclickcheckout.R
 import com.tokopedia.oneclickcheckout.address.AddressListBottomSheet
@@ -384,6 +382,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
         observeEligibilityForAnaRevamp()
 
+        observeOrderShippingDuration()
+
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
             val productIds = arguments?.getString(QUERY_PRODUCT_ID)
@@ -530,6 +530,45 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 is OccState.Success -> showMainContent(it.data)
             }
         }
+    }
+
+    private fun observeOrderShippingDuration() {
+        viewModel.orderShippingDuration.observe(viewLifecycleOwner) {
+            when (it) {
+                is OccState.Loading -> {
+                    // no ops
+                }
+                is OccState.Failed -> {
+                    binding.loaderContent.animateGone()
+                    it.getFailure()?.let { failure ->
+                        handleError(failure.throwable)
+                    }
+                }
+                is OccState.FirstLoad -> {
+                    // no ops
+                }
+                is OccState.Success -> openShippingDurationBottomsheet(it.data)
+            }
+        }
+    }
+
+    private fun openShippingDurationBottomsheet(data: OrderShippingDuration) {
+        activity?.let {
+            ShippingDurationBottomsheet().show(
+                activity = it,
+                fragmentManager = parentFragmentManager,
+                shipmentDetailData = data.shipmentDetailData,
+                selectedServiceId = data.selectedServiceId,
+                shopShipmentList = data.shopShipmentList,
+                cartPosition = 0,
+                products = data.products,
+                cartString = data.cartString,
+                isDisableOrderPrioritas = true,
+                isOcc = true,
+                pslCode = data.pslCode,
+                shippingDurationBottomsheetListener = getShippingDurationListener())
+        }
+
     }
 
     private fun observeOrderShipment() {
@@ -866,6 +905,11 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 viewModel.changePinpoint()
             }
         }
+    }
+
+    private fun onChoosePromoLogisticShipping(logisticPromoUiModel: LogisticPromoUiModel) {
+        orderSummaryAnalytics.eventChooseBboAsDuration()
+        viewModel.chooseLogisticPromo(logisticPromoUiModel)
     }
 
     private fun forceShowOnboarding(onboarding: OccOnboarding?) {
@@ -1311,8 +1355,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun getOrderPreferenceCardListener(): OrderPreferenceCard.OrderPreferenceCardListener = object : OrderPreferenceCard.OrderPreferenceCardListener {
 
         override fun onLogisticPromoClick(logisticPromoUiModel: LogisticPromoUiModel) {
-            orderSummaryAnalytics.eventChooseBboAsDuration()
-            viewModel.chooseLogisticPromo(logisticPromoUiModel)
+            onChoosePromoLogisticShipping(logisticPromoUiModel)
         }
 
         override fun reloadShipping(shopId: String) {
@@ -1353,48 +1396,14 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
         }
 
-        override fun chooseDuration(isDurationError: Boolean, currentSpId: String, shippingRecommendationData: ShippingRecommendationData) {
+        override fun chooseDuration(isDurationError: Boolean, currentSpId: String) {
             if (viewModel.orderTotal.value.buttonState != OccButtonState.LOADING) {
                 if (isDurationError) {
                     orderSummaryAnalytics.eventClickUbahWhenDurationError(userSession.get().userId)
                 } else if (currentSpId.isNotEmpty()) {
                     orderSummaryAnalytics.eventClickArrowToChangeDurationOption(currentSpId, userSession.get().userId)
                 }
-                activity?.let {
-                    ShippingDurationBottomsheet().show(it, parentFragmentManager, object : ShippingDurationBottomsheetListener {
-                        override fun onShippingDurationChoosen(
-                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                            selectedCourier: ShippingCourierUiModel?,
-                            recipientAddressModel: RecipientAddressModel?,
-                            cartPosition: Int,
-                            selectedServiceId: Int,
-                            serviceData: ServiceData?,
-                            flagNeedToSetPinpoint: Boolean,
-                            isDurationClick: Boolean,
-                            isClearPromo: Boolean
-                        ) {
-                            if (selectedCourier != null && serviceData != null) {
-                                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(selectedCourier.toString(), userSession.get().userId)
-                                val serviceId = if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
-                                viewModel.chooseDuration(serviceId, selectedCourier, flagNeedToSetPinpoint)
-                            }
-                        }
-
-                        override fun onLogisticPromoChosen(
-                            shippingCourierUiModels: List<ShippingCourierUiModel>?,
-                            courierData: ShippingCourierUiModel?,
-                            recipientAddressModel: RecipientAddressModel?,
-                            cartPosition: Int,
-                            serviceData: ServiceData?,
-                            flagNeedToSetPinpoint: Boolean,
-                            promoCode: String?,
-                            selectedServiceId: Int,
-                            logisticPromo: LogisticPromoUiModel
-                        ) {
-                            onLogisticPromoClick(logisticPromo)
-                        }
-                    }, shippingRecommendationData, 0, true)
-                }
+                viewModel.getShippingBottomsheetParam()
             }
         }
 
@@ -1532,6 +1541,48 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     orderSummaryAnalytics.eventClickTopUpGoPayButton()
                 }
             }
+        }
+    }
+
+    private fun getShippingDurationListener() : ShippingDurationBottomsheetListener = object : ShippingDurationBottomsheetListener {
+        override fun onShippingDurationChoosen(
+            shippingCourierUiModels: List<ShippingCourierUiModel>?,
+            selectedCourier: ShippingCourierUiModel?,
+            recipientAddressModel: RecipientAddressModel?,
+            cartPosition: Int,
+            selectedServiceId: Int,
+            serviceData: ServiceData?,
+            flagNeedToSetPinpoint: Boolean,
+            isDurationClick: Boolean,
+            isClearPromo: Boolean
+        ) {
+            if (selectedCourier != null && serviceData != null) {
+                orderSummaryAnalytics.eventClickSelectedDurationOptionNew(
+                    selectedCourier.toString(),
+                    userSession.get().userId
+                )
+                val serviceId =
+                    if (flagNeedToSetPinpoint) selectedServiceId else serviceData.serviceId
+                viewModel.chooseDuration(
+                    serviceId,
+                    selectedCourier,
+                    flagNeedToSetPinpoint
+                )
+            }
+        }
+
+        override fun onLogisticPromoChosen(
+            shippingCourierUiModels: List<ShippingCourierUiModel>?,
+            courierData: ShippingCourierUiModel?,
+            recipientAddressModel: RecipientAddressModel?,
+            cartPosition: Int,
+            serviceData: ServiceData?,
+            flagNeedToSetPinpoint: Boolean,
+            promoCode: String?,
+            selectedServiceId: Int,
+            logisticPromo: LogisticPromoUiModel
+        ) {
+            onChoosePromoLogisticShipping(logisticPromo)
         }
     }
 

@@ -4,7 +4,6 @@ import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.datamock.DummyProvider
-import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -51,7 +50,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
 
         // Then
         verify {
@@ -77,7 +76,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, addressData, false, 0, "")
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", false)
 
         // Then
         verify {
@@ -102,7 +101,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
 
         // Then
         verify {
@@ -124,7 +123,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
 
         // Then
         verify {
@@ -143,7 +142,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
 
         // Then
         verify {
@@ -168,7 +167,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
                 shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "")
+                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
 
         // Then
         verify {
@@ -196,7 +195,7 @@ class ShippingDurationPresenterTest {
         // When
         presenter.loadCourierRecommendation(shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, address, false, 0, "")
+            products, "1479278-30-740525-99367774", true, address, false, 0, "", false)
 
         // Then
         assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)

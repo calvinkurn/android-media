@@ -74,7 +74,8 @@ data class RatesParam(
             is_fulfillment = builder.is_fulfillment,
             po_time = builder.po_time,
             mvc = builder.mvc,
-            bo_metadata = builder.bo_metadata)
+            bo_metadata = builder.bo_metadata,
+            occ = builder.occ)
 
     fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,
@@ -185,6 +186,8 @@ data class RatesParam(
         var mvc: String = ""
         var bo_metadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
             private set
+        var occ: String = "0"
+            private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -195,6 +198,8 @@ data class RatesParam(
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
 
         fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
+
+        fun isOcc(isOcc: Boolean) = apply { this.occ = if (isOcc) "1" else "0" }
 
         fun build() = RatesParam(this)
 
