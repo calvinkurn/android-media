@@ -23,7 +23,7 @@ class PlayPreference @Inject constructor(
 
         private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
         private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
-        private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with channelId
+        private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with userId
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
