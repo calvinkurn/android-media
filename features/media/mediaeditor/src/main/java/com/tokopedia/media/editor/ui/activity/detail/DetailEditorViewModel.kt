@@ -13,6 +13,7 @@ import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
 import com.tokopedia.media.editor.data.repository.RotateFilterRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
+import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
@@ -109,7 +110,7 @@ class DetailEditorViewModel @Inject constructor(
     fun setWatermark(
         context: Context,
         bitmapSource: Bitmap,
-        watermarkType: Int,
+        type: WatermarkType,
         shopName: String,
         isThumbnail: Boolean = false,
         detailUiModel: EditorDetailUiModel,
@@ -118,7 +119,7 @@ class DetailEditorViewModel @Inject constructor(
         _watermarkFilter.value = watermarkFilterRepository.watermark(
             context,
             bitmapSource,
-            watermarkType,
+            type,
             shopName,
             isThumbnail,
             detailUiModel,

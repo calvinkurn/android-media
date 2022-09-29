@@ -19,14 +19,14 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:padding="@dimen/editor_watermark_selected_padding"
-            android:id="@+id/watermark_type1"
+            android:id="@+id/btn_watermark_diagonal"
             android:layout_width="64dp"
             android:layout_height="64dp"/>
 
         <androidx.appcompat.widget.AppCompatImageView
             android:padding="@dimen/editor_watermark_selected_padding"
-            android:layout_marginLeft="16dp"
-            android:id="@+id/watermark_type2"
+            android:layout_marginStart="16dp"
+            android:id="@+id/btn_watermark_center"
             android:layout_width="64dp"
             android:layout_height="64dp"/>
 

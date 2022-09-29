@@ -6,47 +6,47 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.picker.common.basecomponent.UiComponent
-import com.tokopedia.media.editor.R.dimen as dimenR
 
 class WatermarkToolUiComponent constructor(
     viewGroup: ViewGroup,
     private val listener: Listener
 ) : UiComponent(viewGroup, R.id.uc_tool_watermark) {
 
-    private val buttonType1 = findViewById<ImageView>(R.id.watermark_type1)
-    private val buttonType2 = findViewById<ImageView>(R.id.watermark_type2)
+    private val btnWatermarkDiagonal = findViewById<ImageView>(R.id.btn_watermark_diagonal)
+    private val btnWatermarkCenter = findViewById<ImageView>(R.id.btn_watermark_center)
 
     fun setupView() {
         container().show()
 
-        buttonType1.setOnClickListener {
-            listener.onWatermarkChanged(WATERMARK_TOKOPEDIA)
+        btnWatermarkDiagonal.setOnClickListener {
+            listener.onWatermarkChanged(WatermarkType.Diagonal)
             setButtonSelected(it)
-            releaseButtonSelected(buttonType2)
+            releaseButtonSelected(btnWatermarkCenter)
         }
 
-        buttonType2.setOnClickListener {
-            listener.onWatermarkChanged(WATERMARK_SHOP)
+        btnWatermarkCenter.setOnClickListener {
+            listener.onWatermarkChanged(WatermarkType.Center)
             setButtonSelected(it)
-            releaseButtonSelected(buttonType1)
+            releaseButtonSelected(btnWatermarkDiagonal)
         }
     }
 
-    fun setWatermarkTypeSelected(watermarkType: Int?){
+    fun setWatermarkTypeSelected(watermarkType: WatermarkType?){
         when(watermarkType){
-            WATERMARK_TOKOPEDIA -> setButtonSelected(buttonType1)
-            WATERMARK_SHOP -> setButtonSelected(buttonType2)
+            WatermarkType.Diagonal -> setButtonSelected(btnWatermarkDiagonal)
+            WatermarkType.Center -> setButtonSelected(btnWatermarkCenter)
             null -> {
-                listener.onWatermarkChanged(WATERMARK_TOKOPEDIA)
-                setButtonSelected(buttonType1)
-                releaseButtonSelected(buttonType2)
+                listener.onWatermarkChanged(WatermarkType.Diagonal)
+                setButtonSelected(btnWatermarkDiagonal)
+                releaseButtonSelected(btnWatermarkCenter)
             }
         }
     }
 
     fun getButtonRef(): Pair<ImageView, ImageView> {
-        return Pair(buttonType1, buttonType2)
+        return Pair(btnWatermarkDiagonal, btnWatermarkCenter)
     }
 
     private fun setButtonSelected(view: View) {
@@ -59,11 +59,6 @@ class WatermarkToolUiComponent constructor(
     }
 
     interface Listener {
-        fun onWatermarkChanged(value: Int)
-    }
-
-    companion object {
-        const val WATERMARK_TOKOPEDIA = 0
-        const val WATERMARK_SHOP = 1
+        fun onWatermarkChanged(type: WatermarkType)
     }
 }

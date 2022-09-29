@@ -23,6 +23,7 @@ import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
+import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
@@ -206,14 +207,14 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    override fun onWatermarkChanged(value: Int) {
+    override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
             val shopName = if (userSession.shopName.isEmpty())
                 DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
             viewModel.setWatermark(
                 requireContext(),
                 it,
-                value,
+                type,
                 shopName,
                 detailUiModel = data,
                 useStorageColor = false
@@ -525,16 +526,18 @@ class DetailEditorFragment @Inject constructor(
                 val shopName = if (userSession.shopName.isEmpty())
                     DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
 
-                viewModel.setWatermark(
-                    requireContext(),
-                    bitmap,
-                    it.watermarkType,
-                    shopName,
-                    detailUiModel = detailUiModel,
-                    useStorageColor = true
-                )
+                WatermarkType.map(it.watermarkType)?.let { type ->
+                    viewModel.setWatermark(
+                        requireContext(),
+                        bitmap,
+                        type,
+                        shopName,
+                        detailUiModel = detailUiModel,
+                        useStorageColor = true
+                    )
 
-                watermarkComponent.setWatermarkTypeSelected(it.watermarkType)
+                    watermarkComponent.setWatermarkTypeSelected(type)
+                }
             }
         }
     }
@@ -746,7 +749,7 @@ class DetailEditorFragment @Inject constructor(
 
                     if (data.isToolWatermark()) {
                         setWatermarkDrawerItem(bitmap)
-                        watermarkComponent.setWatermarkTypeSelected(data.watermarkMode?.watermarkType)
+                        watermarkComponent.setWatermarkTypeSelected(WatermarkType.map(data.watermarkMode?.watermarkType))
                     }
                 },
                 onCleared = {}

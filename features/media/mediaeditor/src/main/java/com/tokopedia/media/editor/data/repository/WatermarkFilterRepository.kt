@@ -9,7 +9,6 @@ import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
-import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
 import javax.inject.Inject
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
@@ -18,14 +17,32 @@ import com.tokopedia.media.editor.utils.isDark
 import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.min
 
+sealed class WatermarkType(val value: Int) {
+    object Diagonal: WatermarkType(DIAGONAL_INDEX)
+    object Center: WatermarkType(CENTER_INDEX)
+
+    companion object {
+        private const val DIAGONAL_INDEX = 0
+        private const val CENTER_INDEX = 1
+
+        fun map(type: Int?): WatermarkType? {
+            return when (type) {
+                DIAGONAL_INDEX -> Diagonal
+                CENTER_INDEX -> Center
+                else -> null
+            }
+        }
+    }
+}
+
 interface WatermarkFilterRepository {
     fun watermark(
         context: Context,
         source: Bitmap,
-        watermarkType: Int,
+        type: WatermarkType,
         shopNameParam: String,
         isThumbnail: Boolean,
-        detailUiModel: EditorDetailUiModel? = null,
+        element: EditorDetailUiModel? = null,
         useStorageColor: Boolean
     ): Bitmap
 
@@ -47,8 +64,10 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             }
         }
 
+    @Suppress("SpellCheckingInspection")
     private var topedDrawable: Drawable? = null
 
+    @Suppress("SpellCheckingInspection")
     // image ratio 14:3 || refer to watermark_tokopedia.xml vector drawable
     private var tokopediaLogoWidth: Float = 0f
         set(value) {
@@ -57,6 +76,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             fontSize = tokopediaLogoHeight
         }
 
+    @Suppress("SpellCheckingInspection")
     private var tokopediaLogoHeight = 0f
 
     private var fontSize = 0f
@@ -69,10 +89,10 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     override fun watermark(
         context: Context,
         source: Bitmap,
-        watermarkType: Int,
+        type: WatermarkType,
         shopNameParam: String,
         isThumbnail: Boolean,
-        detailUiModel: EditorDetailUiModel?,
+        element: EditorDetailUiModel?,
         useStorageColor: Boolean
     ): Bitmap {
         shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
@@ -82,7 +102,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
         var isDark = source.isDark()
         if (useStorageColor) {
-            detailUiModel?.watermarkMode?.let {
+            element?.watermarkMode?.let {
                 isDark = it.textColorDark
             }
 
@@ -124,20 +144,20 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         textWidth = shopTextBound.width()
         textHeight = shopTextBound.height()
 
-        when (watermarkType) {
-            WatermarkToolUiComponent.WATERMARK_TOKOPEDIA -> {
-                watermark1(sourceWidth, sourceHeight, canvas, paint)
+        when (type) {
+            WatermarkType.Diagonal -> {
+                setWatermarkDiagonal(sourceWidth, sourceHeight, canvas, paint)
             }
-            WatermarkToolUiComponent.WATERMARK_SHOP -> {
-                watermark2(sourceWidth, sourceHeight, canvas, paint)
+            WatermarkType.Center -> {
+                setWatermarkCenter(sourceWidth, sourceHeight, canvas, paint)
             }
         }
 
-        detailUiModel?.watermarkMode?.let {
+        element?.watermarkMode?.let {
             it.textColorDark = isDark
-            it.watermarkType = watermarkType
+            it.watermarkType = type.value
         } ?: kotlin.run {
-            detailUiModel?.watermarkMode = EditorWatermarkUiModel(watermarkType, isDark)
+            element?.watermarkMode = EditorWatermarkUiModel(type.value, isDark)
         }
 
         return result
@@ -153,7 +173,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             val resultBitmap1 = watermark(
                 context,
                 bitmap,
-                WatermarkToolUiComponent.WATERMARK_TOKOPEDIA,
+                WatermarkType.Diagonal,
                 shopName,
                 true,
                 useStorageColor = false
@@ -162,7 +182,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             val resultBitmap2 = watermark(
                 context,
                 bitmap,
-                WatermarkToolUiComponent.WATERMARK_SHOP,
+                WatermarkType.Center,
                 shopName,
                 true,
                 useStorageColor = false
@@ -179,8 +199,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         }
     }
 
-    // Tokopedia text & shop name only on center image
-    private fun watermark2(
+    private fun setWatermarkCenter(
         width: Int,
         height: Int,
         canvas: Canvas,
@@ -203,8 +222,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         topedDrawable?.draw(canvas)
     }
 
-    // Tokopedia text & shop name fill image
-    private fun watermark1(
+    private fun setWatermarkDiagonal(
         width: Int,
         height: Int,
         canvas: Canvas,
