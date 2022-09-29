@@ -107,7 +107,15 @@ class MenuSettingViewModelTest {
     fun `check shop loc whitelist if response success with data eligble`() =
         runBlocking {
             everyProviderShopLocWhitelist()
-            everyShopLocWhitelistSuccess(ShopLocationWhitelistResponse(ShopLocWhitelist(data = DataWhitelist(eligibilityState = 1))))
+            everyShopLocWhitelistSuccess(
+                ShopLocationWhitelistResponse(
+                    ShopLocWhitelist(
+                        data = DataWhitelist(
+                            eligibilityState = 1
+                        )
+                    )
+                )
+            )
 
             viewModel.getShopLocEligible(424424)
             Assert.assertEquals(
@@ -121,7 +129,15 @@ class MenuSettingViewModelTest {
     fun `check shop loc whitelist if response success with data not eligble`() =
         runBlocking {
             everyProviderShopLocWhitelist()
-            everyShopLocWhitelistSuccess(ShopLocationWhitelistResponse(ShopLocWhitelist(data = DataWhitelist(eligibilityState = 0))))
+            everyShopLocWhitelistSuccess(
+                ShopLocationWhitelistResponse(
+                    ShopLocWhitelist(
+                        data = DataWhitelist(
+                            eligibilityState = 0
+                        )
+                    )
+                )
+            )
 
             viewModel.getShopLocEligible(424424)
             Assert.assertEquals(
@@ -158,7 +174,7 @@ class MenuSettingViewModelTest {
         coEvery { shopMultilocProvider.get() } returns shopMultilocWhitelistUseCase
     }
 
-    private fun everyShopLocWhitelistSuccess(response:ShopLocationWhitelistResponse) {
+    private fun everyShopLocWhitelistSuccess(response: ShopLocationWhitelistResponse) {
         coEvery { shopMultilocWhitelistUseCase.invoke(424424) } returns response
     }
 
