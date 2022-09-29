@@ -86,7 +86,6 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
         updateLocalCacheModelData()
         observeGetInitialState()
         observeRemoveRecentSearch()
-        hideKeyboardOnTouchListener()
     }
 
     override fun onDestroyView() {
@@ -118,8 +117,8 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun onChipsClicked(data: ChipsPopularSearch) {
         initialStateViewUpdateListener?.setKeywordSearchBarView(data.title)
-        initialStateViewUpdateListener?.hideKeyboard()
         analytics.clickTopKeyword(keyword)
+        initialStateViewUpdateListener?.hideKeyboard()
     }
 
     override fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int) {
@@ -193,6 +192,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             layoutManager = LinearLayoutManager(context)
             adapter = initialSearchAdapter
             addOnScrollListener(OnScrollListenerSearch(this))
+            hideKeyboardOnTouchListener()
         }
     }
 

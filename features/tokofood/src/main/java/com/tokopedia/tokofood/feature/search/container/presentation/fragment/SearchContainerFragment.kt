@@ -78,7 +78,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
         initView(view)
         observeSearchKeyword()
         keyword?.let { setKeywordSearchBarView(it) }
-        hideKeyboardOnTouchListener()
+        globalSearchBarWidget.hideKeyboardOnTouchListener()
     }
 
     override fun onDestroyView() {
@@ -107,7 +107,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
 
     override fun hideKeyboard() {
         view?.let {
-            KeyboardHandler.DropKeyboard(it.context, it)
+            KeyboardHandler.DropKeyboard(it.context, view)
         }
     }
 
@@ -158,7 +158,6 @@ class SearchContainerFragment : BaseDaggerFragment(),
     override fun onTransactionListClicked() {
         context?.let {
             RouteManager.route(it, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
-            onBackPressed()
         }
     }
 

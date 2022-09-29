@@ -141,7 +141,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         setupLayout()
         collectFlows()
         setLocalCacheModel()
-        hideKeyboardOnTouchListener()
     }
 
     override fun onResume() {
@@ -359,6 +358,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
                 layoutManager = LinearLayoutManager(it, LinearLayoutManager.VERTICAL, false)
             }
             addOnScrollListener(OnScrollListenerSearch(this))
+            hideKeyboardOnTouchListener()
         }
     }
 

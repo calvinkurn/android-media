@@ -128,8 +128,8 @@ class GlobalSearchBarWidget: ConstraintLayout {
         binding?.run {
             searchBarView.searchBarTextField.setText(searchKeyword)
             searchTextBoxListener?.onQueryTextChangeListener(searchKeyword)
+            showKeyboard(searchBarView.searchBarTextField)
             searchBarView.searchBarTextField.postDelayed({
-                showKeyboard(searchBarView.searchBarTextField)
                 searchBarView.searchBarTextField.text?.length?.let {
                     searchBarView.searchBarTextField.setSelection(
                         it

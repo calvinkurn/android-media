@@ -20,14 +20,21 @@ internal class OnScrollListenerSearch(val view : View) : RecyclerView.OnScrollLi
 }
 
 @SuppressLint("ClickableViewAccessibility")
-internal fun Fragment.hideKeyboardOnTouchListener()  {
-    view?.setOnTouchListener(object : View.OnTouchListener {
+internal fun View?.hideKeyboardOnTouchListener()  {
+    this?.setOnTouchListener(object : View.OnTouchListener {
         override fun onTouch(v: View?, event: MotionEvent?): Boolean {
             if (v == null) return false
-            if (v !is SearchBarUnify || v !is EditText) {
-                KeyboardHandler.DropKeyboard(v.context, v)
+            return try {
+                val searchBarEdt = v.rootView?.findViewById<SearchBarUnify>(com.tokopedia.tokofood.R.id.searchBarView)
+                if (v !is SearchBarUnify || v !is EditText) {
+                    KeyboardHandler.DropKeyboard(v.context, v)
+                }
+                searchBarEdt?.clearFocus()
+                true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                false
             }
-            return true
         }
     })
 }
