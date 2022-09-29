@@ -11,7 +11,6 @@ import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatch
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.NUMBER_PATTERN
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
 import java.text.DecimalFormat
@@ -21,6 +20,10 @@ open class ManageProductVariantBaseViewHolder(
     view: View,
     private val listener: ManageProductVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
+
+    companion object {
+        const val NUMBER_PATTERN = "#,###,###"
+    }
 
     var listenerOfEditTextDiscountNominal : TextWatcher? = null
     var listenerOfEditTextDiscountPercent : TextWatcher? = null
@@ -72,8 +75,8 @@ open class ManageProductVariantBaseViewHolder(
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?,
     ) {
 
-        listenerNumberFormatDiscountNominal = setListenerOfSomething(textFieldPriceDiscountNominal)
-        listenerNumberFormatDiscountPercent = setListenerOfSomething(textFieldPriceDiscountPercentage)
+        listenerNumberFormatDiscountNominal = setNumberTextChangeListener(textFieldPriceDiscountNominal)
+        listenerNumberFormatDiscountPercent = setNumberTextChangeListener(textFieldPriceDiscountPercentage)
 
         listenerOfEditTextDiscountNominal = EditTextWatcher{
             discount?.price = it.digitsOnly()
@@ -152,7 +155,7 @@ open class ManageProductVariantBaseViewHolder(
         )
     }
 
-    private fun setListenerOfSomething(editText : TextFieldUnify2): TextWatcher {
+    private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
         numberFormatter.applyPattern(NUMBER_PATTERN)
         return NumberThousandSeparatorTextWatcher(

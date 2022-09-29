@@ -13,14 +13,13 @@ class ManageProductVariantMultiLocationAdapter :
 
     private var productVariant: ReservedProduct.Product.ChildProduct? = null
     private var listener: ManageProductVariantAdapterListener? = null
-    private var binding: LayoutCampaignManageProductDetailLocationItemBinding? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
-        binding = LayoutCampaignManageProductDetailLocationItemBinding.inflate(
+        val binding = LayoutCampaignManageProductDetailLocationItemBinding.inflate(
             LayoutInflater.from(parent.context),
             parent, false
         )
-        return CriteriaViewHolder(binding!!, listener)
+        return CriteriaViewHolder(binding, listener)
     }
 
     override fun getItemCount() = productVariant?.warehouses?.size.orZero()
