@@ -19,6 +19,7 @@ open class ClientMessageDatasource @Inject constructor(
         val data = messageEvent.data.decodeToString()
         when(messageEvent.path) {
             MessageConstant.GET_ORDER_LIST_PATH -> wearCacheAction.saveOrderListToCache(data)
+            MessageConstant.GET_NOTIFICATION_LIST_PATH -> wearCacheAction.saveNotificationListToCache(data)
             else -> { }
         }
     }

@@ -20,6 +20,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
 import com.tokopedia.watch.listenerservice.DataLayerServiceListener
+import com.tokopedia.watch.notification.model.Notification
+import com.tokopedia.watch.notification.model.NotificationListModel
 import com.tokopedia.watch.orderlist.mapper.OrderListMapper
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
@@ -103,6 +105,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
         }
 
         getOrderList()
+        getNotificationList()
     }
 
     private fun sendDataToWatch() {
@@ -262,4 +265,31 @@ class TokopediaWatchActivity : AppCompatActivity(),
         }
     }
 
+    private fun getNotificationList() {
+        val notifications = listOf(
+            Notification(notifId = "1", title = "test-1", content = "test-1"),
+            Notification(notifId = "2", title = "test-2", content = "test-2")
+        )
+        val notificationListModel = NotificationListModel(notifications = notifications)
+        sendMessageToWatch(
+            DataLayerServiceListener.GET_NOTIFICATION_LIST_PATH,
+            Gson().toJson(notificationListModel)
+        )
+    }
+
+    private fun getLoadNotificationListDataSubscriber(): Subscriber<OrderListModel> {
+        return object: Subscriber<OrderListModel>() {
+            override fun onCompleted() {
+
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+
+            override fun onNext(orderListModel: OrderListModel) {
+
+            }
+        }
+    }
 }
