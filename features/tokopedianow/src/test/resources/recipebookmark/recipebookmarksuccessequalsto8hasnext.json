@@ -24,6 +24,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -95,6 +96,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -166,6 +168,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -237,6 +240,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -308,6 +312,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -379,6 +384,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "7",
             "name": "test create category 2"
@@ -450,6 +456,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "2",
             "name": "Test Category 1"
@@ -521,6 +528,7 @@
           "updatedTime": null,
           "publishedTime": null,
           "isBookmarked": true,
+          "appUrl": "tokopedia://now/recipe/detail/122312",
           "category": {
             "id": "1",
             "name": "Category-1"
