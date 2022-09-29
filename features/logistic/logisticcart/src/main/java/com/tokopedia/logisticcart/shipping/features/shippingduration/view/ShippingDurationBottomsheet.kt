@@ -121,22 +121,23 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     private fun initData(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int, shopShipmentList: List<ShopShipment>, recipientAddressModel: RecipientAddressModel?, cartPosition: Int, codHistory: Int, isLeasing: Boolean, pslCode: String, products: ArrayList<Product>, cartString: String, isDisableOrderPrioritas: Boolean, isTradeInDropOff: Boolean, isFulFillment: Boolean, preOrderTime: Int, mvc: String) {
-        bundle = Bundle()
-        bundle?.putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
-        bundle?.putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
-        bundle?.putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
-        bundle?.putInt(ARGUMENT_CART_POSITION, cartPosition)
-        bundle?.putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
-        bundle?.putInt(ARGUMENT_COD_HISTORY, codHistory)
-        bundle?.putBoolean(ARGUMENT_IS_LEASING, isLeasing)
-        bundle?.putString(ARGUMENT_PSL_CODE, pslCode)
-        bundle?.putParcelableArrayList(ARGUMENT_PRODUCTS, products)
-        bundle?.putString(ARGUMENT_CART_STRING, cartString)
-        bundle?.putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
-        bundle?.putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
-        bundle?.putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
-        bundle?.putInt(ARGUMENT_PO_TIME, preOrderTime)
-        bundle?.putString(ARGUMENT_MVC, mvc)
+        bundle = Bundle().apply {
+            putParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA, shipmentDetailData)
+            putParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST, ArrayList(shopShipmentList))
+            putParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL, recipientAddressModel)
+            putInt(ARGUMENT_CART_POSITION, cartPosition)
+            putInt(ARGUMENT_SELECTED_SERVICE_ID, selectedServiceId)
+            putInt(ARGUMENT_COD_HISTORY, codHistory)
+            putBoolean(ARGUMENT_IS_LEASING, isLeasing)
+            putString(ARGUMENT_PSL_CODE, pslCode)
+            putParcelableArrayList(ARGUMENT_PRODUCTS, products)
+            putString(ARGUMENT_CART_STRING, cartString)
+            putBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS, isDisableOrderPrioritas)
+            putBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF, isTradeInDropOff)
+            putBoolean(ARGUMENT_IS_FULFILLMENT, isFulFillment)
+            putInt(ARGUMENT_PO_TIME, preOrderTime)
+            putString(ARGUMENT_MVC, mvc)   
+        }
     }
 
     private fun initializeInjector() {
@@ -161,28 +162,26 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     private fun loadData() {
-        if (bundle != null) {
-            mRecipientAddress = bundle!!.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            mCartPosition = bundle!!.getInt(ARGUMENT_CART_POSITION)
-            val selectedServiceId = bundle!!.getInt(ARGUMENT_SELECTED_SERVICE_ID)
-            val codHistory = bundle!!.getInt(ARGUMENT_COD_HISTORY)
-            if (mRecipientAddress != null) {
-                mIsCorner = mRecipientAddress!!.isCornerAddress
-            }
-            isDisableCourierPromo = bundle!!.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER)
+        bundle?.let {
+            mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
+            mCartPosition = it.getInt(ARGUMENT_CART_POSITION)
+            val selectedServiceId = it.getInt(ARGUMENT_SELECTED_SERVICE_ID)
+            val codHistory = it.getInt(ARGUMENT_COD_HISTORY)
+            mRecipientAddress?.let { recipientAddressModel -> mIsCorner = recipientAddressModel.isCornerAddress}
+            isDisableCourierPromo = it.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER)
             setupRecyclerView(mCartPosition)
-            val shipmentDetailData: ShipmentDetailData = bundle!!.getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA)!!
-            val shopShipments: List<ShopShipment> = bundle!!.getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST)!!
-            val isLeasing = bundle!!.getBoolean(ARGUMENT_IS_LEASING)
-            val pslCode = bundle!!.getString(ARGUMENT_PSL_CODE, "")
-            val products: ArrayList<Product> = bundle!!.getParcelableArrayList(ARGUMENT_PRODUCTS)!!
-            val cartString = bundle!!.getString(ARGUMENT_CART_STRING)
-            isDisableOrderPrioritas = bundle!!.getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS)
-            val isTradeInDropOff = bundle!!.getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF)
-            val mvc = bundle!!.getString(ARGUMENT_MVC, "")
-            val isFulfillment = bundle!!.getBoolean(ARGUMENT_IS_FULFILLMENT)
-            val preOrderTime = bundle!!.getInt(ARGUMENT_PO_TIME)
-            presenter!!.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
+            val shipmentDetailData: ShipmentDetailData = it.getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA)!!
+            val shopShipments: List<ShopShipment> = it.getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST)!!
+            val isLeasing = it.getBoolean(ARGUMENT_IS_LEASING)
+            val pslCode = it.getString(ARGUMENT_PSL_CODE, "")
+            val products: ArrayList<Product> = it.getParcelableArrayList(ARGUMENT_PRODUCTS)!!
+            val cartString = it.getString(ARGUMENT_CART_STRING)
+            isDisableOrderPrioritas = it.getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS)
+            val isTradeInDropOff = it.getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF)
+            val mvc = it.getString(ARGUMENT_MVC, "")
+            val isFulfillment = it.getBoolean(ARGUMENT_IS_FULFILLMENT)
+            val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
+            presenter?.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
                     shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc, isOcc)
         }
     }
