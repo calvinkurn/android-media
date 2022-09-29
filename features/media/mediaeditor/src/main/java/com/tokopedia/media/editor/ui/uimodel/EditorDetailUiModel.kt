@@ -1,7 +1,6 @@
 package com.tokopedia.media.editor.ui.uimodel
 
 import android.os.Parcelable
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel.Companion.getEmptyEditorCropRotateModel
 import com.tokopedia.picker.common.types.EditorToolType
 import kotlinx.parcelize.Parcelize
 
@@ -19,7 +18,7 @@ data class EditorDetailUiModel(
     var watermarkMode: EditorWatermarkModel? = null,
     var removeBackgroundUrl: String? = null,
     var isContrastExecuteFirst: Boolean? = null,
-    var cropRotateValue: EditorCropRotateModel = getEmptyEditorCropRotateModel(),
+    var cropRotateValue: EditorCropRotateModel = EditorCropRotateModel(),
     var originalRatio: Float = 1f
 ) : Parcelable {
     // used only for remove background
@@ -27,7 +26,7 @@ data class EditorDetailUiModel(
         brightnessValue = null
         contrastValue = null
         watermarkMode = null
-        cropRotateValue = getEmptyEditorCropRotateModel()
+        cropRotateValue = EditorCropRotateModel()
     }
 
     fun isToolBrightness(): Boolean {
