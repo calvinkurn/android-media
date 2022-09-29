@@ -43,10 +43,6 @@
 
     <dimen name="play_loader_container_margin">36dp</dimen>
 
-    <!--Schedule-->
-
-    <!--Tags-->
-
     <dimen name="play_interactive_create_radius">26dp</dimen>
     <dimen name="play_interactive_loading_radius">52dp</dimen>
     <dimen name="play_interactive_time_radius">10dp</dimen>
