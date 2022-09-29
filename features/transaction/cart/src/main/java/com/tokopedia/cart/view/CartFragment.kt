@@ -2399,11 +2399,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
                 districtId = localizationChooseAddress.districtId,
                 lat = localizationChooseAddress.latitude,
                 long = localizationChooseAddress.longitude,
-                label = String.format(
-                    "%s %s",
-                    localizationChooseAddress.addressName,
-                    localizationChooseAddress.receiverName
-                ),
+                label = "${localizationChooseAddress.addressName} ${localizationChooseAddress.receiverName}",
                 postalCode = localizationChooseAddress.postalCode,
                 shopId = if (shouldReplaceTokoNowData) newTokoNowData.shopId else lca.shop_id,
                 warehouseId = if (shouldReplaceTokoNowData) newTokoNowData.warehouseId else lca.warehouse_id,
