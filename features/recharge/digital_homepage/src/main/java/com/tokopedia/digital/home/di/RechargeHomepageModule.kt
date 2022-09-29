@@ -13,6 +13,7 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
+import kotlinx.coroutines.Job
 
 @Module
 class RechargeHomepageModule {
@@ -51,5 +52,9 @@ class RechargeHomepageModule {
     @RechargeHomepageScope
     @Provides
     fun provideRechargeHomepageTracking(): RechargeHomepageAnalytics = RechargeHomepageAnalytics()
+
+    @RechargeHomepageScope
+    @Provides
+    fun provideCoroutineJob(): Job = Job()
 
 }

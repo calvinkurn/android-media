@@ -19,12 +19,13 @@ class ValidateCampaignCreationEligibilityUseCase @Inject constructor(
 ) : GraphqlUseCase<CampaignCreationEligibility>(repository) {
 
 
-    suspend fun execute(): CampaignCreationEligibility {
+    suspend fun execute(vpsPackageId : Long): CampaignCreationEligibility {
         return coroutineScope {
             val remainingQuotaDeferred = async {
                 getSellerCampaignAttributeUseCase.execute(
                     month = dateManager.getCurrentMonth(),
-                    year = dateManager.getCurrentYear()
+                    year = dateManager.getCurrentYear(),
+                    vpsPackageId = vpsPackageId
                 )
             }
             val sellerEligibilityDeferred = async { getSellerCampaignEligibilityUseCase.execute() }
