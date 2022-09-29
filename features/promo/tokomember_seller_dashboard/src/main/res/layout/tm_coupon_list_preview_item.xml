@@ -51,8 +51,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivLogoUser"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/unify_space_16"
+            android:layout_width="@dimen/tm_dash_dp_24"
+            android:layout_height="@dimen/tm_dash_dp_24"
             app:srcCompat="@drawable/tm_icon_user"
             android:layout_marginEnd="@dimen/unify_space_8"
             app:layout_constraintBottom_toBottomOf="parent"

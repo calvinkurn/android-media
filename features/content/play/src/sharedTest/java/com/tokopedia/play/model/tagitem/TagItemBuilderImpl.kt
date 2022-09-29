@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import java.util.*
 
 class TagItemBuilderImpl : TagItemBuilder {
 
@@ -105,15 +106,17 @@ class TagItemBuilderImpl : TagItemBuilder {
         type: ProductSectionType,
         title: String,
         timerInfo: String,
-        serverTime: String,
-        startTime: String,
-        endTime: String,
+        controlTime: Date,
+        serverTime: Date?,
+        startTime: Date?,
+        endTime: Date?,
         background: ProductSectionUiModel.Section.BackgroundUiModel,
         reminderStatus: PlayUpcomingBellStatus
     ) = ProductSectionUiModel.Section.ConfigUiModel (
         type = type,
         title = title,
         timerInfo = timerInfo,
+        controlTime = controlTime,
         serverTime = serverTime,
         startTime = startTime,
         endTime = endTime,
