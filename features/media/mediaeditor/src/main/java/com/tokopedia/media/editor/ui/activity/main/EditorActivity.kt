@@ -7,22 +7,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.media.editor.R as editorR
-import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
+import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
-import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
-import com.tokopedia.picker.common.EXTRA_INTENT_EDITOR
-import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
-import com.tokopedia.picker.common.EditorImageSource
-import com.tokopedia.picker.common.EditorParam
-import com.tokopedia.picker.common.EditorResult
-import com.tokopedia.picker.common.ImageRatioType
-import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
+import com.tokopedia.media.editor.R as editorR
 
 class EditorActivity : BaseEditorActivity() {
 

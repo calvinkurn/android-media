@@ -5,15 +5,15 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.media.editor.R as editorR
-import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.base.BaseEditorActivity
+import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.fragment.DetailEditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.picker.common.EditorParam
 import javax.inject.Inject
+import com.tokopedia.media.editor.R as editorR
 
 class DetailEditorActivity : BaseEditorActivity() {
 
