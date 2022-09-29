@@ -6,6 +6,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Error
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -24,6 +25,7 @@ import io.mockk.every
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Test
 import rx.Observable
 
@@ -1815,22 +1817,47 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
         assertEquals(OccState.Failed(expected), orderSummaryPageViewModel.eligibleForAnaRevamp.value)
     }
 
-    // todo
     @Test
     fun `Get normal shipping duration param`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment
+
+        // When
         orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assert(orderSummaryPageViewModel.orderShippingDuration.value is OccState.Success)
     }
 
-    // todo
     @Test
     fun `Get shipping duration param overweight`() {
+        // Given
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart.copy(
+            shop = helper.orderData.cart.shop.copy(maximumWeight = 10, maximumWeightWording = "max"),
+            products = arrayListOf(helper.product.copy(weight = 100)))
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+
+        // When
         orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assertNotEquals(OccState.Success(OrderShippingDuration()), orderSummaryPageViewModel.orderShippingDuration.value)
     }
 
-    // todo
     @Test
     fun `Get shipping duration param after choose BO`() {
+        // Given
+        orderSummaryPageViewModel.orderProfile.value = helper.preference
+        orderSummaryPageViewModel.orderCart = helper.orderData.cart
+        orderSummaryPageViewModel.orderShipment.value = helper.orderShipment.copy(isApplyLogisticPromo = true)
+
+        // When
         orderSummaryPageViewModel.getShippingBottomsheetParam()
+
+        // Then
+        assert((orderSummaryPageViewModel.orderShippingDuration.value as OccState.Success<OrderShippingDuration>).data.pslCode == helper.logisticPromo.promoCode)
     }
 
     private fun onCheckEligibility_thenReturn(keroAddrIsEligibleForAddressFeatureResponse: KeroAddrIsEligibleForAddressFeatureData) {
