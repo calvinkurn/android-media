@@ -115,7 +115,11 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         override fun addSingleBundleToCart(selectedBundle: BundleDetailUiModel, bundleProducts: BundleProductUiModel) {
             if(selectedBundle.bundleId.isNotEmpty()) {
                 itemView.context?.let { context ->
-                    RouteManager.route(context,context.getString(R.string.product_bundling_atc_applink, bundleProducts.productId, selectedBundle.bundleId))
+                    if(selectedBundle.selectedBundleApplink.isNotEmpty()){
+                        RouteManager.route(context,selectedBundle.selectedBundleApplink)
+                    }else {
+                        RouteManager.route(context, context.getString(R.string.product_bundling_atc_applink, bundleProducts.productId, selectedBundle.selectedBundleId))
+                    }
                 }
             }
         }
