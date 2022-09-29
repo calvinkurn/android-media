@@ -104,7 +104,7 @@ class MenuSettingViewModelTest {
         }
 
     @Test
-    fun `check shop loc whitelist if response success with data eligble`() =
+    fun `check shop loc whitelist if response success with data eligible`() =
         runBlocking {
             everyProviderShopLocWhitelist()
             everyShopLocWhitelistSuccess(
@@ -126,7 +126,7 @@ class MenuSettingViewModelTest {
         }
 
     @Test
-    fun `check shop loc whitelist if response success with data not eligble`() =
+    fun `check shop loc whitelist if response success with data not eligible`() =
         runBlocking {
             everyProviderShopLocWhitelist()
             everyShopLocWhitelistSuccess(
