@@ -706,7 +706,7 @@ class PromoListItemViewHolder(
                 layoutParams.bottomMargin = 16.dpToPx(root.context.resources.displayMetrics)
             } else {
                 containerTimeValidity.show()
-                layoutParams.topMargin = 0
+                layoutParams.topMargin = 16.dpToPx(root.context.resources.displayMetrics)
                 layoutParams.bottomMargin = 0
             }
             textPromoItemTitle.layoutParams = layoutParams
