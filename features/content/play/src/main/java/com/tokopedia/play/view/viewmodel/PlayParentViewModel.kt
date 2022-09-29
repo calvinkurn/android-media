@@ -114,7 +114,10 @@ class PlayParentViewModel constructor(
 
     fun getLatestChannelStorageData(channelId: String): PlayChannelData = playChannelStateStorage.getData(channelId) ?: error("Channel with ID $channelId not found")
 
-    fun getChannelInfo(index: Int) = playChannelStateStorage.getChannelList()[index]
+    fun getNextChannel(currentChannelId: String) : String {
+        val index = playChannelStateStorage.getChannelList().indexOf(currentChannelId)
+        return playChannelStateStorage.getChannelList()[index + 1]
+    }
 
     fun setLatestChannelStorageData(
             channelId: String,

@@ -95,6 +95,12 @@ class PlayViewModelCreatePageTest {
         }
     }
 
+    //experiment once everyday less than one day
+    //experiment once every day more than one day
+
+    //experiment everytime enter the room
+    //experiment swipe to another room
+
     @Test
     fun `given channel data is set, when page is created and has not shown onboarding before, should show one tap onboarding after 5s`() {
         coroutineTestRule.runBlockingTest {

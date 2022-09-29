@@ -59,6 +59,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -577,8 +578,10 @@ class PlayFragment @Inject constructor(
     }
 
     private fun sendSwipeRoomAnalytic() {
-        val nextId = playParentViewModel.getChannelInfo(1)
-        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
+        try {
+            val nextId = playParentViewModel.getNextChannel(channelId)
+            if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
+        } catch (e: Exception) {}
     }
 
     //region onStateChanged
