@@ -3,6 +3,10 @@ package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
+import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
+import com.tokopedia.tokopedianow.recipebookmark.domain.model.RemoveRecipeBookmarkResponse
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmarkUseCase
+import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipelist.domain.model.TokoNowGetRecipes
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
@@ -29,6 +33,8 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
     }
 
     private lateinit var getRecipeListUseCase: GetRecipeListUseCase
+    private lateinit var addRecipeBookmarkUseCase: AddRecipeBookmarkUseCase
+    private lateinit var removeRecipeBookmarkUseCase: RemoveRecipeBookmarkUseCase
     private lateinit var addressData: TokoNowLocalAddress
 
     protected lateinit var viewModel: BaseTokoNowRecipeListViewModel
@@ -36,10 +42,14 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
     @Before
     fun setUp() {
         getRecipeListUseCase = mockk(relaxed = true)
+        addRecipeBookmarkUseCase = mockk(relaxed = true)
+        removeRecipeBookmarkUseCase = mockk(relaxed = true)
         addressData = mockk(relaxed = true)
 
         viewModel = BaseTokoNowRecipeListViewModel(
             getRecipeListUseCase,
+            addRecipeBookmarkUseCase,
+            removeRecipeBookmarkUseCase,
             addressData,
             CoroutineTestDispatchers
         )
@@ -58,6 +68,22 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     fun onGetWarehouseId_thenReturn(warehouseId: Long) {
         coEvery { addressData.getWarehouseId() } returns warehouseId
+    }
+
+    fun onAddBookmark_thenReturn(response: AddRecipeBookmarkResponse) {
+        coEvery { addRecipeBookmarkUseCase.execute(any()) } returns response.tokonowAddRecipeBookmark
+    }
+
+    fun onAddBookmark_thenReturn(throwable: Throwable) {
+        coEvery { addRecipeBookmarkUseCase.execute(any()) } throws throwable
+    }
+
+    fun onRemoveBookmark_thenReturn(response: RemoveRecipeBookmarkResponse) {
+        coEvery { removeRecipeBookmarkUseCase.execute(any()) } returns response.tokonowRemoveRecipeBookmark
+    }
+
+    fun onRemoveBookmark_thenReturn(throwable: Throwable) {
+        coEvery { removeRecipeBookmarkUseCase.execute(any()) } throws throwable
     }
 
     fun verifyGetRecipeListUseCaseCalled(times: Int = 1) {
@@ -84,9 +110,5 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     fun addItemToVisitableList(item: Visitable<*>) {
         privateVisitableItems.add(item)
-    }
-
-    fun clearVisitableItems() {
-        privateVisitableItems.clear()
     }
 }
