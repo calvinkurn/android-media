@@ -18,7 +18,7 @@ val accountListResponse = listOf(
         iconUrl = "icon.url.shop",
         badge = "icon.badge",
         hasUsername = true,
-        hasAcceptTnc = true
+        hasAcceptTnc = true,
     ),
     ContentAccountUiModel(
         id = "67890",
@@ -27,14 +27,14 @@ val accountListResponse = listOf(
         iconUrl = "icon.url.buyer",
         badge = "icon.badge",
         hasUsername = true,
-        hasAcceptTnc = true
+        hasAcceptTnc = true,
     ),
 )
 
 val channelResponse = GetChannelResponse.Channel(
     basic = GetChannelResponse.ChannelBasic(
         coverUrl = "https://tokopedia.com",
-        channelId = "12345"
+        channelId = "12345",
     )
 )
 
@@ -64,7 +64,7 @@ private fun buildDurationConfigUiModel(
     remainingDuration: Long = 0L,
     pauseDuration: Long = 0L,
     maxDuration: Long = 0L,
-    maxDurationDesc: String = ""
+    maxDurationDesc: String = "",
 ) = DurationConfigUiModel(
     remainingDuration = remainingDuration,
     pauseDuration = pauseDuration,
@@ -76,7 +76,7 @@ private fun buildProductTagConfigUiModel(
     maxProduct: Int = 0,
     minProduct: Int = 0,
     maxProductDesc: String = "",
-    errorMessage: String = ""
+    errorMessage: String = "",
 ) = ProductTagConfigUiModel(
     maxProduct = maxProduct,
     minProduct = minProduct,
