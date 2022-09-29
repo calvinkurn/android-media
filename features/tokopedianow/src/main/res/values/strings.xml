@@ -201,7 +201,9 @@
     <string name="tokopedianow_recipe_bookmark_item_subtitle_without_duration">%d Porsi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_try_again">Coba Lagi</string>
     <string name="tokopedianow_recipe_bookmark_toaster_cta_cancel">Batalkan</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_cta_see">Lihat</string>
     <string name="tokopedianow_recipe_bookmark_toaster_description_success_removing_recipe">\"%s\" sudah dihapus dari Buku Resep.</string>
+    <string name="tokopedianow_recipe_bookmark_toaster_description_success_adding_recipe">\"%s\" berhasil ditambahkan ke Buku Resep.</string>
 
     <!-- Recipe Search -->
     <string name="tokopedianow_recipe_search_ingredient_title_bottomsheet">Cari berdasarkan bahan</string>
@@ -230,4 +232,9 @@
     <string name="tokopedianow_duration_format">%02d:%02d</string>
     <string name="tokopedianow_recipe_similar_product_title">Produk serupa</string>
     <string name="tokopedianow_recipe_autocomplete_info">Silakan cari resep berdasarkan namanya. Contoh: “Soto Ayam”</string>
+    <string name="tokopedianow_recipe_search_empty_state_button">Reset Filter</string>
+    <string name="tokopedianow_recipe_search_empty_state_title">Resep yang kamu cari belum ada</string>
+    <string name="tokopedianow_recipe_search_empty_state_description">Pencarian untuk “%s” tidak ditemukan. Coba cari pakai kata kunci lain.</string>
+    <string name="tokopedianow_recipe_search_filter_empty_state_title">Pencarian tidak ditemukan</string>
+    <string name="tokopedianow_recipe_search_filter_empty_state_description">Belum ada resep sesuai filtermu. Coba cari pakai filter lain.</string>
 </resources>

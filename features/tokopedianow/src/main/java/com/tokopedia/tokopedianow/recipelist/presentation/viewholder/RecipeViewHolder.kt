@@ -7,11 +7,14 @@ import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.ViewHintListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeViewHolder(
@@ -35,6 +38,7 @@ class RecipeViewHolder(
         renderPortion(recipe)
         renderDuration(recipe)
         renderBookmark(recipe)
+        setImpressionListener(recipe)
         setClickListener(recipe)
     }
 
@@ -76,13 +80,23 @@ class RecipeViewHolder(
 
     private fun renderBookmark(recipe: RecipeUiModel) {
         binding?.imageBookmark?.apply {
-            val iconResId = if (recipe.isBookmarked) {
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
-            } else {
-                com.tokopedia.iconunify.R.drawable.iconunify_bookmark
+            var isBookmarked= recipe.isBookmarked
+            changeIconBookmark(this, isBookmarked)
+            setOnClickListener {
+                isBookmarked = !isBookmarked
+                changeIconBookmark(this, isBookmarked)
+                listener.onClickBookmark(recipe, layoutPosition, isBookmarked)
             }
-            setImageDrawable(ContextCompat.getDrawable(context, iconResId))
         }
+    }
+
+    private fun changeIconBookmark(imageBookmark: ImageUnify, isBookmarked: Boolean) {
+        val iconResId = if (isBookmarked) {
+            com.tokopedia.iconunify.R.drawable.iconunify_bookmark_filled
+        } else {
+            com.tokopedia.iconunify.R.drawable.iconunify_bookmark
+        }
+        imageBookmark.setImageDrawable(ContextCompat.getDrawable(context, iconResId))
     }
 
     private fun TextView.setDrawableLeft(@DrawableRes drawableRes: Int) {
@@ -100,11 +114,21 @@ class RecipeViewHolder(
 
     private fun setClickListener(recipe: RecipeUiModel) {
         binding?.root?.setOnClickListener {
-            listener.onClickItem(recipe)
+            listener.onClickItem(recipe, layoutPosition)
         }
     }
 
+    private fun setImpressionListener(recipe: RecipeUiModel) {
+        binding?.root?.addOnImpressionListener(recipe, object : ViewHintListener {
+            override fun onViewHint() {
+                listener.onImpressItem(recipe, layoutPosition)
+            }
+        })
+    }
+
     interface RecipeItemListener {
-        fun onClickItem(recipe: RecipeUiModel)
+        fun onClickItem(recipe: RecipeUiModel, position: Int)
+        fun onImpressItem(recipe: RecipeUiModel, position: Int)
+        fun onClickBookmark(recipe: RecipeUiModel, position: Int, isBookmarked: Boolean)
     }
 }
