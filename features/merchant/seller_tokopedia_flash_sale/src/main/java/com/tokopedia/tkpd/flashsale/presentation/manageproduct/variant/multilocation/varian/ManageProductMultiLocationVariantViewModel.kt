@@ -5,7 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
@@ -28,7 +29,6 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
         MutableLiveData()
-    val productVariant: LiveData<ReservedProduct.Product.ChildProduct> get() = _productVariant
 
     val enableBulkApply = Transformations.map(_productVariant) {
         var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK
@@ -62,9 +62,68 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
             isPriceError = discountSetup.price !in criteria.minFinalPrice..criteria.maxFinalPrice,
             isPricePercentError = discountSetup.discount !in criteria.minDiscount..criteria.maxDiscount,
             isStockError = discountSetup.stock !in criteria.minCustomStock..criteria.maxCustomStock,
-            priceMessage = errorMessageHelper.getPriceMessage(criteria, discountSetup),
-            pricePercentMessage = errorMessageHelper.getDiscountMessage(criteria, discountSetup)
+            priceMessage = getMessage(
+                isPercent = false,
+                isZero = false,
+                criteria = criteria,
+                discountSetup = discountSetup
+            ),
+            pricePercentMessage = getMessage(
+                isPercent = true,
+                isZero = false,
+                criteria = criteria,
+                discountSetup = discountSetup
+            )
         )
+    }
+
+    fun validateItem(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult {
+        val discountPrice = discountSetup.price.orZero()
+        val discountPercent = discountSetup.discount.orZero()
+        val stock = discountSetup.stock.orZero()
+        val isDiscountPriceZero = discountPrice.isZero()
+        val isDiscountPercentZero = discountPercent.isZero()
+        val isStockZero = stock.isZero()
+        val isDiscountPriceNotInCriteria =
+            discountPrice !in criteria.minFinalPrice..criteria.maxFinalPrice
+        val isDiscountPercentNotInCriteria =
+            discountPercent !in criteria.minDiscount..criteria.maxDiscount
+        val isStockNotInCriteria = stock !in criteria.minCustomStock..criteria.maxCustomStock
+        val messageNominal = getMessage(false, isDiscountPriceZero, criteria, discountSetup)
+        val messagePercent = getMessage(true, isDiscountPercentZero, criteria, discountSetup)
+        return ValidationResult(
+            isPriceError = isDiscountPriceNotInCriteria && !isDiscountPriceZero,
+            isPricePercentError = isDiscountPercentNotInCriteria && !isDiscountPercentZero,
+            isStockError = isStockNotInCriteria && !isStockZero,
+            priceMessage = messageNominal,
+            pricePercentMessage = messagePercent
+        )
+    }
+
+    private fun getMessage(
+        isPercent: Boolean,
+        isZero: Boolean,
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): String {
+        val messagePrice = errorMessageHelper.getString(
+            R.string.manageproductnonvar_range_message_format,
+            criteria.minFinalPrice.getCurrencyFormatted(),
+            criteria.maxFinalPrice.getCurrencyFormatted()
+        )
+        val messagePercent = errorMessageHelper.getString(
+            R.string.manageproductnonvar_range_message_format,
+            criteria.minDiscount.getPercentFormatted(),
+            criteria.maxDiscount.getPercentFormatted()
+        )
+        return when {
+            isZero -> if (isPercent) messagePercent else messagePrice
+            isPercent -> errorMessageHelper.getDiscountMessage(criteria, discountSetup)
+            else -> errorMessageHelper.getPriceMessage(criteria, discountSetup)
+        }
     }
 
     fun calculatePrice(percentInput: Long, originalPrice: Long): String {
@@ -80,20 +139,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         _productVariant.value = product.childProducts[positionOfVariant]
     }
 
-    fun setProduct(
-        product: ReservedProduct.Product,
-        positionOfVariant: Int,
-        positionOfWarehouse: Int
-    ) {
-        val variant = product.childProducts[positionOfVariant]
-        val reAssignMapWarehouse = reAssignMapWarehouse(variant.warehouses, positionOfWarehouse)
-        product.childProducts[positionOfVariant].warehouses = reAssignMapWarehouse
-
-        _product.value = product
-        _productVariant.value = variant
-    }
-
-    fun reAssignMapWarehouse(
+    fun valueAdjustmentOfServedByTokopediaWarehouseToRegister(
         warehouses: List<ReservedProduct.Product.Warehouse>,
         positionWarehouse: Int
     ): List<ReservedProduct.Product.Warehouse> {
@@ -109,17 +155,17 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         return warehouses
     }
 
-    fun servedByTokopedia() : ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>>? {
-        val listOfDilayaniTokopedia: ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>> =
+    fun findPositionOfProductServedByTokopediaToRegister(listWarehouse: List<ReservedProduct.Product.Warehouse>): ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>>? {
+        val listOfServedByTokopedia: ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>> =
             arrayListOf()
-        _productVariant.value?.warehouses.orEmpty().forEachIndexed { index, warehouse ->
+        listWarehouse.forEachIndexed { index, warehouse ->
             if (warehouse.isToggleOn && warehouse.isDilayaniTokopedia) {
-                listOfDilayaniTokopedia.add(Pair(index, warehouse))
+                listOfServedByTokopedia.add(Pair(index, warehouse))
             }
         }
 
-        return if (listOfDilayaniTokopedia.size >= MINIMUM_TO_SET_BULK)
-            listOfDilayaniTokopedia
+        return if (listOfServedByTokopedia.size >= MINIMUM_TO_SET_BULK)
+            listOfServedByTokopedia
         else
             null
     }

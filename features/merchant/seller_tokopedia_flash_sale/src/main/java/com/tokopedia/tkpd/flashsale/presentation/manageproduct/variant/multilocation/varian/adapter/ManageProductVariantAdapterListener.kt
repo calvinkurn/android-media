@@ -10,6 +10,11 @@ interface ManageProductVariantAdapterListener {
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
     ): ValidationResult
 
+    fun validationItem(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult
+
     fun calculatePrice(percentInput: Long, adapterPosition: Int): String
 
     fun calculatePercent(priceInput: Long, adapterPosition: Int): String

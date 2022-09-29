@@ -32,6 +32,35 @@ object DataDummyOfVariantMultiLocationType {
         )
     }
 
+    fun createDummyProductWithoutVariant(): ReservedProduct.Product {
+        return ReservedProduct.Product(
+            childProducts = listOf(),
+            isMultiWarehouse = false,
+            isParentProduct = true,
+            name = "Judul Produk Bisa Sepanjang Dua Baris Kebawah",
+            picture = "https://placekitten.com/100/100",
+            price = ReservedProduct.Product.Price(
+                price = 5000,
+                lowerPrice = 4000,
+                upperPrice = 6000
+            ),
+            productCriteria = ReservedProduct.Product.ProductCriteria(
+                criteriaId = 0,
+                maxCustomStock = 100,
+                maxDiscount = 70,
+                maxFinalPrice = 6000,
+                minCustomStock = 11,
+                minDiscount = 10,
+                minFinalPrice = 2000
+            ),
+            productId = 0,
+            sku = "SK-0918",
+            stock = 30,
+            url = "",
+            warehouses = listOf()
+        )
+    }
+
     fun createDummyChildsProduct(): List<ReservedProduct.Product.ChildProduct> {
         val childsProduct: MutableList<ReservedProduct.Product.ChildProduct> = mutableListOf()
         for (child in 1 until 6) {
@@ -68,7 +97,7 @@ object DataDummyOfVariantMultiLocationType {
         return childsProduct
     }
 
-    private fun createWarehouseDummy(): List<ReservedProduct.Product.Warehouse> {
+    fun createWarehouseDummy(): List<ReservedProduct.Product.Warehouse> {
         val listWarehouse = arrayListOf<ReservedProduct.Product.Warehouse>()
         for (child in 1 until 6) {
             val warehouse = ReservedProduct.Product.Warehouse(
@@ -81,7 +110,7 @@ object DataDummyOfVariantMultiLocationType {
                     price = 5000,
                     stock = (10 * child).toLong()
                 ),
-                isDilayaniTokopedia = true,
+                isDilayaniTokopedia = false,
                 isToggleOn = false,
                 isDisabled = false,
                 disabledReason = ""
@@ -109,5 +138,28 @@ object DataDummyOfVariantMultiLocationType {
             price = 4000,
             stock = 20
         )
+    }
+
+    fun createWarehousesDilayaniTokopedia(isToogleOn : Boolean = false) : List<ReservedProduct.Product.Warehouse> {
+        val listWarehouse = arrayListOf<ReservedProduct.Product.Warehouse>()
+        for (child in 1 until 6) {
+            val warehouse = ReservedProduct.Product.Warehouse(
+                warehouseId = child.toLong(),
+                name = "Warehouse - ${child}",
+                stock = (10 * child).toLong(),
+                price = 5000,
+                discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                    discount = 10,
+                    price = 5000,
+                    stock = (10 * child).toLong()
+                ),
+                isDilayaniTokopedia = child %2 == 0,
+                isToggleOn = isToogleOn,
+                isDisabled = false,
+                disabledReason = ""
+            )
+            listWarehouse.add(warehouse)
+        }
+        return listWarehouse
     }
 }

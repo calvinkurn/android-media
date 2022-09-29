@@ -155,16 +155,15 @@ class ManageProductMultiLocationVariantFragment :
         viewModel.product.value?.let {
             val warehouses = inputAdapter.getDataList()
             it.childProducts[variantPositionOnProduct].warehouses =
-                viewModel.reAssignMapWarehouse(warehouses, index)
+                viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(warehouses, index)
             viewModel.setProduct(
                 product = it,
                 positionOfVariant = variantPositionOnProduct,
-                positionOfWarehouse = index
             )
 
-            val listDilayaniTokopedia =viewModel.servedByTokopedia()
-            listDilayaniTokopedia?.forEach {
-                val (positionOnItem, dataWarehouse) = it
+            val listServedByTokopedia =viewModel.findPositionOfProductServedByTokopediaToRegister(warehouses)
+            listServedByTokopedia?.forEach { warehouse ->
+                val (positionOnItem, dataWarehouse) = warehouse
                 if(positionOnItem != index){
                     rvManageProductDetail?.post {
                         inputAdapter.setDataList(positionOnItem, dataWarehouse)
@@ -173,6 +172,13 @@ class ManageProductMultiLocationVariantFragment :
             }
         }
         return viewModel.validateInput(criteria, discountSetup)
+    }
+
+    override fun validationItem(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult {
+        return viewModel.validateItem(criteria, discountSetup)
     }
 
     override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {

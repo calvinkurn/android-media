@@ -6,4 +6,5 @@ object BundleConstant {
     const val BUNDLE_KEY_PRODUCT = "product"
     const val VARIANT_POSITION = "variant_position_on_product"
     const val BUNDLE_KEY_RESERVATION_ID = "reservation_id"
+    const val NUMBER_PATTERN = "#,###,###"
 }

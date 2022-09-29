@@ -9,6 +9,9 @@ import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.MockKAnnotations
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyProductWithoutVariant
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehouseDummy
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehousesDilayaniTokopedia
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
@@ -276,16 +279,204 @@ class ManageProductMultiLocationVariantViewModelTest {
         Assert.assertFalse(actualResult)
     }
 
+    @Test
+    fun `isInputPageValid test when no variant in data`() {
+        val dummyProduct = createDummyProductWithoutVariant()
+        val targetPositionOfProduct = 0
+        viewModel.setProduct(dummyProduct, targetPositionOfProduct)
+        val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
+        Assert.assertFalse(actualResult)
+    }
+
+    @Test
+    fun `find Position of Product Served By Tokopedia To Register but the result is null`() {
+        val dummyProduct = createWarehouseDummy()
+        val actualResult = viewModel.findPositionOfProductServedByTokopediaToRegister(dummyProduct)
+        Assert.assertNull(actualResult)
+    }
+
+    @Test
+    fun `find Position of Product Served By Tokopedia To Register but toggle is false and the result is null`() {
+        val dummyProduct = createWarehousesDilayaniTokopedia()
+        val actualResult = viewModel.findPositionOfProductServedByTokopediaToRegister(dummyProduct)
+        Assert.assertNull(actualResult)
+    }
+
+    @Test
+    fun `find Position of Product Served By Tokopedia To Register`() {
+        val dummyProduct = createWarehousesDilayaniTokopedia(isToogleOn = true)
+        val actualResult = viewModel.findPositionOfProductServedByTokopediaToRegister(dummyProduct)
+        Assert.assertNotNull(actualResult)
+        Assert.assertEquals(actualResult!![0].first, 1)
+    }
+
+    @Test
+    fun `value Adjustment of Served By Tokopedia Warehouse ToRegister all toggle on`() {
+        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle All On`()
+
+        val actualResult =
+            viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
+        Assert.assertEquals(target, actualResult)
+    }
+
+    @Test
+    fun `value Adjustment of Served By Tokopedia Warehouse ToRegister all toggle of`() {
+        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle All Off`()
+
+        val actualResult =
+            viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
+        Assert.assertEquals(target, actualResult)
+    }
+
+    @Test
+    fun `value Adjustment of Served By Tokopedia Warehouse ToRegister toggle on and off`() {
+        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle mix On Off`()
+        val actualResult =
+            viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
+        Assert.assertEquals(target, actualResult)
+        Assert.assertEquals(target, actualResult)
+        Assert.assertEquals(false, actualResult[3].isToggleOn)
+        Assert.assertEquals(10, actualResult[3].discountSetup.discount)
+        Assert.assertEquals(5000, actualResult[3].discountSetup.price)
+    }
+
+    private fun `create Sample And Target Served By Tokopedia When Toggle All On`():
+            Pair<List<ReservedProduct.Product.Warehouse>,
+                    List<ReservedProduct.Product.Warehouse>> {
+        val dummyProductTestSample = createWarehousesDilayaniTokopedia(isToogleOn = true)
+        dummyProductTestSample[1].apply {
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        val dummyProductTestTarget = createWarehousesDilayaniTokopedia(isToogleOn = true)
+        dummyProductTestTarget[1].apply {
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        dummyProductTestTarget[3].apply {
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        return Pair(dummyProductTestSample, dummyProductTestTarget)
+    }
+
+    private fun `create Sample And Target Served By Tokopedia When Toggle All Off`():
+            Pair<List<ReservedProduct.Product.Warehouse>,
+                    List<ReservedProduct.Product.Warehouse>> {
+        val dummyProductTestSample = createWarehousesDilayaniTokopedia(isToogleOn = false)
+        dummyProductTestSample[1].apply {
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        val dummyProductTestTarget = createWarehousesDilayaniTokopedia(isToogleOn = false)
+        dummyProductTestTarget[1].apply {
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        return Pair(dummyProductTestSample, dummyProductTestTarget)
+    }
+
+    private fun `create Sample And Target Served By Tokopedia When Toggle mix On Off`():
+            Pair<List<ReservedProduct.Product.Warehouse>,
+                    List<ReservedProduct.Product.Warehouse>> {
+        val dummyProductTestSample = createWarehousesDilayaniTokopedia()
+        dummyProductTestSample[1].apply {
+            isToggleOn = true
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        val dummyProductTestTarget = createWarehousesDilayaniTokopedia()
+        dummyProductTestTarget[1].apply {
+            isToggleOn = true
+            discountSetup.price = 4000
+            discountSetup.discount = 20
+        }
+
+        return Pair(dummyProductTestSample, dummyProductTestTarget)
+    }
+
+    @Test
+    fun `test validate Item warehouse invalid in under minimum criteria and not zero`() {
+        val dummyOfCriteria = createDummyOfProductCriteria()
+        declareDummyReturnTextStringResource()
+        val dummyOfDiscountSetup = createDummyOfDiscountSetup().apply {
+            discount = 10
+            price = 200
+            stock = 9
+        }
+        val validateActualResult = viewModel.validateItem(dummyOfCriteria, dummyOfDiscountSetup)
+        Assert.assertFalse(validateActualResult.isAllFieldValid())
+        Assert.assertTrue(validateActualResult.isPriceError)
+        Assert.assertTrue(validateActualResult.isPricePercentError)
+        Assert.assertTrue(validateActualResult.isStockError)
+        Assert.assertEquals("Min. Rp2.000", validateActualResult.priceMessage)
+    }
+
+    @Test
+    fun `test validate Item warehouse invalid in out maximum criteria and not zero`() {
+        val dummyOfCriteria = createDummyOfProductCriteria()
+        declareDummyReturnTextStringResource()
+        val dummyOfDiscountSetup = createDummyOfDiscountSetup().apply {
+            discount = 90
+            price = 30000
+            stock = 101
+        }
+        val validateActualResult = viewModel.validateItem(dummyOfCriteria, dummyOfDiscountSetup)
+        Assert.assertFalse(validateActualResult.isAllFieldValid())
+        Assert.assertTrue(validateActualResult.isPriceError)
+        Assert.assertTrue(validateActualResult.isPricePercentError)
+        Assert.assertTrue(validateActualResult.isStockError)
+        Assert.assertEquals("Max. Rp10.000", validateActualResult.priceMessage)
+    }
+
+    @Test
+    fun `test validate Item warehouse invalid in criteria and not zero`() {
+        val dummyOfCriteria = createDummyOfProductCriteria()
+        declareDummyReturnTextStringResource()
+        val dummyOfDiscountSetup = createDummyOfDiscountSetup().apply {
+            discount = 50
+            price = 2500
+            stock = 10
+        }
+        val validateActualResult = viewModel.validateItem(dummyOfCriteria, dummyOfDiscountSetup)
+        Assert.assertTrue(validateActualResult.isAllFieldValid())
+        Assert.assertFalse(validateActualResult.isPriceError)
+        Assert.assertFalse(validateActualResult.isPricePercentError)
+        Assert.assertFalse(validateActualResult.isStockError)
+    }
+
+    @Test
+    fun `test validate Item warehouse invalid in zero`() {
+        val dummyOfCriteria = createDummyOfProductCriteria()
+        declareDummyReturnTextStringResource()
+        val dummyOfDiscountSetup = createDummyOfDiscountSetup().apply {
+            discount = 0
+            price = 0
+            stock = 0
+        }
+        val validateActualResult = viewModel.validateItem(dummyOfCriteria, dummyOfDiscountSetup)
+        Assert.assertTrue(validateActualResult.isAllFieldValid())
+        Assert.assertFalse(validateActualResult.isPriceError)
+        Assert.assertFalse(validateActualResult.isPricePercentError)
+        Assert.assertFalse(validateActualResult.isStockError)
+    }
+
     private fun setDummyChild(
         start: Int,
-        end : Int,
+        end: Int,
         price: Long,
         stock: Long,
         discount: Int
     ): ReservedProduct.Product {
         val dummyData = DataDummyOfVariantMultiLocationType.createDummyProduct()
         val dummyChild = dummyData.childProducts[0]
-        for (i in start..end){
+        for (i in start..end) {
             dummyChild.warehouses[i].apply {
                 isToggleOn = true
                 discountSetup.apply {

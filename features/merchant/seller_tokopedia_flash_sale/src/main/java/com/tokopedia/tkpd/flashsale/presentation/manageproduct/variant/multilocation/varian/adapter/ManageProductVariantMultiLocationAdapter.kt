@@ -7,7 +7,6 @@ import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailLocat
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 
 class ManageProductVariantMultiLocationAdapter :
     RecyclerView.Adapter<ManageProductVariantMultiLocationAdapter.CriteriaViewHolder>() {
@@ -82,15 +81,7 @@ class ManageProductVariantMultiLocationAdapter :
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
                 if (selectedWarehouse.isDilayaniTokopedia) {
-                    tickerPriceError.visible()
-                    tickerPriceError.tickerType = TYPE_ANNOUNCEMENT
-                    tickerPriceError.setTextDescription(
-                        String.format(
-                            binding.root.context.getString(
-                                R.string.stfs_text_ticker_warning
-                            )
-                        )
-                    )
+                    setTicker(binding.root.context)
                 }
             }
         }
