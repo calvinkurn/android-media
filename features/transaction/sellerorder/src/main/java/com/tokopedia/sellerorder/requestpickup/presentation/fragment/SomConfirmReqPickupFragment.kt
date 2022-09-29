@@ -393,13 +393,13 @@ class SomConfirmReqPickupFragment : BaseDaggerFragment(), SomConfirmSchedulePick
         currSchedulePickupTime = "${scheduleTime.day}, $formattedTime"
     }
 
-    private fun setInvoiceNumber(invoiceNumber: String){
-        if(invoiceNumber.isNotEmpty()){
+    private fun setInvoiceNumber(invoiceNumber: String) {
+        if (invoiceNumber.isNotEmpty()) {
             binding?.tvInvoiceNumber?.text = invoiceNumber
-            binding?.maskTriggerInvoiceNumber?.setOnClickListener{
+            binding?.maskTriggerInvoiceNumber?.setOnClickListener {
                 onTextCopied(getString(R.string.invoice_label), invoiceNumber)
             }
-        }else{
+        } else {
             binding?.btnCopyInvoiceNumber?.visibility = View.GONE
         }
     }

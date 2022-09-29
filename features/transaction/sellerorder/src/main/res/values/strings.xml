@@ -363,7 +363,8 @@
     <string name="som_request_cancellation_btn_primary_continue_send_order_dialog">Lanjut Kirim</string>
     <string name="som_request_cancellation_desc_confirm_cancellation_order_dialog">Pastikan pesanan belum diserahkan ke kurir sebelum membatalkan. Skor Performa Toko tidak dikurangi.</string>
 
-<!--  success toaster -->
+<!--   invoice-->
+    <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
     <string name="success_invoice_copied">Nomor resi berhasil tersalin</string>
 
 </resources>
