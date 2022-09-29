@@ -36,6 +36,7 @@ class SameSessionRecommendationDataView(
         val keyword: String = "",
         val anchorProductId: String = "",
         val dimension90: String = "",
+        var selectedFeedbackItem: FeedbackItem? = null,
     ) : ImpressHolder(), SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         componentId = componentId,

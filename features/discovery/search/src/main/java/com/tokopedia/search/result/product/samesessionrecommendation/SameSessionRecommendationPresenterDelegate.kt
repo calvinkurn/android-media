@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
 import com.tokopedia.discovery.common.constants.SearchConstant
+import com.tokopedia.discovery.common.model.SearchParameter
+import com.tokopedia.filter.common.helper.isSortHasDefaultValue
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.search.di.scope.SearchScope
@@ -8,9 +10,9 @@ import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationM
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.fragment.RecyclerViewUpdater
 import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConst.HIDE_RECOMMENDATION_ID
-import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConst.IRRELEVANT_RECOMMENDATION_ID
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.HIDE_RECOMMENDATION_ID
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -27,14 +29,27 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
     private val filterController: FilterController,
     private val preference: SameSessionRecommendationPreference,
     private val queryKeyProvider: QueryKeyProvider,
+    private val searchParameterProvider: SearchParameterProvider,
 ) {
     companion object {
         private const val MIN_RECOMMENDED_PRODUCTS = 2
         private const val HIDE_RECOMMENDATION_THRESHOLD = 24 * 60 * 60 * 1000L
     }
 
+    private val searchParameter: SearchParameter?
+        get() = searchParameterProvider.getSearchParameter()
+
+    private val isAnySortActive: Boolean
+        get() {
+            val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
+            return !isSortHasDefaultValue(mapParameter)
+        }
+
     private val isAnyFilterActive
         get() = filterController.isFilterActive()
+
+    private val isAnyFilterOrSortActive
+        get() = isAnyFilterActive || isAnySortActive
 
     private val isHideRecommendationExceedThreshold: Boolean
         get() {
@@ -45,10 +60,13 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         }
 
     private val isFilterOrFeedbackActive: Boolean
-        get() = isAnyFilterActive
+        get() = isAnyFilterOrSortActive
             || !isHideRecommendationExceedThreshold
 
     private var currentRecommendation: SameSessionRecommendationDataView? = null
+    private var currentRecommendationPosition: Int = -1
+
+    private var isCurrentRecommendationRestored: Boolean = false
 
     fun requestSameSessionRecommendation(
         item: ProductItemDataView,
@@ -100,6 +118,25 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         )
     }
 
+    fun restoreSameSessionRecommendation() {
+        if (isCurrentRecommendationRestored) return
+        if (isAnyFilterOrSortActive) return
+
+        if (currentRecommendationPosition == -1) return
+        val recommendation = currentRecommendation ?: return
+
+        val adapterItemCount = recyclerViewUpdater.productListAdapter?.itemCount ?: 0
+
+        if (adapterItemCount < currentRecommendationPosition) return
+
+        recyclerViewUpdater.insertItemAtIndex(recommendation, currentRecommendationPosition)
+        isCurrentRecommendationRestored = true
+    }
+
+    fun clear() {
+        isCurrentRecommendationRestored = false
+    }
+
     private fun removePreviousSameSessionRecommendation() {
         recyclerViewUpdater.productListAdapter?.removeLastSameSessionRecommendation()
     }
@@ -108,10 +145,12 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         recommendation: SameSessionRecommendationDataView,
         selectedProduct: ProductItemDataView,
     ) {
-        recyclerViewUpdater.insertItemAfter(recommendation, selectedProduct)
+        currentRecommendationPosition =
+            recyclerViewUpdater.insertItemAfter(recommendation, selectedProduct)
     }
 
     fun handleFeedbackItemClick(feedbackItem: FeedbackItem) {
+        currentRecommendation?.feedback?.selectedFeedbackItem = feedbackItem
         if (HIDE_RECOMMENDATION_ID == feedbackItem.componentId) {
             handleHideRecommendationClick()
         }

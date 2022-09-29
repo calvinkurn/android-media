@@ -190,12 +190,6 @@ public interface SearchConstant {
         String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
     }
 
-    interface SameSessionRecommendation {
-        int KEYWORD_INTENT_HIGH = 1;
-        int KEYWORD_INTENT_LOW = 0;
-        int DEFAULT_KEYWORD_INTENT = KEYWORD_INTENT_HIGH;
-    }
-
     interface TopAdsComponent {
         String TOP_ADS = "search_product_top_ads";
         String ORGANIC_ADS = "search_product_organic_ads";

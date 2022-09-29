@@ -46,6 +46,13 @@ class SameSessionRecommendationViewHolder(
     override fun bind(element: SameSessionRecommendationDataView) {
         val binding = binding ?: return
         recommendationDataView = element
+        val selectedFeedbackItem = element.feedback.selectedFeedbackItem
+        if(selectedFeedbackItem != null) {
+            binding.showRecommendationSelectedFeedback()
+            bindSelectedFeedbackItem(selectedFeedbackItem)
+        } else {
+            binding.showRecommendationProduct()
+        }
         binding.tgRecommendationTitle.text = element.title
         bindProductCarousel(element.products)
         itemView.addOnImpressionListener(element) {
@@ -100,8 +107,7 @@ class SameSessionRecommendationViewHolder(
     private fun onCloseButtonClicked() {
         val binding = binding ?: return
         val data = recommendationDataView ?: return
-        binding.groupSameSessionRecommendationItem.hide()
-        binding.groupSameSessionRecommendationFeedback.visible()
+        binding.showRecommendationFeedback()
         bindFeedback(data.feedback)
     }
 
@@ -114,8 +120,7 @@ class SameSessionRecommendationViewHolder(
     private fun onUndoButtonClicked() {
         val binding = binding ?: return
         val data = recommendationDataView ?: return
-        binding.groupSameSessionRecommendationFeedback.hide()
-        binding.groupSameSessionRecommendationItem.visible()
+        binding.showRecommendationProduct()
         bindProductCarousel(data.products)
     }
 
@@ -157,6 +162,7 @@ class SameSessionRecommendationViewHolder(
         sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemClicked(
             feedbackItem
         )
+        binding?.showRecommendationSelectedFeedback()
         bindSelectedFeedbackItem(feedbackItem)
     }
 
@@ -164,8 +170,24 @@ class SameSessionRecommendationViewHolder(
         val binding = binding ?: return
         binding.tgSelectedFeedbackTitle.text = feedbackItem.titleOnClick
         binding.tgSelectedFeedbackBody.text = feedbackItem.messageOnClick
-        binding.groupSameSessionRecommendationFeedback.hide()
-        binding.groupSameSessionRecommendationSelectedFeedback.visible()
+    }
+
+    private fun SearchResultSameSessionRecommendationLayoutBinding.showRecommendationProduct() {
+        groupSameSessionRecommendationItem.visible()
+        groupSameSessionRecommendationFeedback.hide()
+        groupSameSessionRecommendationSelectedFeedback.hide()
+    }
+
+    private fun SearchResultSameSessionRecommendationLayoutBinding.showRecommendationFeedback() {
+        groupSameSessionRecommendationItem.hide()
+        groupSameSessionRecommendationFeedback.visible()
+        groupSameSessionRecommendationSelectedFeedback.hide()
+    }
+
+    private fun SearchResultSameSessionRecommendationLayoutBinding.showRecommendationSelectedFeedback() {
+        groupSameSessionRecommendationItem.hide()
+        groupSameSessionRecommendationFeedback.hide()
+        groupSameSessionRecommendationSelectedFeedback.visible()
     }
 
 }

@@ -246,12 +246,13 @@ class ProductListAdapter(
         removeItem(lastSameSessionRecommendationIndex)
     }
 
-    fun insertItemAfter(visitable: Visitable<*>, previousVisitable: Visitable<*>) {
+    fun insertItemAfter(visitable: Visitable<*>, previousVisitable: Visitable<*>) : Int {
         val previousItemIndex = list.indexOfFirst { it == previousVisitable }
-        if(previousItemIndex == -1) return
+        if(previousItemIndex == -1) return -1
         val targetIndex = previousItemIndex + 1
         list.add(targetIndex, visitable)
         notifyItemInserted(targetIndex)
+        return targetIndex
     }
 
     fun insertItemAtIndex(visitable: Visitable<*>, index: Int) {

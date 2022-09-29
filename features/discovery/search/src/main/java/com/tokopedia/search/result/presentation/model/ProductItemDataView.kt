@@ -4,11 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
-import com.tokopedia.discovery.common.constants.SearchConstant.SameSessionRecommendation.DEFAULT_KEYWORD_INTENT
-import com.tokopedia.discovery.common.constants.SearchConstant.SameSessionRecommendation.KEYWORD_INTENT_LOW
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
