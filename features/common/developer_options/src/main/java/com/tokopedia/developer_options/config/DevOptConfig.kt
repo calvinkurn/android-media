@@ -30,7 +30,7 @@ object DevOptConfig {
 
     fun isDevOptOnNotifEnabled(context: Context): Boolean {
         val cache = context.getSharedPreferences(DEV_OPT_ON_NOTIF_ENABLED, Context.MODE_PRIVATE)
-        return cache.getBoolean(IS_DEV_OPT_ON_NOTIF_ENABLED, false)
+        return cache.getBoolean(IS_DEV_OPT_ON_NOTIF_ENABLED, true)
     }
 
     fun setDevOptOnNotifEnabled(context: Context, isDevOptOnNotifEnabled: Boolean) {

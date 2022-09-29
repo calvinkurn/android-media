@@ -15,6 +15,7 @@ import androidx.core.app.NotificationCompat
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.developer_options.R
+import com.tokopedia.developer_options.config.DevOptConfig
 
 
 /**
@@ -30,7 +31,7 @@ class DevOpsNotificationManager(
 
             @OnLifecycleEvent(Lifecycle.Event.ON_START)
             fun onAppForegrounded() {
-                showNotification()
+                showNotificationIfEnabled()
             }
 
             @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
@@ -40,35 +41,37 @@ class DevOpsNotificationManager(
         })
     }
 
-    private fun showNotification() {
-        val intent = RouteManager.getIntent(application, ApplinkConst.DEVELOPER_OPTIONS).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-
-        val pendingIntent = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-
-        val builder = NotificationCompat.Builder(application, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_developer_mode)
-            .setContentTitle(NOTIFICATION_TITLE)
-            .setContentText(NOTIFICATION_DESCRIPTION)
-            .setContentIntent(pendingIntent)
-            .setPriority(NotificationCompat.PRIORITY_LOW)
-            .build()
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = CHANNEL_NAME
-            val descriptionText = CHANNEL_DESCRIPTION
-            val importance = NotificationManager.IMPORTANCE_LOW
-            val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
-                description = descriptionText
+    fun showNotificationIfEnabled() {
+        if(DevOptConfig.isDevOptOnNotifEnabled(application)) {
+            val intent = RouteManager.getIntent(application, ApplinkConst.DEVELOPER_OPTIONS).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
-            notificationManager.createNotificationChannel(channel)
-        }
 
-        notificationManager.notify(NOTIFICATION_ID, builder)
+            val pendingIntent = PendingIntent.getActivity(application, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+
+            val builder = NotificationCompat.Builder(application, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_developer_mode)
+                .setContentTitle(NOTIFICATION_TITLE)
+                .setContentText(NOTIFICATION_DESCRIPTION)
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_LOW)
+                .build()
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val name = CHANNEL_NAME
+                val descriptionText = CHANNEL_DESCRIPTION
+                val importance = NotificationManager.IMPORTANCE_LOW
+                val channel = NotificationChannel(CHANNEL_ID, name, importance).apply {
+                    description = descriptionText
+                }
+                notificationManager.createNotificationChannel(channel)
+            }
+
+            notificationManager.notify(NOTIFICATION_ID, builder)
+        }
     }
 
-    private fun dismissNotification() {
+    fun dismissNotification() {
         notificationManager.cancel(NOTIFICATION_ID)
     }
 
