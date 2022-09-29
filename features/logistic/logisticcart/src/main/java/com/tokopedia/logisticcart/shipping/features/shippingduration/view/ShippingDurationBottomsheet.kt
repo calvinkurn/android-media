@@ -19,9 +19,12 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
+import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -72,7 +75,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     private var mIsCorner = false
 
-    /* Checkout */
     fun show(activity: Activity,
              fragmentManager: FragmentManager,
              shippingDurationBottomsheetListener: ShippingDurationBottomsheetListener?,
@@ -215,22 +217,22 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
-        shippingDurationAdapter?.setShippingDurationViewModels(serviceDataList, promoViewModelList, isDisableOrderPrioritas, preOrderModel, isOcc)
-        if (!isOcc) {
-            if (promoViewModelList.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) shippingDurationAdapter!!.initiateShowcase()
-        }
+        val durationUiModelList = presenter?.convertServiceListToUiModel(serviceDataList, promoViewModelList, preOrderModel, isOcc)
+        durationUiModelList?.let { uiModelList ->
+            shippingDurationAdapter?.setShippingDurationViewModels(uiModelList, isDisableOrderPrioritas)
 
-        val hasCourierPromo = checkHasCourierPromo(serviceDataList)
-        if (hasCourierPromo) {
-            sendAnalyticCourierPromo(serviceDataList)
-        }
-        promoViewModelList.forEach {
-            mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
-            if (it.disabled) {
-                mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
+            // todo move filter logic to presenter
+            val hasCourierPromo = checkHasCourierPromo(serviceDataList)
+            if (hasCourierPromo) {
+                sendAnalyticCourierPromo(serviceDataList)
+            }
+            promoViewModelList.forEach {
+                mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
+                if (it.disabled) {
+                    mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
+                }
             }
         }
-
     }
 
     private fun checkHasCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>): Boolean {
@@ -326,7 +328,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
         mPromoTracker?.eventClickPromoLogisticTicker(data.promoCode)
         // Project Army
-        val serviceData = shippingDurationAdapter?.getRatesDataFromLogisticPromo(data.serviceId)
+        val serviceData = presenter?.getRatesDataFromLogisticPromo(data.serviceId)
         if (serviceData == null) {
             showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
             return

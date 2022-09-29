@@ -30,5 +30,7 @@ interface ShippingDurationContract {
 
         fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
         fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
+        fun convertServiceListToUiModel(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>
+        fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel?
     }
 }

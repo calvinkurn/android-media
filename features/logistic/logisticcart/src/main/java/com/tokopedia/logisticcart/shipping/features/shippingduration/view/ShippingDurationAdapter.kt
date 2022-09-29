@@ -19,36 +19,33 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     // list of eligible services that user can choose
     private var mData: MutableList<RatesViewModelType>
-    // list of all available services from rates (for logistic promo)
-    private var allServices: List<ShippingDurationUiModel>
     private var shippingDurationAdapterListener: ShippingDurationAdapterListener? = null
     private var cartPosition: Int = 0
     private var isDisableOrderPrioritas = false
 
     init {
         mData = mutableListOf()
-        allServices = mutableListOf()
     }
 
-    fun setShippingDurationViewModels(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, isDisableOrderPrioritas: Boolean, preOrderModel: PreOrderModel?, isOcc: Boolean) {
+    fun setShippingDurationViewModels(shippingDurationUiModels: MutableList<RatesViewModelType>, isDisableOrderPrioritas: Boolean) {
         this.isDisableOrderPrioritas = isDisableOrderPrioritas
-        this.allServices = shippingDurationUiModels
-        this.mData = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
-        if (preOrderModel?.display == true)  {
-            preOrderModel.let { this.mData.add(0, it) }
-            if (promoUiModel.isNotEmpty()) {
-                this.mData.addAll(1, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
-            }
-        } else {
-            if (promoUiModel.isNotEmpty()) {
-                this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
-            }
-        }
-        if (!isOcc) {
-            if (shippingDurationUiModels[0].etaErrorCode == 1) {
-                this.mData.add(0, NotifierModel(TYPE_DEFAULT))
-            }
-        }
+//        this.allServices = shippingDurationUiModels
+        this.mData = shippingDurationUiModels
+//        if (preOrderModel?.display == true)  {
+//            preOrderModel.let { this.mData.add(0, it) }
+//            if (promoUiModel.isNotEmpty()) {
+//                this.mData.addAll(1, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+//            }
+//        } else {
+//            if (promoUiModel.isNotEmpty()) {
+//                this.mData.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+//            }
+//        }
+//        if (!isOcc) {
+//            if (shippingDurationUiModels[0].etaErrorCode == 1) {
+//                this.mData.add(0, NotifierModel(TYPE_DEFAULT))
+//            }
+//        }
         notifyDataSetChanged()
     }
 
@@ -58,26 +55,6 @@ class ShippingDurationAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() 
 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
-    }
-
-    fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
-        allServices.firstOrNull { it.serviceData.serviceId == serId }
-            ?.let {
-                return it
-            }
-        return null
-    }
-
-    fun initiateShowcase() {
-        var position = 0
-        for (mDatum in mData) {
-            if (mDatum is ShippingDurationUiModel) {
-                mDatum.isShowShowCase = true
-                break
-            }
-            position++
-        }
-        notifyItemChanged(position)
     }
 
     override fun getItemViewType(position: Int): Int = when (mData[position]) {

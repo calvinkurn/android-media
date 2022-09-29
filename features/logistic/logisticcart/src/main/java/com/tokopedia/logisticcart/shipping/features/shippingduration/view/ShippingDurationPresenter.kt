@@ -20,6 +20,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                                     private val stateConverter: RatesResponseStateConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
+    private var shippingData: ShippingRecommendationData? = null
 
     override fun attachView(view: ShippingDurationContract.View) {
         super.attachView(view)
@@ -110,6 +111,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                                 }
                                             }
                                         }
+                                        shippingData = shippingRecommendationData
                                         view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
                                         view!!.stopTrace()
                                     } else {
@@ -185,4 +187,40 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         }
         return null
     }
+
+    override fun convertServiceListToUiModel(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType> {
+        val uiModelList : MutableList<RatesViewModelType> = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
+        if (promoUiModel.isNotEmpty()) {
+            uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
+        }
+
+        preOrderModel?.let {
+            if (it.display) {
+                uiModelList.add(0, it)
+            }
+        }
+
+        if (!isOcc) {
+            if (shippingDurationUiModels[0].etaErrorCode == 1) {
+                uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
+            }
+            if (promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
+                initiateShowcase()
+            }
+        }
+        return uiModelList
+    }
+
+    private fun initiateShowcase() {
+        shippingData?.shippingDurationUiModels?.firstOrNull()?.isShowShowCase = true
+    }
+
+    override fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
+        shippingData?.shippingDurationUiModels?.firstOrNull { it.serviceData.serviceId == serId }
+            ?.let {
+                return it
+            }
+        return null
+    }
+
 }
