@@ -402,12 +402,11 @@ class ProductTagViewModel @AssistedInject constructor(
                             add(SelectedProductUiModel.createOnlyId(id = product.id))
                         }.toList()
                     }
-                    else currSelectedProduct
-                }
+                    else {
+                        _uiEvent.emit(ProductTagUiEvent.MaxSelectedProductReached)
 
-                if(currSelectedProduct.size != newSelectedProduct.size &&
-                    newSelectedProduct.size == maxSelectedProduct) {
-                    _uiEvent.emit(ProductTagUiEvent.MaxSelectedProductReached)
+                        currSelectedProduct
+                    }
                 }
 
                 _selectedProduct.value = newSelectedProduct
