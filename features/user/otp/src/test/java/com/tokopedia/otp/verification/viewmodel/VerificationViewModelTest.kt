@@ -49,6 +49,9 @@ class VerificationViewModelTest {
     lateinit var getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase
 
     @RelaxedMockK
+    lateinit var getVerificationMethodPhoneRegisterMandatoryUseCase: GetVerificationMethodPhoneRegisterMandatoryUseCase
+
+    @RelaxedMockK
     lateinit var checkPinHashV2UseCase: CheckPinHashV2UseCase
 
     @RelaxedMockK
@@ -61,10 +64,16 @@ class VerificationViewModelTest {
     lateinit var otpValidateUseCase2FA: OtpValidateUseCase2FA
 
     @RelaxedMockK
+    lateinit var otpValidatePhoneRegisterMandatoryUseCase: OtpValidatePhoneRegisterMandatoryUseCase
+
+    @RelaxedMockK
     lateinit var sendOtpUseCase2FA: SendOtp2FAUseCase
 
     @RelaxedMockK
     lateinit var sendOtpUseCase: SendOtpUseCase
+
+    @RelaxedMockK
+    lateinit var sendOtpPhoneRegisterMandatoryUseCase: SendOtpPhoneRegisterMandatoryUseCase
 
     @RelaxedMockK
     lateinit var userSessionInterface: UserSessionInterface
@@ -102,12 +111,15 @@ class VerificationViewModelTest {
             getVerificationMethodUseCase,
             getVerificationMethodUseCase2FA,
             getVerificationMethodInactivePhoneUseCase,
+            getVerificationMethodPhoneRegisterMandatoryUseCase,
             checkPinHashV2UseCase,
             generatePublicKeyUseCase,
             otpValidateUseCase,
             otpValidateUseCase2FA,
+            otpValidatePhoneRegisterMandatoryUseCase,
             sendOtpUseCase,
             sendOtpUseCase2FA,
+            sendOtpPhoneRegisterMandatoryUseCase,
             userSessionInterface,
             remoteConfig,
             dispatcherProviderTest
@@ -285,6 +297,62 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success get verification method phone register mandatory`() {
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethodPhoneRegisterMandatory("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Success<OtpModeListData>>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Success)
+
+        val result = viewmodel.getVerificationMethodResult.value as Success<OtpModeListData>
+        assert(result.data == successGetVerificationMethodResponse.data)
+    }
+
+    @Test
+    fun `Success get verification method phone register mandatory - error message not empty`() {
+        val errMsg = "error"
+        successGetVerificationMethodResponse.data.success = false
+        successGetVerificationMethodResponse.data.errorMessage = errMsg
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethodPhoneRegisterMandatory("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert((viewmodel.getVerificationMethodResult.value as Fail).throwable.message == errMsg)
+    }
+
+    @Test
+    fun `Success get verification method phone register mandatory - error message empty & success false`() {
+        successGetVerificationMethodResponse.data.success = false
+        successGetVerificationMethodResponse.data.errorMessage = ""
+
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+
+        viewmodel.getVerificationMethodPhoneRegisterMandatory("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+    }
+
+    @Test
+    fun `Failed get verification method phone register mandatory`() {
+        viewmodel.getVerificationMethodResult.observeForever(getVerificationMethodResultObserver)
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } coAnswers { throw throwable }
+
+        viewmodel.getVerificationMethodPhoneRegisterMandatory("", "", "", "")
+
+        verify { getVerificationMethodResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.getVerificationMethodResult.value is Fail)
+
+        val result = viewmodel.getVerificationMethodResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
     fun `Success send otp method`() {
         viewmodel.sendOtpResult.observeForever(sendOtpResultObserver)
         coEvery { sendOtpUseCase.getData(any()) } returns successSendOtpResponse
@@ -304,6 +372,34 @@ class VerificationViewModelTest {
         coEvery { sendOtpUseCase.getData(any()) } coAnswers { throw throwable }
 
         viewmodel.sendOtp("", "", "", "", 0)
+
+        verify { sendOtpResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.sendOtpResult.value is Fail)
+
+        val result = viewmodel.sendOtpResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `Success send otp method phone register mandatory`() {
+        viewmodel.sendOtpResult.observeForever(sendOtpResultObserver)
+        coEvery { sendOtpPhoneRegisterMandatoryUseCase(any()) } returns successSendOtpResponse
+
+        viewmodel.sendOtpPhoneRegisterMandatory("", "", "", "", 0, "")
+
+        verify { sendOtpResultObserver.onChanged(any<Success<OtpRequestData>>()) }
+        assert(viewmodel.sendOtpResult.value is Success)
+
+        val result = viewmodel.sendOtpResult.value as Success<OtpRequestData>
+        assert(result.data == successSendOtpResponse.data)
+    }
+
+    @Test
+    fun `Failed send otp method phone register mandatory`() {
+        viewmodel.sendOtpResult.observeForever(sendOtpResultObserver)
+        coEvery { sendOtpPhoneRegisterMandatoryUseCase(any()) } coAnswers { throw throwable }
+
+        viewmodel.sendOtpPhoneRegisterMandatory("", "", "", "", 0, "")
 
         verify { sendOtpResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.sendOtpResult.value is Fail)
@@ -387,6 +483,66 @@ class VerificationViewModelTest {
         coEvery { otpValidateUseCase.getData(any()) } coAnswers { throw throwable }
 
         viewmodel.otpValidate("", "", "", "", "", "", "", "", "", 0)
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+
+        val result = viewmodel.otpValidateResult.value as Fail
+        assertEquals(throwable, result.throwable)
+    }
+
+    @Test
+    fun `Success validate otp method phone register mandatory`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidatePhoneRegisterMandatory("", "", "", "", "", "")
+
+        verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
+        assert(viewmodel.otpValidateResult.value is Success)
+
+        val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
+        assert(result.data == successOtpValidationResponse.data)
+    }
+
+    @Test
+    fun `Success validate otp method phone register mandatory error message isNotEmpty`() {
+        successOtpValidationResponse.data.errorMessage = "error"
+        successOtpValidationResponse.data.success = false
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidatePhoneRegisterMandatory("", "", "", "", "", "")
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+    }
+
+    @Test
+    fun `Success validate otp method phone register mandatory error message isEmpty & success == false`() {
+        successOtpValidationResponse.data.errorMessage = ""
+        successOtpValidationResponse.data.success = false
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } returns successOtpValidationResponse
+
+        viewmodel.otpValidatePhoneRegisterMandatory("", "", "", "", "", "")
+
+        verify { otpValidateResultObserver.onChanged(any<Fail>()) }
+        assert(viewmodel.otpValidateResult.value is Fail)
+    }
+
+    @Test
+    fun `Failed validate otp method phone register mandatory`() {
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+        coEvery { otpValidatePhoneRegisterMandatoryUseCase(any()) } throws throwable
+
+        viewmodel.otpValidatePhoneRegisterMandatory("", "", "", "", "", "")
 
         verify { otpValidateResultObserver.onChanged(any<Fail>()) }
         assert(viewmodel.otpValidateResult.value is Fail)
