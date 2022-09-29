@@ -17,6 +17,7 @@ import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
@@ -88,13 +89,14 @@ class TrackingRepository(
     }
 
     private fun setEmbraceLog(queryName: String, queryParam: String) {
-        Log.e("Hii","Inside Embrace")
-        val embraceMap = mapOf(
-            "queryName" to queryName,
-            "detail" to queryParam
-        )
-
-        ServerLogger.log(Priority.P2, EMBRACE_CUSTOMER_TAG, embraceMap)
+        if(firebaseRemoteConfig?.getBoolean(RemoteConfigKey.ENABLE_CURSOR_EMBRACE_LOGGING)?:false) {
+            Log.e("Hii", "Inside Embrace")
+            val embraceMap = mapOf(
+                "queryName" to queryName,
+                "detail" to queryParam
+            )
+            ServerLogger.log(Priority.P2, EMBRACE_CUSTOMER_TAG, embraceMap)
+        }
     }
 
     fun delete(data: List<Tracking>) {
