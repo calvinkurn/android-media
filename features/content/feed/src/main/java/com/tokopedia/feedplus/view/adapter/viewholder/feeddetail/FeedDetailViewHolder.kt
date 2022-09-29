@@ -81,6 +81,10 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             discountLabel.showWithCondition(feedDetailProductModel.isDiscount)
             if (feedDetailProductModel.isUpcoming) {
                 productPrice.text = feedDetailProductModel.product.priceMaskedFmt
+                productTag.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    text = feedDetailProductModel.originalPriceFmt
+                }
             } else {
                 if (feedDetailProductModel.isDiscount) {
                     discountLabel.text = feedDetailProductModel.discountFmt
