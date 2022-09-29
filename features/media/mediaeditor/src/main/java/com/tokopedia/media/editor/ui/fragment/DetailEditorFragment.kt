@@ -26,12 +26,7 @@ import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
-import com.tokopedia.media.editor.ui.component.BrightnessToolUiComponent
-import com.tokopedia.media.editor.ui.component.ContrastToolsUiComponent
-import com.tokopedia.media.editor.ui.component.CropToolUiComponent
-import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
-import com.tokopedia.media.editor.ui.component.RotateToolUiComponent
-import com.tokopedia.media.editor.ui.component.WatermarkToolUiComponent
+import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
@@ -256,7 +251,7 @@ class DetailEditorFragment @Inject constructor(
             cropView.targetAspectRatio = ratio.getRatio()
 
             val newRatio = Pair(ratio.getRatioX(), ratio.getRatioY())
-            if (data.cropRotateValue.cropRatio != newRatio){
+            if (data.cropRotateValue.cropRatio != newRatio) {
                 data.cropRotateValue.cropRatio = newRatio
                 isEdited = true
             }
@@ -359,7 +354,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
-            if(data.isToolCrop() || data.isToolRotate()){
+            if (data.isToolCrop() || data.isToolRotate()) {
                 // ucrop height must be same between rotate & crop to get same result when implement state
                 // crop item is dynamic according to the editor param
                 rotateComponent.setupView(data)
@@ -386,13 +381,17 @@ class DetailEditorFragment @Inject constructor(
                     val url = data.removeBackgroundUrl ?: data.originalUrl
                     val uri = Uri.fromFile(File(url))
 
-                    if(data.isToolCrop()) {
+                    if (data.isToolCrop()) {
                         rotateComponent.container().hide()
                         viewBinding?.imgUcropPreview?.initializeCrop(uri, this@DetailEditorFragment)
                     } else {
                         cropComponent.container().hide()
                         viewBinding?.imgUcropPreview?.setOverlayRotate()
-                        viewBinding?.imgUcropPreview?.initializeRotate(uri, this@DetailEditorFragment, data)
+                        viewBinding?.imgUcropPreview?.initializeRotate(
+                            uri,
+                            this@DetailEditorFragment,
+                            data
+                        )
                     }
                 }
             } else {
@@ -477,7 +476,7 @@ class DetailEditorFragment @Inject constructor(
                     cropView.setImageToWrapCropBounds(false)
 
                     // set default crop active ratio if already cropped by autoCrop / rotate
-                    if(data.isToolCrop()){
+                    if (data.isToolCrop()) {
                         cropView.post {
                             viewBinding?.imgUcropPreview?.cropImageView?.post {
                                 cropComponent.setActiveCropRatio(data.cropRotateValue.cropRatio)
@@ -505,7 +504,8 @@ class DetailEditorFragment @Inject constructor(
             viewModel.setRotate(it, rotateDegree, isRotate, isPreviousState = true)
             viewModel.rotateNumber = cropRotateData.orientationChangeNumber
             viewModel.rotateSliderValue = cropRotateData.rotateDegree
-            viewModel.rotatePreviousDegree = cropRotateData.rotateDegree * cropRotateData.scaleX * cropRotateData.scaleY
+            viewModel.rotatePreviousDegree =
+                cropRotateData.rotateDegree * cropRotateData.scaleX * cropRotateData.scaleY
 
             cropView.setImageToWrapCropBounds(false)
 
@@ -517,7 +517,7 @@ class DetailEditorFragment @Inject constructor(
 
     private fun implementPreviousWatermark(detailUiModel: EditorDetailUiModel) {
         detailUiModel.watermarkMode?.let {
-            if(it.watermarkType != data.watermarkMode?.watermarkType){
+            if (it.watermarkType != data.watermarkMode?.watermarkType) {
                 return
             }
 
@@ -547,7 +547,8 @@ class DetailEditorFragment @Inject constructor(
             if (editorDetailUi.isToolWatermark()) watermarkIndexNumber = index
             if (editorDetailUi.cropRotateValue.isRotate) rotateIndexNumber = index
 
-            if (editorDetailUi.cropRotateValue.isCrop) cropScale = editorDetailUi.cropRotateValue.scale
+            if (editorDetailUi.cropRotateValue.isCrop) cropScale =
+                editorDetailUi.cropRotateValue.scale
             if (editorDetailUi.editorToolType == data.editorToolType) return@forEachIndexed
             readPreviousDetailState(editorDetailUi)
         }
@@ -561,9 +562,9 @@ class DetailEditorFragment @Inject constructor(
             manualCropBitmap(data.cropRotateValue)
         }
 
-        if((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
+        if ((data.isToolRotate() || data.isToolCrop()) && data.cropRotateValue.imageWidth != 0) {
             implementPreviousStateRotate(data.cropRotateValue)
-            if(cropScale != 0f) viewModel.rotateInitialScale = cropScale
+            if (cropScale != 0f) viewModel.rotateInitialScale = cropScale
         }
 
         if (watermarkIndexNumber > rotateIndexNumber && !data.isToolWatermark()) {
@@ -574,12 +575,17 @@ class DetailEditorFragment @Inject constructor(
         readPreviousDetailState(data, isIncludeWatermark = true)
     }
 
-    private fun readPreviousDetailState(previousState: EditorDetailUiModel, isIncludeWatermark: Boolean = false) {
+    private fun readPreviousDetailState(
+        previousState: EditorDetailUiModel,
+        isIncludeWatermark: Boolean = false
+    ) {
         previousState.apply {
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.WATERMARK -> if(isIncludeWatermark) implementPreviousWatermark(previousState)
+                EditorToolType.WATERMARK -> if (isIncludeWatermark) implementPreviousWatermark(
+                    previousState
+                )
             }
         }
     }
@@ -606,7 +612,8 @@ class DetailEditorFragment @Inject constructor(
 
             val mirrorMatrix = Matrix()
             mirrorMatrix.preScale(cropRotateData.scaleX, cropRotateData.scaleY)
-            val mirroredBitmap = Bitmap.createBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
+            val mirroredBitmap =
+                Bitmap.createBitmap(it, 0, 0, it.width, it.height, mirrorMatrix, true)
 
             // get processed, since data param is set to be null then other data value is not necessary
             val bitmapResult = viewBinding?.imgUcropPreview?.getProcessedBitmap(
