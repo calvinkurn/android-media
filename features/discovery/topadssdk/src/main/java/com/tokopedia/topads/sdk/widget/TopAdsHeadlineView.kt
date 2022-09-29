@@ -22,6 +22,7 @@ import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddTo
 import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
 import com.tokopedia.unifycomponents.LoaderUnify
+import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
@@ -29,10 +30,9 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelProvider by lazy { ViewModelProvider(context as AppCompatActivity, viewModelFactory) }
-
     private val topAdsHeadlineViewModel by lazy {
-        viewModelProvider.get(TopAdsHeadlineViewModel::class.java)
+        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(TopAdsHeadlineViewModel::class.java)
+        WeakReference(vm)
     }
 
     var topadsBannerView: TopAdsBannerView
@@ -62,7 +62,7 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     }
 
     fun getHeadlineAds(params: String, onSuccess: ((CpmModel) -> Unit)? = null, onError: (() -> Unit)? = null) {
-        topAdsHeadlineViewModel.getTopAdsHeadlineData(params, onSuccess, onError)
+        topAdsHeadlineViewModel.get()?.getTopAdsHeadlineData(params, onSuccess, onError)
     }
 
     fun displayAds(cpmModel: CpmModel, index:Int = 0) {
