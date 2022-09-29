@@ -179,8 +179,9 @@ class VideoPictureView @JvmOverloads constructor(
         containerType: MediaContainerType
     ) {
         videoPictureAdapter = VideoPictureAdapter(
-            mListener,
-            componentTrackDataModel
+            listener = mListener,
+            componentTrackDataModel = componentTrackDataModel,
+            containerType = containerType
         )
 
         val viewPager = binding.pdpViewPager

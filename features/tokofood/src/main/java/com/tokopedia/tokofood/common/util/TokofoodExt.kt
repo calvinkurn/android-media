@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 
 
 object TokofoodExt {
@@ -160,5 +161,10 @@ object TokofoodExt {
                 navigationIcon = newDrawable
             }
         }
+    }
+
+    fun getLocalTimeZone(): String {
+        val timeZone = TimeZone.getDefault()
+        return timeZone.id
     }
 }

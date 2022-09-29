@@ -127,6 +127,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
     private var shopId: String? = null
+    private var shopDomain: String = ""
     private var shopName: String? = null
     private var shopRef: String = ""
     private var keyword: String = ""
@@ -258,6 +259,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                 keyword = it.getString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, "")
                 sortId = it.getString(ShopParamConstant.EXTRA_SORT_ID, Integer.MIN_VALUE.toString())
                 shopId = it.getString(ShopParamConstant.EXTRA_SHOP_ID, "")
+                shopDomain = it.getString(ShopParamConstant.EXTRA_SHOP_DOMAIN, "")
                 shopRef = it.getString(ShopParamConstant.EXTRA_SHOP_REF, "")
                 isNeedToReloadData = it.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             }
@@ -269,6 +271,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             keyword = savedInstanceState.getString(SAVED_KEYWORD) ?: ""
 //            sortId = savedInstanceState.getString(SAVED_SORT_VALUE, "")
             shopId = savedInstanceState.getString(SAVED_SHOP_ID)
+            shopDomain = savedInstanceState.getString(SAVED_SHOP_DOMAIN, "")
             shopRef = savedInstanceState.getString(SAVED_SHOP_REF).orEmpty()
             needReloadData = savedInstanceState.getBoolean(ShopCommonExtraConstant.EXTRA_IS_NEED_TO_RELOAD_DATA)
             shopProductFilterParameter = savedInstanceState.getParcelable(SAVED_SHOP_PRODUCT_FILTER_PARAMETER)
@@ -304,7 +307,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun initAffiliateCookie() {
-        viewModel?.initAffiliateCookie(
+        viewModel.initAffiliateCookie(
             affiliateCookieHelper,
             shopId.orEmpty()
         )
@@ -362,7 +365,13 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     isMyShop,
                     isNeedToReloadData
             )
-        } ?: viewModel.getShop(shopId.orEmpty(), isRefresh = isNeedToReloadData)
+        } ?: run {
+            viewModel.getShop(
+                shopId = shopId.orEmpty(),
+                shopDomain = shopDomain,
+                isRefresh = isNeedToReloadData
+            )
+        }
     }
 
     override fun createEndlessRecyclerViewListener(): EndlessRecyclerViewScrollListener {
@@ -919,7 +928,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId.orEmpty()
             )
         }
-        startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
+        startActivity(getProductIntent(shopProductUiModel.productUrl, attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
@@ -1079,27 +1088,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
+    private fun getProductIntent(pdpAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
-            val pdpAppLink = getPdpAppLink(productId)
+            val updatedPdpAppLink = createPdpAffiliateLink(pdpAppLink)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, pdpAppLink)
+            RouteManager.getIntent(context, updatedPdpAppLink)
         } else {
             null
         }
     }
 
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createPdpAffiliateLink(basePdpAppLink)
-    }
-
-    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+    private fun createPdpAffiliateLink(basePdpAppLink: String): String {
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
@@ -1184,6 +1185,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun onSuccessGetShopInfo(shopInfo: ShopInfo) {
         this.shopInfo = shopInfo
         this.shopId = shopInfo.shopCore.shopID
+        this.shopDomain = shopInfo.shopCore.domain
         this.isOfficialStore = shopInfo.goldOS.isOfficial == 1
         this.isGoldMerchant = shopInfo.goldOS.isGold == 1
         this.shopName = shopInfo.shopCore.name
@@ -1361,21 +1363,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingWishlistV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingWishlistV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
         }
     }
 
@@ -1387,14 +1378,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             shopProductAdapter.updateWishListStatus(productCardOptionsModel.productId, true)
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg))
         }
     }
 
@@ -1475,6 +1458,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         outState.putString(SAVED_SORT_VALUE, sortId)
         outState.putString(SAVED_KEYWORD, keyword)
         outState.putString(SAVED_SHOP_ID, shopId)
+        outState.putString(SAVED_SHOP_DOMAIN, shopDomain)
         outState.putString(SAVED_SHOP_REF, shopRef)
         outState.putBoolean(SAVED_SHOP_IS_OFFICIAL, isOfficialStore)
         outState.putBoolean(SAVED_SHOP_IS_GOLD_MERCHANT, isGoldMerchant)
@@ -1526,6 +1510,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         val SAVED_SELECTED_ETALASE_NAME = "saved_etalase_name"
         val SAVED_SELECTED_ETALASE_TYPE = "saved_etalase_type"
         val SAVED_SHOP_ID = "saved_shop_id"
+        val SAVED_SHOP_DOMAIN = "saved_shop_domain"
         val SAVED_SHOP_REF = "saved_shop_ref"
         val SAVED_SHOP_IS_OFFICIAL = "saved_shop_is_official"
         val SAVED_SHOP_IS_GOLD_MERCHANT = "saved_shop_is_gold_merchant"
@@ -1540,6 +1525,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
 
         @JvmStatic
         fun createInstance(shopId: String,
+                           shopDomain: String,
                            shopRef: String?,
                            keyword: String?,
                            etalaseId: String?,
@@ -1550,6 +1536,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         ): ShopPageProductListResultFragment = ShopPageProductListResultFragment().also {
             it.arguments = Bundle().apply {
                 putString(ShopParamConstant.EXTRA_SHOP_ID, shopId)
+                putString(ShopParamConstant.EXTRA_SHOP_DOMAIN, shopDomain)
                 putString(ShopParamConstant.EXTRA_SHOP_REF, shopRef.orEmpty())
                 putString(ShopParamConstant.EXTRA_PRODUCT_KEYWORD, keyword ?: "")
                 putString(ShopParamConstant.EXTRA_ETALASE_ID, etalaseId ?: "")

@@ -2,6 +2,7 @@ package com.tokopedia.play.view.viewcomponent.partnerinfo
 
 import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.play.R
 import com.tokopedia.play.view.uimodel.recom.PartnerFollowableStatus
@@ -47,6 +48,7 @@ class PartnerInfoViewComponent(
             btnFollow.isLoading = isLoading
             btnFollow.isEnabled = !isLoading
             btnFollow.show()
+            listener.onFollowImpressed(this)
         } else btnFollow.hide()
     }
 
@@ -59,6 +61,7 @@ class PartnerInfoViewComponent(
     interface Listener {
         fun onPartnerInfoClicked(view: PartnerInfoViewComponent, applink: String)
         fun onFollowButtonClicked(view: PartnerInfoViewComponent)
+        fun onFollowImpressed(view: PartnerInfoViewComponent)
     }
 
 }

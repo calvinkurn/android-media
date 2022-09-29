@@ -8,7 +8,7 @@ data class PromoCheckoutVoucherOrdersItemUiModel(
         var code: String = "",
         var uniqueId: String = "",
         var cashbackWalletAmount: Int = -1,
-        var discountAmount: Int = -1,
+        var discountAmount: Long = -1,
         var addressId: Int = -1,
         var titleDescription: String = "",
         var isPo: Int = -1,

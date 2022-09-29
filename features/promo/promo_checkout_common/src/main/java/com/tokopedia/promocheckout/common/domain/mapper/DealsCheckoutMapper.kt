@@ -12,7 +12,7 @@ import com.tokopedia.promocheckout.common.view.uimodel.DetailUiModel
 object DealsCheckoutMapper {
 
     const val CASHBACK = "cashback"
-    const val CASHBACK_VALUE = 0
+    const val CASHBACK_VALUE = 0L
 
 
     fun mapDataNew(data: DataDeals): DataUiModel {

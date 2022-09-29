@@ -3,6 +3,7 @@ package com.tokopedia.shop.settings.setting.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.settings.R
 import com.tokopedia.shop.settings.setting.data.*
 import com.tokopedia.shop.settings.setting.view.adapter.viewholder.ProductViewHolder
@@ -45,6 +46,8 @@ class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemCl
     }
 
     private var shopPageSettingList = listOf<ShopPageSetting>()
+    private var isEligibleForMultiLocation: Boolean = false
+    private var shippingViewHolder: ShippingViewHolder? = null
 
     override fun getItemViewType(position: Int): Int {
         return when (shopPageSettingList[position]) {
@@ -83,12 +86,18 @@ class ShopPageSettingAdapter(private val profileItemClickListener: ProfileItemCl
                 holder.bind(supportItemClickListener)
             }
             is ShippingViewHolder -> {
-                holder.bind(shippingItemClickListener)
+                holder.bind(isEligibleForMultiLocation, shippingItemClickListener)
+                shippingViewHolder = holder
             }
         }
     }
 
     fun setShopPageSettingList(newShopPageSettingList: List<ShopPageSetting>) {
         this.shopPageSettingList = newShopPageSettingList
+    }
+
+    fun setMultiLocationEligibility(isEligible: Boolean) {
+        isEligibleForMultiLocation = isEligible
+        notifyItemChanged(shippingViewHolder?.adapterPosition.orZero())
     }
 }

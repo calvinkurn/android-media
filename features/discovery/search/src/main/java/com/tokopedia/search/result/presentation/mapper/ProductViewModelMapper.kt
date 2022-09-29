@@ -429,6 +429,7 @@ class ProductViewModelMapper {
                     data.trackingOption.toIntOrZero(),
                     dimension90,
                     createInspirationCarouselCardButtonViewModel(opt),
+                    InspirationCarouselDataView.Bundle.create(opt),
             )
         }
     }

@@ -95,6 +95,7 @@ internal object GetHomeLayoutData: GqlQueryInterface {
                   title
                   position
                   type
+                  url
                 }
                 param
               }

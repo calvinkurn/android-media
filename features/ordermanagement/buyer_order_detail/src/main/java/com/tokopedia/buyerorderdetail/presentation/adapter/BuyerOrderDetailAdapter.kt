@@ -9,14 +9,15 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThickDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
@@ -32,6 +33,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     ): List<Visitable<BuyerOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
             setupOrderStatusSection(context, newData.orderStatusUiModel)
+            setupOrderResolutionSection(context, newData.orderResolutionUIModel)
             setupProductListSection(context, newData.productListUiModel)
             setupShipmentInfoSection(context, newData.shipmentInfoUiModel)
             setupPaymentInfoSection(context, newData.paymentInfoUiModel)
@@ -58,6 +60,18 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             addThinDividerSection()
         }
         addOrderStatusInfoSection(context, orderStatusUiModel.orderStatusInfoUiModel)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderResolutionSection(
+        context: Context?,
+        orderResolutionUIModel: OrderResolutionUIModel?
+    ) {
+        orderResolutionUIModel?.let {
+            if (it.shouldShow(context)) {
+                addThickDividerSection()
+                add(it)
+            }
+        }
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupProductListSection(
@@ -218,7 +232,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addReceiverAddressInfoSection(
         context: Context?,
-        receiverAddressInfoUiModel: CopyableKeyValueUiModel
+        receiverAddressInfoUiModel: SimpleCopyableKeyValueUiModel
     ) {
         if (receiverAddressInfoUiModel.shouldShow(context)) {
             add(receiverAddressInfoUiModel)
@@ -227,7 +241,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addDropShipperInfoSection(
         context: Context?,
-        dropShipperInfoUiModel: CopyableKeyValueUiModel
+        dropShipperInfoUiModel: SimpleCopyableKeyValueUiModel
     ) {
         if (dropShipperInfoUiModel.shouldShow(context)) {
             add(dropShipperInfoUiModel)

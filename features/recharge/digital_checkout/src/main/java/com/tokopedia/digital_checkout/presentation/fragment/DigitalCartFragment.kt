@@ -23,7 +23,9 @@ import com.tokopedia.cachemanager.PersistentCacheManager
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.AtcErrorButton
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.atc.data.response.FintechProduct
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
@@ -46,12 +48,18 @@ import com.tokopedia.digital_checkout.presentation.viewmodel.DigitalCartViewMode
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCartInputPriceWidget
 import com.tokopedia.digital_checkout.presentation.widget.DigitalCheckoutSimpleWidget
 import com.tokopedia.digital_checkout.utils.DeviceUtil
+import com.tokopedia.digital_checkout.utils.DeviceUtil.generateATokenRechargeCheckout
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.PromoDataUtil.mapToStatePromoCheckout
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.ErrorNetMessage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.data.REQUEST_CODE_PROMO_DETAIL
@@ -179,6 +187,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
             } else {
                 hideContent()
                 loaderCheckout.visibility = View.VISIBLE
+                it.idemPotencyKey = generateATokenRechargeCheckout(requireContext())
                 addToCartViewModel.addToCart(
                     it,
                     getDigitalIdentifierParam(),
@@ -211,6 +220,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 is Fail -> closeViewWithMessageAlert(it.throwable)
             }
         })
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            showErrorPage(it)
+        }
 
         viewModel.cartDigitalInfoData.observe(viewLifecycleOwner, Observer {
             renderCartDigitalInfoData(it)
@@ -301,8 +314,9 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     }
 
     private fun showContent() {
-        contentCheckout.visibility = View.VISIBLE
-        checkoutBottomViewWidget.visibility = View.VISIBLE
+        contentCheckout.visible()
+        checkoutBottomViewWidget.visible()
+        viewEmptyState.gone()
     }
 
     private fun renderCartDigitalInfoData(cartInfo: CartDigitalInfoData) {
@@ -425,6 +439,43 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         }
     }
 
+    private fun showErrorPage(error: ErrorAtc){
+        viewEmptyState?.let {
+            loaderCheckout.gone()
+            hideContent()
+
+            it.errorIllustration.loadImageFitCenter(error.atcErrorPage.imageUrl)
+            it.errorTitle.text = error.atcErrorPage.title.ifEmpty { error.title }
+            it.errorDescription.text = error.atcErrorPage.subTitle
+            it.errorSecondaryAction.gone()
+
+            it.show()
+
+            if (error.atcErrorPage.buttons.isNullOrEmpty()) {
+                it.errorAction.text = getString(R.string.digital_checkout_empty_state_btn)
+                it.setActionClickListener { _ ->
+                    it.gone()
+                    loadData()
+                }
+                return@let
+            }
+
+            val button = error.atcErrorPage.buttons.first()
+
+            it.errorAction.text = button.label
+
+            it.setActionClickListener {
+                if (button.actionType == AtcErrorButton.TYPE_PHONE_VERIFICATION) {
+                    RouteManager.getIntent(context, button.appLinkUrl).apply {
+                        startActivityForResult(this, REQUEST_VERIFY_PHONE_NUMBER)
+                    }
+                } else {
+                    RouteManager.route(context, button.appLinkUrl)
+                }
+            }
+        }
+    }
+
     private fun showPromoTicker() {
         renderDefaultEmptyPromoView()
 
@@ -504,6 +555,8 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
                 }
                 else -> getCartAfterCheckout()
             }
+        } else if (requestCode == REQUEST_VERIFY_PHONE_NUMBER && resultCode == Activity.RESULT_OK){
+            loadData()
         }
     }
 
@@ -716,8 +769,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     private fun sendGetCartAndCheckoutAnalytics() {
         digitalAnalytics.sendCartScreen()
         rechargeAnalytics.trackAddToCartRechargePushEventRecommendation(
-            cartPassData?.categoryId?.toIntOrNull()
-                ?: 0
+            cartPassData?.categoryId?.toIntSafely() ?: 0
         )
     }
 
@@ -824,6 +876,7 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
         private const val EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER =
             "EXTRA_STATE_CHECKOUT_DATA_PARAMETER_BUILDER"
 
+        private const val REQUEST_VERIFY_PHONE_NUMBER = 1012
         private const val REQUEST_CODE_OTP = 1001
         const val OTP_TYPE_CHECKOUT_DIGITAL = 16
 

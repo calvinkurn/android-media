@@ -24,6 +24,8 @@ import com.tokopedia.review.feature.createreputation.presentation.viewholder.Cre
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewMediaPreviewVideoViewHolder
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewMediaPicker @JvmOverloads constructor(
     context: Context,
@@ -107,23 +109,31 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         binding.layoutMediaPickerWaitingState.tvCreateReviewMediaPickerPoem.text = waitingText
     }
 
-    fun updateUi(uiState: CreateReviewMediaPickerUiState) {
+    fun updateUi(uiState: CreateReviewMediaPickerUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewMediaPickerUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
                 showMediaPickerUploadingState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
                 showMediaPickerSuccessUploadState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
                 showMediaPickerFailedUploadState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
