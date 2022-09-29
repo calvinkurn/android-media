@@ -27,7 +27,7 @@ import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
@@ -455,7 +455,7 @@ class DetailEditorFragment @Inject constructor(
         viewModel.setContrast(previousValue ?: 0f, getBitmap())
     }
 
-    private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateModel) {
+    private fun implementPreviousStateCrop(cropRotateData: EditorCropRotateUiModel) {
         if (cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val cropView = it.cropImageView
@@ -488,7 +488,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateModel) {
+    private fun implementPreviousStateRotate(cropRotateData: EditorCropRotateUiModel) {
         if (cropRotateData.imageWidth == 0 && cropRotateData.imageHeight == 0) return
         viewBinding?.imgUcropPreview?.let {
             val cropView = it.cropImageView
@@ -590,7 +590,7 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
-    private fun manualCropBitmap(cropRotateData: EditorCropRotateModel) {
+    private fun manualCropBitmap(cropRotateData: EditorCropRotateUiModel) {
         val currentBitmap = getBitmap()
         currentBitmap?.let {
             // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size

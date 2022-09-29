@@ -18,7 +18,7 @@ data class EditorDetailUiModel(
     var watermarkMode: EditorWatermarkModel? = null,
     var removeBackgroundUrl: String? = null,
     var isContrastExecuteFirst: Boolean? = null,
-    var cropRotateValue: EditorCropRotateModel = EditorCropRotateModel(),
+    var cropRotateValue: EditorCropRotateUiModel = EditorCropRotateUiModel(),
     var originalRatio: Float = 1f
 ) : Parcelable {
     // used only for remove background
@@ -26,7 +26,7 @@ data class EditorDetailUiModel(
         brightnessValue = null
         contrastValue = null
         watermarkMode = null
-        cropRotateValue = EditorCropRotateModel()
+        cropRotateValue = EditorCropRotateUiModel()
     }
 
     fun isToolBrightness(): Boolean {

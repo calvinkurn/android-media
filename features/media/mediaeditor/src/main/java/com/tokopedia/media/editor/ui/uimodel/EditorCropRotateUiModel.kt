@@ -5,7 +5,7 @@ import com.tokopedia.picker.common.ImageRatioType
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class EditorCropRotateModel(
+data class EditorCropRotateUiModel(
     var offsetX: Int = 0,
     var offsetY: Int = 0,
     var imageWidth: Int = 0,

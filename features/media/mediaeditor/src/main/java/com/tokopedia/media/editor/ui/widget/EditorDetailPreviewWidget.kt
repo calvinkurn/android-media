@@ -11,13 +11,12 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.values
 import com.tokopedia.kotlin.extensions.view.toBitmap
-import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateModel
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.getUCropTempResultPath
 import com.yalantis.ucrop.callback.BitmapCropCallback
 import com.yalantis.ucrop.view.TransformImageView
 import com.yalantis.ucrop.view.UCropView
-import kotlin.math.abs
 import com.tokopedia.unifyprinciples.R as principleR
 
 class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
@@ -177,7 +176,7 @@ class EditorDetailPreviewWidget(context: Context, attributeSet: AttributeSet) :
         }
 
         // set crop area on data that will be pass to landing pass for state
-        data?.cropRotateValue = EditorCropRotateModel(
+        data?.cropRotateValue = EditorCropRotateUiModel(
             normalizeX,
             normalizeY,
             imageWidth,
