@@ -28,7 +28,11 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragmen
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
+import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.unifycomponents.ticker.TickerData
+import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
+import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -52,10 +56,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private val predefinedTabs by lazy {
         listOf(
-            TabMetadata(TabConstant.TAB_ID_UPCOMING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_upcoming)),
-            TabMetadata(TabConstant.TAB_ID_REGISTERED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_registered)),
-            TabMetadata(TabConstant.TAB_ID_ONGOING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_ongoing)),
-            TabMetadata(TabConstant.TAB_ID_FINISHED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_finished))
+            TabMetadata.Tab(TabConstant.TAB_ID_UPCOMING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_upcoming)),
+            TabMetadata.Tab(TabConstant.TAB_ID_REGISTERED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_registered)),
+            TabMetadata.Tab(TabConstant.TAB_ID_ONGOING, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_ongoing)),
+            TabMetadata.Tab(TabConstant.TAB_ID_FINISHED, "", DEFAULT_TOTAL_CAMPAIGN_COUNT, getString(R.string.stfs_tab_name_finished))
         )
     }
 
@@ -114,8 +118,8 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
-        renderTicker(uiState.showTicker, uiState.error)
-        renderTabs(uiState.tabsMetadata, uiState.error, findTargetTabDestination() ?: return)
+        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading)
+        renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return)
         renderErrorState(uiState.error)
     }
 
@@ -133,7 +137,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.shimmer?.content?.isVisible = isLoading && !isError
     }
 
-    private fun renderTabs(tabs: List<TabMetadata>, error: Throwable?, targetTabPosition: Int) {
+    private fun renderTabs(tabs: List<TabMetadata.Tab>, error: Throwable?, targetTabPosition: Int) {
         val isError = error != null
         binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
         binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError
@@ -143,7 +147,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun createFragments(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>): List<Pair<String, Fragment>> {
+    private fun createFragments(predefinedTabs: List<TabMetadata.Tab>, tabs: List<TabMetadata.Tab>): List<Pair<String, Fragment>> {
         val pages = mutableListOf<Pair<String, Fragment>>()
 
         predefinedTabs.forEachIndexed { _, currentTab ->
@@ -161,7 +165,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         return pages
     }
 
-    private fun displayTabs(predefinedTabs: List<TabMetadata>, tabs: List<TabMetadata>, targetTabPosition: Int) {
+    private fun displayTabs(predefinedTabs: List<TabMetadata.Tab>, tabs: List<TabMetadata.Tab>, targetTabPosition: Int) {
         val fragments = createFragments(predefinedTabs, tabs)
         val pagerAdapter =
             TabPagerAdapter(childFragmentManager, viewLifecycleOwner.lifecycle, fragments)
@@ -177,21 +181,17 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderTicker(shouldDisplayTicker: Boolean, error: Throwable?) {
-        binding?.run {
-            val isError = error != null
-            ticker.isVisible = shouldDisplayTicker && !isError
-            ticker.setHtmlDescription(getString(R.string.stfs_multi_location_ticker))
-            ticker.setDescriptionClickEvent(object : TickerCallback {
-                override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    routeToUrl(linkUrl.toString())
-                }
+    private fun renderTicker(
+        showTicker: Boolean,
+        remoteTickerMessage: String,
+        error: Throwable?,
+        isLoading: Boolean
+    ) {
+        val isError = error != null
+        val shouldDisplayTicker = showTicker && !isError && !isLoading
 
-                override fun onDismiss() {
-                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
-                }
-
-            })
+        if (shouldDisplayTicker) {
+            displayTicker(remoteTickerMessage)
         }
     }
 
@@ -216,6 +216,47 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             val tabLayout = binding?.tabsUnify?.getUnifyTabLayout()
             val tab = tabLayout?.getTabAt(tabPosition)
             tab?.select()
+        }
+    }
+
+    private fun displayTicker(remoteTickerMessage: String) {
+        binding?.run {
+            ticker.isVisible = true
+
+            val defaultTicker = TickerData(
+                title = "",
+                description = getString(R.string.stfs_multi_location_ticker),
+                isFromHtml = true,
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+            val remoteTicker = TickerData(
+                title = "",
+                description = remoteTickerMessage,
+                isFromHtml = true,
+                type = Ticker.TYPE_ANNOUNCEMENT
+            )
+
+            val tickers = if (remoteTickerMessage.isEmpty()) listOf(defaultTicker) else listOf(remoteTicker, defaultTicker)
+
+            val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
+            tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
+                override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    routeToUrl(linkUrl.toString())
+                }
+            })
+
+
+            ticker.addPagerView(tickerAdapter, tickers)
+            ticker.setDescriptionClickEvent(object : TickerCallback {
+                override fun onDescriptionViewClick(linkUrl: CharSequence) {
+                    routeToUrl(linkUrl.toString())
+                }
+
+                override fun onDismiss() {
+                    viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.DismissMultiLocationTicker)
+                }
+
+            })
         }
     }
 

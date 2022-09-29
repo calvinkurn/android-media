@@ -12,18 +12,27 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.smoothSnapToPosition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsFragmentFlashSaleListBinding
 import com.tokopedia.sortfilter.SortFilterItem
@@ -39,12 +48,13 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlash
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiState
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.TabConfig
-import com.tokopedia.tkpd.flashsale.util.BaseSimpleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -59,8 +69,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         private const val BUNDLE_KEY_TAB_ID = "tab_id"
         private const val BUNDLE_KEY_TAB_NAME = "tab_name"
         private const val PAGE_SIZE = 10
-        private const val SELLER_EDU_URL =
-            "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
+        private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
+        private const val OLD_CAMPAIGN_FLASH_SALE_URL = "https://seller.tokopedia.com/manage-campaign/flash-sale/"
 
 
         @JvmStatic
@@ -80,9 +90,9 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
+            .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked, onUpcomingFlashSaleButtonClicked))
+            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onRegisteredFlashSaleButtonClicked))
             .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
-            .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onAddProductClicked))
-            .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
             .add(LoadingDelegateAdapter())
             .build()
@@ -289,7 +299,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
-        binding?.loader?.isVisible = isLoading
+        binding?.shimmer?.content?.isVisible = isLoading
         binding?.recyclerView?.isVisible = !isLoading
     }
 
@@ -503,20 +513,48 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private val onFlashSaleClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
-        val selectedFlashSaleId = selectedFlashSale.id()
-        context?.let {
-            CampaignDetailActivity.start(
-                it,
-                selectedFlashSaleId as Long,
-                tabName
-            )
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        navigateToFlashSaleDetailPage(selectedFlashSaleId)
+    }
+
+    private val onUpcomingFlashSaleButtonClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : UpcomingFlashSaleItem? = (selectedFlashSale as? UpcomingFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            navigateToFlashSaleDetailPage(selectedFlashSaleId)
         }
     }
 
-    private val onAddProductClicked: (Int) -> Unit = { selectedItemPosition ->
+    private val onRegisteredFlashSaleButtonClicked: (Int) -> Unit = { selectedItemPosition ->
         val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
-        val selectedFlashSaleId = selectedFlashSale.id() as? Long
-        ChooseProductActivity.start(context, selectedFlashSaleId.orZero(), tabName)
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : RegisteredFlashSaleItem? = (selectedFlashSale as? RegisteredFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            handleRegisteredCampaignRedirection(selectedFlashSaleId, status)
+        }
+    }
+
+    private fun navigateToFlashSaleDetailPage(flashSaleId : Long) {
+        CampaignDetailActivity.start(context ?: return, flashSaleId, tabName)
+    }
+
+    private fun handleRegisteredCampaignRedirection(flashSaleId: Long, status: FlashSaleStatus) {
+        if (status == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
+            ChooseProductActivity.start(context, flashSaleId, tabName)
+        } else {
+            navigateToFlashSaleDetailPage(flashSaleId)
+        }
     }
 
 }
