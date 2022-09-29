@@ -19,10 +19,7 @@ import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.Servi
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.ShippingDurationModule
-import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
-import com.tokopedia.logisticcart.shipping.model.NotifierModel
-import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -216,42 +213,25 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         NetworkErrorHelper.showEmptyState(activity, llNetworkErrorView, message) { loadData() }
     }
 
-    override fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?) {
-        val durationUiModelList = presenter?.convertServiceListToUiModel(serviceDataList, promoViewModelList, preOrderModel, isOcc)
-        durationUiModelList?.let { uiModelList ->
-            shippingDurationAdapter?.setShippingDurationViewModels(uiModelList, isDisableOrderPrioritas)
-
-            // todo move filter logic to presenter
-            val hasCourierPromo = checkHasCourierPromo(serviceDataList)
-            if (hasCourierPromo) {
-                sendAnalyticCourierPromo(serviceDataList)
-            }
-            promoViewModelList.forEach {
-                mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
-                if (it.disabled) {
-                    mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
-                }
-            }
-        }
+    override fun showData(uiModelList: MutableList<RatesViewModelType>) {
+        shippingDurationAdapter?.setShippingDurationViewModels(uiModelList, isDisableOrderPrioritas)
     }
 
-    private fun checkHasCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>): Boolean {
-        var hasCourierPromo = false
-        for (shippingDurationUiModel in shippingDurationUiModelList) {
-            if (shippingDurationUiModel.serviceData.isPromo == 1) {
-                hasCourierPromo = true
-                break
-            }
-        }
-        return hasCourierPromo
-    }
-
-    private fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
+    override fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>) {
         for (shippingDurationUiModel in shippingDurationUiModelList) {
             shippingDurationBottomsheetListener?.onShowDurationListWithCourierPromo(
                     shippingDurationUiModel.serviceData.isPromo == 1,
                     shippingDurationUiModel.serviceData.serviceName
             )
+        }
+    }
+
+    override fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>) {
+        promoViewModelList.forEach {
+            mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
+            if (it.disabled) {
+                mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
+            }
         }
     }
 

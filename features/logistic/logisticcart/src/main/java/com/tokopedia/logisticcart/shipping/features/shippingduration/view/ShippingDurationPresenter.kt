@@ -112,7 +112,15 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                             }
                                         }
                                         shippingData = shippingRecommendationData
-                                        view!!.showData(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel)
+                                        view!!.showData(convertServiceListToUiModel(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel, isOcc))
+
+                                        // tracker
+                                        val hasCourierPromo = checkHasCourierPromo()
+                                        if (hasCourierPromo) {
+                                            view?.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
+                                        }
+                                        view?.sendAnalyticPromoLogistic(shippingRecommendationData.listLogisticPromo)
+
                                         view!!.stopTrace()
                                     } else {
                                         view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
@@ -208,6 +216,8 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                 initiateShowcase()
             }
         }
+
+
         return uiModelList
     }
 
@@ -223,4 +233,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         return null
     }
 
+    fun checkHasCourierPromo(): Boolean {
+        return shippingData?.shippingDurationUiModels?.any { it.serviceData.isPromo == 1 } ?: false
+    }
 }

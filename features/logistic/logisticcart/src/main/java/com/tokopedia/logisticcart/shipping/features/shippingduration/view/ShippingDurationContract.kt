@@ -14,11 +14,13 @@ interface ShippingDurationContract {
         fun showLoading()
         fun hideLoading()
         fun showErrorPage(message: String)
-        fun showData(serviceDataList: List<ShippingDurationUiModel>, promoViewModelList: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?)
+        fun showData(uiModelList: MutableList<RatesViewModelType>)
         fun showNoCourierAvailable(message: String?)
         fun stopTrace()
         fun isDisableCourierPromo(): Boolean
         fun getActivity(): Activity
+        fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>)
+        fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>)
     }
 
     interface Presenter : CustomerPresenter<View> {
