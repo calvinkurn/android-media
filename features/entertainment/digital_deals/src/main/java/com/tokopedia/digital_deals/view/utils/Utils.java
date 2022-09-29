@@ -31,7 +31,7 @@ import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
