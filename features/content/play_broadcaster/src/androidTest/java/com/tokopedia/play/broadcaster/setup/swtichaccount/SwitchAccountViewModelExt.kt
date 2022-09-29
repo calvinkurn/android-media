@@ -15,11 +15,14 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetSocketCredentialUseCase
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastMapper
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroadcastUiMapper
+import com.tokopedia.play.broadcaster.util.helper.DefaultUriParser
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
+import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 
@@ -37,12 +40,12 @@ fun parentBroViewModel(
     dispatcher: CoroutineDispatchers = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     playBroadcastWebSocket: PlayBroadcastWebSocket = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true),
-    productMapper: PlayBroProductUiMapper = mockk(relaxed = true),
-    interactiveMapper: PlayInteractiveMapper = mockk(relaxed = true),
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser()),
+    productMapper: PlayBroProductUiMapper = PlayBroProductUiMapper(),
+    interactiveMapper: PlayInteractiveMapper = PlayInteractiveMapper(DefaultHtmlTextTransformer()),
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     logger: PlayLogger = mockk(relaxed = true),
-    broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
+    broadcastTimer: PlayBroadcastTimer = mockk(relaxed = true),
 ): PlayBroadcastViewModel {
     return PlayBroadcastViewModel(
         handle = handle,
@@ -72,7 +75,7 @@ fun preparationBroViewModel(
     channelConfigStore: ChannelConfigStore = mockk(relaxed = true),
     dispatcher: CoroutineDispatchers = mockk(relaxed = true),
     createLiveStreamChannelUseCase: CreateLiveStreamChannelUseCase = mockk(relaxed = true),
-    playBroadcastMapper: PlayBroadcastMapper = mockk(relaxed = true)
+    playBroadcastMapper: PlayBroadcastMapper = PlayBroadcastUiMapper(DefaultHtmlTextTransformer(), DefaultUriParser()),
 ): PlayBroadcastPrepareViewModel {
     return PlayBroadcastPrepareViewModel(
         mDataStore = mDataStore,
