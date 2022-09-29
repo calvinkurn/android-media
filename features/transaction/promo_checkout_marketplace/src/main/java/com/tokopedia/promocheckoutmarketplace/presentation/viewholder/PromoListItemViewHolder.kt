@@ -696,20 +696,20 @@ class PromoListItemViewHolder(
 
     private fun adjustConstraints(viewBinding: PromoCheckoutMarketplaceModuleItemPromoCardBinding) {
         with(viewBinding) {
-            val layoutParams = textPromoItemTitle.layoutParams as ViewGroup.MarginLayoutParams
+            val titleLayoutParams = containerPromoTitle.layoutParams as ViewGroup.MarginLayoutParams
+            val timeLayoutParams = containerTimeValidity.layoutParams as ViewGroup.MarginLayoutParams
             if (!promoHighlightIdentifier.isVisible && !textPromoCodeInfo.isVisible && !containerPromoInfoList.isVisible &&
                 !textTimeValidity.isVisible && !buttonPromoDetail.isVisible && !containerUserValidity.isVisible &&
                 !containerErrorInfo.isVisible
             ) {
-                containerTimeValidity.gone()
-                layoutParams.topMargin = 16.dpToPx(root.context.resources.displayMetrics)
-                layoutParams.bottomMargin = 16.dpToPx(root.context.resources.displayMetrics)
+                titleLayoutParams.topMargin = 8.dpToPx(root.context.resources.displayMetrics)
+                timeLayoutParams.topMargin = 10.dpToPx(root.context.resources.displayMetrics)
             } else {
-                containerTimeValidity.show()
-                layoutParams.topMargin = 16.dpToPx(root.context.resources.displayMetrics)
-                layoutParams.bottomMargin = 0
+                titleLayoutParams.topMargin = 0
+                timeLayoutParams.topMargin = 6.dpToPx(root.context.resources.displayMetrics)
             }
-            textPromoItemTitle.layoutParams = layoutParams
+            containerPromoTitle.layoutParams = titleLayoutParams
+            containerTimeValidity.layoutParams = timeLayoutParams
         }
     }
 }
