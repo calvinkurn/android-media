@@ -97,13 +97,14 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                             }
 
                             override fun onNext(shippingRecommendationData: ShippingRecommendationData) {
-                                if (view != null) {
-                                    view!!.hideLoading()
+                                view?.let {
+                                    it.hideLoading()
                                     if (shippingRecommendationData.errorId != null && shippingRecommendationData.errorId == ErrorProductData.ERROR_RATES_NOT_AVAILABLE) {
-                                        view!!.showNoCourierAvailable(shippingRecommendationData.errorMessage)
-                                        view!!.stopTrace()
+                                        it.showNoCourierAvailable(shippingRecommendationData.errorMessage)
+                                        it.stopTrace()
                                     } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                                        if (view!!.isDisableCourierPromo()) {
+                                        // todo move isDisableCourierPromo from view to presenter
+                                        if (it.isDisableCourierPromo()) {
                                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                                 shippingDurationUiModel.serviceData.isPromo = 0
                                                 for (productData in shippingDurationUiModel.serviceData.products) {
@@ -112,19 +113,19 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                             }
                                         }
                                         shippingData = shippingRecommendationData
-                                        view!!.showData(convertServiceListToUiModel(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel, isOcc))
+                                        it.showData(convertServiceListToUiModel(shippingRecommendationData.shippingDurationUiModels, shippingRecommendationData.listLogisticPromo, shippingRecommendationData.preOrderModel, isOcc))
 
                                         // tracker
                                         val hasCourierPromo = checkHasCourierPromo()
                                         if (hasCourierPromo) {
-                                            view?.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
+                                            it.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
                                         }
-                                        view?.sendAnalyticPromoLogistic(shippingRecommendationData.listLogisticPromo)
+                                        it.sendAnalyticPromoLogistic(shippingRecommendationData.listLogisticPromo)
 
-                                        view!!.stopTrace()
+                                        it.stopTrace()
                                     } else {
-                                        view!!.showNoCourierAvailable(view!!.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
-                                        view!!.stopTrace()
+                                        it.showNoCourierAvailable(it.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
+                                        it.stopTrace()
                                     }
                                 }
                             }
