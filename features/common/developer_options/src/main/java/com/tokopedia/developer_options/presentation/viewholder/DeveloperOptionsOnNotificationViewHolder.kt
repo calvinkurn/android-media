@@ -22,10 +22,12 @@ class DeveloperOptionsOnNotificationViewHolder(
     }
 
     override fun bind(element: DeveloperOptionsOnNotificationUiModel) {
+        val context = itemView.context
         val cb = itemView.findViewById<CheckboxUnify>(R.id.cbx_developer_options_on_notificaion)
-        cb.isChecked = DevOptConfig.isDevOptOnNotifEnabled(itemView.context)
+
+        cb.isChecked = DevOptConfig.isDevOptOnNotifEnabled(context)
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-            DevOptConfig.setDevOptOnNotifEnabled(itemView.context, state)
+            DevOptConfig.setDevOptOnNotifEnabled(context, state)
         }
     }
 }
