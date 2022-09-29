@@ -100,7 +100,7 @@ data class ThanksPageData(
     // parse config flag json
     var configFlagData: ConfigFlag? = null,
     // parse gyro data json
-    var gyroData: @RawValue Map<String,Any?>? = null,
+    var gyroData: @RawValue MutableMap<String,Any?>? = null,
 ) : Parcelable
 
 

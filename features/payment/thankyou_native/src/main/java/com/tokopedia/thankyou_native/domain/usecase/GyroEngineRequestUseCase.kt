@@ -57,15 +57,27 @@ class GyroEngineRequestUseCase @Inject constructor(
         Gson().toJson(
             FeatureEngineRequest(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
-                        mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                        isDonation(thanksPageData).toString(), userSession.userId,
-                        isMarketplace(thanksPageData).toString(), isGoldMerchant(thanksPageData).toString(),
-                        isOfficialStore(thanksPageData).toString(),thanksPageData.customDataOther?.isEnjoyPLus?:"false",thanksPageData.gyroData),
+                concatMap(thanksPageData,mainGatewayCode),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )
         )
+
+
+    private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String,Any?>?{
+        thanksPageData.gyroData?.put("static",true)
+        thanksPageData.gyroData?.put("amount",thanksPageData.amount.toString())
+        thanksPageData.gyroData?.put("gateway_code",mainGatewayCode)
+        thanksPageData.gyroData?.put("egold",isEGoldPurchased(thanksPageData).toString())
+        thanksPageData.gyroData?.put("donation", isDonation(thanksPageData).toString())
+        thanksPageData.gyroData?.put("user_id", userSession.userId)
+        thanksPageData.gyroData?.put("is_RM",  isMarketplace(thanksPageData).toString())
+        thanksPageData.gyroData?.put("is_PM", isGoldMerchant(thanksPageData).toString())
+        thanksPageData.gyroData?.put("is_OS", isOfficialStore(thanksPageData).toString())
+        thanksPageData.gyroData?.put("is_enjoy_plus_benefit",thanksPageData.customDataOther?.isEnjoyPLus?:"false")
+        return thanksPageData.gyroData
+
+    }
 
     private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
         return walletBalance?.let {
