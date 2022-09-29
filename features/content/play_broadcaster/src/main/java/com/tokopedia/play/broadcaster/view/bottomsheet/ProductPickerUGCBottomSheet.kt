@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArg
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.databinding.BottomSheetPlayUgcProductPickerBinding
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
@@ -38,6 +39,8 @@ class ProductPickerUGCBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: ProductPickerUGCAnalytic,
 ) : BaseProductSetupBottomSheet() {
+
+    private val offsetToaster by lazy { context?.resources?.getDimensionPixelOffset(R.dimen.play_dp_50) ?: 0 }
 
     private var _binding: BottomSheetPlayUgcProductPickerBinding? = null
     private val binding: BottomSheetPlayUgcProductPickerBinding
@@ -68,6 +71,15 @@ class ProductPickerUGCBottomSheet @Inject constructor(
             )
 
             viewModel.submitAction(ProductSetupAction.SaveProducts)
+        }
+
+        override fun onMaxSelectedProductReached() {
+            toaster.showToaster(
+                message = getString(R.string.play_bro_max_selected_product_reached).format(viewModel.maxProduct),
+                actionLabel = getString(R.string.play_ok),
+                actionListener = { toaster.dismissToaster() },
+                bottomMargin = offsetToaster,
+            )
         }
     }
 
@@ -205,6 +217,7 @@ class ProductPickerUGCBottomSheet @Inject constructor(
                         toaster.showError(
                             err = it.error,
                             customErrMessage = it.error.message,
+                            bottomMargin = offsetToaster,
                         )
                     }
                     else -> {}

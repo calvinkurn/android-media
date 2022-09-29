@@ -13,6 +13,7 @@
     <dimen name="play_dp_28">28dp</dimen>
     <dimen name="play_dp_30">30dp</dimen>
     <dimen name="play_dp_34">34dp</dimen>
+    <dimen name="play_dp_50">50dp</dimen>
     <dimen name="play_dp_55">55dp</dimen>
 
     <dimen name="play_search_bar_radius">8dp</dimen>
