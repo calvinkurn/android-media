@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
@@ -77,7 +76,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
  */
 class PlayBroadcastPreparationFragment @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
-    private val viewModelFactory: ViewModelFactory,
+    private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayBroadcastAnalytic,
     private val analyticManager: PreparationAnalyticManager,
 ) : PlayBaseBroadcastFragment(), FragmentWithDetachableView,
@@ -88,7 +87,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** ViewModel */
     private lateinit var viewModel: PlayBroadcastPrepareViewModel
     private lateinit var parentViewModel: PlayBroadcastViewModel
-    private lateinit var scheduleViewModel: BroadcastScheduleViewModel
 
     /** View */
     private var _binding by viewBinding<FragmentPlayBroadcastPreparationBinding>()
@@ -149,7 +147,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             requireActivity(),
             parentViewModelFactoryCreator.create(requireActivity()),
         ).get(PlayBroadcastViewModel::class.java)
-        scheduleViewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(BroadcastScheduleViewModel::class.java)
     }
 
     override fun onCreateView(
