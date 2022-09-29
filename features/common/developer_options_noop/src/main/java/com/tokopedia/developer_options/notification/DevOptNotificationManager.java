@@ -5,9 +5,9 @@ import android.app.Application;
 /**
  * Created By : Jonathan Darwin on September 28, 2022
  */
-public class DevOpsNotificationManager {
+public class DevOptNotificationManager {
 
-    public DevOpsNotificationManager(Application application) {
+    public DevOptNotificationManager(Application application) {
 
     }
 
