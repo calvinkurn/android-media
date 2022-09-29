@@ -125,7 +125,7 @@ class SwitchAccountUGCRobot(
         )
     }
 
-    fun onClickAccountFromBottomSheetAndHaveDraft() = chainable {
+    fun onSwitchAccountConfirmationDialogShown() = chainable {
         delay(500L)
         Espresso.onView(
             ViewMatchers.withId(com.tokopedia.dialog.R.id.dialog_btn_primary)
