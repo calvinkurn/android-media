@@ -54,6 +54,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
         private const val PAGE_SIZE = 10
+        private const val APPLINK_SEGMENTS_SIZE = 2
         private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
@@ -101,7 +102,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
-        if (appLinkData?.lastPathSegment?.isNotEmpty() == true) {
+        if (appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size == APPLINK_SEGMENTS_SIZE) {
             appLinkData.lastPathSegment?.toLong().orZero()
         } else {
             arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
@@ -372,6 +373,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             btnSeeCriteria.setOnClickListener {
                 showBottomSheet(flashSale, DetailBottomSheetType.PRODUCT_CRITERIA)
             }
+            btnCheckReason.setOnClickListener {
+                navigateToChooseProductPage()
+            }
         }
     }
 
@@ -612,9 +616,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupChooseProductRedirection() {
         binding?.btnRegister?.setOnClickListener {
-            navigateToChooseProductPage()
-        }
-        upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
             navigateToChooseProductPage()
         }
     }

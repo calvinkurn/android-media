@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +20,11 @@ class FinishedProcessSelectionDelegateAdapter(
     DelegateAdapter<FinishedProcessSelectionItem, FinishedProcessSelectionDelegateAdapter.ViewHolder>(
         FinishedProcessSelectionItem::class.java
     ) {
+
+    companion object {
+        private const val STATUS_ACCEPTED = "Produk Diterima"
+        private const val STATUS_REJECTED = "Produk Ditolak"
+    }
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
         val binding = StfsItemProductOnFinishedSelectionBinding.inflate(
@@ -53,6 +57,7 @@ class FinishedProcessSelectionDelegateAdapter(
                 tpgOriginalPrice.setPrice(item)
                 tpgSubsidy.setSubsidy(item)
                 tpgVariantStockLocation.setStock(item)
+                labelStatus.setStatus(item)
             }
         }
 
@@ -116,25 +121,33 @@ class FinishedProcessSelectionDelegateAdapter(
         }
 
         private fun Typography.setSubsidy(item: FinishedProcessSelectionItem) {
-            var subsidyAmount = 0L
-            if (item.isMultiwarehouse) {
-                item.warehouses.forEach { warehouse ->
-                    subsidyAmount += warehouse.subsidy.subsidyAmount
-                }
-            }
-            if (subsidyAmount.isMoreThanZero()) {
+            if (item.totalSubsidy.isMoreThanZero()) {
                 this.apply {
                     visible()
                     text = MethodChecker.fromHtml(
                         itemView.context.getString(
                             R.string.stfs_subsidy_value_placeholder,
-                            subsidyAmount.getCurrencyFormatted()
+                            item.totalSubsidy.getCurrencyFormatted()
                         )
                     )
                 }
             } else {
                 this.gone()
             }
+        }
+
+        private fun Label.setStatus(item: FinishedProcessSelectionItem) {
+           this.apply {
+               setLabel(item.statusText)
+               when(item.statusText) {
+                   STATUS_ACCEPTED -> {
+                       setLabelType(Label.HIGHLIGHT_LIGHT_GREEN)
+                   }
+                   STATUS_REJECTED -> {
+                       setLabelType(Label.HIGHLIGHT_LIGHT_RED)
+                   }
+               }
+           }
         }
     }
 }

@@ -371,7 +371,9 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            totalSubsidy,
+            statusText
         )
     }
 
