@@ -7,6 +7,8 @@ import android.view.View
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -120,6 +122,7 @@ class ManageProductNonVariantMultilocFragment :
             }
             rvManageProductDetail?.adapter = inputAdapter
             viewModel.setProduct(appliedProduct)
+            displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -147,6 +150,17 @@ class ManageProductNonVariantMultilocFragment :
             )
             buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
         }
+    }
+
+    private fun displayToaster(product: ReservedProduct.Product) {
+        val criteria = product.productCriteria
+
+        val isValid = product.warehouses.firstOrNull {
+            viewModel.validateInput(criteria, it.discountSetup).isAllFieldValid()
+        } != null
+
+        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
     }
 
 }
