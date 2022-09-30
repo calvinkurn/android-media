@@ -63,12 +63,11 @@ class GyroEngineRequestUseCase @Inject constructor(
             )
         )
 
-
-    private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String,Any?>?{
-        thanksPageData.gyroData?.put("static","true")
-        thanksPageData.gyroData?.put("amount",thanksPageData.amount.toString())
-        thanksPageData.gyroData?.put("gateway_code",mainGatewayCode)
-        thanksPageData.gyroData?.put("egold",isEGoldPurchased(thanksPageData).toString())
+    private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String, Any?>? {
+        thanksPageData.gyroData?.put("static", "true")
+        thanksPageData.gyroData?.put("amount", thanksPageData.amount.toString())
+        thanksPageData.gyroData?.put("gateway_code", mainGatewayCode)
+        thanksPageData.gyroData?.put("egold", isEGoldPurchased(thanksPageData).toString())
         thanksPageData.gyroData?.put("donation", isDonation(thanksPageData).toString())
         thanksPageData.gyroData?.put("user_id", userSession.userId)
         thanksPageData.gyroData?.put("is_RM",  isMarketplace(thanksPageData).toString())
