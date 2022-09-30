@@ -23,6 +23,8 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
+import com.tokopedia.play.broadcaster.setup.parentBroViewModel
+import com.tokopedia.play.broadcaster.setup.preparationBroViewModel
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel

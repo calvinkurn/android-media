@@ -13,6 +13,9 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.containsEventAction
+import com.tokopedia.play.broadcaster.setup.accountListResponse
+import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
+import com.tokopedia.play.broadcaster.setup.channelResponse
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface

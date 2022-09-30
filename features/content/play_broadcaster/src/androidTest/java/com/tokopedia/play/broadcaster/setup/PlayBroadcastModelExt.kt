@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.swtichaccount
+package com.tokopedia.play.broadcaster.setup
 
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
