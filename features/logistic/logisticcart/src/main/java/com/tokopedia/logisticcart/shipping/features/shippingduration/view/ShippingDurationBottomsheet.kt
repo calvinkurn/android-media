@@ -179,7 +179,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val mvc = bundle!!.getString(ARGUMENT_MVC, "")
             val isFulfillment = bundle!!.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = bundle!!.getInt(ARGUMENT_PO_TIME)
-            val cartData = bundle!!.getString(ARGUMENT_CART_DATA)!!
+            val cartData = bundle!!.getString(ARGUMENT_CART_DATA, "")
             presenter!!.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
                     shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress!!, isFulfillment, preOrderTime, mvc, cartData)
         }
