@@ -5,6 +5,9 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTracking
 import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -158,7 +161,7 @@ class InspirationCarouselDataView(
                 return ratingAverage.isNotEmpty()
             }
 
-            fun shouldOpenVariantBottomSheet(): Boolean = parentId.isNotEmpty()
+            fun shouldOpenVariantBottomSheet(): Boolean = parentId.toLong().isMoreThanZero()
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
