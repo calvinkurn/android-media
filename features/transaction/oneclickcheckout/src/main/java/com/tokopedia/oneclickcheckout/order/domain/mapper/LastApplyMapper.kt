@@ -38,9 +38,9 @@ object LastApplyMapper {
     private fun mapVoucherOrders(voucherOrders: List<VoucherOrdersItem>): List<LastApplyVoucherOrdersItemUiModel> {
         return voucherOrders.map {
             LastApplyVoucherOrdersItemUiModel(
-                it.code,
-                it.uniqueId,
-                LastApplyMessageUiModel(
+                code = it.code,
+                uniqueId = it.uniqueId,
+                message = LastApplyMessageUiModel(
                     it.message.color,
                     it.message.state,
                     it.message.text

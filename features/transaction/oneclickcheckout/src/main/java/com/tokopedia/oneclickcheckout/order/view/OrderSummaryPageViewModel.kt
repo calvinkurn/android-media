@@ -808,7 +808,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 else -> {
                     validateUsePromoRevampUiModel = null
                     var promo = orderPromo.value
-                    if (promo.lastApply.additionalInfo.usageSummaries.isNotEmpty() || promo.lastApply.voucherOrders.isNotEmpty()) {
+                    if (promo.lastApply.additionalInfo.usageSummaries.isNotEmpty()) {
                         promo = promo.copy(lastApply = LastApplyUiModel())
                     }
                     orderPromo.value = promo.copy(state = OccButtonState.NORMAL)
