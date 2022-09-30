@@ -98,7 +98,6 @@ class BroadMatchViewHolder(
                     discountPercentage = if (it.discountPercentage > 0) "${it.discountPercentage}%"
                                          else "",
                     slashedPrice = if (it.discountPercentage > 0) it.originalPrice else "",
-                    hasAddToCartButton = true,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
@@ -122,17 +121,6 @@ class BroadMatchViewHolder(
                 override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
                     return products.getOrNull(carouselProductCardPosition)
                 }
-            },
-            carouselProductCardOnItemAddToCartListener = object: CarouselProductCardListener.OnItemAddToCartListener {
-                override fun onItemAddToCart(
-                    productCardModel: ProductCardModel,
-                    carouselProductCardPosition: Int
-                ) {
-                    val product = products.getOrNull(carouselProductCardPosition) ?: return
-
-//                    broadMatchListener.addToCart(product)
-                }
-
             },
             carouselViewAllCardData = viewAllCardData,
             carouselViewAllCardClickListener = object: CarouselProductCardListener.OnViewAllCardClickListener {
