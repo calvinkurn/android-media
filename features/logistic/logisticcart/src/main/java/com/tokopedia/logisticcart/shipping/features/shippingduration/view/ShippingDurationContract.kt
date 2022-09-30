@@ -18,11 +18,10 @@ interface ShippingDurationContract {
         fun showData(uiModelList: MutableList<RatesViewModelType>)
         fun showNoCourierAvailable(message: String?)
         fun stopTrace()
-        fun isDisableCourierPromo(): Boolean
         fun getActivity(): Activity
         fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>)
         fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>)
-        fun isToogleYearEndPromotionOn() : Boolean
+        fun isToogleYearEndPromotionOn(): Boolean
         fun onShippingDurationAndRecommendCourierChosen(
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
             courierData: ShippingCourierUiModel?,
@@ -46,20 +45,44 @@ interface ShippingDurationContract {
     }
 
     interface Presenter : CustomerPresenter<View> {
-        fun loadCourierRecommendation(shipmentDetailData: ShipmentDetailData, selectedServiceId: Int,
-                                      shopShipmentList: List<ShopShipment>, codHistory: Int,
-                                      isCorner: Boolean, isLeasing: Boolean, pslCode: String,
-                                      products: List<Product>, cartString: String, isTradeInDropOff: Boolean,
-                                      recipientAddressModel: RecipientAddressModel?, isFulfillment: Boolean, preOrderTime: Int, mvc: String, isOcc: Boolean)
+        fun loadCourierRecommendation(
+            shipmentDetailData: ShipmentDetailData,
+            selectedServiceId: Int,
+            shopShipmentList: List<ShopShipment>,
+            codHistory: Int,
+            isCorner: Boolean,
+            isLeasing: Boolean,
+            pslCode: String,
+            products: List<Product>,
+            cartString: String,
+            isTradeInDropOff: Boolean,
+            recipientAddressModel: RecipientAddressModel?,
+            isFulfillment: Boolean,
+            preOrderTime: Int,
+            mvc: String,
+            isOcc: Boolean,
+            isDisableCourierPromo: Boolean
+        )
 
         fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
-        fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
-        fun convertServiceListToUiModel(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>
+        fun getCourierItemDataById(
+            spId: Int,
+            shippingCourierUiModels: List<ShippingCourierUiModel>
+        ): ShippingCourierUiModel?
+
+        fun convertServiceListToUiModel(
+            shippingDurationUiModels: List<ShippingDurationUiModel>,
+            promoUiModel: List<LogisticPromoUiModel>,
+            preOrderModel: PreOrderModel?,
+            isOcc: Boolean
+        ): MutableList<RatesViewModelType>
+
         fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel?
         fun onChooseDuration(
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
             cartPosition: Int, serviceData: ServiceData
         )
+
         fun onLogisticPromoClicked(data: LogisticPromoUiModel)
     }
 }

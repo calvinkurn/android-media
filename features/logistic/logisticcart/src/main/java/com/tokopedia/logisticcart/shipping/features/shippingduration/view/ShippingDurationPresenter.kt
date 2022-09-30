@@ -48,7 +48,8 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         isTradeInDropOff: Boolean,
         recipientAddressModel: RecipientAddressModel?,
         isFulfillment: Boolean, preOrderTime: Int,
-        mvc: String, isOcc: Boolean) {
+        mvc: String, isOcc: Boolean, isDisableCourierPromo: Boolean
+    ) {
         if (view != null) {
             view!!.showLoading()
             val shippingParam = getShippingParam(shipmentDetailData, products, cartString,
@@ -57,16 +58,20 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
             if (shipmentDetailData.selectedCourier != null) {
                 selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
             }
-            loadDuration(selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
-                    shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, isOcc)
+            loadDuration(
+                selectedSpId, selectedServiceId, codHistory, isCorner, isLeasing,
+                shopShipmentList, isTradeInDropOff, shippingParam, pslCode, mvc, isOcc, isDisableCourierPromo
+            )
         }
     }
 
-    private fun loadDuration(selectedSpId: Int, selectedServiceId: Int, codHistory: Int,
-                             isCorner: Boolean, isLeasing: Boolean,
-                             shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
-                             shippingParam: ShippingParam, pslCode: String,
-                             mvc: String, isOcc: Boolean) {
+    private fun loadDuration(
+        selectedSpId: Int, selectedServiceId: Int, codHistory: Int,
+        isCorner: Boolean, isLeasing: Boolean,
+        shopShipmentList: List<ShopShipment>, isRatesTradeInApi: Boolean,
+        shippingParam: ShippingParam, pslCode: String,
+        mvc: String, isOcc: Boolean, disableCourierPromo: Boolean
+    ) {
         val param = RatesParam.Builder(shopShipmentList, shippingParam)
                 .isCorner(isCorner)
                 .codHistory(codHistory)
@@ -105,8 +110,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                         it.showNoCourierAvailable(shippingRecommendationData.errorMessage)
                                         it.stopTrace()
                                     } else if (shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
-                                        // todo move isDisableCourierPromo from view to presenter
-                                        if (it.isDisableCourierPromo()) {
+                                        if (disableCourierPromo) {
                                             for (shippingDurationUiModel in shippingRecommendationData.shippingDurationUiModels) {
                                                 shippingDurationUiModel.serviceData.isPromo = 0
                                                 for (productData in shippingDurationUiModel.serviceData.products) {

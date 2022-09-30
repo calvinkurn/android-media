@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.res.Resources
 import android.os.Bundle
-import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
 import androidx.fragment.app.FragmentManager
@@ -14,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingduration.di.DaggerShippingDurationComponent
@@ -51,7 +49,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private var chooseCourierTracePerformance: PerformanceMonitoring? = null
     private var isChooseCourierTraceStopped = false
 
-    private var isDisableCourierPromo = false
     private var isDisableOrderPrioritas = false
     private var isOcc = false
     private var mCartPosition = -1
@@ -167,7 +164,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val selectedServiceId = it.getInt(ARGUMENT_SELECTED_SERVICE_ID)
             val codHistory = it.getInt(ARGUMENT_COD_HISTORY)
             mRecipientAddress?.let { recipientAddressModel -> mIsCorner = recipientAddressModel.isCornerAddress}
-            isDisableCourierPromo = it.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER)
+            val isDisableCourierPromo = it.getBoolean(ARGUMENT_DISABLE_PROMO_COURIER)
             setupRecyclerView(mCartPosition)
             val shipmentDetailData: ShipmentDetailData = it.getParcelable(ARGUMENT_SHIPMENT_DETAIL_DATA)!!
             val shopShipments: List<ShopShipment> = it.getParcelableArrayList(ARGUMENT_SHOP_SHIPMENT_LIST)!!
@@ -181,7 +178,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val isFulfillment = it.getBoolean(ARGUMENT_IS_FULFILLMENT)
             val preOrderTime = it.getInt(ARGUMENT_PO_TIME)
             presenter?.loadCourierRecommendation(shipmentDetailData, selectedServiceId,
-                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc, isOcc)
+                    shopShipments, codHistory, mIsCorner, isLeasing, pslCode, products, cartString!!, isTradeInDropOff, mRecipientAddress, isFulfillment, preOrderTime, mvc, isOcc, isDisableCourierPromo)
         }
     }
 
@@ -250,10 +247,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     override fun getActivity(): Activity {
         return activity!!
-    }
-
-    override fun isDisableCourierPromo(): Boolean {
-        return isDisableCourierPromo
     }
 
     override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>,

@@ -48,9 +48,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -74,9 +76,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", false)
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -99,9 +103,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -121,9 +127,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -140,9 +148,11 @@ class ShippingDurationPresenterTest {
         every { ratesUseCase.execute(any()) } returns Observable.error(err)
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -165,9 +175,11 @@ class ShippingDurationPresenterTest {
         shipmentDetailData.selectedCourier = null
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
 
         // Then
         verify {
@@ -193,9 +205,11 @@ class ShippingDurationPresenterTest {
         shipmentDetailData.selectedCourier = null
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, address, false, 0, "", false)
+            products, "1479278-30-740525-99367774", true, address, false, 0, "", false, false
+        )
 
         // Then
         assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)
