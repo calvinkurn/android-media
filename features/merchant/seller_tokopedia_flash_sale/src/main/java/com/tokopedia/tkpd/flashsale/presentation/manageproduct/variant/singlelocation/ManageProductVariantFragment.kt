@@ -153,8 +153,8 @@ class ManageProductVariantFragment :
             } != null
         } != null
 
-        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
-        else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
+        if (isValid) buttonSubmit?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        else buttonSubmit?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
     }
 
     private fun setWidgetBulkApplyState() {
