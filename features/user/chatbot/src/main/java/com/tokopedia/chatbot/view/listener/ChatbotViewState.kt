@@ -78,9 +78,11 @@ interface ChatbotViewState : BaseChatViewState {
     fun handleReplyBox(isEnable: Boolean)
 
     fun showRetryUploadVideos(it: VideoUploadUiModel)
+
     fun onSendingMessage(it: MessageUiModel)
 
     fun hideDummyVideoAttachment()
+
     fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
                          startTime: String,parentReply: ParentReply?)
     fun hideQuickReplyOnClick()

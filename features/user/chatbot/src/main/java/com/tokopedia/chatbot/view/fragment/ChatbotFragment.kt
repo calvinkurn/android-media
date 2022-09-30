@@ -1035,7 +1035,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         getViewState()?.onVideoUpload(uiModel)
     }
 
-    //TODO clear doubts here - do we need to release it
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {
         val videoFile = File(videoFilePath)
         val extension = VideoUtil.findVideoExtension(videoFile)

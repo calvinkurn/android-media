@@ -90,6 +90,13 @@ class ChatbotVideoUploadViewHolder(
         setUpChatbotExoPlayer(element)
         setUpExoPlayerListener()
         setUpExoPlayerRadius()
+        hideDateContainerWhenDummy(element)
+    }
+
+    private fun hideDateContainerWhenDummy(element: VideoUploadUiModel) {
+        if (element.isDummy) {
+            dateContainer?.hide()
+        }
     }
 
     private fun setUpExoPlayerRadius() {
