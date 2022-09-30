@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.presentation.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -11,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
@@ -24,7 +24,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -53,9 +52,7 @@ import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.productcard.IProductCardView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -82,7 +79,6 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
@@ -91,8 +87,10 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
+import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -127,9 +125,6 @@ import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
@@ -148,14 +143,14 @@ class ProductListFragment: BaseDaggerFragment(),
     BroadMatchListener,
     QuickFilterElevation,
     SortFilterBottomSheet.Callback,
-    SearchNavigationClickListener,
     TopAdsImageViewListener,
     ChooseAddressListener,
     ProductListParameterListener,
     QueryKeyProvider,
     SearchParameterProvider,
     FragmentProvider,
-    ClassNameProvider {
+    ClassNameProvider,
+    ScreenNameProvider {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -210,9 +205,11 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
 
-    @Suppress("LateinitUsage")
-    @Inject
+    @Inject @Suppress("LateinitUsage")
     lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
+
+    @Inject @Suppress("LateinitUsage")
+    lateinit var changeView: ChangeView
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -353,10 +350,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         initLoadMoreListener()
         setupRecyclerView(view)
-
-        if (userVisibleHint) {
-            setupSearchNavigation()
-        }
     }
 
     private fun initSwipeToRefresh(view: View) {
@@ -443,7 +436,7 @@ class ProductListFragment: BaseDaggerFragment(),
             broadMatchListener = this,
             inspirationCardListener = inspirationWidgetListenerDelegate,
             searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
-            searchNavigationListener = this,
+            changeViewListener = changeView,
             topAdsImageViewListener = this,
             chooseAddressListener = this,
             bannerListener = BannerListenerDelegate(iris, activity),
@@ -535,68 +528,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         presenter?.onViewVisibilityChanged(isVisibleToUser, isAdded)
     }
-
-    //region Setup Search Navigation (layout switching small grid, list, and big grid)
-    override fun setupSearchNavigation() {
-        searchNavigationListener?.setupSearchNavigation(object : SearchNavigationListener.ClickListener {
-            override fun onChangeGridClick() {
-                switchLayoutType()
-            }
-        })
-        refreshMenuItemGridIcon()
-    }
-
-    private fun switchLayoutType() {
-        val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
-        if (!userVisibleHint) return
-
-        when (productListAdapter.getCurrentLayoutType()) {
-            SearchConstant.ViewType.LIST -> {
-                switchLayoutTypeTo(SearchConstant.ViewType.BIG_GRID)
-                SearchTracking.eventSearchResultChangeGrid("grid 1", screenName)
-            }
-            SearchConstant.ViewType.SMALL_GRID -> {
-                switchLayoutTypeTo(SearchConstant.ViewType.LIST)
-                SearchTracking.eventSearchResultChangeGrid("list", screenName)
-            }
-            SearchConstant.ViewType.BIG_GRID -> {
-                switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
-                SearchTracking.eventSearchResultChangeGrid("grid 2", screenName)
-            }
-        }
-    }
-
-    private fun switchLayoutTypeTo(layoutType: SearchConstant.ViewType) {
-        val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
-        if (!userVisibleHint) return
-
-        when (layoutType) {
-            SearchConstant.ViewType.LIST -> {
-                staggeredGridLayoutManager.spanCount = 1
-                productListAdapter.changeListView()
-            }
-            SearchConstant.ViewType.SMALL_GRID -> {
-                staggeredGridLayoutManager.spanCount = smallGridSpanCount()
-                productListAdapter.changeDoubleGridView()
-            }
-            SearchConstant.ViewType.BIG_GRID -> {
-                staggeredGridLayoutManager.spanCount = 1
-                productListAdapter.changeSingleGridView()
-            }
-        }
-
-        refreshMenuItemGridIcon()
-    }
-
-    private fun refreshMenuItemGridIcon() {
-        val productListAdapter = recyclerViewUpdater.productListAdapter ?: return
-
-        searchNavigationListener?.refreshMenuItemGridIcon(
-                productListAdapter.getTitleTypeRecyclerView(),
-                productListAdapter.getIconTypeRecyclerView()
-        )
-    }
-    //endregion
 
     override fun trackScreenAuthenticated() {
         if (userVisibleHint
@@ -1142,43 +1073,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
     //region Change product card layout
     override fun setDefaultLayoutType(defaultView: Int) {
-        when (defaultView) {
-            SearchConstant.DefaultViewType.SMALL_GRID -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
-            SearchConstant.DefaultViewType.LIST -> switchLayoutTypeTo(SearchConstant.ViewType.LIST)
-            else -> switchLayoutTypeTo(SearchConstant.ViewType.SMALL_GRID)
-        }
-    }
-
-    override fun onChangeViewClicked(position: Int) {
-        val currentLayoutType = recyclerViewUpdater.productListAdapter?.getCurrentLayoutType()
-            ?: SearchConstant.ViewType.SMALL_GRID
-        presenter?.handleChangeView(position, currentLayoutType)
-    }
-
-    override fun trackEventSearchResultChangeView(viewType: String) {
-        SearchTracking.eventSearchResultChangeGrid(viewType, screenName)
-    }
-
-    override fun switchSearchNavigationLayoutTypeToListView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager.spanCount = 1
-        recyclerViewUpdater.productListAdapter?.changeSearchNavigationListView(position)
-    }
-
-    override fun switchSearchNavigationLayoutTypeToBigGridView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager.spanCount = 1
-        recyclerViewUpdater.productListAdapter?.changeSearchNavigationSingleGridView(position)
-    }
-
-
-    override fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int) {
-        if (!userVisibleHint) return
-
-        staggeredGridLayoutManager.spanCount = smallGridSpanCount()
-        recyclerViewUpdater.productListAdapter?.changeSearchNavigationDoubleGridView(position)
+        changeView.change(defaultView)
     }
     //endregion
 

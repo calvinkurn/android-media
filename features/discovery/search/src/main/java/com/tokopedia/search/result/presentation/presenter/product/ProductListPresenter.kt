@@ -281,7 +281,6 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible) {
-            view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
             if (isViewAdded && !hasLoadData)
@@ -2293,36 +2292,9 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Change View
-    override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
-        if (isViewNotAttached) return
-
-        when (currentLayoutType) {
-            SearchConstant.ViewType.LIST -> switchToBigGridView(position)
-            SearchConstant.ViewType.SMALL_GRID -> switchToListView(position)
-            SearchConstant.ViewType.BIG_GRID -> switchToSmallGridView(position)
-        }
-    }
-
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
-
-    private fun switchToBigGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToBigGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
-    }
-
-    private fun switchToListView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToListView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST)
-    }
-
-    private fun switchToSmallGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToSmallGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID)
-    }
-    //endregion
 
     override fun onLocalizingAddressSelected() {
         chooseAddressDelegate.updateChooseAddress(::refreshData)

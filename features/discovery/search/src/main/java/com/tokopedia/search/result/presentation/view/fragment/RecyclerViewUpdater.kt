@@ -22,7 +22,6 @@ class RecyclerViewUpdater @Inject constructor(
     @SearchContext
     context: Context,
 ) : ViewUpdater,
-    ProductListAdapter.OnItemChangeView,
     ContextProvider by WeakReferenceContextProvider(context) {
 
     var recyclerView: RecyclerView? = null
@@ -43,10 +42,7 @@ class RecyclerViewUpdater @Inject constructor(
         productListTypeFactory: ProductListTypeFactory,
     ) {
         this.recyclerView = recyclerView
-        this.productListAdapter = ProductListAdapter(
-            itemChangeView = this,
-            typeFactory = productListTypeFactory
-        )
+        this.productListAdapter = ProductListAdapter(productListTypeFactory)
 
         setupRecyclerView(rvLayoutManager, loadMoreScrollListener, onBoardingScrollListener)
     }
@@ -109,15 +105,7 @@ class RecyclerViewUpdater @Inject constructor(
         productListAdapter?.removeLoading()
     }
 
-    override fun onChangeList() {
-        recyclerView?.requestLayout()
-    }
-
-    override fun onChangeDoubleGrid() {
-        recyclerView?.requestLayout()
-    }
-
-    override fun onChangeSingleGrid() {
+    override fun requestRelayout() {
         recyclerView?.requestLayout()
     }
 
