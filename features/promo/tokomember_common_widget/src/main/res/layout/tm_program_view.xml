@@ -50,6 +50,18 @@
             app:layout_constraintStart_toStartOf="@+id/programStatus"
             app:layout_constraintTop_toBottomOf="@id/programStatus" />
 
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/periodProgram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:textColor="@color/Unify_NN600"
+            android:text="Periode Program"
+            app:layout_constraintStart_toStartOf="@id/containerStartDate"
+            app:layout_constraintBottom_toTopOf="@id/containerStartDate"
+            app:typographyType="small"/>
+
         <LinearLayout
             android:id="@+id/containerStartDate"
             android:layout_width="wrap_content"
@@ -59,17 +71,6 @@
             app:layout_constraintBottom_toBottomOf="@id/ivTime"
             app:layout_constraintStart_toEndOf="@id/ivTime"
             app:layout_constraintTop_toTopOf="@id/ivTime">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/periodProgram"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/unify_space_12"
-                android:textColor="@color/Unify_NN600"
-                android:text="Periode Program"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/ivTime"
-                app:typographyType="small"/>
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programStartDate"
@@ -101,20 +102,21 @@
             android:id="@+id/viewDivider"
             android:backgroundTint="@color/Unify_NN300"
             android:background="@drawable/tm_bg_round_corner"
-            android:layout_marginStart="@dimen/tm_cmn_dp_10"
-            app:layout_constraintBottom_toBottomOf="@id/ivTime"
-            app:layout_constraintTop_toTopOf="@id/ivTime"
+            android:layout_marginStart="@dimen/unify_space_16"
+            android:layout_marginEnd="@dimen/unify_space_16"
+            app:layout_constraintEnd_toStartOf="@id/containerEndDate"
+            app:layout_constraintBottom_toBottomOf="@id/containerEndDate"
+            app:layout_constraintTop_toTopOf="@id/containerEndDate"
             app:layout_constraintStart_toEndOf="@id/containerStartDate"/>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/unify_space_16"
-            android:layout_marginTop="@dimen/unify_space_16"
+            android:id="@+id/containerEndDate"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="@id/ivTime"
+            app:layout_constraintBottom_toBottomOf="@id/containerStartDate"
             app:layout_constraintStart_toEndOf="@id/viewDivider"
-            app:layout_constraintTop_toTopOf="@id/ivTime">
+            app:layout_constraintTop_toTopOf="@id/containerStartDate">
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/programEndDate"

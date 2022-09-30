@@ -41,7 +41,10 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.checkout.analytics.EPharmacyAnalytics;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.mapper.ShipmentAddOnMapper;
+import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource;
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource;
@@ -113,6 +116,7 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
@@ -206,16 +210,19 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
     private static final int REQUEST_CODE_PROMO = 954;
+    public static final int REQUEST_CODE_UPLOAD_PRESCRIPTION = 10021;
     private static final int ADD_ON_STATUS_ACTIVE = 1;
     private static final int ADD_ON_STATUS_DISABLE = 2;
 
     private static final String SHIPMENT_TRACE = "mp_shipment";
 
+    private static final String KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA = "epharmacy_prescription_ids";
     public static final String ARG_IS_ONE_CLICK_SHIPMENT = "ARG_IS_ONE_CLICK_SHIPMENT";
     public static final String ARG_CHECKOUT_LEASING_ID = "ARG_CHECKOUT_LEASING_ID";
     public static final String ARG_CHECKOUT_PAGE_SOURCE = "ARG_CHECKOUT_PAGE_SOURCE";
     private static final String DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION = "LAST_CHOOSE_COURIER_ITEM_POSITION";
     private static final String DATA_STATE_LAST_CHOOSEN_SERVICE_ID = "DATA_STATE_LAST_CHOOSEN_SERVICE_ID";
+    public static String EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string";
 
     private RecyclerView rvShipment;
     private SwipeToRefresh swipeToRefresh;
@@ -247,6 +254,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     CheckoutTradeInAnalytics checkoutTradeInAnalytics;
     @Inject
     CheckoutEgoldAnalytics checkoutEgoldAnalytics;
+    @Inject
+    EPharmacyAnalytics ePharmacyAnalytics;
 
 
 
@@ -261,6 +270,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     BenefitSummaryInfoUiModel benefitSummaryInfoUiModel;
     ShipmentButtonPaymentModel savedShipmentButtonPaymentModel;
     LastApplyUiModel savedLastApplyData;
+    UploadPrescriptionUiModel savedUploadPrescriptionUiModel;
 
     private boolean hasClearPromoBeforeCheckout = false;
     private boolean hasRunningApiCall = false;
@@ -326,6 +336,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }).getType());
                 savedShipmentButtonPaymentModel = saveInstanceCacheManager.get(ShipmentButtonPaymentModel.class.getSimpleName(), ShipmentButtonPaymentModel.class);
                 savedLastApplyData = saveInstanceCacheManager.get(LastApplyUiModel.class.getSimpleName(), LastApplyUiModel.class);
+                savedUploadPrescriptionUiModel = saveInstanceCacheManager.get(UploadPrescriptionUiModel.class.getSimpleName(), UploadPrescriptionUiModel.class);
             }
         }
 
@@ -432,6 +443,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.setLastChooseCourierItemPosition(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION));
             shipmentAdapter.setLastServiceId(savedInstanceState.getInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID));
             shipmentPresenter.setLastApplyData(savedLastApplyData);
+            shipmentPresenter.setUploadPrescriptionData(savedUploadPrescriptionUiModel);
             renderCheckoutPage(true, false, isOneClickShipment());
             swipeToRefresh.setEnabled(false);
         }
@@ -464,6 +476,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             saveInstanceCacheManager.put(ShipmentButtonPaymentModel.class.getSimpleName(), shipmentPresenter.getShipmentButtonPaymentModel());
             outState.putInt(DATA_STATE_LAST_CHOOSE_COURIER_ITEM_POSITION, shipmentAdapter.getLastChooseCourierItemPosition());
             outState.putInt(DATA_STATE_LAST_CHOOSEN_SERVICE_ID, shipmentAdapter.getLastServiceId());
+            saveInstanceCacheManager.put(UploadPrescriptionUiModel.class.getSimpleName(), shipmentPresenter.getUploadPrescriptionUiModel());
         } else {
             saveInstanceCacheManager.put(ShipmentCartItemModel.class.getSimpleName(), null);
         }
@@ -506,6 +519,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       ShipmentCostModel shipmentCostModel,
                                       EgoldAttributeModel egoldAttributeModel,
                                       ShipmentButtonPaymentModel shipmentButtonPaymentModel,
+                                      UploadPrescriptionUiModel uploadPrescriptionUiModel,
                                       boolean isInitialRender,
                                       boolean isReloadAfterPriceChangeHigher,
                                       boolean isLocalReload) {
@@ -537,6 +551,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
+
+        if(uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
+                && uploadPrescriptionUiModel.getShowImageUpload()){
+            shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
+        }
 
         if (shipmentDonationModel != null) {
             if (!shipmentDonationModel.getDonation().getTitle().isEmpty() && shipmentDonationModel.getDonation().getNominal() != 0) {
@@ -830,6 +849,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
+                shipmentPresenter.getUploadPrescriptionUiModel(),
                 isInitialRender,
                 isReloadAfterPriceChangeHigher,
                 false
@@ -864,6 +884,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentPresenter.getShipmentCostModel(),
                 shipmentPresenter.getEgoldAttributeModel(),
                 shipmentPresenter.getShipmentButtonPaymentModel(),
+                shipmentPresenter.getUploadPrescriptionUiModel(),
                 false,
                 false,
                 true
@@ -1234,6 +1255,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             onUpdateResultAddOnProductLevelBottomSheet(data);
         } else if (requestCode == REQUEST_ADD_ON_ORDER_LEVEL_BOTTOMSHEET) {
             onUpdateResultAddOnOrderLevelBottomSheet(data);
+        }else if (requestCode == REQUEST_CODE_UPLOAD_PRESCRIPTION) {
+            onUploadPrescriptionResult(data,false);
         }
     }
 
@@ -3137,7 +3160,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
     }
 
-    private String getFormattedCurrency(int price) {
+    private String getFormattedCurrency(Long price) {
         if (price == 0) {
             return "";
         }
@@ -3208,6 +3231,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                             shipmentCartItemModel.setShippingBorderRed(isTriggeredByPaymentButton);
                             onNeedUpdateViewItem(i);
                             notSelectCourierCount++;
+                        }
+                    }else if(shipmentDataList.get(i) instanceof UploadPrescriptionUiModel){
+                        UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
+                        if(uploadPrescriptionUiModel.getFrontEndValidation() && uploadPrescriptionUiModel.getUploadedImageCount()!= null
+                                && uploadPrescriptionUiModel.getUploadedImageCount() == 0){
+                            if (firstFoundPosition == 0) {
+                                showToastNormal(getActivity().getString(R.string.message_error_prescription_not_found));
+                                firstFoundPosition = i;
+                            }
+                            uploadPrescriptionUiModel.setError(true);
+                            onNeedUpdateViewItem(i);
                         }
                     }
                 }
@@ -3427,6 +3461,36 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
+    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        if(uploadPrescriptionUiModel.getCheckoutId() != null)
+            ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
+        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
+        uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
+        startActivityForResult(uploadPrescriptionIntent,REQUEST_CODE_UPLOAD_PRESCRIPTION);
+    }
+
+    private void onUploadPrescriptionResult(Intent data, boolean isApi){
+        if(data != null && data.getExtras() != null &&
+                data.getExtras().containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) && getActivity() != null){
+            UploadPrescriptionUiModel uploadModel = shipmentPresenter.getUploadPrescriptionUiModel();
+            ArrayList<String> prescriptions = data.getExtras().getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA);
+            uploadModel.setError(false);
+            if(!isApi || (prescriptions != null && !prescriptions.isEmpty())){
+                uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
+                uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
+                uploadModel.setPrescriptionIds(prescriptions);
+                uploadModel.setUploadedImageCount(prescriptions.size());
+                uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
+                        prescriptions.size()));
+            }
+            if(!isApi){
+                showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text));
+            }
+            shipmentAdapter.updateUploadPrescription(uploadModel);
+        }
+    }
+
+    @Override
     public void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel) {
         checkoutAnalyticsCourierSelection.eventViewGotoplusUpsellTicker();
     }
@@ -3509,5 +3573,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         shipmentAdapter.updateShipmentCostModel();
         onNeedUpdateViewItem(shipmentAdapter.getShipmentCostPosition());
+    }
+
+    @Override
+    public void updatePrescriptionIds(List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions) {
+        ArrayList<String> prescriptionsIds = new ArrayList<>();
+        for(int i = 0 ; i < prescriptions.size() ; i++){
+            if(prescriptions.get(i).getPrescriptionId() != null){
+                prescriptionsIds.add(prescriptions.get(i).getPrescriptionId());
+            }
+        }
+        Intent intent = new Intent();
+        intent.putStringArrayListExtra(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA,prescriptionsIds);
+        onUploadPrescriptionResult(intent,true);
     }
 }

@@ -32,8 +32,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAda
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.CarouselImageViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.CarouselVideoViewHolder
 import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
-import com.tokopedia.feedcomponent.view.widget.FeedVODViewHolder
-import com.tokopedia.feedcomponent.view.widget.PostTagView
+import com.tokopedia.feedcomponent.view.widget.*
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kol.R
 import com.tokopedia.kotlin.extensions.view.*
@@ -56,10 +55,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         this,
         true
     )
-    private val shopImage: ImageUnify = findViewById(R.id.shop_image)
-    private val shopBadge: ImageUnify = findViewById(R.id.shop_badge)
-    private val shopName: Typography = findViewById(R.id.shop_name)
-    private val shopMenuIcon: IconUnify = findViewById(R.id.menu_button)
+    private val authorAvatar: ImageUnify = findViewById(R.id.iv_author_avatar)
+    private val shopBadge: ImageUnify = findViewById(R.id.iv_shop_badge)
+    private val authorName: Typography = findViewById(R.id.tv_author_name)
+    private val authorFollowAction: Typography = findViewById(R.id.tv_author_follow_action)
+    private val contentSubInfo: Typography = findViewById(R.id.tv_content_sub_info)
+    private val headerMenu: IconUnify = findViewById(R.id.menu_button)
     private val rvCarousel: RecyclerView = findViewById(R.id.rv_carousel)
     private val feedVODViewHolder: FeedVODViewHolder = findViewById(R.id.feed_vod_viewholder)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
@@ -78,7 +79,6 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     private val seeAllCommentText: Typography = findViewById(R.id.see_all_comment_text)
     private val userImage: ImageUnify = findViewById(R.id.user_image)
     private val addCommentHint: Typography = findViewById(R.id.comment_hint)
-    private val followCount: Typography = findViewById(R.id.follow_count)
     private val scrollHostCarousel: NestedScrollableHost = findViewById(R.id.scroll_host_carousel)
     private var listener: ContentDetailPostViewHolder.CDPListener? = null
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
@@ -328,7 +328,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             if (subTitle.isNotEmpty()) {
                 SpannableString(
                     String.format(
-                        context.getString(com.tokopedia.feedcomponent.R.string.feed_header_time_new),
+                        context.getString(feedComponentR.string.feed_header_time_new),
                         avatarDate
                     )
                 )
@@ -339,6 +339,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         timestampText.show()
     }
 
+    private fun bindContentSubInfo(shouldShow: Boolean, value: String) {
+        contentSubInfo.showWithCondition(shouldShow)
+        contentSubInfo.text = value
+    }
+
+
     fun bindHeader(
         feedXCard: FeedXCard
     ) {
@@ -347,135 +353,71 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         val isFollowed = followers.isFollowed
         val count = followers.count
 
-        if (count >= FOLLOW_COUNT_THRESHOLD) {
-            followCount.text =
+        //region bind content sub info
+        val contentSubInfoValue =  if (feedXCard.isTypeProductHighlight) {
+            when (feedXCard.type) {
+                ASGC_NEW_PRODUCTS -> context.getString(feedComponentR.string.feeds_asgc_new_product_text)
+                ASGC_RESTOCK_PRODUCTS -> context.getString(
+                    feedComponentR.string.feeds_asgc_restock_text)
+                ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
+                else -> ""
+            }
+        } else {
+            if (count >= FOLLOW_COUNT_THRESHOLD) {
                 String.format(
-                    context.getString(kolR.string.feed_header_follow_count_text),
+                    context.getString(feedComponentR.string.feed_header_follow_count_text),
                     count.productThousandFormatted()
                 )
+            } else context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
+        bindContentSubInfo(
+            shouldShow = (feedXCard.isTypeProductHighlight)
+                    || (!isFollowed || followers.transitionFollow),
+            value = contentSubInfoValue
+        )
+        //endregion
 
-        if (feedXCard.isTypeProductHighlight) {
-            if (feedXCard.type == ASGC_NEW_PRODUCTS)
-                followCount.text =
-                    context.getString(feedComponentR.string.feeds_asgc_new_product_text)
-            else if (feedXCard.type == ASGC_RESTOCK_PRODUCTS)
-                followCount.text = context.getString(feedComponentR.string.feeds_asgc_restock_text)
-            followCount.show()
-        } else {
-            followCount.showWithCondition((!isFollowed || followers.transitionFollow) && count >= FOLLOW_COUNT_THRESHOLD)
-        }
-
-        shopImage.setImageUrl(author.logoURL)
+        authorAvatar.setImageUrl(author.logoURL)
         shopBadge.setImageUrl(author.badgeURL)
         shopBadge.showWithCondition(author.badgeURL.isNotEmpty())
-        if (shopBadge.visibility == GONE) {
-            val layoutParams = (followCount.layoutParams as? MarginLayoutParams)
-            layoutParams?.setMargins(FOLLOW_MARGIN, MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO)
-            followCount.layoutParams = layoutParams
-        }
-        val authorName = MethodChecker.fromHtml(author.name)
-        val startIndex = authorName.length + DOT_SPACE
-        var endIndex = startIndex + FOLLOW_SIZE
-
-        val text = if (followers.transitionFollow) {
-            endIndex += SPACE
-            context.getString(feedComponentR.string.kol_Action_following_color)
-        } else {
-            context.getString(
-                feedComponentR.string.feed_component_follow
+        this.authorName.text = MethodChecker.fromHtml(author.name)
+        this.authorName.setOnClickListener {
+            listener?.onShopHeaderItemClicked(
+                feedXCard
             )
         }
-        val textToShow = MethodChecker.fromHtml(
-            context.getString(feedComponentR.string.feed_header_separator) + text
-        )
-        val spannableString = SpannableStringBuilder("")
-        spannableString.append(authorName)
-        if (!isFollowed || followers.transitionFollow) {
-            spannableString.append(" $textToShow")
-        }
-
-        val cs: ClickableSpan = object : ClickableSpan() {
-            override fun onClick(widget: View) {
-                listener?.onShopHeaderItemClicked(
-                    feedXCard
-                )
-            }
-
-            override fun updateDrawState(ds: TextPaint) {
-                super.updateDrawState(ds)
-                ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N600
-                )
-            }
-        }
-
-        if (startIndex < spannableString.length && endIndex <= spannableString.length) {
-            spannableString.setSpan(object : ClickableSpan() {
-                override fun onClick(widget: View) {
-                        listener?.onFollowUnfollowClicked(
-                            feedXCard,
-                            positionInCdp
-                        )
-
-                }
-
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    if (endIndex == startIndex + FOLLOW_SIZE) {
-                        ds.color = MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_G500
-                        )
-                    } else {
-                        ds.color = MethodChecker.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
-                        )
-                    }
-                }
-
-            }, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            try {
-                spannableString.setSpan(
-                    cs,
-                    0,
-                    authorName.length - 1,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            } catch (e: Exception) {
-            }
-            shopName.text = spannableString
-
+        val textFollowAction = if (followers.transitionFollow || followers.isFollowed) {
+            context.getString(feedComponentR.string.kol_action_following_color)
         } else {
-            try {
-                spannableString.setSpan(
-                    cs,
-                    0,
-                    authorName.length,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            } catch (e: Exception) {
-            }
-            shopName.text = spannableString
-
+            context.getString(feedComponentR.string.kol_action_follow_color)
         }
+        if (!isFollowed || followers.transitionFollow) {
+            this.authorFollowAction.text = MethodChecker.fromHtml(
+                "${context.getString(feedComponentR.string.feed_header_separator)}$textFollowAction"
 
-        shopName.movementMethod = LinkMovementMethod.getInstance()
+            )
+            this.authorFollowAction.setOnClickListener {
+                listener?.onFollowUnfollowClicked(
+                        feedXCard,
+                        positionInCdp
+                    )
+            }
+            this.authorFollowAction.show()
+        } else {
+            this.authorFollowAction.hide()
+        }
         followers.transitionFollow = false
+        //endregion
 
-        shopImage.setOnClickListener {
+        authorAvatar.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onShopHeaderItemClicked(
                 feedXCard
             )
         }
         val shouldNotShowMenuIcon = (!feedXCard.reportable && !feedXCard.deletable && !feedXCard.followers.isFollowed)
-        shopMenuIcon.showWithCondition(!shouldNotShowMenuIcon)
-        shopMenuIcon.setOnClickListener {
+        headerMenu.showWithCondition(!shouldNotShowMenuIcon)
+        headerMenu.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onClickOnThreeDots(
                 feedXCard,
@@ -630,7 +572,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             likeButton2.hide()
         }
         userImage.setImageUrl(profilePicture)
-        addCommentHint.hint = context.getString(com.tokopedia.feedcomponent.R.string.feed_component_add_comment, name)
+        addCommentHint.hint = context.getString(feedComponentR.string.feed_component_add_comment, name)
 
         commentButton.setOnClickListener {
             listener?.onCommentClicked(mData, positionInCdp)
@@ -840,7 +782,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     fun setCommentCount(comments: FeedXComments) {
         seeAllCommentText.showWithCondition(comments.count != 0)
         seeAllCommentText.text =
-            context.getString(com.tokopedia.feedcomponent.R.string.feed_component_see_all_comments, comments.countFmt)
+            context.getString(feedComponentR.string.feed_component_see_all_comments, comments.countFmt)
     }
     private fun ifProductAlreadyPresent(
         product: FeedXProduct,
@@ -1029,19 +971,19 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun getCTAButtonText(card: FeedXCard) =
         if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(com.tokopedia.feedcomponent.R.string.feeds_check_x_products, card.totalProducts)
+            context.getString(feedComponentR.string.feeds_check_x_products, card.totalProducts)
         else if (card.isASGCDiscountToko && card.totalProducts > 1)
             context.getString(
-                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_x_products,
+                feedComponentR.string.feeds_asgc_disc_x_products,
                 card.totalProducts,
                 card.maximumDisPercentFmt
             )
         else if (card.isASGCDiscountToko && card.totalProducts == 1)
             context.getString(
-                com.tokopedia.feedcomponent.R.string.feeds_asgc_disc_one_products,
+                feedComponentR.string.feeds_asgc_disc_one_products,
                 card.maximumDisPercentFmt
             )
-        else context.getString(com.tokopedia.feedcomponent.R.string.feeds_cek_sekarang)
+        else context.getString(feedComponentR.string.feeds_cek_sekarang)
 
 
     fun onCTAVisible(feedXCard: FeedXCard) {
@@ -1054,7 +996,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         changeCTABtnColor(
             primaryColor = MethodChecker.getColor(
                 context,
-                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_discount_toko_btn_bg_color
+                feedComponentR.color.feed_dms_asgc_discount_toko_btn_bg_color
             ),
             secondaryColor = MethodChecker.getColor(
                 context,
@@ -1112,20 +1054,28 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         adapter.focusItemAt(pageControl.indicatorCurrentPosition)
-        feedVODViewHolder.onResume()
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
+            feedVODViewHolder.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         adapter.onPause()
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
         feedVODViewHolder.onPause()
         job.cancelChildren()
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
+        feedVODViewHolder.onDestroy()
     }
 
     companion object {
 
         private const val ASGC_NEW_PRODUCTS = "asgc_new_products"
         private const val ASGC_RESTOCK_PRODUCTS = "asgc_restock_products"
+        private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
         private const val MAX_PRODUCT_TO_SHOW_IN_ASGC_CAROUSEL = 5
         private const val TOPADS_TAGGING_CENTER_POS_X = 0.5f
         private const val TOPADS_TAGGING_CENTER_POS_Y = 0.44f

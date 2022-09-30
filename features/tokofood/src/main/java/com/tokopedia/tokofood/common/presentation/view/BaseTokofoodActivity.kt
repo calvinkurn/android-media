@@ -152,7 +152,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 var hasChecked = false
                 while (i >= 0) {
                     prevFragment = supportFragmentManager.fragments.getOrNull(i)
-                    if (prevFragment?.isHidden == false) {
+                    if (prevFragment?.isHidden == false && prevFragment.isAdded) {
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {

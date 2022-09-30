@@ -2,7 +2,6 @@ package com.tokopedia.applink.purchaseplatform
 
 import android.content.Context
 import com.tokopedia.applink.FirebaseRemoteConfigInstance
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -10,23 +9,23 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperPurchasePlatform {
     fun getRegisteredNavigationWishlist(context: Context): String {
-        return if (isWishlistV2(context)) {
-            ApplinkConstInternalPurchasePlatform.WISHLIST_V2
+        return if (isUsingWishlistCollection(context)) {
+            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION
         } else {
-            ApplinkConsInternalHome.HOME_WISHLIST
+            ApplinkConstInternalPurchasePlatform.WISHLIST_V2
         }
     }
 
-    fun isWishlistV2(context: Context): Boolean {
-        return useWishlistV2RemoteConfig(context) && useWishlistV2Rollence()
+    fun isUsingWishlistCollection(context: Context): Boolean {
+        return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
     }
 
-    private fun useWishlistV2RemoteConfig(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_WISHLIST_REVAMP_v2)
+    private fun isEnableRemoteConfigWishlistCollection(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION)
 
-    private fun useWishlistV2Rollence(): Boolean {
+    private fun isEnableRollenceWishlistCollection(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_V2_VARIANT)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
 
         } catch (e: Exception) {
             true

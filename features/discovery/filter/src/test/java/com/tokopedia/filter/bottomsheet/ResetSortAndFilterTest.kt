@@ -3,8 +3,8 @@ package com.tokopedia.filter.bottomsheet
 import com.tokopedia.discovery.common.EventObserver
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.PriceRangeFilterCheckboxUiModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
@@ -115,7 +115,7 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
                 is SortViewModel -> it.assertSortIsReset()
                 is FilterViewModel -> it.assertFilterIsReset()
                 is PriceFilterViewModel -> it.assertPriceFilterIsReset()
-                is PriceRangeFilterCheckboxUiModel -> it.assertPriceRangeFilterCheckboxIsReset()
+                is PriceRangeFilterCheckboxDataView -> it.assertPriceRangeFilterCheckboxIsReset()
             }
         }
     }
@@ -156,9 +156,9 @@ internal class ResetSortAndFilterTest: SortFilterBottomSheetViewModelTestFixture
         }
     }
 
-    private fun PriceRangeFilterCheckboxUiModel.assertPriceRangeFilterCheckboxIsReset() {
-        assert(priceRangeList.all { !it.isSelected }) {
-            "Price range option ${priceRangeList.find { it.isSelected }} is still selected, expected is none"
+    private fun PriceRangeFilterCheckboxDataView.assertPriceRangeFilterCheckboxIsReset() {
+        assert(optionViewModelList.all { !it.isSelected }) {
+            "Price range option ${optionViewModelList.find { it.isSelected }} is still selected, expected is none"
         }
     }
 

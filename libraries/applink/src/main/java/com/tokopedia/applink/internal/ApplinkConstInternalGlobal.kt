@@ -164,6 +164,8 @@ object ApplinkConstInternalGlobal {
 
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE = "$INTERNAL_GLOBAL/deals-slug/"
 
+    const val GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT = "$GLOBAL_INTERNAL_DIGITAL_DEAL/checkout"
+
     const val GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG = "$GLOBAL_INTERNAL_DIGITAL_DEAL_SLUG_BASE{slug}/"
 
     // PhoneVerificationProfileActivity
@@ -276,18 +278,6 @@ object ApplinkConstInternalGlobal {
 
     //FeedbackPageActivity
     const val FEEDBACK_FORM = "$INTERNAL_GLOBAL/internal-feedback"
-
-    // OvoAddNameActivity
-    // tokopedia-android-internal://global/ovo-add-name
-    const val OVO_ADD_NAME = "$INTERNAL_GLOBAL/ovo-add-name"
-
-    // OvoFinalPageActivity
-    // tokopedia-android-internal://global/ovo-final-page
-    const val OVO_FINAL_PAGE = "$INTERNAL_GLOBAL/ovo-final-page"
-
-    // OvoRegisterInitialActivity
-    // tokopedia-android-internal://global/ovo-reg-init
-    const val OVO_REG_INIT = "$INTERNAL_GLOBAL/ovo-reg-init"
 
     // TelephonyActivity
     // tokopedia-android-internal://global/telephony-masking

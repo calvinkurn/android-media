@@ -49,6 +49,7 @@ class CavPlayTrackingVodTest {
             performPinnedProduct()
             performRotateByClick()
             performClose()
+            swipeRoom()
             Thread.sleep(2000)
             validate(cassavaTestRule)
         }
@@ -117,6 +118,11 @@ class CavPlayTrackingVodTest {
     private fun performClose() {
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.iv_back)).perform(ViewActions.click())
+    }
+
+    private fun swipeRoom(){
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeLeft())
     }
 
     private val idlResLike by lazy {

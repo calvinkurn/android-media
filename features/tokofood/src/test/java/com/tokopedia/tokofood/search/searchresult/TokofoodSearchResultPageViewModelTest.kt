@@ -2,7 +2,6 @@ package com.tokopedia.tokofood.search.searchresult
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.filter.bottomsheet.pricerangecheckbox.item.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
@@ -16,8 +15,10 @@ import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.Tokofoo
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithFilterUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchEmptyWithoutFilterUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSearchUiEvent
 import com.tokopedia.tokofood.utils.collectFromSharedFlow
@@ -92,7 +93,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     @Test
     fun `when getInitialMerchantSearchResult should success load search result visitables`() {
         runBlocking {
-            val localCacheModel = LocalCacheModel()
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+                lat = "1.23",
+                long = "3.123"
+            )
             val searchResult = getSearchResultResponse()
             val searchParameter = hashMapOf<String, String>()
             val expectedVisitables = searchResult.tokofoodSearchMerchant.merchants.map {
@@ -120,7 +125,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     @Test
     fun `when getInitialMerchantSearchResult returns empty should show empty state`() {
         runBlocking {
-            val localCacheModel = LocalCacheModel()
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+                lat = "1.23",
+                long = "3.123"
+            )
             val searchResult = getSearchResultEmptyResponse()
             val searchParameter = hashMapOf<String, String>()
             onGetSearchResult_shouldReturn(localCacheModel, searchParameter, null, searchResult)
@@ -140,7 +149,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     @Test
     fun `when getInitialMerchantSearchResult returns empty and have param applid should show empty state`() {
         runBlocking {
-            val localCacheModel = LocalCacheModel()
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+                lat = "1.23",
+                long = "3.123"
+            )
             val searchResult = getSearchResultEmptyResponse()
             val searchParameter = hashMapOf("pricing" to "1")
             onGetSearchResult_shouldReturn(localCacheModel, searchParameter, null, searchResult)
@@ -159,7 +172,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when getInitialMerchantSearchResult should fail load search result visitables`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "3.123"
+        )
         val throwable = MessageErrorException()
         val searchParameter = hashMapOf<String, String>()
         val expectedErrorUiModel = listOf(TokofoodSearchErrorStateUiModel(0))
@@ -326,7 +343,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList and should load more, should load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "3.123"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = "123"
         val hasNextPageSearchResult = searchResult.copy(
@@ -365,7 +386,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList but not on the last index, should not load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "1.23"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = "123"
         val hasNextPageSearchResult = searchResult.copy(
@@ -399,7 +424,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList but still on the first index, should not load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "1.23"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = "123"
         val hasNextPageSearchResult = searchResult.copy(
@@ -433,7 +462,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList but does not have next page key, should not load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "1.23"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = ""
         val hasNextPageSearchResult = searchResult.copy(
@@ -467,7 +500,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList but contains other state, should not load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "1.23"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = "123"
         val hasNextPageSearchResult = searchResult.copy(
@@ -501,7 +538,11 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
     @Test
     fun `when onScrollProductList and should load more, should fail load more`() {
-        val localCacheModel = LocalCacheModel()
+        val localCacheModel = LocalCacheModel(
+            address_id = "123",
+            lat = "1.23",
+            long = "3.123"
+        )
         val searchResult = getSearchResultResponse()
         val nextPageKey = "123"
         val hasNextPageSearchResult = searchResult.copy(
@@ -1097,6 +1138,262 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
 
             val actualSortValue = viewModel.getCurrentSortValue()
             Assert.assertEquals(String.EMPTY, actualSortValue)
+        }
+    }
+
+    @Test
+    fun `when latLong is blank, should emit no pinpoint state`() {
+        runBlocking {
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+            )
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_PINPOINT)
+            )
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_PINPOINT)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when ooc state is true, should emit ooc state`() {
+        runBlocking {
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+                lat = "1.23",
+                long = "3.123"
+            )
+            val searchResult = getSearchResultOocResponse()
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.OUT_OF_COVERAGE)
+            )
+            onGetSearchResult_shouldReturn(localCacheModel, searchParameter, null, searchResult)
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.OUT_OF_COVERAGE)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when local cache model is null but isEligible for revamp, should emit ooc state`() {
+        runBlocking {
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+            )
+            onGetEligibleForAnaRevamp_thenReturn(true)
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when address is empty, should emit no address state`() {
+        runBlocking {
+            val localCacheModel = LocalCacheModel(
+                address_id = "",
+                lat = "1.23",
+                long = "3.123"
+            )
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+            )
+            onGetEligibleForAnaRevamp_thenReturn(false)
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when local cache model is null but is not eligible for revamp, should emit ooc state`() {
+        runBlocking {
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+            )
+            onGetEligibleForAnaRevamp_thenReturn(false)
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when local cache model is null but is check eligible error, should emit ooc state`() {
+        runBlocking {
+            val searchParameter = hashMapOf<String, String>()
+            val expectedUiModels = listOf(
+                MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS)
+            )
+            onGetEligibleForAnaRevamp_thenReturn(MessageErrorException())
+            onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.getInitialMerchantSearchResult(searchParameter)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when edit pinpoint should success set pinpoint event`() {
+        val addressId = "123"
+        val localCacheModel = LocalCacheModel(
+            address_id = addressId
+        )
+        val latitude = "1.123"
+        val longitude = "2.345"
+        onEditAddress_shouldReturn(addressId, latitude, longitude, true)
+        runBlocking {
+            viewModel.uiEventFlow.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.updatePinpoint(latitude, longitude)
+                },
+                then = {
+                    Assert.assertEquals(it?.state, TokofoodSearchUiEvent.EVENT_SUCCESS_EDIT_PINPOINT)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when edit pinpoint but unsuccessful, should set failed pinpoint event`() {
+        val addressId = "123"
+        val localCacheModel = LocalCacheModel(
+            address_id = addressId
+        )
+        val latitude = "1.123"
+        val longitude = "2.345"
+        onEditAddress_shouldReturn(addressId, latitude, longitude, false)
+        runBlocking {
+            viewModel.uiEventFlow.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.updatePinpoint(latitude, longitude)
+                },
+                then = {
+                    Assert.assertEquals(it?.state, TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when edit pinpoint but throw exception, should set failed pinpoint event`() {
+        val addressId = "123"
+        val localCacheModel = LocalCacheModel(
+            address_id = addressId
+        )
+        val latitude = "1.123"
+        val longitude = "2.345"
+        onEditAddress_shouldThrow(addressId, latitude, longitude, MessageErrorException())
+        runBlocking {
+            viewModel.uiEventFlow.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.updatePinpoint(latitude, longitude)
+                },
+                then = {
+                    Assert.assertEquals(it?.state, TokofoodSearchUiEvent.EVENT_FAILED_EDIT_PINPOINT)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when edit pinpoint but addressId empty, should set no address state`() {
+        val addressId = ""
+        val localCacheModel = LocalCacheModel(
+            address_id = addressId
+        )
+        val latitude = "1.123"
+        val longitude = "2.345"
+        onEditAddress_shouldThrow(addressId, latitude, longitude, MessageErrorException())
+        val expectedUiModels = listOf(
+            MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+        )
+        onGetEligibleForAnaRevamp_thenReturn(true)
+        onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+        runBlocking {
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.updatePinpoint(latitude, longitude)
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when edit pinpoint but local cache model null, should set no address state`() {
+        val expectedUiModels = listOf(
+            MerchantSearchOOCUiModel(MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+        )
+        onGetEligibleForAnaRevamp_thenReturn(true)
+        onGetOutOfCoverageUiModels_shouldReturn(expectedUiModels)
+
+        runBlocking {
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updatePinpoint("123", "123")
+                },
+                then = {
+                    Assert.assertEquals(((it as? Success)?.data?.getOrNull(Int.ZERO) as? MerchantSearchOOCUiModel)?.type, MerchantSearchOOCUiModel.NO_ADDRESS_REVAMP)
+                }
+            )
         }
     }
 

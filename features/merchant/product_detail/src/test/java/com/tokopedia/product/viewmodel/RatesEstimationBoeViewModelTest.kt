@@ -72,7 +72,8 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
                 shopTier = 1,
                 addressId = "addressid",
                 warehouseId = "111",
-                orderValue = 1
+                orderValue = 1,
+                boMetadata = "123"
         )
 
         viewModel.setRatesRequest(mockRequest)
@@ -95,7 +96,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
         Assert.assertEquals(requestParams["order_value"], 1)
-        Assert.assertEquals(requestParams["bo_metadata"], "")
+        Assert.assertEquals(requestParams["bo_metadata"], "123")
     }
 
     @Test
@@ -106,6 +107,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase.executeOnBackground(any(), any())
         } returns ratesResponse
 
+        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":3,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         val mockRequest = RatesEstimateRequest(
                 productWeight = 2F,
                 shopDomain = "shopDomain",
@@ -121,7 +123,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
                 addressId = "addressid",
                 warehouseId = "111",
                 orderValue = 1,
-                boCampaignIDs = "123"
+                boMetadata = expectedBoMetaData
         )
 
         viewModel.setRatesRequest(mockRequest)
@@ -144,8 +146,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
         Assert.assertEquals(requestParams["order_value"], 1)
-
-        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":3,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -157,6 +157,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase.executeOnBackground(any(), any())
         } returns ratesResponse
 
+        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":4,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         val mockRequest = RatesEstimateRequest(
                 productWeight = 2F,
                 shopDomain = "shopDomain",
@@ -172,7 +173,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
                 addressId = "addressid",
                 warehouseId = "111",
                 orderValue = 1,
-                boCampaignIDs = "123"
+                boMetadata = expectedBoMetaData
         )
 
         viewModel.setRatesRequest(mockRequest)
@@ -195,8 +196,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
         Assert.assertEquals(requestParams["order_value"], 1)
-
-        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":4,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"true\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -208,6 +207,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase.executeOnBackground(any(), any())
         } returns ratesResponse
 
+        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":5,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"false\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         val mockRequest = RatesEstimateRequest(
             productWeight = 2F,
             shopDomain = "shopDomain",
@@ -223,7 +223,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             addressId = "addressid",
             warehouseId = "111",
             orderValue = 1,
-            boCampaignIDs = "123"
+            boMetadata = expectedBoMetaData
         )
 
         viewModel.setRatesRequest(mockRequest)
@@ -246,8 +246,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
         Assert.assertEquals(requestParams["order_value"], 1)
-
-        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":5,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"false\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 
@@ -259,6 +257,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             ratesUseCase.executeOnBackground(any(), any())
         } returns ratesResponse
 
+        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":6,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"false\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         val mockRequest = RatesEstimateRequest(
             productWeight = 2F,
             shopDomain = "shopDomain",
@@ -274,7 +273,7 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
             addressId = "addressid",
             warehouseId = "111",
             orderValue = 1,
-            boCampaignIDs = "123"
+            boMetadata = expectedBoMetaData
         )
 
         viewModel.setRatesRequest(mockRequest)
@@ -297,8 +296,6 @@ class RatesEstimationBoeViewModelTest : BaseProductViewModelTest() {
         Assert.assertEquals(requestParams["shop_tier"], 1)
         Assert.assertEquals(requestParams["unique_id"], "addressid-123-1-111")
         Assert.assertEquals(requestParams["order_value"], 1)
-
-        val expectedBoMetaData = "{\"bo_metadata\":{\"bo_type\":6,\"bo_eligibilities\":[{\"key\":\"is_tokonow\",\"value\":\"false\"},{\"key\":\"campaign_ids\",\"value\":\"123\"}]}}"
         Assert.assertEquals(requestParams["bo_metadata"], expectedBoMetaData)
     }
 

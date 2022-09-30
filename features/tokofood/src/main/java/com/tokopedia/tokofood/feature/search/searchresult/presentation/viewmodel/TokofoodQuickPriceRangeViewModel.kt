@@ -3,7 +3,6 @@ package com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmode
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -70,7 +69,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     }
 
     fun setPriceRangeUiModel(
-        uiModel: OptionViewModel,
+        uiModel: PriceRangeFilterCheckboxItemUiModel,
         isSelected: Boolean
     ) {
         val appliedOptions = getCurrentAppliedOptions().toMutableList()

@@ -3,13 +3,17 @@ package com.tokopedia.topchat.chatlist.view.fragment
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.StringRes
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
@@ -57,10 +61,12 @@ import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
 import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
 import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
+import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatListWebSocketViewModel
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
+import com.tokopedia.topchat.chatlist.view.widget.OperationalInsightBottomSheet
 import com.tokopedia.topchat.chatroom.view.activity.TopChatRoomActivity
 import com.tokopedia.topchat.chatroom.view.custom.ChatFilterView
 import com.tokopedia.topchat.chatroom.view.listener.TopChatRoomFlexModeListener
@@ -68,7 +74,9 @@ import com.tokopedia.topchat.chatsetting.view.activity.ChatSettingActivity
 import com.tokopedia.topchat.common.Constant
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
+import com.tokopedia.topchat.common.util.Utils.getOperationalInsightStateReport
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -76,6 +84,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.util.Locale
 import javax.inject.Inject
 
 /**
@@ -245,7 +254,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_chat_list, container, false)?.also {
             initView(it)
-            setUpRecyclerView(it)
+            setUpRecyclerView()
             setupObserver()
             setupSellerBroadcastButtonObserver()
             setupSellerBroadcast()
@@ -261,6 +270,35 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun onScrollToTop() {}
+
+    override fun onOperationalInsightTickerShown(element: ShopChatTicker) {
+        TopChatAnalyticsKt.eventViewOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
+    }
+
+    override fun onOperationalInsightTickerClicked(element: ShopChatTicker) {
+        val operationalInsightBottomSheet = OperationalInsightBottomSheet(
+            element, userSession.shopId
+        )
+        operationalInsightBottomSheet.show(childFragmentManager, FilterMenu.TAG)
+        TopChatAnalyticsKt.eventClickOperationalInsightTicker(
+            shopId = userSession.shopId,
+            stateReport = getOperationalInsightStateReport(element.isMaintain)
+        )
+    }
+
+    override fun onOperationalInsightCloseButtonClicked(visitable: Visitable<*>) {
+        adapter?.removeElement(visitable)
+        viewModel.saveNextMondayDate()
+        if (visitable is ShopChatTicker) {
+            TopChatAnalyticsKt.eventClickCloseOperationalInsightTicker(
+                shopId = userSession.shopId,
+                stateReport = getOperationalInsightStateReport(visitable.isMaintain)
+            )
+        }
+    }
 
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(webSocket)
@@ -365,7 +403,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         chatFilter = view.findViewById(R.id.cf_chat_list)
     }
 
-    private fun setUpRecyclerView(view: View) {
+    private fun setUpRecyclerView() {
         rv?.apply {
             setHasFixedSize(true)
             for (i in 0 until itemDecorationCount) {
@@ -380,7 +418,12 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         setupWebSocketObserver()
         viewModel.mutateChatList.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is Success -> onSuccessGetChatList(it.data.data)
+                is Success -> {
+                    onSuccessGetChatList(it.data.data)
+                    if (GlobalConfig.isSellerApp() && isFirstPage())  {
+                        viewModel.getOperationalInsight(userSession.shopId)
+                    }
+                }
                 is Fail -> onFailGetChatList(it.throwable)
             }
         })
@@ -392,7 +435,12 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                     showToaster(R.string.title_success_delete_chat)
                 }
                 is Fail -> view?.let {
-                    Toaster.make(it, getString(R.string.delete_chat_default_error_message), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+                    Toaster.build(
+                        it,
+                        getString(R.string.delete_chat_default_error_message),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
+                    ).show()
                 }
             }
         })
@@ -417,6 +465,11 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 }
             }
         })
+        viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
+            if (it is Success && it.data.showTicker == true) {
+                adapter?.addElement(0, it.data)
+            }
+        }
     }
 
     private fun setupWebSocketObserver() {
@@ -529,12 +582,6 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         }
     }
 
-    private fun animateWhenOnTop() {
-        if ((getRecyclerView(view)?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() == 0) {
-            getRecyclerView(view)?.smoothScrollToPosition(0)
-        }
-    }
-
     private fun onSuccessGetChatList(data: ChatListDataPojo) {
         renderList(data.list, data.hasNext)
         fpmStopTrace()
@@ -601,7 +648,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 setTitle(title)
                 setItemMenuList(itemMenus)
                 setOnItemMenuClickListener { menu, pos ->
-                    chatListAnalytics.eventClickListFilterChat(menu.title.toLowerCase())
+                    chatListAnalytics.eventClickListFilterChat(menu.title.lowercase(Locale.getDefault()))
                     filterChecked = pos
                     loadInitialData()
                     dismiss()
@@ -871,7 +918,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     private fun showSnackbarError(throwable: Throwable) {
         view?.let {
             val errorMsg = ErrorHandler.getErrorMessage(it.context, throwable)
-            Toaster.make(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.build(it, errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 

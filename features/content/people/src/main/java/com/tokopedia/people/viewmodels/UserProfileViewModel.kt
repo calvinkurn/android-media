@@ -46,21 +46,15 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
+    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
+    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
+
     /**
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
      * */
-    private val userPost = MutableLiveData<Boolean>()
-    val userPostLiveData : LiveData<Boolean> get() = userPost
-
-    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
-    val playPostContentLiveData : LiveData<Resources<UserPostModel>> get() = playPostContent
-
     private val userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData : LiveData<Throwable> get() = userPostError
-
-
-
 
 
     /** Public Getter */
@@ -297,28 +291,19 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Helper */
     private suspend fun loadProfileInfo(isRefresh: Boolean) {
-        val deferredProfileInfo = viewModelScope.asyncCatchError(block = {
-            repo.getProfile(username)
-        }) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
-            ProfileUiModel.Empty
-        }
 
-        val deferredFollowInfo = viewModelScope.asyncCatchError(block = {
-            repo.getFollowInfo(listOf(username))
-        }) {
-            FollowInfoUiModel.Empty
-        }
+        val profileInfo = repo.getProfile(username)
 
-        val profileInfo = deferredProfileInfo.await() ?: ProfileUiModel.Empty
-        val followInfo = deferredFollowInfo.await() ?: FollowInfoUiModel.Empty
         val profileType = if(userSession.isLoggedIn) {
-            if(userSession.userId == followInfo.userID)
+            if(userSession.userId == profileInfo.userID)
                 ProfileType.Self
             else ProfileType.OtherUser
         }
         else ProfileType.NotLoggedIn
 
+        val followInfo = if(userSession.isLoggedIn)
+            repo.getFollowInfo(listOf(profileInfo.userID))
+        else FollowInfoUiModel.Empty
 
         _profileInfo.update { profileInfo }
         _followInfo.update { followInfo }
@@ -329,11 +314,8 @@ class UserProfileViewModel @AssistedInject constructor(
             loadShopRecom()
         }
 
-        /**
-         * play video will be moved to dedicated fragment when
-         * developing another tab user profile eventually. so gonna leave as is for now
-         * */
-        userPost.value = isRefresh
+        if(isRefresh)
+            _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
     }
 
     private suspend fun loadShopRecom() {

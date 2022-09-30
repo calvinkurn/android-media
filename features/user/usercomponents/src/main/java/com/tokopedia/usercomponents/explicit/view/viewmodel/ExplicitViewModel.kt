@@ -6,20 +6,26 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.usercomponents.explicit.domain.GetQuestionUseCase
 import com.tokopedia.usercomponents.explicit.domain.SaveAnswerUseCase
 import com.tokopedia.usercomponents.explicit.domain.UpdateStateUseCase
-import com.tokopedia.usercomponents.explicit.domain.model.*
+import com.tokopedia.usercomponents.explicit.domain.model.InputParam
+import com.tokopedia.usercomponents.explicit.domain.model.OptionsItem
+import com.tokopedia.usercomponents.explicit.domain.model.Property
+import com.tokopedia.usercomponents.explicit.domain.model.Template
+import com.tokopedia.usercomponents.explicit.domain.model.UpdateStateParam
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
 
 class ExplicitViewModel @Inject constructor(
     private val getQuestionUseCase: GetQuestionUseCase,
     private val saveAnswerUseCase: SaveAnswerUseCase,
     private val updateStateUseCase: UpdateStateUseCase,
+    private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers
 ) : ExplicitViewContract, CoroutineScope {
 
@@ -29,15 +35,19 @@ class ExplicitViewModel @Inject constructor(
     private val _explicitContent = SingleLiveEvent<Result<Pair<Boolean, Property?>>>()
     override val explicitContent: LiveData<Result<Pair<Boolean, Property?>>> get() = _explicitContent
 
-    private val _statusSaveAnswer = SingleLiveEvent<Result<String>>()
-    override val statusSaveAnswer: LiveData<Result<String>> get() = _statusSaveAnswer
+    private val _statusSaveAnswer = SingleLiveEvent<Result<Pair<OptionsItem?, String>>>()
+    override val statusSaveAnswer: LiveData<Result<Pair<OptionsItem?, String>>> get() = _statusSaveAnswer
 
     private val _statusUpdateState = SingleLiveEvent<Boolean>()
     override val statusUpdateState: LiveData<Boolean> get() = _statusUpdateState
 
     private val preferenceAnswer = InputParam()
     private val preferenceUpdateState = UpdateStateParam()
-    private val preferenceOptions = listOf(OptionsItem(), OptionsItem())
+    private val preferenceOptions = mutableListOf(OptionsItem(), OptionsItem())
+
+    override fun isLoggedIn(): Boolean {
+        return userSession.isLoggedIn
+    }
 
     override fun getExplicitContent(templateName: String) {
         launchCatchError(coroutineContext, {
@@ -62,6 +72,7 @@ class ExplicitViewModel @Inject constructor(
 
     private fun setPreferenceAnswer(template: Template) {
         preferenceUpdateState.template.name = template.name
+
         preferenceAnswer.apply {
             templateId = template.id
             templateName = template.name
@@ -70,25 +81,25 @@ class ExplicitViewModel @Inject constructor(
                 template.sections.first().questions.first().questionId
         }
 
-        val options = template.sections.first().questions.first().property.options
-
-        preferenceOptions.first().apply {
-            value = options.first().value
-        }
-
-        preferenceOptions[1].apply {
-            value = options[1].value
-        }
+        val positiveOptions = template.sections.first().questions.first().property.options.first()
+        val negativeOptions = template.sections.first().questions.first().property.options[1]
+        preferenceOptions.clear()
+        preferenceOptions.addAll(listOf(positiveOptions, negativeOptions))
     }
 
     override fun sendAnswer(answers: Boolean?) {
-        preferenceAnswer.sections.first().questions.first().answerValue =
-            if (answers == true) preferenceOptions.first().value else preferenceOptions[1].value
-
         launchCatchError(coroutineContext, {
+            val optionsItem = if (answers == true) {
+                preferenceOptions.first()
+            } else {
+                preferenceOptions[1]
+            }
+
+            preferenceAnswer.sections.first().questions.first().answerValue = optionsItem.value
+
             val response = saveAnswerUseCase(preferenceAnswer)
 
-            _statusSaveAnswer.value = Success(response.explicitprofileSaveMultiAnswers.message)
+            _statusSaveAnswer.value = Success(Pair(optionsItem, response.explicitprofileSaveMultiAnswers.message))
         }, {
             _statusSaveAnswer.value = Fail(it)
         })

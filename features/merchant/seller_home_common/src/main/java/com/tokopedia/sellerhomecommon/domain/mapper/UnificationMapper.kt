@@ -7,6 +7,7 @@ import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.GetUnificationDataResponse
 import com.tokopedia.sellerhomecommon.domain.model.UnificationTabModel
 import com.tokopedia.sellerhomecommon.domain.model.WidgetModel
+import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetConfigUiModel
@@ -32,12 +33,16 @@ class UnificationMapper @Inject constructor(
                 error = data.errorMsg,
                 isFromCache = isFromCache,
                 showWidget = data.showWidget,
-                lastUpdated = getLastUpdatedMillis(data.dataKey, isFromCache),
+                lastUpdated = getLastUpdated(data.dataKey, isFromCache),
                 tabs = data.tabs.map{ tab ->
                     getTabUiModel(tab)
                 }
             )
         }
+    }
+
+    fun getLastUpdated(dataKey: String, isFromCache: Boolean): LastUpdatedUiModel {
+        return super.getLastUpdatedMillis(dataKey, isFromCache)
     }
 
     private fun getTabUiModel(

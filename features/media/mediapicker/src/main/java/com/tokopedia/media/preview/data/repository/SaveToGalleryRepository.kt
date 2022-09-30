@@ -22,8 +22,7 @@ class SaveToGalleryRepositoryImpl constructor(
             context = context,
             localFile = file,
             mimeType = mimeType(file),
-            outputFileName = fileName(file.name),
-            directory = Environment.DIRECTORY_DOWNLOADS
+            outputFileName = fileName(file.name)
         ).first
     }
 

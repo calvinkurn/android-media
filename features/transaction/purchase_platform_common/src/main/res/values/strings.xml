@@ -13,7 +13,7 @@
     <string name="label_shipping_discount">Total Diskon Ongkos Kirim</string>
     <string name="label_button_bottomsheet_close">Tutup</string>
     <string name="label_shipment_insurance">Asuransi Pengiriman</string>
-    <string name="title_bottomsheet_insurance">Asuransi Pengiriman</string>
+    <string name="title_bottomsheet_insurance">Keuntungan pakai asuransi</string>
     <string name="label_must_insurance">Wajib Asuransi</string>
     <string name="label_choose_payment">Pilih Pembayaran</string>
     <string name="checkout_common_module_title_loading">Loading</string>
@@ -24,5 +24,9 @@
     <!--  Common Content Descriptions  -->
     <string name="pp_cd_image_shop_badge_with_shop_type">image shop badge %1$s</string>
     <string name="pp_cd_image_badge_bo">image badge bebas ongkir</string>
-    <string name="pp_cd_image_badge_boe">image badge bebas ongkir extra</string>
+    <string name="pp_cd_image_badge_plus">image badge plus</string>
+
+    <string name="pp_epharmacy_upload_count_text">%d foto resep di-upload</string>
+    <string name="pp_epharmacy_upload_success_title_text">Berhasil Upload Resep</string>
+    <string name="pp_epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
 </resources>
