@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
@@ -22,6 +23,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManagePro
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class ManageProductNonVariantMultilocFragment :
@@ -159,8 +161,20 @@ class ManageProductNonVariantMultilocFragment :
             viewModel.validateInput(criteria, it.discountSetup).isAllFieldValid()
         } != null
 
-        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        if (isValid) showToasterValid()
         else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
+    }
+
+    private fun showToasterValid() {
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.stfs_toaster_valid),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.stfs_toaster_ok)
+            ).show()
+        }
     }
 
 }

@@ -5,6 +5,7 @@ import android.content.Intent
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.View
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
@@ -26,6 +27,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.Validatio
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION
+import com.tokopedia.unifycomponents.Toaster
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -153,8 +155,20 @@ class ManageProductVariantFragment :
             } != null
         } != null
 
-        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        if (isValid) showToasterValid()
         else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
+    }
+
+    private fun showToasterValid() {
+        view?.let {
+            Toaster.build(
+                it,
+                getString(R.string.stfs_toaster_valid),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                getString(R.string.stfs_toaster_ok)
+            ).show()
+        }
     }
 
     private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
