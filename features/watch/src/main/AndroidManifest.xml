@@ -16,6 +16,18 @@
                     android:host="*"
                     android:pathPrefix="/app-detection"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-order-list"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-summary"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-all-data"
+                    android:scheme="wear" />
             </intent-filter>
         </service>
 

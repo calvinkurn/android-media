@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
 import androidx.lifecycle.viewModelScope
@@ -9,12 +10,14 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
+import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
@@ -37,13 +40,22 @@ class SharedViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val orderUseCaseImpl: OrderUseCaseImpl,
     private val getSummaryUseCase: GetSummaryUseCase,
+    private val getOrderUseCase: OrderUseCaseImpl,
     private val capabilityClient: CapabilityClient,
     private val remoteActivityHelper: RemoteActivityHelper,
+    private val clientMessageDatasource: ClientMessageDatasource
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val FLOW_STOP_TIMEOUT = 3000L
         private const val INDEX_NOT_FOUND = -1
+    }
+
+    init {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
+        }
     }
 
     val homeMenu: StateFlow<List<MenuItem>> = getSummaryUseCase.getMenuItemCounter().map {
