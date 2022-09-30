@@ -106,7 +106,7 @@ class InspirationCarouselDataView(
             val discountPercentage: Int = 0,
             val position: Int = 0,
             val optionTitle: String = "",
-            val shopId: Int = 0,
+            val shopId: String = "",
             val shopLocation: String = "",
             val shopName: String = "",
             val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
@@ -123,10 +123,10 @@ class InspirationCarouselDataView(
             val discount : String = "",
             val label: String = "",
             val bundleId: String = "",
-            val parentId: Int = 0,
+            val parentId: String = "",
             val keyword: String = "",
             val trackingOption: Int = 0,
-            val minOrder: Int = 0,
+            val minOrder: String = "",
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory>,
             SearchComponentTracking by searchComponentTracking(
@@ -158,7 +158,7 @@ class InspirationCarouselDataView(
                 return ratingAverage.isNotEmpty()
             }
 
-            fun shouldOpenVariantBottomSheet(): Boolean = parentId != 0
+            fun shouldOpenVariantBottomSheet(): Boolean = parentId.isNotEmpty()
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

@@ -7,8 +7,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.iris.Iris
-import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.search.R
@@ -24,12 +24,10 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.search_activity_search.*
-import rx.Subscriber
 import javax.inject.Inject
 
 class InspirationListAtcListenerDelegate @Inject constructor(
@@ -82,7 +80,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                     it,
                     productId = product.id,
                     pageSource = VariantPageSource.SRP_PAGESOURCE,
-                    shopId = product.shopId.toString(),
+                    shopId = product.shopId,
                     trackerCdListName = getInspirationCarouselUnificationListName(
                         type,
                         product.componentId,
@@ -134,9 +132,9 @@ class InspirationListAtcListenerDelegate @Inject constructor(
 
     private fun InspirationCarouselDataView.Option.Product.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = id.toLong(),
-            shopId = shopId,
-            quantity = minOrder,
+            productId = id.toLongOrZero(),
+            shopId = shopId.toIntOrZero(),
+            quantity = minOrder.toIntOrZero(),
             productName = name,
             price = priceStr,
             userId = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID

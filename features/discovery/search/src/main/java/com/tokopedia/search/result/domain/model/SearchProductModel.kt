@@ -891,11 +891,11 @@ data class SearchProductModel(
 
             @SerializedName("parent_id")
             @Expose
-            val parentId: Int = 0,
+            val parentId: String = "",
 
             @SerializedName("min_order")
             @Expose
-            val minOrder: Int = 0,
+            val minOrder: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -917,7 +917,7 @@ data class SearchProductModel(
     data class InspirationCarouselProductShop(
             @SerializedName("id")
             @Expose
-            val id: Int = 0,
+            val id: String = "",
             @SerializedName("name")
             @Expose
             val name: String = "",

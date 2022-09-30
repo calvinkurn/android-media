@@ -1511,7 +1511,7 @@ class ProductListFragment: BaseDaggerFragment(),
                 it,
                 productId = product.id,
                 pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-                shopId = product.shopId.toString(),
+                shopId = product.shopId,
                 startActivitResult = { intent, reqCode ->
                     startActivityForResult(intent, reqCode)
                 }
