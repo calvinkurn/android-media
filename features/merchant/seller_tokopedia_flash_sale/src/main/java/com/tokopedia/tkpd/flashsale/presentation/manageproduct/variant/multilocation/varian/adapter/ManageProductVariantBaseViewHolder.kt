@@ -46,11 +46,14 @@ open class ManageProductVariantBaseViewHolder(
     ) {
         discount?.let {
             val validationResult = listener?.onDataInputChanged(adapterPosition, criteria, it)
-            this.textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
-            this.textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
+            val isPriceError = validationResult?.isPriceError == true
+            val isPricePercentError = validationResult?.isPricePercentError == true
+            this.textFieldPriceDiscountNominal.isInputError = isPriceError
+            this.textFieldPriceDiscountPercentage.isInputError = isPricePercentError
             this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
             this.textFieldPriceDiscountNominal.setMessage(validationResult?.priceMessage.orEmpty())
             this.textFieldPriceDiscountPercentage.setMessage(validationResult?.pricePercentMessage.orEmpty())
+            this.tickerPriceError.setTypeOfTicker(isPriceError || isPricePercentError)
         }
     }
 
@@ -120,21 +123,23 @@ open class ManageProductVariantBaseViewHolder(
         this.periodSection.gone()
         this.tickerPriceError.gone()
         this.textFieldPriceDiscountNominal.editText.setText(discount?.price.orZero().getNumberFormatted())
-        this.textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
+        this.textFieldPriceDiscountPercentage.editText.setText(discount?.discount.orZero().toString())
         this.quantityEditor.editText.setText(discount?.stock?.orZero().toString())
         this.textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         val validationResult =
             discount?.let { listener?.validationItem(criteria, it) }
-        this.textFieldPriceDiscountNominal.isInputError = validationResult?.isPriceError == true
-        this.textFieldPriceDiscountPercentage.isInputError = validationResult?.isPricePercentError == true
+        val isPriceError = validationResult?.isPriceError == true
+        val isPricePercentError = validationResult?.isPricePercentError == true
+        this.textFieldPriceDiscountNominal.isInputError = isPriceError
+        this.textFieldPriceDiscountPercentage.isInputError = isPricePercentError
         this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
+        this.tickerPriceError.setTypeOfTicker(isPriceError || isPricePercentError)
 
         setupInitialFieldMessage(criteria)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setTicker(context: Context) {
         this.tickerPriceError.visible()
-        this.tickerPriceError.tickerType = Ticker.TYPE_ANNOUNCEMENT
         this.tickerPriceError.setTextDescription(
             String.format(
                 context.getString(
@@ -154,6 +159,11 @@ open class ManageProductVariantBaseViewHolder(
                 normalColorRes
             }
         )
+    }
+
+    private fun Ticker.setTypeOfTicker(isFieldError : Boolean){
+        this.tickerType = if(isFieldError) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
+
     }
 
     private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
