@@ -208,7 +208,7 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
         }
 
         priceRangeItemList.forEach { priceRangeItem ->
-            priceRangeItem.assertPriceRangeItem(priceRangeItem.option)
+            priceRangeItem.assertOptionViewModel(priceRangeItem.option)
         }
     }
 
@@ -231,12 +231,6 @@ internal class InitializedDynamicFilterViewTest: SortFilterBottomSheetViewModelT
 
         keywordFilterItemList.forEachIndexed { index, keywordFilterItem ->
             keywordFilterItem.assertKeywordFilterItem(negativeKeywordOptions[index])
-        }
-    }
-
-    private fun OptionViewModel.assertPriceRangeItem(expectedOption: Option) {
-        assert(option.name == expectedOption.name) {
-            "Option name is ${option.name}.\nExpected is ${expectedOption.name}"
         }
     }
 

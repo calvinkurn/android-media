@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -45,13 +44,13 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
-import com.tokopedia.tokofood.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
+import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
+import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
@@ -145,7 +144,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onResume() {
         super.onResume()
-        refreshAddressData()
+        refreshAddressData(false)
     }
 
     override fun getScreenName(): String = ""
@@ -320,6 +319,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         onGoToHome()
     }
 
+    override fun needToTrackTokoNow(): Boolean {
+        return true
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
@@ -330,10 +333,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         tokofoodSearchFilterTab = null
         searchParameter = null
         sortFilterBottomSheet = null
+        super.onDestroyView()
     }
 
     fun setSearchResultViewUpdateListener(searchResultViewUpdateListener: SearchResultViewUpdateListener) {
@@ -496,12 +499,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
-    private fun refreshAddressData() {
+    private fun refreshAddressData(shouldRefreshSearchResult: Boolean = true) {
         if (isChooseAddressWidgetDataUpdated()) {
             setLocalCacheModel()
             updateAddressWidget()
         }
-        viewModel.getInitialMerchantSearchResult(searchParameter)
+        if (shouldRefreshSearchResult) {
+            viewModel.getInitialMerchantSearchResult(searchParameter)
+        }
     }
 
     private fun setLocalCacheModel() {

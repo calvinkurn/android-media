@@ -156,28 +156,30 @@ class TokofoodSearchResultPageViewModel @Inject constructor(
     }
 
     fun getInitialMerchantSearchResult(searchParameter: HashMap<String, String>?) {
-        pageKeyLiveData.value = null
-        currentSearchParameterMap.value = searchParameter
-        showInitialLoading()
-        launchCatchError(
-            block = {
-                checkAddressForEligibility {
-                    val searchResult = getSearchResult()
-                    emitSuccessIfInCoverage(searchResult) {
-                        _uiState.emit(getInitialSearchResultSuccessState(searchResult))
+        if (searchParameter != null) {
+            pageKeyLiveData.value = null
+            currentSearchParameterMap.value = searchParameter
+            showInitialLoading()
+            launchCatchError(
+                block = {
+                    checkAddressForEligibility {
+                        val searchResult = getSearchResult()
+                        emitSuccessIfInCoverage(searchResult) {
+                            _uiState.emit(getInitialSearchResultSuccessState(searchResult))
+                        }
                     }
-                }
-            },
-            onError = {
-                _uiState.emit(
-                    TokofoodSearchUiState(
-                        state = TokofoodSearchUiState.STATE_ERROR_INITIAL,
-                        throwable = it
+                },
+                onError = {
+                    _uiState.emit(
+                        TokofoodSearchUiState(
+                            state = TokofoodSearchUiState.STATE_ERROR_INITIAL,
+                            throwable = it
+                        )
                     )
-                )
-                sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_SEARCH_RESULT, it)
-            }
-        )
+                    sendFailureEvent(TokofoodSearchUiEvent.EVENT_FAILED_LOAD_SEARCH_RESULT, it)
+                }
+            )
+        }
     }
 
     fun onScrollProductList(lastVisibleItemIndex: Int, itemCount: Int) {
