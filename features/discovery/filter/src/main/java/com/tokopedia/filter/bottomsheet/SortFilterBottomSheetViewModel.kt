@@ -590,9 +590,13 @@ internal class SortFilterBottomSheetViewModel {
     private fun resetSortFilterItem(index: Int, visitable: Visitable<*>) {
         when (visitable) {
             is SortViewModel -> visitable.reset(index)
-            is FilterViewModel -> visitable.reset(index)
             is PriceFilterViewModel -> visitable.reset(index)
-            is PriceRangeFilterCheckboxDataView -> visitable.reset(index)
+            is FilterRefreshable -> {
+                val shouldUpdate = visitable.resetAndReturnShouldUpdate()
+                if (shouldUpdate) {
+                    updateViewInPositionEventMutableLiveData.value = Event(index)
+                }
+            }
         }
     }
 
@@ -606,20 +610,6 @@ internal class SortFilterBottomSheetViewModel {
 
             updateViewInPositionEventMutableLiveData.value = Event(sortIndex)
         }
-    }
-
-    private fun FilterViewModel.reset(filterIndex: Int) {
-        var shouldUpdate = false
-
-        optionViewModelList.forEach {
-            if (it.isSelected) {
-                shouldUpdate = true
-                it.isSelected = false
-                it.option.inputState = false.toString()
-            }
-        }
-
-        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
     }
 
     private fun PriceFilterViewModel.reset(filterIndex: Int) {
@@ -639,20 +629,6 @@ internal class SortFilterBottomSheetViewModel {
             if (it.isSelected) {
                 shouldUpdate = true
                 it.isSelected = false
-            }
-        }
-
-        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
-    }
-
-    private fun PriceRangeFilterCheckboxDataView.reset(filterIndex: Int) {
-        var shouldUpdate = false
-
-        optionViewModelList.forEach {
-            if (it.isSelected) {
-                shouldUpdate = true
-                it.isSelected = false
-                it.option.inputState = false.toString()
             }
         }
 
