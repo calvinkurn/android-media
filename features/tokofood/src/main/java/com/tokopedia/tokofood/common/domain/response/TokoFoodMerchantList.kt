@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.common.domain.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.model.ImpressHolder
 
@@ -25,6 +26,7 @@ data class Merchant (
     val merchantCategories: List<String> = emptyList(),
     @SerializedName("imageURL")
     val imageURL: String = "",
+    @SuppressLint("Invalid Data Type")
     @SerializedName("priceLevel")
     val priceLevel: PriceLevel = PriceLevel(),
     @SerializedName("rating")
