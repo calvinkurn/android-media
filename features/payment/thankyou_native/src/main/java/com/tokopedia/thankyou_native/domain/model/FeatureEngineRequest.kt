@@ -13,7 +13,7 @@ data class FeatureEngineRequest (
         @SerializedName("limit")
         val limit : Int,
         @SerializedName("parameters")
-        val parameters : @RawValue Map<String,Any?>? = null,
+        val parameters: @RawValue Map<String, Any?>? = null,
         @SerializedName("operators")
         val operators : FeatureEngineRequestOperators,
         @SerializedName("thresholds")
