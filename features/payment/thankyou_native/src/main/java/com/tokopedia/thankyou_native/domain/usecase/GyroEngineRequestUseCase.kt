@@ -70,7 +70,7 @@ class GyroEngineRequestUseCase @Inject constructor(
         thanksPageData.gyroData?.put("egold", isEGoldPurchased(thanksPageData).toString())
         thanksPageData.gyroData?.put("donation", isDonation(thanksPageData).toString())
         thanksPageData.gyroData?.put("user_id", userSession.userId)
-        thanksPageData.gyroData?.put("is_RM",  isMarketplace(thanksPageData).toString())
+        thanksPageData.gyroData?.put("is_RM", isMarketplace(thanksPageData).toString())
         thanksPageData.gyroData?.put("is_PM", isGoldMerchant(thanksPageData).toString())
         thanksPageData.gyroData?.put("is_OS", isOfficialStore(thanksPageData).toString())
         thanksPageData.gyroData?.put("is_enjoy_plus_benefit", thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
