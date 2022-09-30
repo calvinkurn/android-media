@@ -31,6 +31,18 @@ interface ShippingDurationContract {
             serviceData: ServiceData,
             flagNeedToSetPinpoint: Boolean
         )
+
+        fun onLogisticPromoChosen(
+            shippingCourierViewModelList: List<ShippingCourierUiModel>,
+            courierData: ShippingCourierUiModel,
+            serviceData: ServiceData,
+            needToSetPinpoint: Boolean,
+            promoCode: String,
+            serviceId: Int,
+            data: LogisticPromoUiModel
+        )
+
+        fun showPromoCourierNotAvailable()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -48,5 +60,6 @@ interface ShippingDurationContract {
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
             cartPosition: Int, serviceData: ServiceData
         )
+        fun onLogisticPromoClicked(data: LogisticPromoUiModel)
     }
 }

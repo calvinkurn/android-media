@@ -274,4 +274,25 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
             courierData, cartPosition, selectedServiceId, serviceData,
             flagNeedToSetPinpoint)
     }
+
+    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+        // Project Army
+        val shippingDurationUiModel = getRatesDataFromLogisticPromo(data.serviceId)
+        if (shippingDurationUiModel == null) {
+            view?.showPromoCourierNotAvailable()
+            return
+        }
+        val courierData = getCourierItemDataById(
+            data.shipperProductId,
+            shippingDurationUiModel.shippingCourierViewModelList
+        )
+        if (courierData == null) {
+            view?.showPromoCourierNotAvailable()
+            return
+        }
+        view?.onLogisticPromoChosen(
+            shippingDurationUiModel.shippingCourierViewModelList, courierData,
+            shippingDurationUiModel.serviceData, false, data.promoCode, data.serviceId, data
+        )
+    }
 }

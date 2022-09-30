@@ -295,28 +295,35 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         }
     }
 
-    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-        mPromoTracker?.eventClickPromoLogisticTicker(data.promoCode)
-        // Project Army
-        val serviceData = presenter?.getRatesDataFromLogisticPromo(data.serviceId)
-        if (serviceData == null) {
-            showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
-            return
-        }
-        val courierData = presenter?.getCourierItemDataById(data.shipperProductId, serviceData.shippingCourierViewModelList)
-        if (courierData == null) {
-            showErrorPage(activity!!.getString(R.string.logistic_promo_serviceid_mismatch_message))
-            return
-        }
+    override fun onLogisticPromoChosen(
+        shippingCourierViewModelList: List<ShippingCourierUiModel>,
+        courierData: ShippingCourierUiModel,
+        serviceData: ServiceData,
+        needToSetPinpoint: Boolean,
+        promoCode: String,
+        serviceId: Int,
+        data: LogisticPromoUiModel
+    ) {
         try {
             shippingDurationBottomsheetListener?.onLogisticPromoChosen(
-                serviceData.shippingCourierViewModelList, courierData,
+                shippingCourierViewModelList, courierData,
                 mRecipientAddress, mCartPosition,
-                serviceData.serviceData, false, data.promoCode, data.serviceId, data)
+                serviceData, false, promoCode, serviceId, data)
         } catch (e: Exception) {
             e.printStackTrace()
         }
         bottomSheet?.dismiss()
+    }
+
+    override fun showPromoCourierNotAvailable() {
+        activity?.let {
+            showErrorPage(it.getString(R.string.logistic_promo_serviceid_mismatch_message))
+        }
+    }
+
+    override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
+        mPromoTracker?.eventClickPromoLogisticTicker(data.promoCode)
+        presenter?.onLogisticPromoClicked(data)
     }
 
     companion object {
