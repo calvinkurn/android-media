@@ -9,7 +9,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import com.tokopedia.report.view.fragment.unify_components.TextUnify
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 import com.tokopedia.unifycomponents.HtmlLinkHelper
@@ -25,7 +24,7 @@ fun ProductReportReasonFooter(
     text: String,
     onClick: (String) -> Unit
 ) {
-    TextUnify(
+    /*TextUnify(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
@@ -39,7 +38,7 @@ fun ProductReportReasonFooter(
             setTextColor(color)
             composeSpannable(typography = this, text = text, onClick = onClick)
         }
-    )
+    )*/
 }
 
 private fun composeSpannable(

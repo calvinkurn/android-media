@@ -1,6 +1,5 @@
 package com.tokopedia.report.view.fragment.components
 
-import android.text.TextUtils
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,11 +19,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
 import com.tokopedia.report.data.model.ProductReportReason
-import com.tokopedia.report.view.fragment.unify_components.TextUnify
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -56,7 +51,7 @@ fun ProductReportReasonItem(
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                TextUnify(
+                /*TextUnify(
                     modifier = Modifier,
                     type = TextUnifyType.Body2,
                     weight = TextUnifyWeight.Bold,
@@ -85,7 +80,7 @@ fun ProductReportReasonItem(
                             ellipsize = TextUtils.TruncateAt.END
                         }
                     )
-                }
+                }*/
             }
 
             Spacer(modifier = Modifier.width(4.dp))

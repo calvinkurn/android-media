@@ -8,14 +8,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.tokopedia.report.R
 
 /**
  * Created by yovi.putra on 28/09/22"
@@ -45,6 +46,11 @@ fun CTypography(
         type = type,
         default = textStyle.letterSpacing.value
     )
+    val fontFamily = getFontFamily(
+        type = type,
+        weight = weight,
+        isFontTypeOpenSauceOne = isFontTypeOpenSauceOne
+    )
 
     Text(
         modifier = modifier.setPaddingOpenSauceOne(type = type),
@@ -52,7 +58,8 @@ fun CTypography(
         fontStyle = fontStyle,
         style = textStyle.copy(
             fontSize = fontSize,
-            letterSpacing = letterSpacing
+            letterSpacing = letterSpacing,
+            fontFamily = fontFamily
         ),
         maxLines = maxLines,
         overflow = overflow,
@@ -96,28 +103,53 @@ private fun getLetterSpacing(
     }
 }
 
-private fun getFontWeight(
+private fun getFontFamily(
     type: TextUnifyType,
     weight: TextUnifyWeight,
     isFontTypeOpenSauceOne: Boolean
-) {
-    if (isFontTypeOpenSauceOne) {
-        val boldType = listOf(
-            TextUnifyType.Heading1,
-            TextUnifyType.Heading2,
-            TextUnifyType.Heading3,
-            TextUnifyType.Heading4,
-            TextUnifyType.Heading5,
-            TextUnifyType.Heading6,
-            TextUnifyType.Display3
-        )
-        val isBold = boldType.contains(type) || weight is TextUnifyWeight.Bold
+): FontFamily = if (isFontTypeOpenSauceOne) {
+    val boldType = listOf(
+        TextUnifyType.Heading1,
+        TextUnifyType.Heading2,
+        TextUnifyType.Heading3,
+        TextUnifyType.Heading4,
+        TextUnifyType.Heading5,
+        TextUnifyType.Heading6,
+        TextUnifyType.Display3
+    )
+    val isBold = boldType.contains(type) || weight is TextUnifyWeight.Bold
 
-        if (isBold) {
-
-        }
+    if (isBold) {
+        fontOpenSourceOneExtraBold
+    } else {
+        fontOpenSourceOneRegular
+    }
+} else {
+    when (type) {
+        TextUnifyType.Body1,
+        TextUnifyType.Body2,
+        TextUnifyType.Body3,
+        TextUnifyType.Display1,
+        TextUnifyType.Display2,
+        TextUnifyType.Display3,
+        TextUnifyType.Paragraph1,
+        TextUnifyType.Paragraph2,
+        TextUnifyType.Paragraph3,
+        TextUnifyType.Small ->
+            if (weight is TextUnifyWeight.Regular) {
+                fontRobotoRegular
+            } else {
+                fontRobotoBold
+            }
+        else -> fontNunitoSansExtraBold
     }
 }
+
+val fontOpenSourceOneExtraBold = FontFamily(Font(R.font.nunito_sans_extra_bold))
+val fontOpenSourceOneRegular = FontFamily(Font(R.font.open_sauce_one_regular))
+val fontRobotoRegular = FontFamily(Font(R.font.roboto_regular))
+val fontRobotoBold = FontFamily(Font(R.font.roboto_bold))
+val fontNunitoSansExtraBold = FontFamily(Font(R.font.nunito_sans_extra_bold))
 
 private fun Modifier.setPaddingOpenSauceOne(type: TextUnifyType): Modifier {
     return when (type) {
