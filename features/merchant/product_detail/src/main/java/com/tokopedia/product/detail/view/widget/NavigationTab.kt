@@ -41,7 +41,6 @@ class NavigationTab(
     private var items: List<Item> = emptyList()
     private var listener: NavigationListener? = null
     private var config: ProductDetailNavigation.Configuration? = null
-    private var itemPositionMap: Map<Int, Int> = mapOf()
 
     private val smoothScroller = SmoothScroller(context)
     private val onTabSelectedListener = OnTabSelected()
@@ -92,9 +91,9 @@ class NavigationTab(
     }
 
     fun updateItemPosition() {
-        itemPositionMap = items.mapIndexed { index, item ->
-            item.getPosition() to index
-        }.toMap()
+        this.items.forEach { item ->
+            item.updatePosition()
+        }
     }
 
     fun onClickBackToTop() {
@@ -160,7 +159,14 @@ class NavigationTab(
         val componentName: String,
         private val positionUpdater: () -> Int
     ) {
-        fun getPosition() = positionUpdater.invoke()
+        private var mutablePosition = -1
+
+        val position: Int
+            get() = mutablePosition
+
+        fun updatePosition() {
+            mutablePosition = positionUpdater.invoke()
+        }
     }
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
@@ -240,7 +246,7 @@ class NavigationTab(
         private fun scrollToContent(tabPosition: Int) {
             selectTabJob?.cancel()
             selectTabJob = launch(Dispatchers.IO) {
-                val position = items.getOrNull(tabPosition)?.getPosition() ?: -1
+                val position = items.getOrNull(tabPosition)?.position ?: -1
                 smoothScrollToPosition(position)
             }
         }
@@ -291,7 +297,7 @@ class NavigationTab(
                 offsetY = offsetY
             )
             val indexTab = if (firstVisibleItemPosition == 0) 0
-            else items.indexOfFirst { firstVisibleItemPosition == it.getPosition() }
+            else items.indexOfFirst { firstVisibleItemPosition == it.position }
             changeTab(indexTab)
         }
 

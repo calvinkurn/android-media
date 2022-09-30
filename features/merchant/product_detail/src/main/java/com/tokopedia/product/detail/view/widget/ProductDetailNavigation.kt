@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.detail.data.util.CenterLayoutManager
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.databinding.WidgetProductDetailNavigationBinding
@@ -20,7 +19,6 @@ class ProductDetailNavigation(
 ) : FrameLayout(context, attributeSet), NavigationListener {
 
     companion object {
-        const val NAVIGATION_THRESHOLD_MEDIA_PERCENTAGE = 0.75
         private const val REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH =
             "android_enable_blocking_touch_pdp_navbar"
 
@@ -45,18 +43,24 @@ class ProductDetailNavigation(
             val someItem = layoutManager.findViewByPosition(position)
             val rectItem = Rect()
             someItem?.getGlobalVisibleRect(rectItem)
-            val rectRv = Rect()
-            recyclerView.getGlobalVisibleRect(rectRv)
-            return if ((rectItem.bottom - rectRv.top) <= offsetY) {
-                checkViewHeight(layoutManager, position + 1)
+            return if (rectItem.bottom <= offsetY) {
+                evaluateViewPosition(layoutManager, offsetY, position + 1)
             } else position
         }
 
-        private fun checkViewHeight(layoutManager: CenterLayoutManager, position: Int): Int {
+        private fun evaluateViewPosition(
+            layoutManager: CenterLayoutManager,
+            offsetY: Int,
+            position: Int
+        ): Int {
             val itemView = layoutManager.findViewByPosition(position) ?: return position - 1
-            val height = itemView.height.orZero()
-            return if (height == 0) {
-                checkViewHeight(layoutManager, position + 1)
+            if (itemView.height == Int.ZERO) {
+                return evaluateViewPosition(layoutManager, offsetY, position + 1)
+            }
+            val rectItem = Rect()
+            itemView.getGlobalVisibleRect(rectItem)
+            return if (rectItem.bottom <= offsetY) {
+                evaluateViewPosition(layoutManager, offsetY, position + 1)
             } else position
         }
     }
