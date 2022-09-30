@@ -578,7 +578,7 @@ class TopupBillsPersoFavoriteNumberFragment :
 
         val description = when (pageConfig) {
             FavoriteNumberPageConfig.CREDIT_CARD -> {
-                val clientDetail = "${favNumberItem.operatorName} - ${favNumberItem.getClientNumber()}"
+                val clientDetail = "${favNumberItem.operatorName} (${favNumberItem.getClientNumber()})"
                 Html.fromHtml(
                     getString(
                         R.string.common_topup_fav_number_delete_dialog_cc,
