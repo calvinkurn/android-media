@@ -2,11 +2,14 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.data.SocketResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -35,6 +38,8 @@ import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
+import com.tokopedia.chatbot.websocket.ChatbotWebSocketException
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -54,10 +59,13 @@ import io.mockk.spyk
 import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -93,6 +101,7 @@ class ChatbotPresenterTest {
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
+    private var socketJob: Job? = null
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -163,6 +172,163 @@ class ChatbotPresenterTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    @Test
+    fun `connectWebSocket success when Socket is Opened`() {
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.SocketOpened
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("123")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `connectWebSocket - when Socket is Closed`() {
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.Closed(1000)
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("123")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `connectWebSocket - when Socket connection is Failure`() {
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.Failure(ChatbotWebSocketException(Exception()))
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("123")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `connectWebSocket - when Socket receives new Message with code 103 `() {
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+               SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `connectWebSocket - when Socket receives new Message with code 204 `() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+        val pojo: ChatSocketPojo =
+            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                fullResponse
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving Code 103 for Reply Message` () {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+        val pojo: ChatSocketPojo =
+            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse,"4058088")
+
+        assertNotNull(socketJob)
+
+    }
+
+    @Test
+    fun `handleAttachment When receiving Code 203 for Start Typing` () {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
+        val pojo: ChatSocketPojo =
+            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse,"4058088")
+
+        assertNotNull(socketJob)
+
+    }
+
+    @Test
+    fun `handleAttachment When receiving Code 301 for Read Message` () {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
+        val pojo: ChatSocketPojo =
+            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse,"4058088")
+
+        assertNotNull(socketJob)
+
+    }
+
+
+    @Test
+    fun `handleAttachment When receiving Code 204 for End Typing` () {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+        val pojo: ChatSocketPojo =
+            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse,"4058088")
+
+        assertNotNull(socketJob)
+
+    }
+
+
 
     @Test
     fun `sendMessage without parent reply`() {

@@ -45,8 +45,6 @@ interface ChatbotContract {
 
         fun isBackAllowed(isBackAllowed: Boolean)
 
-        fun onClickLeaveQueue()
-
         fun showErrorToast(it: Throwable)
 
         fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?)

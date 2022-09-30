@@ -1252,10 +1252,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         this.isBackAllowed = isBackAllowed
     }
 
-    override fun onClickLeaveQueue() {
-        presenter.OnClickLeaveQueue()
-    }
-
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
@@ -1378,15 +1374,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     })
         }
 
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (!isBackAllowed) {
-            presenter.OnClickLeaveQueue()
-            (activity as? ChatbotActivity)?.finish()
-            return true
-        }
-        return super.onBackPressed()
     }
 
     override fun onBottomSheetDismissListener(data: Intent) {
