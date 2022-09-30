@@ -591,12 +591,7 @@ internal class SortFilterBottomSheetViewModel {
         when (visitable) {
             is SortViewModel -> visitable.reset(index)
             is PriceFilterViewModel -> visitable.reset(index)
-            is FilterRefreshable -> {
-                val shouldUpdate = visitable.resetAndReturnShouldUpdate()
-                if (shouldUpdate) {
-                    updateViewInPositionEventMutableLiveData.value = Event(index)
-                }
-            }
+            is FilterRefreshable -> visitable.reset(index)
         }
     }
 
@@ -629,6 +624,20 @@ internal class SortFilterBottomSheetViewModel {
             if (it.isSelected) {
                 shouldUpdate = true
                 it.isSelected = false
+            }
+        }
+
+        if (shouldUpdate) updateViewInPositionEventMutableLiveData.value = Event(filterIndex)
+    }
+
+    private fun FilterRefreshable.reset(filterIndex: Int) {
+        var shouldUpdate = false
+
+        optionViewModelList.forEach {
+            if (it.isSelected) {
+                shouldUpdate = true
+                it.isSelected = false
+                it.option.inputState = false.toString()
             }
         }
 
