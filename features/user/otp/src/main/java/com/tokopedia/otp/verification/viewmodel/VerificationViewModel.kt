@@ -14,6 +14,9 @@ import com.tokopedia.otp.verification.data.OtpConstant
 import com.tokopedia.otp.verification.domain.data.OtpRequestData
 import com.tokopedia.otp.verification.domain.data.OtpValidateData
 import com.tokopedia.otp.verification.domain.pojo.OtpModeListData
+import com.tokopedia.otp.verification.domain.pojo.GetVerificationMethodPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandatoryParam
+import com.tokopedia.otp.verification.domain.pojo.OtpValidatePhoneRegisterMandatoryParam
 import com.tokopedia.otp.verification.domain.usecase.*
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -36,12 +39,15 @@ open class VerificationViewModel @Inject constructor(
     private val getVerificationMethodUseCase: GetVerificationMethodUseCase,
     private val getVerificationMethodUseCase2FA: GetVerificationMethodUseCase2FA,
     private val getVerificationMethodInactivePhoneUseCase: GetVerificationMethodInactivePhoneUseCase,
+    private val getVerificationMethodPhoneRegisterMandatoryUseCase: GetVerificationMethodPhoneRegisterMandatoryUseCase,
     private val checkPinHashV2UseCase: CheckPinHashV2UseCase,
     private val generatePublicKeyUseCase: GeneratePublicKeyUseCase,
     private val otpValidateUseCase: OtpValidateUseCase,
     private val otpValidateUseCase2FA: OtpValidateUseCase2FA,
+    private val otpValidatePhoneRegisterMandatoryUseCase: OtpValidatePhoneRegisterMandatoryUseCase,
     private val sendOtpUseCase: SendOtpUseCase,
     private val sendOtpUseCase2FA: SendOtp2FAUseCase,
+    private val sendOtpPhoneRegisterMandatoryUseCase: SendOtpPhoneRegisterMandatoryUseCase,
     private val userSession: UserSessionInterface,
     private val remoteConfig: RemoteConfig,
     dispatcherProvider: CoroutineDispatchers
@@ -61,6 +67,38 @@ open class VerificationViewModel @Inject constructor(
 
     var done = false
     var isLoginRegisterFlow = false
+
+    fun getVerificationMethodPhoneRegisterMandatory(
+        otpType: String,
+        validateToken: String,
+        email: String,
+        msisdn: String
+    ) {
+        val param = GetVerificationMethodPhoneRegisterMandatoryParam(
+            otpType = otpType,
+            msisdn = msisdn,
+            email = email,
+            validateToken = validateToken
+        )
+        launchCatchError(block = {
+            val response = getVerificationMethodPhoneRegisterMandatoryUseCase(param)
+
+            when {
+                response.data.success -> {
+                    _getVerificationMethodResult.value = Success(response.data)
+                }
+                response.data.errorMessage.isNotEmpty() -> {
+                    _getVerificationMethodResult.value =
+                        Fail(MessageErrorException(response.data.errorMessage))
+                }
+                else -> {
+                    _getVerificationMethodResult.value = Fail(Throwable())
+                }
+            }
+        }, onError = {
+            _getVerificationMethodResult.value = Fail(it)
+        })
+    }
 
     fun getVerificationMethod2FA(
         otpType: String,
@@ -174,6 +212,31 @@ open class VerificationViewModel @Inject constructor(
         })
     }
 
+    fun sendOtpPhoneRegisterMandatory(
+        otpType: String,
+        mode: String,
+        msisdn: String,
+        email: String,
+        otpDigit: Int,
+        validateToken: String
+    ) {
+        val param = OtpRequestPhoneRegisterMandatoryParam(
+            otpType = otpType,
+            mode = mode,
+            msisdn = msisdn,
+            email = email,
+            otpDigit = otpDigit,
+            validateToken = validateToken
+        )
+        launchCatchError(coroutineContext, {
+            val response = sendOtpPhoneRegisterMandatoryUseCase(param)
+            val data = response.data
+            _sendOtpResult.value = Success(data)
+        }, {
+            _sendOtpResult.postValue(Fail(it))
+        })
+    }
+
     fun sendOtp2FA(
         otpType: String,
         mode: String,
@@ -219,6 +282,41 @@ open class VerificationViewModel @Inject constructor(
         }, {
             _sendOtpResult.postValue(Fail(it))
             TkpdIdlingResource.decrement()
+        })
+    }
+
+    fun otpValidatePhoneRegisterMandatory(
+        code: String,
+        otpType: String,
+        mode: String,
+        msisdn: String,
+        email: String,
+        validateToken: String
+    ) {
+        val params = OtpValidatePhoneRegisterMandatoryParam(
+            code,
+            otpType,
+            mode,
+            msisdn,
+            email,
+            validateToken
+        )
+        launchCatchError(coroutineContext, {
+            val data = otpValidatePhoneRegisterMandatoryUseCase(params).data
+
+            when {
+                data.success -> {
+                    _otpValidateResult.value = Success(data)
+                }
+                data.errorMessage.isNotEmpty() -> {
+                    _otpValidateResult.postValue(Fail(MessageErrorException(data.errorMessage)))
+                }
+                else -> {
+                    _otpValidateResult.postValue(Fail(Throwable()))
+                }
+            }
+        }, {
+            _otpValidateResult.postValue(Fail(it))
         })
     }
 
