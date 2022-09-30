@@ -40,6 +40,7 @@ import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsPersoFa
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.common.topupbills.favoritepage.view.typefactory.PersoFavoriteNumberTypeFactoryImpl
 import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.utils.InputNumberActionType
 import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFavNumberViewModel
 import com.tokopedia.common.topupbills.favoritepage.view.viewmodel.TopupBillsFavNumberViewModel.Companion.ERROR_FETCH_AFTER_DELETE
@@ -109,6 +110,7 @@ class TopupBillsPersoFavoriteNumberFragment :
     private var loyaltyStatus: String = ""
     private var isHideCoachmark = false
     private var lastDeletedNumber: UpdateFavoriteDetail? = null
+    private var pageConfig: FavoriteNumberPageConfig = FavoriteNumberPageConfig.TELCO
 
     private var binding: FragmentFavoriteNumberBinding? = null
     private var operatorList: HashMap<String, TelcoAttributesOperator> = hashMapOf()
@@ -132,6 +134,11 @@ class TopupBillsPersoFavoriteNumberFragment :
                 arguments.getIntegerArrayList(ARG_PARAM_DG_OPERATOR_IDS)?.toList() ?: listOf()
             currentCategoryName = arguments.getString(ARG_PARAM_CATEGORY_NAME, "")
             loyaltyStatus = arguments.getString(ARG_PARAM_LOYALTY_STATUS, "")
+
+            val favoriteNumberPageConfig = arguments.getSerializable(ARG_PARAM_PAGE_CONFIG) as? FavoriteNumberPageConfig
+            if (favoriteNumberPageConfig != null) {
+                pageConfig = favoriteNumberPageConfig
+            }
         }
     }
 
@@ -161,6 +168,10 @@ class TopupBillsPersoFavoriteNumberFragment :
 
     fun initView() {
         initRecyclerView()
+    }
+
+    private fun initPageConfig() {
+
     }
 
     private fun initRecyclerView() {
@@ -564,30 +575,45 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun showDeleteConfirmationDialog(favNumberItem: TopupBillsPersoFavNumberDataView) {
-        val clientName = favNumberItem.getClientName()
-        val clientNumber = favNumberItem.getClientNumber()
 
-        val clientDetail = if (favNumberItem.getClientName().isNotEmpty()) {
-            Html.fromHtml(
-                getString(
-                    R.string.common_topup_fav_number_delete_dialog_with_client_name,
-                    clientName,
-                    clientNumber
+        val description = when (pageConfig) {
+            FavoriteNumberPageConfig.CREDIT_CARD -> {
+                val clientDetail = "${favNumberItem.operatorName} - ${favNumberItem.getClientNumber()}"
+                Html.fromHtml(
+                    getString(
+                        R.string.common_topup_fav_number_delete_dialog_cc,
+                        clientDetail
+                    )
                 )
-            )
-        } else {
-            Html.fromHtml(
-                getString(
-                    R.string.common_topup_fav_number_delete_dialog,
-                    clientNumber
-                )
-            )
+            }
+            else -> {
+                val clientName = favNumberItem.getClientName()
+                val clientNumber = favNumberItem.getClientNumber()
+
+                if (favNumberItem.getClientName().isNotEmpty()) {
+                    Html.fromHtml(
+                        getString(
+                            R.string.common_topup_fav_number_delete_dialog_with_client_name,
+                            clientName,
+                            clientNumber
+                        )
+                    )
+                } else {
+                    Html.fromHtml(
+                        getString(
+                            R.string.common_topup_fav_number_delete_dialog,
+                            clientNumber
+                        )
+                    )
+                }
+            }
         }
+
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.run {
                 setTitle(getString(R.string.common_topup_fav_number_delete_dialog_title))
-                setDescription(clientDetail)
+                setDescription(description)
                 setSecondaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_cancel))
                 setSecondaryCTAClickListener { dismiss() }
                 setPrimaryCTAText(getString(R.string.common_topup_fav_number_delete_dialog_confirm))
@@ -695,6 +721,7 @@ class TopupBillsPersoFavoriteNumberFragment :
         const val ARG_PARAM_DG_OPERATOR_IDS = "ARG_PARAM_DG_OPERATOR_IDS"
         const val ARG_PARAM_CATEGORY_NAME = "ARG_PARAM_CATEGORY_NAME"
         const val ARG_PARAM_LOYALTY_STATUS = "ARG_PARAM_LOYALTY_STATUS"
+        const val ARG_PARAM_PAGE_CONFIG = "ARG_PARAM_PAGE_CONFIG"
         const val COACH_MARK_START_DELAY: Long = 200
         const val CACHE_SHOW_COACH_MARK_KEY = "show_coach_mark_key_favorite_number"
         const val CACHE_PREFERENCES_NAME = "favorite_number_preferences"
@@ -705,7 +732,8 @@ class TopupBillsPersoFavoriteNumberFragment :
         fun newInstance(
             clientNumberType: String, number: String,
             categoryName: String, digitalCategoryIds: ArrayList<String>,
-            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String
+            digitalOperatorIds: ArrayList<String>, loyaltyStatus: String,
+            pageConfig: FavoriteNumberPageConfig
         ): Fragment {
             val fragment = TopupBillsPersoFavoriteNumberFragment()
             val bundle = Bundle()
@@ -715,6 +743,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             bundle.putString(ARG_PARAM_LOYALTY_STATUS, loyaltyStatus)
             bundle.putStringArrayList(ARG_PARAM_DG_CATEGORY_IDS, digitalCategoryIds)
             bundle.putStringArrayList(ARG_PARAM_DG_OPERATOR_IDS, digitalOperatorIds)
+            bundle.putSerializable(ARG_PARAM_PAGE_CONFIG, pageConfig)
             fragment.arguments = bundle
             return fragment
         }

@@ -42,6 +42,7 @@
     <string name="common_topup_fav_number_modify_phone">Nomor HP</string>
     <string name="common_topup_fav_number_modify_button">Simpan</string>
     <string name="common_topup_fav_number_delete_dialog"><![CDATA[<b>%s</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
+    <string name="common_topup_fav_number_delete_dialog_cc"><![CDATA[Nomor kartu kredit kamu <b>%s</b> akan dihapus dari Tokopedia.]]></string>
     <string name="common_topup_fav_number_delete_dialog_with_client_name"><![CDATA[<b>%s (%s)</b> akan dihapus dari Nomor Favorit. Kamu masih bisa simpan lagi nomor ini lain kali]]></string>
     <string name="common_topup_fav_number_success_update_name">Oke, nama berhasil diubah.</string>
     <string name="common_topup_fav_number_failed_update_name">Maaf, belum berhasil diubah. Coba lagi, ya.</string>

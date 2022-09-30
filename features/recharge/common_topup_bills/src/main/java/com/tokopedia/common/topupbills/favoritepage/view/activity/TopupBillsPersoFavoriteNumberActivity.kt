@@ -57,7 +57,6 @@ class TopupBillsPersoFavoriteNumberActivity : BaseSimpleActivity(),
             this.dgOperatorIds = extras.getStringArrayList(EXTRA_DG_OPERATOR_IDS) ?: arrayListOf()
             this.loyaltyStatus = extras.getString(EXTRA_LOYALTY_STATUS, "")
 
-
             val favoriteNumberPageConfig = extras
                 .getSerializable(EXTRA_FAVORITE_NUMBER_PAGE_CONFIG) as? FavoriteNumberPageConfig
             if (favoriteNumberPageConfig != null) {

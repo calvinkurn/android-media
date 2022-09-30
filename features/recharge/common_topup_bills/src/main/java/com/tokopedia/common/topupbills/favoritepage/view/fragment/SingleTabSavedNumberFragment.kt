@@ -82,13 +82,13 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initHeader()
+        initPageConfig()
         initChildView()
         initListener()
         observeData()
     }
 
-    private fun initHeader() {
+    private fun initPageConfig() {
         binding?.run {
             (activity as? BaseToolbarActivity)?.updateTitle(getString(pageConfig.headerTextRes))
             commonTopupBillsSingleFavoriteNumberClue.text = getString(pageConfig.clueTextRes)
@@ -104,7 +104,8 @@ class SingleTabSavedNumberFragment: BaseDaggerFragment() {
             currentCategoryName,
             dgCategoryIds,
             dgOperatorIds,
-            loyaltyStatus
+            loyaltyStatus,
+            pageConfig,
         )
         childFragmentManager
             .beginTransaction()
