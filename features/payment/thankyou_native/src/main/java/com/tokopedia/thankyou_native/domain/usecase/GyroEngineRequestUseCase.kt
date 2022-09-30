@@ -65,17 +65,17 @@ class GyroEngineRequestUseCase @Inject constructor(
         )
 
     private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String, Any?>? {
-        thanksPageData.gyroData?.put(isStatic, "true")
-        thanksPageData.gyroData?.put(amount, thanksPageData.amount.toString())
-        thanksPageData.gyroData?.put(gateway_code, mainGatewayCode)
-        thanksPageData.gyroData?.put(egold, isEGoldPurchased(thanksPageData).toString())
-        thanksPageData.gyroData?.put(donation, isDonation(thanksPageData).toString())
-        thanksPageData.gyroData?.put(user_id, userSession.userId)
-        thanksPageData.gyroData?.put(is_RM, isMarketplace(thanksPageData).toString())
-        thanksPageData.gyroData?.put(is_PM, isGoldMerchant(thanksPageData).toString())
-        thanksPageData.gyroData?.put(is_OS, isOfficialStore(thanksPageData).toString())
-        thanksPageData.gyroData?.put(is_enjoy_plus_benefit, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
-        thanksPageData.gyroData?.put(is_plus_transaction, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
+        thanksPageData.gyroData?.put(IS_STATIC, "true")
+        thanksPageData.gyroData?.put(AMOUNT, thanksPageData.amount.toString())
+        thanksPageData.gyroData?.put(GATEWAY_CODE, mainGatewayCode)
+        thanksPageData.gyroData?.put(EGOLD, isEGoldPurchased(thanksPageData).toString())
+        thanksPageData.gyroData?.put(DONATION, isDonation(thanksPageData).toString())
+        thanksPageData.gyroData?.put(USER_ID, userSession.userId)
+        thanksPageData.gyroData?.put(IS_RM, isMarketplace(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_PM, isGoldMerchant(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_0S, isOfficialStore(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_ENJOY_PLUS_BENEFIT, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
+        thanksPageData.gyroData?.put(IS_PLUS_TRANSACTION, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
         return thanksPageData.gyroData
 
     }
@@ -130,17 +130,17 @@ class GyroEngineRequestUseCase @Inject constructor(
     companion object {
         const val PARAM_REQUEST = "request"
         const val PARAM_WALLET_PARAMETERS = "parameters"
-        const val isStatic = "static"
-        const val amount = "amount"
-        const val gateway_code = "gateway_code"
-        const val egold = "egold"
-        const val donation = "donation"
-        const val user_id = "user_id"
-        const val is_RM = "is_RM"
-        const val is_PM = "is_PM"
-        const val is_OS = "is_OS"
-        const val is_enjoy_plus_benefit = "is_enjoy_plus_benefit"
-        const val is_plus_transaction = "is_plus_transaction"
+        const val IS_STATIC = "static"
+        const val AMOUNT = "amount"
+        const val GATEWAY_CODE = "gateway_code"
+        const val EGOLD = "egold"
+        const val DONATION = "donation"
+        const val USER_ID = "user_id"
+        const val IS_RM = "is_RM"
+        const val IS_PM = "is_PM"
+        const val IS_0S = "is_OS"
+        const val IS_ENJOY_PLUS_BENEFIT = "is_enjoy_plus_benefit"
+        const val IS_PLUS_TRANSACTION = "is_plus_transaction"
 
     }
 }
