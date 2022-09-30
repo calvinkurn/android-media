@@ -243,7 +243,7 @@ class UploadPrescriptionFragment : BaseDaggerFragment() , EPharmacyListener {
                 if(resultCode == Activity.RESULT_OK && data != null){
                     val result = MediaPicker.result(data)
                     sendUploadPrescriptionButtonClickFromPreview()
-                    uploadPrescriptionViewModel.addSelectedPrescriptionImages(result.originalPaths)
+                    uploadPrescriptionViewModel.addSelectedPrescriptionImages(result.compressedImages)
                 }
             }else -> super.onActivityResult(requestCode, resultCode, data)
         }
