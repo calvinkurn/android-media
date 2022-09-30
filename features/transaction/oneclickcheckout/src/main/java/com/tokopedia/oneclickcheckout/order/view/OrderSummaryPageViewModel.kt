@@ -339,14 +339,24 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             return
         }
         if (!hasOldPromoCode) {
+            val promo = orderPromo.value
             val unexpectedBoVoucher =
-                orderPromo.value.lastApply.voucherOrders.firstOrNull { it.uniqueId == orderCart.cartString && it.type == "logistic" }
+                promo.lastApply.voucherOrders.firstOrNull {
+                    it.uniqueId == orderCart.cartString &&
+                        it.shippingId > 0 &&
+                        it.spId > 0 &&
+                        it.type == "logistic"
+                }
             if (unexpectedBoVoucher != null) {
                 promoProcessor.clearOldLogisticPromo(unexpectedBoVoucher.code, orderCart)
                 promoProcessor.clearOldLogisticPromoFromLastRequest(
                     lastValidateUsePromoRequest,
                     unexpectedBoVoucher.code
                 )
+                val newVoucherList = promo.lastApply.voucherOrders.toMutableList()
+                newVoucherList.remove(unexpectedBoVoucher)
+                orderPromo.value =
+                    promo.copy(lastApply = promo.lastApply.copy(voucherOrders = newVoucherList))
                 hasOldPromoCode = true
             }
         }

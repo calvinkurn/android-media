@@ -45,7 +45,9 @@ object LastApplyMapper {
                     it.message.state,
                     it.message.text
                 ),
-                it.type
+                shippingId = it.shippingId,
+                spId = it.spId,
+                type = it.type
             )
         }
     }

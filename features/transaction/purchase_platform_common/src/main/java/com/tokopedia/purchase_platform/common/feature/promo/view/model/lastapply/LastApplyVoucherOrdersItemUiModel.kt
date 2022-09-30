@@ -8,6 +8,7 @@ data class LastApplyVoucherOrdersItemUiModel(
     var code: String = "",
     var uniqueId: String = "",
     var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
+    var shippingId: Int = 0,
+    var spId: Int = 0,
     var type: String = ""
-// spId, shippingId
 ) : Parcelable
