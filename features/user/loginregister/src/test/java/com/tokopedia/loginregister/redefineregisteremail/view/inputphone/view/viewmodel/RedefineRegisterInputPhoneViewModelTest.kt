@@ -67,55 +67,69 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `input empty phone number then field status invalid`() {
+        // Given
         val phone = ""
         val expected = R.string.register_email_message_must_be_filled
 
+        // When
         viewModel.validatePhone(phone)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
     @Test
     fun `input to sort phone number then field status invalid`() {
+        // Given
         val phone = "0812123"
         val expected = R.string.register_email_input_phone_min_length_error
 
+        // When
         viewModel.validatePhone(phone)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
     @Test
     fun `input to exceed phone number length then field status invalid`() {
+        // Given
         val phone = "08121234567890123"
         val expected = R.string.register_email_input_phone_max_length_error
 
+        // When
         viewModel.validatePhone(phone)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
     @Test
     fun `input to valid phone number then field status valid`() {
+        // Given
         val phone = "081212345678"
         val expected = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validatePhone(phone)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result)
     }
 
     @Test
     fun `submit invalid phone number then field status invalid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "0812"
         val isRequiredInputPhone = false //in this case, whatever the value behavior still same
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -123,17 +137,20 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertTrue(result != validField)
     }
 
     @Test
     fun `submit valid phone number then field status valid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = false //in this case, whatever the value behavior still same
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -141,12 +158,14 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(validField, result)
     }
 
     @Test
     fun `get registerCheck then ineligible user`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
@@ -155,6 +174,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             data = RegisterCheckData(errors = listOf(message))
         )
 
+        // When
         coEvery { getRegisterCheckUseCase(phone) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -163,6 +183,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.isRegisteredPhone.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is RegistrationPhoneState.Ineligible)
@@ -172,6 +193,7 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerCheck then registered user`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
@@ -179,6 +201,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             data = RegisterCheckData(isExist = true)
         )
 
+        // When
         coEvery { getRegisterCheckUseCase(phone) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -187,6 +210,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.isRegisteredPhone.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is RegistrationPhoneState.Registered)
@@ -197,6 +221,7 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerCheck then unregistered user`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
@@ -204,6 +229,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             data = RegisterCheckData(isExist = false)
         )
 
+        // When
         coEvery { getRegisterCheckUseCase(phone) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -212,6 +238,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.isRegisteredPhone.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is RegistrationPhoneState.Unregistered)
@@ -221,11 +248,13 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerCheck then return failed`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = true
         val response = Throwable()
 
+        // When
         coEvery { getRegisterCheckUseCase(phone) } throws response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -234,6 +263,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.isRegisteredPhone.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is RegistrationPhoneState.Failed)
@@ -243,6 +273,7 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userProfileValidate then success`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = false
@@ -253,6 +284,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         )
         val expected = Success(response)
 
+        // When
         coEvery { getUserProfileValidateUseCase(param) } returns  response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -261,6 +293,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.userProfileValidate.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is Success)
@@ -270,6 +303,7 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userProfileValidate then failed`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val phone = "08121234567890"
         val isRequiredInputPhone = false
@@ -280,6 +314,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         )
         val expected = Fail(response)
 
+        // When
         coEvery { getUserProfileValidateUseCase(param) } throws response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
@@ -288,6 +323,7 @@ class RedefineRegisterInputPhoneViewModelTest {
             isRequiredInputPhone = isRequiredInputPhone
         )
 
+        // Then
         val result = viewModel.userProfileValidate.getOrAwaitValue()
         val isLoading = viewModel.submitPhoneLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -297,13 +333,16 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userProfileUpdate then success`() {
+        // Given
         val response = UserProfileUpdateModel()
         val param = UserProfileUpdateParam()
         val expected = Success(response)
 
+        // When
         coEvery { getUserProfileUpdateUseCase(param) } returns response
         viewModel.userProfileUpdate(param)
 
+        // Then
         val result = viewModel.userPhoneUpdate.getOrAwaitValue()
         assertTrue(result is Success)
         assertEquals(expected, result)
@@ -311,13 +350,16 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userProfileUpdate then failed`() {
+        // Given
         val response = Throwable()
         val param = UserProfileUpdateParam()
         val expected = Fail(response)
 
+        // When
         coEvery { getUserProfileUpdateUseCase(param) } throws response
         viewModel.userProfileUpdate(param)
 
+        // Then
         val result = viewModel.userPhoneUpdate.getOrAwaitValue()
         assertTrue(result is Fail)
         assertEquals(expected, result)
@@ -325,12 +367,15 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerV2 then success`() {
+        // Given
         val response = Success(Register())
         val param = RegisterV2Param()
 
+        // When
         coEvery { getRegisterV2AndSaveSessionUseCase(param) } returns response
         viewModel.registerV2(param)
 
+        // Then
         val result = viewModel.registerV2.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Success)
@@ -340,12 +385,15 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerV2 then get failed value from useCase`() {
+        // Given
         val response = Fail(Throwable())
         val param = RegisterV2Param()
 
+        // When
         coEvery { getRegisterV2AndSaveSessionUseCase(param) } returns response
         viewModel.registerV2(param)
 
+        // Then
         val result = viewModel.registerV2.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -355,13 +403,16 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get registerV2 then failed`() {
+        // Given
         val response = Throwable()
         val param = RegisterV2Param()
         val expected = Fail(response)
 
+        // When
         coEvery { getRegisterV2AndSaveSessionUseCase(param) } throws response
         viewModel.registerV2(param)
 
+        // Then
         val result = viewModel.registerV2.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -371,11 +422,14 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userInfo then success`() {
+        // Given
         val response = Success(ProfilePojo())
 
+        // When
         coEvery { getUserInfoAndSaveSessionUseCase(Unit) } returns response
         viewModel.getUserInfo()
 
+        // Then
         val result = viewModel.getUserInfo.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Success)
@@ -385,11 +439,14 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userInfo then get failed value from useCase`() {
+        // Given
         val response = Fail(Throwable())
 
+        // When
         coEvery { getUserInfoAndSaveSessionUseCase(Unit) } returns response
         viewModel.getUserInfo()
 
+        // Then
         val result = viewModel.getUserInfo.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -399,12 +456,15 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `get userInfo then failed`() {
+        // Given
         val response = Throwable()
         val expected = Fail(response)
 
+        // When
         coEvery { getUserInfoAndSaveSessionUseCase(Unit) } throws response
         viewModel.getUserInfo()
 
+        // Then
         val result = viewModel.getUserInfo.getOrAwaitValue()
         val isLoading = viewModel.submitRegisterLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -414,8 +474,10 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `set action after register then make sure function only called once`() {
+        // When
         viewModel.saveFirstInstallTime()
 
+        // Then
         coVerify(exactly = 1){
             registerPreferences.saveFirstInstallTime()
         }
@@ -423,11 +485,14 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     @Test
     fun `set action after register then failed`() {
+        // Given
         val response = Throwable()
 
+        // When
         coEvery { registerPreferences.saveFirstInstallTime() } throws response
         viewModel.saveFirstInstallTime()
 
+        // Then
         coVerify(exactly = 1){
             registerPreferences.saveFirstInstallTime()
         }
