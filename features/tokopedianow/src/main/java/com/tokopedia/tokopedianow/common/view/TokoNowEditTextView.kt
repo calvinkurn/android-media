@@ -4,13 +4,30 @@ import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.content.ContextCompat
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.Typography
 
-class TokoNowEditTextView(context: Context, attributeSet: AttributeSet? = null) : AppCompatEditText(context, attributeSet) {
+class TokoNowEditTextView constructor(
+    context: Context,
+    attrs: AttributeSet? = null
+) : AppCompatEditText(context, attrs) {
+
     var focusChangedListener: ((focused: Boolean) -> Unit)? = null
 
     init {
-        typeface = Typography.getFontType(context, false, Typography.DISPLAY_2)
+        typeface = Typography.getFontType(
+            context = context,
+            isBold = false,
+            fontVariant = Typography.DISPLAY_2
+        )
+
+        setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+    }
+
+    override fun setText(text: CharSequence?, type: BufferType?) {
+        super.setText(text, type)
+        if (isFocused) setSelection(text?.length.orZero())
     }
 
     override fun onFocusChanged(
@@ -21,4 +38,5 @@ class TokoNowEditTextView(context: Context, attributeSet: AttributeSet? = null) 
         focusChangedListener?.invoke(focused)
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
     }
+
 }

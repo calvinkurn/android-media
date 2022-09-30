@@ -16,5 +16,7 @@
     <dimen name="tokopedianow_usp_illustration_height">32dp</dimen>
     <dimen name="tokopedianow_usp_illustration_width">32dp</dimen>
     <dimen name="tokopedianow_switcher_coachmark_left_margin">55dp</dimen>
-    <dimen name="tokopedianow_test">14sp</dimen>
+    <dimen name="tokopedianow_quantity_editor_text_size_start_with_value">16sp</dimen>
+    <dimen name="tokopedianow_quantity_editor_text_size_end_with_value">14sp</dimen>
+    <dimen name="tokopedianow_quantity_editor_padding_horizontal">6dp</dimen>
 </resources>
