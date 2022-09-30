@@ -543,12 +543,16 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_REGISTER -> {
                 if (resultCode == Activity.RESULT_OK) {
                     submitRegisterV2()
+                } else {
+                    redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, RedefineRegisterEmailAnalytics.MESSAGE_FAILED_OTP)
                 }
             }
             RedefineRegisterEmailConstants.VERIFICATION_PHONE_UPDATE_PROFILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     parameter.token = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                     submitUpdatePhone()
+                } else {
+                    redefineRegisterEmailAnalytics.sendClickYaBenarPhoneNumberEvent(RedefineRegisterEmailAnalytics.ACTION_FAILED, parameter.isRequiredInputPhone, RedefineRegisterEmailAnalytics.MESSAGE_FAILED_OTP)
                 }
             }
         }
