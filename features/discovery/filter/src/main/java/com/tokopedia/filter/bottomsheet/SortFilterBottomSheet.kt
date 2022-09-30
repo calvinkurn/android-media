@@ -16,6 +16,7 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.bottomsheet.filter.FilterViewListener
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
@@ -127,10 +128,10 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private val priceRangeFilterCheckboxListener = object : PriceRangeFilterCheckboxListener {
 
         override fun onPriceRangeFilterCheckboxItemClicked(
-            filterRefreshable: FilterRefreshable,
+            priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
             optionViewModel: OptionViewModel
         ) {
-            sortFilterBottomSheetViewModel?.onOptionClick(filterRefreshable, optionViewModel)
+            sortFilterBottomSheetViewModel?.onOptionClick(priceRangeFilterCheckboxDataView, optionViewModel)
         }
     }
 

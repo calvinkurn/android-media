@@ -8,9 +8,11 @@ import com.tokopedia.filter.common.data.Filter
 internal class FilterViewModel(
     override val filter: Filter,
     val hasSeeAllButton: Boolean,
-    override val willSortOptionList: Boolean,
     override var optionViewModelList: MutableList<OptionViewModel>,
 ): FilterRefreshable, Visitable<SortFilterBottomSheetTypeFactory> {
+
+    override val willSortOptionList: Boolean
+        get() = true
 
     override fun type(typeFactory: SortFilterBottomSheetTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0

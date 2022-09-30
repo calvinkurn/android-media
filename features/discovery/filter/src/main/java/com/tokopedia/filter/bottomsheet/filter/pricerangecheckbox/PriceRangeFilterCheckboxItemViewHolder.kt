@@ -16,7 +16,11 @@ internal class PriceRangeFilterCheckboxItemViewHolder(
     private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView, item: OptionViewModel, priceRangeSize: Int) {
+    fun bind(
+        priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
+        item: OptionViewModel,
+        priceRangeSize: Int
+    ) {
         with(binding) {
             tvPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
@@ -25,8 +29,10 @@ internal class PriceRangeFilterCheckboxItemViewHolder(
         }
     }
 
-    private fun bindCheckboxPriceRange(priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
-                                       item: OptionViewModel) {
+    private fun bindCheckboxPriceRange(
+        priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
+        item: OptionViewModel
+    ) {
         with(binding.cbPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected

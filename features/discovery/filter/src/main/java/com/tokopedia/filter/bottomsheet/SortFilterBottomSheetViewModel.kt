@@ -256,12 +256,15 @@ internal class SortFilterBottomSheetViewModel {
 
         val hasSeeAllButton = filter.options.any { !it.isPopular } || filter.isCategoryFilter
 
-        return FilterViewModel(filter, hasSeeAllButton, true, optionViewModelMutableList)
+        return FilterViewModel(filter, hasSeeAllButton, optionViewModelMutableList)
                 .apply { sortBySelectedAndName() }
     }
 
-    private fun processOptionList(optionList: List<Option>, optionViewModelList: MutableList<OptionViewModel>,
-                                  willSortOptionList: Boolean) {
+    private fun processOptionList(
+        optionList: List<Option>,
+        optionViewModelList: MutableList<OptionViewModel>,
+        willSortOptionList: Boolean
+    ) {
         val levelTwoCategoryList = mutableListOf<Option>()
         val levelThreeCategoryList = mutableListOf<Option>()
 
@@ -285,7 +288,7 @@ internal class SortFilterBottomSheetViewModel {
         }
 
         val optionListForViewModel = if (willSortOptionList) {
-             createOptionListForViewModel(selectedOrPopularOptionList)
+            createOptionListForViewModel(selectedOrPopularOptionList)
         } else {
             selectedOrPopularOptionList
         }
