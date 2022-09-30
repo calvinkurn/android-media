@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_ITEM_LIST
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_VIEW_PG_IRIS
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_CATEGORY_ID
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_INDEX
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_BRAND
@@ -18,6 +19,10 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_NAME
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_VARIANT
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_PRICE
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_QUANTITY
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_ID
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_NAME
+import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_SHOP_TYPE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.DEFAULT_EMPTY_VALUE
@@ -33,13 +38,17 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.user.session.UserSessionInterface
 
+/**
+ * Docs:
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3155
+ */
 class RecipeSimilarProductAnalytics(
     private val userSession: UserSessionInterface
 ) : ProductAnalytics {
 
     companion object {
         private const val EVENT_ACTION_IMPRESSION_BOTTOMSHEET = "impression produk serupa bottomsheet"
-        private const val EVENT_ACTION_IMPRESSION_PRODUCT_BOTTOMSHEET = "impression produk serupa bottomsheet"
+        private const val EVENT_ACTION_IMPRESSION_PRODUCT_BOTTOMSHEET = "product impression at bottomsheet"
         private const val EVENT_ACTION_IMPRESSION_SIMILAR_PRODUCT_BTN = "impression produk serupa button"
         private const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN = "click produk serupa button"
         private const val EVENT_ACTION_CLICK_ADD_TO_CART = "bottomsheet atc product"
@@ -100,11 +109,11 @@ class RecipeSimilarProductAnalytics(
 
         val itemList = product.similarProducts.map {
             createProductItemDataLayer(
-                index = product.position,
-                id = product.id,
-                name = product.name,
-                price = product.priceFmt,
-                category = product.categoryId
+                index = it.position,
+                id = it.id,
+                name = it.name,
+                price = it.priceFmt,
+                category = it.categoryId
             )
         }
 
@@ -124,12 +133,14 @@ class RecipeSimilarProductAnalytics(
 
     override fun trackClickAddToCart(product: RecipeProductUiModel) {
         val items = listOf(
-            createProductItemDataLayer(
-                index = product.position,
+            createAtcProductItemDataLayer(
                 id = product.id,
                 name = product.name,
                 price = product.priceFmt,
-                category = product.categoryId
+                categoryName = product.categoryName,
+                categoryId = product.categoryId,
+                quantity = product.minOrder.toString(),
+                shopId = product.shopId
             )
         )
 
@@ -217,11 +228,22 @@ class RecipeSimilarProductAnalytics(
             )
         )
 
+        val itemList = product.similarProducts.map {
+            createProductItemDataLayer(
+                index = it.position,
+                id = it.id,
+                name = it.name,
+                price = it.priceFmt,
+                category = it.categoryId
+            )
+        }
+
         val dataLayer = createGeneralDataLayer(
             event = EVENT_VIEW_ITEM_LIST,
             action = EVENT_ACTION_IMPRESSION_OUT_OF_STOCK_PRODUCT
         ).apply {
             putParcelableArrayList(KEY_ITEMS, ArrayList(items))
+            putParcelableArrayList(KEY_ITEM_LIST, ArrayList(itemList))
         }
 
         sendEnhanceEcommerceEvent(
@@ -259,6 +281,32 @@ class RecipeSimilarProductAnalytics(
             putString(KEY_ITEM_NAME, name)
             putString(KEY_ITEM_VARIANT, variant)
             putString(KEY_PRICE, price)
+        }
+    }
+
+    private fun createAtcProductItemDataLayer(
+        id: String = "",
+        name: String = "",
+        price: String = "",
+        brand: String = "",
+        categoryName: String = "",
+        categoryId: String = "",
+        quantity: String = "",
+        variant: String = "",
+        shopId: String = ""
+    ): Bundle {
+        return Bundle().apply {
+            putString(KEY_ITEM_BRAND, brand)
+            putString(KEY_ITEM_CATEGORY, categoryName)
+            putString(KEY_ITEM_ID, id)
+            putString(KEY_ITEM_NAME, name)
+            putString(KEY_ITEM_VARIANT, variant)
+            putString(KEY_PRICE, price)
+            putString(KEY_CATEGORY_ID, categoryId)
+            putString(KEY_QUANTITY, quantity)
+            putString(KEY_SHOP_ID, shopId)
+            putString(KEY_SHOP_NAME, DEFAULT_EMPTY_VALUE)
+            putString(KEY_SHOP_TYPE, DEFAULT_EMPTY_VALUE)
         }
     }
 
