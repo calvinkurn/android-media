@@ -9,7 +9,9 @@ data class GetFlashSaleListForSellerMetaResponse(
 ) {
     data class GetFlashSaleListForSellerMeta(
         @SerializedName("tab_list")
-        val tabList: List<Tab> = listOf()
+        val tabList: List<Tab> = listOf(),
+        @SerializedName("ticker_non_multiloc_message")
+        val tickerNonMultiLocMessage: String = ""
     ) {
         data class Tab(
             @SerializedName("display_name")

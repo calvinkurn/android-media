@@ -23,8 +23,12 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.Date
 
-class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (Int) -> Unit) : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
-    UpcomingFlashSaleItem::class.java) {
+class UpcomingFlashSaleDelegateAdapter(
+    private val onCardClicked: (Int) -> Unit,
+    private val onRegisterButtonClicked: (Int) -> Unit
+) : DelegateAdapter<UpcomingFlashSaleItem, UpcomingFlashSaleDelegateAdapter.UpcomingFlashSaleViewHolder>(
+    UpcomingFlashSaleItem::class.java
+) {
 
     private val now = Date()
 
@@ -52,7 +56,8 @@ class UpcomingFlashSaleDelegateAdapter(private val onRegisterButtonClicked : (In
     inner class UpcomingFlashSaleViewHolder(private val binding : StfsItemUpcomingFlashSaleBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onRegisterButtonClicked(adapterPosition) }
+            binding.root.setOnClickListener { onCardClicked(adapterPosition) }
+            binding.btnRegister.setOnClickListener { onRegisterButtonClicked(adapterPosition) }
         }
 
         fun bind(item: UpcomingFlashSaleItem) {

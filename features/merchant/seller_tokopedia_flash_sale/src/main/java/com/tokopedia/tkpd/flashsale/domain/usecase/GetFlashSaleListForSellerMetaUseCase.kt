@@ -18,7 +18,7 @@ import javax.inject.Inject
 class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: GetFlashSaleListForSellerMetaMapper
-) : GraphqlUseCase<List<TabMetadata>>(repository) {
+) : GraphqlUseCase<TabMetadata>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -29,7 +29,6 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-
         private val OPERATION_NAME = "getFlashSaleListForSellerMeta"
         private val QUERY = """
         query $OPERATION_NAME(${'$'}params: GetFlashSaleListForSellerMeta!) {
@@ -40,6 +39,7 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
                      total_campaign
                      display_name
                    }
+                   ticker_non_multiloc_message
              }
        }
 
@@ -50,7 +50,7 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(): List<TabMetadata> {
+    suspend fun execute(): TabMetadata {
         val request = buildRequest()
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleListForSellerMetaResponse>()

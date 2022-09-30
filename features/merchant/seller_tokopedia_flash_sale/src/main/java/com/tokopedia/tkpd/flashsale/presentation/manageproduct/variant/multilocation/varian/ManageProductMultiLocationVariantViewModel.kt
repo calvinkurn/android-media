@@ -1,171 +1,187 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import javax.inject.Inject
 
-//TODO WILLYBRODUS : Add all logic method in Adapter and Fragment into here
 class ManageProductMultiLocationVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val errorMessageHelper: ErrorMessageHelper
 ) : BaseViewModel(dispatchers.main) {
 
-    private lateinit var productData: ReservedProduct.Product
-    private lateinit var variant: ReservedProduct.Product.ChildProduct
-    private var variantPositionOnProduct: Int = 0
-    private var isHasEmptyState = arrayListOf<Int>()
-    val buttonEnableState = MutableLiveData<Boolean>()
-
-    fun setupInitiateProductData(product: ReservedProduct.Product, variantPositionOnProduct: Int) {
-        productData = product
-        variant = product.childProducts[variantPositionOnProduct]
-        this.variantPositionOnProduct = variantPositionOnProduct
+    companion object {
+        const val MINIMUM_TO_SET_BULK = 2
+        const val DEFAULT_SIZE_TO_BULK = 0
     }
 
-    fun setItemToggleValue(itemPosition: Int, value: Boolean) {
-        val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.isToggleOn = value
+    private var _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()
+    val product: LiveData<ReservedProduct.Product>
+        get() = _product
+
+    private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
+        MutableLiveData()
+
+    val enableBulkApply = Transformations.map(_productVariant) {
+        var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK
+        it.warehouses.forEach { warehouse -> if (warehouse.isToggleOn) sizeOfToggleOn++ }
+        sizeOfToggleOn >= MINIMUM_TO_SET_BULK
     }
 
-    fun setDiscountAmount(itemPosition: Int, value: Long) {
-        val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.discountSetup.price = value
+    val bulkApplyCaption = Transformations.map(_productVariant) {
+        errorMessageHelper.getBulkApplyCaption(it.warehouses)
     }
 
-    fun setStockAmount(itemPosition: Int, value: Long) {
-        val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.discountSetup.stock = value
-    }
+    val isInputPageValid = Transformations.map(_product) {
+        val criteria = it.productCriteria
+        val listOfSelectedProductVariant = it.childProducts[variantPositionOnProduct].warehouses
+            .filter { warehouse -> warehouse.isToggleOn }
 
-    fun setDiscountPercentage(itemPosition: Int, value: Long) {
-        val selectedItem = variant.warehouses[itemPosition]
-        selectedItem.discountSetup.discount = value.toInt()
-    }
-
-    fun getFinalProductData(): ReservedProduct.Product {
-        return productData
-    }
-
-    fun checkAllValidationOfInputUser(position: Int, isAllInputEmpty: Boolean = false) {
-        val isAllAmountValid = checkIsAllAmountInCriteria()
-        val isAllStockValid = checkIsStockInCriteria()
-        reViewIsHasEmptyState(position, isAllInputEmpty)
-        buttonEnableState.value =
-            if (isEmptyState()) false else (isAllAmountValid && isAllStockValid)
-    }
-
-    private fun reViewIsHasEmptyState(position: Int, isAllInputEmpty: Boolean) {
-        if (!isAllInputEmpty)
-            isHasEmptyState.remove(position)
-        else {
-            if (!isHasEmptyState.contains(position))
-                isHasEmptyState.add(position)
+        return@map listOfSelectedProductVariant.any {
+            return@map validateInput(
+                criteria,
+                it.discountSetup
+            ).isAllFieldValid()
         }
     }
 
-    private fun isEmptyState() = isHasEmptyState.size > 0
+    var variantPositionOnProduct : Int = 0
 
-    fun checkValidationDiscountAmountInWarehouseWithPosition(positionWarehouse: Int): Boolean {
-        return checkIsAmountOnCriteria(variant.warehouses[positionWarehouse])
-    }
-
-    fun checkValidationDiscountPercentInWarehouseWithPosition(positionWarehouse: Int): Boolean {
-        return checkIsPercentOnCriteria(variant.warehouses[positionWarehouse])
-    }
-
-    fun checkValidationStockInWarehouseWithPosition(positionWarehouse: Int): Boolean {
-        return checkIsStockOnCriteria(variant.warehouses[positionWarehouse].stock)
-    }
-
-    fun getMessageOfHintInputField(positionWarehouse: Int): Pair<String, String> {
-        return Pair(
-            errorMessageHelper.getPriceMessage(
-                productData.productCriteria,
-                variant.warehouses[positionWarehouse].discountSetup
+    fun validateInput(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult {
+        return ValidationResult(
+            isPriceError = discountSetup.price !in criteria.minFinalPrice..criteria.maxFinalPrice,
+            isPricePercentError = discountSetup.discount !in criteria.minDiscount..criteria.maxDiscount,
+            isStockError = discountSetup.stock !in criteria.minCustomStock..criteria.maxCustomStock,
+            priceMessage = getMessage(
+                isPercent = false,
+                isZero = false,
+                criteria = criteria,
+                discountSetup = discountSetup
             ),
-            errorMessageHelper.getDiscountMessage(
-                productData.productCriteria,
-                variant.warehouses[positionWarehouse].discountSetup
-            ),
+            pricePercentMessage = getMessage(
+                isPercent = true,
+                isZero = false,
+                criteria = criteria,
+                discountSetup = discountSetup
+            )
         )
     }
 
-    fun getMessageOfHintStockField(positionWarehouse: Int): String {
-        return errorMessageHelper.getStockMessage(
-            productData.productCriteria,
-            variant.warehouses[positionWarehouse].stock
+    fun validateItem(
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): ValidationResult {
+        val discountPrice = discountSetup.price.orZero()
+        val discountPercent = discountSetup.discount.orZero()
+        val stock = discountSetup.stock.orZero()
+        val isDiscountPriceZero = discountPrice.isZero()
+        val isDiscountPercentZero = discountPercent.isZero()
+        val isStockZero = stock.isZero()
+        val isDiscountPriceNotInCriteria =
+            discountPrice !in criteria.minFinalPrice..criteria.maxFinalPrice
+        val isDiscountPercentNotInCriteria =
+            discountPercent !in criteria.minDiscount..criteria.maxDiscount
+        val isStockNotInCriteria = stock !in criteria.minCustomStock..criteria.maxCustomStock
+        val messageNominal = getMessage(false, isDiscountPriceZero, criteria, discountSetup)
+        val messagePercent = getMessage(true, isDiscountPercentZero, criteria, discountSetup)
+        return ValidationResult(
+            isPriceError = isDiscountPriceNotInCriteria && !isDiscountPriceZero,
+            isPricePercentError = isDiscountPercentNotInCriteria && !isDiscountPercentZero,
+            isStockError = isStockNotInCriteria && !isStockZero,
+            priceMessage = messageNominal,
+            pricePercentMessage = messagePercent
         )
-
     }
 
-    private fun checkIsAllAmountInCriteria(): Boolean {
-        return variant.warehouses.any { warehouse ->
-            if (warehouse.isToggleOn) {
-                val resultCheck = checkIsAmountOnCriteria(warehouse)
-                if (!resultCheck) {
-                    return false
-                }
-                return@any resultCheck
-            } else
-                false
+    private fun getMessage(
+        isPercent: Boolean,
+        isZero: Boolean,
+        criteria: ReservedProduct.Product.ProductCriteria,
+        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
+    ): String {
+        val messagePrice = errorMessageHelper.getString(
+            R.string.manageproductnonvar_range_message_format,
+            criteria.minFinalPrice.getCurrencyFormatted(),
+            criteria.maxFinalPrice.getCurrencyFormatted()
+        )
+        val messagePercent = errorMessageHelper.getString(
+            R.string.manageproductnonvar_range_message_format,
+            criteria.minDiscount.getPercentFormatted(),
+            criteria.maxDiscount.getPercentFormatted()
+        )
+        return when {
+            isZero -> if (isPercent) messagePercent else messagePrice
+            isPercent -> errorMessageHelper.getDiscountMessage(criteria, discountSetup)
+            else -> errorMessageHelper.getPriceMessage(criteria, discountSetup)
         }
     }
 
-    private fun checkIsStockInCriteria(): Boolean {
-        return variant.warehouses.any { warehouse ->
-            if (warehouse.isToggleOn) {
-                val resultCheck = checkIsStockOnCriteria(warehouse.stock)
-                if (!resultCheck) {
-                    return false
+    fun calculatePrice(percentInput: Long, originalPrice: Long): String {
+        return DiscountUtil.calculatePrice(percentInput, originalPrice).toString()
+    }
+
+    fun calculatePercent(priceInput: Long, originalPrice: Long): String {
+        return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
+    }
+
+    fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int) {
+        _product.value = product
+        variantPositionOnProduct = positionOfVariant
+        _productVariant.value = product.childProducts[positionOfVariant]
+    }
+
+    fun valueAdjustmentOfServedByTokopediaWarehouseToRegister(
+        warehouses: List<ReservedProduct.Product.Warehouse>,
+        positionWarehouse: Int
+    ): List<ReservedProduct.Product.Warehouse> {
+        val warehouse = warehouses[positionWarehouse]
+        warehouses.forEach {
+            if (it.isToggleOn && it.isDilayaniTokopedia) {
+                it.discountSetup.apply {
+                    price = warehouse.discountSetup.price
+                    discount = warehouse.discountSetup.discount
                 }
-
-                return@any resultCheck
-            } else
-                false
+            }
         }
+        return warehouses
     }
 
-    private fun checkIsAmountOnCriteria(variant: ReservedProduct.Product.Warehouse): Boolean {
-        val (productMinFinalPrice, productMaxFinalPrice) = getCriteriaPriceInProduct()
-        return variant.price in productMinFinalPrice..productMaxFinalPrice
+    fun findPositionOfProductServedByTokopediaToRegister(listWarehouse: List<ReservedProduct.Product.Warehouse>): ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>>? {
+        val listOfServedByTokopedia: ArrayList<Pair<Int, ReservedProduct.Product.Warehouse>> =
+            arrayListOf()
+        listWarehouse.forEachIndexed { index, warehouse ->
+            if (warehouse.isToggleOn && warehouse.isDilayaniTokopedia) {
+                listOfServedByTokopedia.add(Pair(index, warehouse))
+            }
+        }
+
+        return if (listOfServedByTokopedia.size >= MINIMUM_TO_SET_BULK)
+            listOfServedByTokopedia
+        else
+            null
     }
 
-    private fun checkIsPercentOnCriteria(variant: ReservedProduct.Product.Warehouse): Boolean {
-        val (productMinPercent, productMaxPercent) = getCriteriaPercentInProduct()
-        return variant.discountSetup.discount in productMinPercent..productMaxPercent
+    fun setToggleOnOrOf(product : ReservedProduct.Product?, positionOfVariant : Int) : ReservedProduct.Product? {
+        return if(product != null) {
+            val variant = product.childProducts[positionOfVariant]
+            val isToggleOn = findToggleOnInWarehouse(variant).size.isMoreThanZero()
+            variant.isToggleOn = isToggleOn
+             product
+        } else null
     }
 
-    private fun checkIsStockOnCriteria(stock: Long): Boolean {
-        val (productMinStock, productMaxStock) = getCriteriaStockInProduct()
-        return stock in productMinStock..productMaxStock
-    }
-
-    private fun getCriteriaPriceInProduct(): Pair<Long, Long> {
-        val productMinFinalPrice = productData.productCriteria.minFinalPrice
-        val productMaxFinalPrice = productData.productCriteria.maxFinalPrice
-        return Pair(productMinFinalPrice, productMaxFinalPrice)
-    }
-
-    private fun getCriteriaPercentInProduct(): Pair<Long, Long> {
-        val productMinDiscount = productData.productCriteria.minDiscount
-        val productMaxDiscount = productData.productCriteria.maxDiscount
-        return Pair(productMinDiscount, productMaxDiscount)
-    }
-
-    private fun getCriteriaStockInProduct(): Pair<Int, Int> {
-        val productMinStock = productData.productCriteria.minCustomStock
-        val productMaxStock = productData.productCriteria.maxCustomStock
-        return Pair(productMinStock, productMaxStock)
-    }
-
-    fun getVariantData(): ReservedProduct.Product.ChildProduct {
-        return variant
-    }
-
-    fun getProductResult(): ReservedProduct.Product {
-        return productData
+    fun findToggleOnInWarehouse(variant : ReservedProduct.Product.ChildProduct) : List<ReservedProduct.Product.Warehouse>{
+        return variant.warehouses.filter { it.isToggleOn }
     }
 }

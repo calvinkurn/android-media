@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -25,7 +26,6 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.Validatio
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION
-import timber.log.Timber
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -132,10 +132,7 @@ class ManageProductVariantFragment :
         bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             setProductListData(appliedProduct)
-            buttonSubmit.showToaster(
-                getString(R.string.stfs_success_bulk_apply_label),
-                getString(R.string.stfs_oke_label)
-            )
+            displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -144,6 +141,20 @@ class ManageProductVariantFragment :
         return ManageProductVariantAdapter(this).apply {
             setDataList(viewModel.getProductData())
         }
+    }
+
+    private fun displayToaster(product: ReservedProduct.Product) {
+        val variantWarehouses = product.childProducts
+        val criteria = product.productCriteria
+
+        val isValid = variantWarehouses.firstOrNull { variantProduct ->
+            variantProduct.warehouses.firstOrNull { variantWarehouse ->
+                viewModel.validateInput(criteria, variantWarehouse.discountSetup).isAllFieldValid()
+            } != null
+        } != null
+
+        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
     }
 
     private fun setWidgetBulkApplyState() {
@@ -235,7 +246,6 @@ class ManageProductVariantFragment :
                 if (resultCode == Activity.RESULT_OK) {
                     val appliedProduct =
                         data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
-                    Timber.tag("Masuk").d(appliedProduct.toString())
                     if (appliedProduct != null) {
                         setProductListData(appliedProduct)
                         viewModel.validateInputPage(appliedProduct.productCriteria)

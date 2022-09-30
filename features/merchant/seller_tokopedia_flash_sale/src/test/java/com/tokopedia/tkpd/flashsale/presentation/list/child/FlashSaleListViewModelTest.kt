@@ -209,7 +209,7 @@ class FlashSaleListViewModelTest {
             1,
             "Flash Sale 1",
             true,
-            FlashSale.ProductMeta(5, 5, 10, 5, 5, 0),
+            FlashSale.ProductMeta(5, 5, 10, 5, 5, 0, 0.0),
             1,
             flashSaleReview,
             flashSaleReview,
@@ -221,7 +221,8 @@ class FlashSaleListViewModelTest {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.UPCOMING
+            FlashSaleStatus.UPCOMING,
+            emptyList()
         )
         val expected = listOf(
             UpcomingFlashSaleItem(
@@ -234,7 +235,8 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                flashSaleSubmission
+                flashSaleSubmission,
+                useMultiLocation = false
             )
 
         )
@@ -281,7 +283,7 @@ class FlashSaleListViewModelTest {
             requestProductMetaData = true
         )
 
-        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0)
+        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0, 0.0)
         val currentDate = GregorianCalendar(2022, 10,1, 0,0,0).time
         val flashSaleStartDate = GregorianCalendar(2022, 10,10, 0,0,0).time
         val flashSaleEndDate = GregorianCalendar(2022, 10,20, 0,0,0).time
@@ -309,7 +311,8 @@ class FlashSaleListViewModelTest {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.FINISHED
+            FlashSaleStatus.FINISHED,
+            emptyList()
         )
         val expected = listOf(
             FinishedFlashSaleItem(
@@ -322,7 +325,8 @@ class FlashSaleListViewModelTest {
                 "Selesai",
                 productMeta,
                 "",
-                100
+                100,
+                useMultiLocation = false
             )
 
         )
@@ -369,7 +373,7 @@ class FlashSaleListViewModelTest {
             requestProductMetaData = false
         )
 
-        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0)
+        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0, 0.0)
         val currentDate = GregorianCalendar(2022, 10,10, 0,0,0).time
         val flashSaleStartDate = GregorianCalendar(2022, 10,10, 7,0,0).time
         val flashSaleEndDate = GregorianCalendar(2022, 10,20, 0,0,0).time
@@ -397,7 +401,8 @@ class FlashSaleListViewModelTest {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.WAITING_FOR_SELECTION
+            FlashSaleStatus.WAITING_FOR_SELECTION,
+            emptyList()
         )
 
         val expected = listOf(
@@ -412,7 +417,8 @@ class FlashSaleListViewModelTest {
                 flashSaleReview,
                 flashSaleReview,
                 FlashSaleStatus.WAITING_FOR_SELECTION,
-                "Proses Seleksi"
+                "Proses Seleksi",
+                useMultiLocation = false
             )
 
         )
@@ -460,7 +466,7 @@ class FlashSaleListViewModelTest {
             requestProductMetaData = true
         )
 
-        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0)
+        val productMeta = FlashSale.ProductMeta(5, 5, 10, 5, 5, 0, 0.0)
         val currentDate = GregorianCalendar(2022, 10,10, 0,0,0).time
         val flashSaleStartDate = GregorianCalendar(2022, 10,10, 10,0,0).time
         val flashSaleEndDate = GregorianCalendar(2022, 10,10, 12,0,0).time
@@ -488,7 +494,8 @@ class FlashSaleListViewModelTest {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.ONGOING
+            FlashSaleStatus.ONGOING,
+            emptyList()
         )
         val expected = listOf(
             OngoingFlashSaleItem(
@@ -501,7 +508,8 @@ class FlashSaleListViewModelTest {
                 5,
                 5,
                 FlashSaleStatus.ONGOING,
-                "Berlangsung"
+                "Berlangsung",
+                useMultiLocation = false
             )
 
         )
@@ -563,7 +571,7 @@ class FlashSaleListViewModelTest {
             1,
             "Flash Sale 1",
             true,
-            FlashSale.ProductMeta(5, 5, 10, 5, 5, 0),
+            FlashSale.ProductMeta(5, 5, 10, 5, 5, 0, 0.0),
             1,
             flashSaleReview,
             flashSaleReview,
@@ -575,8 +583,10 @@ class FlashSaleListViewModelTest {
             flashSaleSubmission,
             false,
             FlashSale.FormattedDate("", ""),
-            FlashSaleStatus.UPCOMING
+            FlashSaleStatus.UPCOMING,
+            emptyList()
         )
+
         val expected = listOf(
             UpcomingFlashSaleItem(
                 1,
@@ -588,7 +598,8 @@ class FlashSaleListViewModelTest {
                 "",
                 flashSaleEndDate,
                 0,
-                flashSaleSubmission
+                flashSaleSubmission,
+                useMultiLocation = false
             )
 
         )

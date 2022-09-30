@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ErrorMessageHelper @Inject constructor(@ApplicationContext private val context: Context) {
 
-    private fun getString(@StringRes resId: Int, vararg formatArgs: Any): String {
+    fun getString(@StringRes resId: Int, vararg formatArgs: Any): String {
         return try {
             context.getString(resId, *formatArgs)
         } catch (e: Exception) {
@@ -43,19 +43,6 @@ class ErrorMessageHelper @Inject constructor(@ApplicationContext private val con
             getString(R.string.manageproductnonvar_max_message_format, criteria.maxDiscount.getPercentFormatted())
         } else {
             getString(R.string.manageproductnonvar_range_message_format, criteria.minDiscount.getPercentFormatted(), criteria.maxDiscount.getPercentFormatted())
-        }
-    }
-
-    fun getStockMessage(
-        criteria: ReservedProduct.Product.ProductCriteria,
-        stock: Long,
-    ): String {
-        return if (stock < criteria.minCustomStock) {
-            getString(R.string.manageproductnonvar_min_message_format, criteria.minCustomStock)
-        } else if (stock > criteria.maxCustomStock) {
-            getString(R.string.manageproductnonvar_max_message_format, criteria.maxCustomStock)
-        } else {
-            getString(R.string.manageproductnonvar_range_message_format, criteria.minCustomStock, criteria.maxCustomStock)
         }
     }
 

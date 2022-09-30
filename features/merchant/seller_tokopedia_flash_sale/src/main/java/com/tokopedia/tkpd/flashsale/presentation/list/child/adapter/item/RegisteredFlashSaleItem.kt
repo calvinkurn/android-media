@@ -15,7 +15,8 @@ data class RegisteredFlashSaleItem(
     val reviewStartDate: Date,
     val reviewEndDate: Date,
     val status: FlashSaleStatus,
-    val statusText: String
+    val statusText: String,
+    val useMultiLocation: Boolean
 ) : DelegateAdapterItem {
     override fun id() = id
 }

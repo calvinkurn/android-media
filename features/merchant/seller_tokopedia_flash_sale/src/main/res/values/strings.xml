@@ -68,6 +68,7 @@
     <string name="stfs_placeholder_selected_category_count">%d Kategori</string>
     <string name="stfs_placeholder_selected_status_count">%d Status</string>
     <string name="stfs_placeholder_sold_count_on_campaign_finished">Campaign selesai dengan jumlah produk terjual sebanyak %d%% (%d dari %d)</string>
+    <string name="stfs_placeholder_cancellation_reason">Dibatalkan karena %s</string>
 
     <!--Campaign Detail Bottomsheet-->
     <string name="campaigndetail_bottomsheet_title">Detail Campaign</string>
@@ -87,8 +88,10 @@
     <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
     <string name="commonbs_product_check_title">Detail produk</string>
     <string name="commonbs_max_shown_format">Maks. %1d kali dalam %2d hari</string>
-    <string name="commonbs_multiloc_desc"><![CDATA[2 lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
+    <string name="commonbs_multiloc_desc"><![CDATA[%d lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
     <string name="commonbs_criteria_check_description">Menampilkan produk dan lokasi campaign yang belum sesuai kriteria.</string>
+    <string name="commonbs_criteria_variant_check_description">Menampilkan produk yang belum sesuai kriteria.</string>
+    <string name="commonbs_criteria_single_check_description">Lihat kenapa produkmu belum sesuai dengan kriteria lokasi di sini, ya.</string>
     <string name="commonbs_criteria_check_original_price_field_title">Kisaran Harga Awal</string>
     <string name="commonbs_criteria_check_min_rating_field_title">Min. Rating</string>
     <string name="commonbs_criteria_check_sold_product_field_title">Produk Terjual</string>
@@ -261,5 +264,9 @@
     <string name="stfs_note_stock_mandatory_on_location">Stok Wajib %d - %2d</string>
     <string name="stfs_title_qty_editor_title">Stok Campaign</string>
     <string name="stfs_text_button_save">Simpan</string>
+    <string name="stfs_text_ticker_warning">Harga diskon di semua lokasi Dilayani Tokopedia wajib sama. Harga akan disamakan secara otomatis, ya.</string>
+    <string name="stfs_toaster_error">Beberapa info produk gagal disimpan. Periksa kembali daftar produkmu, ya.</string>
+    <string name="stfs_toaster_valid">Info produk sudah diubah.</string>
+    <string name="stfs_toaster_ok">Oke</string>
 
 </resources>

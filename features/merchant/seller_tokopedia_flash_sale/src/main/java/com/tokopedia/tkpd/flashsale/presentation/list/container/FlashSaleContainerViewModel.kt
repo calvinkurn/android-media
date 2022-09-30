@@ -21,7 +21,8 @@ class FlashSaleContainerViewModel @Inject constructor(
 
     data class UiState(
         val isLoading: Boolean = true,
-        val tabsMetadata: List<TabMetadata> = emptyList(),
+        val tickerMessage: String = "",
+        val tabs: List<TabMetadata.Tab> = emptyList(),
         val targetTabPosition: Int = 0,
         val showTicker: Boolean = false,
         val error: Throwable? = null
@@ -59,11 +60,19 @@ class FlashSaleContainerViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val tabs = getFlashSaleListForSellerMetaUseCase.execute()
+                val tabMetadata = getFlashSaleListForSellerMetaUseCase.execute()
 
                 val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
                 val showTicker = !isMultiLocationTickerPreviouslyDismissed
-                _uiState.update { it.copy(isLoading = false,  error = null, tabsMetadata = tabs, showTicker = showTicker) }
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = null,
+                        tabs = tabMetadata.tabs,
+                        tickerMessage = tabMetadata.tickerNonMultiLocationMessage,
+                        showTicker = showTicker
+                    )
+                }
 
             },
             onError = { error ->

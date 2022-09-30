@@ -14,7 +14,8 @@ data class FinishedFlashSaleItem(
     val statusText: String,
     val productMeta: FlashSale.ProductMeta,
     val cancellationReason: String,
-    val productSoldPercentage: Int
+    val productSoldPercentage: Int,
+    val useMultiLocation: Boolean
 ) : DelegateAdapterItem {
     override fun id() = id
 }
