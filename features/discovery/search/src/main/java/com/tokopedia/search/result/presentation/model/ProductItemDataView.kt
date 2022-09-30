@@ -139,6 +139,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             dimension90: String,
             productListType: String,
             externalReference: String,
+            keywordIntention: Int,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -177,6 +178,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.customVideoURL = topAds.product.customVideoUrl
             item.productListType = productListType
             item.dimension131 = externalReference
+            item.keywordIntention = keywordIntention
             return item
         }
 

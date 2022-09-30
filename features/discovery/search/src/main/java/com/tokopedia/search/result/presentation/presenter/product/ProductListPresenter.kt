@@ -478,6 +478,7 @@ class ProductListPresenter @Inject constructor(
                 dimension90,
                 productListType,
                 externalReference,
+                productDataView.keywordIntention,
             )
     }
 

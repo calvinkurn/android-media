@@ -122,6 +122,7 @@ class ProductViewModelMapper {
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
         productDataView.backendFilters = searchProductModel.backendFilters
+        productDataView.keywordIntention = searchProductModel.keywordIntention
 
         return productDataView
     }
