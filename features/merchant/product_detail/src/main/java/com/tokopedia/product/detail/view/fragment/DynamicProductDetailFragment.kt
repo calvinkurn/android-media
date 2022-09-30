@@ -2423,8 +2423,13 @@ open class DynamicProductDetailFragment :
     }
 
     private fun observeSingleVariantData() {
-        viewLifecycleOwner.observe(viewModel.singleVariantData) {
-            val listOfVariantLevelOne = listOf(it)
+        viewLifecycleOwner.observe(viewModel.singleVariantData) { variantCategory ->
+            if (variantCategory == null) {
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
+                pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+                return@observe
+            }
+            val listOfVariantLevelOne = listOf(variantCategory)
             pdpUiUpdater?.updateVariantData(listOfVariantLevelOne)
             updateUi()
         }
