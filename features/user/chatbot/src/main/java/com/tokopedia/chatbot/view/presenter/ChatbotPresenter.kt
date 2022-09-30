@@ -10,6 +10,7 @@ import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
+import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -97,7 +98,7 @@ import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
+import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
@@ -170,7 +171,7 @@ class ChatbotPresenter @Inject constructor(
         const val ERROR_CODE = "400"
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
-        const val CHAT_DIVIDER_DEBUGGING = "15"
+        const val CHAT_DIVIDER = "15"
         const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
     }
@@ -318,21 +319,24 @@ class ChatbotPresenter @Inject constructor(
 
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     fun handleAttachmentTypes(webSocketResponse: ChatWebSocketResponse, messageId: String) {
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
-        if (pojo.msgId != messageId) return
-        chatResponse = pojo
+        try {
+            val pojo: ChatSocketPojo =
+                Gson().fromJson(webSocketResponse.jsonObject, ChatSocketPojo::class.java)
+            if (pojo.msgId != messageId) return
+            chatResponse = pojo
 
-        mappingSocketEvent(webSocketResponse, messageId)
+            mappingSocketEvent(webSocketResponse, messageId)
 
-        val attachmentType = chatResponse.attachment?.type
-        if (attachmentType != null) {
-            when (attachmentType) {
-                OPEN_CSAT -> handleOpenCsatAttachment(webSocketResponse)
-                UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
-                CHAT_DIVIDER_DEBUGGING -> handleChatDividerAttachment()
-                SESSION_CHANGE -> handleSessionChangeAttachment()
+            val attachmentType = chatResponse.attachment?.type
+            if (attachmentType != null) {
+                when (attachmentType) {
+                    OPEN_CSAT -> handleOpenCsatAttachment(webSocketResponse)
+                    UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
+                    CHAT_DIVIDER -> handleChatDividerAttachment()
+                    SESSION_CHANGE -> handleSessionChangeAttachment()
+                }
             }
+        } catch (e: JsonSyntaxException) {
         }
     }
 

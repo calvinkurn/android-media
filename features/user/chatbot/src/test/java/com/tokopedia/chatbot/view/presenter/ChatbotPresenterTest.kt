@@ -2,11 +2,9 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.SocketResponse
@@ -219,7 +217,7 @@ class ChatbotPresenterTest {
     fun `connectWebSocket - when Socket receives new Message with code 103 `() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
-               SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
+                SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
             )
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
@@ -234,8 +232,6 @@ class ChatbotPresenterTest {
     @Test
     fun `connectWebSocket - when Socket receives new Message with code 204 `() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -252,10 +248,8 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `handleAttachment When receiving Code 103 for Reply Message` () {
+    fun `handleAttachment When receiving Code 103 for Reply Message`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_103_REPLY_MESSAGE)
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -264,17 +258,14 @@ class ChatbotPresenterTest {
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
 
-        presenter.handleAttachmentTypes(fullResponse,"4058088")
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
-
     }
 
     @Test
-    fun `handleAttachment When receiving Code 203 for Start Typing` () {
+    fun `handleAttachment When receiving Code 203 for Start Typing`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_203_START_TYPING)
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -283,17 +274,14 @@ class ChatbotPresenterTest {
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
 
-        presenter.handleAttachmentTypes(fullResponse,"4058088")
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
-
     }
 
     @Test
-    fun `handleAttachment When receiving Code 301 for Read Message` () {
+    fun `handleAttachment When receiving Code 301 for Read Message`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_301_READ_MESSAGE)
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -302,18 +290,14 @@ class ChatbotPresenterTest {
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
 
-        presenter.handleAttachmentTypes(fullResponse,"4058088")
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
-
     }
 
-
     @Test
-    fun `handleAttachment When receiving Code 204 for End Typing` () {
+    fun `handleAttachment When receiving Code 204 for End Typing`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.RESPONSE_WITH_204_END_TYPING)
-        val pojo: ChatSocketPojo =
-            Gson().fromJson(fullResponse.jsonElement, ChatSocketPojo::class.java)
 
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.NewMessage(
@@ -322,13 +306,91 @@ class ChatbotPresenterTest {
         )
         coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
 
-        presenter.handleAttachmentTypes(fullResponse,"4058088")
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
-
     }
 
 
+    @Test
+    fun `handleAttachment When receiving attachment type 13 to open csat`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 14 to update the toolbar`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_14_UPDATE_TOOLBAR)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 15 with chat divider`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_15_CHAT_DIVIDER)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 31 for session Change with Mode Agent`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_AGENT)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `handleAttachment When receiving attachment type 31 for session Change with Mode Bot`() {
+        val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
+
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.NewMessage(
+                SocketResponse.getResponse(SocketResponse.ATTACHMENT_31_SESSION_CHANGE_WITH_MODE_BOT)
+            )
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        presenter.handleAttachmentTypes(fullResponse, "4058088")
+
+        assertNotNull(socketJob)
+    }
 
     @Test
     fun `sendMessage without parent reply`() {
