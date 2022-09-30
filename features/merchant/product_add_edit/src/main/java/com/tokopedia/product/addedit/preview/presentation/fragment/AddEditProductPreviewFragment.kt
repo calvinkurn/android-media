@@ -757,12 +757,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        activity?.finish()
-    }
-
     private fun saveProductToDraft() {
         // increment wholesale min order by one because of > symbol
         viewModel.productInputModel.value?.run {
@@ -1555,7 +1549,7 @@ class AddEditProductPreviewFragment :
                 setDescription(getString(R.string.label_description_on_dialog))
                 setSecondaryCTAClickListener {
                     saveProductToDraft()
-                    moveToManageProduct()
+                    activity?.finish()
                     ProductAddStepperTracking.trackDraftYes(shopId)
                 }
                 setPrimaryCTAClickListener {
