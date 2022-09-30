@@ -48,7 +48,7 @@ data class UserCardMember (
     val id:String? = "",
     @Expose
     @SerializedName("userID")
-    val userID:Int?= 0,
+    val userID:Long?= 0,
     @Expose
     @SerializedName("referenceID")
     val referenceID:String?= "",

@@ -27,8 +27,8 @@ import javax.inject.Inject
 
 class TokomemberMemberListFragment : BaseDaggerFragment() {
 
-    private lateinit var tmMemberListRv : RecyclerView
-    private lateinit var flipper: ViewFlipper
+    private var tmMemberListRv : RecyclerView? = null
+    private var flipper: ViewFlipper? = null
     private var shopId:Int = 0
 
     @Inject
@@ -78,16 +78,16 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
         tmMemberViewModel.tmMemberListInitialResult.observe(viewLifecycleOwner){
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING -> {
-                    flipper.displayedChild  = 0
+                    flipper?.displayedChild  = 0
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    flipper.displayedChild  = 1
+                    flipper?.displayedChild  = 1
                     setupHeader()
                     setupRecyclerView()
                     tmMemberViewModel.mapInitialMemberList()
                 }
                 else -> {
-                    flipper.displayedChild  = 0
+                    flipper?.displayedChild  = 0
                 }
             }
         }
@@ -98,7 +98,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
     }
 
     private fun setupRecyclerView(){
-        tmMemberListRv.apply {
+        tmMemberListRv?.apply {
             tmMemberAdapter = TmMemberListAdapter(listOf(),context)
             layoutManager = LinearLayoutManager(context)
             val dividerDecor  = TmMemberItemDecoration(context)
@@ -110,7 +110,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
     }
 
     private fun addRvScrollListener(){
-        tmMemberListRv.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+        tmMemberListRv?.addOnScrollListener(object : RecyclerView.OnScrollListener(){
 
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -129,7 +129,7 @@ class TokomemberMemberListFragment : BaseDaggerFragment() {
     }
 
     private fun removeRvScrollListener(){
-        tmMemberListRv.clearOnScrollListeners()
+        tmMemberListRv?.clearOnScrollListeners()
     }
 
     private fun updateMemberList(result:InfiniteListResult<DataModel>){
