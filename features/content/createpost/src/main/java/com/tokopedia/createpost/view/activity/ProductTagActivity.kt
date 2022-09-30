@@ -87,6 +87,10 @@ class ProductTagActivity : BaseActivity() {
                         setResult(Activity.RESULT_OK, data)
                         finish()
                     }
+
+                    override fun onMaxSelectedProductReached() {
+                        /** No implementation */
+                    }
                 })
 
                 fragment.setAnalytic(productTagAnalytic)
