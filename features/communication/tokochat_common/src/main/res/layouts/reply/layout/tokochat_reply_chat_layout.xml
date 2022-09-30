@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.tokopedia.tokochat_common.view.customview.TokoChatMessageAreaView
+    <com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
         android:id="@+id/tokoChatReplyArea"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

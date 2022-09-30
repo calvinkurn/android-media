@@ -21,13 +21,13 @@ import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*
 
-class TokoChatMessageAreaView : ConstraintLayout, LifecycleObserver {
+class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     private var composeArea: EditText? = null
     private var errorComposeMsg: Typography? = null
 
     private var textWatcher: TokoChatMessageTextWatcher? = null
-    private var sendButtontextWatcher: TokoChatReplyButtonWatcher? = null
+    private var sendButtonTextWatcher: TokoChatReplyButtonWatcher? = null
     private var bgComposeArea: Drawable? = null
 
     private val numberFormat = NumberFormat.getInstance(Locale("in", "ID"))
@@ -64,7 +64,7 @@ class TokoChatMessageAreaView : ConstraintLayout, LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun cleanUpReference() {
         composeArea?.removeTextChangedListener(textWatcher)
-        composeArea?.removeTextChangedListener(sendButtontextWatcher)
+        composeArea?.removeTextChangedListener(sendButtonTextWatcher)
     }
 
     fun initLayout(
@@ -124,7 +124,7 @@ class TokoChatMessageAreaView : ConstraintLayout, LifecycleObserver {
             composeArea?.addTextChangedListener(textWatcher)
         }
         replyTextListener?.let {
-            sendButtontextWatcher = TokoChatReplyButtonWatcher(
+            sendButtonTextWatcher = TokoChatReplyButtonWatcher(
                 it,
                 object : TokoChatReplyButtonWatcher.Listener {
                     override fun onComposeTextLimitExceeded(offset: Int) {
@@ -141,7 +141,7 @@ class TokoChatMessageAreaView : ConstraintLayout, LifecycleObserver {
                         setDefaultComposeBackground()
                     }
                 })
-            composeArea?.addTextChangedListener(sendButtontextWatcher)
+            composeArea?.addTextChangedListener(sendButtonTextWatcher)
         }
     }
 
