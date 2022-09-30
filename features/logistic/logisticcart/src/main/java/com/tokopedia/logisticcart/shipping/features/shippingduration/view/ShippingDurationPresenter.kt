@@ -1,8 +1,10 @@
 package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
+import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
@@ -236,5 +238,40 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
 
     fun checkHasCourierPromo(): Boolean {
         return shippingData?.shippingDurationUiModels?.any { it.serviceData.isPromo == 1 } ?: false
+    }
+
+    override fun onChooseDuration(
+        shippingCourierUiModelList: List<ShippingCourierUiModel>,
+        cartPosition: Int, serviceData: ServiceData
+    ) {
+        var flagNeedToSetPinpoint = false
+        var selectedServiceId = 0
+        if (view?.isToogleYearEndPromotionOn() == true) {
+            if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
+                !TextUtils.isEmpty(serviceData.error.errorMessage)
+            ) {
+                flagNeedToSetPinpoint = true
+                selectedServiceId = serviceData.serviceId
+            }
+        } else {
+            for (shippingCourierUiModel in shippingCourierUiModelList) {
+                shippingCourierUiModel.isSelected =
+                    if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
+                if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
+                    flagNeedToSetPinpoint = true
+                    selectedServiceId = shippingCourierUiModel.serviceData.serviceId
+                    shippingCourierUiModel.serviceData.texts.textRangePrice =
+                        shippingCourierUiModel.productData.error.errorMessage
+                }
+            }
+        }
+        val courierData =
+            if (serviceData.selectedShipperProductId > 0) getCourierItemDataById(
+                serviceData.selectedShipperProductId,
+                shippingCourierUiModelList
+            ) else getCourierItemData(shippingCourierUiModelList)
+        view?.onShippingDurationAndRecommendCourierChosen(shippingCourierUiModelList,
+            courierData, cartPosition, selectedServiceId, serviceData,
+            flagNeedToSetPinpoint)
     }
 }

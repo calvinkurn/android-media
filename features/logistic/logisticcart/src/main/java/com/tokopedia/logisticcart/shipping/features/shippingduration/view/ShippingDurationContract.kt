@@ -4,6 +4,7 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.model.*
 
 /**
@@ -21,6 +22,15 @@ interface ShippingDurationContract {
         fun getActivity(): Activity
         fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>)
         fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>)
+        fun isToogleYearEndPromotionOn() : Boolean
+        fun onShippingDurationAndRecommendCourierChosen(
+            shippingCourierUiModelList: List<ShippingCourierUiModel>,
+            courierData: ShippingCourierUiModel?,
+            cartPosition: Int,
+            selectedServiceId: Int,
+            serviceData: ServiceData,
+            flagNeedToSetPinpoint: Boolean
+        )
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -34,5 +44,9 @@ interface ShippingDurationContract {
         fun getCourierItemDataById(spId: Int, shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
         fun convertServiceListToUiModel(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>
         fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel?
+        fun onChooseDuration(
+            shippingCourierUiModelList: List<ShippingCourierUiModel>,
+            cartPosition: Int, serviceData: ServiceData
+        )
     }
 }

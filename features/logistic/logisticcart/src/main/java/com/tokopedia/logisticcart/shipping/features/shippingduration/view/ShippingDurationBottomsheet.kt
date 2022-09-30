@@ -188,6 +188,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     private fun setupRecyclerView(cartPosition: Int) {
         shippingDurationAdapter?.setShippingDurationAdapterListener(this)
         shippingDurationAdapter?.setCartPosition(cartPosition)
+        shippingDurationAdapter?.setToggleYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false)
         rvDuration?.layoutManager = linearLayoutManager
@@ -257,40 +258,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
 
     override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>,
                                            cartPosition: Int, serviceData: ServiceData) {
-        var flagNeedToSetPinpoint = false
-        var selectedServiceId = 0
-        if (isToogleYearEndPromotionOn()) {
-            if (serviceData.error != null && serviceData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED &&
-                    !TextUtils.isEmpty(serviceData.error.errorMessage)) {
-                flagNeedToSetPinpoint = true
-                selectedServiceId = serviceData.serviceId
-            }
-        } else {
-            for (shippingCourierUiModel in shippingCourierUiModelList) {
-                shippingCourierUiModel.isSelected = if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
-                if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
-                    flagNeedToSetPinpoint = true
-                    selectedServiceId = shippingCourierUiModel.serviceData.serviceId
-                    shippingCourierUiModel.serviceData.texts.textRangePrice = shippingCourierUiModel.productData.error.errorMessage
-                }
-            }
-        }
-        if (shippingDurationBottomsheetListener != null) {
-            try {
-                val courierData = if (serviceData.selectedShipperProductId > 0) presenter!!.getCourierItemDataById(
-                    serviceData.selectedShipperProductId,
-                    shippingCourierUiModelList
-                ) else presenter!!.getCourierItemData(shippingCourierUiModelList)
-                shippingDurationBottomsheetListener?.onShippingDurationChoosen(
-                    shippingCourierUiModelList,
-                    courierData,
-                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
-                        flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
-                bottomSheet?.dismiss()
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
+        presenter?.onChooseDuration(shippingCourierUiModelList, cartPosition, serviceData)
     }
 
     override fun isToogleYearEndPromotionOn(): Boolean {
@@ -302,6 +270,28 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 return remoteConfig.getBoolean("mainapp_enable_year_end_promotion")
             }
             return false
+        }
+    }
+
+    override fun onShippingDurationAndRecommendCourierChosen(
+        shippingCourierUiModelList: List<ShippingCourierUiModel>,
+        courierData: ShippingCourierUiModel?,
+        cartPosition: Int,
+        selectedServiceId: Int,
+        serviceData: ServiceData,
+        flagNeedToSetPinpoint: Boolean
+    ) {
+        shippingDurationBottomsheetListener?.let {
+            try {
+                it.onShippingDurationChoosen(
+                    shippingCourierUiModelList,
+                    courierData,
+                    mRecipientAddress, cartPosition, selectedServiceId, serviceData,
+                    flagNeedToSetPinpoint, isDurationClick = true, isClearPromo = true)
+                bottomSheet?.dismiss()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
