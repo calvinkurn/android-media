@@ -171,6 +171,8 @@ class NavigationTab(
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
+        val threshold = NAVIGATION_SHOW_THRESHOLD.toPx().toInt()
+
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 enableScrollUpListener = true
@@ -215,7 +217,7 @@ class NavigationTab(
         private fun shouldHide(recyclerView: RecyclerView): Boolean {
             return if (config is ProductDetailNavigation.Configuration.Navbar4) {
                 val scrollOffset = recyclerView.computeVerticalScrollOffset()
-                scrollOffset < NAVIGATION_SHOW_THRESHOLD.toPx().toInt()
+                scrollOffset < threshold
             } else getFirstVisibleItemPosition(recyclerView) == 0
         }
     }

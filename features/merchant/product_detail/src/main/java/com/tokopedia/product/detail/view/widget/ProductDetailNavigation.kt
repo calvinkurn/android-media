@@ -15,7 +15,8 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 
 class ProductDetailNavigation(
-    context: Context, attributeSet: AttributeSet
+    context: Context,
+    attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), NavigationListener {
 
     companion object {
@@ -110,7 +111,8 @@ class ProductDetailNavigation(
 
     private fun getEnableBlockingTouch(remoteConfig: RemoteConfig): Boolean {
         return remoteConfig.getBoolean(
-            REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH, true
+            REMOTE_CONFIG_KEY_ENABLE_BLOCKING_TOUCH,
+            true
         )
     }
 

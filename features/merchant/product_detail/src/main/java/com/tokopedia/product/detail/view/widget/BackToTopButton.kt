@@ -105,6 +105,8 @@ class BackToTopButton(
 
     private inner class OnScrollListener : RecyclerView.OnScrollListener() {
 
+        val threshold = BACK_TO_TOP_SHOW_THRESHOLD.toPx().toInt()
+
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 enableTouchScroll(true)
@@ -118,7 +120,7 @@ class BackToTopButton(
         private fun resolveButtonVisibility(recyclerView: RecyclerView) {
             val shouldHide = if (config is ProductDetailNavigation.Configuration.Navbar4) {
                 val scrollOffset = recyclerView.computeVerticalScrollOffset()
-                scrollOffset < BACK_TO_TOP_SHOW_THRESHOLD.toPx().toInt()
+                scrollOffset < threshold
             } else calculateFirstVisibleItemPosition(recyclerView, config?.offsetY.orZero()) == 0
             toggle(!shouldHide)
         }
