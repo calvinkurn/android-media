@@ -169,7 +169,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
         val dataLayer = Bundle().apply {
             setEventInfo(
                 eventName = TokoFoodAnalyticsConstants.VIEW_ITEM,
-                eventAction = TokoFoodAnalyticsConstants.VIEW_MINI_FILTER_TOKOFOOD,
+                eventAction = TokoFoodAnalyticsConstants.VIEW_ADDRESS_WIDGET_IN_SRP_TOKOFOOD,
                 eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE,
                 eventLabel = String.EMPTY
             )

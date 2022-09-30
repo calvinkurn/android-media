@@ -30,7 +30,7 @@ internal fun View?.hideKeyboardOnTouchListener()  {
                     KeyboardHandler.DropKeyboard(v.context, v)
                     searchBarEdt?.clearFocus()
                 }
-                true
+                false
             } catch (e: Exception) {
                 e.printStackTrace()
                 false

@@ -19,8 +19,8 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
-import com.tokopedia.tokofood.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
+import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.viewmodel.SearchContainerViewModel
