@@ -560,6 +560,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               success
               cart_id
               unique_id
+              shipping_id
+              sp_id
               order_id
               shop_id
               is_po

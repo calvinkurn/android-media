@@ -59,6 +59,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveA
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.mapper.LastApplyUiMapper
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.NotEligiblePromoHolderdata
@@ -309,17 +310,45 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         } else if (orderProfile.value.isDisableChangeCourierAndNeedPinpoint()) {
             logisticProcessor.generateNeedPinpointResultRates(orderProfile.value)
         } else {
-            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value, validateUsePromoRevampUiModel, orderPayment.value)
+            val (orderCost, updatedProductIndex) = calculator.calculateOrderCostWithoutPaymentFee(
+                orderCart,
+                orderShipment.value,
+                validateUsePromoRevampUiModel,
+                orderPayment.value
+            )
             updateOrderProducts.value = updatedProductIndex
-            logisticProcessor.getRates(orderCart, orderProfile.value, orderShipment.value, orderCost, orderShop.value.shopShipment)
+            logisticProcessor.getRates(
+                orderCart,
+                orderProfile.value,
+                orderShipment.value,
+                orderCost,
+                orderShop.value.shopShipment
+            )
         }
-        val hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
+        var hasOldPromoCode = result.clearOldPromoCode.isNotEmpty()
         if (hasOldPromoCode) {
             clearOldLogisticPromo(result.clearOldPromoCode)
         }
         if (result.autoApplyPromo != null) {
-            autoApplyLogisticPromo(result.autoApplyPromo, result.clearOldPromoCode, result.orderShipment, result)
+            autoApplyLogisticPromo(
+                result.autoApplyPromo,
+                result.clearOldPromoCode,
+                result.orderShipment,
+                result
+            )
             return
+        }
+        if (!hasOldPromoCode) {
+            val unexpectedBoVoucher =
+                orderPromo.value.lastApply.voucherOrders.firstOrNull { it.uniqueId == orderCart.cartString && it.type == "logistic" }
+            if (unexpectedBoVoucher != null) {
+                promoProcessor.clearOldLogisticPromo(unexpectedBoVoucher.code, orderCart)
+                promoProcessor.clearOldLogisticPromoFromLastRequest(
+                    lastValidateUsePromoRequest,
+                    unexpectedBoVoucher.code
+                )
+                hasOldPromoCode = true
+            }
         }
         orderShipment.value = result.orderShipment
         sendViewOspEe()
@@ -768,7 +797,11 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 }
                 else -> {
                     validateUsePromoRevampUiModel = null
-                    orderPromo.value = orderPromo.value.copy(state = OccButtonState.NORMAL)
+                    var promo = orderPromo.value
+                    if (promo.lastApply.additionalInfo.usageSummaries.isNotEmpty() || promo.lastApply.voucherOrders.isNotEmpty()) {
+                        promo = promo.copy(lastApply = LastApplyUiModel())
+                    }
+                    orderPromo.value = promo.copy(state = OccButtonState.NORMAL)
                     calculateTotal()
                 }
             }

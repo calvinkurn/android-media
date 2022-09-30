@@ -5,7 +5,9 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class LastApplyVoucherOrdersItemUiModel(
-        var code: String = "",
-        var uniqueId: String = "",
-        var message: LastApplyMessageUiModel = LastApplyMessageUiModel()
+    var code: String = "",
+    var uniqueId: String = "",
+    var message: LastApplyMessageUiModel = LastApplyMessageUiModel(),
+    var type: String = ""
+// spId, shippingId
 ) : Parcelable
