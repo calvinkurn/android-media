@@ -114,7 +114,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
-
+        throwable?.printStackTrace()
     }
 
     override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
@@ -141,22 +141,6 @@ class InspirationListAtcListenerDelegate @Inject constructor(
             price = priceStr,
             userId = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
         )
-    }
-
-    private fun createAddToCartUseCaseSubscriber(onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit): Subscriber<AddToCartDataModel> {
-        return object : Subscriber<AddToCartDataModel>() {
-            override fun onNext(addToCartDataModel: AddToCartDataModel?) {
-                onAddToCartUseCaseSuccess(addToCartDataModel)
-            }
-
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-                onAddToCartUseCaseFailed(e)
-            }
-        }
     }
 
     fun getProductById(id: String): InspirationCarouselDataView.Option.Product? {

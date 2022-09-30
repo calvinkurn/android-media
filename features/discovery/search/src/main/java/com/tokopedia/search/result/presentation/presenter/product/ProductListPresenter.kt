@@ -1022,86 +1022,86 @@ class ProductListPresenter @Inject constructor(
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
-            inspirationCarouselDataView.add(
-                InspirationCarouselDataView(
-                    title = "",
-                    type = "same_shop",
-                    position = 4,
-                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                    trackingOption = 0,
-                    options = listOf(
-                        InspirationCarouselDataView.Option(
-                            applink = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE,
-                            title = "Checkout sekaligus, hemat ongkirnya!",
-                            subtitle = "Beli sekalian dari toko yang ada di keranjangmu.",
-                            componentId = "03.43.01.00",
-                            layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                            product = listOf(
-                                InspirationCarouselDataView.Option.Product(
-                                    id = "3339227182",
-                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-                                    parentId = 123,
-                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
-                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
-                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
-                                    shopId = 3996920,
-                                    shopName = "iPason Technology Indonesia",
-                                    shopLocation = "Jakarta Barat",
-                                    price = 204000,
-                                    originalPrice = "Rp235.000",
-                                    priceStr = "Rp235.000",
-                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                                ),
-                                InspirationCarouselDataView.Option.Product(
-                                    id = "3339227182",
-                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-                                    parentId = 0,
-                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
-                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
-                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
-                                    shopId = 3996920,
-                                    shopName = "iPason Technology Indonesia",
-                                    shopLocation = "Jakarta Barat",
-                                    price = 204000,
-                                    originalPrice = "Rp235.000",
-                                    priceStr = "Rp235.000",
-                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                                ),
-                                InspirationCarouselDataView.Option.Product(
-                                    id = "3339227182",
-                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-                                    parentId = 0,
-                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
-                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
-                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
-                                    shopId = 3996920,
-                                    shopName = "iPason Technology Indonesia",
-                                    shopLocation = "Jakarta Barat",
-                                    price = 204000,
-                                    originalPrice = "Rp235.000",
-                                    priceStr = "Rp235.000",
-                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                                ),
-                                InspirationCarouselDataView.Option.Product(
-                                    id = "3339227182",
-                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
-                                    parentId = 0,
-                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
-                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
-                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
-                                    shopId = 3996920,
-                                    shopName = "iPason Technology Indonesia",
-                                    shopLocation = "Jakarta Barat",
-                                    price = 204000,
-                                    originalPrice = "Rp235.000",
-                                    priceStr = "Rp235.000",
-                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-                                )
-                            )
-                        )
-                    )
-                )
-            )
+//            inspirationCarouselDataView.add(
+//                InspirationCarouselDataView(
+//                    title = "",
+//                    type = "same_shop",
+//                    position = 4,
+//                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                    trackingOption = 0,
+//                    options = listOf(
+//                        InspirationCarouselDataView.Option(
+//                            applink = ApplinkConst.DISCOVERY_SEARCH_AUTOCOMPLETE,
+//                            title = "Checkout sekaligus, hemat ongkirnya!",
+//                            subtitle = "Beli sekalian dari toko yang ada di keranjangmu.",
+//                            componentId = "03.43.01.00",
+//                            layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                            product = listOf(
+//                                InspirationCarouselDataView.Option.Product(
+//                                    id = "3339227182",
+//                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+//                                    parentId = 123,
+//                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+//                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
+//                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
+//                                    shopId = 3996920,
+//                                    shopName = "iPason Technology Indonesia",
+//                                    shopLocation = "Jakarta Barat",
+//                                    price = 204000,
+//                                    originalPrice = "Rp235.000",
+//                                    priceStr = "Rp235.000",
+//                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                                ),
+//                                InspirationCarouselDataView.Option.Product(
+//                                    id = "3339227182",
+//                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+//                                    parentId = 0,
+//                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+//                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
+//                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
+//                                    shopId = 3996920,
+//                                    shopName = "iPason Technology Indonesia",
+//                                    shopLocation = "Jakarta Barat",
+//                                    price = 204000,
+//                                    originalPrice = "Rp235.000",
+//                                    priceStr = "Rp235.000",
+//                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                                ),
+//                                InspirationCarouselDataView.Option.Product(
+//                                    id = "3339227182",
+//                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+//                                    parentId = 0,
+//                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+//                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
+//                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
+//                                    shopId = 3996920,
+//                                    shopName = "iPason Technology Indonesia",
+//                                    shopLocation = "Jakarta Barat",
+//                                    price = 204000,
+//                                    originalPrice = "Rp235.000",
+//                                    priceStr = "Rp235.000",
+//                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                                ),
+//                                InspirationCarouselDataView.Option.Product(
+//                                    id = "3339227182",
+//                                    name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+//                                    parentId = 0,
+//                                    imgUrl = "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/8/31/d80a60c4-9784-44a6-b78c-82dd3848cab7.jpg",
+//                                    url = "https://www.tokopedia.com/ipason/edifier-r12u-active-usb-powered-speakers-desktop-laptop-audio-black",
+//                                    applink = "tokopedia://product/3747018003?extParam=ivf%3Dfalse%26src%3Dsearch",
+//                                    shopId = 3996920,
+//                                    shopName = "iPason Technology Indonesia",
+//                                    shopLocation = "Jakarta Barat",
+//                                    price = 204000,
+//                                    originalPrice = "Rp235.000",
+//                                    priceStr = "Rp235.000",
+//                                    layout = SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
+//                                )
+//                            )
+//                        )
+//                    )
+//                )
+//            )
             processInspirationCarouselPosition(searchParameter, list)
         }
 
@@ -1366,7 +1366,7 @@ class ProductListPresenter @Inject constructor(
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
-            data.isListAtcLayout() -> convertInspirationCarouselToInspirationListCta(data)
+            data.isListAtcLayout() -> convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1394,12 +1394,12 @@ class ProductListPresenter @Inject constructor(
         ))
     }
 
-    private fun convertInspirationCarouselToInspirationListCta(
+    private fun convertInspirationCarouselToInspirationListAtc(
         data: InspirationCarouselDataView
     ): List<Visitable<*>> {
         return data.options.map {
             InspirationListAtcDataView(
-                data = it,
+                option = it,
                 type = data.type,
             )
         }

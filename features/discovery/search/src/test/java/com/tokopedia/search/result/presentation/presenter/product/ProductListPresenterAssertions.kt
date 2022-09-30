@@ -152,6 +152,9 @@ internal fun List<InspirationCarouselDataView.Option.Product>.assert(
         actualProduct.componentId shouldBe expectedProduct.componentId
         actualProduct.inspirationCarouselTitle shouldBe inspirationCarouselTitle
         actualProduct.dimension90 shouldBe expectedDimension90
+        actualProduct.parentId shouldBe expectedProduct.parentId
+        actualProduct.minOrder shouldBe expectedProduct.minOrder
+        actualProduct.shopId shouldBe expectedProduct.shop.id
         productPosition++
     }
 }

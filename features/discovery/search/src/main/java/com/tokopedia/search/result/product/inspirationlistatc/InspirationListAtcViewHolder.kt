@@ -31,25 +31,25 @@ class InspirationListAtcViewHolder(
     }
 
     private fun bindTitle(item: InspirationListAtcDataView) {
-        binding?.inspirationCarouselListAtcTitle?.text = item.data.title
+        binding?.inspirationCarouselListAtcTitle?.text = item.option.title
     }
 
     private fun bindSubtitle(item: InspirationListAtcDataView) {
-        binding?.inspirationCarouselListAtcSubtitle?.text = item.data.subtitle
+        binding?.inspirationCarouselListAtcSubtitle?.text = item.option.subtitle
     }
 
     private fun bindSeeMoreClick(item: InspirationListAtcDataView) {
         val seeMoreView = binding?.inspirationCarouselListAtcSeeMore
 
-        seeMoreView?.shouldShowWithAction(item.data.applink.isNotEmpty()) {
+        seeMoreView?.shouldShowWithAction(item.option.applink.isNotEmpty()) {
             seeMoreView.setOnClickListener {
-                inspirationListAtcListener.onListAtcSeeMoreClicked(item.data)
+                inspirationListAtcListener.onListAtcSeeMoreClicked(item.option)
             }
         }
     }
 
     private fun bindProductCarousel(item: InspirationListAtcDataView) {
-        val products = item.data.product
+        val products = item.option.product
 
         binding?.inspirationCarouselListAtcProductCarousel?.bindCarouselProductCardViewGrid(
             recyclerViewPool = inspirationListAtcListener.carouselRecycledViewPool,

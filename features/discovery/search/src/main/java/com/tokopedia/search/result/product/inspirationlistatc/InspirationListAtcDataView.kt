@@ -7,7 +7,7 @@ import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 
 data class InspirationListAtcDataView(
-    val data: Option = Option(),
+    val option: Option = Option(),
     val type: String = "",
 ) : Visitable<ProductListTypeFactory>,
     VerticalSeparable {
