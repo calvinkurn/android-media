@@ -333,10 +333,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onDestroyView() {
-        super.onDestroyView()
         tokofoodSearchFilterTab = null
         searchParameter = null
         sortFilterBottomSheet = null
+        super.onDestroyView()
     }
 
     fun setSearchResultViewUpdateListener(searchResultViewUpdateListener: SearchResultViewUpdateListener) {
