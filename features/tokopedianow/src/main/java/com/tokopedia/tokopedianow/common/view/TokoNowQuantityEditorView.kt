@@ -11,8 +11,8 @@ import android.widget.TextView
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorCustomViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
@@ -50,7 +50,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         binding = LayoutTokopedianowQuantityEditorCustomViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             quantityEditorAddButton.setOnClickListener {
                 if (counter < maxNumber) {
-                    if (!editText.isFocused) {
+                    if (root.progress == 0f) {
                         root.setTransition(R.id.start, R.id.end)
                         root.transitionToEnd()
                         editText.setText(counter.toString())
@@ -70,7 +70,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
             editText.focusChangedListener = { isFocused ->
                 if (!isFocused) {
-                    startTimer()
+                    if (editText.text.isNullOrBlank()) {
+                        root.setTransition(R.id.end, R.id.start)
+                    } else {
+                        root.setTransition(R.id.end, R.id.startWithValue)
+                    }
+                    root.transitionToEnd()
+                    cancelTimer()
                 }
             }
 
@@ -89,9 +95,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     } else {
                         quantityEditorAddButton.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                         quantityEditorSubButton.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
-                        editText.setText(currentCounter.toString())
                         currentCounter
                     }
+                    cancelTimer()
+                    startTimer()
                 }
             }
 
@@ -130,9 +137,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                         if (motionLayout?.currentState == R.id.end) {
                             editText.requestFocus()
                             editText.setOnTouchListener(null)
-                            editText.setSelection(editText.text?.length.orZero())
-                        } else {
-                            cancelTask()
+                            cancelTimer()
+                            startTimer()
                         }
                     }
 
@@ -154,19 +160,14 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun initializeTimerTask() {
         timerTask = object : TimerTask() {
             override fun run() {
-                binding.apply {
-                    if (editText.text.isNullOrBlank()) {
-                        root.setTransition(R.id.end, R.id.start)
-                    } else {
-                        root.setTransition(R.id.end, R.id.startWithValue)
-                    }
-                    root.transitionToEnd()
+                context.getActivityFromContext()?.runOnUiThread {
+                    binding.editText.clearFocus()
                 }
             }
         }
     }
 
-    private fun cancelTask() {
+    private fun cancelTimer() {
         if (timer != null) {
             timer?.cancel()
             timerTask?.cancel()

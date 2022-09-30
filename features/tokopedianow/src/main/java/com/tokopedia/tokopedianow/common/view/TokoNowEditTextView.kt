@@ -5,7 +5,6 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.unifyprinciples.Typography
 
 class TokoNowEditTextView constructor(
@@ -23,11 +22,6 @@ class TokoNowEditTextView constructor(
         )
 
         setTextColor(ContextCompat.getColor(context,com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-    }
-
-    override fun setText(text: CharSequence?, type: BufferType?) {
-        super.setText(text, type)
-        if (isFocused) setSelection(text?.length.orZero())
     }
 
     override fun onFocusChanged(
