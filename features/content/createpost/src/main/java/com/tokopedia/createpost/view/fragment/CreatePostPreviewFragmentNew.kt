@@ -212,7 +212,7 @@ class CreatePostPreviewFragmentNew : BaseCreatePostFragmentNew(), CreateContentP
             for (i in 0 until extraSize) {
                 val currentPostTags = createPostModel.completeImageList[createPostModel.currentCorouselIndex].tags
                 val index = (tagListSize + i) - 1
-                if (currentPostTags.isNotEmpty() && index >= 0) {
+                if (currentPostTags.isNotEmpty() && index in 0 until currentPostTags.size) {
                     createPostModel.completeImageList[createPostModel.currentCorouselIndex]
                         .tags.removeAt(index)
                 }
