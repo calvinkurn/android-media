@@ -199,6 +199,7 @@ object RecipeDetailMapper {
             slashedPrice = detail.slashedPrice,
             discountPercentage = formatFloatToString(detail.discountPercentage),
             categoryId = detail.categoryID,
+            categoryName = detail.categoryName,
             similarProducts = similarProducts,
             position = position
         )
