@@ -53,6 +53,7 @@ internal object GetRecipeList: GqlQueryInterface {
                     createdTime
                     updatedTime
                     publishedTime
+                    isBookmarked
                     category {
                       id
                       name
