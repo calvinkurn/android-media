@@ -246,11 +246,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 }
                 else if(it.channel.layout == DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL){
                     getTopAdsBannerCarousel(
-                        OfficialTopAdsBannerDataModel(
-                        OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
-                            it.channel,0
-                        )
-                    )
+                        OfficialTopAdsBannerDataModel()
                     )
                 }
             }
@@ -328,8 +324,8 @@ class OfficialStoreHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getTopAdsBannerCarousel(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel){
-        launchCatchError(coroutineContext, block={
+    private fun getTopAdsBannerCarousel(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel) {
+        launchCatchError(coroutineContext, block = {
             val results = topAdsImageViewUseCase.getImageData(
                 topAdsImageViewUseCase.getQueryMap(
                     "",
@@ -340,11 +336,15 @@ class OfficialStoreHomeViewModel @Inject constructor(
                     ""
                 )
             )
-            OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable){
+            OfficialHomeMapper.updateTopAdsBanner(officialTopAdsBannerDataModel, results, _officialStoreListVisitable) {
                 _officialStoreLiveData.postValue(it)
             }
-        }){
-
+        }) {
+            _officialStoreListVisitable.run {
+                removeAll {
+                    it is OfficialTopAdsBannerDataModel
+                }
+            }
         }
     }
 

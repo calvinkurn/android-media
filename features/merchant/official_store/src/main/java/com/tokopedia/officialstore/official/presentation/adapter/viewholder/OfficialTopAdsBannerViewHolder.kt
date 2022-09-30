@@ -12,7 +12,6 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolder<OfficialTopAdsBannerDataModel>(view) {
-
     private var binding: ViewmodelOfficialTopadsBannerBinding? by viewBinding()
 
     override fun bind(element: OfficialTopAdsBannerDataModel) {
@@ -21,8 +20,6 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
         element.tdnBanner?.toList()?.let {
              TdnHelper.categoriesTdnBanners(it)
         }
-
-        binding?.topadsBannerTitle?.text = element.channelModel.name
 
         if (!tdnBannerList.isNullOrEmpty()) {
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
