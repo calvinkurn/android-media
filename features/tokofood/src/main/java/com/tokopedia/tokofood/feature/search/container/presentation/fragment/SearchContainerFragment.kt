@@ -117,6 +117,10 @@ class SearchContainerFragment : BaseDaggerFragment(),
             initialStateContainer.show()
         }
 
+        setShowInitialStateCommit()
+    }
+
+    private fun setShowInitialStateCommit() {
         initialSearchStateFragment?.let { initialStateFragment ->
             searchResultFragment?.let { searchResultFragment ->
                 val ft = childFragmentManager.beginTransaction()
@@ -135,6 +139,10 @@ class SearchContainerFragment : BaseDaggerFragment(),
             searchResultContainer.show()
         }
 
+        setShowSearchResultCommit()
+    }
+
+    private fun setShowSearchResultCommit() {
         searchResultFragment?.let { searchResultFragment ->
             initialSearchStateFragment?.let { initialStateFragment ->
                 val ft = childFragmentManager.beginTransaction()
