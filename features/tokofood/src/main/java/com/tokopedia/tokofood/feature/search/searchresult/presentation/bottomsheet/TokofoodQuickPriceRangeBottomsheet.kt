@@ -9,17 +9,17 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxItemAdapter
-import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.databinding.BottomsheetTokofoodSearchQuickPriceRangeBinding
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent
 import com.tokopedia.tokofood.feature.search.di.component.TokoFoodSearchComponent
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.pricerangecheckbox.QuickPriceRangeFilterListener
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.pricerangecheckbox.QuickPriceRangeItemAdapter
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.viewmodel.TokofoodQuickPriceRangeViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.collect
 import java.lang.Exception
 import javax.inject.Inject
 
-class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterCheckboxListener,
+class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), QuickPriceRangeFilterListener,
     HasComponent<TokoFoodSearchComponent> {
 
     @Inject
@@ -85,12 +85,11 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
             .build()
     }
 
-
     override fun onPriceRangeFilterCheckboxItemClicked(
-        optionViewModel: OptionViewModel,
+        uiModel: TokofoodOptionUiModel,
         isChecked: Boolean
     ) {
-        viewModel.setPriceRangeUiModel(optionViewModel, isChecked)
+        viewModel.setPriceRangeUiModel(uiModel, isChecked)
     }
 
     fun show(fm: FragmentManager) {
@@ -166,11 +165,11 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), PriceRangeFilterC
 
     private fun setupAdapter(uiModels: List<PriceRangeFilterCheckboxItemUiModel>) {
         val optionViewModelList = uiModels.map {
-            OptionViewModel(option = it.option).apply {
+            TokofoodOptionUiModel(option = it.option).apply {
                 isSelected = it.isSelected
             }
         }
-        val quickPriceRangeAdapter = PriceRangeFilterCheckboxItemAdapter(optionViewModelList, this)
+        val quickPriceRangeAdapter = QuickPriceRangeItemAdapter(optionViewModelList, this)
         binding?.rvTokofoodSearchQuickPriceRange?.swapAdapter(quickPriceRangeAdapter, false)
     }
 

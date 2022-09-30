@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
@@ -18,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.util.Constant
+import com.tokopedia.tokofood.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.databinding.FragmentSearchContainerBinding
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.InitialStateViewUpdateListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
@@ -76,6 +78,7 @@ class SearchContainerFragment : BaseDaggerFragment(),
         initView(view)
         observeSearchKeyword()
         keyword?.let { setKeywordSearchBarView(it) }
+        globalSearchBarWidget.hideKeyboardOnTouchListener()
     }
 
     override fun onDestroyView() {
@@ -100,6 +103,12 @@ class SearchContainerFragment : BaseDaggerFragment(),
 
     override fun setKeywordSearchBarView(keyword: String) {
         globalSearchBarWidget?.setKeywordSearchBar(keyword)
+    }
+
+    override fun hideKeyboard() {
+        view?.let {
+            KeyboardHandler.DropKeyboard(it.context, view)
+        }
     }
 
     override fun showInitialStateView() {
@@ -149,7 +158,6 @@ class SearchContainerFragment : BaseDaggerFragment(),
     override fun onTransactionListClicked() {
         context?.let {
             RouteManager.route(it, ApplinkConst.TokoFood.TOKOFOOD_ORDER)
-            onBackPressed()
         }
     }
 

@@ -1,39 +1,31 @@
-package com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox
+package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.pricerangecheckbox
 
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
-import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.databinding.FilterPriceRangeItemBinding
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokofood.databinding.ItemTokofoodSearchPriceRangeBinding
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
 import java.lang.StringBuilder
 
-internal class PriceRangeFilterCheckboxItemViewHolder(
-    private val binding: FilterPriceRangeItemBinding,
-    private val priceRangeFilterCheckboxListener: PriceRangeFilterCheckboxListener
+class QuickPriceRangeFilterItemViewHolder(
+    private val binding: ItemTokofoodSearchPriceRangeBinding,
+    private val quickPriceRangeFilterListener: QuickPriceRangeFilterListener
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(
-        priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
-        item: OptionViewModel,
-        priceRangeSize: Int
-    ) {
+    fun bind(item: TokofoodOptionUiModel, priceRangeSize: Int) {
         with(binding) {
-            tvPriceRangeDollar.text =
+            tvTokofoodPriceRangeDollar.text =
                 MethodChecker.fromHtml(getPriceLevelString(item, priceRangeSize))
-            tvPriceRangeDesc.text = item.option.description
-            bindCheckboxPriceRange(priceRangeFilterCheckboxDataView, item)
+            tvTokofoodPriceRangeDesc.text = item.option.description
+            bindCheckboxPriceRange(item)
         }
     }
 
-    private fun bindCheckboxPriceRange(
-        priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
-        item: OptionViewModel
-    ) {
-        with(binding.cbPriceRange) {
+    private fun bindCheckboxPriceRange(item: TokofoodOptionUiModel) {
+        with(binding.checkboxTokofoodPriceRange) {
             setOnCheckedChangeListener(null)
             isChecked = item.isSelected
 
@@ -41,17 +33,17 @@ internal class PriceRangeFilterCheckboxItemViewHolder(
                 isChecked = !isChecked
             }
 
-            setOnCheckedChangeListener { _, _ ->
-                priceRangeFilterCheckboxListener.onPriceRangeFilterCheckboxItemClicked(
-                    priceRangeFilterCheckboxDataView,
-                    item
+            setOnCheckedChangeListener { _, isChecked ->
+                quickPriceRangeFilterListener.onPriceRangeFilterCheckboxItemClicked(
+                    item,
+                    isChecked
                 )
             }
         }
     }
 
     private fun getPriceLevelString(
-        item: OptionViewModel,
+        item: TokofoodOptionUiModel,
         priceRangeSize: Int
     ): String {
         val priceBuilder = StringBuilder()
@@ -86,11 +78,16 @@ internal class PriceRangeFilterCheckboxItemViewHolder(
         return try {
             val colorHexInt = ContextCompat.getColor(itemView.context, idColor)
             val colorToHexString = Integer.toHexString(colorHexInt).uppercase()
-                .substring(PriceRangeFilterCheckboxViewHolder.STRING_COLOR_INDEX)
+                .substring(STRING_COLOR_INDEX)
             return "#$colorToHexString"
         } catch (e: Exception) {
             e.printStackTrace()
             ""
         }
     }
+
+    companion object {
+        const val STRING_COLOR_INDEX = 2
+    }
+
 }
