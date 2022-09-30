@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
@@ -190,7 +191,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getTotalUnreadCount(): LiveData<Int> {
         return try {
-            getChatHistoryUseCase.getTotalUnreadCount()
+            getChatHistoryUseCase.getTotalUnreadCount(listOf(ChannelType.GroupBooking))
         } catch (throwable: Throwable) {
             _error.value = throwable
             MutableLiveData()

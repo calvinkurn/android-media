@@ -107,10 +107,6 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
             }
             binding?.connectionStatusTv?.text = connectionString
         }
-
-        viewModel.getTotalUnreadCount().observe(viewLifecycleOwner) {
-            binding?.counterTv?.text = it.toString()
-        }
     }
 
     override fun onDestroy() {
@@ -129,12 +125,16 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 OrderChatType.Unknown
             )
         }
+
+        viewModel.getTotalUnreadCount().observe(viewLifecycleOwner) {
+            binding?.counterTv?.text = it.toString()
+        }
     }
 
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "RB-147102-9903459"
+            "RB-156893-3535570"
         } else {
             text.toString()
         }
@@ -186,9 +186,9 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 if (!s.isNullOrEmpty()) {
-//                    viewModel.setTypingStatus(true)
+                    viewModel.setTypingStatus(true)
                 } else {
-//                    viewModel.setTypingStatus(false)
+                    viewModel.setTypingStatus(false)
                 }
             }
 
