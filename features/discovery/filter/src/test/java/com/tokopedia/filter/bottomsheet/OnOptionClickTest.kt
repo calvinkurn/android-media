@@ -417,28 +417,22 @@ internal class OnOptionClickTest: SortFilterBottomSheetViewModelTestFixtures() {
     fun `onOptionClicked with given PriceRangeFilterCheckboxDataView to apply filter`() {
         val existingMapParameter = createMapParameter()
         val dynamicFilterModel = "dynamic-filter-model-common.json".jsonToObject<DynamicFilterModel>()
+        val templatePricingFood = "template_pricing_food"
         `Given SortFilterBottomSheet view is already created`(existingMapParameter, dynamicFilterModel)
 
         val sortFilterList = this.sortFilterList!!
-        val selectedFilter = dynamicFilterModel.data.filter.first { it.templateName == "template_pricing_food" } // Just choose any filter
+        val selectedFilter = dynamicFilterModel.data.filter.first { it.templateName == templatePricingFood } // Just choose any filter
         val priceRangeFilter = sortFilterList.findPriceRangeFilterCheckboxDataView(selectedFilter)
             ?: throw AssertionError("Cannot find selected filter ${selectedFilter.title} in Sort Filter List")
         val clickedOptionViewModel = priceRangeFilter.optionViewModelList.first { !it.isSelected } // Just choose any un-selected option
 
         `When an Option is Clicked And Applied`(priceRangeFilter, clickedOptionViewModel)
 
-        val selectedOptionViewModel = getSelectedOptionViewModel(priceRangeFilter, clickedOptionViewModel)
-
         val priceRangeFilterCheckboxDataView = this.sortFilterList!!.filterIsInstance<PriceRangeFilterCheckboxDataView>().first()
         val optionViewModels = selectedFilter.options.take(priceRangeFilterCheckboxDataView.optionViewModelList.size).filterIndexed { index, item ->
             priceRangeFilterCheckboxDataView.optionViewModelList[index].option.description == item.description
         }
 
-        `Then assert option selected state`(selectedOptionViewModel, true)
-        `Then assert sort filter view is updated`(sortFilterList.indexOf(priceRangeFilter))
-        `Then assert map parameter values contains the clicked option`(existingMapParameter, selectedOptionViewModel)
-        `Then assert map parameter contains origin_filter=filter`()
-        `Then assert ACTIVE filter map parameter contains the clicked option`(selectedOptionViewModel)
         `Then assert option list doesn't sort by selected or name`(optionViewModels)
     }
 
