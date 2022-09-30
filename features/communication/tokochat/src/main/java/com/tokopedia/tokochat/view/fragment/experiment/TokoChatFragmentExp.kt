@@ -126,7 +126,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 orderId,
                 2,
                 getGroupBookingListener(),
-                OrderChatType.Driver
+                OrderChatType.Unknown
             )
         }
     }
@@ -134,7 +134,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "RB-186701-4154028"
+            "RB-147102-9903459"
         } else {
             text.toString()
         }
