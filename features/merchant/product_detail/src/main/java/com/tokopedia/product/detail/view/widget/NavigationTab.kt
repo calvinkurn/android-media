@@ -99,6 +99,7 @@ class NavigationTab(
 
     fun onClickBackToTop() {
         enableContentChangeListener = true
+        toggle(false, false)
     }
 
     private fun updateItems(items: List<Item>) {
@@ -120,7 +121,7 @@ class NavigationTab(
         }
     }
 
-    private fun toggle(show: Boolean) {
+    private fun toggle(show: Boolean, animate: Boolean = true) {
         if (isVisible == show) return
 
         val showY = 0f
@@ -137,7 +138,8 @@ class NavigationTab(
         }
 
         val y = if (show) showY else hideY
-        view.animate().translationY(y).duration = NAVIGATION_ANIMATION_DURATION
+        val duration = if (animate) NAVIGATION_ANIMATION_DURATION else 0L
+        view.animate().translationY(y).duration = duration
         isVisible = show
     }
 
@@ -171,7 +173,9 @@ class NavigationTab(
         }
 
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            if (enableScrollUpListener && (shouldHide(recyclerView) || dy < 0)) {
+            if (!enableScrollUpListener) return
+            val shouldHide = shouldHide(recyclerView)
+            if (shouldHide || dy < 0) {
                 toggle(false)
             } else {
                 toggle(true)
@@ -205,6 +209,7 @@ class NavigationTab(
         private fun shouldHide(recyclerView: RecyclerView): Boolean {
             return if (config is ProductDetailNavigation.Configuration.Navbar4) {
                 val scrollOffset = recyclerView.computeVerticalScrollOffset()
+                println("vindp - $scrollOffset")
                 scrollOffset < NAVIGATION_SHOW_THRESHOLD.toPx().toInt()
             } else getFirstVisibleItemPosition(recyclerView) == 0
         }
@@ -241,14 +246,16 @@ class NavigationTab(
             }
         }
 
-        private fun smoothScrollToPosition(position: Int) {
+        private suspend fun smoothScrollToPosition(position: Int) {
             if (position == -1) return
 
             recyclerView?.apply {
                 enableTouchScroll(false)
                 smoothScroller.targetPosition = position
-                enableScrollUpListener = position == 0
                 layoutManager?.startSmoothScroll(smoothScroller)
+                if (position == 0) {
+                    withContext(Dispatchers.Main) { onClickBackToTop() }
+                }
             }
         }
 
@@ -317,6 +324,7 @@ class NavigationTab(
 
         override fun onStart() {
             super.onStart()
+            enableScrollUpListener = false
             enableContentChangeListener = false
         }
 
