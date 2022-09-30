@@ -209,7 +209,6 @@ class NavigationTab(
         private fun shouldHide(recyclerView: RecyclerView): Boolean {
             return if (config is ProductDetailNavigation.Configuration.Navbar4) {
                 val scrollOffset = recyclerView.computeVerticalScrollOffset()
-                println("vindp - $scrollOffset")
                 scrollOffset < NAVIGATION_SHOW_THRESHOLD.toPx().toInt()
             } else getFirstVisibleItemPosition(recyclerView) == 0
         }
