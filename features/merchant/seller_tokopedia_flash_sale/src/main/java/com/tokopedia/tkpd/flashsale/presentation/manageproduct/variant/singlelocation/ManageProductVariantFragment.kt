@@ -9,6 +9,8 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
+import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -130,6 +132,7 @@ class ManageProductVariantFragment :
         bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             setProductListData(appliedProduct)
+            displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -138,6 +141,20 @@ class ManageProductVariantFragment :
         return ManageProductVariantAdapter(this).apply {
             setDataList(viewModel.getProductData())
         }
+    }
+
+    private fun displayToaster(product: ReservedProduct.Product) {
+        val variantWarehouses = product.childProducts
+        val criteria = product.productCriteria
+
+        val isValid = variantWarehouses.firstOrNull { variantProduct ->
+            variantProduct.warehouses.firstOrNull { variantWarehouse ->
+                viewModel.validateInput(criteria, variantWarehouse.discountSetup).isAllFieldValid()
+            } != null
+        } != null
+
+        if (isValid) view?.showToaster(getString(R.string.stfs_toaster_valid), getString(R.string.stfs_toaster_ok))
+        else view?.showToasterError(getString(R.string.stfs_toaster_error), getString(R.string.stfs_toaster_ok))
     }
 
     private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
