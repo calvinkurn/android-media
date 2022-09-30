@@ -196,6 +196,38 @@
     <string name="other_method_email">E-mail</string>
     <string name="other_method_title">Pilih metode untuk Daftar</string>
 
+    <!--Redefine Register Email-->
+    <string name="register_email_title">Daftar dengan E-mail</string>
+    <string name="register_email_label_field_email">E-mail</string>
+    <string name="register_email_label_field_password">Kata Sandi</string>
+    <string name="register_email_label_field_name">Nama Lengkap</string>
+    <string name="register_email_button_next">Lanjut</string>
+    <string name="register_email_desc">Setelah ini kamu perlu masukkan kode verifikasi yang akan dikirimkan ke e-mail diatas</string>
+    <string name="register_email_message_must_be_filled">Harus diisi!</string>
+    <string name="register_email_message_email_not_available">E-mail ini tidak bisa dipakai di Tokopedia</string>
+    <string name="register_email_message_email_not_valid">Format email salah</string>
+    <string name="register_email_message_name_min_length_error">Min. 3 karakter.</string>
+    <string name="register_email_message_name_character_error">Ketik namamu pakai huruf, ya.</string>
+    <string name="register_email_message_name_max_length_error">Maks. 35 karakter.</string>
+    <string name="register_email_dialog_offer_login_title">E-mail sudah Terdaftar</string>
+    <string name="register_email_dialog_offer_login_subtitle">Lanjut masuk dengan e-mail ini\n%s</string>
+    <string name="register_email_dialog_offer_login_secondary_button">Ubah</string>
+    <string name="register_email_dialog_offer_login_primary_button">Ya, Masuk</string>
+    <string name="register_email_input_phone_header">Selangkah lagi selesai!</string>
+    <string name="register_email_input_phone_description">Masukkan nomor HP untuk bisa dapat cashback, akun makin aman, dan banyak lagi!</string>
+    <string name="register_email_input_phone_min_length_error">Min. 8 angka</string>
+    <string name="register_email_input_phone_max_length_error">Maks. 15 angka</string>
+    <string name="register_email_input_phone_dialog_offer_login_title">Nomor HP Sudah Terdaftar</string>
+    <string name="register_email_input_phone_dialog_offer_login_subtitle">Lanjut masuk dengan nomor ini\n%s</string>
+    <string name="register_email_input_phone_dialog_failed_title">Permintaanmu gagal diproses</string>
+    <string name="register_email_input_phone_dialog_failed_subtitle">Ada kendala pada akun atau HP-mu. Coba lagi atau hubungi Tokopedia Care.</string>
+    <string name="register_email_input_phone_dialog_failed_primary_button">Hubungi Tokopedia Care</string>
+    <string name="register_email_input_phone_dialog_failed_secondary_button">Tutup</string>
+    <string name="register_email_input_phone_dialog_success_subtitle">Pastikan nomor HP yang kamu isi sudah benar untuk diverifikasi.</string>
+    <string name="register_email_input_phone_dialog_success_primary_button">Ya, Benar</string>
+    <string name="register_email_input_phone_dialog_success_secondary_button">Ubah</string>
+    <string name="register_email_input_phone_skip">Lewati</string>
+
     <string name="goto_seamless_description_text">Akunmu udah kesambung ke Gojek. Kamu bisa masuk ke Tokopedia lebih cepat, deh!</string>
     <string name="goto_seamless_primary_title">Sekali klik, langsung masuk!</string>
     <string name="goto_seamless_secondary_btn_text">Masuk ke Akun Lain</string>

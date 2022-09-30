@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.common.view.dialog
 
 import android.content.Context
+import android.telephony.PhoneNumberUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginregister.R
 
@@ -51,6 +52,58 @@ class RegisteredDialog {
                 return dialog
             }
             return null
+        }
+
+        fun createRedefineRegisterEmailOfferLogin(context: Context, email: String): DialogUnify {
+            val offerToLoginDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+
+            offerToLoginDialog.apply {
+                setTitle(context.getString(R.string.register_email_dialog_offer_login_title))
+                setDescription(context.getString(R.string.register_email_dialog_offer_login_subtitle, email))
+                setPrimaryCTAText(context.getString(R.string.register_email_dialog_offer_login_primary_button))
+                setSecondaryCTAText(context.getString(R.string.register_email_dialog_offer_login_secondary_button))
+            }
+
+            return offerToLoginDialog
+        }
+
+        fun createRedefineRegisterInputPhoneOfferLogin(context: Context, phone: String): DialogUnify {
+            val offerToLoginDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+
+            offerToLoginDialog.apply {
+                setTitle(context.getString(R.string.register_email_input_phone_dialog_offer_login_title))
+                setDescription(context.getString(R.string.register_email_input_phone_dialog_offer_login_subtitle, phone))
+                setPrimaryCTAText(context.getString(R.string.register_email_dialog_offer_login_primary_button))
+                setSecondaryCTAText(context.getString(R.string.register_email_dialog_offer_login_secondary_button))
+            }
+
+            return offerToLoginDialog
+        }
+
+        fun createRedefineRegisterInputPhoneFailed(context: Context): DialogUnify {
+            val failedDialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+
+            failedDialog.apply {
+                setTitle(context.getString(R.string.register_email_input_phone_dialog_failed_title))
+                setDescription(context.getString(R.string.register_email_input_phone_dialog_failed_subtitle))
+                setPrimaryCTAText(context.getString(R.string.register_email_input_phone_dialog_failed_primary_button))
+                setSecondaryCTAText(context.getString(R.string.register_email_input_phone_dialog_failed_secondary_button))
+            }
+
+            return failedDialog
+        }
+
+        fun createRedefineRegisterInputPhoneOfferSuccess(context: Context, phone: String): DialogUnify {
+            val confirmDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+
+            confirmDialog.apply {
+                setTitle(phone)
+                setDescription(context.getString(R.string.register_email_input_phone_dialog_success_subtitle))
+                setPrimaryCTAText(context.getString(R.string.register_email_input_phone_dialog_success_primary_button))
+                setSecondaryCTAText(context.getString(R.string.register_email_input_phone_dialog_success_secondary_button))
+            }
+
+            return confirmDialog
         }
     }
 }

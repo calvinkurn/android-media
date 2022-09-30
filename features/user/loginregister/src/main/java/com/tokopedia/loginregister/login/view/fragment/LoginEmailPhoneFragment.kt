@@ -207,6 +207,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isUseHash = false
     private var validateToken = ""
     private var isLoginAfterSq = false
+    private var isReturnHomeWhenBackPressed = false
 
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
@@ -339,6 +340,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isReturnHomeWhenBackPressed = getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, arguments, savedInstanceState, false)
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
@@ -1160,6 +1162,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
                 }
 
+                if (isReturnHomeWhenBackPressed) {
+                    goToHome()
+                }
+
                 it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
                 it.finish()
             }
@@ -1278,6 +1284,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         analytics.eventFailedLogin(userSession.loginMethod, errMsg.removeErrorCode(), isFromRegister)
         dismissLoadingLogin()
         showToaster(errMsg)
+    }
+
+    private fun goToHome() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
     }
 
     override fun trackSuccessValidate() {
@@ -1754,6 +1766,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
+        } else if (isReturnHomeWhenBackPressed) {
+            goToHome()
         } else if (activity != null) {
             activity?.finish()
         }
