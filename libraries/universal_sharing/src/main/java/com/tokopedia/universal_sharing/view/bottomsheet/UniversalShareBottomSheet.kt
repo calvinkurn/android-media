@@ -971,10 +971,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         if (getImageFromMedia) {
             when (sourceId) {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
-                    lifecycleScope.launch {
-                        val listOfParams = executeImagePolicyUseCase(sourceId, shareModel.platform)
-                        executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
-                    }
+                    executePdpContextualImage(shareModel)
                 }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
@@ -985,6 +982,18 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
         } else {
             executeSharingFlow(shareModel)
+        }
+    }
+
+    private fun executePdpContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null) return
+        imageGeneratorParam?.apply {
+            this.platform = shareModel.platform
+        }
+        lifecycleScope.launch {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
         }
     }
 
@@ -1126,19 +1135,6 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             it.printStackTrace()
             executeSharingFlow(shareModel)
         })
-    }
-
-    private suspend fun executeImagePolicyUseCase(sourceId: String, platform: String): ArrayList<ImageGeneratorRequestData> {
-        if (imageGeneratorParam == null) throw Exception("image generator param is null")
-        imageGeneratorParam?.apply {
-            this.platform = platform
-        }
-        val result = lifecycleScope.async(Dispatchers.IO) {
-            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
-            val param = result.generateImageGeneratorParam(imageGeneratorParam!!)
-            return@async param
-        }.await()
-        return result
     }
 
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
