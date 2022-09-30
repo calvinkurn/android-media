@@ -2,6 +2,7 @@ package com.tkpd.macrobenchmark.util
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.*
+import java.util.concurrent.TimeUnit
 
 object MacroInteration {
     private val DEFAULT_TIMEOUT = 60000L
@@ -41,5 +42,15 @@ object MacroInteration {
 
         recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)
+    }
+
+    fun waitUntilActivityShown(packageName: String) {
+        val instrumentation = InstrumentationRegistry.getInstrumentation()
+        val device = UiDevice.getInstance(instrumentation)
+
+        device.wait(
+            Until.hasObject(By.clazz(packageName)),
+            TimeUnit.SECONDS.toMillis(10)
+        )
     }
 }

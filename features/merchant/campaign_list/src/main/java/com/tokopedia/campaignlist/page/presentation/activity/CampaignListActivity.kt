@@ -5,7 +5,7 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
-import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListComposeFragment
+import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListFragment
 
 class CampaignListActivity : BaseSimpleActivity() {
 
@@ -15,7 +15,7 @@ class CampaignListActivity : BaseSimpleActivity() {
     }
 
     override fun getNewFragment(): Fragment {
-        return CampaignListComposeFragment.createInstance()
+        return CampaignListFragment.createInstance()
     }
 
     private fun initInjector() {
