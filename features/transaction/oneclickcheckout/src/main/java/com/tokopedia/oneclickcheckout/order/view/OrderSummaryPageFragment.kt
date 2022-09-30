@@ -19,12 +19,12 @@ import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common.payment.PaymentConstant
@@ -1548,7 +1548,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private fun getOrderPromoCardListener(): OrderPromoCard.OrderPromoCardListener {
         return object : OrderPromoCard.OrderPromoCardListener {
             override fun onClickRetryValidatePromo() {
-                viewModel.validateUsePromo()
+                viewModel.validateUsePromo(forceValidateUse = true)
             }
 
             override fun onClickPromo() {
