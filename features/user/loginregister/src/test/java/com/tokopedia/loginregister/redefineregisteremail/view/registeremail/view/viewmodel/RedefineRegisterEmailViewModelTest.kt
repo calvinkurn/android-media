@@ -44,148 +44,187 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `input invalid email then form state email invalid`() {
+        // Given
         val email = "habibi@tokopedia"
         val expected = R.string.register_email_message_email_not_valid
 
+        // When
         viewModel.validateEmail(email)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.emailError)
     }
 
     @Test
     fun `input empty email then form state email invalid`() {
+        // Given
         val email = ""
         val expected = R.string.register_email_message_must_be_filled
 
+        // When
         viewModel.validateEmail(email)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.emailError)
     }
 
     @Test
     fun `input valid email then form state email valid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val expected = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.emailError)
     }
 
     @Test
     fun `input empty password then form state password invalid`() {
+        // Given
         val password = ""
         val expected = R.string.register_email_message_must_be_filled
 
+        // When
         viewModel.validatePassword(password)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.passwordError)
     }
 
     @Test
     fun `input too sort password then form state password invalid`() {
+        // Given
         val password = "123"
         val expected = R.string.error_minimal_password
 
+        // When
         viewModel.validatePassword(password)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.passwordError)
     }
 
     @Test
     fun `input exceed password length then form state password invalid`() {
+        // Given
         val password = "12345678901234567890123456789012345"
         val expected = R.string.error_maximal_password
 
+        // When
         viewModel.validatePassword(password)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.passwordError)
     }
 
     @Test
     fun `input valid password then form state password valid`() {
+        // Given
         val password = "1234567890"
         val expected = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validatePassword(password)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.passwordError)
     }
 
     @Test
     fun `input empty name then form state name invalid`() {
+        // Given
         val name = ""
         val expected = R.string.register_email_message_must_be_filled
 
+        // When
         viewModel.validateName(name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.nameError)
     }
 
     @Test
     fun `input too sort name then form state name invalid`() {
+        // Given
         val name = "Ha"
         val expected = R.string.register_email_message_name_min_length_error
 
+        // When
         viewModel.validateName(name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.nameError)
     }
 
     @Test
     fun `input name with number then form state name invalid`() {
+        // Given
         val name = "Habibi123"
         val expected = R.string.register_email_message_name_character_error
 
+        // When
         viewModel.validateName(name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.nameError)
     }
 
     @Test
     fun `input exceed name length then form state name invalid`() {
+        // Given
         val name = "AbcdefghijklmnopqrstuvwxyzAbcdefghijklmnopqrstuvwxyz"
         val expected = R.string.register_email_message_name_max_length_error
 
+        // When
         viewModel.validateName(name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.nameError)
     }
 
     @Test
     fun `input valid name then form state name valid`() {
+        // Given
         val name = "Habibi"
         val expected = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateName(name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(expected, result.nameError)
     }
 
     @Test
     fun `submit invalid field then form state invalid`() {
+        // Given
         val email = "habibi"
         val password = "12"
         val name = "H"
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertTrue(result.emailError != validField)
         assertTrue(result.passwordError != validField)
@@ -194,15 +233,18 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit invalid field then current value not empty`() {
+        // Given
         val email = "habibi"
         val password = "12"
         val name = "H"
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val resultEmail = viewModel.currentEmail
         val resultPassword = viewModel.currentPassword
         val resultName = viewModel.currentName
@@ -213,16 +255,19 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then form state valid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val resultFieldState = viewModel.formState.getOrAwaitValue()
         assertTrue(resultFieldState.emailError == validField)
         assertTrue(resultFieldState.passwordError == validField)
@@ -231,15 +276,18 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then field value all set`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val resultEmail = viewModel.currentEmail
         val resultPassword = viewModel.currentPassword
         val resultName = viewModel.currentName
@@ -250,16 +298,19 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then form state email not valid`() {
+        // Given
         val email = "habibi"
         val password = "123456789"
         val name = "Habibi"
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertNotEquals(validField, result.emailError)
         assertEquals(validField, result.passwordError)
@@ -268,16 +319,19 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then form state password not valid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "12"
         val name = "Habibi"
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(validField, result.emailError)
         assertNotEquals(validField, result.passwordError)
@@ -286,16 +340,19 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then form state name not valid`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "1234567890"
         val name = "Ha"
         val validField = RedefineRegisterEmailConstants.EMPTY_RESOURCE
 
+        // When
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.formState.getOrAwaitValue()
         assertEquals(validField, result.emailError)
         assertEquals(validField, result.passwordError)
@@ -304,6 +361,7 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then success encrypt password and validate all of variable value`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
@@ -311,6 +369,7 @@ class RedefineRegisterEmailViewModelTest {
         val key = ByteArray(10)
         val encryptedPassword = "qwerty"
 
+        // When
         coEvery { Base64.decode(data.key, any()) } returns key
         coEvery { RsaUtils.encrypt(password, String(key), true) } returns encryptedPassword
         coEvery { generateKeyUseCase(Unit).keyData } returns data
@@ -319,6 +378,7 @@ class RedefineRegisterEmailViewModelTest {
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val resultHash = viewModel.currentHash
         val resultEncryptedPassword = viewModel.encryptedPassword
         assertTrue(resultHash.isNotEmpty())
@@ -329,18 +389,21 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then failed get generateKeyUseCase`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
         val response = Throwable()
         val expected = Fail(response)
 
+        // When
         coEvery { generateKeyUseCase(Unit).keyData } throws response
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val resultHash = viewModel.currentHash
         val resultEncryptedPassword = viewModel.encryptedPassword
         val resultValidateUserData = viewModel.validateUserData.getOrAwaitValue()
@@ -352,6 +415,7 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then success get validateUserData`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
@@ -361,6 +425,7 @@ class RedefineRegisterEmailViewModelTest {
         val response = ValidateUserDataModel()
         val expected = Success(response.validateUserData)
 
+        // When
         coEvery { Base64.decode(data.key, any()) } returns key
         coEvery { RsaUtils.encrypt(password, String(key), true) } returns encryptedPassword
         coEvery { generateKeyUseCase(Unit).keyData } returns data
@@ -370,6 +435,7 @@ class RedefineRegisterEmailViewModelTest {
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.validateUserData.getOrAwaitValue()
         val isLoading = viewModel.isLoading.getOrAwaitValue()
         assertTrue(result is Success)
@@ -379,6 +445,7 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then failed get validateUserData`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
@@ -388,6 +455,7 @@ class RedefineRegisterEmailViewModelTest {
         val response = Throwable()
         val expected = Fail(response)
 
+        // When
         coEvery { Base64.decode(data.key, any()) } returns key
         coEvery { RsaUtils.encrypt(password, String(key), true) } returns encryptedPassword
         coEvery { generateKeyUseCase(Unit).keyData } returns data
@@ -397,6 +465,7 @@ class RedefineRegisterEmailViewModelTest {
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.validateUserData.getOrAwaitValue()
         val isLoading = viewModel.isLoading.getOrAwaitValue()
         assertTrue(result is Fail)
@@ -406,6 +475,7 @@ class RedefineRegisterEmailViewModelTest {
 
     @Test
     fun `submit valid field then failed and try again`() {
+        // Given
         val email = "habibi@tokopedia.com"
         val password = "123456789"
         val name = "Habibi"
@@ -416,6 +486,7 @@ class RedefineRegisterEmailViewModelTest {
         val responseSuccess = ValidateUserDataModel()
         val expected = Success(responseSuccess.validateUserData)
 
+        // When
         coEvery { Base64.decode(data.key, any()) } returns key
         coEvery { RsaUtils.encrypt(password, String(key), true) } returns encryptedPassword
         coEvery { generateKeyUseCase(Unit).keyData } returns data
@@ -429,6 +500,7 @@ class RedefineRegisterEmailViewModelTest {
         coEvery { validateUserDataUseCase(any()) } returns responseSuccess
         viewModel.submitForm(email, password, name)
 
+        // Then
         val result = viewModel.validateUserData.getOrAwaitValue()
         val isLoading = viewModel.isLoading.getOrAwaitValue()
         assertTrue(result is Success)
