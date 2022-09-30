@@ -6,13 +6,18 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
+import com.tokopedia.logisticCommon.data.response.EligibleForAddressFeature
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
+import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokofood.common.domain.usecase.KeroEditAddressUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodFilterSortMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodMerchantSearchResultMapper
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodFilterSortResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.response.TokofoodSearchMerchantResponse
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodFilterSortUseCase
 import com.tokopedia.tokofood.feature.search.searchresult.domain.usecase.TokofoodSearchMerchantUseCase
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeChipUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodQuickSortUiModel
@@ -47,6 +52,12 @@ open class TokofoodSearchResultPageViewModelTestFixture {
     lateinit var tokofoodFilterSortUseCase: TokofoodFilterSortUseCase
 
     @RelaxedMockK
+    lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
+
+    @RelaxedMockK
+    lateinit var keroEditAddressUseCase: KeroEditAddressUseCase
+
+    @RelaxedMockK
     lateinit var tokofoodMerchantSearchResultMapper: TokofoodMerchantSearchResultMapper
 
     @RelaxedMockK
@@ -60,6 +71,8 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         viewModel = TokofoodSearchResultPageViewModel(
             tokofoodSearchMerchantUseCase,
             tokofoodFilterSortUseCase,
+            eligibleForAddressUseCase,
+            keroEditAddressUseCase,
             tokofoodMerchantSearchResultMapper,
             tokofoodFilterSortMapper,
             CoroutineTestDispatchersProvider
@@ -83,6 +96,11 @@ open class TokofoodSearchResultPageViewModelTestFixture {
     protected fun getSearchResultEmptyResponse() =
         JsonResourcesUtil.createSuccessResponse<TokofoodSearchMerchantResponse>(
             SEARCH_RESULT_EMPTY_JSON
+        )
+
+    protected fun getSearchResultOocResponse() =
+        JsonResourcesUtil.createSuccessResponse<TokofoodSearchMerchantResponse>(
+            SEARCH_RESULT_OOC
         )
 
     protected fun getFilterSortUiModels(dataValue: DataValue): List<TokofoodSortFilterItemUiModel> {
@@ -218,11 +236,58 @@ open class TokofoodSearchResultPageViewModelTestFixture {
         } returns sortKey
     }
 
+    protected fun onGetOutOfCoverageUiModels_shouldReturn(uiModels: List<MerchantSearchOOCUiModel>) {
+        coEvery {
+            tokofoodMerchantSearchResultMapper.getOutOfCoverageUiModels(any())
+        } returns uiModels
+    }
+
+    protected fun onGetEligibleForAnaRevamp_thenReturn(isEligible: Boolean) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData)-> Unit>().invoke(
+                KeroAddrIsEligibleForAddressFeatureData(
+                    eligibleForRevampAna = EligibleForAddressFeature(
+                        eligible = isEligible
+                    )
+                )
+            )
+        }
+    }
+
+    protected fun onGetEligibleForAnaRevamp_thenReturn(errorThrowable: Throwable) {
+        coEvery {
+            eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
+        } answers {
+            secondArg<(Throwable)-> Unit>().invoke(errorThrowable)
+        }
+    }
+
+    protected fun onEditAddress_shouldReturn(addressId: String,
+                                             lat: String,
+                                             long: String,
+                                             isSuccess: Boolean) {
+        coEvery {
+            keroEditAddressUseCase.execute(addressId, lat, long)
+        } returns isSuccess
+    }
+
+    protected fun onEditAddress_shouldThrow(addressId: String,
+                                            lat: String,
+                                            long: String,
+                                            throwable: Throwable) {
+        coEvery {
+            keroEditAddressUseCase.execute(addressId, lat, long)
+        } throws throwable
+    }
+
     companion object {
         const val QUICK_FILTER_JSON = "json/search/searchresult/quick_filter.json"
         const val DETAIL_FILTER_JSON = "json/search/searchresult/detail_filter.json"
         const val SEARCH_RESULT_JSON = "json/search/searchresult/search_result.json"
         const val SEARCH_RESULT_EMPTY_JSON = "json/search/searchresult/search_result_empty.json"
+        const val SEARCH_RESULT_OOC = "json/search/searchresult/search_result_ooc.json"
     }
 
 }

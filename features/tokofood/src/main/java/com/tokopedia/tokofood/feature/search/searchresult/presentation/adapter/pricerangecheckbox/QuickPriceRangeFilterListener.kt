@@ -1,7 +1,7 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.pricerangecheckbox
 
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 
 interface QuickPriceRangeFilterListener {
-    fun onPriceRangeFilterCheckboxItemClicked(uiModel: TokofoodOptionUiModel, isChecked: Boolean)
+    fun onPriceRangeFilterCheckboxItemClicked(uiModel: PriceRangeFilterCheckboxItemUiModel, isChecked: Boolean)
 }

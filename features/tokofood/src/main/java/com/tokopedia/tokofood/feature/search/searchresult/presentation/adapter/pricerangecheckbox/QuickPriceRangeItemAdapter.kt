@@ -4,10 +4,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchPriceRangeBinding
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
+import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
 
 class QuickPriceRangeItemAdapter(
-    private val uiModels: List<TokofoodOptionUiModel>,
+    private val uiModels: List<PriceRangeFilterCheckboxItemUiModel>,
     private val quickPriceRangeFilterListener: QuickPriceRangeFilterListener
 ) : RecyclerView.Adapter<QuickPriceRangeFilterItemViewHolder>() {
 

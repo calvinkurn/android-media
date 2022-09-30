@@ -8,7 +8,6 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokofood.feature.search.searchresult.domain.mapper.TokofoodQuickPriceRangeHelper
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.PriceRangeFilterCheckboxItemUiModel
-import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodOptionUiModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -70,7 +69,7 @@ class TokofoodQuickPriceRangeViewModel @Inject constructor(
     }
 
     fun setPriceRangeUiModel(
-        uiModel: TokofoodOptionUiModel,
+        uiModel: PriceRangeFilterCheckboxItemUiModel,
         isSelected: Boolean
     ) {
         val appliedOptions = getCurrentAppliedOptions().toMutableList()
