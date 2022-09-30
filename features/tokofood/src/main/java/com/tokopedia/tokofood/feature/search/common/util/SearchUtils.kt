@@ -1,4 +1,4 @@
-package com.tokopedia.tokofood.common.util
+package com.tokopedia.tokofood.feature.search.common.util
 
 import android.annotation.SuppressLint
 import android.view.MotionEvent
@@ -28,8 +28,8 @@ internal fun View?.hideKeyboardOnTouchListener()  {
                 val searchBarEdt = v.rootView?.findViewById<SearchBarUnify>(com.tokopedia.tokofood.R.id.searchBarView)
                 if (v !is SearchBarUnify || v !is EditText) {
                     KeyboardHandler.DropKeyboard(v.context, v)
+                    searchBarEdt?.clearFocus()
                 }
-                searchBarEdt?.clearFocus()
                 true
             } catch (e: Exception) {
                 e.printStackTrace()
