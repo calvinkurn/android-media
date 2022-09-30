@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultSameSessionRecommendationLayoutBinding
-import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -68,10 +67,7 @@ class SameSessionRecommendationViewHolder(
         binding.rvSameSessionRecommendationProduct.apply {
             layoutManager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
             addItemDecorationIfNotExists(createProductItemDecoration())
-            val typeFactory = SameSessionRecommendationProductTypeFactory(
-                inspirationCarouselListener
-            )
-            adapter = InspirationCarouselOptionAdapter(typeFactory).apply {
+            adapter = SameSessionRecommendationProductAdapter(inspirationCarouselListener).apply {
                 clearData()
                 addAll(products)
             }
