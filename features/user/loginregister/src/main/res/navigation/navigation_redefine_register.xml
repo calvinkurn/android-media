@@ -26,7 +26,7 @@
         tools:layout="@layout/fragment_redefine_register_input_phone" >
         <argument
             android:name="parameter"
-            app:argType="com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel"/>
+            app:argType="com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel"/>
     </fragment>
 
 </navigation>
