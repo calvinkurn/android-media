@@ -32,7 +32,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -145,7 +144,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     override fun onResume() {
         super.onResume()
-        refreshAddressData()
+        refreshAddressData(false)
     }
 
     override fun getScreenName(): String = ""
@@ -500,12 +499,14 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         }
     }
 
-    private fun refreshAddressData() {
+    private fun refreshAddressData(shouldRefreshSearchResult: Boolean = true) {
         if (isChooseAddressWidgetDataUpdated()) {
             setLocalCacheModel()
             updateAddressWidget()
         }
-        viewModel.getInitialMerchantSearchResult(searchParameter)
+        if (shouldRefreshSearchResult) {
+            viewModel.getInitialMerchantSearchResult(searchParameter)
+        }
     }
 
     private fun setLocalCacheModel() {
