@@ -6,5 +6,5 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 private fun firebaseRemoteConfig(context: Context) = FirebaseRemoteConfigImpl(context)
 
-fun isOnlyRegisterWithNumber(context: Context): Boolean =
+fun isRedefineRegisterEmailActivated(context: Context): Boolean =
     firebaseRemoteConfig(context).getBoolean(RegisterConstants.RemoteConfigKey.REMOTE_CONFIG_KEY_REGISTER_ONLY_WITH_PHONE_NUMBER, false)
