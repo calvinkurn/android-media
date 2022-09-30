@@ -1,14 +1,13 @@
 package com.tokopedia.feedcomponent.onboarding.di
 
 import androidx.fragment.app.Fragment
-import com.tokopedia.feedcomponent.di.FragmentKey
+import com.tokopedia.abstraction.base.view.fragment.FragmentKey
 import com.tokopedia.feedcomponent.onboarding.data.FeedUGCOnboardingRepositoryImpl
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.CompleteStrategy
 import com.tokopedia.feedcomponent.onboarding.di.qualifier.TncStrategy
 import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserCompleteOnboardingBottomSheet
 import com.tokopedia.feedcomponent.onboarding.view.bottomsheet.FeedUserTnCOnboardingBottomSheet
-import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCCompleteOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCTncOnboardingStrategy
 import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy

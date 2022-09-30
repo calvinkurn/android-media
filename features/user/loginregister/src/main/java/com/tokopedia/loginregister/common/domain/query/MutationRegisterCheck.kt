@@ -19,6 +19,8 @@ object MutationRegisterCheck {
                 userID
                 view
                 errors
+                uh
+                registerOvoEnable
             }
         }
     """.trimIndent()

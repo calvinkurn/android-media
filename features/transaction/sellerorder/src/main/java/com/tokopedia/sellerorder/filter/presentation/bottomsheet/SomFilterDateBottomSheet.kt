@@ -26,6 +26,9 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
         const val PATTER_DATE_EDT = "dd MMM yyyy"
         const val TITLE_FILTER_DATE = "Pilih Tanggal"
 
+        const val YEARS_BACK = 2
+        const val MONTHS_AHEAD = 1
+
         fun newInstance(): SomFilterDateBottomSheet {
             return SomFilterDateBottomSheet()
         }
@@ -133,8 +136,8 @@ class SomFilterDateBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupCalendarView() {
-        val minDate = Utils.getNPastYearTimeStamp(2)
-        val maxDate = Date(Utils.getNowTimeStamp())
+        val minDate = Utils.getNPastYearTimeStamp(YEARS_BACK)
+        val maxDate = Utils.getNFutureMonthsTimeStamp(MONTHS_AHEAD)
 
         calendarView?.let { cpv ->
             cpv.init(minDate, maxDate, emptyList()).inMode(mode)

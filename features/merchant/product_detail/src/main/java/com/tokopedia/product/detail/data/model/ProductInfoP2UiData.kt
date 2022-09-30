@@ -59,6 +59,7 @@ data class ProductInfoP2UiData(
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
+    var isToolbarTransparent: Boolean = false
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {
@@ -75,9 +76,7 @@ data class ProductInfoP2UiData(
         } ?: 0
     }
 
-    fun getBebasOngkirCampaignIDsByProductId(productId: String): String {
-        return bebasOngkir.boProduct.firstOrNull {
-            it.productId == productId
-        }?.boCampaignIDs ?: ""
+    fun getRatesEstimateBoMetadata(productId: String): String {
+        return ratesEstimate.firstOrNull { productId in it.listfProductId }?.boMetadata ?: ""
     }
 }

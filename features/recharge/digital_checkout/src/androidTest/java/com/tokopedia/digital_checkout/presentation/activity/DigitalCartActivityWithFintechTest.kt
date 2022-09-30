@@ -266,7 +266,7 @@ class DigitalCartActivityWithFintechTest {
         val dummyPromoTitle = "Promo Code dummy"
         val mockIntentData = Intent().apply {
             putExtra(EXTRA_PROMO_DATA, PromoData(state = TickerCheckoutView.State.ACTIVE,
-                    amount = 1000, promoCode = "dummyPromoCode", description = dummyPromoDescription,
+                    amount = 1000L, promoCode = "dummyPromoCode", description = dummyPromoDescription,
                     title = dummyPromoTitle))
         }
 

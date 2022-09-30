@@ -587,17 +587,17 @@ class ShopProductAdapter(private val shopProductAdapterTypeFactory: ShopProductA
         }
     }
 
-    fun updateShopPageProductChangeGridSectionIcon(totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
+    fun updateShopPageProductChangeGridSectionIcon(isProductListEmpty: Boolean, totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
         val gridSectionModel = visitables.filterIsInstance<ShopProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
-            if(totalProductData != 0) {
+            if(!isProductListEmpty) {
                 visitables.add(getListWithoutProductCardDataAndLoadingModel().size, ShopProductChangeGridSectionUiModel(totalProductData, gridType))
                 notifyChangedDataSet()
             }
         } else {
             gridSectionModel.apply {
                 val index = visitables.indexOf(this)
-                if(totalProductData == 0){
+                if(isProductListEmpty){
                     visitables.remove(this)
                     notifyRemovedItem(index)
                 }else{

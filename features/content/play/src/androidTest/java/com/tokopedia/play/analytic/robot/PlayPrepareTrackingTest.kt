@@ -4,7 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig

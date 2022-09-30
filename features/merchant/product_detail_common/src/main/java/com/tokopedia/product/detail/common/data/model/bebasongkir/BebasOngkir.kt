@@ -23,11 +23,7 @@ data class BebasOngkirProduct(
 
         @SerializedName("productID")
         @Expose
-        val productId: String = "",
-
-        @SerializedName("boCampaignIDs")
-        @Expose
-        val boCampaignIDs: String = ""
+        val productId: String = ""
 )
 
 data class BebasOngkirImage(

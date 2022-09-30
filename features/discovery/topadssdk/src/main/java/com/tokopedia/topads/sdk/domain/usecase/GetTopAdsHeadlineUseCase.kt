@@ -148,9 +148,9 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
         headlineProductCount: String,
         item: String,
         device: String = "android",
-        seenAds: String
+        seenAds: String?
     ): String {
-        val map = mapOf(
+        val map = mutableMapOf(
             PARAM_USER_ID to userId,
             PARAM_PAGE to page,
             PARAM_EP to ep,
@@ -159,8 +159,10 @@ class GetTopAdsHeadlineUseCase constructor(graphqlRepository: GraphqlRepository)
             PARAM_HEADLINE_PRODUCT_COUNT to headlineProductCount,
             PARAM_ITEM to item,
             PARAM_DEVICE to device,
-            KEY_SEEN_ADS to seenAds
+            KEY_SEEN_ADS to (seenAds ?: "")
         )
+
+        seenAds?.let { map.remove(KEY_SEEN_ADS) }
 
         return map.entries.joinToString("&")
 

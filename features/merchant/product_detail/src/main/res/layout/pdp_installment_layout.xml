@@ -20,8 +20,8 @@
 
         <ImageView
             android:id="@+id/iv_installment_main_icon"
-            android:layout_width="@dimen/dp_56"
-            android:layout_height="@dimen/dp_28"
+            android:layout_width="56dp"
+            android:layout_height="28dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
@@ -120,7 +120,7 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_1"
+        android:layout_height="1dp"
         android:layout_marginTop="16dp"
         android:background="@drawable/bg_line_separator"
         app:layout_constraintStart_toStartOf="parent"

@@ -57,6 +57,8 @@ data class ComponentData(
         val isWishlist: Boolean = false,
         @SerializedName("media")
         val media: List<Media> = listOf(),
+        @SerializedName("containerType")
+        val containerType: String = "",
         @SerializedName("name")
         val name: String = "",
         @SerializedName("parentName")
@@ -174,8 +176,8 @@ data class ComponentData(
             val thumbnailUrl: String
             val type: ProductDetailGallery.Item.Type
             if (media.type == PRODUCT_IMAGE_TYPE) {
-                url = media.uRLOriginal
-                thumbnailUrl = media.uRLOriginal
+                url = media.urlHD
+                thumbnailUrl = media.uRLThumbnail
                 type = ProductDetailGallery.Item.Type.Image
             } else {
                 url = media.videoURLAndroid

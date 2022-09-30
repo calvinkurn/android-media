@@ -8,10 +8,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image"
-        android:layout_width="@dimen/dp_200"
-        android:layout_height="@dimen/dp_200"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/dp_32"
+        android:layout_marginTop="32dp"
         android:scaleType="fitCenter"
         app:srcCompat="@drawable/ic_loading_image"
         tools:src="@tools:sample/avatars" />
@@ -43,8 +43,8 @@
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_back"
-        android:layout_width="@dimen/dp_180"
-        android:layout_height="@dimen/dp_44"
+        android:layout_width="180dp"
+        android:layout_height="44dp"
         android:layout_gravity="center"
         android:layout_marginLeft="24dp"
         android:layout_marginTop="16dp"

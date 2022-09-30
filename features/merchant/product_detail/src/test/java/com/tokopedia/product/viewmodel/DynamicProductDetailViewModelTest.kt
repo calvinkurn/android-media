@@ -11,7 +11,6 @@ import com.tokopedia.cartcommon.data.response.updatecart.Data
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
-import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.encodeToUtf8
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -62,6 +61,8 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.AnnotationChip
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaImageThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaVideoThumbnailUiModel
 import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
@@ -71,13 +72,11 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
 import com.tokopedia.topads.sdk.domain.model.TopadsStatus
-import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -90,6 +89,7 @@ import io.mockk.just
 import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
+import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -646,6 +646,31 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseError
+
+        viewModel.addToCart(addToCartOcsRequestParams)
+
+        coVerify {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOcsUseCase.createObservable(any()).toBlocking()
+        }
+
+        coVerify(inverse = true) {
+            addToCartOccUseCase.setParams(any()).executeOnBackground()
+        }
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+    }
+
+    @Test
+    fun `on error normal atc cause result null`() = runBlockingTest {
+        val addToCartOcsRequestParams = AddToCartRequestParams()
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } returns null
 
         viewModel.addToCart(addToCartOcsRequestParams)
 
@@ -1675,67 +1700,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * Add/Remove Wishlist
-     */
-    @Test
-    fun onSuccessAddWishlist() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorAddWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    @Test
-    fun onSuccessRemoveWishlist() {
-        val productId = "123"
-        every { (removeWishlistUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorRemoveWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (removeWishlistUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    /**
      * Discussion Most Helpful
      */
     @Test
@@ -2308,6 +2272,147 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
     }
 
+    @Test
+    fun `verify toolbar state should be solid when rollence is empty`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns ""
+
+        val vm = createViewModel()
+        Assert.assertFalse(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify toolbar state should be transparent when rollence is transparent`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        Assert.assertTrue(vm.toolbarTransparentState.getOrAwaitValue())
+    }
+
+    @Test
+    fun `verify if seller app then toolbar state should be solid always`() {
+        every {
+            GlobalConfig.isSellerApp()
+        } returns true
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(any(), any())
+        } returns RollenceKey.PdpToolbar.transparent
+
+        val vm = createViewModel()
+        val isTimeoutException = try {
+            vm.toolbarTransparentState.getOrAwaitValue()
+        } catch (_: TimeoutException) {
+            true
+        }
+
+        Assert.assertTrue(isTimeoutException)
+    }
+
+    @Test
+    fun `verify vertical recommendation when return empty list, will be fail`() {
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId
+        )
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify vertical recommendation throw error, will be fail`() {
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(pageNumber, captured.pageNumber)
+        Assert.assertEquals(listOf(productId), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageName = "pdp_8_vertical"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = null,
+            page = null
+        )
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(1, captured.pageNumber)
+        Assert.assertEquals(listOf(""), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
 
     //======================================END OF PDP SECTION=======================================//
     //==============================================================================================//

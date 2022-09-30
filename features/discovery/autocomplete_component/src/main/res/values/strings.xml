@@ -2,8 +2,8 @@
 <resources>
     <string name="autocomplete_app_name">autocomplete</string>
     <string name="title_autocomplete">Pencarian</string>
-    <string name="on_board_title" >Pencarian Gambar</string>
-    <string name="on_board_desc" >Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
+    <string name="on_board_title">Pencarian Gambar</string>
+    <string name="on_board_desc">Kini lebih mudah. Cukup ambil gambar dan temukan produk yang diinginkan.</string>
     <string name="title_all">Semua</string>
     <string name="title_product">Produk</string>
     <string name="title_catalog">Katalog</string>
@@ -46,4 +46,7 @@
     <string name="autocomplete_suggestion_double_line_without_image_subtitle">di Tokopedia</string>
     <string name="content_desc_curated_campaign_image">image curated campaign</string>
     <string name="suggestion_ad_text">Ad</string>
+    <string name="universal_search_see_more">Lihat Semua</string>
+    <string name="universal_search_toolbar_title">\"%1$s\"</string>
+    <string name="universal_search_toolbar_subtitle">Semua Promo, Produk Pilihan, dsb.</string>
 </resources>

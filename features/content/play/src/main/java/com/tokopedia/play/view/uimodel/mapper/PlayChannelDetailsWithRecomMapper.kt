@@ -53,7 +53,7 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                 quickReplyInfo = mapQuickReply(it.quickReplies),
                 videoMetaInfo = if(it.airTime == PlayUpcomingUiModel.COMING_SOON) emptyVideoMetaInfo() else mapVideoMeta(it.video, it.id, it.title, extraParams),
                 leaderboard = mapLeaderboardInfo(),
-                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime),
+                upcomingInfo = mapUpcoming(it.title, it.airTime, it.config.reminder.isSet, it.coverUrl, it.startTime, it.description),
                 tagItems = mapTagItems(it.config),
                 status = mapStatus(it.config, it.title),
             )
@@ -232,14 +232,15 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
 
     private fun mapLeaderboardInfo() = LeaderboardUiModel.Empty
 
-    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String) =
+    private fun mapUpcoming(title: String, airTime: String, isReminderSet: Boolean, coverUrl: String, startTime: String, description: String) =
         PlayUpcomingUiModel(
             title = title,
             isUpcoming = airTime == PlayUpcomingUiModel.COMING_SOON,
             isReminderSet = isReminderSet,
             coverUrl = coverUrl,
             startTime = startTime,
-            isAlreadyLive = false
+            isAlreadyLive = false,
+            description = description,
         )
 
     private fun emptyVideoMetaInfo() = PlayVideoMetaInfoUiModel(

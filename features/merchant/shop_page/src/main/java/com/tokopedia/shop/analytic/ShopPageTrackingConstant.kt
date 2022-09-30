@@ -466,4 +466,9 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET = "25640"
         const val TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET = "25643"
     }
+
+    object Key {
+        const val CAMPAIGN_ID = "campaign_id"
+        const val VARIANT_ID = "variant_id"
+    }
 }

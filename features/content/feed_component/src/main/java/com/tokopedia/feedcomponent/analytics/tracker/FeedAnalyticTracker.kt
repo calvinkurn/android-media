@@ -742,11 +742,12 @@ class FeedAnalyticTracker
         productId: String,
         products: List<FeedXProduct>,
         shopId: String,
+        isFollowed: Boolean
     ) {
         val type = if (productId == TYPE_FEED_X_CARD_PRODUCT_TOPADS) {
             TOPADS
         } else {
-            ASGC
+            if (!isFollowed) ASGC_RECOM else ASGC
         }
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,

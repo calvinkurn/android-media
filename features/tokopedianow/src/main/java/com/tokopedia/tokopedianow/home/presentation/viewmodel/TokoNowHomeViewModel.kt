@@ -896,8 +896,7 @@ class TokoNowHomeViewModel @Inject constructor(
         val product = productList.firstOrNull { it.productId == productId }
 
         product?.let {
-            val position = productList.indexOf(it)
-            val data = HomeAddToCartTracker(position, quantity,cartId, it)
+            val data = HomeAddToCartTracker(product.position, quantity,cartId, it)
             _homeAddToCartTracker.postValue(data)
         }
     }
@@ -925,7 +924,7 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String
     ): Int {
         val product = recomItemList.first { it.productId.toString() == productId }
-        return recomItemList.indexOf(product)
+        return product.position
     }
 
     private fun trackLeftCarouselAddToCart(productId: String, quantity: Int, cartId: String) {

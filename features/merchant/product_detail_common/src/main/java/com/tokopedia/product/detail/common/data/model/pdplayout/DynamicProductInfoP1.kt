@@ -29,9 +29,6 @@ data class DynamicProductInfoP1(
             }
         }
 
-    val isProductParent: Boolean
-        get() = data.variant.isVariant && basic.productID == data.variant.parentID
-
     val parentProductId: String
         get() =
             if (data.variant.isVariant && data.variant.parentID.isNotEmpty() && data.variant.parentID.toLongOrNull() ?: 0L > 0L) {
@@ -49,24 +46,6 @@ data class DynamicProductInfoP1(
                 data.campaign.discountedPrice
             } else {
                 data.price.value
-            }
-        }
-
-    val priceBeforeDouble: Double
-        get() {
-            return if (data.campaign.isActive) {
-                data.campaign.originalPrice
-            } else {
-                0.0
-            }
-        }
-
-    val dropPercentage: String?
-        get() {
-            return if (data.campaign.isActive) {
-                data.campaign.percentageAmount.toString()
-            } else {
-                ""
             }
         }
 
