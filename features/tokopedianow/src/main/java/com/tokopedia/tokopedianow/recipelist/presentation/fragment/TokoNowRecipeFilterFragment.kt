@@ -1,4 +1,4 @@
-package com.tokopedia.tokopedianow.recipehome.presentation.fragment
+package com.tokopedia.tokopedianow.recipelist.presentation.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater

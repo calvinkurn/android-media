@@ -1,11 +1,10 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.listener
 
 import android.content.Intent
-import com.tokopedia.tokopedianow.recipehome.presentation.activity.TokoNowRecipeFilterActivity
-import com.tokopedia.tokopedianow.recipehome.presentation.fragment.TokoNowRecipeFilterFragment.Companion.EXTRA_SELECTED_FILTER_IDS
+import com.tokopedia.tokopedianow.recipelist.presentation.activity.TokoNowRecipeFilterActivity
+import com.tokopedia.tokopedianow.recipelist.presentation.fragment.TokoNowRecipeFilterFragment.Companion.EXTRA_SELECTED_FILTER_IDS
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
 import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment.Companion.REQUEST_CODE_FILTER
-import com.tokopedia.tokopedianow.recipelist.base.viewmodel.BaseTokoNowRecipeListViewModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
 import com.tokopedia.tokopedianow.recipelist.presentation.view.RecipeListView
