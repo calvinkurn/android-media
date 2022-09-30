@@ -39,8 +39,8 @@ import com.tokopedia.loginregister.redefineregisteremail.common.intentGoToVerifi
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationRegisterParam
 import com.tokopedia.loginregister.redefineregisteremail.common.routedataparam.GoToVerificationUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.model.RedefineParamUiModel
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RedefineRegisterInputPhoneViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel.RegistrationPhoneState
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants

@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.graphql.data.GqlParam
