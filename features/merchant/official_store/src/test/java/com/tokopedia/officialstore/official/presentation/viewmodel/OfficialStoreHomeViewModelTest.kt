@@ -38,6 +38,7 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -123,6 +124,9 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var topAdsAddressHelper: TopAdsAddressHelper
 
+    @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -143,6 +147,7 @@ class OfficialStoreHomeViewModelTest {
             topAdsWishlishedUseCase,
             deleteWishlistV2UseCase,
             getDisplayHeadlineAds,
+            topAdsImageViewUseCase,
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             getTopAdsHeadlineUseCase,
