@@ -69,9 +69,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -108,8 +105,6 @@ open class TopChatViewModel @Inject constructor(
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
-    private var addWishListUseCase: AddWishListUseCase,
-    private var removeWishListUseCase: RemoveWishListUseCase,
     private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
@@ -788,14 +783,6 @@ open class TopChatViewModel @Inject constructor(
             })
     }
 
-    fun addToWishList(
-        productId: String,
-        userId: String,
-        wishlistActionListener: WishListActionListener
-    ) {
-        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
-    }
-
     fun addToWishListV2(
         productId: String,
         userId: String,
@@ -811,12 +798,6 @@ open class TopChatViewModel @Inject constructor(
                 wishlistActionListener.onErrorAddWishList(error, productId)
             }
         }
-    }
-
-    fun removeFromWishList(
-        productId: String, userId: String, wishListActionListener: WishListActionListener
-    ) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     fun removeFromWishListV2(

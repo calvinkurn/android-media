@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
-import com.tokopedia.chat_common.data.OrderStatusCode
 import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
@@ -18,6 +17,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.databinding.ItemCarouselInvoiceAttachBinding
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
+import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -115,7 +115,7 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             invoiceDate.text = element.createdTime
             productName.text = element.title
             setProductDesc(element.description)
-            setStatus(element.status, element.statusId)
+            setStatus(element.status, element.color, element.statusId)
             setPrice(element.amount)
         }
 
@@ -139,23 +139,17 @@ class AttachedInvoiceSelectionViewHolder(itemView: View,
             }
         }
 
-        private fun setStatus(status: String, statusId: Int) {
+        private fun setStatus(status: String, statusColor: String?, statusId: Int) {
             if (status.isNotEmpty() == true) {
-                val labelType = getLabelType(statusId)
+                var labelType : Int = if(statusColor!=null && statusColor.isEmpty())
+                    InvoiceStatusLabelHelper.getLabelTypeWithStatusId(statusId)
+                else
+                    InvoiceStatusLabelHelper.getLabelType(statusColor)
                 invoiceStatus.text = status
                 invoiceStatus.setLabelType(labelType)
                 invoiceStatus.show()
             } else {
                 invoiceStatus.invisible()
-            }
-        }
-
-        private fun getLabelType(statusId: Int?): Int {
-            if (statusId == null) return Label.GENERAL_DARK_GREY
-            return when (OrderStatusCode.MAP[statusId]) {
-                OrderStatusCode.COLOR_RED -> Label.GENERAL_LIGHT_RED
-                OrderStatusCode.COLOR_GREEN -> Label.GENERAL_LIGHT_GREEN
-                else -> Label.GENERAL_DARK_GREY
             }
         }
 
