@@ -1,4 +1,4 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory

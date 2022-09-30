@@ -1,12 +1,12 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 data class ProductDetailInfoCardDataModel(
-        var componentName: Int = 0,
-        var title: String = "",
-        var image: String = "",
-        var applink: String = ""
+    var componentName: Int = 0,
+    var title: String = "",
+    var image: String = "",
+    var applink: String = ""
 ) : ProductDetailInfoVisitable {
     override fun uniqueIdentifier(): Int = componentName
 

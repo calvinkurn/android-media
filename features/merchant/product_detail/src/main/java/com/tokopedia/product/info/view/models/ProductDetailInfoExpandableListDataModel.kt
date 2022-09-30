@@ -1,16 +1,16 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
-import com.tokopedia.product.info.model.productdetail.response.ShopNotesData
+import com.tokopedia.product.info.data.response.ShopNotesData
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
  * Created by Yehezkiel on 14/10/20
  */
 data class ProductDetailInfoExpandableListDataModel(
-        var componentName: Int = 0,
-        var title: String = "",
-        var shopNotes: List<ShopNotesData> = listOf(),
-        var isShowable: Boolean = false
+    var componentName: Int = 0,
+    var title: String = "",
+    var shopNotes: List<ShopNotesData> = listOf(),
+    var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
     override fun uniqueIdentifier(): Int = componentName
 

@@ -1,32 +1,33 @@
-package com.tokopedia.product.info.model.productdetail.uidata
+package com.tokopedia.product.info.view.models
 
 import com.tokopedia.product.info.view.adapter.ProductDetailInfoAdapterFactory
 
 /**
  * Created by Yehezkiel on 12/10/20
  */
-data class ProductDetailInfoLoadingDataModel(
-        val isLoading: Boolean = false
+data class ProductDetailInfoHeaderDataModel(
+    var componentId: Int = 0,
+    var image: String = "",
+    var title: String = "",
+    var isShowable: Boolean = false
 ) : ProductDetailInfoVisitable {
-
-    companion object {
-        const val LOADING_ID = 999
-    }
 
     override fun newInstance(): ProductDetailInfoVisitable {
         return this.copy()
     }
 
-    override fun uniqueIdentifier(): Int = LOADING_ID
+    override fun uniqueIdentifier(): Int = componentId
 
     override fun setIsShowable(isShowable: Boolean) {}
 
     override fun isExpand(): Boolean {
-        return false
+        return isShowable
     }
 
     override fun equalsWith(newData: ProductDetailInfoVisitable): Boolean {
-        return false
+        return if (newData is ProductDetailInfoHeaderDataModel) {
+            image == newData.image && title == newData.title
+        } else false
     }
 
     override fun type(typeFactory: ProductDetailInfoAdapterFactory): Int {
