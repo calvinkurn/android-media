@@ -23,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger.Companion.instance
 import com.tokopedia.applink.ApplinkConst
@@ -46,7 +47,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionAbTestPlatform
+import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
@@ -74,6 +75,9 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     lateinit var userSessionDataStore: UserSessionDataStore
 
     @Inject
+    lateinit var dataStorePreference: DataStorePreference
+
+    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModelProvider by lazy { ViewModelProviders.of(this, viewModelFactory) }
     private val logoutViewModel by lazy { viewModelProvider.get(LogoutViewModel::class.java) }
@@ -88,7 +92,8 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     override fun getComponent(): LogoutComponent {
         return DaggerLogoutComponent.builder()
-                .baseAppComponent((application as BaseMainApplication).baseAppComponent)
+                .baseComponent((application as BaseMainApplication).baseAppComponent)
+                .context(this)
                 .build()
     }
 
@@ -181,9 +186,6 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         }.show()
     }
 
-    private fun isEnableDataStore(): Boolean =
-        UserSessionAbTestPlatform.isDataStoreEnable(applicationContext)
-
     private fun clearData() {
         hideLoading()
         clearStickyLogin()
@@ -205,6 +207,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
         tetraDebugger?.setUserId("")
         userSession.clearToken()
         userSession.logoutSession()
+        TkpdFirebaseAnalytics.getInstance(this).setUserId(null)
 
         clearDataStore()
         RemoteConfigInstance.getInstance().abTestPlatform.fetchByType(null)
@@ -229,7 +232,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun clearDataStore() {
-        if(isEnableDataStore()) {
+        if(dataStorePreference.isDataStoreEnabled()) {
             GlobalScope.launch {
                 try {
                     userSessionDataStore.clearDataStore()

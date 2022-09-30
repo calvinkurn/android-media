@@ -8,14 +8,14 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
+        android:layout_height="200dp"
         app:srcCompat="@drawable/ic_empty_shop_feed"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/sp_15"
-        android:layout_marginTop="@dimen/dp_40"
+        android:textSize="15sp"
+        android:layout_marginTop="40dp"
         android:layout_gravity="center"
         android:gravity="center"
         android:textColor="@color/Unify_N700_68"
@@ -25,11 +25,11 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_8"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/sp_12"
+        android:textSize="12sp"
         android:text="@string/empty_feed_subtitle"
         android:layout_gravity="center"
         android:gravity="center"/>
@@ -37,10 +37,10 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_post"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
-        android:layout_marginLeft="@dimen/dp_24"
-        android:layout_marginRight="@dimen/dp_24"
-        android:layout_marginTop="@dimen/dp_16"
+        android:layout_height="40dp"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="16dp"
         app:unifyButtonSize="medium"
         app:unifyButtonType="main"
         app:unifyButtonVariant="filled"

@@ -36,6 +36,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
 import com.tokopedia.tokofood.databinding.FragmentManageLocationLayoutBinding
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
@@ -43,6 +44,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.ManageLoca
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import java.util.*
@@ -87,6 +89,9 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     private val viewModelProvider by lazy {
         ViewModelProvider(this, viewModelFactory)
@@ -173,6 +178,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_ELIGIBLE_FOR_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_ELIGIBLE_FOR_ADDRESS
+                    )
                 }
             }
         }
@@ -188,6 +198,11 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHOOSE_ADDRESS,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION
+                    )
                 }
             }
         }
@@ -200,9 +215,28 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
                 }
                 is Fail -> {
                     showToaster(it.throwable.message)
+                    logExceptionToServerLogger(
+                        it.throwable,
+                        TokofoodErrorLogger.ErrorType.ERROR_CHECK_DELIVERY_COVERAGE,
+                        TokofoodErrorLogger.ErrorDescription.ERROR_CHECK_DELIVERY_COVERAGE
+                    )
                 }
             }
         }
+    }
+
+    private fun logExceptionToServerLogger(
+        throwable: Throwable,
+        errorType: String,
+        errorDesc: String
+    ) {
+        TokofoodErrorLogger.logExceptionToServerLogger(
+            TokofoodErrorLogger.PAGE.MERCHANT,
+            throwable,
+            errorType,
+            userSession.deviceId.orEmpty(),
+            errorDesc
+        )
     }
 
     private fun showToaster(message: String?) {

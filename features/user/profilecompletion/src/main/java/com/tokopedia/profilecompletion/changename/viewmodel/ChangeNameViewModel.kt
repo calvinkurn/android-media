@@ -10,8 +10,8 @@ import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNameResult
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant.PARAM_NAME
-import com.tokopedia.profilecompletion.settingprofile.data.ProfileRoleData
-import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
+import com.tokopedia.profilecompletion.profilecompletion.data.ProfileRoleData
+import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileRoleData
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success

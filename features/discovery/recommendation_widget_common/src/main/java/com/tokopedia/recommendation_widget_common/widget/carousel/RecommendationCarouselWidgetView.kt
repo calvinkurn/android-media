@@ -129,7 +129,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowListener: RecommendationCarouselTokonowListener?,
         chipListener: RecomCarouselChipListener? = null,
-        scrollToPosition: Int = 0
+        scrollToPosition: Int = RecyclerView.NO_POSITION,
     ) {
         try {
             widgetMetadata = widgetMetadata.copy(
@@ -163,7 +163,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
         adapterPosition: Int = 0,
         basicListener: RecomCarouselWidgetBasicListener?,
         tokonowPageNameListener: RecommendationCarouselTokonowPageNameListener?,
-        scrollToPosition: Int = 0,
+        scrollToPosition: Int = RecyclerView.NO_POSITION,
         pageName: String,
         tempHeaderName: String = context.getString(R.string.text_other_recom),
         isForceRefresh: Boolean = false,
@@ -421,6 +421,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
 
     private fun scrollCarousel(scrollToPosition: Int) {
         if (!::layoutManager.isInitialized) return
+        if (scrollToPosition == RecyclerView.NO_POSITION) return
 
         itemView.post {
             layoutManager.scrollToPositionWithOffset(
@@ -733,7 +734,7 @@ class RecommendationCarouselWidgetView : FrameLayout, RecomCommonProductCardList
     }
 
     data class RecomWidgetMetadata(
-        val scrollToPosition: Int = 0,
+        val scrollToPosition: Int = RecyclerView.NO_POSITION,
         val pageName: String = "",
         val adapterPosition: Int = 0,
         var isInitialized: Boolean = false,

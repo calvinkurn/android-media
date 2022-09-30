@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.adapter.ProductListAdapter
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.SeparatorItemDecoration
@@ -15,6 +16,7 @@ import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import javax.inject.Inject
 
+@SearchScope
 class RecyclerViewUpdater @Inject constructor(
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     @SearchContext
@@ -33,7 +35,8 @@ class RecyclerViewUpdater @Inject constructor(
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
-        onScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
         productListTypeFactory: ProductListTypeFactory,
     ) {
         this.recyclerView = recyclerView
@@ -42,22 +45,25 @@ class RecyclerViewUpdater @Inject constructor(
             typeFactory = productListTypeFactory
         )
 
-        setupRecyclerView(rvLayoutManager, onScrollListener)
+        setupRecyclerView(rvLayoutManager, loadMoreScrollListener, onBoardingScrollListener)
     }
 
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
-        rvOnScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
     ) {
         rvLayoutManager ?: return
-        rvOnScrollListener ?: return
+        loadMoreScrollListener ?: return
+        onBoardingScrollListener ?: return
 
         this.recyclerView?.run {
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
-            addOnScrollListener(rvOnScrollListener)
+            addOnScrollListener(loadMoreScrollListener)
+            addOnScrollListener(onBoardingScrollListener)
         }
     }
 

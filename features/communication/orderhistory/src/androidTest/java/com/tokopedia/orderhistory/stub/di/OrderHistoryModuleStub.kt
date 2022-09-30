@@ -9,12 +9,10 @@ import com.tokopedia.orderhistory.di.OrderHistoryContext
 import com.tokopedia.orderhistory.di.OrderHistoryScope
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Named
 
 @Module
 class OrderHistoryModuleStub {
@@ -31,11 +29,5 @@ class OrderHistoryModuleStub {
     @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
-    }
-
-    @OrderHistoryScope
-    @Provides
-    internal fun provideAddWishListUseCase(@OrderHistoryContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
     }
 }

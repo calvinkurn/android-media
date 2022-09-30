@@ -7,9 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.common.utils.ParamCacheManager
 import com.tokopedia.media.picker.data.loader.LoaderDataSource
 import com.tokopedia.media.picker.data.loader.LoaderDataSourceImpl
-import com.tokopedia.media.picker.data.repository.AlbumRepository
-import com.tokopedia.media.picker.data.repository.DeviceInfoRepository
-import com.tokopedia.media.picker.data.repository.MediaRepository
+import com.tokopedia.media.picker.data.repository.*
+import com.tokopedia.media.picker.data.repository.CreateMediaRepositoryImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -61,6 +60,12 @@ object PickerModule {
             loaderDataSource,
             dispatcher
         )
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideCreateMediaRepository(): CreateMediaRepository {
+        return CreateMediaRepositoryImpl()
     }
 
 }

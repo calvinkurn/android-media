@@ -42,11 +42,11 @@ class InstallReferral {
                                     if (response != null) {
                                         response.installReferrer?.let { installReferrer ->
                                             trackIfFromCampaignUrl(installReferrer)
-                                            sendToGA(context, installReferrer)
+                                            sendToGA(applicationContext, installReferrer)
                                             executeInstallReferrerCallback(installReferrer)
                                         }
                                     }
-                                    InstallUtils.sendIrisInstallEvent(context)
+                                    InstallUtils.sendIrisInstallEvent(applicationContext)
                                     updateReferralCache()
                                     executeInstallReferrerCallback("")
                                 }

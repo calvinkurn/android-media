@@ -328,7 +328,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         if(isLinked) {
             LinkAccountWebViewActivity.gotoSuccessPage(activity, ApplinkConst.HOME)
         } else {
-            val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW).apply {
+            val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW).apply {
                 putExtra(
                     ApplinkConstInternalGlobal.PARAM_LD,
                     LinkAccountWebviewFragment.BACK_BTN_APPLINK
@@ -1254,7 +1254,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
                 }
             }
             AccountConstants.SettingCode.SETTING_QUALITY_SETTING -> {
-                RouteManager.route(context, ApplinkConstInternalGlobal.MEDIA_QUALITY_SETTING)
+                RouteManager.route(context, ApplinkConstInternalUserPlatform.MEDIA_QUALITY_SETTING)
             }
             AccountConstants.SettingCode.SETTING_APP_ADVANCED_CLEAR_CACHE -> {
                 homeAccountAnalytic.eventClickAppSettingCleanCache()
@@ -1534,14 +1534,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
 
     private fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel) {
         homeAccountAnalytic.eventClickWishlistButton(!productCardOptionsModel.isWishlisted)
-        if (productCardOptionsModel.wishlistResult.isUsingWishlistV2) {
-            handleWishlistV2Action(productCardOptionsModel)
-        } else {
-            if (productCardOptionsModel.wishlistResult.isSuccess)
-                handleWishlistActionSuccess(productCardOptionsModel)
-            else
-                handleWishlistActionError()
-        }
+        handleWishlistV2Action(productCardOptionsModel)
     }
 
     private fun handleWishlistV2Action(productCardOptionsModel: ProductCardOptionsModel) {
@@ -1570,36 +1563,12 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         }
     }
 
-    private fun handleWishlistActionSuccess(productCardOptionsModel: ProductCardOptionsModel) {
-        val recommendationItem = adapter?.getItems()
-            ?.getOrNull(productCardOptionsModel.productPosition) as? RecommendationItem
-            ?: return
-        recommendationItem.isWishlist = productCardOptionsModel.wishlistResult.isAddWishlist
-
-        if (productCardOptionsModel.wishlistResult.isAddWishlist)
-            showSuccessAddWishlist()
-        else
-            showSuccessRemoveWishlist()
-    }
-
-    private fun showSuccessAddWishlist() {
-        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        view?.let {
-            Toaster.build(it, msg, Toaster.LENGTH_SHORT, Toaster.TYPE_NORMAL, ctaText) { goToWishlist() }.show()
-        }
-    }
-
     private fun showSuccessAddWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, context, v)
             }
         }
-    }
-
-    private fun goToWishlist() {
-        RouteManager.route(activity, ApplinkConst.WISHLIST)
     }
 
     private fun showBottomSheetAddName(profile: ProfileDataView) {
@@ -1648,7 +1617,7 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
     private fun gotoChangeName(profile: ProfileDataView) {
         val intent = RouteManager.getIntent(
             requireContext(),
-            ApplinkConstInternalGlobal.CHANGE_NAME,
+            ApplinkConstInternalUserPlatform.CHANGE_NAME,
             profile.name,
             ""
         )
@@ -1661,33 +1630,11 @@ open class HomeAccountUserFragment : BaseDaggerFragment(), HomeAccountUserListen
         startActivityForResult(intent, REQUEST_CODE_PROFILE_SETTING)
     }
 
-    private fun showSuccessRemoveWishlist() {
-        view?.let {
-            Toaster.make(
-                it,
-                getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_NORMAL
-            )
-        }
-    }
-
     private fun showSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         context?.let { context ->
             view?.let { v ->
                 AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
             }
-        }
-    }
-
-    private fun handleWishlistActionError() {
-        view?.let {
-            Toaster.make(
-                it,
-                ErrorHandler.getErrorMessage(activity, null),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR
-            )
         }
     }
 

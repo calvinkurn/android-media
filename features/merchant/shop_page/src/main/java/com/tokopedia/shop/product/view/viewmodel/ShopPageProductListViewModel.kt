@@ -308,6 +308,7 @@ class ShopPageProductListViewModel @Inject constructor(
             pmax: Int = 0,
             pmin: Int = 0,
             fcategory: Int? = null,
+            extraParam: String = "",
             isEnableDirectPurchase: Boolean
     ): GetShopProductUiModel {
         useCase.params = GqlGetShopProductUseCase.createParams(shopId, ShopProductFilterInput(
@@ -323,7 +324,8 @@ class ShopPageProductListViewModel @Inject constructor(
                 userDistrictId = widgetUserAddressLocalData.district_id,
                 userCityId = widgetUserAddressLocalData.city_id,
                 userLat = widgetUserAddressLocalData.lat,
-                userLong = widgetUserAddressLocalData.long
+                userLong = widgetUserAddressLocalData.long,
+                extraParam = extraParam
         ))
         val productListResponse = useCase.executeOnBackground()
         val isHasNextPage = isHasNextPage(page, perPage, productListResponse.totalData)
@@ -336,7 +338,8 @@ class ShopPageProductListViewModel @Inject constructor(
                     etalaseId,
                     isEnableDirectPurchase = isEnableDirectPurchase
                 )},
-                totalProductData
+                totalProductData,
+                page
         ).apply {
             updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }
@@ -377,6 +380,7 @@ class ShopPageProductListViewModel @Inject constructor(
                         shopProductFilterParameter.getPmax(),
                         shopProductFilterParameter.getPmin(),
                         shopProductFilterParameter.getCategory(),
+                        shopProductFilterParameter.getExtraParam(),
                         isEnableDirectPurchase
                 )
             }
@@ -476,7 +480,8 @@ class ShopPageProductListViewModel @Inject constructor(
                                 isEnableDirectPurchase = isEnableDirectPurchase
                             )
                         },
-                        initialProductListData.totalData
+                        initialProductListData.totalData,
+                        START_PAGE // current page is 1 since its initial product list
                 ).apply {
                     updateProductCardQuantity(listShopProductUiModel.toMutableList())
                 }
@@ -533,7 +538,8 @@ class ShopPageProductListViewModel @Inject constructor(
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                widgetUserAddressLocalData.long,
+                tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,

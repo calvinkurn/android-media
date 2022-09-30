@@ -9,6 +9,7 @@ import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.robot.prepare
@@ -31,6 +32,9 @@ class CavPlayTrackingVodTest {
     @get:Rule
     val intentsTestRule = IntentsTestRule(PlayActivity::class.java, false, false)
 
+    @get:Rule
+    var cassavaTestRule = CassavaTestRule()
+
     @Test
     fun validateTrackingChannelVod() {
         prepare {
@@ -45,8 +49,9 @@ class CavPlayTrackingVodTest {
             performPinnedProduct()
             performRotateByClick()
             performClose()
+            swipeRoom()
             Thread.sleep(2000)
-            validate()
+            validate(cassavaTestRule)
         }
     }
 
@@ -113,6 +118,11 @@ class CavPlayTrackingVodTest {
     private fun performClose() {
         Thread.sleep(2000)
         Espresso.onView(ViewMatchers.withId(R.id.iv_back)).perform(ViewActions.click())
+    }
+
+    private fun swipeRoom(){
+        Thread.sleep(3000)
+        Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.swipeLeft())
     }
 
     private val idlResLike by lazy {

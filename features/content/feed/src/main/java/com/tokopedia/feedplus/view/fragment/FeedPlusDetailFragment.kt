@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
@@ -31,6 +29,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedplus.R
+import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
@@ -56,7 +55,6 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -79,8 +77,6 @@ private const val TITLE_OTHER = "Lainnya"
 
 class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback {
     private lateinit var recyclerView: RecyclerView
-    private lateinit var shareButton: ImageButton
-    private lateinit var seeShopButton: Typography
     private lateinit var progressBar: ProgressBar
     private lateinit var recyclerviewScrollListener: EndlessScrollRecycleListener
     private lateinit var layoutManager: LinearLayoutManager
@@ -429,19 +425,27 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
+        val desc =
+            context.getString(feedComponentR.string.feed_detail_share_default_text)
+                ?.let {
+                    String.format(
+                        it, item.product.name, item.shopName, item.priceFmt
+                    )
+                }
         val sheet = ProductActionBottomSheet.newInstance(bundle)
         sheet.show((context as FragmentActivity).supportFragmentManager, "")
         sheet.shareProductCB = {
             onShareProduct(
                     item.id.toIntOrZero(),
                     item.text,
-                    item.description,
+                    desc,
                     item.weblink,
                     item.imgUrl,
                     finalID,
                     item.postType,
                     item.isFollowed,
                     item.shopId,
+                    item.applink,
                     item.isTopads
             )
         }
@@ -471,6 +475,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             type: String,
             isFollowed: Boolean,
             shopId: String,
+            applink: String,
             isTopads:Boolean = false
     ) {
         feedAnalytics.eventonShareProductClicked(
@@ -491,13 +496,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     .setDescription(description)
                     .setImgUri(imageUrl)
                     .setUri(url)
-                    .setDeepLink(url)
+                    .setDeepLink(applink)
                     .setType(LinkerData.FEED_TYPE)
                     .setDesktopUrl(urlString)
 
-            if (isTopads) {
-                linkerBuilder.setOgImageUrl(imageUrl)
-            }
             shareData = linkerBuilder.build()
             val linkerShareData = DataMapper().getLinkerShareData(shareData)
             LinkerManager.getInstance().executeShareRequest(
@@ -550,54 +552,22 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         )
 
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                feedViewModel.addWishlistV2(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccessV2,
-                    it
-                )
-            } else {
-                feedViewModel.addWishlist(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccess,
-                    it
-                )
-            }
+            feedViewModel.addWishlistV2(
+                postId,
+                productId,
+                shopId,
+                0,
+                type,
+                isFollowed,
+                ::onWishListFail,
+                ::onWishListSuccessV2,
+                it
+            )
         }
     }
 
     private fun onWishListFail(s: String) {
         showToast(s, Toaster.TYPE_ERROR)
-    }
-
-    private fun onWishListSuccess(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean
-    ) {
-        Toaster.build(
-            requireView(),
-            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-            Toaster.LENGTH_LONG,
-            Toaster.TYPE_NORMAL,
-            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-            View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
-                RouteManager.route(context, ApplinkConst.WISHLIST)
-            }).show()
     }
 
     private fun onWishListSuccessV2(
@@ -768,27 +738,23 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         trackImpression(productList)
     }
 
+    override fun onError(linkerError: LinkerError?) {}
 
-    override fun urlCreated(linkerShareData: LinkerShareResult) {
-        val intent = getIntent(linkerShareData.shareContents, linkerShareData.url)
-        activity?.startActivity(Intent.createChooser(intent, TITLE_OTHER))
+    override fun urlCreated(linkerShareData: LinkerShareResult?) {
+        val intent = getIntent()
+        activity?.startActivity(Intent.createChooser(intent, shareData.name))
         sendTracker()
     }
 
-    override fun onError(linkerError: LinkerError?) {}
-
-    private fun getIntent(contains: String, url: String): Intent {
-        var str: String? = contains
-        val mIntent = Intent(Intent.ACTION_SEND)
-        mIntent.type = TYPE
-        val title: String? = shareData.name
-        if (!TextUtils.isEmpty(shareData.custmMsg) && shareData.custmMsg.contains(PLACEHOLDER_LINK)) {
-            str = FindAndReplaceHelper.findAndReplacePlaceHolders(shareData.custmMsg, PLACEHOLDER_LINK, url)
+    private fun getIntent(): Intent {
+        return Intent().apply {
+            action = Intent.ACTION_SEND
+            type = TYPE
+            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            putExtra(Intent.EXTRA_TITLE, shareData.name)
+            putExtra(Intent.EXTRA_SUBJECT, shareData.name)
+            putExtra(Intent.EXTRA_TEXT, shareData.description + "\n" + shareData.uri)
         }
-        mIntent.putExtra(Intent.EXTRA_TITLE, title)
-        mIntent.putExtra(Intent.EXTRA_SUBJECT, title)
-        mIntent.putExtra(Intent.EXTRA_TEXT, str)
-        return mIntent
     }
 
     private fun sendTracker() {
@@ -808,7 +774,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): MutableList<FeedDetailProductModel> {
         var postDescription = ""
         var adClickUrl = ""
-        val desc = context?.getString(com.tokopedia.feedcomponent.R.string.feed_share_default_text)
+        val desc = context?.getString(feedComponentR.string.feed_share_default_text)
         val itemList: MutableList<FeedDetailProductModel> = ArrayList()
         for (postTagItem in postTagItemList) {
             if (postTagItem.isTopads){

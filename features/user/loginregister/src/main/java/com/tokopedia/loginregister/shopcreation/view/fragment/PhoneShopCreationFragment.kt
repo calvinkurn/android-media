@@ -407,7 +407,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToRegisterAddNamePage(phone: String, validateToken: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
 

@@ -56,6 +56,7 @@ import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import java.util.Locale
 
 /**
  * @author : Steven 29/11/18
@@ -614,14 +615,17 @@ open class TopChatViewStateImpl constructor(
     ) {
 
         val isBlocked = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL)
             -> {
                 blockedStatus.isPromoBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) -> {
                 blockedStatus.isBlocked
             }
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) -> {
                 blockedStatus.isBlocked
             }
             else -> {
@@ -664,10 +668,13 @@ open class TopChatViewStateImpl constructor(
 
         val blockText = chatBlockLayout.findViewById<TextView>(R.id.blocked_text)
         val category = when {
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_OFFICIAL) -> CHAT_PROMOTION
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_SHOP) ->
                 CHAT_BOTH
-            opponentRole.toLowerCase().contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
+            opponentRole.lowercase(Locale.getDefault())
+                .contains(ChatRoomHeaderUiModel.Companion.ROLE_USER) ->
                 CHAT_PERSONAL
             else -> {
                 ""

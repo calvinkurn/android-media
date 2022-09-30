@@ -519,39 +519,6 @@ fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
 //==================================== end of item action ======================================
 
 
-//==================================== cassava validator =======================================
-
-//
-//fun getAssertBUWiddet(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
-//            hasAllSuccess())
-////    -> impression tab intermitten missing
-//}
-//
-//fun getAssertHPB(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
-//            hasAllSuccess())
-////    -> impression missing
-//}
-//
-//fun getAssertListCarousel(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
-//            hasAllSuccess())
-////    -> cant mock occ response
-//}
-//
-//fun getAssertRecommendationIcon(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON),
-//            hasAllSuccess())
-////    -> missing click
-//}
-//
-//fun getAssertRecommendationFeedTab(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
-//            hasAllSuccess())
-//}
-//==================================== end of cassava validator ================================
-
 private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     return object : BaseMatcher<T>() {
         var isFirst = true

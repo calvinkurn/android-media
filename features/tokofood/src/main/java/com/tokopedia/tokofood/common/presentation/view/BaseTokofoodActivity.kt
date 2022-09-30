@@ -148,16 +148,20 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
             val fCount = getFragmentCount()
             if (fCount > 0) {
                 var i = fCount - 1
-                var prevFragment:Fragment
+                var prevFragment: Fragment?
                 var hasChecked = false
                 while (i >= 0) {
-                    prevFragment = supportFragmentManager.fragments[i]
-                    if (!prevFragment.isHidden) {
+                    prevFragment = supportFragmentManager.fragments.getOrNull(i)
+                    if (prevFragment?.isHidden == false && prevFragment.isAdded) {
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {
                             ft.hide(prevFragment)
-                            ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
+                            try {
+                                ft.setMaxLifecycle(prevFragment, Lifecycle.State.STARTED)
+                            } catch (ex: Exception) {
+                                ex.printStackTrace()
+                            }
                         }
                     }
                     i--

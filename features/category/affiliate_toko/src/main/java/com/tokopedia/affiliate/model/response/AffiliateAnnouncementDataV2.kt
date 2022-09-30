@@ -71,7 +71,7 @@ class AffiliateAnnouncementDataV2(
                     var iosURL: String?,
                     @SerializedName("MobileURL")
                     var mobileURL: String?
-                )
+                ) : Serializable
             }
         }
     }
