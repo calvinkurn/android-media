@@ -51,6 +51,7 @@ fun productUGCViewModel(
         maxSelectedProduct = 30,
         backButton = ContentProductTagConfig.BackButton.Close,
         isShowActionBarDivider = false,
+        appLinkAfterAutocomplete = "",
     ),
     repo: ProductTagRepository = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
