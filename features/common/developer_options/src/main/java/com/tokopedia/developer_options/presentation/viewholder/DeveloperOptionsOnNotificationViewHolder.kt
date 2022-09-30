@@ -25,7 +25,12 @@ class DeveloperOptionsOnNotificationViewHolder(
 
     private val context = itemView.context
 
-    private val notificationManager = DevOptNotificationManager(context.applicationContext as Application)
+    private val notificationManager by lazy(LazyThreadSafetyMode.NONE) {
+        val application = context.applicationContext as? Application
+
+        if(application == null) null
+        else DevOptNotificationManager(application)
+    }
 
     override fun bind(element: DeveloperOptionsOnNotificationUiModel) {
         val cb = itemView.findViewById<CheckboxUnify>(R.id.cbx_developer_options_on_notificaion)
@@ -34,8 +39,8 @@ class DeveloperOptionsOnNotificationViewHolder(
         cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
             DevOptConfig.setDevOptOnNotifEnabled(context, state)
 
-            if(state) notificationManager.showNotificationIfEnabled()
-            else notificationManager.dismissNotification()
+            if(state) notificationManager?.showNotificationIfEnabled()
+            else notificationManager?.dismissNotification()
         }
     }
 }
