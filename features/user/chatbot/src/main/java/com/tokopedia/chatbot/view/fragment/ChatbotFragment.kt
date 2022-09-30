@@ -90,8 +90,8 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
-import com.tokopedia.chatbot.databinding.RetryUploadImageBottomSheetLayoutBinding
 import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
+import com.tokopedia.chatbot.databinding.RetryUploadImageBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -433,7 +433,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                     replyEditText.addTextChangedListener(textWatcher)
                 }
 
-                getBindingView().floatChatItem.show()
+                getBindingView().floatingInvoice.show()
 
             }
             isArticleDataSent(true)
@@ -468,7 +468,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSendFloatingInvoiceClicked() {
 
         floatingInvoice.hide()
-        getBindingView().floatChatItem.hide()
         isSendButtonActivated = true
         sendButton.setImageResource(R.drawable.ic_chatbot_send)
         replyEditText.removeTextChangedListener(textWatcher)
@@ -582,16 +581,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         replyEditText = getBindingView().composeArea.newComment
         replyEditTextContainer = getBindingView().composeArea.newCommentContainer
         replyBubbleContainer = getBindingView().composeArea.replyBubbleContainer
+        floatingInvoice = getBindingView().floatingInvoice
         bindReplyTextBackground()
         ticker = getBindingView().chatbotTicker
         dateIndicator = getBindingView().dateIndicator
         dateIndicatorContainer = getBindingView().dateIndicatorContainer
-
-        invoiceLabel = getBindingView().attachInvoiceFloatChatItem.tvStatus
-        invoiceName = getBindingView().attachInvoiceFloatChatItem.tvInvoiceName
-        invoiceImage = getBindingView().attachInvoiceFloatChatItem.ivThumbnail
-        invoiceCancel = getBindingView().attachInvoiceFloatChatItem.ivCross
         sendButton = getBindingView().composeArea.sendBut
+
+        setUpFloatingInvoiceListeners()
 
         recyclerView = getRecyclerView(view)
         isFloatingInvoiceCancelled = false
