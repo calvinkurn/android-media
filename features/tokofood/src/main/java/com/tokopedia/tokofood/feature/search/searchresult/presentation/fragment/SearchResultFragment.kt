@@ -45,13 +45,13 @@ import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
-import com.tokopedia.tokofood.common.util.OnScrollListenerSearch
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodRouteManager
-import com.tokopedia.tokofood.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.databinding.FragmentSearchResultBinding
 import com.tokopedia.tokofood.feature.home.presentation.fragment.TokoFoodHomeFragment
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
+import com.tokopedia.tokofood.feature.search.common.util.OnScrollListenerSearch
+import com.tokopedia.tokofood.feature.search.common.util.hideKeyboardOnTouchListener
 import com.tokopedia.tokofood.feature.search.container.presentation.listener.SearchResultViewUpdateListener
 import com.tokopedia.tokofood.feature.search.searchresult.analytics.TokofoodSearchResultAnalytics
 import com.tokopedia.tokofood.feature.search.di.component.DaggerTokoFoodSearchComponent

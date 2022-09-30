@@ -123,6 +123,27 @@ class TokofoodSearchResultPageViewModelTest: TokofoodSearchResultPageViewModelTe
     }
 
     @Test
+    fun `when getInitialMerchantSearchResult but search param empty should not get merchant search result`() {
+        runBlocking {
+            val localCacheModel = LocalCacheModel(
+                address_id = "123",
+                lat = "1.23",
+                long = "3.123"
+            )
+
+            viewModel.visitables.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.setLocalCacheModel(localCacheModel)
+                    viewModel.getInitialMerchantSearchResult(null)
+                },
+                then = {
+                    assert(it == null)
+                }
+            )
+        }
+    }
+
+    @Test
     fun `when getInitialMerchantSearchResult returns empty should show empty state`() {
         runBlocking {
             val localCacheModel = LocalCacheModel(
