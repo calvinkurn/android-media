@@ -575,37 +575,28 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun showDeleteConfirmationDialog(favNumberItem: TopupBillsPersoFavNumberDataView) {
-
         val description = when (pageConfig) {
             FavoriteNumberPageConfig.CREDIT_CARD -> {
                 val clientDetail = "${favNumberItem.operatorName} (${favNumberItem.getClientNumber()})"
                 Html.fromHtml(
                     getString(
-                        R.string.common_topup_fav_number_delete_dialog_cc,
+                        pageConfig.deleteDialogTextRes,
                         clientDetail
                     )
                 )
             }
             else -> {
-                val clientName = favNumberItem.getClientName()
-                val clientNumber = favNumberItem.getClientNumber()
-
-                if (favNumberItem.getClientName().isNotEmpty()) {
-                    Html.fromHtml(
-                        getString(
-                            R.string.common_topup_fav_number_delete_dialog_with_client_name,
-                            clientName,
-                            clientNumber
-                        )
-                    )
+                val clientDetail = if (favNumberItem.getClientName().isNotEmpty()) {
+                    "${favNumberItem.getClientName()} (${favNumberItem.getClientNumber()})"
                 } else {
-                    Html.fromHtml(
-                        getString(
-                            R.string.common_topup_fav_number_delete_dialog,
-                            clientNumber
-                        )
-                    )
+                    favNumberItem.getClientNumber()
                 }
+                Html.fromHtml(
+                    getString(
+                        pageConfig.deleteDialogTextRes,
+                        clientDetail
+                    )
+                )
             }
         }
 
