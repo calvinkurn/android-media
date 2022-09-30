@@ -1,31 +1,38 @@
 package com.tokopedia.loginregister.common.view.bottomsheet
 
-import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.LinearLayout
 import com.tokopedia.loginregister.R
+import com.tokopedia.loginregister.databinding.LayoutSocmedBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
  * Created by Yoris Prayogo on 15/12/20.
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SocmedBottomSheet(mContext: Context?): BottomSheetUnify() {
+class SocmedBottomSheet: BottomSheetUnify() {
 
     private var socmedButtonsContainer: LinearLayout? = null
+    private var viewBinding by autoClearedNullable<LayoutSocmedBottomsheetBinding>()
 
-    init {
-        createBottomSheet(mContext)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        initBottomSheet()
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun createBottomSheet(context: Context?): SocmedBottomSheet? {
-        val viewBottomSheetDialog = View.inflate(context, R.layout.layout_socmed_bottomsheet, null)
-        socmedButtonsContainer = viewBottomSheetDialog.findViewById(R.id.socmed_container)
-
+    private fun initBottomSheet() {
+        viewBinding = LayoutSocmedBottomsheetBinding.inflate(LayoutInflater.from(context))
         setTitle(context?.getString(R.string.choose_social_media) ?: "")
-        setChild(viewBottomSheetDialog)
-        return this
+        setChild(viewBinding?.root)
     }
 
     fun getSocmedButtonContainer(): LinearLayout? = socmedButtonsContainer
