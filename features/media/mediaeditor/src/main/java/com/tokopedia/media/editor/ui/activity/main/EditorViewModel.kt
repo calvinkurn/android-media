@@ -9,10 +9,7 @@ import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
-import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.types.EditorToolType
-import com.tokopedia.utils.image.ImageProcessingUtil
-import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
@@ -112,13 +109,11 @@ class EditorViewModel @Inject constructor(
             var topMargin = 0
             var leftMargin = 0
 
-            var scaledTarget = 1f
-
             if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
                 leftMargin = (bitmapWidth - newWidth) / 2
                 topMargin = (bitmapHeight - newHeight) / 2
             } else if (newHeight > bitmapHeight) {
-                scaledTarget = bitmapHeight.toFloat() / newHeight
+                val scaledTarget = bitmapHeight.toFloat() / newHeight
 
                 // new value after rescale small
                 newWidth = (newWidth * scaledTarget).toInt()
