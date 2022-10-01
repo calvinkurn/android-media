@@ -9,12 +9,13 @@
 
     <androidx.constraintlayout.utils.widget.ImageFilterView
         android:id="@+id/background"
-        android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/tokopedianow_bg_quantity_editor_view"
         android:translationZ="1dp"
         app:altSrc="@drawable/tokopedianow_bg_quantity_editor_view_expanded"
-        android:background="@drawable/tokopedianow_bg_quantity_editor_view"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,10 +23,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/quantity_editor_add_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:padding="16dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_add"
-        android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/iconunify_add"
         android:tint="@color/Unify_GN500"
@@ -37,10 +38,10 @@
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/quantity_editor_sub_button"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
+        android:padding="16dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_sub"
-        android:padding="6dp"
         android:scaleType="centerCrop"
         android:src="@drawable/iconunify_remove"
         android:tint="@color/Unify_GN500"
@@ -52,7 +53,7 @@
     <com.tokopedia.tokopedianow.common.view.TokoNowEditTextView
         android:id="@+id/edit_text"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="30dp"
         android:background="@null"
         android:gravity="center"
         android:inputType="number"
