@@ -48,6 +48,14 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
 
+    var minNumber: Int = MIN_NUMBER
+        set(value) {
+            field = value
+            if (text.isNotBlank()) {
+                binding.setCounter()
+            }
+        }
+
     init {
         binding = LayoutTokopedianowQuantityEditorCustomViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             setupAddButton()
@@ -102,7 +110,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     @SuppressLint("Method Call Prohibited")
     private fun String.getCounterOrDefaultValue(): Int {
         return try {
-            if (isBlank()) MIN_NUMBER else toInt()
+            if (isBlank()) minNumber else toInt()
         } catch (e: Exception) {
             maxNumber
         }
@@ -138,23 +146,21 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             editText.text?.clear()
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
             currentCounter
-        } else if (maxNumber == MIN_NUMBER) {
-            editText.setText(MIN_NUMBER.toString())
+        } else if (maxNumber == minNumber) {
+            editText.setText(minNumber.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(false))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
-            MIN_NUMBER
+            minNumber
         } else if (currentCounter >= maxNumber) {
             editText.setText(maxNumber.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(false))
             quantityEditorSubButton.setColorFilter(getEnabledColor(true))
             maxNumber
-        } else if (currentCounter <= MIN_NUMBER) {
-            if (currentCounter < MIN_NUMBER) {
-                editText.setText(MIN_NUMBER.toString())
-            }
+        } else if (currentCounter <= minNumber) {
+            if (currentCounter < minNumber) editText.setText(minNumber.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(true))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
-            MIN_NUMBER
+            minNumber
         }  else {
             quantityEditorAddButton.setColorFilter(getEnabledColor(true))
             quantityEditorSubButton.setColorFilter(getEnabledColor(true))
@@ -179,7 +185,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupSubButton() {
         quantityEditorSubButton.setOnClickListener {
-            if (counter > MIN_NUMBER) {
+            if (counter > minNumber) {
                 counter--
                 editText.setText(counter.toString())
             }
@@ -188,9 +194,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupEditText() {
         editText.focusChangedListener = { isFocused ->
-            if (!isFocused) {
-                backToTheStartState()
-            }
+            if (!isFocused) backToTheStartState()
         }
 
         editText.afterTextChanged {
@@ -212,9 +216,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         if (text.isBlank() && counter == NO_NUMBER) {
             root.setTransition(R.id.end, R.id.start)
         } else {
-            if (text.isBlank()) {
-                editText.setText(counter.toString())
-            }
+            if (text.isBlank()) editText.setText(counter.toString())
             root.setTransition(R.id.end, R.id.startWithValue)
         }
         root.transitionToEnd()
