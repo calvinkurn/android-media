@@ -225,6 +225,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     root.transitionToEnd()
                     setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
                     setTextColor(getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+                    setOnTouchListener(null)
                 }
                 true
             }
