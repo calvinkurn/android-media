@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/quantity_editor_add_button"
+        android:id="@+id/add_button"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:padding="16dp"
@@ -37,7 +37,7 @@
         tools:ignore="TouchTargetSizeCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck,DuplicateClickableBoundsCheck" />
 
     <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/quantity_editor_sub_button"
+        android:id="@+id/sub_button"
         android:layout_width="46dp"
         android:layout_height="46dp"
         android:padding="16dp"
