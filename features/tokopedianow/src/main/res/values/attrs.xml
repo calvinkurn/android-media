@@ -6,8 +6,8 @@
     </declare-styleable>
 
     <declare-styleable name="TokoNowQuantityEditorView">
-        <attr name="minNumber" format="integer"/>
-        <attr name="maxNumber" format="integer"/>
+        <attr name="minQuantity" format="integer"/>
+        <attr name="maxQuantity" format="integer"/>
         <attr name="quantity" format="integer"/>
     </declare-styleable>
 </resources>

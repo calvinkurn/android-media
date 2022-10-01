@@ -26,7 +26,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val DELAY_EXECUTION_TIME = 1000L
+        private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
@@ -40,7 +40,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private var counter = DEFAULT_NUMBER
     private var text: String = ""
 
-    var maxNumber: Int = Int.MAX_VALUE
+    var maxQuantity: Int = Int.MAX_VALUE
         set(value) {
             field = value
             if (text.isNotBlank()) {
@@ -48,7 +48,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             }
         }
 
-    var minNumber: Int = MIN_NUMBER
+    var minQuantity: Int = MIN_NUMBER
         set(value) {
             field = value
             if (text.isNotBlank()) {
@@ -88,8 +88,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         ).apply {
             try {
                 setQuantity(getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER))
-                maxNumber = getInt(R.styleable.TokoNowQuantityEditorView_maxNumber, Int.MAX_VALUE)
-                minNumber = getInt(R.styleable.TokoNowQuantityEditorView_minNumber, minNumber)
+                maxQuantity = getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, Int.MAX_VALUE)
+                minQuantity = getInt(R.styleable.TokoNowQuantityEditorView_minQuantity, minQuantity)
             } finally {
                 recycle()
             }
@@ -101,7 +101,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         initializeTimerTask()
         timer?.schedule(
             timerTask,
-            DELAY_EXECUTION_TIME
+            DELAY_TIME_BACK_TO_START_STATE
         )
     }
 
@@ -127,9 +127,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     @SuppressLint("Method Call Prohibited")
     private fun String.getCounterOrDefaultValue(): Int {
         return try {
-            if (isBlank()) minNumber else toInt()
+            if (isBlank()) minQuantity else toInt()
         } catch (e: Exception) {
-            maxNumber
+            maxQuantity
         }
     }
 
@@ -163,21 +163,21 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             editText.text?.clear()
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
             currentCounter
-        } else if (maxNumber == minNumber) {
-            editText.setText(minNumber.toString())
+        } else if (maxQuantity == minQuantity) {
+            editText.setText(minQuantity.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(false))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
-            minNumber
-        } else if (currentCounter >= maxNumber) {
-            editText.setText(maxNumber.toString())
+            minQuantity
+        } else if (currentCounter >= maxQuantity) {
+            editText.setText(maxQuantity.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(false))
             quantityEditorSubButton.setColorFilter(getEnabledColor(true))
-            maxNumber
-        } else if (currentCounter <= minNumber) {
-            if (currentCounter < minNumber) editText.setText(minNumber.toString())
+            maxQuantity
+        } else if (currentCounter <= minQuantity) {
+            if (currentCounter < minQuantity) editText.setText(minQuantity.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(true))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
-            minNumber
+            minQuantity
         }  else {
             quantityEditorAddButton.setColorFilter(getEnabledColor(true))
             quantityEditorSubButton.setColorFilter(getEnabledColor(true))
@@ -187,7 +187,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupAddButton() {
         quantityEditorAddButton.setOnClickListener {
-            if (counter < maxNumber) {
+            if (counter < maxQuantity) {
                 if (root.progress == NO_PROGRESS_ANIMATION) {
                     root.setTransition(R.id.start, R.id.end)
                     root.transitionToEnd()
@@ -202,7 +202,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupSubButton() {
         quantityEditorSubButton.setOnClickListener {
-            if (counter > minNumber) {
+            if (counter > minQuantity) {
                 counter--
                 editText.setText(counter.toString())
             }
