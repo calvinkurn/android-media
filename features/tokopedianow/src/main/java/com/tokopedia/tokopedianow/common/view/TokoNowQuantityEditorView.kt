@@ -28,6 +28,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     companion object {
         private const val DELAY_EXECUTION_TIME = 1000L
         private const val MIN_NUMBER = 1
+        private const val NO_NUMBER = 0
         private const val DEFAULT_DP = 0
         private const val NO_PROGRESS_ANIMATION = 0F
     }
@@ -36,7 +37,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
-    private var counter = MIN_NUMBER
+    private var counter = NO_NUMBER
     private var text: String = ""
 
     var maxNumber: Int = Int.MAX_VALUE
@@ -55,13 +56,11 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
             root.setTransitionListener(object : MotionLayout.TransitionListener {
                     override fun onTransitionStarted(motionLayout: MotionLayout, p1: Int, p2: Int) = onAnimationStarted(
-                        currentState = motionLayout.currentState,
-                        binding = this@apply
+                        currentState = motionLayout.currentState
                     )
 
                     override fun onTransitionCompleted(motionLayout: MotionLayout, p1: Int) = onAnimationFinished(
-                        currentState = motionLayout.currentState,
-                        binding = this@apply
+                        currentState = motionLayout.currentState
                     )
 
                     override fun onTransitionChange(motionLayout: MotionLayout?, p1: Int, p2: Int, p3: Float) { /* nothing to do */ }
@@ -69,21 +68,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     override fun onTransitionTrigger(motionLayout: MotionLayout?, p1: Int, p2: Boolean, p3: Float) { /* nothing to do */ }
                 }
             )
-        }
-    }
-
-    private fun onAnimationStarted(currentState: Int, binding: LayoutTokopedianowQuantityEditorCustomViewBinding) {
-        if (currentState == R.id.startWithValue) {
-            binding.setEditTextWhenStartingWithValueAnimation()
-        }
-    }
-
-    private fun onAnimationFinished(currentState: Int, binding: LayoutTokopedianowQuantityEditorCustomViewBinding) {
-        if (currentState == R.id.end) {
-            binding.editText.requestFocus()
-            binding.editText.setOnTouchListener(null)
-            cancelTimer()
-            startTimer()
         }
     }
 
@@ -128,9 +112,33 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun getResourceColor(id: Int): Int = ContextCompat.getColor(context, id)
 
+    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.onAnimationStarted(
+        currentState: Int
+    ) {
+        if (currentState == R.id.startWithValue) {
+            setEditTextWhenStartingWithValueAnimation()
+        }
+    }
+
+    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.onAnimationFinished(
+        currentState: Int
+    ) {
+        if (currentState == R.id.end) {
+            editText.requestFocus()
+            editText.setOnTouchListener(null)
+            editText.setSelection(text.length)
+            cancelTimer()
+            startTimer()
+        }
+    }
+
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setCounter() {
         val currentCounter = text.getCounterOrDefaultValue()
-        counter = if (maxNumber == MIN_NUMBER) {
+        counter = if (text.isBlank()) {
+            editText.text?.clear()
+            quantityEditorSubButton.setColorFilter(getEnabledColor(false))
+            currentCounter
+        } else if (maxNumber == MIN_NUMBER) {
             editText.setText(MIN_NUMBER.toString())
             quantityEditorAddButton.setColorFilter(getEnabledColor(false))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
@@ -141,7 +149,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             quantityEditorSubButton.setColorFilter(getEnabledColor(true))
             maxNumber
         } else if (currentCounter <= MIN_NUMBER) {
-            editText.setText(MIN_NUMBER.toString())
+            if (currentCounter < MIN_NUMBER) {
+                editText.setText(MIN_NUMBER.toString())
+            }
             quantityEditorAddButton.setColorFilter(getEnabledColor(true))
             quantityEditorSubButton.setColorFilter(getEnabledColor(false))
             MIN_NUMBER
@@ -186,6 +196,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         editText.afterTextChanged {
             if (text != it) {
                 text = it
+                editText.setSelection(text.length)
                 changeViewDisplayAndRestartTimer()
             }
         }
@@ -198,9 +209,12 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.backToTheStartState() {
-        if (editText.text.isNullOrBlank()) {
+        if (text.isBlank() && counter == NO_NUMBER) {
             root.setTransition(R.id.end, R.id.start)
         } else {
+            if (text.isBlank()) {
+                editText.setText(counter.toString())
+            }
             root.setTransition(R.id.end, R.id.startWithValue)
         }
         root.transitionToEnd()
