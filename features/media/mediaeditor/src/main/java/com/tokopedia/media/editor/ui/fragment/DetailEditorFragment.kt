@@ -311,8 +311,8 @@ class DetailEditorFragment @Inject constructor(
                                 RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_GRAY -> principleR.color.Unify_NN200
                                 RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
                                 else -> null
-                            }?.let {
-                                val color = ContextCompat.getColor(requireContext(), it)
+                            }?.let { backgroundColor ->
+                                val color = ContextCompat.getColor(requireContext(), backgroundColor)
 
                                 val backgroundBitmap = Bitmap.createBitmap(
                                     resultBitmap.width,
@@ -356,7 +356,7 @@ class DetailEditorFragment @Inject constructor(
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             if (data.isToolCrop() || data.isToolRotate()) {
-                // ucrop height must be same between rotate & crop to get same result when implement state
+                // uCrop height must be same between rotate & crop to get same result when implement state
                 // crop item is dynamic according to the editor param
                 rotateComponent.setupView(data)
                 cropComponent.setupView(it, data)
@@ -596,7 +596,7 @@ class DetailEditorFragment @Inject constructor(
     private fun manualCropBitmap(cropRotateData: EditorCropRotateUiModel) {
         val currentBitmap = getBitmap()
         currentBitmap?.let {
-            // need normalize between crop data and loaded image data, ucrop bound the loaded image size according to the view size
+            // need normalize between crop data and loaded image data, uCrop bound the loaded image size according to the view size
             // but glide will load the image full size
             val scalingSize = if (cropRotateData.croppedSourceWidth != 0) {
                 it.width.toFloat() / cropRotateData.croppedSourceWidth

@@ -1,43 +1,19 @@
 package com.tokopedia.media.editor.data.repository
 
 import android.graphics.Bitmap
-import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import javax.inject.Inject
-import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
-import com.tokopedia.media.loader.loadImageRounded
 import kotlin.math.min
-
-sealed class WatermarkType(val value: Int) {
-    object Diagonal: WatermarkType(DIAGONAL_INDEX)
-    object Center: WatermarkType(CENTER_INDEX)
-
-    companion object {
-        private const val DIAGONAL_INDEX = 0
-        private const val CENTER_INDEX = 1
-
-        fun map(type: Int?): WatermarkType? {
-            return when (type) {
-                DIAGONAL_INDEX -> Diagonal
-                CENTER_INDEX -> Center
-                else -> null
-            }
-        }
-    }
-}
 
 interface WatermarkFilterRepository {
     fun watermark(
-        context: Context,
         source: Bitmap,
         type: WatermarkType,
         shopNameParam: String,
@@ -47,14 +23,17 @@ interface WatermarkFilterRepository {
     ): Bitmap
 
     fun watermarkDrawerItem(
-        context: Context,
-        implementedBaseBitmap: Bitmap?,
-        shopName: String,
-        buttonRef: Pair<ImageView, ImageView>
-    )
+        implementedBaseBitmap: Bitmap,
+        shopName: String
+    ): Pair<Bitmap, Bitmap>
+
+    fun isAssetInitialize(): Boolean
+    fun setAsset(logoDrawable: Drawable, textLightColor: Int, textDarkColor: Int)
 }
 
 class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepository {
+    private var logoDrawable: Drawable? = null
+
     private var shopText = ""
         set(value) {
             field = if (value.length > SHOP_NAME_CHAR_LIMIT) {
@@ -65,29 +44,36 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         }
 
     @Suppress("SpellCheckingInspection")
-    private var topedDrawable: Drawable? = null
-
-    @Suppress("SpellCheckingInspection")
     // image ratio 14:3 || refer to watermark_tokopedia.xml vector drawable
-    private var tokopediaLogoWidth: Float = 0f
+    private var logoDrawableWidth: Float = 0f
         set(value) {
             field = value
-            tokopediaLogoHeight = (value / 14) * 3
-            fontSize = tokopediaLogoHeight
+            logoDrawableHeight = (value / 14) * 3
         }
 
-    @Suppress("SpellCheckingInspection")
-    private var tokopediaLogoHeight = 0f
-
-    private var fontSize = 0f
+    private var logoDrawableHeight = 0f
 
     private var textWidth = 0
     private var textHeight = 0
 
-    private var watermarkColor = 0
+    private var textLightColor = 0
+    private var textDarkColor = 0
+
+    override fun isAssetInitialize(): Boolean {
+        return logoDrawable != null
+    }
+
+    override fun setAsset(
+        logoDrawable: Drawable,
+        textLightColor: Int,
+        textDarkColor: Int
+    ) {
+        this.logoDrawable = logoDrawable
+        this.textLightColor = textLightColor
+        this.textDarkColor = textDarkColor
+    }
 
     override fun watermark(
-        context: Context,
         source: Bitmap,
         type: WatermarkType,
         shopNameParam: String,
@@ -96,24 +82,16 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         useStorageColor: Boolean
     ): Bitmap {
         shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
-        if (topedDrawable == null) {
-            topedDrawable = ContextCompat.getDrawable(context, R.drawable.watermark_tokopedia)
-        }
 
         var isDark = source.isDark()
         if (useStorageColor) {
             element?.watermarkMode?.let {
                 isDark = it.textColorDark
             }
-
         }
 
-        watermarkColor = if (!isThumbnail) {
-            ContextCompat.getColor(
-                context,
-                if (isDark) R.color.dms_watermark_text_dark
-                else R.color.dms_watermark_text_light
-            )
+        val watermarkColor = if (!isThumbnail) {
+            if (isDark) textDarkColor else textLightColor
         } else {
             Color.WHITE
         }
@@ -122,7 +100,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val sourceHeight: Int = source.height
         val result = Bitmap.createBitmap(sourceWidth, sourceHeight, source.config)
 
-        tokopediaLogoWidth = if (!isThumbnail)
+        logoDrawableWidth = if (!isThumbnail)
             (sourceWidth / IMAGE_SIZE_DIVIDER).toFloat()
         else
             min(sourceWidth, sourceHeight) / 3f
@@ -132,11 +110,12 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
         val paint = Paint()
 
-        paint.color = watermarkColor
-        paint.textSize = fontSize
+        // font size will refer to logo height to achieve same visual size
+        paint.textSize = logoDrawableHeight
         paint.isAntiAlias = true
+        paint.color = watermarkColor
 
-        topedDrawable?.setTint(watermarkColor)
+        logoDrawable?.setTint(watermarkColor)
 
         val shopTextBound = Rect()
         paint.getTextBounds(shopText, 0, shopText.length, shopTextBound)
@@ -164,39 +143,26 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
     }
 
     override fun watermarkDrawerItem(
-        context: Context,
-        implementedBaseBitmap: Bitmap?,
-        shopName: String,
-        buttonRef: Pair<ImageView, ImageView>
-    ) {
-        implementedBaseBitmap?.let { bitmap ->
-            val resultBitmap1 = watermark(
-                context,
-                bitmap,
-                WatermarkType.Diagonal,
-                shopName,
-                true,
-                useStorageColor = false
-            )
+        implementedBaseBitmap: Bitmap,
+        shopName: String
+    ): Pair<Bitmap, Bitmap> {
+        val resultBitmap1 = watermark(
+            implementedBaseBitmap,
+            WatermarkType.Diagonal,
+            shopName,
+            true,
+            useStorageColor = false
+        )
 
-            val resultBitmap2 = watermark(
-                context,
-                bitmap,
-                WatermarkType.Center,
-                shopName,
-                true,
-                useStorageColor = false
-            )
+        val resultBitmap2 = watermark(
+            implementedBaseBitmap,
+            WatermarkType.Center,
+            shopName,
+            true,
+            useStorageColor = false
+        )
 
-            val roundedCorner =
-                context.resources?.getDimension(R.dimen.editor_watermark_rounded) ?: 0f
-            buttonRef.first.loadImageRounded(resultBitmap1, roundedCorner) {
-                centerCrop()
-            }
-            buttonRef.second.loadImageRounded(resultBitmap2, roundedCorner) {
-                centerCrop()
-            }
-        }
+        return Pair(resultBitmap1, resultBitmap2)
     }
 
     private fun setWatermarkCenter(
@@ -210,16 +176,16 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         canvas.drawText(shopText, xPos, yPos, paint)
 
 
-        xPos = ((width / 2) - (tokopediaLogoWidth / 2))
-        yPos = ((height / 2) - (tokopediaLogoHeight))
-        topedDrawable?.setBounds(
+        xPos = ((width / 2) - (logoDrawableWidth / 2))
+        yPos = ((height / 2) - (logoDrawableHeight))
+        logoDrawable?.setBounds(
             0,
             0,
-            tokopediaLogoWidth.toInt(),
-            tokopediaLogoHeight.toInt()
+            logoDrawableWidth.toInt(),
+            logoDrawableHeight.toInt()
         )
         canvas.translate(xPos, yPos)
-        topedDrawable?.draw(canvas)
+        logoDrawable?.draw(canvas)
     }
 
     private fun setWatermarkDiagonal(
@@ -232,7 +198,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         val paddingVertical = height / PADDING_DIVIDER
 
         var xLastPost: Float
-        var yLastPost = tokopediaLogoHeight
+        var yLastPost = logoDrawableHeight
 
         // text box bound height will be 2x source height
         // text box bound width will be source width + 2x text column
@@ -241,11 +207,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
 
         var index: Int
-        topedDrawable?.setBounds(
+        logoDrawable?.setBounds(
             0,
             0,
-            tokopediaLogoWidth.toInt(),
-            tokopediaLogoHeight.toInt()
+            logoDrawableWidth.toInt(),
+            logoDrawableHeight.toInt()
         )
 
         while (yLastPost <= yLimit) {
@@ -257,8 +223,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 
                 if (index % 2 == 1) {
                     canvas.translate(xLastPost, yLastPost)
-                    topedDrawable?.draw(canvas)
-                    xLastPost += (tokopediaLogoWidth + (paddingHorizontal))
+                    logoDrawable?.draw(canvas)
+                    xLastPost += (logoDrawableWidth + (paddingHorizontal))
                 } else {
                     canvas.drawText(shopText, xLastPost, yLastPost, paint)
                     xLastPost += (textWidth + (paddingHorizontal))
@@ -267,7 +233,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
                 canvas.restore()
                 index++
             }
-            yLastPost += tokopediaLogoHeight + (paddingVertical)
+            yLastPost += logoDrawableHeight + (paddingVertical)
         }
     }
 
@@ -277,5 +243,23 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         private const val ELLIPSIS_CONST = "..."
         private const val PADDING_DIVIDER = 6
         private const val IMAGE_SIZE_DIVIDER = 6
+    }
+}
+
+sealed class WatermarkType(val value: Int) {
+    object Diagonal: WatermarkType(DIAGONAL_INDEX)
+    object Center: WatermarkType(CENTER_INDEX)
+
+    companion object {
+        private const val DIAGONAL_INDEX = 0
+        private const val CENTER_INDEX = 1
+
+        fun map(type: Int?): WatermarkType? {
+            return when (type) {
+                DIAGONAL_INDEX -> Diagonal
+                CENTER_INDEX -> Center
+                else -> null
+            }
+        }
     }
 }
