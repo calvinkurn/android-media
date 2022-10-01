@@ -28,7 +28,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     companion object {
         private const val DELAY_EXECUTION_TIME = 1000L
         private const val MIN_NUMBER = 1
-        private const val NO_NUMBER = 0
+        private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
         private const val NO_PROGRESS_ANIMATION = 0F
     }
@@ -37,7 +37,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
-    private var counter = NO_NUMBER
+    private var counter = DEFAULT_NUMBER
     private var text: String = ""
 
     var maxNumber: Int = Int.MAX_VALUE
@@ -76,6 +76,23 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     override fun onTransitionTrigger(motionLayout: MotionLayout?, p1: Int, p2: Boolean, p3: Float) { /* nothing to do */ }
                 }
             )
+        }
+
+        obtainAttributes(attrs)
+    }
+
+    private fun obtainAttributes(attrs: AttributeSet?) {
+        context.obtainStyledAttributes(
+            attrs,
+            R.styleable.TokoNowQuantityEditorView
+        ).apply {
+            try {
+                setQuantity(getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER))
+                maxNumber = getInt(R.styleable.TokoNowQuantityEditorView_maxNumber, Int.MAX_VALUE)
+                minNumber = getInt(R.styleable.TokoNowQuantityEditorView_minNumber, minNumber)
+            } finally {
+                recycle()
+            }
         }
     }
 
@@ -213,7 +230,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorCustomViewBinding.backToTheStartState() {
-        if (text.isBlank() && counter == NO_NUMBER) {
+        if (text.isBlank() && counter == DEFAULT_NUMBER) {
             root.setTransition(R.id.end, R.id.start)
         } else {
             if (text.isBlank()) editText.setText(counter.toString())
@@ -248,10 +265,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    fun setText(text: String) {
+    fun setQuantity(quantity: Int) {
         binding.apply {
-            if (text.isNotBlank()) {
-                counter = text.getCounterOrDefaultValue()
+            if (quantity > DEFAULT_NUMBER) {
+                counter = quantity
                 editText.setText(counter.toString())
                 binding.root.setTransition(R.id.startWithValue, R.id.end)
                 setEditTextWhenStartingWithValueAnimation()
@@ -259,5 +276,5 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    fun getText(): String = text
+    fun getQuantity(): Int = counter
 }
