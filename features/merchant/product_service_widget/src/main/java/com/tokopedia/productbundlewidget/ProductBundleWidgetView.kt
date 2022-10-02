@@ -13,17 +13,19 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
+import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
+import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
 import javax.inject.Inject
 
-class ProductBundleWidgetView : BaseCustomView {
+class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private val bundleAdapter = ProductBundleWidgetAdapter()
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -39,12 +41,10 @@ class ProductBundleWidgetView : BaseCustomView {
 
     fun createViewModel(storeOwner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
         val viewModel = ViewModelProvider(storeOwner, viewModelFactory).get(ProductBundleWidgetViewModel::class.java)
-        viewModel.testdata.observe(lifecycleOwner) {
-            it.forEach {
-                println(it)
-            }
+        viewModel.bundleUiModels.observe(lifecycleOwner) {
+            bundleAdapter.updateDataSet(it)
         }
-        viewModel.getBundleInfo(5995723895, "")
+        viewModel.getBundleInfo(715868015, "", emptyList())
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
@@ -56,27 +56,10 @@ class ProductBundleWidgetView : BaseCustomView {
     }
 
     private fun setupItems(rvBundles: RecyclerView) {
-        val bundleAdapter = ProductBundleWidgetAdapter()
-        val product = listOf(
-            BundleProductUiModel(productName = "satu", productImageUrl = "https://placekitten.com/50/50"),
-            BundleProductUiModel(productName = "satu", productImageUrl = "https://placekitten.com/52/52"),
-        )
-        val shop = BundleShopUiModel(
-            "", "Test Shop", "https://placekitten.com/30/30"
-        )
-        val bundle = listOf(
-            BundleDetailUiModel(products = product, shopInfo = shop)
-        )
-        val listdata = listOf(
-            BundleUiModel("Multi1", bundleDetails = bundle),
-            BundleUiModel("Multi2", bundleDetails = bundle),
-            BundleUiModel("Multi3", bundleDetails = bundle),
-            BundleUiModel("Multi4", bundleDetails = bundle),
-        )
-        bundleAdapter.updateDataSet(listdata)
         rvBundles.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = bundleAdapter
+            bundleAdapter.setListener(this@ProductBundleWidgetView)
         }
     }
 
@@ -96,5 +79,61 @@ class ProductBundleWidgetView : BaseCustomView {
                 styledAttributes.recycle()
             }
         }
+    }
+
+    override fun onBundleProductClicked(
+        bundleType: BundleTypes,
+        bundle: BundleUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        selectedProduct: BundleProductUiModel,
+        productItemPosition: Int
+    ) {
+
+    }
+
+    override fun addMultipleBundleToCart(
+        selectedMultipleBundle: BundleDetailUiModel,
+        productDetails: List<BundleProductUiModel>
+    ) {
+
+    }
+
+    override fun addSingleBundleToCart(
+        selectedBundle: BundleDetailUiModel,
+        bundleProducts: BundleProductUiModel
+    ) {
+
+    }
+
+    override fun onTrackSingleVariantChange(
+        selectedProduct: BundleProductUiModel,
+        selectedSingleBundle: BundleDetailUiModel,
+        bundleName: String
+    ) {
+
+    }
+
+    override fun impressionProductBundleSingle(
+        selectedSingleBundle: BundleDetailUiModel,
+        selectedProduct: BundleProductUiModel,
+        bundleName: String,
+        bundlePosition: Int
+    ) {
+
+    }
+
+    override fun impressionProductBundleMultiple(
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundlePosition: Int
+    ) {
+
+    }
+
+    override fun impressionProductItemBundleMultiple(
+        selectedProduct: BundleProductUiModel,
+        selectedMultipleBundle: BundleDetailUiModel,
+        productItemPosition: Int
+    ) {
+
     }
 }

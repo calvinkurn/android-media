@@ -1,28 +1,29 @@
 package com.tokopedia.productbundlewidget
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.ProductServiceWidgetConstant
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
-import com.tokopedia.product_bundle.common.data.model.request.InventoryDetail
-import com.tokopedia.product_bundle.common.data.model.request.ProductData
-import com.tokopedia.product_bundle.common.data.model.request.RequestData
-import com.tokopedia.product_bundle.common.data.model.request.UserLocation
+import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ProductBundleWidgetViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getBundleInfoUseCase: GetBundleInfoUseCase,
-    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper,
+    private val productBundleWidgetUiMapper: ProductBundleWidgetUiMapper
 ) : BaseViewModel(dispatchers.main) {
 
-    val testdata: MutableLiveData<List<String>> = MutableLiveData()
+    private val _bundleUiModels: MutableLiveData<List<BundleUiModel>> = MutableLiveData()
+    val bundleUiModels: LiveData<List<BundleUiModel>> get() = _bundleUiModels
 
-    fun getBundleInfo(productId: Long, warehouseId: String) {
+    fun getBundleInfo(productId: Long, warehouseId: String, bundleIdList: List<Bundle>) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -49,13 +50,11 @@ class ProductBundleWidgetViewModel @Inject constructor(
                         productID = productId.toString(),
                         warehouseIDs = listOf(warehouseId)
                     ),
-                    bundleIdList = emptyList()
+                    bundleIdList = bundleIdList
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }
-            testdata.value = result.getBundleInfo?.bundleInfo?.map {
-                it.name
-            }
+            _bundleUiModels.value = productBundleWidgetUiMapper.groupAndMap(result.getBundleInfo?.bundleInfo.orEmpty())
         }, onError = {
 
         })
