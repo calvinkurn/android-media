@@ -1444,6 +1444,25 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `determine variant return value`(){
+
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        val expectedVariantCategory = VariantCategory()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns expectedVariantCategory
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+    }
+
+    @Test
     fun `determine variant return null`(){
 
         val productVariant = ProductVariant()
