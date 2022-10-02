@@ -14,7 +14,7 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
-import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
+import com.tokopedia.buyerorderdetail.domain.usecases.GetDetailWithResolutionUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
@@ -35,11 +35,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
         @Named(BuyerOrderDetailMiscConstant.DAGGER_ATC_QUERY_NAME)
         private val atcMultiQuery: dagger.Lazy<String>,
         private val userSession: dagger.Lazy<UserSessionInterface>,
-        private val getBuyerOrderDetailUseCase: dagger.Lazy<GetBuyerOrderDetailUseCase>,
+        private val getBuyerOrderDetailUseCase: dagger.Lazy<GetDetailWithResolutionUseCase>,
         private val finishOrderUseCase: dagger.Lazy<FinishOrderUseCase>,
         private val atcUseCase: dagger.Lazy<AddToCartMultiUseCase>,
         private val resourceProvider: dagger.Lazy<ResourceProvider>
 ) : BaseViewModel(coroutineDispatchers.main) {
+
+    companion object {
+        const val STATUS_ID_REGEX_PATTERN = "\\d+"
+    }
+
     private val _buyerOrderDetailResult: MutableLiveData<Result<BuyerOrderDetailUiModel>> = MutableLiveData()
     val buyerOrderDetailResult: LiveData<Result<BuyerOrderDetailUiModel>>
         get() = _buyerOrderDetailResult
@@ -58,7 +63,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     private fun getFinishOrderActionStatus(): String {
         val statusId = getOrderStatusId()
-        return if (statusId.matches(Regex("\\d+")) && statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
+        return if (statusId.matches(Regex(STATUS_ID_REGEX_PATTERN)) && statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER else ""
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
@@ -76,7 +81,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun getBuyerOrderDetail(orderId: String, paymentId: String, cart: String) {
         launchCatchError(block = {
             val param = GetBuyerOrderDetailParams(cart, orderId, paymentId)
-            _buyerOrderDetailResult.value = (Success(getBuyerOrderDetailUseCase.get().execute(param)))
+            _buyerOrderDetailResult.value = Success(getBuyerOrderDetailUseCase.get().execute(param))
         }, onError = {
             _buyerOrderDetailResult.value = (Fail(it))
         })

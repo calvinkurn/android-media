@@ -39,8 +39,9 @@
     <string name="affiliate_link_generated_succesfully">Link affiliate untuk di %s tersalin dan siap dipromosikan.</string>
     <string name="affiliate_link_empty_error">Link gagal disalin karena ada kendala pada sistem.</string>
     <string name="affiliate_product_count">%s Produk</string>
-    <string name="affiliate_product_inactive">Link produk tidak aktif</string>
+    <string name="affiliate_product_inactive">Link tidak aktif</string>
     <string name="affiliate_product_inactive_text">Sementara link produk ini tidak bisa dipromosikan, karena tidak memenuhi syarat untuk Affiliate.</string>
+    <string name="affiliate_shop_inactive_text">Sementara link toko ini tidak bisa dipromosikan, karena tidak memenuhi syarat untuk Affiliate.</string>
     <string name="affiliate_beta_info">Ini Affiliate versi Beta</string>
     <string name="affiliate_beta_info_text">Di versi ini, tim bisnis kami akan mengirimkan laporan Performa Affiliate &amp; pendapatanmu. Nantikan fitur yang lebih optimal di versi berikutnya, ya!</string>
     <string name="affiliate_beta">BETA</string>
@@ -147,4 +148,5 @@
     <string name="no_promoted_products_message">Kamu bisa cari %s di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
+    <string name="affiliate_date">Dibuat %s</string>
 </resources>
