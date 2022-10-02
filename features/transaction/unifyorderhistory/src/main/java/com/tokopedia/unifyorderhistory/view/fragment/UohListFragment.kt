@@ -819,9 +819,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             when (it) {
                 is Success -> {
                     orderList = it.data
-                    /*if (!isFilterClicked && currPage == 1) {
-                        renderChipsFilter(it.data.v2Filters, it.data.categories)
-                    }*/
                     if (orderList.orders.isNotEmpty()) {
                         if (orderIdNeedUpdated.isEmpty()) {
                             currPage += 1
@@ -1302,7 +1299,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         if (tempFilterDateLabel.isEmpty()) tempFilterDateLabel = ALL_DATE
         if (tempFilterDateKey.isEmpty()) tempFilterDateKey = "0"
 
-        val filterDateBottomSheet = UohFilterOptionsBottomSheet.newInstance(UohConsts.CHOOSE_DATE)
+        val filterDateBottomSheet = UohFilterOptionsBottomSheet.newInstance(UohConsts.CHOOSE_DATE, true)
         if (filterDateBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val optionAdapter = UohBottomSheetOptionAdapter()
@@ -1456,7 +1453,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun onClickFilterStatus() {
-        val filterStatusBottomSheet = UohFilterOptionsBottomSheet.newInstance(UohConsts.CHOOSE_STATUS)
+        val filterStatusBottomSheet = UohFilterOptionsBottomSheet.newInstance(
+            UohConsts.CHOOSE_STATUS,
+            false
+        )
         if (filterStatusBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val optionAdapter = UohBottomSheetOptionAdapter()
@@ -1552,7 +1552,10 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             selectedKey = currFilterCategoryKey
         }
 
-        val filterProductBottomSheet = UohFilterOptionsBottomSheet.newInstance(UohConsts.CHOOSE_PRODUCT)
+        val filterProductBottomSheet = UohFilterOptionsBottomSheet.newInstance(
+            UohConsts.CHOOSE_PRODUCT,
+            false
+        )
         if (filterProductBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
         val optionAdapter = UohBottomSheetOptionAdapter()
@@ -1688,7 +1691,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             false, "")
                     }
                 }
-                paramUohOrder.status.isNotEmpty() -> {
+                paramUohOrder.status.isNotEmpty() || paramUohOrder.verticalCategory.isNotEmpty() -> {
                     emptyStatus = activity?.resources?.let { resource ->
                         UohEmptyState(URL_IMG_EMPTY_ORDER_LIST,
                             resource.getString(R.string.uoh_filter_empty),

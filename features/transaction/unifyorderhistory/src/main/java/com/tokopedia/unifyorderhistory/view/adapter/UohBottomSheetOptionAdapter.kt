@@ -118,7 +118,11 @@ class UohBottomSheetOptionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder
            isReset = false
            selectedRadio = position
            actionListener?.onOptionItemClick(filterBundle.key, filterBundle.value, filterType)
-           notifyDataSetChanged()
+           if (filterType == UohConsts.TYPE_FILTER_DATE) {
+               notifyDataSetChanged()
+           } else {
+               actionListener?.onClickApply()
+           }
        }
    }
 }
