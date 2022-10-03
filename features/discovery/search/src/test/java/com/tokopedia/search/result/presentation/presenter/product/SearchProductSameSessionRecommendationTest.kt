@@ -1,8 +1,6 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
@@ -13,7 +11,6 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.just
-import io.mockk.mockk
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verify
@@ -28,11 +25,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         "searchproduct/samesessionrecommendation/same-session-recommendation.json"
     private val emptySameSessionRecommendationResponseJSON =
         "searchproduct/samesessionrecommendation/empty-same-session-recommendation.json"
-
-    private val searchParameter = mockk<SearchParameter>(relaxed = true)
-    private val searchParameterMap = mutableMapOf(
-        SearchApiConst.OB to SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_SORT
-    )
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>>
@@ -51,10 +43,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
             emptySameSessionRecommendation
         )
-        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
-        `Given filter controller has no active filter`()
+        `Given product filter indicator has default sorting and no active filter`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -76,10 +67,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
             sameSessionRecommendation
         )
-        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
-        `Given filter controller has no active filter`()
+        `Given product filter indicator has default sorting and no active filter`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -101,10 +91,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
             sameSessionRecommendation
         )
-        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
-        `Given filter controller has active filter`()
+        `Given product filter indicator has active filter`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -126,11 +115,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
             sameSessionRecommendation
         )
-        `Given searchParameterProvider getSearchParameter will return searchParameter`()
+        `Given product filter indicator has non-default sorting`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return empty`()
-        `Given filter controller has no active filter`()
-        `Given searchParameter return non-default sorting`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -152,10 +139,9 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         `Given same search recommendationAPI will return SearchSameSessionRecommendationModel`(
             sameSessionRecommendation
         )
-        `Given searchParameterProvider getSearchParameter will return searchParameter`()
         `Given recyclerViewUpdater`()
         `Given same session recommendation preference will return non-empty`()
-        `Given filter controller has no active filter`()
+        `Given product filter indicator has default sorting and no active filter`()
         `Given queryKeyProvider queryKey return empty string`()
 
         val productItemDataViewIndex = visitableList.indexOfFirst { it is ProductItemDataView }
@@ -187,15 +173,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         }
     }
 
-    private fun `Given searchParameterProvider getSearchParameter will return searchParameter`() {
-        every {
-            searchParameterProvider.getSearchParameter()
-        } returns searchParameter
-        every {
-            searchParameter.getSearchParameterMap()
-        } returns searchParameterMap
-    }
-
     private fun `Given same session recommendation preference will return non-empty`() {
         every { sameSessionRecommendationPreference.hideRecommendationTimestamp } returns System.currentTimeMillis() - 10_000L
     }
@@ -204,12 +181,18 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
         every { sameSessionRecommendationPreference.hideRecommendationTimestamp } returns 0L
     }
 
-    private fun `Given filter controller has active filter`() {
-        every { filterController.isFilterActive() } returns true
+    private fun `Given product filter indicator has active filter`() {
+        every { productFilterIndicator.isAnyFilterOrSortActive } returns true
     }
 
-    private fun `Given filter controller has no active filter`() {
-        every { filterController.isFilterActive() } returns false
+    private fun `Given product filter indicator has non-default sorting`() {
+        every {
+            productFilterIndicator.isAnyFilterOrSortActive
+        } returns true
+    }
+
+    private fun `Given product filter indicator has default sorting and no active filter`() {
+        every { productFilterIndicator.isAnyFilterOrSortActive } returns false
     }
 
     private fun `Given recyclerViewUpdater`() {
@@ -232,10 +215,6 @@ internal class SearchProductSameSessionRecommendationTest : ProductListPresenter
 
     private fun `Given queryKeyProvider queryKey return empty string`() {
         every { queryKeyProvider.queryKey } returns ""
-    }
-
-    private fun `Given searchParameter return non-default sorting`() {
-        searchParameterMap[SearchApiConst.OB] = ""
     }
 
     private fun `When product item is clicked`(

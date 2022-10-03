@@ -1,18 +1,16 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
 import com.tokopedia.discovery.common.constants.SearchConstant
-import com.tokopedia.discovery.common.model.SearchParameter
-import com.tokopedia.filter.common.helper.isSortHasDefaultValue
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.QueryKeyProvider
-import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
+import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.HIDE_RECOMMENDATION_ID
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 import com.tokopedia.usecase.UseCase
 import rx.Subscriber
@@ -26,25 +24,10 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     @param:Named(SearchConstant.SearchProduct.SEARCH_SAME_SESSION_RECOMMENDATION_USE_CASE)
     private val sameSessionRecommendationUseCase: UseCase<SearchSameSessionRecommendationModel>,
-    private val filterController: FilterController,
     private val preference: SameSessionRecommendationPreference,
     private val queryKeyProvider: QueryKeyProvider,
-    private val searchParameterProvider: SearchParameterProvider,
+    private val productFilterIndicator: ProductFilterIndicator,
 ) {
-    private val searchParameter: SearchParameter?
-        get() = searchParameterProvider.getSearchParameter()
-
-    private val isAnySortActive: Boolean
-        get() {
-            val mapParameter = searchParameter?.getSearchParameterMap() ?: mapOf()
-            return !isSortHasDefaultValue(mapParameter)
-        }
-
-    private val isAnyFilterActive
-        get() = filterController.isFilterActive()
-
-    private val isAnyFilterOrSortActive
-        get() = isAnyFilterActive || isAnySortActive
 
     private val isHideRecommendationExceedThreshold: Boolean
         get() {
@@ -55,10 +38,8 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         }
 
     private val isFilterOrFeedbackActive: Boolean
-        get() = isAnyFilterOrSortActive
+        get() = productFilterIndicator.isAnyFilterOrSortActive
             || !isHideRecommendationExceedThreshold
-
-    private var currentRecommendation: SameSessionRecommendationDataView? = null
 
     fun requestSameSessionRecommendation(
         item: ProductItemDataView,
@@ -82,31 +63,45 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
 
         sameSessionRecommendationUseCase.execute(
             sameSessionRequestParams,
-            object : Subscriber<SearchSameSessionRecommendationModel>() {
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                    Timber.e(e)
-                }
-
-                override fun onNext(data: SearchSameSessionRecommendationModel) {
-                    if (data.products.size < MIN_RECOMMENDED_PRODUCTS) return
-
-                    val recommendationData = SameSessionRecommendationMapper()
-                        .convertToSameSessionRecommendationDataView(
-                            data,
-                            item.productID,
-                            queryKeyProvider.queryKey,
-                            dimension90,
-                            externalReference,
-                        )
-                    currentRecommendation = recommendationData
-                    removePreviousSameSessionRecommendation()
-                    addSameSessionRecommendation(recommendationData, item)
-                }
-            }
+            createSameSessionRecommendationUseCaseSubscriber(item, dimension90, externalReference)
         )
+    }
+
+    private fun createSameSessionRecommendationUseCaseSubscriber(
+        item: ProductItemDataView,
+        dimension90: String,
+        externalReference: String,
+    ) = object : Subscriber<SearchSameSessionRecommendationModel>() {
+        override fun onCompleted() {
+        }
+
+        override fun onError(e: Throwable) {
+            Timber.e(e)
+        }
+
+        override fun onNext(data: SearchSameSessionRecommendationModel) {
+            handleSameSessionRecommendationUseCaseOnNext(data, item, dimension90, externalReference)
+        }
+    }
+
+    private fun handleSameSessionRecommendationUseCaseOnNext(
+        data: SearchSameSessionRecommendationModel,
+        item: ProductItemDataView,
+        dimension90: String,
+        externalReference: String,
+    ) {
+        if (data.products.size < MIN_RECOMMENDED_PRODUCTS) return
+
+        val recommendationData = SameSessionRecommendationMapper()
+            .convertToSameSessionRecommendationDataView(
+                data,
+                item.productID,
+                queryKeyProvider.queryKey,
+                dimension90,
+                externalReference,
+            )
+        removePreviousSameSessionRecommendation()
+        addSameSessionRecommendation(recommendationData, item)
     }
 
     private fun removePreviousSameSessionRecommendation() {
@@ -120,8 +115,11 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         viewUpdater.insertItemAfter(recommendation, selectedProduct)
     }
 
-    fun handleFeedbackItemClick(feedbackItem: FeedbackItem) {
-        currentRecommendation?.feedback?.selectedFeedbackItem = feedbackItem
+    fun handleFeedbackItemClick(
+        feedback: Feedback,
+        feedbackItem: FeedbackItem,
+    ) {
+        feedback.selectedFeedbackItem = feedbackItem
         if (HIDE_RECOMMENDATION_ID == feedbackItem.componentId) {
             handleHideRecommendationClick()
         }

@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
 import com.tokopedia.iris.Iris
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 import com.tokopedia.track.TrackApp
 
@@ -19,8 +20,11 @@ class SameSessionRecommendationListenerDelegate(
         feedbackItem.impress(iris)
     }
 
-    override fun onSameSessionRecommendationFeedbackItemClicked(feedbackItem: FeedbackItem) {
+    override fun onSameSessionRecommendationFeedbackItemClicked(
+        feedback: Feedback,
+        feedbackItem: FeedbackItem
+    ) {
         feedbackItem.click(TrackApp.getInstance().gtm)
-        sameSessionRecommendationPresenterDelegate.handleFeedbackItemClick(feedbackItem)
+        sameSessionRecommendationPresenterDelegate.handleFeedbackItemClick(feedback, feedbackItem)
     }
 }

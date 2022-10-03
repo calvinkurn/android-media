@@ -21,6 +21,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
+import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
@@ -81,11 +82,10 @@ internal open class ProductListPresenterTestFixtures {
     protected val viewUpdater = mockk<ViewUpdater>(relaxed = true)
     protected val sameSessionRecommendationUseCase =
         mockk<UseCase<SearchSameSessionRecommendationModel>>(relaxed = true)
-    protected val filterController = mockk<FilterController>(relaxed = true)
     protected val sameSessionRecommendationPreference =
         mockk<SameSessionRecommendationPreference>(relaxed = true)
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
-    protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
+    protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
 
     protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
@@ -98,10 +98,9 @@ internal open class ProductListPresenterTestFixtures {
             viewUpdater,
             requestParamsGenerator,
             sameSessionRecommendationUseCase,
-            filterController,
             sameSessionRecommendationPreference,
             queryKeyProvider,
-            searchParameterProvider,
+            productFilterIndicator,
         )
 
         productListPresenter = ProductListPresenter(

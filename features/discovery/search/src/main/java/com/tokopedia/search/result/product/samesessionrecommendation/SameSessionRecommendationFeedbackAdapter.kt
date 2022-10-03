@@ -5,13 +5,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 
 class SameSessionRecommendationFeedbackAdapter(
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
-    private val onFeedbackItemClicked: (FeedbackItem) -> Unit,
+    private val onFeedbackItemClicked: (Feedback, FeedbackItem) -> Unit,
     diffCallback: DiffUtil.ItemCallback<FeedbackItem> = DEFAULT_DIFF_CALLBACK
 ) : ListAdapter<FeedbackItem, SameSessionRecommendationFeedbackItemViewHolder>(diffCallback) {
+    private var feedback: Feedback? = null
+
+    override fun onViewRecycled(holder: SameSessionRecommendationFeedbackItemViewHolder) {
+        feedback = null
+        super.onViewRecycled(holder)
+    }
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -27,11 +34,14 @@ class SameSessionRecommendationFeedbackAdapter(
             sameSessionRecommendationListener,
             view,
         ).apply {
-            itemView.setOnClickListener {
-                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                    onFeedbackItemClicked(getItem(bindingAdapterPosition))
-                }
-            }
+            itemView.setOnClickListener { handleFeedbackItemClick() }
+        }
+    }
+
+    private fun SameSessionRecommendationFeedbackItemViewHolder.handleFeedbackItemClick() {
+        val feedback = feedback ?: return
+        if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+            onFeedbackItemClicked(feedback, getItem(bindingAdapterPosition))
         }
     }
 

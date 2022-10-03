@@ -81,8 +81,9 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun getItemAtIndex(index: Int): Visitable<*>? {
         val itemList = productListAdapter?.itemList ?: return null
+        if (index !in itemList.indices) return null
         if (itemList.size < index) return null
-        return itemList[index]
+        return itemList.getOrNull(index)
     }
 
     override fun setItems(list: List<Visitable<*>>) {

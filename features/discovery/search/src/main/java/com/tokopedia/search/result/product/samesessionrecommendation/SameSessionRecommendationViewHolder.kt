@@ -16,6 +16,7 @@ import com.tokopedia.search.databinding.SearchResultSameSessionRecommendationLay
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.decoration.ProductItemDecoration
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView.Feedback.FeedbackItem
 import com.tokopedia.search.utils.addItemDecorationIfNotExists
 import com.tokopedia.unifycomponents.toPx
@@ -46,9 +47,9 @@ class SameSessionRecommendationViewHolder(
             bindSelectedFeedbackItem(selectedFeedbackItem)
         } else {
             binding.showRecommendationProduct()
+            binding.tgRecommendationTitle.text = element.title
+            bindProductCarousel(element.products)
         }
-        binding.tgRecommendationTitle.text = element.title
-        bindProductCarousel(element.products)
         itemView.addOnImpressionListener(element) {
             sameSessionRecommendationListener.onSameSessionRecommendationImpressed(element)
         }
@@ -74,7 +75,7 @@ class SameSessionRecommendationViewHolder(
         }
     }
 
-    private fun bindFeedback(feedback: SameSessionRecommendationDataView.Feedback) {
+    private fun bindFeedback(feedback: Feedback) {
         val binding = binding ?: return
         binding.tgHideRecommendation.text = feedback.title
         binding.rvSameSessionRecommendationFeedback.apply {
@@ -124,34 +125,10 @@ class SameSessionRecommendationViewHolder(
         return FeedbackItemDecoration(getSpacing(), itemView.context)
     }
 
-    private class FeedbackItemDecoration(
-        private val left: Int,
-        context: Context,
-    ) : RecyclerView.ItemDecoration() {
-        private val divider =
-            context.getDrawable(R.drawable.search_divider_same_session_recommendation_feedback)
-
-        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-            super.onDrawOver(c, parent, state)
-            val divider = divider ?: return
-            val childCount = parent.childCount
-
-            val right = parent.width - parent.paddingRight
-            val onePx = 1.toPx()
-            for (i in 0 until childCount) {
-                val child = parent.getChildAt(i)
-                val params = child.layoutParams as RecyclerView.LayoutParams
-                val top = child.bottom + params.bottomMargin - onePx
-                val bottom = top + onePx
-                divider.setBounds(left, top, right, bottom)
-                divider.draw(c)
-            }
-        }
-    }
-
-    private fun onFeedbackItemClicked(feedbackItem: FeedbackItem) {
+    private fun onFeedbackItemClicked(feedback: Feedback, feedbackItem: FeedbackItem) {
         sameSessionRecommendationListener.onSameSessionRecommendationFeedbackItemClicked(
-            feedbackItem
+            feedback,
+            feedbackItem,
         )
         binding?.showRecommendationSelectedFeedback()
         bindSelectedFeedbackItem(feedbackItem)
@@ -185,5 +162,30 @@ class SameSessionRecommendationViewHolder(
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.search_result_same_session_recommendation_layout
+    }
+
+    private class FeedbackItemDecoration(
+        private val left: Int,
+        context: Context,
+    ) : RecyclerView.ItemDecoration() {
+        private val divider =
+            context.getDrawable(R.drawable.search_divider_same_session_recommendation_feedback)
+
+        override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+            super.onDrawOver(c, parent, state)
+            val divider = divider ?: return
+            val childCount = parent.childCount
+
+            val right = parent.width - parent.paddingRight
+            val onePx = 1.toPx()
+            for (i in 0 until childCount) {
+                val child = parent.getChildAt(i)
+                val params = child.layoutParams as RecyclerView.LayoutParams
+                val top = child.bottom + params.bottomMargin - onePx
+                val bottom = top + onePx
+                divider.setBounds(left, top, right, bottom)
+                divider.draw(c)
+            }
+        }
     }
 }
