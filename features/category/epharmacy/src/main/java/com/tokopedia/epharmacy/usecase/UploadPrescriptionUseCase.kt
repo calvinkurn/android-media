@@ -47,16 +47,22 @@ class UploadPrescriptionUseCase @Inject constructor(
     private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false): String {
         var prescriptionImageBitmap: Bitmap? = null
         return try {
-            logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
-            prescriptionImageBitmap = BitmapFactory.decodeFile(localFilePath)
+            prescriptionImageBitmap = if(compress){
+                val compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
+                logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
+                BitmapFactory.decodeFile(compressedUri?.path)
+            }else {
+                logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
+                BitmapFactory.decodeFile(localFilePath)
+            }
             val prescriptionByteArrayOutputStream = ByteArrayOutputStream()
-            prescriptionImageBitmap?.compress(
+            prescriptionImageBitmap.compress(
                 Bitmap.CompressFormat.JPEG,
                 getImageQualitySafeFix(),
                 prescriptionByteArrayOutputStream
             )
             val byteArrayImage = prescriptionByteArrayOutputStream.toByteArray()
-            prescriptionImageBitmap?.recycle()
+            prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             "${IMAGE_DATA_PREFIX}${encodedString}"
@@ -66,7 +72,7 @@ class UploadPrescriptionUseCase @Inject constructor(
             when(e){
                 is NullPointerException -> {
                     if(!compress){
-                        getBase64OfPrescriptionImage(localFilePath ?: "", true)
+                        getBase64OfPrescriptionImage(localFilePath, true)
                     }
                     EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
                 }
