@@ -144,7 +144,6 @@ class DetailEditorViewModel @Inject constructor(
         }
 
         watermarkFilterRepository.watermarkDrawerItem(
-            context,
             implementedBaseBitmap,
             shopName
         ).apply {
@@ -161,19 +160,19 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setRotate(
-        ucropRef: EditorDetailPreviewWidget?,
+        uCropRef: EditorDetailPreviewWidget?,
         rotateDegree: Float,
         isRotateRatio: Boolean,
         ratio: Pair<Float, Float>? = null,
         isPreviousState: Boolean = false
     ) {
-        ucropRef?.let {
+        uCropRef?.let {
             rotateFilterRepository.rotate(it, rotateDegree, isRotateRatio, ratio, isPreviousState)
         }
     }
 
-    fun setMirror(ucropRef: EditorDetailPreviewWidget?) {
-        ucropRef?.let {
+    fun setMirror(uCropRef: EditorDetailPreviewWidget?) {
+        uCropRef?.let {
             rotateFilterRepository.mirror(it)
         }
     }
