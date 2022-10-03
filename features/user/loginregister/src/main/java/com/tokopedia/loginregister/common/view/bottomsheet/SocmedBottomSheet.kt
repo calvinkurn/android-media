@@ -17,7 +17,6 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class SocmedBottomSheet: BottomSheetUnify() {
 
-    private var socmedButtonsContainer: LinearLayout? = null
     private var viewBinding by autoClearedNullable<LayoutSocmedBottomsheetBinding>()
 
     override fun onCreateView(
@@ -35,5 +34,5 @@ class SocmedBottomSheet: BottomSheetUnify() {
         setChild(viewBinding?.root)
     }
 
-    fun getSocmedButtonContainer(): LinearLayout? = socmedButtonsContainer
+    fun getSocmedButtonContainer(): LinearLayout? = viewBinding?.socmedContainer
 }

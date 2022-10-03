@@ -1,19 +1,26 @@
 package com.tokopedia.loginregister.common.view.emailextension.adapter
 
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.loginregister.R
-import kotlinx.android.synthetic.main.layout_list_email_extension.view.*
+import com.tokopedia.loginregister.databinding.LayoutListEmailExtensionBinding
 
 class EmailExtensionAdapter(
-        private var list: List<String>,
-        private val listener: ClickListener,
-        private val maxShowingItems: Int
-): RecyclerView.Adapter<EmailExtensionAdapter.ViewHolder>() {
+    private var list: List<String>,
+    private val listener: ClickListener,
+    private val maxShowingItems: Int,
+) : RecyclerView.Adapter<EmailExtensionAdapter.EmailExtensionAdapter>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        return ViewHolder(View.inflate(parent.context, R.layout.layout_list_email_extension, null))
+    class EmailExtensionAdapter(view: View) : RecyclerView.ViewHolder(view) {
+        val viewBinding by lazy {
+            LayoutListEmailExtensionBinding.bind(view)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailExtensionAdapter {
+        val view = LayoutListEmailExtensionBinding.inflate(LayoutInflater.from(parent.context))
+        return EmailExtensionAdapter(view.root)
     }
 
     fun updateList(list: List<String>) {
@@ -21,22 +28,20 @@ class EmailExtensionAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if(list.size > maxShowingItems) {
+        return if (list.size > maxShowingItems) {
             maxShowingItems
         } else {
             list.size
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(list[position], listener, position)
-    }
-
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        fun bind(extension: String, listener: ClickListener?, position: Int) {
-            itemView.textEmailExtension.text = extension
-            itemView.setOnClickListener {
-                listener?.onExtensionClick(extension, position)
+    override fun onBindViewHolder(holder: EmailExtensionAdapter, position: Int) {
+        list[position].let { item ->
+            holder.viewBinding.run {
+                textEmailExtension.text = item
+                root.setOnClickListener {
+                    listener.onExtensionClick(item, position)
+                }
             }
         }
     }
