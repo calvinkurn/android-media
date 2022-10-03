@@ -47,12 +47,12 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -79,8 +79,6 @@ import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
-
-    private const val PDP_SOURCE_AFFILIATE = "pdp"
 
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
@@ -297,14 +295,15 @@ object DynamicProductDetailMapper {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible,
+                eduLink = it.eduLink
             )
         }?.associateBy { it.productID }
     }
