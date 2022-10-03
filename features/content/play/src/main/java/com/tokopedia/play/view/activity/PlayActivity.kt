@@ -9,8 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.*
 import androidx.viewpager2.widget.ViewPager2
-import com.google.android.gms.cast.framework.CastContext
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -282,9 +280,10 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeFirstChannelEvent() {
+        val userId = if(viewModel.userId.isEmpty()) "0" else viewModel.userId
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
-            playPreference.setCoachMark(true, channelId = startChannelId, userId = viewModel.userId)
+            playPreference.setCoachMark(true, channelId = startChannelId, userId = userId)
         })
     }
 

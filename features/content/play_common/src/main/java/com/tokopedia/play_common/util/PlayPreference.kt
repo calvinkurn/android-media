@@ -76,13 +76,13 @@ class PlayPreference @Inject constructor(
         ""
     )
 
-    private fun getLastVisit(userId: String) = sharedPref.getLong(String.format(SWIPE_ONBOARDING, userId), currentTime)
+    private fun getLastVisit(userId: String) = sharedPref.getLong(String.format(SWIPE_ONBOARDING, userId), currentTime - A_DAY_IN_MILLIS)
 
     private fun getDiffDay(userId: String) : Long {
         return currentTime - getLastVisit(userId)
     }
 
-    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String, userId: String) { // first channel event
+    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String, userId: String) { // first channel event\
         when (variant) {
             SWIPE_LIVE_ROOM_VARIANT -> {
                 if (getDiffDay(channelId) >= A_DAY_IN_MILLIS) {
