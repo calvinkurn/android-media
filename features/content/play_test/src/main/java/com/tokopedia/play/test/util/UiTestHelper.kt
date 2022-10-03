@@ -35,3 +35,11 @@ fun ViewInteraction.isVisible() {
 fun ViewInteraction.isHidden() {
     check(matches(not(isDisplayed())))
 }
+
+fun isVisible(@IdRes vararg ids: Int) {
+    ids.forEach { id -> select(id).isVisible() }
+}
+
+fun isHidden(@IdRes vararg ids: Int) {
+    ids.forEach { id -> select(id).isHidden() }
+}

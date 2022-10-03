@@ -14,8 +14,10 @@ import com.tokopedia.content.common.producttag.container.ContentProductTagTestAc
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.ContentProductTagDaggerHelper
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.play.test.util.clickView
 import com.tokopedia.play.test.util.isHidden
 import com.tokopedia.play.test.util.isVisible
 import com.tokopedia.play.test.util.select
@@ -54,6 +56,8 @@ class ContentProductTagConfigUiTest {
                 putExtra(EXTRA_ARGUMENT, argumentBuilder.build())
             }
         )
+
+        delay(INITIAL_DELAY)
     }
 
     init {
@@ -84,8 +88,6 @@ class ContentProductTagConfigUiTest {
             .setAuthorType(ContentCommonUserType.TYPE_USER)
         )
 
-        delay(INITIAL_DELAY)
-
         select(R.id.tv_cc_product_tag_product_source_label)
             .isVisible()
 
@@ -104,8 +106,6 @@ class ContentProductTagConfigUiTest {
             .setAuthorType(ContentCommonUserType.TYPE_SHOP)
         )
 
-        delay(INITIAL_DELAY)
-
         select(R.id.tv_cc_product_tag_product_source_label)
             .isHidden()
 
@@ -114,6 +114,124 @@ class ContentProductTagConfigUiTest {
 
         select(R.id.ic_cc_product_tag_chevron_1)
             .isHidden()
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_productTagSource_completeSource() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.MyShop,
+                    ProductTagSource.LastPurchase,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        select(R.id.tv_cc_product_tag_product_source)
+            .clickView()
+
+        isVisible(
+            R.id.cl_global_search,
+
+            R.id.tv_my_account_label,
+            R.id.cl_last_purchase,
+
+            R.id.tv_my_shop_label,
+            R.id.cl_my_shop,
+        )
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_productTagSource_noMyShopSource() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.LastPurchase,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        select(R.id.tv_cc_product_tag_product_source)
+            .clickView()
+
+        isVisible(
+            R.id.cl_global_search,
+
+            R.id.tv_my_account_label,
+            R.id.cl_last_purchase,
+        )
+
+        isHidden(
+            R.id.tv_my_shop_label,
+            R.id.cl_my_shop,
+        )
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_productTagSource_noLastPurchasedSource() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.MyShop,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        select(R.id.tv_cc_product_tag_product_source)
+            .clickView()
+
+        isVisible(
+            R.id.cl_global_search,
+
+            R.id.tv_my_shop_label,
+            R.id.cl_my_shop,
+        )
+
+        isHidden(
+            R.id.tv_my_account_label,
+            R.id.cl_last_purchase,
+        )
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_productTagSource_onlyGlobalSearch() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        select(R.id.tv_cc_product_tag_product_source)
+            .clickView()
+
+        isVisible(
+            R.id.cl_global_search,
+        )
+
+        isHidden(
+            R.id.tv_my_shop_label,
+            R.id.cl_my_shop,
+
+            R.id.tv_my_account_label,
+            R.id.cl_last_purchase,
+        )
 
         delay(DEFAULT_DELAY)
     }
