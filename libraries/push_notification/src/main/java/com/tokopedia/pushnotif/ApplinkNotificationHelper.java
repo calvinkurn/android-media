@@ -54,6 +54,7 @@ public class ApplinkNotificationHelper {
         model.setMainAppPriority(data.getString("mainapp_priority", ""));
         model.setSellerAppPriority(data.getString("sellerapp_priority", ""));
         model.setIsAdvanceTarget(data.getString("is_advance_target", "false").equals("true"));
+        model.setSentTime(data.getLong("sent_time", System.currentTimeMillis()));
         return model;
     }
 
