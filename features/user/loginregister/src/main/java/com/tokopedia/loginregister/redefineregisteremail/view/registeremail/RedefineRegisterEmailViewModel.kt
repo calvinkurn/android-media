@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.registeremail.view.viewmodel
+package com.tokopedia.loginregister.redefineregisteremail.view.registeremail
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import javax.inject.Inject
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.utils.RegisterUtil
+import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants.EMPTY_RESOURCE
 import com.tokopedia.sessioncommon.domain.usecase.GenerateKeyUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.ValidateUserDataUseCase
@@ -150,3 +151,10 @@ class RedefineRegisterEmailViewModel @Inject constructor(
     }
 
 }
+
+data class RedefineEmailFormState (
+    var emailError: Int = RedefineRegisterEmailConstants.INITIAL_RESOURCE,
+    var passwordError: Int = RedefineRegisterEmailConstants.INITIAL_RESOURCE,
+    var nameError: Int = RedefineRegisterEmailConstants.INITIAL_RESOURCE,
+    var isAllDataValid: Boolean = false
+)

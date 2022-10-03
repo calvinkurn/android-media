@@ -1,4 +1,4 @@
-package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.viewmodel
+package com.tokopedia.loginregister.redefineregisteremail.view.inputphone
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -25,8 +25,8 @@ import com.tokopedia.sessioncommon.domain.usecase.GetUserInfoAndSaveSessionUseCa
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class RedefineRegisterInputPhoneViewModel @Inject constructor(
@@ -36,8 +36,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     private val getUserProfileUpdateUseCase: GetUserProfileUpdateUseCase,
     private val getUserProfileValidateUseCase: GetUserProfileValidateUseCase,
     private val registerPreferences: RegisterPreferences,
-    private val userSession: UserSessionInterface,
-    private val dispatcher: CoroutineDispatchers
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private var phoneError = INITIAL_RESOURCE
@@ -154,7 +153,6 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
             _submitRegisterLoading.value = false
         }, {
             _submitRegisterLoading.value = false
-            userSession.clearToken()
             _registerV2.value = Fail(it)
         })
     }
@@ -186,9 +184,18 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
     }
 
     fun saveFirstInstallTime() {
-        launchCatchError(dispatcher.io, {
-            registerPreferences.saveFirstInstallTime()
-        }, {})
+        launch {
+            try {
+                registerPreferences.saveFirstInstallTime()
+            } catch (_: Exception) {}
+        }
     }
 
+}
+
+sealed class RegistrationPhoneState(val message: String = "", val throwable: Throwable? = null) {
+    class Unregistered(phoneNumber: String) : RegistrationPhoneState(message = phoneNumber)
+    class Registered(phoneNumber: String) : RegistrationPhoneState(message = phoneNumber)
+    class Ineligible(message: String) : RegistrationPhoneState(message = message)
+    class Failed(throwable: Throwable) : RegistrationPhoneState(throwable = throwable)
 }

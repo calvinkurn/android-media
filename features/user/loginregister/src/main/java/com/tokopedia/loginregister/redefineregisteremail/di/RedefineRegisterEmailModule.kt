@@ -26,10 +26,4 @@ object RedefineRegisterEmailModule {
         return FirebaseRemoteConfigImpl(context)
     }
 
-    @Provides
-    @ActivityScope
-    fun provideRegisterPreferences(@ApplicationContext context: Context): RegisterPreferences {
-        return RegisterPreferences(context)
-    }
-
 }
