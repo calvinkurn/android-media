@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.chat_service">
+    package="com.tokopedia.tokochat">
 
     <application>
         <activity
-            android:name=".view.activity.TokoChatActivity"
+            android:name="com.tokopedia.tokochat.view.activity.TokoChatActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.White">
@@ -22,7 +22,7 @@
         </activity>
 
         <activity
-            android:name=".view.activity.TokoChatListActivity"
+            android:name="com.tokopedia.tokochat.view.activity.TokoChatListActivity"
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.White">

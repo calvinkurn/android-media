@@ -4,12 +4,6 @@ apply plugin: 'io.hansel.preprocessor.module'
 apply from: "../../../compile-unit-test.gradle"
 apply from: "../../../compile-instrument-test.gradle"
 
-android {
-    buildFeatures {
-        viewBinding true
-    }
-}
-
 buildscript {
     repositories {
         google()
@@ -22,6 +16,9 @@ buildscript {
 }
 
 android {
+    buildFeatures {
+        viewBinding true
+    }
     defaultConfig {
         multiDexEnabled true
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
@@ -57,6 +54,8 @@ android {
 }
 
 dependencies {
+    implementation projectOrAar(rootProject.ext.features.tokochat_common)
+
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.baseList)
     implementation projectOrAar(rootProject.ext.libraries.track)
@@ -72,8 +71,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analyticAnnotationCentral)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
-    implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation projectOrAar(rootProject.ext.libraries.network)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
+    implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
@@ -90,7 +90,6 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.miscDependencies.conversation
     implementation rootProject.ext.miscDependencies.dagger
@@ -111,11 +110,15 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 
     androidTestImplementation rootProject.ext.playServicesDependencies.analytics
 
+    testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockk
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
@@ -125,7 +128,7 @@ project.ext {
     artifactId = 'chat_service'
     groupId = 'com.tokopedia.communication'
     versionName = "0.0.1"
-    artifactName = "chat_service-release"
+    artifactName = "tokochat-release"
 }
 
 apply from: '../../../publish_local.gradle'
