@@ -22,7 +22,6 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.test.util.*
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -31,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import com.tokopedia.content.common.test.R as testR
 import com.tokopedia.iconunify.R.drawable as iconR
+import com.tokopedia.autocompletecomponent.R as autocompleteR
 
 /**
  * Created By : Jonathan Darwin on October 03, 2022
@@ -375,6 +375,40 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
 
         verifyButtonState(R.id.btn_save, false)
+
+        delay(DEFAULT_DELAY)
+    }
+
+    /** isFullPageAutocomplete Test */
+    @Test
+    fun contentProductTag_isFullPageAutocomplete_true() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(true, "")
+        )
+
+        click(R.id.cl_search)
+
+        isVisible(
+            autocompleteR.id.autocompleteSearchBar
+        )
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isFullPageAutocomplete_false() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        click(R.id.cl_search)
+
+        isVisible(
+            R.id.ic_back,
+            R.id.sb_autocomplete,
+        )
 
         delay(DEFAULT_DELAY)
     }
