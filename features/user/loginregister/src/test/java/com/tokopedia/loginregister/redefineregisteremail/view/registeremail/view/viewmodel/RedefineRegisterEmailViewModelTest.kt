@@ -39,7 +39,11 @@ class RedefineRegisterEmailViewModelTest {
     fun setUp() {
         mockkStatic(Base64::class)
         mockkObject(RsaUtils)
-        viewModel = RedefineRegisterEmailViewModel(generateKeyUseCase, validateUserDataUseCase, CoroutineTestDispatchersProvider)
+        viewModel = RedefineRegisterEmailViewModel(
+            generateKeyUseCase,
+            validateUserDataUseCase,
+            CoroutineTestDispatchersProvider
+        )
     }
 
     @Test
@@ -490,13 +494,13 @@ class RedefineRegisterEmailViewModelTest {
         coEvery { Base64.decode(data.key, any()) } returns key
         coEvery { RsaUtils.encrypt(password, String(key), true) } returns encryptedPassword
         coEvery { generateKeyUseCase(Unit).keyData } returns data
-        //submit data and failed
+        // submit data and failed
         coEvery { validateUserDataUseCase(any()) } throws responseFailed
         viewModel.validateEmail(email)
         viewModel.validatePassword(password)
         viewModel.validateName(name)
         viewModel.submitForm(email, password, name)
-        //try again submit data
+        // try again submit data
         coEvery { validateUserDataUseCase(any()) } returns responseSuccess
         viewModel.submitForm(email, password, name)
 

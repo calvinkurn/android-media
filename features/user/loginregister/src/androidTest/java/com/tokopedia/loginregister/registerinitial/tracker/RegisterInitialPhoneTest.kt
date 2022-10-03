@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.registerinitial.tracker
 import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.ext.junit.runners.AndroidJUnit4

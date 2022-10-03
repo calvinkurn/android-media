@@ -23,4 +23,4 @@ data class OtpRequestPhoneRegisterMandatoryParam(
     @SerializedName("otpDigit")
     val otpDigit: Int = 6
 
-): GqlParam
+) : GqlParam

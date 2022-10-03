@@ -15,8 +15,22 @@ class SendOtpPhoneRegisterMandatoryUseCase @Inject constructor(
 ) : CoroutineUseCase<OtpRequestPhoneRegisterMandatoryParam, OtpRequestPojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
-            query otp_request(${'$'}otpType: String!, ${'$'}mode: String, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}otpDigit: Int, ${'$'}ValidateToken: String){
-                OTPRequest(otpType: ${'$'}otpType, mode: ${'$'}mode, msisdn: ${'$'}msisdn, email: ${'$'}email, otpDigit: ${'$'}otpDigit, ValidateToken: ${'$'}ValidateToken) {
+            query otp_request(
+                ${'$'}otpType: String!,
+                ${'$'}mode: String,
+                ${'$'}msisdn: String,
+                ${'$'}email: String,
+                ${'$'}otpDigit: Int,
+                ${'$'}ValidateToken: String
+            ){
+                OTPRequest(
+                    otpType: ${'$'}otpType,
+                    mode: ${'$'}mode,
+                    msisdn: ${'$'}msisdn,
+                    email: ${'$'}email,
+                    otpDigit: ${'$'}otpDigit,
+                    ValidateToken: ${'$'}ValidateToken
+                ) {
                     success
                     message
                     errorMessage

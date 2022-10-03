@@ -9,7 +9,8 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
 
-class RedefineRegisterEmailActivity : BaseSimpleActivity(),
+class RedefineRegisterEmailActivity :
+    BaseSimpleActivity(),
     HasComponent<RedefineRegisterEmailComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,14 +30,16 @@ class RedefineRegisterEmailActivity : BaseSimpleActivity(),
 
     override fun onBackPressed() {
         try {
-            val fragment = supportFragmentManager.fragments.last().childFragmentManager.fragments.last()
+            val fragment =
+                supportFragmentManager.fragments.last().childFragmentManager.fragments.last()
             if (fragment is TkpdBaseV4Fragment && fragment.isVisible) {
                 val handled = fragment.onFragmentBackPressed()
                 if (handled) {
                     return
                 }
             }
-        } catch (_: Exception) {}
+        } catch (_: Exception) {
+        }
 
         super.onBackPressed()
     }

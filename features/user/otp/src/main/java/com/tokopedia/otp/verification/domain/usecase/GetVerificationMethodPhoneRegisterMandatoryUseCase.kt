@@ -15,8 +15,19 @@ class GetVerificationMethodPhoneRegisterMandatoryUseCase @Inject constructor(
 ) : CoroutineUseCase<GetVerificationMethodPhoneRegisterMandatoryParam, OtpModeListPojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
-            query otp_mode_list(${'$'}otpType: String!, ${'$'}msisdn: String, ${'$'}email: String, ${'$'}ValidateToken: String){
-                OTPModeList(otpType: ${'$'}otpType, msisdn: ${'$'}msisdn, email: ${'$'}email, ValidateToken: ${'$'}ValidateToken) {
+            query otp_mode_list(
+                ${'$'}otpType: String!,
+                ${'$'}msisdn: String,
+                ${'$'}email: String,
+                ${'$'}ValidateToken:
+                String
+            ) {
+                OTPModeList(
+                    otpType: ${'$'}otpType,
+                    msisdn: ${'$'}msisdn,
+                    email: ${'$'}email,
+                    ValidateToken: ${'$'}ValidateToken
+                ) {
                     success
                     message
                     errorMessage

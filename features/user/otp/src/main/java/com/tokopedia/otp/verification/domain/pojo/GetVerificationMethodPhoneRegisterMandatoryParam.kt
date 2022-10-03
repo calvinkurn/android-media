@@ -17,4 +17,4 @@ data class GetVerificationMethodPhoneRegisterMandatoryParam(
     @SerializedName("ValidateToken")
     var validateToken: String = ""
 
-): GqlParam
+) : GqlParam

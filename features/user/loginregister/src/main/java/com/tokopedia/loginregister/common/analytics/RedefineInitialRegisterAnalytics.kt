@@ -44,7 +44,11 @@ class RedefineInitialRegisterAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonDaftarPhoneNumberEvent(action: String, variant: String, errorMessage: String = "") {
+    fun sendClickOnButtonDaftarPhoneNumberEvent(
+        action: String,
+        variant: String,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_ON_BUTTON_DAFTAR - $PHONE_NUMBER")
@@ -57,7 +61,11 @@ class RedefineInitialRegisterAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonDaftarEmailEvent(action: String, variant: String, errorMessage: String = "") {
+    fun sendClickOnButtonDaftarEmailEvent(
+        action: String,
+        variant: String,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_ON_BUTTON_DAFTAR - $EMAIL")
@@ -83,7 +91,7 @@ class RedefineInitialRegisterAnalytics @Inject constructor() {
             .send()
     }
 
-    private fun getActionLabel(action: String, variant: String, errorMessage: String):String {
+    private fun getActionLabel(action: String, variant: String, errorMessage: String): String {
         return "$action - ${getVariant(variant)}${if (action == ACTION_FAILED) " - $errorMessage" else ""}"
     }
 

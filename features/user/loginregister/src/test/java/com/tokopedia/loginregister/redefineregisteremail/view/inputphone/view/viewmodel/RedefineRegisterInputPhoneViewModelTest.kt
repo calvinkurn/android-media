@@ -44,11 +44,19 @@ class RedefineRegisterInputPhoneViewModelTest {
     private lateinit var viewModel: RedefineRegisterInputPhoneViewModel
 
     private val getRegisterCheckUseCase = mockk<GetRegisterCheckUseCase>(relaxed = true)
-    private val getUserInfoAndSaveSessionUseCase = mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
-    private val getRegisterV2AndSaveSessionUseCase = mockk<GetRegisterV2AndSaveSessionUseCase>(relaxed = true)
+
+    private val getUserInfoAndSaveSessionUseCase =
+        mockk<GetUserInfoAndSaveSessionUseCase>(relaxed = true)
+
+    private val getRegisterV2AndSaveSessionUseCase =
+        mockk<GetRegisterV2AndSaveSessionUseCase>(relaxed = true)
+
     private val getUserProfileUpdateUseCase = mockk<GetUserProfileUpdateUseCase>(relaxed = true)
+
     private val getUserProfileValidateUseCase = mockk<GetUserProfileValidateUseCase>(relaxed = true)
+
     private val registerPreferences = mockk<RegisterPreferences>(relaxed = true)
+
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
 
     @Before
@@ -285,7 +293,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         val expected = Success(response)
 
         // When
-        coEvery { getUserProfileValidateUseCase(param) } returns  response
+        coEvery { getUserProfileValidateUseCase(param) } returns response
         viewModel.validatePhone(phone)
         viewModel.submitForm(
             phone = phone,
@@ -478,7 +486,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         viewModel.saveFirstInstallTime()
 
         // Then
-        coVerify(exactly = 1){
+        coVerify(exactly = 1) {
             registerPreferences.saveFirstInstallTime()
         }
     }
@@ -493,7 +501,7 @@ class RedefineRegisterInputPhoneViewModelTest {
         viewModel.saveFirstInstallTime()
 
         // Then
-        coVerify(exactly = 1){
+        coVerify(exactly = 1) {
             registerPreferences.saveFirstInstallTime()
         }
     }

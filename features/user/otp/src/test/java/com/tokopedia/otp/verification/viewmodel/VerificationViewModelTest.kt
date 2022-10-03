@@ -306,7 +306,8 @@ class VerificationViewModelTest {
         val msisdn = "08123456789"
 
         // When
-        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
+            successGetVerificationMethodResponse
         viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
 
         // Then
@@ -327,7 +328,8 @@ class VerificationViewModelTest {
         successGetVerificationMethodResponse.data.errorMessage = errMsg
 
         // When
-        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns
+            successGetVerificationMethodResponse
         viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
 
         // Then
@@ -347,12 +349,13 @@ class VerificationViewModelTest {
         successGetVerificationMethodResponse.data.errorMessage = ""
 
         // When
-        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) } returns successGetVerificationMethodResponse
+        coEvery { getVerificationMethodPhoneRegisterMandatoryUseCase(any()) }returns
+            successGetVerificationMethodResponse
         viewmodel.getVerificationMethodPhoneRegisterMandatory(otpType, validateToken, email, msisdn)
 
         // Then
         val result = viewmodel.getVerificationMethodResult.getOrAwaitValue()
-        assertTrue(result is  Fail)
+        assertTrue(result is Fail)
     }
 
     @Test

@@ -342,7 +342,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
-        isReturnHomeWhenBackPressed = getParamBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, arguments, savedInstanceState, false)
+        isReturnHomeWhenBackPressed = getParamBoolean(
+            ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, arguments, savedInstanceState, false
+        )
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()

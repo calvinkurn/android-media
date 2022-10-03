@@ -44,8 +44,11 @@ object RegisterUtil {
     fun isPhoneTooShortLength(phone: String): Boolean = phone.length < MIN_PHONE_NUMBER
     fun isPhoneExceedMaximumLength(phone: String): Boolean = phone.length > MAX_PHONE_NUMBER
 
-    fun isPasswordTooShortLength(password: String): Boolean = password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH
-    fun isPasswordExceedMaximumLength(password: String): Boolean = password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH
+    fun isPasswordTooShortLength(password: String): Boolean =
+        password.length < PasswordUtils.PASSWORD_MINIMUM_LENGTH
+
+    fun isPasswordExceedMaximumLength(password: String): Boolean =
+        password.length > PasswordUtils.PASSWORD_MAXIMUM_LENGTH
 
     fun isCanRegister(name: String, email: String, password: String): Boolean {
         var isValid = true

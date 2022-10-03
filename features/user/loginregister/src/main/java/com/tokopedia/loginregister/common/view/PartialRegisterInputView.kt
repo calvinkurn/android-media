@@ -291,7 +291,9 @@ class PartialRegisterInputView : BaseCustomView {
 
     private fun defaultMessageInputEmailPhone() {
         fieldUnifyInputEmailPhone?.isInputError = false
-        fieldUnifyInputEmailPhone?.setMessage(fieldUnifyInputEmailPhone?.context?.getString(R.string.default_placeholder).toString())
+        fieldUnifyInputEmailPhone?.setMessage(
+            fieldUnifyInputEmailPhone?.context?.getString(R.string.default_placeholder).toString()
+        )
     }
 
     private fun hideMessageInputEmailPhone() {

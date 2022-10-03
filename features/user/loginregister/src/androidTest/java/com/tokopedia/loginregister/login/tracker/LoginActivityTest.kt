@@ -15,7 +15,6 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withInputType
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -185,7 +184,8 @@ class LoginActivityTest: LoginBase() {
     }
 
     private fun inputEditText(value: String) {
-        val viewInteraction = Espresso.onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        val viewInteraction = Espresso.onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(typeText(value), closeSoftKeyboard())
     }
 

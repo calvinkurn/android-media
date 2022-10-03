@@ -1,7 +1,6 @@
 package com.tokopedia.loginregister.common.view.dialog
 
 import android.content.Context
-import android.telephony.PhoneNumberUtils
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.loginregister.R
 
@@ -17,7 +16,12 @@ class RegisteredDialog {
             context?.run {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.phone_number_already_registered))
-                dialog.setDescription(String.format(resources.getString(R.string.reigster_page_phone_number_already_registered_info), phone))
+                dialog.setDescription(
+                    String.format(
+                        resources.getString(R.string.reigster_page_phone_number_already_registered_info),
+                        phone
+                    )
+                )
                 dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
                 return dialog
@@ -30,8 +34,12 @@ class RegisteredDialog {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.email_already_registered))
                 dialog.setDescription(
-                        String.format(resources.getString(
-                                R.string.email_already_registered_info), email))
+                    String.format(
+                        resources.getString(
+                            R.string.email_already_registered_info
+                        ), email
+                    )
+                )
                 dialog.setPrimaryCTAText(getString(R.string.already_registered_yes))
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
                 return dialog
@@ -45,8 +53,12 @@ class RegisteredDialog {
                 val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
                 dialog.setTitle(getString(R.string.email_not_registered))
                 dialog.setDescription(
-                        String.format(resources.getString(
-                                R.string.email_not_registered_info), email))
+                    String.format(
+                        resources.getString(
+                            R.string.email_not_registered_info
+                        ), email
+                    )
+                )
                 dialog.setPrimaryCTAText(getString(R.string.not_registered_yes))
                 dialog.setSecondaryCTAText(getString(R.string.already_registered_no))
                 return dialog
@@ -55,11 +67,17 @@ class RegisteredDialog {
         }
 
         fun createRedefineRegisterEmailOfferLogin(context: Context, email: String): DialogUnify {
-            val offerToLoginDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+            val offerToLoginDialog =
+                DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
             offerToLoginDialog.apply {
                 setTitle(context.getString(R.string.register_email_dialog_offer_login_title))
-                setDescription(context.getString(R.string.register_email_dialog_offer_login_subtitle, email))
+                setDescription(
+                    context.getString(
+                        R.string.register_email_dialog_offer_login_subtitle,
+                        email
+                    )
+                )
                 setPrimaryCTAText(context.getString(R.string.register_email_dialog_offer_login_primary_button))
                 setSecondaryCTAText(context.getString(R.string.register_email_dialog_offer_login_secondary_button))
             }
@@ -67,12 +85,21 @@ class RegisteredDialog {
             return offerToLoginDialog
         }
 
-        fun createRedefineRegisterInputPhoneOfferLogin(context: Context, phone: String): DialogUnify {
-            val offerToLoginDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        fun createRedefineRegisterInputPhoneOfferLogin(
+            context: Context,
+            phone: String
+        ): DialogUnify {
+            val offerToLoginDialog =
+                DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
             offerToLoginDialog.apply {
                 setTitle(context.getString(R.string.register_email_input_phone_dialog_offer_login_title))
-                setDescription(context.getString(R.string.register_email_input_phone_dialog_offer_login_subtitle, phone))
+                setDescription(
+                    context.getString(
+                        R.string.register_email_input_phone_dialog_offer_login_subtitle,
+                        phone
+                    )
+                )
                 setPrimaryCTAText(context.getString(R.string.register_email_dialog_offer_login_primary_button))
                 setSecondaryCTAText(context.getString(R.string.register_email_dialog_offer_login_secondary_button))
             }
@@ -81,7 +108,8 @@ class RegisteredDialog {
         }
 
         fun createRedefineRegisterInputPhoneFailed(context: Context): DialogUnify {
-            val failedDialog = DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+            val failedDialog =
+                DialogUnify(context, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
 
             failedDialog.apply {
                 setTitle(context.getString(R.string.register_email_input_phone_dialog_failed_title))
@@ -93,8 +121,12 @@ class RegisteredDialog {
             return failedDialog
         }
 
-        fun createRedefineRegisterInputPhoneOfferSuccess(context: Context, phone: String): DialogUnify {
-            val confirmDialog = DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+        fun createRedefineRegisterInputPhoneOfferSuccess(
+            context: Context,
+            phone: String
+        ): DialogUnify {
+            val confirmDialog =
+                DialogUnify(context, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
 
             confirmDialog.apply {
                 setTitle(phone)

@@ -94,7 +94,9 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     fun inputPassword(value: String) {
-        val viewInteraction = onView(withInputType(InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withInputType(
+            InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
+        ).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
     }
 

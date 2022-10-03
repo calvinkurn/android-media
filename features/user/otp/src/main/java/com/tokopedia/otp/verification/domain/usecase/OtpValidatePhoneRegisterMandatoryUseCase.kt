@@ -12,7 +12,7 @@ import javax.inject.Inject
 class OtpValidatePhoneRegisterMandatoryUseCase @Inject constructor(
     @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<OtpValidatePhoneRegisterMandatoryParam, OtpValidatePojo>(dispatcher.io)  {
+) : CoroutineUseCase<OtpValidatePhoneRegisterMandatoryParam, OtpValidatePojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
         """
             query otp_validate(

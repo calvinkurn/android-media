@@ -5,7 +5,11 @@ import javax.inject.Inject
 
 class RedefineRegisterEmailAnalytics @Inject constructor() {
 
-    fun sendClickOnButtonDaftarEmailEvent(action: String, requiredInputPhone: Boolean, errorMessage: String = "") {
+    fun sendClickOnButtonDaftarEmailEvent(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_ON_BUTTON_DAFTAR - $EMAIL")
@@ -18,7 +22,11 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonLanjutEvent(action: String, requiredInputPhone: Boolean, errorMessage: String = "") {
+    fun sendClickOnButtonLanjutEvent(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction(CLICK_ON_BUTTON_LANJUT)
@@ -57,7 +65,11 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonLanjutAddPhoneNumberEvent(action: String, requiredInputPhone: Boolean, errorMessage: String = "") {
+    fun sendClickOnButtonLanjutAddPhoneNumberEvent(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_ON_BUTTON_LANJUT - $ADD_PHONE_NUMBER")
@@ -96,7 +108,11 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickOnButtonLanjutAddPnPageOptionalEvent(action: String, requiredInputPhone: Boolean, errorMessage: String = "") {
+    fun sendClickOnButtonLanjutAddPnPageOptionalEvent(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_ON_BUTTON_LANJUT - $ADD_PN_PAGE_OPTIONAL")
@@ -135,7 +151,11 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    fun sendClickYaBenarPhoneNumberEvent(action: String, requiredInputPhone: Boolean, errorMessage: String = "") {
+    fun sendClickYaBenarPhoneNumberEvent(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String = ""
+    ) {
         Tracker.Builder()
             .setEvent(CLICK_ACCOUNT)
             .setEventAction("$CLICK_YA_BENAR - $PHONE_NUMBER")
@@ -200,7 +220,11 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
             .send()
     }
 
-    private fun getActionLabel(action: String, requiredInputPhone: Boolean, errorMessage: String):String {
+    private fun getActionLabel(
+        action: String,
+        requiredInputPhone: Boolean,
+        errorMessage: String
+    ): String {
         return "$action - ${getVariant(requiredInputPhone)}${if (action == ACTION_FAILED) " - $errorMessage" else ""}"
     }
 
@@ -234,7 +258,8 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
         private const val CLICK_ACCOUNT = "clickAccount"
         private const val VIEW_REGISTER_PAGE = "view register page"
         private const val ADD_PHONE_NUMBER_PAGE = "add phone number page"
-        private const val VIEW_ADD_PHONE_NUMBER_OPTIONAL_PAGE = "view add phone number optional page"
+        private const val VIEW_ADD_PHONE_NUMBER_OPTIONAL_PAGE =
+            "view add phone number optional page"
         private const val CLICK_ON_BUTTON_DAFTAR = "click on button daftar"
         private const val CLICK_ON_BUTTON_LANJUT = "click on button lanjut"
         private const val CLICK_ON_BUTTON_BACK = "click on button back"
@@ -243,7 +268,8 @@ class RedefineRegisterEmailAnalytics @Inject constructor() {
         private const val CLICK_UBAH_TERDAFTAR = "click ubah terdaftar"
         private const val CLICK_YA_BENAR = "click ya, benar"
         private const val CLICK_YA_MASUK_TERDAFTAR = "click ya, masuk terdaftar"
-        private const val VIEW_POP_UP_PHONE_NUMBER_REGISTERED_PAGE = "view pop up phone number registered page"
+        private const val VIEW_POP_UP_PHONE_NUMBER_REGISTERED_PAGE =
+            "view pop up phone number registered page"
         private const val VIEW_POP_UP_EMAIL_REGISTERED_PAGE = "view pop up email registered page"
 
         private const val ID_36099 = "36099"
