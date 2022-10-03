@@ -512,7 +512,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
                 dismiss()
-                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()    )
+                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
 
