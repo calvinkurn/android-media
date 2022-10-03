@@ -17,7 +17,6 @@ import com.tokopedia.play.broadcaster.setup.accountListResponse
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.setup.channelResponse
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -56,14 +55,14 @@ class SwitchAccountUGCAnalyticTest {
     )
 
     init {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse
+        coEvery { mockRepo.getAccountList() } returns accountListResponse()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns buildConfigurationUiModel()
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns channelResponse
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns emptyList()
-        coEvery { mockConfigStore.getAuthorId() } returns accountListResponse[0].id
+        coEvery { mockConfigStore.getAuthorId() } returns accountListResponse()[0].id
         coEvery { mockConfigStore.getAuthorTypeName() } returns ContentCommonUserType.TYPE_NAME_SELLER
-        coEvery { mockUserSession.userId } returns accountListResponse[0].id
+        coEvery { mockUserSession.userId } returns accountListResponse()[0].id
     }
 
     @Test
