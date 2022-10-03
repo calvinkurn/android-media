@@ -1,10 +1,12 @@
 package com.tokopedia.tokochat.di
 
+import com.gojek.courier.CourierConnection
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import com.tokopedia.tokochat.domain.CreateChannelUseCase
 import com.tokopedia.tokochat.domain.GetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.GetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.MarkAsReadUseCase
+import com.tokopedia.tokochat.domain.MutationProfileUseCase
 import com.tokopedia.tokochat.domain.RegistrationActiveChannelUseCase
 import com.tokopedia.tokochat.domain.SendMessageUseCase
 import dagger.Module
@@ -59,5 +61,14 @@ object TokoChatUseCaseModule {
         repository: TokoChatRepository
     ): SendMessageUseCase {
         return SendMessageUseCase(repository)
+    }
+
+    @TokoChatScope
+    @Provides
+    fun provideMutationProfileUseCase(
+        repository: TokoChatRepository,
+        courierConnection: CourierConnection
+    ): MutationProfileUseCase {
+        return MutationProfileUseCase(repository, courierConnection)
     }
 }

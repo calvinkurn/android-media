@@ -58,8 +58,8 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
         }
     }
 
-    override fun initViews() {
-        super.initViews()
+    override fun initViews(savedInstanceState: Bundle?) {
+        super.initViews(savedInstanceState)
         binding?.goBtn?.setOnClickListener {
             viewModel.getChatHistory(channelUrl).removeObservers(viewLifecycleOwner)
             viewModel.deRegisterActiveChannel(channelUrl)

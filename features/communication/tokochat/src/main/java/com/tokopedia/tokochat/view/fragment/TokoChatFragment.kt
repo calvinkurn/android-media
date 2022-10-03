@@ -4,20 +4,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.view.mapper.TokoChatConversationMapper.mapToMessageBubbleUi
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    private var channelUrl = ""
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
@@ -31,92 +37,70 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>() {
         AndroidThreeTen.init(context?.applicationContext)
     }
 
-    override fun initViews() {
-        super.initViews()
-        setupReceiverDummyMessages()
-        setupSenderDummyMessages()
-    }
-
-    private fun setupSenderDummyMessages() {
-        val message = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(true)
-            .withIsRead(true)
-            .withIsDummy(false)
-            .withMsgId("123")
-            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
-            .withFromUid("123")
-            .withFromRole("User")
-            .withReplyTime("123123123")
-            .withMsg("Halooo")
-            .withFraudStatus(0)
-            .withLabel("Label")
-            .build()
-        adapter.addItem(message)
-        adapter.notifyItemInserted(adapter.itemCount)
-
-        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(true)
-            .withIsRead(true)
-            .withIsDummy(false)
-            .withMarkAsDeleted()
-            .build()
-        adapter.addItem(deletedMessage)
-        adapter.notifyItemInserted(adapter.itemCount)
-
-        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(true)
-            .withIsRead(true)
-            .withIsDummy(false)
-            .withFraudStatus(1)
-            .build()
-        adapter.addItem(bannedMessage)
-        adapter.notifyItemInserted(adapter.itemCount)
-    }
-
-    private fun setupReceiverDummyMessages() {
-        val message = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(false)
-            .withIsRead(false)
-            .withIsDummy(false)
-            .withMsgId("123")
-            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
-            .withFromUid("123")
-            .withFromRole("User")
-            .withReplyTime("123123123")
-            .withMsg("Halooo")
-            .withFraudStatus(0)
-            .withLabel("Label")
-            .build()
-        adapter.addItem(message)
-        adapter.notifyItemInserted(adapter.itemCount)
-
-        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(false)
-            .withIsRead(true)
-            .withIsDummy(false)
-            .withMarkAsDeleted()
-            .build()
-        adapter.addItem(deletedMessage)
-        adapter.notifyItemInserted(adapter.itemCount)
-
-        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
-            .withStartTime("")
-            .withIsSender(false)
-            .withIsRead(true)
-            .withIsDummy(false)
-            .withFraudStatus(1)
-            .build()
-        adapter.addItem(bannedMessage)
-        adapter.notifyItemInserted(adapter.itemCount)
+    override fun initViews(savedInstanceState: Bundle?) {
+        super.initViews(savedInstanceState)
+        initializeChatProfile()
+        initializeChatProfile()
+        initGroupBooking(savedInstanceState)
     }
 
     override fun initObservers() {
 
+    }
+
+    //TODO: Replace this with updated SDK
+    private fun initializeChatProfile() {
+        val userId = viewModel.getUserId()
+        if (userId.isEmpty()) {
+            viewModel.initializeProfile()
+        }
+    }
+
+    private fun initGroupBooking(savedInstanceState: Bundle?) {
+        val gojekOrderId = getParamString(
+            ApplinkConst.TokoChat.ORDER_ID_GOJEK,
+            arguments,
+            savedInstanceState
+        )
+        viewModel.resetTypingStatus()
+        viewModel.initGroupBooking(
+            orderId = gojekOrderId,
+            groupBookingListener = getGroupBookingListener()
+        )
+    }
+
+    private fun getGroupBookingListener(): ConversationsGroupBookingListener {
+        return object : ConversationsGroupBookingListener {
+
+            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+                view?.let {
+                    var errorMessage = error.getErrorMessage()
+                    if (errorMessage.isEmpty()) {
+                        errorMessage = error.toString()
+                    }
+                    Toaster.build(
+                        it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
+                    ).show()
+                }
+            }
+
+            override fun onGroupBookingChannelCreationStarted() {}
+
+            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+                this@TokoChatFragment.channelUrl = channelUrl
+                viewModel.registerActiveChannel(channelUrl)
+                observeChatHistory()
+            }
+
+        }
+    }
+
+    private fun observeChatHistory() {
+        viewModel.getChatHistory(channelUrl).observe(viewLifecycleOwner) {
+            val result = it.mapToMessageBubbleUi(viewModel.getUserId())
+            adapter.addItems(result)
+            adapter.notifyDataSetChanged()
+        }
     }
 
     companion object {

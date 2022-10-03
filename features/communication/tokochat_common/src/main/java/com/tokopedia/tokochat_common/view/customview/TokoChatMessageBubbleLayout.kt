@@ -180,7 +180,6 @@ class TokoChatMessageBubbleLayout : ViewGroup {
     class LayoutParams : MarginLayoutParams {
         constructor(c: Context?, attrs: AttributeSet?) : super(c, attrs)
         constructor(width: Int, height: Int) : super(width, height)
-        constructor(source: MarginLayoutParams?) : super(source)
         constructor(source: ViewGroup.LayoutParams?) : super(source)
     }
 

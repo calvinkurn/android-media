@@ -36,7 +36,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         additionalSetup()
-        initViews()
+        initViews(savedInstanceState)
         initObservers()
     }
 
@@ -44,7 +44,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     abstract fun additionalSetup()
     abstract fun initObservers()
 
-    protected open fun initViews() {
+    protected open fun initViews(savedInstanceState: Bundle?) {
         setupChatRoomRecyclerView()
     }
 

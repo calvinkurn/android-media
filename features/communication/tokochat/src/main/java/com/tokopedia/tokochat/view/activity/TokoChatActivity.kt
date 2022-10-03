@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatContextModule
@@ -66,7 +67,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getNewFragment(): Fragment {
-        val isExp = true
+        val isExp = false
         return if (isExp) {
             TokoChatFragmentExp.getFragment(
                 supportFragmentManager,
@@ -77,8 +78,15 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             TokoChatFragment.getFragment(
                 supportFragmentManager,
                 classLoader,
-                bundle ?: Bundle()
+                getFragmentBundle()
             )
+        }
+    }
+
+    private fun getFragmentBundle(): Bundle {
+        val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK)?: ""
+        return Bundle().apply {
+            putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
         }
     }
 }

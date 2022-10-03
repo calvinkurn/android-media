@@ -70,9 +70,9 @@ class TokoChatViewModel @Inject constructor(
 
     fun initGroupBooking(
         orderId: String,
-        serviceType: Int,
+        serviceType: Int = 2,
         groupBookingListener: ConversationsGroupBookingListener,
-        orderChatType: OrderChatType
+        orderChatType: OrderChatType = OrderChatType.Unknown
     ) {
         try {
             createChannelUseCase.initGroupBookingChat(

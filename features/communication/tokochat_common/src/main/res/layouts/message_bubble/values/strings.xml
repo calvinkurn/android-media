@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tokochat_title_sender_chat_banned">Pesan ini mengandung kata yang tidak diizinkan.</string>
-    <string name="tokochat_title_check_tnc"><![CDATA[Cek Syarat & Ketentuan]]></string>
-
-    <string name="tokochat_title_chat_deleted">"Pesan ini telah dihapus.</string>
-
     <string name="tokochat_connected_websocket">"Terhubung!"</string>
     <string name="tokochat_title_last_online">Terakhir online</string>
     <string name="tokochat_online">Online</string>
