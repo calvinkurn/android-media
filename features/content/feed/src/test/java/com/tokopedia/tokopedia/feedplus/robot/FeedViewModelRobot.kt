@@ -18,7 +18,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.every
 import io.mockk.mockk
@@ -42,7 +41,6 @@ class FeedViewModelRobot(
     getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     getWhitelistNewUseCase: GetWhitelistNewUseCase,
     sendReportUseCase: SubmitReportContentUseCase,
-    addWishListUseCase: AddWishListUseCase,
     addToWishlistV2UseCase: AddToWishlistV2UseCase,
     trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     feedXTrackViewerUseCase: FeedXTrackViewerUseCase
@@ -62,7 +60,6 @@ class FeedViewModelRobot(
         getDynamicFeedNewUseCase,
         getWhitelistNewUseCase,
         sendReportUseCase,
-        addWishListUseCase,
         addToWishlistV2UseCase,
         trackVisitChannelBroadcasterUseCase,
         feedXTrackViewerUseCase
@@ -94,7 +91,6 @@ fun create(
     getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase = mockk(relaxed = true),
     getWhitelistNewUseCase: GetWhitelistNewUseCase = mockk(relaxed = true),
     sendReportUseCase: SubmitReportContentUseCase = mockk(relaxed = true),
-    addWishListUseCase: AddWishListUseCase = mockk(relaxed = true),
     addToWishlistV2UseCase: AddToWishlistV2UseCase = mockk(relaxed = true),
     trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase = mockk(relaxed = true),
     feedXTrackViewerUseCase: FeedXTrackViewerUseCase = mockk(relaxed = true),
@@ -115,7 +111,6 @@ fun create(
         getWhitelistNewUseCase = getWhitelistNewUseCase,
         sendReportUseCase = sendReportUseCase,
         addToWishlistV2UseCase = addToWishlistV2UseCase,
-        addWishListUseCase = addWishListUseCase,
         trackVisitChannelBroadcasterUseCase = trackVisitChannelBroadcasterUseCase,
         feedXTrackViewerUseCase = feedXTrackViewerUseCase
     ).apply(fn)
