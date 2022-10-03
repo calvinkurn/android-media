@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://product/15418162"
+        return ""
     }
 }
