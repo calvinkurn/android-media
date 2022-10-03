@@ -345,12 +345,8 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         this.channelType = config.channelStatus
-        if (channelType == ChannelStatus.Live) {
-            analytic.viewDialogViolation(config.channelId)
-        } else {
-            if (isRequiredPermissionGranted()) configureChannelType(channelType)
-            else requestPermission()
-        }
+        if (isRequiredPermissionGranted()) configureChannelType(channelType)
+        else requestPermission()
     }
 
     private fun configureChannelType(channelStatus: ChannelStatus) {
@@ -361,13 +357,13 @@ class PlayBroadcastActivity : BaseActivity(),
             return
         }
         when (channelStatus) {
-            ChannelStatus.Pause, ChannelStatus.Live -> {
+            ChannelStatus.Pause -> {
                 openBroadcastActivePage()
                 showDialogContinueLiveStreaming()
             }
             ChannelStatus.Draft,
             ChannelStatus.CompleteDraft,
-            ChannelStatus.Unknown -> openBroadcastSetupPage()
+            ChannelStatus.Unknown, ChannelStatus.Live -> openBroadcastSetupPage()
         }
     }
 
