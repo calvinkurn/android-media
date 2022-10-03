@@ -285,6 +285,66 @@ class ShippingDurationPresenterTest {
         assertNull(actual)
     }
 
+    // todo
+    @Test
+    fun `When rates v3 response has eligible courier for promo Then should hit analytic`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    /*
+    convertServiceListToUiModel
+    */
+
+    // todo
+    @Test
+    fun `When service list has service with ui rates hidden Then dont show in bottomsheet`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When rates v3 response has promo logistic Then show divider in bottomsheet`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When pre order model display is true Then show pre order in bottomsheet`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When in checkout and promo has error code Then initiate showcase`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When in checkout and duration has error code Then show notifier model`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When duration has error code Then show notifier model`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
     @Test
     fun `When presenter detached Then all usecases is unsubscribed`() {
         // When
