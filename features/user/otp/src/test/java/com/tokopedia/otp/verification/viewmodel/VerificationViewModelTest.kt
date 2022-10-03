@@ -355,6 +355,20 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `Success validate otp method - pin isNeedHash false`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
+
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+
+        viewmodel.otpValidate("", "", "08123123123", "", "", "", "PIN", "", "", 0)
+
+        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
+    }
+
+    @Test
     fun `Failed validate otp method error message not empty`() {
         successOtpValidationResponse.data.success = false
         successOtpValidationResponse.data.errorMessage = "error"
@@ -407,6 +421,20 @@ class VerificationViewModelTest {
 
         val result = viewmodel.otpValidateResult.value as Success<OtpValidateData>
         assert(result.data == successOtpValidationResponse.data)
+    }
+
+    @Test
+    fun `Success validate otp method 2fa isNeedHash false`() {
+        viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
+        coEvery { otpValidateUseCase2FA.getData(any()) } returns successOtpValidationResponse
+
+        val data = PinStatusData(isNeedHash = false)
+        val mockResponse = PinStatusResponse(data = data)
+        coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
+
+        viewmodel.otpValidate2FA("", "", "", "PIN", "", userId = 0)
+
+        coVerify(exactly = 0) { generatePublicKeyUseCase.executeOnBackground() }
     }
 
     @Test
@@ -466,7 +494,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -489,7 +517,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0, true)
+        viewmodel.otpValidate("", "", "", "", "", "", "PIN", "", "", 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -556,7 +584,7 @@ class VerificationViewModelTest {
         val msisdn = "08123123"
         val uid = 0
 
-        viewmodel.otpValidate2FA(otpType, validateToken, userIdEnc, mode, code, msisdn = msisdn, userId = uid, usePinV2 = true)
+        viewmodel.otpValidate2FA(otpType, validateToken, userIdEnc, mode, code, msisdn = msisdn, userId = uid)
 
         var params = otpValidateUseCase2FA.getParams(
             otpType = otpType,
@@ -586,7 +614,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns PinStatusResponse(PinStatusData(isNeedHash = true))
         coEvery { generatePublicKeyUseCase.executeOnBackground() } returns GenerateKeyPojo(KeyData("abc", "bca", hash))
 
-        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0, usePinV2 = true)
+        viewmodel.otpValidate2FA("", "", "", "", "", userId = 0)
 
         verify { otpValidateResultObserver.onChanged(any<Success<OtpValidateData>>()) }
         assert(viewmodel.otpValidateResult.value is Success)
@@ -623,6 +651,62 @@ class VerificationViewModelTest {
         viewmodel.onCleared()
 
         assert(userSessionInterface.accessToken.isNullOrEmpty())
+    }
+
+    @Test
+    fun `on viewmodel clear isLoginRegisterFlow = false`() {
+        viewmodel.done = false
+        viewmodel.isLoginRegisterFlow = false
+        val clearValue = true
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns clearValue
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
+    }
+
+    @Test
+    fun `on viewmodel clear done = true`() {
+        viewmodel.done = true
+        viewmodel.isLoginRegisterFlow = false
+        val clearValue = true
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns clearValue
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
+    }
+
+    @Test
+    fun `on viewmodel clear config = false`() {
+        viewmodel.done = true
+        viewmodel.isLoginRegisterFlow = false
+        coEvery {
+            remoteConfig.getBoolean(
+                RemoteConfigKey.PRE_OTP_LOGIN_CLEAR,
+                true
+            )
+        } returns false
+
+        viewmodel.onCleared()
+
+        verify(exactly = 0) {
+            userSessionInterface.setToken(null, null, null)
+        }
     }
 
     companion object {
