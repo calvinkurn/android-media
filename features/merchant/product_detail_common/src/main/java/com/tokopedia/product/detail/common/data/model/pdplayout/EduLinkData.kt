@@ -18,7 +18,7 @@ data class EduLinkData(
     val webLink: WebLinkData = WebLinkData()
 ) {
 
-    private fun isEmpty() = appLink.isEmpty() && webLink.isEmpty()
+    private fun isEmpty() = appLink.isEmpty()
 
     fun isNotEmpty() = !isEmpty()
 }

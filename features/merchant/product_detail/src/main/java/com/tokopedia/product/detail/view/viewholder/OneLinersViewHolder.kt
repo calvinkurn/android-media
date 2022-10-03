@@ -87,8 +87,10 @@ class OneLinersViewHolder(
     private fun renderViewEvent(content: OneLinersContent) {
         if (content.applink.isNotBlank()) {
             view.setOnClickListener { listener.goToApplink(content.applink) }
-        } else if (content.eduLink.appLink.isNotBlank()) {
-            view.setOnClickListener { listener.goToApplink(content.eduLink.appLink) }
+        }
+
+        if (content.eduLink.appLink.isNotBlank()) {
+            iconRightArrow?.setOnClickListener { listener.goToApplink(content.eduLink.appLink) }
             renderCoachMark()
         }
     }
@@ -153,10 +155,10 @@ class OneLinersViewHolder(
         val shouldShow = content.applink.isNotBlank() || content.eduLink.isNotEmpty()
 
         iconRightArrow?.shouldShowWithAction(shouldShow = shouldShow) {
-            if (content.applink.isNotBlank()) {
-                iconRightArrow.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
-            } else if (content.eduLink.isNotEmpty()) {
+            if (content.eduLink.isNotEmpty()) {
                 iconRightArrow.setImage(newIconId = IconUnify.INFORMATION)
+            } else if (content.applink.isNotBlank()) {
+                iconRightArrow.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
             }
         }
     }
