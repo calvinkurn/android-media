@@ -19,11 +19,14 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singleloc
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantActivity
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 
 class ManageProductVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantAdapter>(),
@@ -130,6 +133,7 @@ class ManageProductVariantFragment :
         bSheet.setOnApplyClickListener {
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             setProductListData(appliedProduct)
+            displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -138,6 +142,20 @@ class ManageProductVariantFragment :
         return ManageProductVariantAdapter(this).apply {
             setDataList(viewModel.getProductData())
         }
+    }
+
+    private fun displayToaster(product: ReservedProduct.Product) {
+        val variantWarehouses = product.childProducts
+        val criteria = product.productCriteria
+
+        val isValid = variantWarehouses.firstOrNull { variantProduct ->
+            variantProduct.warehouses.firstOrNull { variantWarehouse ->
+                viewModel.validateInput(criteria, variantWarehouse.discountSetup).isAllFieldValid()
+            } != null
+        } != null
+
+        if (isValid) ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_valid), TYPE_NORMAL)
+        else ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
     }
 
     private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {

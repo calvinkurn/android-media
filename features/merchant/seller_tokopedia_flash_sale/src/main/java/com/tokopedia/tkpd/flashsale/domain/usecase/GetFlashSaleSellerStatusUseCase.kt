@@ -7,18 +7,18 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleListForSellerMetaMapper
+import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleSellerStatusMapper
 import com.tokopedia.tkpd.flashsale.data.request.CampaignParticipationRequestHeader
-import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleListForSellerMetaRequest
-import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerMetaResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
+import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSellerStatusRequest
+import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleSellerStatusResponse
+import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import javax.inject.Inject
 
 
-class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
+class GetFlashSaleSellerStatusUseCase @Inject constructor(
     private val repository: GraphqlRepository,
-    private val mapper: GetFlashSaleListForSellerMetaMapper
-) : GraphqlUseCase<TabMetadata>(repository) {
+    private val mapper: GetFlashSaleSellerStatusMapper
+) : GraphqlUseCase<SellerEligibility>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -29,17 +29,23 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
     }
 
     private val query = object : GqlQueryInterface {
-        private val OPERATION_NAME = "getFlashSaleListForSellerMeta"
+
+        private val OPERATION_NAME = "getFlashSaleSellerStatus"
         private val QUERY = """
-        query $OPERATION_NAME(${'$'}params: GetFlashSaleListForSellerMeta!) {
+        query $OPERATION_NAME(${'$'}params: GetFlashSaleSellerStatusRequest!) {
              $OPERATION_NAME(params: ${'$'}params) {
-                   tab_list {
-                     tab_id
-                     tab_name
-                     total_campaign
-                     display_name
-                   }
-                   ticker_non_multiloc_message
+                response_header {
+                  status
+                  success
+                  process_time
+                  error_code
+                }
+                admin_access {
+                  manage_flash_sale {
+                    is_device_allowed
+                    is_user_allowed
+                  }
+                }
              }
        }
 
@@ -50,21 +56,21 @@ class GetFlashSaleListForSellerMetaUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(): TabMetadata {
+    suspend fun execute(): SellerEligibility {
         val request = buildRequest()
         val response = repository.response(listOf(request))
-        val data = response.getSuccessData<GetFlashSaleListForSellerMetaResponse>()
+        val data = response.getSuccessData<GetFlashSaleSellerStatusResponse>()
         return mapper.map(data)
     }
 
     private fun buildRequest(): GraphqlRequest {
         val requestHeader = CampaignParticipationRequestHeader(usecase = "campaign_list")
-        val payload = GetFlashSaleListForSellerMetaRequest(requestHeader)
+        val payload = GetFlashSaleSellerStatusRequest(requestHeader)
         val params = mapOf(REQUEST_PARAM_KEY to payload)
 
         return GraphqlRequest(
             query,
-            GetFlashSaleListForSellerMetaResponse::class.java,
+            GetFlashSaleSellerStatusResponse::class.java,
             params
         )
     }

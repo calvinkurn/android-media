@@ -12,15 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="1dp" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tfProductName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/Unify_NN600"
-        android:layout_marginHorizontal="16dp"
-        app:typographyType="paragraph_3"
-        android:text="@string/commonbs_criteria_check_description" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvResult"
         android:layout_width="match_parent"

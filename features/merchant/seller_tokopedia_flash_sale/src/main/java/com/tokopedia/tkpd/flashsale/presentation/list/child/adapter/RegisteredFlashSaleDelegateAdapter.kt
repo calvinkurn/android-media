@@ -22,7 +22,7 @@ import java.util.Date
 
 class RegisteredFlashSaleDelegateAdapter(
     private val onCardClicked: (Int) -> Unit,
-    private val onAddProductButtonClicked: (Int) -> Unit
+    private val onButtonClicked: (Int) -> Unit
 ) : DelegateAdapter<RegisteredFlashSaleItem, RegisteredFlashSaleDelegateAdapter.ViewHolder>
     (RegisteredFlashSaleItem::class.java) {
 
@@ -45,6 +45,7 @@ class RegisteredFlashSaleDelegateAdapter(
 
         init {
             binding.root.setOnClickListener { onCardClicked(adapterPosition) }
+            binding.btnAddProduct.setOnClickListener { onButtonClicked(adapterPosition) }
         }
 
         fun bind(item: RegisteredFlashSaleItem) {
@@ -61,7 +62,6 @@ class RegisteredFlashSaleDelegateAdapter(
             )
             binding.tpgDescription.setDescription(item)
             binding.timer.setTimer(item)
-            handleButtonClickAction(item)
         }
 
         private fun TextView.setDescription(item: RegisteredFlashSaleItem) {
@@ -152,16 +152,6 @@ class RegisteredFlashSaleDelegateAdapter(
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
                 binding.timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
                 binding.timer.targetDate = endDate.toCalendar()
-            }
-        }
-
-        private fun handleButtonClickAction(item: RegisteredFlashSaleItem) {
-            binding.btnAddProduct.setOnClickListener {
-                if (item.status == FlashSaleStatus.NO_REGISTERED_PRODUCT) {
-                    onAddProductButtonClicked(adapterPosition)
-                } else {
-                    onCardClicked(adapterPosition)
-                }
             }
         }
     }

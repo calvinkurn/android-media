@@ -59,9 +59,8 @@ class CampaignCriteriaCheckingResultViewHolder(
         item: CriteriaCheckingResult
     ) {
         bindingContent.apply {
-            val htmlDecText = this.root.context.getString(R.string.commonbs_multiloc_desc, item.locationResult.size)
+            val htmlDecText = this.root.context.getString(R.string.commonbs_criteria_location_desc)
             tickerMultiloc.setHtmlDescription(htmlDecText)
-            tickerMultiloc.isVisible = item.isMultiloc
             tickerMultiloc.setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     onTickerClick(item.locationResult)

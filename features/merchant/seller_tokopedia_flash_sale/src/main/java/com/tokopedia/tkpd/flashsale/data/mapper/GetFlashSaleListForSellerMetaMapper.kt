@@ -7,10 +7,16 @@ import javax.inject.Inject
 
 class GetFlashSaleListForSellerMetaMapper @Inject constructor() {
 
-    fun map(response: GetFlashSaleListForSellerMetaResponse): List<TabMetadata> {
-        return response.getFlashSaleListForSellerMeta.tabList.map { tab ->
-            TabMetadata(tab.tabId.toIntOrZero(), tab.tabName, tab.totalCampaign, tab.displayName)
+    fun map(response: GetFlashSaleListForSellerMetaResponse): TabMetadata {
+        val tabs = response.getFlashSaleListForSellerMeta.tabList.map { tab ->
+            TabMetadata.Tab(
+                tab.tabId.toIntOrZero(),
+                tab.tabName,
+                tab.totalCampaign,
+                tab.displayName
+            )
         }
+        return TabMetadata(tabs, response.getFlashSaleListForSellerMeta.tickerNonMultiLocMessage)
     }
 
 }

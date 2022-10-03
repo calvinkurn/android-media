@@ -26,4 +26,9 @@
     <string name="bottom_sheet_apply">Terapkan</string>
     <string name="stfs_avp_title_multiloc_cta">Atur Diskon Tiap Lokasi</string>
     <string name="stfs_avp_description_multiloc_cta">Pilih lokasi dulu sebelum Atur Diskon, ya.</string>
+
+    <!-- RBAC Bottom Sheet -->
+    <string name="default_rbac_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
+    <string name="default_rbac_description">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
+    <string name="default_rbac_button_title">Baca Artikel</string>
 </resources>
