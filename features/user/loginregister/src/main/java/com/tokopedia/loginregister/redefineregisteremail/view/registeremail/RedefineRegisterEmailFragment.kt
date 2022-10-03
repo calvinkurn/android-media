@@ -65,7 +65,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         val intentExtras = requireActivity().intent.extras
 
         paramSource = intentExtras?.getString(ApplinkConstInternalGlobal.PARAM_SOURCE).orEmpty()
-        paramIsRequiredInputPhone = intentExtras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE).orFalse()
+        paramIsRequiredInputPhone =
+            intentExtras?.getBoolean(ApplinkConstInternalUserPlatform.PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE)
+                .orFalse()
     }
 
     override fun onCreateView(
@@ -97,16 +99,17 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
 
     private fun setUpValue() {
         binding?.apply {
-            if(viewModel.currentEmail.isNotEmpty()) {
+            if (viewModel.currentEmail.isNotEmpty()) {
                 fieldEmail.editText.setText(viewModel.currentEmail)
             }
-            if(viewModel.currentPassword.isNotEmpty()) {
+            if (viewModel.currentPassword.isNotEmpty()) {
                 fieldPassword.editText.setText(viewModel.currentPassword)
             }
-            if(viewModel.currentName.isNotEmpty()) {
+            if (viewModel.currentName.isNotEmpty()) {
                 fieldName.editText.setText(viewModel.currentName)
             }
-            btnSubmit.isEnabled = viewModel.currentEmail.isNotEmpty() || viewModel.currentPassword.isNotEmpty() || viewModel.currentName.isNotEmpty()
+            btnSubmit.isEnabled =
+                viewModel.currentEmail.isNotEmpty() || viewModel.currentPassword.isNotEmpty() || viewModel.currentName.isNotEmpty()
         }
     }
 
@@ -125,24 +128,41 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         emailExtensionList.clear()
         emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
         emailExtensionList.let { it ->
-            binding?.emailExtension?.setExtensions(it, object: EmailExtensionAdapter.ClickListener {
-                override fun onExtensionClick(extension: String, position: Int) {
-                    val charEmail: Array<String> = binding?.fieldEmail?.editText?.text.toString().split(
-                        DELIMITER_EMAIL
-                    ).toTypedArray()
-                    if (charEmail.isNotEmpty()) {
-                        binding?.fieldEmail?.editText?.setText(String.format(STRING_FORMAT_EMAIL, charEmail[0], extension))
-                    } else {
-                        binding?.fieldEmail?.editText?.setText(String.format(
-                            STRING_FORMAT_EMAIL,  binding?.fieldEmail?.editText?.text.toString().replace(
-                            DELIMITER_EMAIL, ""
-                            ), extension))
+            binding?.emailExtension?.setExtensions(
+                it,
+                object : EmailExtensionAdapter.ClickListener {
+                    override fun onExtensionClick(extension: String, position: Int) {
+                        val charEmail: Array<String> =
+                            binding?.fieldEmail?.editText?.text.toString().split(
+                                DELIMITER_EMAIL
+                            ).toTypedArray()
+                        if (charEmail.isNotEmpty()) {
+                            binding?.fieldEmail?.editText?.setText(
+                                String.format(
+                                    STRING_FORMAT_EMAIL,
+                                    charEmail[0],
+                                    extension
+                                )
+                            )
+                        } else {
+                            binding?.fieldEmail?.editText?.setText(
+                                String.format(
+                                    STRING_FORMAT_EMAIL,
+                                    binding?.fieldEmail?.editText?.text.toString().replace(
+                                        DELIMITER_EMAIL, ""
+                                    ),
+                                    extension
+                                )
+                            )
+                        }
+                        binding?.fieldEmail?.editText?.setSelection(
+                            binding?.fieldEmail?.editText?.text.toString()
+                                .trim { it <= RedefineRegisterEmailConstants.CHAR_SPACE }.length
+                        )
+                        isExtensionSelected = true
+                        showEmailExtension(false)
                     }
-                    binding?.fieldEmail?.editText?.setSelection( binding?.fieldEmail?.editText?.text.toString().trim { it <= RedefineRegisterEmailConstants.CHAR_SPACE }.length)
-                    isExtensionSelected = true
-                    showEmailExtension(false)
-                }
-            })
+                })
         }
     }
 
@@ -219,7 +239,8 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
         binding?.btnSubmit?.setOnClickListener {
             if (binding?.btnSubmit?.isLoading == false) {
                 redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(
-                    RedefineRegisterEmailAnalytics.ACTION_CLICK, paramIsRequiredInputPhone)
+                    RedefineRegisterEmailAnalytics.ACTION_CLICK, paramIsRequiredInputPhone
+                )
                 submitForm()
             }
         }
@@ -255,7 +276,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
                 is Fail -> {
                     val message = it.throwable.getMessage(requireActivity())
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(
-                        RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, message)
+                        RedefineRegisterEmailAnalytics.ACTION_FAILED,
+                        paramIsRequiredInputPhone,
+                        message
+                    )
                     showToasterError(message)
                 }
             }
@@ -289,7 +313,10 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             val allErrorMessage = listErrorMessage.joinToString(separator = SEPARATOR_MESSAGE_ERROR)
 
             redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(
-                RedefineRegisterEmailAnalytics.ACTION_FAILED, paramIsRequiredInputPhone, allErrorMessage)
+                RedefineRegisterEmailAnalytics.ACTION_FAILED,
+                paramIsRequiredInputPhone,
+                allErrorMessage
+            )
 
             if (error.isNotEmpty()) {
                 showToasterError(error)
@@ -306,13 +333,14 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
     }
 
     private fun TextFieldUnify2.setMessageField(stringResource: Int) {
-        isInputError = if (stringResource != RedefineRegisterEmailConstants.EMPTY_RESOURCE && stringResource != RedefineRegisterEmailConstants.INITIAL_RESOURCE) {
-            setMessage(getString(stringResource))
-            true
-        } else {
-            setMessage(RedefineRegisterEmailConstants.SPACE)
-            false
-        }
+        isInputError =
+            if (stringResource != RedefineRegisterEmailConstants.EMPTY_RESOURCE && stringResource != RedefineRegisterEmailConstants.INITIAL_RESOURCE) {
+                setMessage(getString(stringResource))
+                true
+            } else {
+                setMessage(RedefineRegisterEmailConstants.SPACE)
+                false
+            }
     }
 
     private fun TextFieldUnify2.setMessageField(message: String) {
@@ -339,7 +367,9 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             offerToLoginDialog.dismiss()
         }
 
-        redefineRegisterEmailAnalytics.sendViewPopUpEmailRegisteredPageEvent(paramIsRequiredInputPhone)
+        redefineRegisterEmailAnalytics.sendViewPopUpEmailRegisteredPageEvent(
+            paramIsRequiredInputPhone
+        )
         offerToLoginDialog.show()
     }
 
@@ -350,9 +380,11 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             RedefineRegisterEmailConstants.VERIFICATION_EMAIL -> {
                 if (resultCode == Activity.RESULT_OK) {
 
-                    paramToken = data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
+                    paramToken =
+                        data?.extras?.getString(ApplinkConstInternalGlobal.PARAM_TOKEN).orEmpty()
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(
-                        RedefineRegisterEmailAnalytics.ACTION_SUCCESS, paramIsRequiredInputPhone)
+                        RedefineRegisterEmailAnalytics.ACTION_SUCCESS, paramIsRequiredInputPhone
+                    )
                     goToInputPhone()
                 } else {
                     redefineRegisterEmailAnalytics.sendClickOnButtonLanjutEvent(
@@ -390,16 +422,19 @@ class RedefineRegisterEmailFragment : BaseDaggerFragment() {
             hash = viewModel.currentHash
         )
 
-        val toRedefineRegisterInputPhoneNumber = RedefineRegisterEmailFragmentDirections.actionRedefineRegisterEmailFragmentToRedefineRegisterInputPhoneFragment(
-            parameter = parameter
-        )
+        val toRedefineRegisterInputPhoneNumber =
+            RedefineRegisterEmailFragmentDirections.actionRedefineRegisterEmailFragmentToRedefineRegisterInputPhoneFragment(
+                parameter = parameter
+            )
         view?.findNavController()?.navigate(toRedefineRegisterInputPhoneNumber)
     }
 
     private fun handleNakamaRegistration() {
         if (GlobalConfig.DEBUG) {
             val partsEmail = viewModel.currentEmail.split(DELIMITER_EMAIL)
-            if (partsEmail.size == SPLIT_EMAIL_SIZE && !partsEmail.first().contains(STRING_TESTING_REGISTER) && partsEmail[1] == DOMAIN_TOKOPEDIA_EMAIL) {
+            if (partsEmail.size == SPLIT_EMAIL_SIZE && !partsEmail.first()
+                    .contains(STRING_TESTING_REGISTER) && partsEmail[1] == DOMAIN_TOKOPEDIA_EMAIL
+            ) {
                 paramIsRequiredInputPhone = false
             }
         }

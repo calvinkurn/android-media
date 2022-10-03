@@ -3,13 +3,15 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.view.v
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.RedefineRegisterInputPhoneViewModel
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.RegistrationPhoneState
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.local.RegisterPreferences
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileUpdateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.GetUserProfileValidateUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateModel
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileUpdateParam
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateModel
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.data.UserProfileValidateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
+import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileValidateParam
 import com.tokopedia.sessioncommon.data.RegisterCheckData
 import com.tokopedia.sessioncommon.data.RegisterCheckModel
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
@@ -22,7 +24,6 @@ import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -57,8 +58,6 @@ class RedefineRegisterInputPhoneViewModelTest {
 
     private val registerPreferences = mockk<RegisterPreferences>(relaxed = true)
 
-    private val userSession = mockk<UserSessionInterface>(relaxed = true)
-
     @Before
     fun setUp() {
         viewModel = RedefineRegisterInputPhoneViewModel(
@@ -68,7 +67,6 @@ class RedefineRegisterInputPhoneViewModelTest {
             getUserProfileUpdateUseCase,
             getUserProfileValidateUseCase,
             registerPreferences,
-            userSession,
             CoroutineTestDispatchersProvider
         )
     }

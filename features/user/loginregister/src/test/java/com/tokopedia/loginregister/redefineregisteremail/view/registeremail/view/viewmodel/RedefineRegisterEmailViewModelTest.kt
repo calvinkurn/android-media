@@ -5,6 +5,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.encryption.security.RsaUtils
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefineregisteremail.common.RedefineRegisterEmailConstants
+import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.RedefineRegisterEmailViewModel
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.ValidateUserDataUseCase
 import com.tokopedia.loginregister.redefineregisteremail.view.registeremail.domain.data.ValidateUserDataModel
 import com.tokopedia.sessioncommon.data.KeyData

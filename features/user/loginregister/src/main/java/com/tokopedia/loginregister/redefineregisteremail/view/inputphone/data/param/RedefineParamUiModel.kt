@@ -1,4 +1,5 @@
 @file:Suppress("ParamFieldAnnotation")
+
 package com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param
 
 import android.os.Parcel
@@ -12,7 +13,7 @@ data class RedefineParamUiModel(
     val isRequiredInputPhone: Boolean = false,
     var token: String = "",
     val hash: String = ""
-): Parcelable {
+) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readString().toString(),
         parcel.readString().toString(),

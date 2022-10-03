@@ -140,7 +140,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         })
     }
 
-    //token must get from OTP type 126
+    // token must get from OTP type 126
     fun registerV2(
         registerV2Param: RegisterV2Param
     ) {
@@ -171,7 +171,7 @@ class RedefineRegisterInputPhoneViewModel @Inject constructor(
         })
     }
 
-    //token must get from OTP type 11
+    // token must get from OTP type 11
     fun userProfileUpdate(userProfileUpdateParam: UserProfileUpdateParam) {
         launchCatchError(coroutineContext, {
 
