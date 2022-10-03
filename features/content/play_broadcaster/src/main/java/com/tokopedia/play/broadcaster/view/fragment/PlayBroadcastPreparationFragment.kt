@@ -621,9 +621,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         when(state.type) {
             AccountStateInfoType.Live -> {
                 analytic.viewDialogViolation(state.channelId)
-                showWaringInfoBottomSheet()
+                showWarningInfoBottomSheet()
             }
-            AccountStateInfoType.Banned -> showWaringInfoBottomSheet()
+            AccountStateInfoType.Banned -> showWarningInfoBottomSheet()
             AccountStateInfoType.NotAcceptTNC -> {
                 if (state.selectedAccount.isShop) showTermsAndConditionBottomSheet()
                 else showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
@@ -906,7 +906,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         } catch (e: Exception) { }
     }
 
-    private fun showWaringInfoBottomSheet() {
+    private fun showWarningInfoBottomSheet() {
         try {
             WarningInfoBottomSheet
                 .getFragment(childFragmentManager, requireActivity().classLoader)
