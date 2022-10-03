@@ -39,7 +39,6 @@ import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.R as principleR
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.yalantis.ucrop.util.FastBitmapDrawable
 import java.io.File
@@ -48,9 +47,13 @@ import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory
-) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
-    RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
-    RotateToolUiComponent.Listener, CropToolUiComponent.Listener,
+) : BaseEditorFragment(),
+    BrightnessToolUiComponent.Listener,
+    ContrastToolsUiComponent.Listener,
+    RemoveBackgroundToolUiComponent.Listener,
+    WatermarkToolUiComponent.Listener,
+    RotateToolUiComponent.Listener,
+    CropToolUiComponent.Listener,
     EditorDetailPreviewWidget.Listener {
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
@@ -307,7 +310,8 @@ class DetailEditorFragment @Inject constructor(
                                 RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
                                 else -> null
                             }?.let { backgroundColor ->
-                                val color = ContextCompat.getColor(requireContext(), backgroundColor)
+                                val color =
+                                    ContextCompat.getColor(requireContext(), backgroundColor)
 
                                 val backgroundBitmap = Bitmap.createBitmap(
                                     resultBitmap.width,
@@ -729,12 +733,17 @@ class DetailEditorFragment @Inject constructor(
                 onReady = { bitmap ->
                     viewBinding?.imgViewPreview?.setImageBitmap(bitmap)
 
-                    if (readPreviousValue) readPreviousState()
-                    else implementedBaseBitmap = bitmap
+                    if (readPreviousValue) {
+                        readPreviousState()
+                    } else {
+                        implementedBaseBitmap = bitmap
+                    }
 
                     if (data.isToolWatermark()) {
                         setWatermarkDrawerItem(bitmap)
-                        watermarkComponent.setWatermarkTypeSelected(WatermarkType.map(data.watermarkMode?.watermarkType))
+                        watermarkComponent.setWatermarkTypeSelected(
+                            WatermarkType.map(data.watermarkMode?.watermarkType)
+                        )
                     }
                 },
                 onCleared = {}
