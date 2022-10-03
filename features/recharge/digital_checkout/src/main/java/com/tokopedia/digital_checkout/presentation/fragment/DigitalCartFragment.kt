@@ -106,7 +106,10 @@ class DigitalCartFragment : BaseDaggerFragment(), MyBillsActionListener,
     @Inject
     lateinit var userSession: UserSessionInterface
 
+    @Suppress("LateinitUsage")
     private lateinit var cartDetailInfoAdapter: DigitalCartDetailInfoAdapter
+
+    @Suppress("LateinitUsage")
     private lateinit var myBillsAdapter: DigitalMyBillsAdapter
 
     private val viewModel by viewModels<DigitalCartViewModel> { viewModelFactory }
