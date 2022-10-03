@@ -11,13 +11,15 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
+import com.tokopedia.logisticCommon.data.constant.CourierConstant
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.DaggerShippingCourierComponent
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.di.ShippingCourierModule
+import com.tokopedia.logisticcart.shipping.model.NotifierModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
-import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -139,8 +141,9 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
 
     private fun setupRecyclerView(cartPosition: Int) {
         shippingCourierAdapter.setShippingCourierAdapterListener(this)
-        shippingCourierAdapter.setShippingCourierViewModels(mCourierModelList, mPreOrderModel, isOcc)
+        shippingCourierAdapter.setShippingCourierViewModels(convertCourierListToUiModel(mCourierModelList, mPreOrderModel, isOcc))
         shippingCourierAdapter.setCartPosition(cartPosition)
+        shippingCourierAdapter.setEndYearPromotion(isToogleYearEndPromotionOn())
         val linearLayoutManager = LinearLayoutManager(
                 activity, LinearLayoutManager.VERTICAL, false)
         rvCourier?.layoutManager = linearLayoutManager
@@ -168,7 +171,7 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         bottomSheet?.dismiss()
     }
 
-    override fun isToogleYearEndPromotionOn(): Boolean {
+    private fun isToogleYearEndPromotionOn(): Boolean {
         if (isOcc) {
             return false
         } else {
@@ -201,7 +204,32 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         }
     }
 
+    private fun convertCourierListToUiModel(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType>{
+        val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden}.toMutableList()
+        val uiModel : MutableList<RatesViewModelType> = mutableListOf()
+        uiModel.addAll(eligibleCourierList)
+        setNotifierModel(uiModel, eligibleCourierList[0], isOcc)
+        if (preOrderModel?.display == true) {
+            preOrderModel.let { uiModel.add(0, it) }
+        }
+        return uiModel
+    }
+
+    private fun setNotifierModel(uiModel: MutableList<RatesViewModelType>, shippingCourierUiModel: ShippingCourierUiModel, isOcc: Boolean) {
+        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
+             uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
+        } else {
+            if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
+                uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
+            } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
+                uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
+            }
+        }
+    }
+
     companion object {
+        private const val INSTAN_VIEW_TYPE = "Instan"
+        private const val SAME_DAY_VIEW_TYPE = "Same Day"
         const val ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST = "ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST"
         const val ARGUMENT_CART_POSITION = "ARGUMENT_CART_POSITION"
         const val ARGUMENT_RECIPIENT_ADDRESS_MODEL = "ARGUMENT_RECIPIENT_ADDRESS_MODEL"
