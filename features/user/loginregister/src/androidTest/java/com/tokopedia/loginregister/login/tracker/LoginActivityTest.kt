@@ -2,8 +2,10 @@ package com.tokopedia.loginregister.login.tracker
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.text.InputType
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.intent.Intents.intending
@@ -12,6 +14,8 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
@@ -181,8 +185,8 @@ class LoginActivityTest: LoginBase() {
     }
 
     private fun inputEditText(value: String) {
-        val viewInteraction = Espresso.onView(withId(R.id.input_email_phone)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        viewInteraction.perform(typeText(value))
+        val viewInteraction = Espresso.onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        viewInteraction.perform(typeText(value), closeSoftKeyboard())
     }
 
     private fun clickRegisterBottom(){
