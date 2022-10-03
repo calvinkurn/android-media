@@ -15,17 +15,18 @@ import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepos
 import com.tokopedia.content.common.producttag.helper.ContentProductTagDaggerHelper
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.play.test.util.clickView
-import com.tokopedia.play.test.util.isHidden
-import com.tokopedia.play.test.util.isVisible
-import com.tokopedia.play.test.util.select
+import com.tokopedia.play.test.util.*
+import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
+import com.tokopedia.content.common.test.R as testR
 
 /**
  * Created By : Jonathan Darwin on October 03, 2022
@@ -57,7 +58,7 @@ class ContentProductTagConfigUiTest {
             }
         )
 
-        delay(INITIAL_DELAY)
+        delay(DEFAULT_DELAY)
     }
 
     init {
@@ -76,26 +77,24 @@ class ContentProductTagConfigUiTest {
     /**
      * Test:
      * 1. (DONE) authorType -> breadcrumb is not showing
-     * 2. productTagSource
-     * 3. isMultipleSelectionProduct -> checkbox show or not & select unselect
+     * 2. (DONE) productTagSource
+     * 3. (DONE) isMultipleSelectionProduct -> checkbox show or not & select unselect
      * 4. isFullPageAutocomplete -> from us or not
      * 5. isShowActionBarDivider
      */
 
+    /** AuthorType Test */
     @Test
     fun contentProductTag_ugc_breadcrumbVisible() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
         )
 
-        select(R.id.tv_cc_product_tag_product_source_label)
-            .isVisible()
-
-        select(R.id.tv_cc_product_tag_product_source)
-            .isVisible()
-
-        select(R.id.ic_cc_product_tag_chevron_1)
-            .isVisible()
+        isVisible(
+            R.id.tv_cc_product_tag_product_source_label,
+            R.id.tv_cc_product_tag_product_source,
+            R.id.ic_cc_product_tag_chevron_1,
+        )
 
         delay(DEFAULT_DELAY)
     }
@@ -106,18 +105,16 @@ class ContentProductTagConfigUiTest {
             .setAuthorType(ContentCommonUserType.TYPE_SHOP)
         )
 
-        select(R.id.tv_cc_product_tag_product_source_label)
-            .isHidden()
-
-        select(R.id.tv_cc_product_tag_product_source)
-            .isHidden()
-
-        select(R.id.ic_cc_product_tag_chevron_1)
-            .isHidden()
+        isHidden(
+            R.id.tv_cc_product_tag_product_source_label,
+            R.id.tv_cc_product_tag_product_source,
+            R.id.ic_cc_product_tag_chevron_1,
+        )
 
         delay(DEFAULT_DELAY)
     }
 
+    /** ProductTagSource Test */
     @Test
     fun contentProductTag_productTagSource_completeSource() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -131,8 +128,7 @@ class ContentProductTagConfigUiTest {
             )
         )
 
-        select(R.id.tv_cc_product_tag_product_source)
-            .clickView()
+        click(R.id.tv_cc_product_tag_product_source)
 
         isVisible(
             R.id.cl_global_search,
@@ -159,8 +155,7 @@ class ContentProductTagConfigUiTest {
             )
         )
 
-        select(R.id.tv_cc_product_tag_product_source)
-            .clickView()
+        click(R.id.tv_cc_product_tag_product_source)
 
         isVisible(
             R.id.cl_global_search,
@@ -189,8 +184,7 @@ class ContentProductTagConfigUiTest {
             )
         )
 
-        select(R.id.tv_cc_product_tag_product_source)
-            .clickView()
+        click(R.id.tv_cc_product_tag_product_source)
 
         isVisible(
             R.id.cl_global_search,
@@ -218,8 +212,7 @@ class ContentProductTagConfigUiTest {
             )
         )
 
-        select(R.id.tv_cc_product_tag_product_source)
-            .clickView()
+        click(R.id.tv_cc_product_tag_product_source)
 
         isVisible(
             R.id.cl_global_search,
@@ -232,6 +225,151 @@ class ContentProductTagConfigUiTest {
             R.id.tv_my_account_label,
             R.id.cl_last_purchase,
         )
+
+        delay(DEFAULT_DELAY)
+    }
+
+    /** IsMultipleSelectionProduct Test */
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_false_shouldFinishPicker() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(false, 0)
+        )
+
+        val position = 1
+        val selectedProduct = listOf(lastTaggedProduct.dataList[position].toSelectedProduct())
+
+        isHidden(R.id.btn_save)
+
+        clickItemRecyclerView(R.id.rv_last_tagged_product, 1)
+
+        select(testR.id.tv_selected_product)
+            .verifyText(selectedProduct.toString())
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_true_checkBoxVisible_submitButtonVisible() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(true, 3)
+        )
+
+        verifyItemRecyclerView(R.id.rv_last_tagged_product, 0) {
+            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isVisible
+        }
+
+        isVisible(R.id.btn_save)
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_true_ableToPickUntilMaxProduct() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(true, 3)
+        )
+
+        val positionList = listOf(0, 1, 2)
+        val selectedProducts = positionList.map { position ->
+            SelectedProductUiModel.createOnlyId(lastTaggedProduct.dataList[position].id)
+        }
+
+        positionList.forEach { position ->
+            clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+            delay(DEFAULT_DELAY)
+        }
+
+        click(R.id.btn_save)
+
+        select(testR.id.tv_selected_product)
+            .verifyText(selectedProducts.toString())
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_true_cannotTickMoreThanMaxProduct() {
+        val maxProduct = 3
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(true, maxProduct)
+        )
+
+        val positionList = listOf(0, 1, 2, 3)
+        val selectedProducts = positionList.take(maxProduct).map { position ->
+            SelectedProductUiModel.createOnlyId(lastTaggedProduct.dataList[position].id)
+        }
+
+        positionList.forEach { position ->
+            clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+            delay(DEFAULT_DELAY)
+        }
+
+        click(R.id.btn_save)
+
+        select(testR.id.tv_selected_product)
+            .verifyText(selectedProducts.toString())
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_true_doubleClickOnProduct_checkedFalse() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(true, 3)
+        )
+
+        val position = 0
+        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
+            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked
+        }
+        delay(DEFAULT_DELAY)
+
+        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
+            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked.not()
+        }
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isMultipleSelectionProduct_true_noProductSelected_submitButtonDisabled() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(false)
+            .setMultipleSelectionProduct(true, 3)
+        )
+
+        val position = 0
+
+        verifyButtonState(R.id.btn_save, false)
+
+        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
+            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked
+        }
+        delay(DEFAULT_DELAY)
+
+        verifyButtonState(R.id.btn_save, true)
+
+        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
+            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked.not()
+        }
+        delay(DEFAULT_DELAY)
+
+        verifyButtonState(R.id.btn_save, false)
 
         delay(DEFAULT_DELAY)
     }

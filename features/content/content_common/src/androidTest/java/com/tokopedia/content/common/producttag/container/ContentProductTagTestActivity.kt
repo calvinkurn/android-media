@@ -1,7 +1,9 @@
 package com.tokopedia.content.common.producttag.container
 
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,6 +14,7 @@ import com.tokopedia.content.common.producttag.di.ContentProductTagTestModule
 import com.tokopedia.content.common.producttag.di.DaggerContentProductTagTestComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.test.R
 import com.tokopedia.user.session.UserSession
@@ -46,6 +49,35 @@ class ContentProductTagTestActivity : AppCompatActivity() {
                 ProductTagParentFragment.TAG,
             )
             .commit()
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+
+        when(fragment) {
+            is ProductTagParentFragment -> {
+                fragment.setListener(object : ProductTagParentFragment.Listener {
+                    override fun onCloseProductTag() {
+                        supportFragmentManager
+                            .beginTransaction()
+                            .remove(ProductTagParentFragment.getFragment(
+                                supportFragmentManager,
+                                classLoader,
+                                getArgumentBuilder()
+                            ))
+                            .commitNow()
+                    }
+
+                    override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
+                        findViewById<TextView>(R.id.tv_selected_product).text = products.toString()
+                    }
+
+                    override fun onMaxSelectedProductReached() {
+
+                    }
+                })
+            }
+        }
     }
 
     private fun getArgumentBuilder(): ContentProductTagArgument.Builder {
