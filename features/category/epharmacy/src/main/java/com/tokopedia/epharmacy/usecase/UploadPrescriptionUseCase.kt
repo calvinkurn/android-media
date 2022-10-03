@@ -44,8 +44,9 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false): String {
+    private fun getBase64OfPrescriptionImage(localFilePath: String, compressLocal : Boolean = false): String {
         var compressCounter = 0
+        var compress  = compressLocal
         var prescriptionImageBitmap: Bitmap? = null
         var compressedUri : Uri? = null
         return try {
