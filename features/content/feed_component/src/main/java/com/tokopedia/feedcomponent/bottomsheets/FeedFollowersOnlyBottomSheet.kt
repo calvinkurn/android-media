@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -54,8 +54,8 @@ class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
     }
     private fun setSubtitleText(){
         when(campaignStatus){
-            FeedXCard.Upcoming -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
-            FeedXCard.Ongoing -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
+            FeedXCampaign.UPCOMING -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_upcoming_text)
+            FeedXCampaign.ONGOING -> subTitle.text = getString(com.tokopedia.feedcomponent.R.string.feed_follow_bottom_sheet_desc_ongoing_text)
         }
     }
 

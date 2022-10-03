@@ -126,22 +126,10 @@ data class FeedXCard(
         get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
-
-
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
-
     val isASGCDiscountToko: Boolean
          get() = type == ASGC_DISCOUNT_TOKO
-
-    val isFlashSaleToko: Boolean
-        get() = type == ASGC_FLASH_SALE_TOKO
-    val isRilisanSpl: Boolean
-        get() = type == ASGC_RILISAN_SPECIAL
-    val isUpcoming: Boolean
-        get() = campaign.status == Upcoming
-    val isOngoing: Boolean
-        get() = campaign.status == Ongoing
 
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -195,13 +183,7 @@ data class FeedXCard(
         private const val TYPE_LONG_VIDEO: String = "long-video"
         private const val TYPE_VIDEO: String = "video"
 
-
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
-        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
-        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
-        const val Upcoming = "upcoming"
-        const val Ongoing = "ongoing"
-
     }
 }

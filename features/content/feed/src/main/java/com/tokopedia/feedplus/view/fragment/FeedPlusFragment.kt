@@ -1786,7 +1786,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getTrackerLabelSuffixForCampaignSaleTracker(card: FeedXCard) =
         if (card.campaign.status.isNotEmpty()) {
-            if (card.isUpcoming)
+            if (card.campaign.isUpcoming)
                 "pre"
             else
                 "ongoing"
@@ -1810,7 +1810,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (positionInFeed < list.size && list[positionInFeed] is DynamicPostUiModel) {
             val item = list[positionInFeed] as DynamicPostUiModel
             val card = item.feedXCard
-            trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+            trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                 if (card.followers.isFollowed)
                     trackerIdAsgc
                 else
@@ -2448,7 +2448,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedXCard: FeedXCard
     ) {
         feedAnalytics.eventImageClicked(feedXCard.id, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
-        if (feedXCard.isRilisanSpl || feedXCard.isFlashSaleToko) {
+        if (feedXCard.campaign.isRilisanSpl || feedXCard.campaign.isFlashSaleToko) {
             val product =
                 if (feedXCard.lastCarouselIndex in (feedXCard.products.indices)) feedXCard.products[feedXCard.lastCarouselIndex] else null
             product?.let {
@@ -2486,7 +2486,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 label
             )
             productTagBS.closeClicked = {
-                val trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+                val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                     if (card.followers.isFollowed)
                         "13441"
                     else
@@ -2503,7 +2503,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
             productTagBS.disMissed = {
-                val trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+                val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                     if (card.followers.isFollowed)
                         "13448"
                     else
@@ -2543,7 +2543,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun shouldShowFollowerBottomSheet(card: FeedXCard) =
-         card.isRilisanSpl && !card.followers.isFollowed && card.campaign.isRSFollowersRestrictionOn
+         card.campaign.isRilisanSpl && !card.followers.isFollowed && card.campaign.isRSFollowersRestrictionOn
 
 
     private fun addToWishList(
@@ -3018,12 +3018,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when{
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isFlashSaleToko -> showToast(
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
                 context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isRilisanSpl -> showToast(
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
                 context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
@@ -3094,7 +3094,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     )
                 }
 
-                val trackerId = if (feedXCardData.isFlashSaleToko || feedXCardData.isRilisanSpl) {
+                val trackerId = if (feedXCardData.campaign.isFlashSaleToko || feedXCardData.campaign.isRilisanSpl) {
                     if (feedXCardData.followers.isFollowed)
                         "13423"
                     else
@@ -3451,7 +3451,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics.clickSekSekarang(postId, shopId, type, isFollowed)
         } else {
-            val trackerId = if (feedXCard.isFlashSaleToko || feedXCard.isRilisanSpl) {
+            val trackerId = if (feedXCard.campaign.isFlashSaleToko || feedXCard.campaign.isRilisanSpl) {
                 if (feedXCard.followers.isFollowed)
                     "13451"
                 else
