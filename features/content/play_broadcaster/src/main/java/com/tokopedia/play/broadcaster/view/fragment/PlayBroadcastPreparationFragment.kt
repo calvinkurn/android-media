@@ -620,7 +620,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     private fun renderAccountStateInfo(state: AccountStateInfo) {
         when(state.type) {
             AccountStateInfoType.Live -> {
-                analytic.viewDialogViolation(state.channelId)
+                analytic.viewDialogViolation(parentViewModel.channelId)
                 showWarningInfoBottomSheet()
             }
             AccountStateInfoType.Banned -> showWarningInfoBottomSheet()

@@ -1547,7 +1547,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     AccountStateInfo(
                         type = AccountStateInfoType.Banned,
                         selectedAccount = selectedAccount,
-                        channelId = configUiModel.channelId,
                     )
                 }
                 false
@@ -1560,7 +1559,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     AccountStateInfo(
                         type = AccountStateInfoType.Live,
                         selectedAccount = selectedAccount,
-                        channelId = configUiModel.channelId,
                     )
                 }
                 false
