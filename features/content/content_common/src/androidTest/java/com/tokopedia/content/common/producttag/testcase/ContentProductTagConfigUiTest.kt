@@ -6,7 +6,6 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
-import com.tokopedia.content.common.const.INITIAL_DELAY
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
