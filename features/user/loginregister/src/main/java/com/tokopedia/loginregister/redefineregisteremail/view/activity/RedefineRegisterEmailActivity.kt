@@ -7,7 +7,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.redefineregisteremail.di.DaggerRedefineRegisterEmailComponent
+import com.tokopedia.loginregister.login.di.ActivityComponentFactory
 import com.tokopedia.loginregister.redefineregisteremail.di.RedefineRegisterEmailComponent
 
 class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<RedefineRegisterEmailComponent> {
@@ -24,9 +24,7 @@ class RedefineRegisterEmailActivity : BaseSimpleActivity(), HasComponent<Redefin
     override fun getNewFragment(): Fragment? = null
 
     override fun getComponent(): RedefineRegisterEmailComponent {
-        return DaggerRedefineRegisterEmailComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        return ActivityComponentFactory.instance.createRedefineRegisterEmailComponent(application)
     }
 
     override fun onBackPressed() {

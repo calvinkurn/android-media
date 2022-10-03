@@ -1,5 +1,6 @@
 package com.tokopedia.otp.verification.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -9,7 +10,7 @@ import com.tokopedia.otp.verification.domain.pojo.OtpRequestPhoneRegisterMandato
 import javax.inject.Inject
 
 class SendOtpPhoneRegisterMandatoryUseCase @Inject constructor(
-    private val graphqlRepository: GraphqlRepository,
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<OtpRequestPhoneRegisterMandatoryParam, OtpRequestPojo>(dispatcher.io) {
     override fun graphqlQuery(): String =
