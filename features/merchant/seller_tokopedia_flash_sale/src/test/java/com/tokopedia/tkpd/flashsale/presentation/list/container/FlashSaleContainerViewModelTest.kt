@@ -1,8 +1,10 @@
 package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -22,7 +24,10 @@ import org.junit.Test
 class FlashSaleContainerViewModelTest {
 
     @RelaxedMockK
-    lateinit var  getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase
+    lateinit var getFlashSaleListForSellerMetaUseCase: GetFlashSaleListForSellerMetaUseCase
+
+    @RelaxedMockK
+    lateinit var getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase
 
     @RelaxedMockK
     lateinit var preferenceDataStore: PreferenceDataStore
@@ -35,12 +40,13 @@ class FlashSaleContainerViewModelTest {
         viewModel = FlashSaleContainerViewModel(
             CoroutineTestDispatchersProvider,
             getFlashSaleListForSellerMetaUseCase,
+            getFlashSaleSellerStatusUseCase,
             preferenceDataStore
         )
     }
 
     @Test
-    fun `When fetch tabs metadata from remote success, should successfully receive the data`() = runBlockingTest {
+    fun `When fetch prerequisite data success and access is eligible, should successfully receive the data`() = runBlockingTest {
         //Given
         val tabsMetadata = TabMetadata(
             listOf(
@@ -52,7 +58,9 @@ class FlashSaleContainerViewModelTest {
                 )
             ), "Some ticker message"
         )
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
@@ -63,7 +71,7 @@ class FlashSaleContainerViewModelTest {
         coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
 
         //When
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
 
         //Then
         val actual = emittedValues.last()
@@ -72,6 +80,79 @@ class FlashSaleContainerViewModelTest {
         assertEquals(null, actual.error)
         assertEquals(tabsMetadata.tabs, actual.tabs)
         assertEquals(tabsMetadata.tickerNonMultiLocationMessage, actual.tickerMessage)
+        assertEquals(true, actual.isEligibleUsingFeature)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When device is not allowed to use feature, isEligibleUsingFeature should be false`() = runBlockingTest {
+        //Given
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ), "Some ticker message"
+        )
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = false, isUserAllowed = true)
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+
+        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
+
+        //When
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+
+        //Then
+        val actual = emittedValues.last()
+
+        assertEquals(false, actual.isEligibleUsingFeature)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When user is not allowed to use feature, isEligibleUsingFeature should be false`() = runBlockingTest {
+        //Given
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ), "Some ticker message"
+        )
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = false)
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+
+        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
+
+        //When
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+
+        //Then
+        val actual = emittedValues.last()
+
+        assertEquals(false, actual.isEligibleUsingFeature)
 
         job.cancel()
     }
@@ -90,7 +171,9 @@ class FlashSaleContainerViewModelTest {
             ),
             "Some ticker message"
         )
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
 
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
@@ -101,7 +184,7 @@ class FlashSaleContainerViewModelTest {
         coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns true
 
         //When
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
 
         //Then
         val actual = emittedValues.last()
@@ -126,6 +209,9 @@ class FlashSaleContainerViewModelTest {
             "Some ticker message"
         )
 
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = true)
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
 
         val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
@@ -136,7 +222,7 @@ class FlashSaleContainerViewModelTest {
         coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
 
         //When
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
 
         //Then
         val actual = emittedValues.last()
@@ -152,6 +238,7 @@ class FlashSaleContainerViewModelTest {
         val error = MessageErrorException("Server Error")
         val expectedEvent = FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData(error)
 
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws  error
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } throws error
 
         val emittedEvent = arrayListOf<FlashSaleContainerViewModel.UiEffect>()
@@ -160,7 +247,7 @@ class FlashSaleContainerViewModelTest {
         }
 
         //When
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
 
         //Then
         val actualEvent = emittedEvent.last()
@@ -175,6 +262,8 @@ class FlashSaleContainerViewModelTest {
     fun `When fetch tabs metadata from remote error, isLoading should be false and error value should be set`() = runBlockingTest {
         //Given
         val error = MessageErrorException("Server Error")
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } throws  error
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } throws error
 
 
@@ -184,7 +273,7 @@ class FlashSaleContainerViewModelTest {
         }
 
         //When
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
 
         //Then
         val actual = emittedValues.last()
