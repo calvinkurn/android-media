@@ -49,7 +49,13 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
         if (requestCode == REQUEST_PICKER_CODE && resultCode == Activity.RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
 
-            val rawList = if (elements.editedImages.isEmpty()) elements.originalPaths else elements.editedImages
+            val rawList = elements.editedImages.mapIndexed { index, imagePath ->
+                if (imagePath.isEmpty()) {
+                    elements.originalPaths[index]
+                } else {
+                    imagePath
+                }
+            }
 
             val uiModels = rawList
                 .map { PickerFile(it) }
