@@ -1279,6 +1279,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 if (isCompetitive) {
                     priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                     priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                } else {
+                    priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
+                    priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
                 }
             }
         }
@@ -1311,6 +1314,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             if (isCompetitive) {
                 priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                 priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+            } else {
+                priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
+                priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
             }
         }
         viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {
