@@ -17,6 +17,10 @@ import com.tokopedia.track.constant.TrackerConstant.EVENT_LABEL
 import com.tokopedia.track.constant.TrackerConstant.USERID
 import com.tokopedia.user.session.UserSessionInterface
 
+/**
+ * Docs:
+ * https://mynakama.tokopedia.com/datatracker/product/requestdetail/view/3155
+ */
 class RecipeDetailAnalytics(private val userSession: UserSessionInterface) {
 
     companion object {

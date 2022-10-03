@@ -10,7 +10,7 @@ data class RecipeUiModel(
     val title: String,
     val portion: Int,
     val duration: Int,
-    val labels: List<TagUiModel>,
+    val tags: List<TagUiModel>,
     val thumbnail: String,
     val isBookmarked: Boolean
 ): Visitable<RecipeListTypeFactory>, ImpressHolder() {

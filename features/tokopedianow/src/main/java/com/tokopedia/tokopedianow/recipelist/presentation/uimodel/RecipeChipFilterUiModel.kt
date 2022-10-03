@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.adapter.RecipeChipFilt
 
 data class RecipeChipFilterUiModel(
     val id: String,
-    val title: String,
+    val title: String = "",
     val type: ChipType = ChipType.NORMAL
 ): Visitable<RecipeChipFilterTypeFactory> {
 

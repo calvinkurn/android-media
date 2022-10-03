@@ -22,6 +22,7 @@ data class RecipeProductUiModel(
     val discountPercentage: String = "",
     val similarProducts: List<RecipeProductUiModel> = emptyList(),
     val categoryId: String = "",
+    val categoryName: String = "",
     val position: Int = 0
 ) : Visitable<RecipeProductTypeFactory>, Parcelable {
 

@@ -10,7 +10,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSectionHeaderUiModel
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeSortBy
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet
 import java.util.*
 
@@ -57,40 +56,40 @@ class TokoNowRecipeFilterFragment : Fragment() {
                 parentId = "1",
                 items = listOf(
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.Newest.name,
+                        id = "Newest",
                         parentId = "1",
                         text = "Terbaru",
-                        selected = selectedFilterIds.contains(RecipeSortBy.Newest.name)
+                        selected = selectedFilterIds.contains("Newest")
                     ),
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.Oldest.name,
+                        id = "Oldest",
                         parentId = "1",
                         text = "Terlama",
-                        selected = selectedFilterIds.contains(RecipeSortBy.Oldest.name)
+                        selected = selectedFilterIds.contains("Oldest")
                     ),
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.MostPortion.name,
+                        id = "MostPortion",
                         parentId = "1",
                         text = "Porsi Terbanyak",
-                        selected = selectedFilterIds.contains(RecipeSortBy.MostPortion.name)
+                        selected = selectedFilterIds.contains("MostPortion")
                     ),
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.LeastPortion.name,
+                        id = "LeastPortion",
                         parentId = "1",
                         text = "Porsi Paling Sedikit",
-                        selected = selectedFilterIds.contains(RecipeSortBy.LeastPortion.name)
+                        selected = selectedFilterIds.contains("LeastPortion")
                     ),
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.ShortestDuration.name,
+                        id = "ShortestDuration",
                         parentId = "1",
                         text = "Waktu Tercepat",
-                        selected = selectedFilterIds.contains(RecipeSortBy.ShortestDuration.name)
+                        selected = selectedFilterIds.contains("ShortestDuration")
                     ),
                     TokoNowChipUiModel(
-                        id = RecipeSortBy.LongestDuration.name,
+                        id = "LongestDuration",
                         parentId = "1",
                         text = "Waktu Terlama",
-                        selected = selectedFilterIds.contains(RecipeSortBy.LongestDuration.name)
+                        selected = selectedFilterIds.contains("LongestDuration")
                     )
                 ),
                 isMultiSelect = false
