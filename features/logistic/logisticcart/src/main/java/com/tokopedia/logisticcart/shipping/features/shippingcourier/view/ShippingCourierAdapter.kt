@@ -23,11 +23,28 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var data: MutableList<RatesViewModelType> = mutableListOf()
     private var shippingCourierAdapterListener: ShippingCourierAdapterListener? = null
     private var cartPosition = 0
-    private var isEndYearPromotion = false
 
-    fun setShippingCourierViewModels(uiModel: MutableList<RatesViewModelType>) {
-        this.data = uiModel
+    fun setShippingCourierViewModels(shippingCourierUiModels: List<ShippingCourierUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) {
+        this.data = shippingCourierUiModels.filter {courier -> !courier.productData.isUiRatesHidden}.toMutableList()
+        if (preOrderModel?.display == true) {
+            preOrderModel.let { this.data.add(0, it) }
+            setNotifierModel(shippingCourierUiModels[0], 1, isOcc)
+        } else {
+            setNotifierModel(shippingCourierUiModels[0], 0, isOcc)
+        }
         notifyDataSetChanged()
+    }
+
+    private fun setNotifierModel(shippingCourierUiModel: ShippingCourierUiModel, index: Int, isOcc: Boolean) {
+        if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
+            this.data.add(index, NotifierModel(TYPE_DEFAULT))
+        } else {
+            if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
+                this.data.add(index, NotifierModel(TYPE_INSTAN))
+            } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
+                this.data.add(index, NotifierModel(TYPE_SAMEDAY))
+            }
+        }
     }
 
     fun setShippingCourierAdapterListener(shippingCourierAdapterListener: ShippingCourierAdapterListener?) {
@@ -36,10 +53,6 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     fun setCartPosition(cartPosition: Int) {
         this.cartPosition = cartPosition
-    }
-
-    fun setEndYearPromotion(endYearPromotion: Boolean) {
-        this.isEndYearPromotion = endYearPromotion
     }
 
     override fun getItemViewType(position: Int): Int = when (data[position]) {
@@ -64,9 +77,14 @@ class ShippingCourierAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is PreOrderViewHolder -> holder.bindData(data[position] as PreOrderModel)
-            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount -1, isEndYearPromotion)
+            is ShippingCourierViewHolder -> holder.bindData(data[position] as ShippingCourierUiModel, shippingCourierAdapterListener, position == itemCount -1)
             is NotifierViewHolder -> holder.bindData(data[position] as NotifierModel)
         }
+    }
+
+    companion object {
+        private const val INSTAN_VIEW_TYPE = "Instan"
+        private const val SAME_DAY_VIEW_TYPE = "Same Day"
     }
 
 }

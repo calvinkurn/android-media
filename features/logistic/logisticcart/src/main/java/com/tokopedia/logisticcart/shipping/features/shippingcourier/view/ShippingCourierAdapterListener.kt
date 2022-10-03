@@ -7,4 +7,5 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
  */
 interface ShippingCourierAdapterListener {
     fun onCourierChoosen(shippingCourierUiModel: ShippingCourierUiModel, cartPosition: Int, isNeedPinpoint: Boolean)
+    fun isToogleYearEndPromotionOn(): Boolean
 }
