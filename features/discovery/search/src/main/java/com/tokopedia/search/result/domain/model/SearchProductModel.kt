@@ -168,7 +168,7 @@ data class SearchProductModel(
 
             @SerializedName("keywordIntention")
             @Expose
-            val keywordIntention: Int = 0,
+            val keywordIntention: Int = 1,
     )
 
     data class Redirection(
