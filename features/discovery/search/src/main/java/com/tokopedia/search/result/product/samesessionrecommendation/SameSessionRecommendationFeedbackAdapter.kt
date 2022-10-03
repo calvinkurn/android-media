@@ -15,6 +15,10 @@ class SameSessionRecommendationFeedbackAdapter(
 ) : ListAdapter<FeedbackItem, SameSessionRecommendationFeedbackItemViewHolder>(diffCallback) {
     private var feedback: Feedback? = null
 
+    fun setFeedback(feedback: Feedback) {
+        this.feedback = feedback
+    }
+
     override fun onViewRecycled(holder: SameSessionRecommendationFeedbackItemViewHolder) {
         feedback = null
         super.onViewRecycled(holder)

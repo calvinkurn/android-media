@@ -85,6 +85,7 @@ class SameSessionRecommendationViewHolder(
                 sameSessionRecommendationListener,
                 this@SameSessionRecommendationViewHolder::onFeedbackItemClicked,
             ).apply {
+                setFeedback(feedback)
                 submitList(feedback.items)
             }
         }
