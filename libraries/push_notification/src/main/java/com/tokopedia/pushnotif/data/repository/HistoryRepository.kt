@@ -3,6 +3,7 @@ package com.tokopedia.pushnotif.data.repository
 import android.content.Context
 import com.tokopedia.pushnotif.data.db.PushNotificationDB.Companion.getInstance
 import com.tokopedia.pushnotif.data.db.model.HistoryNotification
+import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 
 /**
  * @author ricoharisin .
@@ -10,20 +11,27 @@ import com.tokopedia.pushnotif.data.db.model.HistoryNotification
 object HistoryRepository {
 
     private const val HISTORY_NOTIFICATION_LIMIT = 5
+    private const val DEFAULT_AVATAR_URL = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg"
 
     @JvmStatic
     fun storeNotification(
-            context: Context,
-            senderName: String?,
-            message: String?,
-            notificationType: Int,
-            notificationId: Int
+        context: Context,
+        applinkNotificationModel: ApplinkNotificationModel,
+        notificationType: Int,
+        notificationId: Int
     ) {
+        val thumbnailUrl = if (applinkNotificationModel.thumbnail.isNullOrBlank()) {
+            DEFAULT_AVATAR_URL
+        } else {
+            applinkNotificationModel.thumbnail
+        }
         val data = HistoryNotification(
-                senderName,
-                message,
-                notificationType,
-                notificationId
+            applinkNotificationModel.fullName,
+            applinkNotificationModel.summary,
+            notificationType,
+            notificationId,
+            thumbnailUrl,
+            applinkNotificationModel.applinks,
         )
         runCatching {
             getInstance(context)
