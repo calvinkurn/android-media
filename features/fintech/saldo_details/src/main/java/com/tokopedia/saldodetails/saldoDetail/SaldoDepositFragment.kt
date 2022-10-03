@@ -448,8 +448,6 @@ class SaldoDepositFragment : BaseDaggerFragment() {
 
                 }
             }
-
-            closeTickerMessage.setOnClickListener { tickerMessageLayout.gone() }
         }
     }
 
@@ -752,10 +750,9 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun showTickerMessage(withdrawalTicker: String) {
-        binding?.depositHeaderLayout?.apply {
-            tickerMessageLayout.show()
-            tickerMessageText.text =
-                withdrawalTicker
+        binding?.tickerSaldoWithdrawalInfo?.apply {
+            this.show()
+            this.setHtmlDescription(withdrawalTicker)
         }
     }
 
@@ -795,7 +792,7 @@ class SaldoDepositFragment : BaseDaggerFragment() {
     }
 
     private fun hideTickerMessage() {
-        binding?.depositHeaderLayout?.tickerMessageLayout?.gone()
+        binding?.tickerSaldoWithdrawalInfo?.hide()
     }
 
     private fun setLateCount(count: Int) {

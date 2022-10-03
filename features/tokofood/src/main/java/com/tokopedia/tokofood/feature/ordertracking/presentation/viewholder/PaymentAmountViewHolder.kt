@@ -4,10 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingPaymentGrandTotalBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.PaymentAmountUiModel
 
 class PaymentAmountViewHolder(view: View) :
-    BaseOrderTrackingViewHolder<PaymentAmountUiModel>(view) {
+    CustomPayloadViewHolder<PaymentAmountUiModel>(view) {
 
     companion object {
         @LayoutRes
