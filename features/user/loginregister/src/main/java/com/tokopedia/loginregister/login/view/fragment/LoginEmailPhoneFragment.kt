@@ -17,12 +17,7 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -89,6 +84,7 @@ import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
+import com.tokopedia.loginregister.databinding.FragmentLoginWithPhoneBinding
 import com.tokopedia.loginregister.discover.pojo.DiscoverData
 import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
@@ -129,7 +125,6 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
@@ -144,16 +139,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.fragment_login_with_phone.container
-import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
-import kotlinx.android.synthetic.main.fragment_login_with_phone.fingerprint_btn
-import kotlinx.android.synthetic.main.fragment_login_with_phone.progressBarLoginWithPhone
-import kotlinx.android.synthetic.main.fragment_login_with_phone.register_button
-import kotlinx.android.synthetic.main.layout_partial_register_input.wrapper_password
-
 
 /**
  * @author by nisie on 18/01/19.
@@ -195,6 +184,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     @Inject
     lateinit var abTestPlatform: AbTestPlatform
 
+    var viewBinding by autoClearedNullable<FragmentLoginWithPhoneBinding>()
+
     private var source: String = ""
     protected var isAutoLogin: Boolean = false
     private var isShowTicker: Boolean = false
@@ -213,8 +204,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
-    private var socmedButton: UnifyButton? = null
-    private var loadingOverlay: View? = null
 
     private var currentEmail = ""
     private var tempValidateToken = ""
@@ -223,9 +212,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
     private var emailPhoneEditText: EditText? = null
     var partialActionButton: UnifyButton? = null
-    private var tickerAnnouncement: Ticker? = null
-    private var bannerLogin: ImageUnify? = null
-    private var callTokopediaCare: Typography? = null
     private var sharedPrefs: SharedPreferences? = null
 
     private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
@@ -365,17 +351,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
-        partialRegisterInputView = view.findViewById(R.id.login_input_view)
-        fieldUnifyInputEmailPhone = partialRegisterInputView?.findViewById(R.id.input_email_phone)
-        emailPhoneEditText = fieldUnifyInputEmailPhone?.editText
-        partialActionButton = partialRegisterInputView?.findViewById(R.id.register_btn)
-        tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
-        bannerLogin = view.findViewById(R.id.banner_login)
-        callTokopediaCare = view.findViewById(R.id.to_tokopedia_care)
-        socmedButton = view.findViewById(R.id.socmed_btn)
-        loadingOverlay = view.findViewById(R.id.login_loading_overlay)
-        return view
+        viewBinding = FragmentLoginWithPhoneBinding.inflate(inflater, container, false)
+        return viewBinding?.root
     }
 
     /*
@@ -410,7 +387,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
-        partialRegisterInputView?.setEmailExtension(emailExtension, emailExtensionList)
+        partialRegisterInputView?.setEmailExtension(viewBinding?.emailExtension, emailExtensionList)
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
@@ -435,12 +412,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun showLoadingSeamless() {
-        loadingOverlay?.show()
+        viewBinding?.loginLoadingOverlay?.root?.show()
         (activity as? LoginActivity)?.supportActionBar?.hide()
     }
 
     private fun hideLoadingSeamless() {
-        loadingOverlay?.hide()
+        viewBinding?.loginLoadingOverlay?.root?.hide()
         (activity as? LoginActivity)?.supportActionBar?.show()
     }
 
@@ -667,7 +644,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
         partialRegisterInputView?.showLoginEmailView(email)
         emailPhoneEditText?.setText(email)
-        wrapper_password?.editText?.setText(pw)
+        viewBinding?.loginInputView?.setPassword(pw)
         loginEmail(email, pw)
         activity?.let {
             analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -719,18 +696,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun prepareView() {
         partialRegisterInputView?.showForgotPassword()
-        socmedBottomSheet = SocmedBottomSheet(context)
+        socmedBottomSheet = SocmedBottomSheet()
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()
             socmedBottomSheet?.dismiss()
         }
 
-        socmedButton?.setOnClickListener {
+        viewBinding?.socmedBtn?.setOnClickListener {
             analytics.eventClickSocmedButton()
-            fragmentManager?.let {
-                socmedBottomSheet?.show(it, getString(R.string.bottom_sheet_show))
-            }
+            socmedBottomSheet?.show(parentFragmentManager, getString(R.string.bottom_sheet_show))
         }
 
         checkFingerprintAvailability()
@@ -744,10 +719,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             registerCheck(emailPhoneEditText?.text.toString())
         }
 
-        wrapper_password?.editText?.setOnEditorActionListener { textView, id, keyEvent ->
+        viewBinding?.loginInputView?.setPasswordListener { v, _, _ ->
             if (id == EditorInfo.IME_ACTION_DONE) {
-                loginEmail(emailPhoneEditText?.text.toString().trim(),
-                        wrapper_password?.editText?.text.toString(), useHash = isUseHash)
+                loginEmail(
+                    emailPhoneEditText?.text.toString().trim(),
+                    v.text.toString(),
+                    useHash = isUseHash
+                )
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
@@ -768,7 +746,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         activity?.let { it ->
 
-            register_button.setOnClickListener {
+            viewBinding?.registerButton?.setOnClickListener {
                 registerAnalytics.trackClickBottomSignUpButton()
                 goToRegisterInitial(source)
             }
@@ -795,9 +773,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
 
         if (isUsingRollenceNeedHelp) {
-            callTokopediaCare?.hide()
+            viewBinding?.toTokopediaCare?.hide()
         } else {
-            callTokopediaCare?.show()
+            viewBinding?.toTokopediaCare?.show()
             initKeyboardListener(view)
         }
     }
@@ -806,11 +784,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         view?.run {
             com.tokopedia.loginregister.common.utils.KeyboardHandler(view, object : com.tokopedia.loginregister.common.utils.KeyboardHandler.OnKeyBoardVisibilityChangeListener {
                 override fun onKeyboardShow() {
-                    callTokopediaCare?.hide()
+                    viewBinding?.toTokopediaCare?.hide()
                 }
 
                 override fun onKeyboardHide() {
-                    if (!isUsingRollenceNeedHelp) callTokopediaCare?.show() else callTokopediaCare?.hide()
+                    if (!isUsingRollenceNeedHelp) viewBinding?.toTokopediaCare?.show()
+                    else viewBinding?.toTokopediaCare?.hide()
                 }
             })
         }
@@ -823,11 +802,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun disableFingerprint() {
-        fingerprint_btn.hide()
+        viewBinding?.fingerprintBtn?.hide()
     }
 
     private fun enableFingerprint() {
-        fingerprint_btn?.apply {
+        viewBinding?.fingerprintBtn?.apply {
             setLeftDrawableForFingerprint()
             show()
             setOnClickListener {
@@ -843,7 +822,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     requireActivity(),
                     R.drawable.ic_fingerprint_thumb
             )
-            fingerprint_btn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+            viewBinding?.fingerprintBtn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
         }
     }
 
@@ -867,7 +846,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 }
             }, sourceString.indexOf("Daftar"), sourceString.length, 0)
 
-            register_button?.setText(spannable, TextView.BufferType.SPANNABLE)
+            viewBinding?.registerButton?.setText(spannable, TextView.BufferType.SPANNABLE)
 
             initTokopediaCareText()
         }
@@ -891,15 +870,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 message.indexOf(getString(R.string.call_tokopedia_care)) + getString(R.string.call_tokopedia_care).length,
                 0
         )
-        callTokopediaCare?.movementMethod = LinkMovementMethod.getInstance()
-        callTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
+        viewBinding?.toTokopediaCare?.movementMethod = LinkMovementMethod.getInstance()
+        viewBinding?.toTokopediaCare?.setText(spannable, TextView.BufferType.SPANNABLE)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         // https://stackoverflow.com/questions/28539216/
-        callTokopediaCare?.movementMethod = null
-        callTokopediaCare?.text = ""
+        viewBinding?.toTokopediaCare?.movementMethod = null
+        viewBinding?.toTokopediaCare?.text = ""
     }
 
     private fun onChangeButtonClicked() {
@@ -1066,28 +1045,28 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val shortAnimTime = context?.resources?.getInteger(android.R.integer.config_shortAnimTime)
 
         shortAnimTime?.toLong()?.let {
-            progressBarLoginWithPhone?.animate()?.setDuration(it)
+            viewBinding?.progressBarLoginWithPhone?.animate()?.setDuration(it)
                     ?.alpha((if (isLoading) 1 else 0).toFloat())
                     ?.setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            if (progressBarLoginWithPhone != null) {
-                                progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
+                            if (viewBinding?.progressBarLoginWithPhone != null) {
+                                viewBinding?.progressBarLoginWithPhone?.visibility = if (isLoading) View.VISIBLE else View.GONE
                             }
                         }
                     })
 
-            container?.animate()?.setDuration(it)
+            viewBinding?.container?.animate()?.setDuration(it)
                     ?.alpha((if (isLoading) 0 else 1).toFloat())
                     ?.setListener(object : AnimatorListenerAdapter() {
                         override fun onAnimationEnd(animation: Animator) {
-                            if (container != null) {
-                                container.visibility = if (isLoading) View.GONE else View.VISIBLE
+                            if (viewBinding?.container != null) {
+                                viewBinding?.container?.visibility = if (isLoading) View.GONE else View.VISIBLE
                             }
                         }
                     })
         }
-        emailExtension?.hide()
-        callTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
+        viewBinding?.emailExtension?.hide()
+        viewBinding?.toTokopediaCare?.showWithCondition(!isUsingRollenceNeedHelp && !isLoading)
     }
 
     override fun goToRegisterInitial(source: String) {
@@ -1340,7 +1319,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         partialRegisterInputView?.showLoginEmailView(email)
         partialActionButton?.setOnClickListener {
-            loginEmail(email, wrapper_password?.editText?.text.toString(), useHash = isUseHash)
+            loginEmail(
+                email,
+                viewBinding?.loginInputView?.getPassword().orEmpty(),
+                useHash = isUseHash
+            )
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -1784,7 +1767,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if (listTickerInfo.isNotEmpty()) {
-            tickerAnnouncement?.visibility = View.VISIBLE
+            viewBinding?.tickerAnnouncement?.show()
             if (listTickerInfo.size > 1) {
                 val mockData = arrayListOf<TickerData>()
                 listTickerInfo.forEach {
@@ -1803,15 +1786,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                         }
 
                     })
-                    tickerAnnouncement?.addPagerView(adapter, mockData)
+                    viewBinding?.tickerAnnouncement?.addPagerView(adapter, mockData)
                 }
             } else {
                 listTickerInfo.first().let {
-                    tickerAnnouncement?.tickerTitle = it.title
-                    tickerAnnouncement?.setHtmlDescription(it.message)
-                    tickerAnnouncement?.tickerShape = getTickerType(it.color)
+                    viewBinding?.tickerAnnouncement?.tickerTitle = it.title
+                    viewBinding?.tickerAnnouncement?.setHtmlDescription(it.message)
+                    viewBinding?.tickerAnnouncement?.tickerShape = getTickerType(it.color)
                 }
-                tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
+                viewBinding?.tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         analytics.eventClickLinkTicker(linkUrl.toString())
                         RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
@@ -1823,7 +1806,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
                 })
             }
-            tickerAnnouncement?.setOnClickListener { v ->
+            viewBinding?.tickerAnnouncement?.setOnClickListener { v ->
                 analytics.eventClickTicker()
             }
 
@@ -1909,16 +1892,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGetDynamicBannerSuccess(dynamicBannerDataModel: DynamicBannerDataModel) {
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.run {
-                bannerLogin?.let { banner ->
+                viewBinding?.bannerLogin?.let { banner ->
                     ImageUtils.loadImage(
                             imageView = banner,
                             url = dynamicBannerDataModel.banner.imgUrl,
                             imageLoaded = {
                                 if (it) {
-                                    bannerLogin?.show()
+                                    viewBinding?.bannerLogin?.show()
                                     analytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
                                 } else {
-                                    bannerLogin?.hide()
+                                    viewBinding?.bannerLogin?.hide()
                                     showTicker()
                                 }
                             })
@@ -1930,25 +1913,25 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun onGetDynamicBannerError(throwable: Throwable) {
-        bannerLogin?.hide()
+        viewBinding?.bannerLogin?.hide()
         showTicker()
     }
 
     private fun showTicker() {
         if (!GlobalConfig.isSellerApp()) {
             if (isFromAtcPage() && isShowTicker) {
-                tickerAnnouncement?.visibility = View.VISIBLE
-                tickerAnnouncement?.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement?.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
-                tickerAnnouncement?.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
+                viewBinding?.tickerAnnouncement?.visibility = View.VISIBLE
+                viewBinding?.tickerAnnouncement?.tickerTitle = getString(R.string.title_ticker_from_atc)
+                viewBinding?.tickerAnnouncement?.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
+                viewBinding?.tickerAnnouncement?.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                viewBinding?.tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}
 
                     override fun onDismiss() {
                         analytics.eventClickCloseTicker()
                     }
                 })
-                tickerAnnouncement?.setOnClickListener {
+                viewBinding?.tickerAnnouncement?.setOnClickListener {
                     analytics.eventClickTicker()
                 }
             } else {

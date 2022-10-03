@@ -10,6 +10,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -381,6 +382,18 @@ class PartialRegisterInputView : BaseCustomView {
 
     fun hideForgotPassword() {
         viewBinding.forgotPass.hide()
+    }
+
+    fun setPassword(pass: String) {
+        viewBinding.wrapperPassword.editText.setText(pass)
+    }
+
+    fun setPasswordListener(listener: TextView.OnEditorActionListener) {
+        viewBinding.wrapperPassword.editText.setOnEditorActionListener(listener)
+    }
+
+    fun getPassword(): String {
+        return viewBinding.wrapperPassword.editText.text.toString()
     }
 
     companion object {
