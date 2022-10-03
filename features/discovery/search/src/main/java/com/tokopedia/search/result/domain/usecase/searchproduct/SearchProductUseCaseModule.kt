@@ -4,10 +4,10 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.data.mapper.searchproduct.SearchProductMapperModule
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
@@ -30,8 +30,7 @@ class SearchProductUseCaseModule {
         userSession: UserSessionInterface,
         coroutineDispatchers: CoroutineDispatchers,
         topAdsIrisSession: TopAdsIrisSession,
-        @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
-        remoteConfigAbTest: RemoteConfig,
+        performanceMonitoringProvider: PerformanceMonitoringProvider,
     ): UseCase<SearchProductModel> {
         val firstPageGqlUseCase = provideSearchProductFirstPageUseCase(
             searchProductModelMapper,
@@ -43,7 +42,7 @@ class SearchProductUseCaseModule {
         return SearchProductTypoCorrectionUseCase(
             firstPageGqlUseCase,
             topAdsGqlUseCase,
-            remoteConfigAbTest,
+            performanceMonitoringProvider,
         )
     }
 
@@ -76,15 +75,14 @@ class SearchProductUseCaseModule {
     @Named(SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE)
     fun provideSearchLoadMoreUseCase(
         searchProductModelMapper: Func1<GraphqlResponse?, SearchProductModel?>,
-        @Named(SearchConstant.AB_TEST_REMOTE_CONFIG)
-        remoteConfigAbTest: RemoteConfig,
+        performanceMonitoringProvider: PerformanceMonitoringProvider,
     ): UseCase<SearchProductModel> {
         val loadMoreGqlUseCase = provideSearchProductLoadMoreUseCase(searchProductModelMapper)
         val topAdsGqlUseCase = provideSearchProductTopAddsUseCase()
         return SearchProductTypoCorrectionUseCase(
             loadMoreGqlUseCase,
             topAdsGqlUseCase,
-            remoteConfigAbTest,
+            performanceMonitoringProvider,
         )
     }
 
