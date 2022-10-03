@@ -9,13 +9,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.media.editor.data.repository.ColorFilterRepository
-import com.tokopedia.media.editor.data.repository.ContrastFilterRepository
-import com.tokopedia.media.editor.data.repository.RotateFilterRepository
-import com.tokopedia.media.editor.data.repository.SaveImageRepository
-import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
-import com.tokopedia.media.editor.data.repository.WatermarkType
+import com.tokopedia.media.editor.data.repository.*
+import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
+import com.tokopedia.media.editor.domain.param.WatermarkUseCaseParam
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
@@ -35,7 +32,8 @@ class DetailEditorViewModel @Inject constructor(
     private val contrastFilterRepository: ContrastFilterRepository,
     private val watermarkFilterRepository: WatermarkFilterRepository,
     private val rotateFilterRepository: RotateFilterRepository,
-    private val saveImageRepository: SaveImageRepository
+    private val saveImageRepository: SaveImageRepository,
+    private val getWatermarkUseCase: GetWatermarkUseCase
 ) : ViewModel() {
 
     private var _isLoading = MutableLiveData<Boolean>()
@@ -123,13 +121,15 @@ class DetailEditorViewModel @Inject constructor(
             initializeWatermarkAsset(context)
         }
 
-        _watermarkFilter.value = watermarkFilterRepository.watermark(
-            bitmapSource,
-            type,
-            shopName,
-            isThumbnail,
-            detailUiModel,
-            useStorageColor
+        _watermarkFilter.value = getWatermarkUseCase(
+            WatermarkUseCaseParam(
+                source = bitmapSource,
+                type = type,
+                shopNameParam = shopName,
+                isThumbnail = isThumbnail,
+                element = detailUiModel,
+                useStorageColor = useStorageColor
+            )
         )
     }
 

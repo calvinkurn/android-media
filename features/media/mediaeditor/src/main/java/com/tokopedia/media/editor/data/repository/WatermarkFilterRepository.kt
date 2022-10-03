@@ -6,8 +6,8 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import com.tokopedia.media.editor.data.entity.EditorDetailEntity
 import javax.inject.Inject
-import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorWatermarkUiModel
 import com.tokopedia.media.editor.utils.isDark
 import kotlin.math.min
@@ -18,7 +18,7 @@ interface WatermarkFilterRepository {
         type: WatermarkType,
         shopNameParam: String,
         isThumbnail: Boolean,
-        element: EditorDetailUiModel? = null,
+        element: EditorDetailEntity? = null,
         useStorageColor: Boolean
     ): Bitmap
 
@@ -78,14 +78,14 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         type: WatermarkType,
         shopNameParam: String,
         isThumbnail: Boolean,
-        element: EditorDetailUiModel?,
+        element: EditorDetailEntity?,
         useStorageColor: Boolean
     ): Bitmap {
         shopText = if (shopNameParam.isEmpty()) DEFAULT_SHOP_NAME else shopNameParam
 
         var isDark = source.isDark()
         if (useStorageColor) {
-            element?.watermarkMode?.let {
+            element?.watermarkModeEntityData?.let {
                 isDark = it.textColorDark
             }
         }
@@ -132,11 +132,11 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
             }
         }
 
-        element?.watermarkMode?.let {
+        element?.watermarkModeEntityData?.let {
             it.textColorDark = isDark
             it.watermarkType = type.value
         } ?: kotlin.run {
-            element?.watermarkMode = EditorWatermarkUiModel(type.value, isDark)
+            element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
         }
 
         return result
