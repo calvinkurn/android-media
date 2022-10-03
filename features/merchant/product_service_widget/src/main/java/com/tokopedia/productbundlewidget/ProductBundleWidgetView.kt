@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.product_bundle.common.data.model.request.Bundle
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
@@ -44,7 +45,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         viewModel.bundleUiModels.observe(lifecycleOwner) {
             bundleAdapter.updateDataSet(it)
         }
-        viewModel.getBundleInfo(715868015, "", emptyList())
+        viewModel.getBundleInfo(0, "", listOf(Bundle(ID = "338583")))
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
