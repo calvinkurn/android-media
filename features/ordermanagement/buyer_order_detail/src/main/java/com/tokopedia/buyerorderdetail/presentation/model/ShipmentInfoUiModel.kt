@@ -5,6 +5,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.buyerorderdetail.presentation.coachmark.DriverTippingCoachMarkManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import java.io.Serializable
 
 data class ShipmentInfoUiModel(
     val awbInfoUiModel: AwbInfoUiModel,
@@ -15,7 +16,7 @@ data class ShipmentInfoUiModel(
     val headerUiModel: PlainHeaderUiModel,
     val receiverAddressInfoUiModel: SimpleCopyableKeyValueUiModel,
     val ticker: TickerUiModel
-) {
+) : Serializable {
 
     data class AwbInfoUiModel(
         val orderId: String,

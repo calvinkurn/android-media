@@ -4,17 +4,18 @@ import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
+import java.io.Serializable
 
 data class PaymentInfoUiModel(
-        val headerUiModel: PlainHeaderUiModel,
-        val paymentGrandTotal: PaymentGrandTotalUiModel,
-        val paymentInfoItems: List<PaymentInfoItemUiModel>,
-        val paymentMethodInfoItem: PaymentInfoItemUiModel,
-        val ticker: TickerUiModel
-) {
+    val headerUiModel: PlainHeaderUiModel,
+    val paymentGrandTotal: PaymentGrandTotalUiModel,
+    val paymentInfoItems: List<PaymentInfoItemUiModel>,
+    val paymentMethodInfoItem: PaymentInfoItemUiModel,
+    val ticker: TickerUiModel
+) : Serializable {
     data class PaymentInfoItemUiModel(
-            val label: String,
-            val value: String
+        val label: String,
+        val value: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -30,8 +31,8 @@ data class PaymentInfoUiModel(
     }
 
     data class PaymentGrandTotalUiModel(
-            val label: String,
-            val value: String
+        val label: String,
+        val value: String
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()

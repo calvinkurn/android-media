@@ -1,38 +1,48 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailScope
-import com.tokopedia.buyerorderdetail.domain.mapper.GetBuyerOrderDetailMapper
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
-import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 @BuyerOrderDetailScope
 @GqlQuery("GetOrderResolutionQuery", GetOrderResolutionUseCase.QUERY)
 class GetOrderResolutionUseCase @Inject constructor(
-    val mapper: GetBuyerOrderDetailMapper
-) : GraphqlUseCase<GetResolutionTicketStatusResponse>() {
+    private val useCase: GraphqlUseCase<GetResolutionTicketStatusResponse>
+) {
 
     init {
-        val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build()
-        setCacheStrategy(cacheStrategy)
-
-        setGraphqlQuery(GetOrderResolutionQuery())
-        setTypeClass(GetResolutionTicketStatusResponse::class.java)
+        useCase.setTypeClass(GetResolutionTicketStatusResponse::class.java)
+        useCase.setGraphqlQuery(GetOrderResolutionQuery())
     }
 
-    suspend fun execute(): OrderResolutionUIModel {
-        val response = executeOnBackground()
-        return mapper.mapResolutionResponseToUIModel(response.resolutionGetTicketStatus?.data)
+    private fun createRequestParam(orderId: Long): Map<String, Any> {
+        return RequestParams.create().apply {
+            putLong(PARAM_ORDER_ID, orderId)
+        }.parameters
     }
+
+    fun getOrderResolution(orderId: Long) = flow {
+        emit(GetOrderResolutionRequestState.Requesting)
+        useCase.setRequestParams(createRequestParam(orderId))
+        emit(GetOrderResolutionRequestState.Success(useCase.executeOnBackground().resolutionGetTicketStatus?.data))
+    }.catch {
+        emit(GetOrderResolutionRequestState.Error(it))
+    }.flowOn(Dispatchers.IO)
 
     companion object {
+        private const val PARAM_ORDER_ID = "orderID"
+
         const val QUERY = """
-            query resolutionGetTicketStatus(${'$'}orderID: Int64!) {
-              resolutionGetTicketStatus(orderID: ${'$'}orderID) {
+            query resolutionGetTicketStatus(${'$'}$PARAM_ORDER_ID: Int64!) {
+              resolutionGetTicketStatus($PARAM_ORDER_ID: ${'$'}$PARAM_ORDER_ID) {
                 data {
                   profile_picture
                   card_title

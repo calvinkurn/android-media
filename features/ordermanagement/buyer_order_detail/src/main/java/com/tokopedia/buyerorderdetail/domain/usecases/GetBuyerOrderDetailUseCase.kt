@@ -1,27 +1,34 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.buyerorderdetail.domain.mapper.GetBuyerOrderDetailMapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
+@GqlQuery("MPBOMDetail", GetBuyerOrderDetailUseCase.QUERY)
 class GetBuyerOrderDetailUseCase @Inject constructor(
-        private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>,
-        private val mapper: GetBuyerOrderDetailMapper
+    private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>
 ) {
 
     init {
         useCase.setTypeClass(GetBuyerOrderDetailResponse.Data::class.java)
-        useCase.setGraphqlQuery(QUERY)
+        useCase.setGraphqlQuery(MPBOMDetail())
     }
 
-    suspend fun execute(params: GetBuyerOrderDetailParams): BuyerOrderDetailUiModel {
+    fun getBuyerOrderDetail(params: GetBuyerOrderDetailParams) = flow {
+        emit(GetBuyerOrderDetailRequestState.Requesting)
         useCase.setRequestParams(createRequestParam(params))
-        return mapper.mapDomainModelToUiModel(useCase.executeOnBackground().buyerOrderDetail)
-    }
+        emit(GetBuyerOrderDetailRequestState.Success(useCase.executeOnBackground().buyerOrderDetail))
+    }.catch {
+        emit(GetBuyerOrderDetailRequestState.Error(it))
+    }.flowOn(Dispatchers.IO)
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
         return RequestParams.create().apply {
@@ -32,9 +39,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     companion object {
         private const val PARAM_INPUT = "input"
 
-        private val QUERY = """
-            query MPBOMDetail(${'$'}input: BomDetailV2Request!) {
-              mp_bom_detail(input: ${'$'}input) {
+        const val QUERY = """
+            query MPBOMDetail(${'$'}$PARAM_INPUT: BomDetailV2Request!) {
+              mp_bom_detail(input: ${'$'}$PARAM_INPUT) {
                 has_reso_status
                 order_id
                 invoice
@@ -310,6 +317,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                 }
               }
             }
-        """.trimIndent()
+        """
     }
 }

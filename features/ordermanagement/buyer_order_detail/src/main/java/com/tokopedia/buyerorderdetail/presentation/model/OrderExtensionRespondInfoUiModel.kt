@@ -1,5 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
+import java.io.Serializable
+
 data class OrderExtensionRespondInfoUiModel(
     val orderId: String = "",
     val confirmationTitle: String = "",
@@ -8,4 +10,4 @@ data class OrderExtensionRespondInfoUiModel(
     val newDeadline: String = "",
     val messageCode: Int,
     val message: String = ""
-)
+) : Serializable
