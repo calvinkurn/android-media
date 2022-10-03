@@ -79,7 +79,8 @@ class ContentProductTagConfigUiTest {
      * 2. (DONE) productTagSource
      * 3. (DONE) isMultipleSelectionProduct -> checkbox show or not & select unselect
      * 4. isFullPageAutocomplete -> from us or not
-     * 5. isShowActionBarDivider
+     * 5. BackButton
+     * 6. isShowActionBarDivider
      */
 
     /** AuthorType Test */
@@ -369,6 +370,33 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
 
         verifyButtonState(R.id.btn_save, false)
+
+        delay(DEFAULT_DELAY)
+    }
+
+    /** BackButton Test */
+
+    /** isShowActionBarDivider Test */
+    @Test
+    fun contentProductTag_isShowActionBarDivider_true_showDivider() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsShowActionBarDivider(true)
+        )
+
+        isVisible(R.id.view_cc_product_tag_divider)
+
+        delay(DEFAULT_DELAY)
+    }
+
+    @Test
+    fun contentProductTag_isShowActionBarDivider_false_hideDivider() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsShowActionBarDivider(false)
+        )
+
+        isHidden(R.id.view_cc_product_tag_divider)
 
         delay(DEFAULT_DELAY)
     }
