@@ -512,17 +512,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
                 dismiss()
-                if (deeplink.isNotEmpty()) {
-                    val affiliateDeeplink = if (Uri.parse(deeplink).scheme != ApplinkConst.APPLINK_CUSTOMER_SCHEME) {
-                        Uri.parse(String.format(Locale.getDefault(), "%s://%s", ApplinkConst.APPLINK_CUSTOMER_SCHEME, deeplink))
-                            .buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
-                    } else {
-                        Uri.parse(deeplink).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()
-                    }
-                    RouteManager.route(context, affiliateDeeplink)
-                } else {
-                    RouteManager.route(context, ApplinkConst.AFFILIATE)
-                }
+                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString()    )
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
 
