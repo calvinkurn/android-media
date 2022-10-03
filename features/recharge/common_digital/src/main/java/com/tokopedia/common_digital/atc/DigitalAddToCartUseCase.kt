@@ -8,9 +8,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.network.data.model.response.DataResponse
-import com.tokopedia.network.exception.ResponseErrorException
 import javax.inject.Inject
-
 
 /**
  * @author Created By : Muhammad Furqan on Aug 5, 2022
@@ -30,24 +28,31 @@ class DigitalAddToCartUseCase @Inject constructor(
         if (isUseGql) {
             var returnResult: DigitalAtcTrackingModel? = null
 
-            gqlUseCase.setParams(
-                digitalCheckoutPassData, userId, digitalIdentifierParam
-            )
+            gqlUseCase.setParams(digitalCheckoutPassData, userId, digitalIdentifierParam)
+
             val result = gqlUseCase.executeOnBackground().atcResponse
 
-            if (result.errors.isNotEmpty()) {
-                throw ResponseErrorException(result.errors.first().title)
-            }
-
-            returnResult = if (result.data.id.isNotEmpty()) {
-                DigitalAtcMapper.mapToDigitalAtcTrackingModel(
-                    null,
-                    result,
-                    digitalCheckoutPassData,
-                    userId
-                )
-            } else {
-                null
+            returnResult = when {
+                result.data.id.isNotEmpty() -> {
+                    DigitalAtcMapper.mapToDigitalAtcTrackingModel(
+                        null,
+                        result,
+                        digitalCheckoutPassData,
+                        userId
+                    )
+                }
+                result.errors.isNotEmpty() -> {
+                    DigitalAtcMapper.mapToDigitalAtcTrackingModel(
+                        null,
+                        result,
+                        digitalCheckoutPassData,
+                        userId,
+                        error = DigitalAtcMapper.mapErrorToErrorAtc(result.errors)
+                    )
+                }
+                else -> {
+                    null
+                }
             }
 
             returnResult

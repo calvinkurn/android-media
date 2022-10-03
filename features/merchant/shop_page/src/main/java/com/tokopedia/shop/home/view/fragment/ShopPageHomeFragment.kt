@@ -2361,6 +2361,27 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
+    override fun onPersonalizationTrendingCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+            shopHomeCarousellProductUiModel.name,
+            shopHomeCarousellProductUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
+        shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
+        )
+        goToPDP(shopHomeProductViewModel.productUrl)
+    }
+
     override fun onCarouselPersonalizationProductItemClickAddToCart(
         parentPosition: Int,
         itemPosition: Int,
@@ -2501,6 +2522,18 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             shopHomeCarousellProductUiModel?.header?.title ?: "",
             shopHomeCarousellProductUiModel?.name ?: "",
             customDimensionShopPage
+        )
+    }
+
+    override fun onCarouselProductPersonalizationTrendingItemImpression(
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        shopPageHomeTracking.impressionProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
         )
     }
 
@@ -2801,6 +2834,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         )
     }
 
+    override fun onCarouselProductPersonalizationTrendingWidgetImpression() {
+        shopPageHomeTracking.impressionPersonalizationTrendingWidget(shopId, userId)
+    }
+
     private fun onSuccessRemoveWishList(
         shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel?,
         shopHomeProductViewModel: ShopHomeProductUiModel?
@@ -3018,26 +3055,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
 
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel?.clearGetShopProductUseCase()
-        val isUsingV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorAddWishlist(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg)
-            )
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel.wishlistResult)
         }
     }
 
@@ -3053,19 +3074,6 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
                 trackClickWishlist(threeDotsClickShopCarouselProductUiModel,
                     it, true)
             }
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishList(
-                threeDotsClickShopCarouselProductUiModel,
-                threeDotsClickShopProductViewModel
-            )
-        } else {
-            onErrorRemoveWishList(
-                getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-            )
         }
     }
 

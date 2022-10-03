@@ -23,7 +23,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
@@ -37,7 +37,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment, boolean enable);
 
-    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -145,4 +145,6 @@ public interface ShipmentAdapterActionListener {
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onViewFreeShippingPlusBadge();
+
+    void onInsuranceInfoTooltipClickedTrackingAnalytics();
 }
