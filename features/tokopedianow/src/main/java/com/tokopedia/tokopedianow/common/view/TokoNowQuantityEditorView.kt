@@ -193,8 +193,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                     root.transitionToEnd()
                     editText.setText(counter.toString())
                 } else {
-                    counter++
-                    editText.setText(counter.toString())
+                    if (root.currentState == R.id.startWithValue) {
+                        root.setTransition(R.id.startWithValue, R.id.end)
+                        root.transitionToEnd()
+                    } else {
+                        counter++
+                        editText.setText(counter.toString())
+                    }
                 }
             }
         }
