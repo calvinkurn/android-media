@@ -24,7 +24,7 @@ class PlayCampaignAnalyticImpl @Inject constructor(
         channelType: PlayChannelType
     ) {
         val eventAction =
-            if (sectionInfo.config.reminder is PlayUpcomingBellStatus.On) "remove ${Companion.KEY_TRACK_UPCOMING_REMINDER}" else Companion.KEY_TRACK_UPCOMING_REMINDER
+            if (sectionInfo.config.reminder == PlayUpcomingBellStatus.On) "remove ${Companion.KEY_TRACK_UPCOMING_REMINDER}" else Companion.KEY_TRACK_UPCOMING_REMINDER
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
