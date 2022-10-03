@@ -1,14 +1,15 @@
 package com.tokopedia.product.detail.view.viewholder
 
-import android.graphics.drawable.Icon
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
@@ -42,6 +43,7 @@ class OneLinersViewHolder(
     private val iconRightArrow: IconUnify? = view.findViewById(R.id.one_liners_icon_right)
     private val separatorTop: View? = view.findViewById(R.id.one_liners_top_separator)
     private val separatorBottom: View? = view.findViewById(R.id.one_liners_bottom_separator)
+    private val coachMarkIms by lazy(LazyThreadSafetyMode.NONE) { CoachMark2(view.context) }
 
     override fun bind(element: OneLinersDataModel) {
         val content = element.oneLinersContent
@@ -85,7 +87,23 @@ class OneLinersViewHolder(
     private fun renderViewEvent(content: OneLinersContent) {
         if (content.applink.isNotBlank()) {
             view.setOnClickListener { listener.goToApplink(content.applink) }
-            iconRightArrow?.visible()
+        } else if (content.eduLink.appLink.isNotBlank()) {
+            view.setOnClickListener { listener.goToApplink(content.eduLink.appLink) }
+            renderCoachMark()
+        }
+    }
+
+    private fun renderCoachMark() {
+        iconStart?.let {
+            if (!coachMarkIms.isShowing) {
+                val item = CoachMark2Item(
+                    anchorView = it,
+                    title = view.context.getString(R.string.pdp_oneliners_ims100_coachmark_title),
+                    description = view.context.getString(R.string.pdp_oneliners_ims100_coachmark_description),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+                coachMarkIms.showCoachMark(arrayListOf(item), null, 0)
+            }
         }
     }
 
@@ -130,8 +148,16 @@ class OneLinersViewHolder(
     }
 
     private fun renderIconEnd(content: OneLinersContent) {
-        if (!content.eduLink.isEmpty()) {
-            iconRightArrow?.visible()
+        // app-link is existing flag for stock info
+        // otherwise edu-link is new flag for stock should available always
+        val shouldShow = content.applink.isNotBlank() || content.eduLink.isNotEmpty()
+
+        iconRightArrow?.shouldShowWithAction(shouldShow = shouldShow) {
+            if (content.applink.isNotBlank()) {
+                iconRightArrow.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
+            } else if (content.eduLink.isNotEmpty()) {
+                iconRightArrow.setImage(newIconId = IconUnify.INFORMATION)
+            }
         }
     }
 

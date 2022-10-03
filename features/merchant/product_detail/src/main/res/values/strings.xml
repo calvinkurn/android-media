@@ -200,4 +200,8 @@
 
     <string name="pdp_media_label_builder">%1$s • %2$s </string>
     <string name="pdp_general_info_see">Lihat</string>
+
+    <!-- One Liners -->
+    <string name="pdp_oneliners_ims100_coachmark_title">Stok terpantau aman oleh Tokopedia!</string>
+    <string name="pdp_oneliners_ims100_coachmark_description">Nggak perlu chat tokonya lagi untuk nanya stok, deh. Yuk, langsung beli aja.</string>
 </resources>

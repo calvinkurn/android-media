@@ -10,7 +10,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
  **/
 
 data class EduLinkData(
-    @SerializedName("applink")
+    @SerializedName("appLink")
     @Expose
     val appLink: String = String.EMPTY,
     @SerializedName("webLink")
@@ -18,7 +18,9 @@ data class EduLinkData(
     val webLink: WebLinkData = WebLinkData()
 ) {
 
-    fun isEmpty() = appLink.isEmpty() && webLink.isEmpty()
+    private fun isEmpty() = appLink.isEmpty() && webLink.isEmpty()
+
+    fun isNotEmpty() = !isEmpty()
 }
 
 data class WebLinkData(
