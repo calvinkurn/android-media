@@ -345,7 +345,6 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         this.channelType = config.channelStatus
-        if (channelType == ChannelStatus.Live) analytic.viewDialogViolation(config.channelId)
         if (isRequiredPermissionGranted()) configureChannelType(channelType)
         else requestPermission()
     }

@@ -6,6 +6,7 @@ package com.tokopedia.content.common.ui.model
 data class AccountStateInfo(
     val type: AccountStateInfoType = AccountStateInfoType.Unknown,
     val selectedAccount: ContentAccountUiModel = ContentAccountUiModel.Empty,
+    val channelId: String = "",
 )
 
 enum class AccountStateInfoType {
