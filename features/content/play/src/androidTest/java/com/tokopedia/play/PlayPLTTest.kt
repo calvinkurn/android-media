@@ -11,6 +11,7 @@ import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
 import com.tokopedia.play.performance.PlayPerformanceDataFileUtils
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play.view.uimodel.recom.PlayGeneralVideoPlayerParams
@@ -19,13 +20,12 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.test.application.TestRepeatRule
+import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-
 
 /**
  * Created by mzennis on 15/05/20.
@@ -43,9 +43,11 @@ class PlayPLTTest {
 
     private val uiModelBuilder = UiModelBuilder.get()
 
-    private val channelIds = List(3) { it.toString() }
+    private val channelCount = 1
 
-    private val channelData = List(3) {
+    private val channelIds = List(channelCount) { it.toString() }
+
+    private val channelData = List(channelCount) {
         uiModelBuilder.buildChannelData(
             id = it.toString(),
             tagItems = uiModelBuilder.buildTagItem(
@@ -69,6 +71,7 @@ class PlayPLTTest {
     }
 
     init {
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(channelData, "")
         every { mockChannelStorage.getChannelList() } returns channelIds
         every { mockChannelStorage.getData(any()) } answers {
             val channelId = (invocation.args[0] as String).toInt()
@@ -103,17 +106,8 @@ class PlayPLTTest {
         }
     }
 
-    @After
-    fun tearDown() {
-//        IdlingRegistry.getInstance().unregister(idlingResource)
-    }
-
     companion object {
 
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_test_case_page_load_time"
-
-        const val CHANNEL_ID = "15774"
-        // const val CHANNEL_ID = "10759" // staging
-
     }
 }

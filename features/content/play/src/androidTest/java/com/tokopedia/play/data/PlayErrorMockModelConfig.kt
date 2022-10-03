@@ -11,7 +11,7 @@ class PlayErrorMockModelConfig : MockModelConfig() {
 
     override fun createMockModel(context: Context): MockModelConfig {
         addMockResponse(
-                KEY_QUERY,
+                KEY_QUERY_CHANNEL_DETAILS,
                 RESPONSE_MOCK_CHANNEL_DETAIL_ERROR,
                 FIND_BY_CONTAINS)
         return this

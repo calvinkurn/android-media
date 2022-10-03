@@ -101,7 +101,7 @@ class PltPlayPerformanceTest {
 
         const val TEST_CASE_PAGE_LOAD_TIME_PERFORMANCE = "play_test_case_page_load_time"
 
-        const val CHANNEL_ID = "15774"
+        const val CHANNEL_ID = "1111"
         // const val CHANNEL_ID = "10759" // staging
 
     }

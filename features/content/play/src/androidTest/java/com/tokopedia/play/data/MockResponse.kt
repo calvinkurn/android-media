@@ -6,6 +6,7 @@ package com.tokopedia.play.data
  */
 
 const val KEY_QUERY = "GetPlayChannelDetail"
+const val KEY_QUERY_CHANNEL_DETAILS = "playGetChannelDetailsWithRecom"
 const val KEY_QUERY_SHOP_INFO = "getShopInfo"
 const val KEY_QUERY_PINNED_PRODUCT = "playGetTagsItem"
 const val KEY_QUERY_PRODUCT_VARIANT = "getProductVariant"
@@ -860,4 +861,506 @@ const val RESPONSE_MOCK_ADD_TO_CART = """
 		}
 	}
 }]
+"""
+
+const val RESPONSE_MOCK_CHANNEL_DETAILS = """
+    [
+   {
+      "data":{
+         "playGetChannelDetailsWithRecom":{
+            "meta":{
+               "cursor":"CJ57IhAIGRIMWzkwOCw2Mzc0ODVdKg1iTV9zN2hYOjxXIzY0"
+            },
+            "data":[
+               {
+                  "id":"15774",
+                  "title":"Test - Android Performance Test",
+                  "description":"",
+                  "cover_url":"https://images.tokopedia.net/img/jJtrdn/2020/12/16/4944cbeb-dc7f-400c-a825-20242f88fefd.png?b\\u003dUMKT%40{.T^hE34p%25MIuIT^%2Bt5D%25WEV[S5nhs%2B",
+                  "start_time":"2020-12-15T00:00:00+07:00",
+                  "is_live":false,
+                  "partner":{
+                     "id":"1959733",
+                     "type":"shop",
+                     "name":"BUKAN Toko Kuma ~!@#${'$'}%^\u0026amp;(){}-",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2017/4/6/1959733/1959733_263ef181-52db-415c-80c9-1a7c45a465a3.png",
+                     "badge_url":"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power Merchant Pro.png",
+                     "app_link":"tokopedia://shop/1959733",
+                     "web_link":"https://www.tokopedia.com/bukantokokuma"
+                  },
+                  "video":{
+                     "id":"15689",
+                     "orientation":"vertical",
+                     "type":"vod",
+                     "stream_source":"https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"4614",
+                     "title":"Test Pinned",
+                     "redirect_url":"tokopedia://play/15774"
+                  },
+                  "quick_replies":[
+                     
+                  ],
+                  "configurations":{
+                     "welcome_format":{
+                        "type":"self_join",
+                        "copy":"{{name}} \u003cb\u003eikut nonton\u003c/b\u003e",
+                        "background_color":"#AD009F92",
+                        "icon":"https://images.tokopedia.net/img/playassets/join.png"
+                     },
+                     "real_time_notif":{
+                        "lifespan":800
+                     },
+                     "show_cart":false,
+                     "show_pinned_product":false,
+                     "active":true,
+                     "freezed":false,
+                     "has_promo":true,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh\u003dtrue\u0026titlebar\u003dfalse\u0026autoplay\u003dtrue\u0026url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":false,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"15774",
+                        "like_type":3
+                     },
+                     "room_background":{
+                        "image_url":""
+                     },
+                     "multiple_like":[
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFFFC400"
+                        }
+                     ],
+                     "has_follow_button":true,
+                     "empty_bottom_sheet":{
+                        "copy_text_header":"Barang pilihan telah habis",
+                        "copy_text_body":"Wah, barang \u0026 promo pilihan sudah habis. Yuk cek barang menarik lainnya di toko ini!",
+                        "copy_text_redirect_button":"Ke Halaman Toko",
+                        "image_url":"https://images.tokopedia.net/img/play/bottomsheet/empty/Product Search Not Found.png"
+                     }
+                  },
+                  "app_link":"tokopedia://play/15774",
+                  "web_link":"https://www.tokopedia.com/play/channel/15774",
+                  "share":{
+                     "text":"Udah pada nonton \"Test - Android Performance Test\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n",
+                     "redirect_url":"https://www.tokopedia.com/play/channel/15774?titlebar\\u003dfalse",
+                     "use_short_url":false,
+                     "meta_title":"Tonton BUKAN Toko Kuma ~!@#${'$'}%^\u0026amp;(){}- di Tokopedia Play",
+                     "meta_description":"Aku punya obat anti-bosen buatmu. Ayo nonton BUKAN Toko Kuma ~!@#${'$'}%^\u0026amp;*(){}- di Tokopedia Play!",
+                     "is_show_button":true
+                  },
+                  "air_time":"WATCH_AGAIN"
+               },
+               {
+                  "id":"638087",
+                  "title":"🌻22.9ATASAN WANITA KEKINIAN",
+                  "description":"",
+                  "cover_url":"https://images.tokopedia.net/img/jJtrdn/2022/9/23/aa6b45aa-50a6-4ec5-92f8-13e571aa957b.jpg?b\\u003dUGH_i9n%24%25KWBr.D*D%25of~Wt7Nft7ISxtt7NG",
+                  "start_time":"2022-09-23T15:02:00+07:00",
+                  "is_live":true,
+                  "partner":{
+                     "id":"961442",
+                     "type":"shop",
+                     "name":"Vice Shop Official",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/shops-1/2021/4/7/961442/961442_6e9fb5f0-4194-4cc9-afff-7f2de02e0eb6.jpg",
+                     "badge_url":"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power Merchant Pro.png",
+                     "app_link":"tokopedia://shop/961442",
+                     "web_link":"https://www.tokopedia.com/viceshop"
+                  },
+                  "video":{
+                     "id":"969782",
+                     "orientation":"vertical",
+                     "type":"live",
+                     "stream_source":"https://live-stream.tokopedia.net/live/v0.2/play_20220923150159_005f17bf-3b16-11ed-976b-42010a2946ba/live/abr.m3u8",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"119362",
+                     "title":"cancel 1x-max 3 orang baru-tanya belakang 1/1❤️",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "Spill promo hari ini min!",
+                     "Gratis ongkir kemana aja?",
+                     "Dikirim darimana?",
+                     "Jelasin variannya dong!"
+                  ],
+                  "configurations":{
+                     "welcome_format":{
+                        "type":"self_join",
+                        "copy":"{{name}} \u003cb\u003eikut nonton\u003c/b\u003e",
+                        "background_color":"#AD009F92",
+                        "icon":"https://images.tokopedia.net/img/playassets/join.png"
+                     },
+                     "real_time_notif":{
+                        "lifespan":800
+                     },
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "active":true,
+                     "freezed":false,
+                     "has_promo":true,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh\u003dtrue\u0026titlebar\u003dfalse\u0026autoplay\u003dtrue\u0026url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":true,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"638087",
+                        "like_type":2
+                     },
+                     "room_background":{
+                        "image_url":""
+                     },
+                     "multiple_like":[
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFFFC400"
+                        }
+                     ],
+                     "has_follow_button":true,
+                     "empty_bottom_sheet":{
+                        "copy_text_header":"Barang pilihan telah habis",
+                        "copy_text_body":"Wah, barang \u0026 promo pilihan sudah habis. Yuk cek barang menarik lainnya di toko ini!",
+                        "copy_text_redirect_button":"Ke Halaman Toko",
+                        "image_url":"https://images.tokopedia.net/img/play/bottomsheet/empty/Product Search Not Found.png"
+                     }
+                  },
+                  "app_link":"tokopedia://play/638087",
+                  "web_link":"https://www.tokopedia.com/play/channel/638087",
+                  "share":{
+                     "text":"Udah pada nonton \"🌻22.9ATASAN WANITA KEKINIAN\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!",
+                     "redirect_url":"https://www.tokopedia.com/play/channel/638087?titlebar\\u003dfalse",
+                     "use_short_url":false,
+                     "meta_title":"Tonton Vice Shop Official di Tokopedia Play",
+                     "meta_description":"Aku punya obat anti-bosen buatmu. Ayo nonton Vice Shop Official di Tokopedia Play!",
+                     "is_show_button":true
+                  },
+                  "air_time":"LIVE"
+               },
+               {
+                  "id":"638206",
+                  "title":"LONG OUTER X RAJUT SULTAN🥰",
+                  "description":"",
+                  "cover_url":"https://images.tokopedia.net/img/jJtrdn/2022/9/23/b8b52f7d-786b-456c-9573-546742bf1730.jpg?b\\u003dUYHeE}~pS%23x]4nROozWVtlxuofNGX9Rkt6xu",
+                  "start_time":"2022-09-23T15:30:24+07:00",
+                  "is_live":true,
+                  "partner":{
+                     "id":"12525390",
+                     "type":"shop",
+                     "name":"oteweshopid",
+                     "thumbnail_url":"https://images.tokopedia.net/img/cache/215-square/GAnVPX/2021/12/8/9804ea71-612a-49bb-89ce-3afd2bf89a14.jpg",
+                     "badge_url":"https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/Power Merchant Pro.png",
+                     "app_link":"tokopedia://shop/12525390",
+                     "web_link":"https://www.tokopedia.com/oteweshopid"
+                  },
+                  "video":{
+                     "id":"969942",
+                     "orientation":"vertical",
+                     "type":"live",
+                     "stream_source":"https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id\\u003df661d83e-3b19-11ed-978f-42010a2946ba",
+                     "autoplay":true,
+                     "buffer_control":{
+                        "max_buffer_in_seconds":18,
+                        "min_buffer_in_seconds":3,
+                        "buffer_for_playback":2,
+                        "buffer_for_playback_after_rebuffer":2
+                     }
+                  },
+                  "pinned_message":{
+                     "id":"",
+                     "title":"",
+                     "redirect_url":""
+                  },
+                  "quick_replies":[
+                     "Spill promo hari ini min!",
+                     "Gratis ongkir kemana aja?",
+                     "Dikirim darimana?",
+                     "Jelasin variannya dong!"
+                  ],
+                  "configurations":{
+                     "welcome_format":{
+                        "type":"self_join",
+                        "copy":"{{name}} \u003cb\u003eikut nonton\u003c/b\u003e",
+                        "background_color":"#AD009F92",
+                        "icon":"https://images.tokopedia.net/img/playassets/join.png"
+                     },
+                     "real_time_notif":{
+                        "lifespan":800
+                     },
+                     "show_cart":true,
+                     "show_pinned_product":true,
+                     "active":true,
+                     "freezed":false,
+                     "has_promo":false,
+                     "reminder":{
+                        "is_set":false
+                     },
+                     "channel_freeze_screen":{
+                        "title":"%s Telah Berakhir",
+                        "description":"Yuk lanjut nonton berbagai video menarik lainnya di Tokopedia Play!",
+                        "button_text":"Cek Channel Lain",
+                        "button_app_link":"tokopedia://webview?pull_to_refresh\u003dtrue\u0026titlebar\u003dfalse\u0026autoplay\u003dtrue\u0026url\u003dhttps%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fchannels%2F"
+                     },
+                     "channel_banned_message":{
+                        "title":"Anda diblokir admin",
+                        "message":"Anda diblokir oleh admin karena melanggar syarat dan ketentuan Channel, sehingga tidak dapat melihat konten ini.",
+                        "button_text":"OK"
+                     },
+                     "chat_config":{
+                        "chat_enabled":true,
+                        "chat_disabled_message":"Maaf, fitur chat sedang dimatikan oleh admin."
+                     },
+                     "feeds_like_params":{
+                        "content_type":29,
+                        "content_id":"638206",
+                        "like_type":2
+                     },
+                     "room_background":{
+                        "image_url":""
+                     },
+                     "multiple_like":[
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/thumb_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/star_filled.png",
+                           "background_color":"#FFFFC400"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFF94D63"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF00AA5B"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF46D8F1"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FF9342ED"
+                        },
+                        {
+                           "icon":"https://images.tokopedia.net/img/playassets/multiplelike/heart_filled.png",
+                           "background_color":"#FFFFC400"
+                        }
+                     ],
+                     "has_follow_button":true,
+                     "empty_bottom_sheet":{
+                        "copy_text_header":"Barang pilihan telah habis",
+                        "copy_text_body":"Wah, barang \u0026 promo pilihan sudah habis. Yuk cek barang menarik lainnya di toko ini!",
+                        "copy_text_redirect_button":"Ke Halaman Toko",
+                        "image_url":"https://images.tokopedia.net/img/play/bottomsheet/empty/Product Search Not Found.png"
+                     }
+                  },
+                  "app_link":"tokopedia://play/638206",
+                  "web_link":"https://www.tokopedia.com/play/channel/638206",
+                  "share":{
+                     "text":"Udah pada nonton \"LONG OUTER X RAJUT SULTAN🥰\" di Tokopedia Play? Ayo nonton bareng~ soalnya ini seru banget!\n",
+                     "redirect_url":"https://www.tokopedia.com/play/channel/638206?titlebar\\u003dfalse",
+                     "use_short_url":false,
+                     "meta_title":"Tonton oteweshopid di Tokopedia Play",
+                     "meta_description":"Aku punya obat anti-bosen buatmu. Ayo nonton oteweshopid di Tokopedia Play!",
+                     "is_show_button":true
+                  },
+                  "air_time":"LIVE"
+               }
+            ]
+         }
+      }
+   }
+]
 """

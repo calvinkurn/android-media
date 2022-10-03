@@ -1,10 +1,13 @@
 package com.tokopedia.play.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.domain.GetChannelStatusUseCase
 import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
+import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
 import com.tokopedia.play.view.uimodel.recom.PlayStatusSource
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
@@ -14,7 +17,9 @@ import javax.inject.Inject
 class PlayViewerChannelRepositoryImpl @Inject constructor(
     private val channelStorage: PlayChannelStateStorage,
     private val getChannelStatusUseCase: GetChannelStatusUseCase,
+    private val getChannelDetailsUseCase: GetChannelDetailsWithRecomUseCase,
     private val dispatchers: CoroutineDispatchers,
+    private val channelMapper: PlayChannelDetailsWithRecomMapper,
 ) : PlayViewerChannelRepository {
 
     override fun getChannelData(
@@ -40,6 +45,20 @@ class PlayViewerChannelRepositoryImpl @Inject constructor(
             statusType = statusType,
             statusSource = PlayStatusSource.Network,
             waitingDuration = response.playGetChannelsStatus.waitingDuration
+        )
+    }
+
+    override suspend fun getChannels(
+        key: GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey,
+        extraParams: PlayChannelDetailsWithRecomMapper.ExtraParams
+    ): PagingChannel = withContext(dispatchers.io) {
+        val response = getChannelDetailsUseCase.apply {
+            setRequestParams(GetChannelDetailsWithRecomUseCase.createParams(key))
+        }.executeOnBackground()
+
+        return@withContext PagingChannel(
+            channelList = channelMapper.map(response, extraParams),
+            cursor = response.channelDetails.meta.cursor,
         )
     }
 }
