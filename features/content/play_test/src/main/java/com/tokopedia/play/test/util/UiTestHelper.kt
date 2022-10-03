@@ -64,8 +64,8 @@ fun verifyItemRecyclerView(@IdRes id: Int, position: Int, verifyBlock: (Recycler
         )
 }
 
-fun ViewInteraction.verifyText(text: String) {
-    check(matches(withText(text)))
+fun verifyText(@IdRes id: Int, text: String) {
+    select(id).verifyText(text)
 }
 
 fun verifyButtonState(@IdRes id: Int, isEnabled: Boolean) {
@@ -105,6 +105,10 @@ private fun ViewInteraction.isVisible() {
 
 private fun ViewInteraction.isHidden() {
     check(matches(not(isDisplayed())))
+}
+
+private fun ViewInteraction.verifyText(text: String) {
+    check(matches(withText(text)))
 }
 
 private fun atPosition(

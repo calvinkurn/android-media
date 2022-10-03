@@ -54,6 +54,7 @@ class ContentProductTagConfigUiTest {
     /** Model */
     private val lastTaggedProduct = lastTaggedModelBuilder.buildPagedDataModel()
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
+    private val maxSelectedProduct = 3
 
     private fun launchActivity(argumentBuilder: ContentProductTagArgument.Builder) {
         ActivityScenario.launch<ContentProductTagTestActivity>(
@@ -83,7 +84,7 @@ class ContentProductTagConfigUiTest {
      * 1. (DONE) authorType -> breadcrumb is not showing
      * 2. (DONE) productTagSource
      * 3. (DONE) isMultipleSelectionProduct -> checkbox show or not & select unselect
-     * 4. isFullPageAutocomplete -> from us or not
+     * 4. (DONE) isFullPageAutocomplete -> from us or not
      * 5. (DONE) BackButton
      * 6. (DONE) isShowActionBarDivider
      */
@@ -248,20 +249,28 @@ class ContentProductTagConfigUiTest {
 
         isHidden(R.id.btn_save)
 
+        verifyText(R.id.tv_cc_product_tag_page_title, targetContext.getString(R.string.content_creation_product_tag_title))
+
         clickItemRecyclerView(R.id.rv_last_tagged_product, 1)
 
-        select(testR.id.tv_selected_product)
-            .verifyText(selectedProduct.toString())
+
+        verifyText(testR.id.tv_selected_product, selectedProduct.toString())
 
         delay(DEFAULT_DELAY)
     }
 
     @Test
-    fun contentProductTag_isMultipleSelectionProduct_true_checkBoxVisible_submitButtonVisible() {
+    fun contentProductTag_isMultipleSelectionProduct_true_titleHasCounter_checkBoxVisible_submitButtonVisible() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setIsAutoHandleBackPressed(false)
-            .setMultipleSelectionProduct(true, 3)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+        )
+
+        verifyText(
+            R.id.tv_cc_product_tag_page_title,
+            targetContext.getString(R.string.content_creation_multiple_product_tag_title)
+                .format(0, maxSelectedProduct)
         )
 
         verifyItemRecyclerView(R.id.rv_last_tagged_product, 0) {
@@ -278,7 +287,7 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setIsAutoHandleBackPressed(false)
-            .setMultipleSelectionProduct(true, 3)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
         )
 
         val positionList = listOf(0, 1, 2)
@@ -286,30 +295,33 @@ class ContentProductTagConfigUiTest {
             SelectedProductUiModel.createOnlyId(lastTaggedProduct.dataList[position].id)
         }
 
-        positionList.forEach { position ->
+        positionList.forEachIndexed { idx, position ->
             clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+            verifyText(
+                R.id.tv_cc_product_tag_page_title,
+                targetContext.getString(R.string.content_creation_multiple_product_tag_title)
+                    .format(idx+1, maxSelectedProduct)
+            )
             delay(DEFAULT_DELAY)
         }
 
         click(R.id.btn_save)
 
-        select(testR.id.tv_selected_product)
-            .verifyText(selectedProducts.toString())
+        verifyText(testR.id.tv_selected_product, selectedProducts.toString())
 
         delay(DEFAULT_DELAY)
     }
 
     @Test
     fun contentProductTag_isMultipleSelectionProduct_true_cannotTickMoreThanMaxProduct() {
-        val maxProduct = 3
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setIsAutoHandleBackPressed(false)
-            .setMultipleSelectionProduct(true, maxProduct)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
         )
 
         val positionList = listOf(0, 1, 2, 3)
-        val selectedProducts = positionList.take(maxProduct).map { position ->
+        val selectedProducts = positionList.take(maxSelectedProduct).map { position ->
             SelectedProductUiModel.createOnlyId(lastTaggedProduct.dataList[position].id)
         }
 
@@ -317,11 +329,15 @@ class ContentProductTagConfigUiTest {
             clickItemRecyclerView(R.id.rv_last_tagged_product, position)
             delay(DEFAULT_DELAY)
         }
+        verifyText(
+            R.id.tv_cc_product_tag_page_title,
+            targetContext.getString(R.string.content_creation_multiple_product_tag_title)
+                .format(maxSelectedProduct, maxSelectedProduct)
+        )
 
         click(R.id.btn_save)
 
-        select(testR.id.tv_selected_product)
-            .verifyText(selectedProducts.toString())
+        verifyText(testR.id.tv_selected_product, selectedProducts.toString())
 
         delay(DEFAULT_DELAY)
     }
@@ -331,7 +347,7 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setIsAutoHandleBackPressed(false)
-            .setMultipleSelectionProduct(true, 3)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
         )
 
         val position = 0
@@ -339,12 +355,22 @@ class ContentProductTagConfigUiTest {
         verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
             it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked
         }
+        verifyText(
+            R.id.tv_cc_product_tag_page_title,
+            targetContext.getString(R.string.content_creation_multiple_product_tag_title)
+                .format(1, maxSelectedProduct)
+        )
         delay(DEFAULT_DELAY)
 
         clickItemRecyclerView(R.id.rv_last_tagged_product, position)
         verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
             it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked.not()
         }
+        verifyText(
+            R.id.tv_cc_product_tag_page_title,
+            targetContext.getString(R.string.content_creation_multiple_product_tag_title)
+                .format(0, maxSelectedProduct)
+        )
         delay(DEFAULT_DELAY)
     }
 
@@ -353,7 +379,7 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setIsAutoHandleBackPressed(false)
-            .setMultipleSelectionProduct(true, 3)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
         )
 
         val position = 0
