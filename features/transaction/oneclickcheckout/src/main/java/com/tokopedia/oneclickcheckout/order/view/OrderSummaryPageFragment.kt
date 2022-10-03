@@ -1532,7 +1532,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             }
 
             override fun onClickInsuranceInfo(message: String) {
-                   showInsuranceBottomSheet(message)
+                orderSummaryAnalytics.eventClickOnInsuranceInfoTooltip(userSession.get().userId)
+                showInsuranceBottomSheet(message)
             }
         }
     }
