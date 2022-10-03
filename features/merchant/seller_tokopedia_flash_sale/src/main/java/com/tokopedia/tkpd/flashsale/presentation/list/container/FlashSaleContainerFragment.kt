@@ -12,11 +12,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
+import com.tokopedia.campaign.components.ineligibleaccessview.IneligibleAccessView
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -43,6 +46,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         private const val REDIRECTION_DELAY : Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
+        private const val INELIGIBLE_ACCESS_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access_fs_tokopedia.png"
         @JvmStatic
         fun newInstance() = FlashSaleContainerFragment()
     }
@@ -85,7 +89,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
         applyUnifyBackgroundColor()
-        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
     }
 
     private fun setupView() {
@@ -111,23 +115,42 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         when (effect) {
             is FlashSaleContainerViewModel.UiEffect.ErrorFetchTabsMetaData -> {
                 binding?.root.showToasterError(effect.throwable)
-
+            }
+            FlashSaleContainerViewModel.UiEffect.ShowIneligibleAccessWarning -> {
+                showIneligibleAccessBottomSheet()
             }
         }
     }
 
     private fun handleUiState(uiState: FlashSaleContainerViewModel.UiState) {
         renderLoadingState(uiState.isLoading, uiState.error)
-        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading)
-        renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return)
+        renderTicker(uiState.showTicker, uiState.tickerMessage, uiState.error, uiState.isLoading, uiState.isEligibleUsingFeature)
+        renderTabs(uiState.tabs, uiState.error, findTargetTabDestination() ?: return, uiState.isEligibleUsingFeature)
         renderErrorState(uiState.error)
+        renderIneligibleAccessWarning(uiState.isEligibleUsingFeature)
+    }
+
+    private fun renderIneligibleAccessWarning(isEligibleUsingFeature: Boolean) {
+        if (!isEligibleUsingFeature) {
+            val onButtonClick = { routeToUrl(SELLER_EDU_ARTICLE_URL) }
+            val param = IneligibleAccessView.Param(
+                INELIGIBLE_ACCESS_IMAGE_URL,
+                getString(R.string.stfs_ineligible_reason_title),
+                getString(R.string.stfs_ineligible_reason_description),
+                getString(R.string.stfs_feature_learn_more),
+                onButtonClick
+            )
+            binding?.ineligibleAccessView?.show(param)
+        } else {
+            binding?.ineligibleAccessView?.gone()
+        }
     }
 
     private fun renderErrorState(error: Throwable?) {
         val isError = error != null
         binding?.globalError?.isVisible = isError
         binding?.globalError?.setActionClickListener {
-            viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetTabsMetadata)
+            viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
         }
     }
 
@@ -137,10 +160,10 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         binding?.shimmer?.content?.isVisible = isLoading && !isError
     }
 
-    private fun renderTabs(tabs: List<TabMetadata.Tab>, error: Throwable?, targetTabPosition: Int) {
+    private fun renderTabs(tabs: List<TabMetadata.Tab>, error: Throwable?, targetTabPosition: Int, isEligibleUsingFeature: Boolean) {
         val isError = error != null
-        binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError
-        binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError
+        binding?.tabsUnify?.isVisible = tabs.isNotEmpty() && !isError && isEligibleUsingFeature
+        binding?.viewPager?.isVisible = tabs.isNotEmpty() && !isError && isEligibleUsingFeature
 
         if (tabs.isNotEmpty()) {
             displayTabs(predefinedTabs, tabs, targetTabPosition)
@@ -185,10 +208,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
         showTicker: Boolean,
         remoteTickerMessage: String,
         error: Throwable?,
-        isLoading: Boolean
+        isLoading: Boolean,
+        isEligibleUsingFeature: Boolean
     ) {
         val isError = error != null
-        val shouldDisplayTicker = showTicker && !isError && !isLoading
+        val shouldDisplayTicker = showTicker && !isError && !isLoading && isEligibleUsingFeature
 
         if (shouldDisplayTicker) {
             displayTicker(remoteTickerMessage)
@@ -272,5 +296,11 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             "finished" -> FlashSaleListPageTab.FINISHED.position
             else -> FlashSaleListPageTab.UPCOMING.position
         }
+    }
+
+    private fun showIneligibleAccessBottomSheet() {
+        val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
+        bottomSheet.setOnButtonClicked { routeToUrl(SELLER_EDU_ARTICLE_URL) }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
