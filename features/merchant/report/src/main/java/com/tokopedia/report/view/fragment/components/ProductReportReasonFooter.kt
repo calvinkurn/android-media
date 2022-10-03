@@ -11,7 +11,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.report.view.fragment.unify_components.CTypography
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
-import com.tokopedia.report.view.fragment.unify_components.htmlLinkParser
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -30,9 +29,7 @@ fun ProductReportReasonFooter(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
-        text = text.htmlLinkParser {
-            onClick.invoke(it)
-        },
+        text = text,
         type = TextUnifyType.Body3,
     )
     /*TextUnify(
