@@ -15,14 +15,21 @@ class TmProgramListViewModel @Inject constructor(
     @CoroutineMainDispatcher dispatcher: CoroutineDispatcher,
     ): BaseViewModel(dispatcher) {
 
-    private val _tokomemberProgramListLiveData = MutableLiveData<Int>()
-    val tokomemberProgramListLiveData: LiveData<Int> = _tokomemberProgramListLiveData
+    private val _tmRefreshProgramListLiveData = MutableLiveData<Int>()
+    val tmRefreshProgramListLiveData: LiveData<Int> = _tmRefreshProgramListLiveData
+
+    private val _tmProgramListLoadingStateLiveData = MutableLiveData<Int>()
+    val tmProgramListLoadingStateLiveData: LiveData<Int> = _tmProgramListLoadingStateLiveData
 
     private val _tokomemberProgramListResultLiveData = MutableLiveData<TokoLiveDataResult<ProgramList>>()
     val tokomemberProgramListResultLiveData: LiveData<TokoLiveDataResult<ProgramList>> = _tokomemberProgramListResultLiveData
 
-    fun refreshList(state: Int){
-        _tokomemberProgramListLiveData.postValue(state)
+    fun refreshProgramList(state: Int){
+        _tmRefreshProgramListLiveData.postValue(state)
+    }
+
+    fun programListLoadingState(state: Int){
+        _tmProgramListLoadingStateLiveData.postValue(state)
     }
 
     fun getProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){

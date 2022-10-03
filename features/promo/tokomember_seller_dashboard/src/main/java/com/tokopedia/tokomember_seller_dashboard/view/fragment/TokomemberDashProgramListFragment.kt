@@ -145,25 +145,25 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     viewFlipperProgramList.displayedChild = 0
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    if(it.data?.membershipGetProgramList?.programSellerList.isNullOrEmpty()){
+                    tmProgramListViewModel?.refreshProgramList(LOADED)
+                    tmProgramListViewModel?.programListLoadingState(LOADED)
+                    hasNext = it.data?.membershipGetProgramList?.programSellerList?.size != 0
+                    if(it.data?.membershipGetProgramList?.programSellerList.isNullOrEmpty() && tokomemberDashProgramAdapter.programSellerList.isNullOrEmpty()){
                         viewFlipperProgramList.displayedChild = 2
-                        tmProgramListViewModel?.refreshList(LOADED)
                     }
                     else {
-                        hasNext = it.data?.membershipGetProgramList?.programSellerList?.size != 0
                         viewFlipperProgramList.displayedChild = 1
                         tokomemberDashProgramAdapter.programSellerList.addAll(it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>)
                         tokomemberDashProgramAdapter.notifyDataSetChanged()
-                        tmProgramListViewModel?.refreshList(LOADED)
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
-                    tmProgramListViewModel?.refreshList(LOADED)
+                    tmProgramListViewModel?.refreshProgramList(LOADED)
                 }
             }
         })
 
-        tmProgramListViewModel?.tokomemberProgramListLiveData?.observe(viewLifecycleOwner, {
+        tmProgramListViewModel?.tmRefreshProgramListLiveData?.observe(viewLifecycleOwner, {
             when (it) {
                 REFRESH ->{
                     tmProgramListViewModel?.getProgramList(shopId, cardId)
@@ -203,7 +203,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
                         closeLoadingDialog()
-                        tmProgramListViewModel?.refreshList(REFRESH)
+                        tmProgramListViewModel?.refreshProgramList(REFRESH)
                         view?.let { it1 -> Toaster.build(it1, "Program dibatalkan.", Toaster.LENGTH_SHORT).show() }
                     }
                     else{
@@ -215,7 +215,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 }
             }
         })
-        Log.d("REFRESH_TAG", "observeViewModel: " + tmProgramListViewModel?.tokomemberProgramListLiveData?.hasActiveObservers())
+        Log.d("REFRESH_TAG", "observeViewModel: " + tmProgramListViewModel?.tmRefreshProgramListLiveData?.hasActiveObservers())
     }
 
     override fun getScreenName() = ""
@@ -299,10 +299,11 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 val visibleItemCount: Int? = linearLayoutManager?.childCount
                 val totalItemCount: Int? = linearLayoutManager?.itemCount
                 val firstVisibleItemPosition: Int? = linearLayoutManager?.findFirstVisibleItemPosition()
-                if ((tmProgramListViewModel?.tokomemberProgramListResultLiveData?.value)?.equals(TokoLiveDataResult.STATUS.LOADING) == false) {
+                if ((tmProgramListViewModel?.tmProgramListLoadingStateLiveData?.value)?.equals(LOADED) == true) {
                     if (visibleItemCount != null && firstVisibleItemPosition != null && totalItemCount != null) {
                         if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition > 0) {
                             if(hasNext) {
+                                tmProgramListViewModel?.programListLoadingState(REFRESH)
                                 currentPage += 1
                                 tmProgramListViewModel?.getProgramList(
                                     shopId,
