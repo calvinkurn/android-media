@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.product_bundle.common.data.model.request.Bundle
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
@@ -45,7 +46,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         viewModel.bundleUiModels.observe(lifecycleOwner) {
             bundleAdapter.updateDataSet(it)
         }
-        viewModel.getBundleInfo(0, "", listOf(Bundle(ID = "338583")))
+        viewModel.getBundleInfo(2444029649, "", listOf())
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
@@ -89,21 +90,21 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedProduct: BundleProductUiModel,
         productItemPosition: Int
     ) {
-
+        RouteManager.route(context, ApplinkConst.PRODUCT_INFO, selectedProduct.productId)
     }
 
     override fun addMultipleBundleToCart(
         selectedMultipleBundle: BundleDetailUiModel,
         productDetails: List<BundleProductUiModel>
     ) {
-
+        RouteManager.route(context, ApplinkConst.PRODUCT_BUNDLE, selectedMultipleBundle.bundleId)
     }
 
     override fun addSingleBundleToCart(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     ) {
-
+        RouteManager.route(context, ApplinkConst.PRODUCT_BUNDLE, selectedBundle.bundleId)
     }
 
     override fun onTrackSingleVariantChange(
@@ -111,7 +112,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedSingleBundle: BundleDetailUiModel,
         bundleName: String
     ) {
-
+        println(bundleName)
     }
 
     override fun impressionProductBundleSingle(
@@ -120,14 +121,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         bundleName: String,
         bundlePosition: Int
     ) {
-
+        println(bundleName)
     }
 
     override fun impressionProductBundleMultiple(
         selectedMultipleBundle: BundleDetailUiModel,
         bundlePosition: Int
     ) {
-
+        println(selectedMultipleBundle)
     }
 
     override fun impressionProductItemBundleMultiple(
@@ -135,6 +136,6 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
-
+        println(selectedProduct)
     }
 }
