@@ -149,13 +149,6 @@ class FeedPlusModule {
 
     @FeedPlusScope
     @Provides
-    @Named(RawQueryKeyConstant.GQL_QUERY_FEED_DETAIL)
-    fun provideFeedDetailQuery(@ApplicationContext context: Context): String {
-        return GraphqlHelper.loadRawString(context.resources, R.raw.query_feed_detail)
-    }
-
-    @FeedPlusScope
-    @Provides
     fun provideNetworkRouter(@ApplicationContext context: Context): NetworkRouter {
         return context as NetworkRouter
     }
