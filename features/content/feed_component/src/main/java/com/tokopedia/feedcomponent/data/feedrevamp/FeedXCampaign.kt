@@ -22,10 +22,23 @@ data class FeedXCampaign(
         get() = id.toLongOrZero()
 
     val isUpcoming: Boolean
-        get() = status == Upcoming
+        get() = status == UPCOMING
+
+    val isOngoing: Boolean
+        get() = status == ONGOING
+
+    val isRilisanSpl: Boolean
+        get() = name == ASGC_RILISAN_SPECIAL ||  name == RILISAN_SPECIAL
+
+    val isFlashSaleToko: Boolean
+        get() = name == ASGC_FLASH_SALE_TOKO
 
     companion object {
-        private const val Upcoming = "upcoming"
+        private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"//Rilisan Spesial
+        private const val RILISAN_SPECIAL = "Rilisan Spesial"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        const val ONGOING = "ongoing"
+        const val UPCOMING = "upcoming"
     }
 }
 

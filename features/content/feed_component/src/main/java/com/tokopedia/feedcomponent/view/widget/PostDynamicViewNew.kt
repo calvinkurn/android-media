@@ -1434,7 +1434,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         commentButton.invisible()
         seeAllCommentText.hide()
-        if (feedXCard.isTypeProductHighlight && feedXCard.isUpcoming)
+        if (feedXCard.isTypeProductHighlight && feedXCard.campaign.isUpcoming)
         listener?.onIngatkanSayaBtnImpressed(mData, positionInFeed)
 
         adapter.setItemsAndAnimateChanges(mediaList)
@@ -1780,7 +1780,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             card.isAsgcColorChangedAsPerWidgetColor = true
             if (card.isTypeProductHighlight) {
-                if ((card.isRilisanSpl || card.isFlashSaleToko) && colorGradient.isNotEmpty()) {
+                if ((card.campaign.isRilisanSpl || card.campaign.isFlashSaleToko) && colorGradient.isNotEmpty()) {
                     changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
                         colorGradient.color
                     } as? ArrayList<String>)
