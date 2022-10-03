@@ -15,8 +15,8 @@ import dagger.Component
     modules = [
         ContentProductTagTestModule::class,
         ContentProductTagTestBindModule::class,
-        ContentCreationProductTagBindModule::class,
-        ContentCreationProductTagModule::class,
+        ContentCreationProductTagBindTestModule::class,
+        ContentCreationProductTagTestModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

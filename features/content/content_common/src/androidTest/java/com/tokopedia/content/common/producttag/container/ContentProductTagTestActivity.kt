@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.producttag.di.ContentCreationProductTagTestModule
+import com.tokopedia.content.common.producttag.di.ContentProductTagTestInjector
 import com.tokopedia.content.common.producttag.di.ContentProductTagTestModule
 import com.tokopedia.content.common.producttag.di.DaggerContentProductTagTestComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
@@ -62,15 +64,7 @@ class ContentProductTagTestActivity : AppCompatActivity() {
     }
 
     private fun inject() {
-        DaggerContentProductTagTestComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .contentProductTagTestModule(
-                ContentProductTagTestModule(
-                    mockUserSession = UserSession(this),
-                )
-            )
-            .build()
-            .inject(this)
+        ContentProductTagTestInjector.get()?.inject(this)
     }
 
     companion object {
