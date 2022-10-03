@@ -1,6 +1,7 @@
 package com.tokopedia.content.common.producttag.testcase
 
 import android.content.Intent
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.test.core.app.ActivityScenario
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
@@ -15,10 +16,13 @@ import com.tokopedia.content.common.producttag.helper.ContentProductTagDaggerHel
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
+import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.play.test.util.*
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -26,6 +30,7 @@ import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.tokopedia.content.common.test.R as testR
+import com.tokopedia.iconunify.R.drawable as iconR
 
 /**
  * Created By : Jonathan Darwin on October 03, 2022
@@ -79,8 +84,8 @@ class ContentProductTagConfigUiTest {
      * 2. (DONE) productTagSource
      * 3. (DONE) isMultipleSelectionProduct -> checkbox show or not & select unselect
      * 4. isFullPageAutocomplete -> from us or not
-     * 5. BackButton
-     * 6. isShowActionBarDivider
+     * 5. (DONE) BackButton
+     * 6. (DONE) isShowActionBarDivider
      */
 
     /** AuthorType Test */
@@ -375,6 +380,29 @@ class ContentProductTagConfigUiTest {
     }
 
     /** BackButton Test */
+    @Test
+    fun contentProductTag_backButton_back() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setBackButton(ContentProductTagConfig.BackButton.Back)
+        )
+
+        verify<IconUnify>(R.id.ic_cc_product_tag_back) {
+            it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_arrow_back)
+        }
+    }
+
+    @Test
+    fun contentProductTag_backButton_close() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setBackButton(ContentProductTagConfig.BackButton.Close)
+        )
+
+        verify<IconUnify>(R.id.ic_cc_product_tag_back) {
+            it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_close)
+        }
+    }
 
     /** isShowActionBarDivider Test */
     @Test

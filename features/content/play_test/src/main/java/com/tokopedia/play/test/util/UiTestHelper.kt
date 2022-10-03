@@ -1,6 +1,7 @@
 package com.tokopedia.play.test.util
 
 import android.view.View
+import android.widget.ImageView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
@@ -74,6 +75,24 @@ fun verifyButtonState(@IdRes id: Int, isEnabled: Boolean) {
             else not(isEnabled())
         )
     )
+}
+
+fun <T: View> verify(
+    @IdRes id: Int,
+    verifyBlock: (T) -> Boolean,
+): Matcher<View> {
+    return object: BoundedMatcher<View, View>(View::class.java) {
+        override fun describeTo(description: Description?) {
+
+        }
+
+        override fun matchesSafely(item: View?): Boolean {
+            val view = item as? T
+            return view?.let {
+                verifyBlock(it)
+            } ?: false
+        }
+    }
 }
 
 private fun ViewInteraction.clickView() {
