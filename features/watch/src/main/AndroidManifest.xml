@@ -28,6 +28,12 @@
                     android:host="*"
                     android:pathPrefix="/get-all-data"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-phone-state"
+                    android:scheme="wear" />
+
+
             </intent-filter>
         </service>
 

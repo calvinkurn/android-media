@@ -1,6 +1,7 @@
 package com.tokopedia.watch.listenerservice
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Log
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -82,12 +83,27 @@ class DataLayerServiceListener: WearableListenerService() {
                     getSummaryData()
                 }
             }
+            GET_PHONE_STATE -> {
+                runBlocking {
+                    if (!userSession.get().isLoggedIn) {
+                        sendMessageToWatch(
+                            DataLayerServiceListener.GET_PHONE_STATE,
+                            STATE.COMPANION_NOT_LOGIN.getStringState()
+                        )
+                    } else {
+                        sendMessageToWatch(
+                            DataLayerServiceListener.GET_PHONE_STATE,
+                            STATE.CONNECTED.getStringState()
+                        )
+                    }
+                }
+            }
         }
     }
 
     private fun getOrderList() {
         if (!userSession.get().isLoggedIn) {
-            startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN))
+            return
         }
 
         getOrderListUseCase.get().executeSync(RequestParams(), getLoadOrderListDataSubscriber())
@@ -95,7 +111,7 @@ class DataLayerServiceListener: WearableListenerService() {
 
     private fun getSummaryData() {
         if (!userSession.get().isLoggedIn) {
-            startActivity(RouteManager.getIntent(this, ApplinkConst.LOGIN))
+            return
         }
         getSummaryUseCase.get().executeSync(RequestParams(), getLoadSummaryDataSubscriber())
     }
@@ -147,6 +163,8 @@ class DataLayerServiceListener: WearableListenerService() {
 
                 // Send a message to all nodes in parallel
                 nodes.map { node ->
+                    Log.d(TAG, "Sending data to watch... ${node.displayName}")
+
                     async {
                         messageClient.sendMessage(
                             node.id,
@@ -171,6 +189,22 @@ class DataLayerServiceListener: WearableListenerService() {
         scope.cancel()
     }
 
+    enum class STATE {
+        CONNECTED,
+        SYNC,
+        COMPANION_NOT_LOGIN,
+        COMPANION_NOT_REACHABLE,
+        COMPANION_NOT_INSTALLED;
+
+        fun getStringState() = when(this) {
+            SYNC -> "sync"
+            CONNECTED -> "connected"
+            COMPANION_NOT_LOGIN -> "companion_not_login"
+            COMPANION_NOT_REACHABLE -> "companion_not_reachable"
+            COMPANION_NOT_INSTALLED -> "companion_not_installed"
+        }
+    }
+
     companion object {
         const val MESSAGE_CLIENT_START_ORDER_ACTIVITY = "/start-order-activity"
         const val MESSAGE_CLIENT_APP_DETECTION = "/app-detection"
@@ -178,7 +212,11 @@ class DataLayerServiceListener: WearableListenerService() {
         const val GET_SUMMARY_PATH = "/get-summary"
 
         const val GET_ALL_DATA_PATH = "/get-all-data"
+        const val GET_PHONE_STATE = "/get-phone-state"
+
         const val ACCEPT_BULK_ORDER_PATH = "/accept_bulk-order"
         const val TAG = "DataLayerServiceListener"
+
+
     }
 }

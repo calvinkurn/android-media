@@ -14,6 +14,7 @@ import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
@@ -73,9 +74,22 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _currentState = MutableStateFlow<UiState<PhoneState>>(UiState.Loading())
+    val currentState : StateFlow<UiState<PhoneState>> = _currentState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
+
+    fun checkPhoneState() {
+        viewModelScope.launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+        }
+    }
 
     fun getOrderList(dataKey: String) {
         viewModelScope.launch {

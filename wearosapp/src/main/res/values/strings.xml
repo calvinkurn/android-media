@@ -22,5 +22,6 @@
     <string name="new_order_detail_footer_title">Actions</string>
     <string name="new_order_detail_accept_order">Terima Pesanan</string>
     <string name="new_order_detail_open_on_cellphone">Buka di handphone</string>
+    <string name="watch_shape">Square Watch</string>
 
 </resources>
