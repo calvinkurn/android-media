@@ -1,0 +1,26 @@
+package com.tokopedia.content.common.producttag.di
+
+import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.content.common.di.ContentProductTagSampleScope
+import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
+import dagger.Component
+
+/**
+ * Created By : Jonathan Darwin on October 03, 2022
+ */
+@ContentProductTagSampleScope
+@Component(
+    modules = [
+        ContentProductTagTestModule::class,
+        ContentProductTagTestBindModule::class,
+        ContentCreationProductTagBindModule::class,
+        ContentCreationProductTagModule::class,
+    ],
+    dependencies = [BaseAppComponent::class]
+)
+interface ContentProductTagTestComponent {
+
+    fun inject(activity: ContentProductTagTestActivity)
+}
