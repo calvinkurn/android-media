@@ -1,16 +1,17 @@
 package com.tokopedia.report.view.fragment.components
 
+import android.content.Context
 import android.text.method.LinkMovementMethod
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.content.ContextCompat
+import com.tokopedia.report.view.fragment.unify_components.CTypography
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
+import com.tokopedia.report.view.fragment.unify_components.htmlLinkParser
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -21,9 +22,19 @@ import com.tokopedia.unifyprinciples.Typography
 
 @Composable
 fun ProductReportReasonFooter(
+    context: Context = LocalContext.current,
     text: String,
     onClick: (String) -> Unit
 ) {
+    CTypography(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        text = text.htmlLinkParser {
+            onClick.invoke(it)
+        },
+        type = TextUnifyType.Body3,
+    )
     /*TextUnify(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,9 +73,9 @@ private fun composeSpannable(
 @Preview
 @Composable
 fun ProductReportReasonFooterPreview() {
-    ProductReportReasonFooter(
+    /*ProductReportReasonFooter(
         stringResource(id = com.tokopedia.report.R.string.product_report_see_all_types)
     ) {
 
-    }
+    }*/
 }

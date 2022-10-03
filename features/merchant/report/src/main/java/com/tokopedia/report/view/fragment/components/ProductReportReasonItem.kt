@@ -17,9 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.report.data.model.ProductReportReason
+import com.tokopedia.report.view.fragment.unify_components.CTypography
+import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
+import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -51,6 +55,21 @@ fun ProductReportReasonItem(
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
+                CTypography(
+                    text = reason.value,
+                    type = TextUnifyType.Body2,
+                    weight = TextUnifyWeight.Bold
+                )
+
+                if (subtitleVisible) {
+                    CTypography(
+                        text = reason.detail,
+                        type = TextUnifyType.Body3,
+                        weight = TextUnifyWeight.Bold,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
                 /*TextUnify(
                     modifier = Modifier,
                     type = TextUnifyType.Body2,

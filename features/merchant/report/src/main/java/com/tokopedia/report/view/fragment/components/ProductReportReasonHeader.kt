@@ -8,6 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import com.tokopedia.report.view.fragment.unify_components.CTypography
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
 import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 
@@ -20,6 +21,14 @@ import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 fun ProductReportReasonHeader(
     text: String
 ) {
+    CTypography(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        text = text,
+        type = TextUnifyType.Heading3,
+        weight = TextUnifyWeight.Bold
+    )
     /*TextUnify(
         modifier = Modifier
             .fillMaxWidth()
