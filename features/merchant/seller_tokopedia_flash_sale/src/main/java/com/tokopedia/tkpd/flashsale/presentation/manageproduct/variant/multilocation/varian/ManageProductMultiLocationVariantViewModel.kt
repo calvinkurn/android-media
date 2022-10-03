@@ -30,6 +30,9 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
         MutableLiveData()
 
+    private var _variantPositionOnProduct : Int = 0
+
+
     val enableBulkApply = Transformations.map(_productVariant) {
         var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK
         it.warehouses.forEach { warehouse -> if (warehouse.isToggleOn) sizeOfToggleOn++ }
@@ -42,18 +45,16 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     val isInputPageValid = Transformations.map(_product) {
         val criteria = it.productCriteria
-        val listOfSelectedProductVariant = it.childProducts[variantPositionOnProduct].warehouses
+        val listOfSelectedProductVariant = it.childProducts[_variantPositionOnProduct].warehouses
             .filter { warehouse -> warehouse.isToggleOn }
 
-        return@map listOfSelectedProductVariant.any {
-            return@map validateInput(
+        return@map listOfSelectedProductVariant.any { warehouse ->
+            return@map !validateInput(
                 criteria,
-                it.discountSetup
+                warehouse.discountSetup
             ).isAllFieldValid()
         }
     }
-
-    var variantPositionOnProduct : Int = 0
 
     fun validateInput(
         criteria: ReservedProduct.Product.ProductCriteria,
@@ -137,7 +138,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
 
     fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int) {
         _product.value = product
-        variantPositionOnProduct = positionOfVariant
+        _variantPositionOnProduct = positionOfVariant
         _productVariant.value = product.childProducts[positionOfVariant]
     }
 

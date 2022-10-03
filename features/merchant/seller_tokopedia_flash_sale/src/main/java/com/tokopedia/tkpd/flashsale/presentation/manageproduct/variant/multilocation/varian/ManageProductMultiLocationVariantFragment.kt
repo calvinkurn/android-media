@@ -140,7 +140,7 @@ class ManageProductMultiLocationVariantFragment :
 
     private fun setupObservers() {
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {
-            buttonSubmit?.isEnabled = it
+            buttonSubmit?.isEnabled = !it
         }
         viewModel.enableBulkApply.observe(viewLifecycleOwner) {
             if (it) enableWidgetBulkApply() else disableWidgetBulkApply()
