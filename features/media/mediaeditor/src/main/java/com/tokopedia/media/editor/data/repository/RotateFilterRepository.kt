@@ -153,7 +153,10 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
             cropImageView.zoomOutImage(newScale)
         }
 
-        // need delay process to prevent cropview zoom & rotate to conflict in process
+        /**
+         * need delay to provide uCrop process the zoom & rotate
+         * it will break zoom & crop position after several rotate crop state if process is not delayed
+         */
         Thread.sleep(CROP_VIEW_ZOOM_DELAY)
 
         initialScale = cropImageView.currentScale
