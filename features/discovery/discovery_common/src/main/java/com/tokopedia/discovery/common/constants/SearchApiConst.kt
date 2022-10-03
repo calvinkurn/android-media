@@ -81,6 +81,7 @@ class SearchApiConst {
         const val IS_TYPO_CORRECTED = "is_typo_corrected"
         const val FROM = "from"
         const val PAGE_SOURCE = "page_source"
+        const val PRICING = "pricing"
         const val PRODUCT_ID = "product_id"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"

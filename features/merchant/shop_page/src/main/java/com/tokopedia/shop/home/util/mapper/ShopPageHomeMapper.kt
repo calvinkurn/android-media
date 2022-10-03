@@ -805,6 +805,7 @@ object ShopPageHomeMapper {
     private fun mapToHeaderModel(header: ShopLayoutWidget.Widget.Header): BaseShopHomeWidgetUiModel.Header {
         return BaseShopHomeWidgetUiModel.Header(
             header.title,
+            header.subtitle,
             header.ctaText,
             header.ctaLink,
             header.cover,

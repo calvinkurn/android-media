@@ -148,12 +148,12 @@ import com.tokopedia.product.detail.data.model.addtocartrecommendation.AddToCart
 import com.tokopedia.product.detail.data.model.datamodel.ComponentTrackDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomLayoutBasicData
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.financing.FtInstallmentCalculationDataResponse
 import com.tokopedia.product.detail.data.model.ticker.TickerActionBs
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -986,7 +986,7 @@ open class DynamicProductDetailFragment :
     }
 
     override fun onSeeMoreDescriptionClicked(
-        dataContent: List<ProductDetailInfoContent>,
+        infoData: ProductDetailInfoDataModel,
         componentTrackDataModel: ComponentTrackDataModel
     ) {
         activity?.let {
@@ -1001,8 +1001,33 @@ open class DynamicProductDetailFragment :
                 listener = this,
                 p1Data = viewModel.getDynamicProductInfoP1,
                 sizeChartImageUrl = viewModel.variantData?.sizeChart,
-                detailInfoContent = dataContent,
+                infoData = infoData,
                 forceRefresh = shouldRefreshProductInfoBottomSheet,
+                isOpenSpecification = false
+            )
+            shouldRefreshProductInfoBottomSheet = false
+        }
+    }
+
+    override fun onSeeMoreSpecificationClicked(
+        infoData: ProductDetailInfoDataModel,
+        componentTrackDataModel: ComponentTrackDataModel
+    ) {
+        activity?.let {
+            DynamicProductDetailTracking.Click.eventClickProductSpecificationReadMore(
+                viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel
+            )
+
+            ProductDetailInfoHelper.showBottomSheetInfo(
+                fragmentActivity = it,
+                daggerComponent = productDaggerComponent,
+                listener = this,
+                p1Data = viewModel.getDynamicProductInfoP1,
+                sizeChartImageUrl = viewModel.variantData?.sizeChart,
+                infoData = infoData,
+                forceRefresh = shouldRefreshProductInfoBottomSheet,
+                isOpenSpecification = true
             )
             shouldRefreshProductInfoBottomSheet = false
         }
@@ -3276,8 +3301,13 @@ open class DynamicProductDetailFragment :
                 )
             )
             shouldRefreshShippingBottomSheet = false
-            val shippingBs = ProductDetailShippingBottomSheet()
-            shippingBs.show(getProductFragmentManager())
+
+            showImmediately(
+                fragmentManager = getProductFragmentManager(),
+                tag = ProductDetailShippingBottomSheet::class.java.simpleName
+            ) {
+                ProductDetailShippingBottomSheet()
+            }
         }
     }
 
