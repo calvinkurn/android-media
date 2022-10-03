@@ -123,11 +123,11 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
     }
 
     private fun loadData() {
-        bundle?.let {
-            mRecipientAddress = it.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
-            val cartPosition = it.getInt(ARGUMENT_CART_POSITION)
-            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = it.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
-            mPreOrderModel = it.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
+        if (bundle != null) {
+            mRecipientAddress = bundle?.getParcelable(ARGUMENT_RECIPIENT_ADDRESS_MODEL)
+            val cartPosition = bundle?.getInt(ARGUMENT_CART_POSITION) ?: 0
+            val shippingCourierUiModels: ArrayList<ShippingCourierUiModel>? = bundle?.getParcelableArrayList(ARGUMENT_SHIPPING_COURIER_VIEW_MODEL_LIST)
+            mPreOrderModel = bundle?.getParcelable(ARGUMENT_PRE_ORDER_MODEL)
             if (shippingCourierUiModels != null) {
                 mCourierModelList = shippingCourierUiModels
                 setupRecyclerView(cartPosition)
