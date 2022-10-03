@@ -135,7 +135,7 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
         element?.watermarkModeEntityData?.let {
             it.textColorDark = isDark
             it.watermarkType = type.value
-        } ?: kotlin.run {
+        } ?: run {
             element?.watermarkModeEntityData = EditorWatermarkUiModel(type.value, isDark)
         }
 

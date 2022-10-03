@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,17 +15,20 @@ import com.tokopedia.media.editor.domain.param.WatermarkUseCaseParam
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.ResourceProvider
 import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import java.io.File
 import javax.inject.Inject
-import com.tokopedia.media.editor.R as editorR
 
 class DetailEditorViewModel @Inject constructor(
+    private val resourceProvider: ResourceProvider,
+    private val userSession: UserSessionInterface,
     private val colorFilterRepository: ColorFilterRepository,
     private val removeBackgroundUseCase: SetRemoveBackgroundUseCase,
     private val contrastFilterRepository: ContrastFilterRepository,
@@ -109,23 +111,21 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setWatermark(
-        context: Context,
         bitmapSource: Bitmap,
         type: WatermarkType,
-        shopName: String,
         isThumbnail: Boolean = false,
         detailUiModel: EditorDetailUiModel,
         useStorageColor: Boolean
     ) {
         if (!watermarkFilterRepository.isAssetInitialize()){
-            initializeWatermarkAsset(context)
+            initializeWatermarkAsset()
         }
 
         _watermarkFilter.value = getWatermarkUseCase(
             WatermarkUseCaseParam(
                 source = bitmapSource,
                 type = type,
-                shopNameParam = shopName,
+                shopNameParam = userSession.shopName,
                 isThumbnail = isThumbnail,
                 element = detailUiModel,
                 useStorageColor = useStorageColor
@@ -134,21 +134,18 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setWatermarkFilterThumbnail(
-        context: Context,
         implementedBaseBitmap: Bitmap,
-        shopName: String,
         buttonRef: Pair<ImageView, ImageView>
     ) {
         if (!watermarkFilterRepository.isAssetInitialize()){
-            initializeWatermarkAsset(context)
+            initializeWatermarkAsset()
         }
 
         watermarkFilterRepository.watermarkDrawerItem(
             implementedBaseBitmap,
-            shopName
+            userSession.shopName
         ).apply {
-            val roundedCorner =
-                context.resources?.getDimension(editorR.dimen.editor_watermark_rounded) ?: 0f
+            val roundedCorner = resourceProvider.getWatermarkRoundCorner() ?: WATERMARK_CORNER_DEFAULT_SIZE
 
             buttonRef.first.loadImageRounded(this.first, roundedCorner) {
                 centerCrop()
@@ -214,15 +211,21 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
-    private fun initializeWatermarkAsset(context: Context) {
+    private fun initializeWatermarkAsset() {
         if (!watermarkFilterRepository.isAssetInitialize()){
-            ContextCompat.getDrawable(context, editorR.drawable.watermark_tokopedia)?.let {
+            resourceProvider.getWatermarkLogoDrawable()?.let {
+                val textColor = resourceProvider.getWatermarkTextColor()
                 watermarkFilterRepository.setAsset(
                     it,
-                    textLightColor = ContextCompat.getColor(context, editorR.color.dms_watermark_text_light),
-                    textDarkColor = ContextCompat.getColor(context, editorR.color.dms_watermark_text_dark)
+                    textLightColor = textColor.first ?: WATERMARK_TEXT_COLOR_DEFAULT,
+                    textDarkColor = textColor.second ?: WATERMARK_TEXT_COLOR_DEFAULT
                 )
             }
         }
+    }
+
+    companion object {
+        private const val WATERMARK_TEXT_COLOR_DEFAULT = 0
+        private const val WATERMARK_CORNER_DEFAULT_SIZE = 0f
     }
 }

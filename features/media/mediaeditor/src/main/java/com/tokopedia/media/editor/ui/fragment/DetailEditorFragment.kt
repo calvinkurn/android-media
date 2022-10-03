@@ -47,8 +47,7 @@ import javax.inject.Inject
 import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory,
-    private val userSession: UserSessionInterface
+    private val viewModelFactory: ViewModelProvider.Factory
 ) : BaseEditorFragment(), BrightnessToolUiComponent.Listener, ContrastToolsUiComponent.Listener,
     RemoveBackgroundToolUiComponent.Listener, WatermarkToolUiComponent.Listener,
     RotateToolUiComponent.Listener, CropToolUiComponent.Listener,
@@ -209,13 +208,9 @@ class DetailEditorFragment @Inject constructor(
 
     override fun onWatermarkChanged(type: WatermarkType) {
         implementedBaseBitmap?.let {
-            val shopName = if (userSession.shopName.isEmpty())
-                DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
             viewModel.setWatermark(
-                requireContext(),
                 it,
                 type,
-                shopName,
                 detailUiModel = data,
                 useStorageColor = false
             )
@@ -523,15 +518,10 @@ class DetailEditorFragment @Inject constructor(
             }
 
             getBitmap()?.let { bitmap ->
-                val shopName = if (userSession.shopName.isEmpty())
-                    DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
-
                 WatermarkType.map(it.watermarkType)?.let { type ->
                     viewModel.setWatermark(
-                        requireContext(),
                         bitmap,
                         type,
-                        shopName,
                         detailUiModel = detailUiModel,
                         useStorageColor = true
                     )
@@ -644,13 +634,8 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun setWatermarkDrawerItem(bitmap: Bitmap) {
-        val shopName = if (userSession.shopName.isEmpty())
-            DEFAULT_VALUE_SHOP_TEXT else userSession.shopName
-
         viewModel.setWatermarkFilterThumbnail(
-            requireContext(),
             bitmap,
-            shopName,
             watermarkComponent.getButtonRef()
         )
     }
@@ -780,8 +765,6 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
-
-        private const val DEFAULT_VALUE_SHOP_TEXT = "Shop Name"
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 300L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 300L
