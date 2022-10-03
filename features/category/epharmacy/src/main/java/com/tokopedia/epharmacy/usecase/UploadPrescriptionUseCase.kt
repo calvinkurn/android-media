@@ -47,10 +47,11 @@ class UploadPrescriptionUseCase @Inject constructor(
     private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false): String {
         var compressCounter = 0
         var prescriptionImageBitmap: Bitmap? = null
+        var compressedUri : Uri? = null
         return try {
             prescriptionImageBitmap = if(compress){
                 compressCounter += 1
-                val compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
+                compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
                 logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
                 BitmapFactory.decodeFile(compressedUri?.path)
             }else {
@@ -74,7 +75,11 @@ class UploadPrescriptionUseCase @Inject constructor(
             when(e){
                 is NullPointerException -> {
                     if((!compress) || (compress && (compressCounter < 5))){
-                        getBase64OfPrescriptionImage(localFilePath, true)
+                        if (compress && !compressedUri?.path.isNullOrBlank()){
+                            getBase64OfPrescriptionImage(compressedUri?.path ?: "", true)
+                        }else {
+                            getBase64OfPrescriptionImage(localFilePath, true)
+                        }
                     }
                     EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
                 }
