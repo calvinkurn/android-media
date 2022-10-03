@@ -56,7 +56,7 @@ class ShippingDurationPresenterTest {
 
         // Then
         verify {
-            view.showData(any(), any(), any())
+            view.showData(any())
         }
     }
 
@@ -84,7 +84,7 @@ class ShippingDurationPresenterTest {
 
         // Then
         verify {
-            view.showData(any(), any(), any())
+            view.showData(any())
         }
     }
 
@@ -199,7 +199,6 @@ class ShippingDurationPresenterTest {
         every {
             responseConverter.fillState(any(), shopShipments, 0, 0)
         } returns shippingData
-        every {view.isDisableCourierPromo()} returns true
 
         val shipmentDetailData = DummyProvider.getShipmentDetailData()
         shipmentDetailData.selectedCourier = null
@@ -208,7 +207,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, address, false, 0, "", false, false
+            products, "1479278-30-740525-99367774", true, address, false, 0, "", false, true
         )
 
         // Then
