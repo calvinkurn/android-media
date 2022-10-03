@@ -6,42 +6,57 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import com.tokopedia.digital_checkout.R
+import com.tokopedia.digital_checkout.databinding.ItemDigitalCheckoutInputPriceViewBinding
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.BaseCustomView
-import kotlinx.android.synthetic.main.item_digital_checkout_input_price_view.view.*
 import org.jetbrains.annotations.NotNull
 import kotlin.math.min
-
 
 /**
  * @author by jessica on 19/01/21
  */
-class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Context,
-                                                            attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+class DigitalCartInputPriceWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null, defStyleAttr: Int = Int.ZERO
+) : BaseCustomView(context, attrs, defStyleAttr) {
+
+    private companion object {
+        const val INT_TWO = 2
+        const val ZERO_LONG = 0L
+        const val DOT_CHARACTER = "."
+        const val COMMA_CHARACTER = ","
+        const val EMPTY_STRING = ""
+        const val PRICE_FORMAT = "%,d"
+    }
 
     private var priceInput: Long? = null
 
-    private var minPayment: Long = 0
-    private var maxPayment: Long = 0
+    private var minPayment: Long = ZERO_LONG
+    private var maxPayment: Long = ZERO_LONG
     private var minPaymentString: String = ""
     private var maxPaymentString: String = ""
 
     var actionListener: ActionListener? = null
 
-    init {
-        LayoutInflater.from(context).inflate(R.layout.item_digital_checkout_input_price_view, this, true)
-    }
+    private val binding = ItemDigitalCheckoutInputPriceViewBinding.inflate(
+        LayoutInflater.from(context),
+        this, true
+    )
 
     fun getPriceInput(): Long? = priceInput
 
-    fun setMinMaxPayment(minPayment: Long, maxPayment: Long,
-                         minPaymentString: String, maxPaymentString: String) {
+    fun setMinMaxPayment(
+        minPayment: Long, maxPayment: Long,
+        minPaymentString: String, maxPaymentString: String
+    ) {
         this.minPayment = minPayment
         this.maxPayment = maxPayment
         this.minPaymentString = minPaymentString
         this.maxPaymentString = maxPaymentString
 
-        etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object : TextWatcher {
+        binding.etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(object :
+            TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 onAfterTextChanged(this, s.toString())
             }
@@ -54,42 +69,54 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
 
     private fun onAfterTextChanged(watcher: TextWatcher, s: String) {
         val beforePrice = priceInput
-        val price: Long? = s.replace(".", "").toLongOrNull()
-        val stringFormatted = getFormattedPriceString(price ?: 0)
-        val selectionPosition = etDigitalCheckoutInputPrice.textFieldInput.selectionStart
+        val price: Long? = s.replace(DOT_CHARACTER, EMPTY_STRING).toLongOrNull()
+        val stringFormatted = getFormattedPriceString(price ?: ZERO_LONG)
+        val selectionPosition = binding.etDigitalCheckoutInputPrice.textFieldInput.selectionStart
 
-        etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(watcher)
+        binding.etDigitalCheckoutInputPrice.textFieldInput.removeTextChangedListener(watcher)
         setPriceInput(price)
-        getSelectionPosition(beforePrice ?: 0, stringFormatted, selectionPosition).let {
-            if (it >= 0) etDigitalCheckoutInputPrice.textFieldInput.setSelection(it)
+        getSelectionPosition(beforePrice ?: ZERO_LONG, stringFormatted, selectionPosition).let {
+            if (it >= Int.ZERO) binding.etDigitalCheckoutInputPrice.textFieldInput.setSelection(it)
         }
-        etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(watcher)
+        binding.etDigitalCheckoutInputPrice.textFieldInput.addTextChangedListener(watcher)
     }
 
     private fun validateUserInput(priceInput: Long?) {
         if (priceInput == null) return
         when {
             isUserInputValid(priceInput, minPayment, maxPayment) -> {
-                if (minPayment > 0L && maxPayment > 0L) {
-                    etDigitalCheckoutInputPrice.setError(false)
-                    etDigitalCheckoutInputPrice.setMessage(resources
-                            .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                if (minPayment > ZERO_LONG && maxPayment > ZERO_LONG) {
+                    binding.etDigitalCheckoutInputPrice.setError(false)
+                    binding.etDigitalCheckoutInputPrice.setMessage(
+                        resources
+                            .getString(
+                                R.string.digital_cart_error_input_price_less_than_min,
+                                minPaymentString
+                            )
+                    )
                     actionListener?.enableCheckoutButton()
                 }
             }
             priceInput > maxPayment -> {
-                if (maxPayment > 0L) {
-                    etDigitalCheckoutInputPrice.setError(true)
-                    etDigitalCheckoutInputPrice.setMessage(resources
-                            .getString(R.string.digital_cart_error_input_price_more_than_max, maxPaymentString))
+                if (maxPayment > ZERO_LONG) {
+                    binding.etDigitalCheckoutInputPrice.setError(true)
+                    binding.etDigitalCheckoutInputPrice.setMessage(
+                        resources
+                            .getString(
+                                R.string.digital_cart_error_input_price_more_than_max,
+                                maxPaymentString
+                            )
+                    )
                     actionListener?.disableCheckoutButton()
                 }
             }
             else -> {
-                if (minPayment > 0L) {
-                    if (priceInput > 0L) etDigitalCheckoutInputPrice.setError(true)
-                    etDigitalCheckoutInputPrice.setMessage(resources
-                            .getString(R.string.digital_cart_error_input_price_less_than_min, minPaymentString))
+                if (minPayment > ZERO_LONG) {
+                    if (priceInput > ZERO_LONG) binding.etDigitalCheckoutInputPrice.setError(true)
+                    binding.etDigitalCheckoutInputPrice.setMessage(resources.getString(
+                                R.string.digital_cart_error_input_price_less_than_min,
+                                minPaymentString
+                            ))
                     actionListener?.disableCheckoutButton()
                 }
             }
@@ -101,38 +128,42 @@ class DigitalCartInputPriceWidget @JvmOverloads constructor(@NotNull context: Co
     }
 
     private fun getFormattedPriceString(price: Long): String {
-        return if (price > 0L) String.format("%,d", price).replace(",", ".") else ""
+        return if (price > ZERO_LONG) String.format(PRICE_FORMAT, price).replace(COMMA_CHARACTER, DOT_CHARACTER) else EMPTY_STRING
     }
 
     fun setPriceInput(price: Long?) {
         if (price != null) {
             price.let {
                 this.priceInput = it
-                etDigitalCheckoutInputPrice.textFieldInput.setText(getFormattedPriceString(it))
-                etDigitalCheckoutInputPrice.textFieldInput.setSelection(getFormattedPriceString(it).length)
+                binding.etDigitalCheckoutInputPrice.textFieldInput.setText(getFormattedPriceString(it))
+                binding.etDigitalCheckoutInputPrice.textFieldInput.setSelection(getFormattedPriceString(it).length)
                 actionListener?.onInputPriceByUserFilled(it)
                 validateUserInput(it)
             }
         } else {
-            priceInput = 0
+            priceInput = ZERO_LONG
             actionListener?.onInputPriceByUserFilled(priceInput)
             actionListener?.disableCheckoutButton()
             return
         }
     }
 
-    private fun getSelectionPosition(beforePrice: Long, formattedPrice: String, selectionPosition: Int): Int {
+    private fun getSelectionPosition(
+        beforePrice: Long,
+        formattedPrice: String,
+        selectionPosition: Int
+    ): Int {
         getFormattedPriceString(beforePrice).let { beforePriceFormatted ->
             return when (beforePriceFormatted.length) {
-                formattedPrice.length - 2 -> {
+                formattedPrice.length - INT_TWO -> {
                     // e.g. when before price 100, after user input: 1.000
                     // selection position must be +1 due to the addition of . (dot)
-                    return selectionPosition + 1
+                    return selectionPosition + Int.ONE
                 }
-                formattedPrice.length + 2 -> {
+                formattedPrice.length + INT_TWO -> {
                     // e.g. when before price 1.000, after user input: 100
                     // selection position must be -1 due to the removal of . (dot)
-                    return selectionPosition - 1
+                    return selectionPosition - Int.ONE
                 }
                 else -> min(selectionPosition, formattedPrice.length)
             }

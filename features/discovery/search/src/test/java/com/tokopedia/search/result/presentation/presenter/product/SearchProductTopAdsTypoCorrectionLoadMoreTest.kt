@@ -2,7 +2,6 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.domain.model.ProductTopAdsModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -34,26 +33,25 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         get() = SearchProductTypoCorrectionUseCase(
             searchProductFirstPageUseCase,
             searchProductTopAdsUseCase,
-            remoteConfigAbTest,
+            { performanceMonitoring },
             testSchedulersProvider,
         )
     override val searchLoadMoreUseCase: UseCase<SearchProductModel>
         get() = SearchProductTypoCorrectionUseCase(
             searchProductLoadMoreUseCase,
             searchProductTopAdsUseCase,
-            remoteConfigAbTest,
+            { performanceMonitoring },
             testSchedulersProvider,
         )
 
     @Test
-    fun `Load More with Response Code 3 and experiment is enabled will call TopAds GQL again`() {
+    fun `Load More with Response Code 3 will call TopAds GQL again`() {
         val searchProductModelFirstPage = searchProductResponseCode3.jsonToObject<SearchProductModel>()
         val typoCorrectedTopAdsFirstPage = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
         val searchProductModelSecondPage = searchProductResponseCode3SecondPage.jsonToObject<SearchProductModel>()
         val relatedKeywordSecondPage = searchProductModelSecondPage.searchProduct.data.related.relatedKeyword
         val expectedTopAds = topAdsTypoCorrectedSecondPage.jsonToObject<ProductTopAdsModel>().topAdsModel
 
-        `Given ABTest Typo Correction Ads is enabled`()
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
         `Given TopAds API will return TopAdsModel`(typoCorrectedTopAdsFirstPage)
         `Given Product List Presenter already Load Data`()
@@ -93,39 +91,6 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         productListPresenter.loadMoreData(searchParameter)
     }
 
-    @Test
-    fun `Load More with Response Code 3 and experiment is disabled will not call TopAds GQL again`() {
-        val searchProductModelFirstPage = searchProductResponseCode3.jsonToObject<SearchProductModel>()
-        val typoCorrectedTopAdsFirstPage = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
-        val searchProductModelSecondPage = searchProductResponseCode3SecondPage.jsonToObject<SearchProductModel>()
-        val expectedTopAds = topAdsTypoCorrectedSecondPage.jsonToObject<ProductTopAdsModel>().topAdsModel
-
-        `Given ABTest Typo Correction Ads is disabled`()
-        `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
-        `Given TopAds API will return TopAdsModel`(typoCorrectedTopAdsFirstPage)
-        `Given Product List Presenter already Load Data`()
-
-        `Given Search Product Load More API will return SearchProductModel`(searchProductModelSecondPage)
-        `Given TopAds API will return TopAdsModel`(expectedTopAds)
-
-        val loadMoreSearchParameter = createLoadMoreSearchParameter()
-        `When Product List Presenter Load More Data`(loadMoreSearchParameter)
-
-        `Then verify TopAds use case is not executed`()
-        `Then verify view will add product list`()
-    }
-
-
-    private fun `Given ABTest Typo Correction Ads is enabled`() {
-        every { remoteConfigAbTest.getString(RollenceKey.SEARCH_TYPO_CORRECTION_ADS, any()) }
-            .returns(RollenceKey.SEARCH_TYPO_CORRECTION_ADS_VARIANT)
-    }
-
-    private fun `Given ABTest Typo Correction Ads is disabled`() {
-        every { remoteConfigAbTest.getString(RollenceKey.SEARCH_TYPO_CORRECTION_ADS, any()) }
-            .returns("")
-    }
-
     private fun `Given Search Product API will return SearchProductModel`(searchProductModel: SearchProductModel) {
         every { searchProductFirstPageUseCase.createObservable(any()) }
             .returns(Observable.just(searchProductModel))
@@ -148,12 +113,6 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
 
     private fun `Then verify TopAds use case is executed`() {
         verify(exactly = 2) {
-            searchProductTopAdsUseCase.createObservable(any())
-        }
-    }
-
-    private fun `Then verify TopAds use case is not executed`() {
-        verify(exactly = 0) {
             searchProductTopAdsUseCase.createObservable(any())
         }
     }
@@ -189,7 +148,6 @@ internal class SearchProductTopAdsTypoCorrectionLoadMoreTest : ProductListPresen
         val typoCorrectedTopAdsFirstPage = topAdsTypoCorrected.jsonToObject<ProductTopAdsModel>().topAdsModel
         val searchProductModelSecondPage = searchProductResponseCode3SecondPage.jsonToObject<SearchProductModel>()
 
-        `Given ABTest Typo Correction Ads is enabled`()
         `Given Search Product API will return SearchProductModel`(searchProductModelFirstPage)
         `Given TopAds API will return TopAdsModel`(typoCorrectedTopAdsFirstPage)
         `Given Product List Presenter already Load Data`()
