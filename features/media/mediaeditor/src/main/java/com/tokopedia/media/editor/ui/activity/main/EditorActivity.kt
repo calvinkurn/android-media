@@ -99,13 +99,15 @@ class EditorActivity : BaseEditorActivity() {
     }
 
     override fun onHeaderActionClick() {
-        val listImageEditState = viewModel.editStateList.values
+        val listImageEditState = viewModel.editStateList.values.toList()
+
         viewModel.saveToGallery(
             this,
-            listImageEditState.map { it.getImageUrl() }) {
+            listImageEditState
+        ) { imageResultList ->
             val result = EditorResult(
                 originalPaths = listImageEditState.map { it.getOriginalUrl() },
-                editedImages = it
+                editedImages = imageResultList
             )
 
             val intent = Intent()

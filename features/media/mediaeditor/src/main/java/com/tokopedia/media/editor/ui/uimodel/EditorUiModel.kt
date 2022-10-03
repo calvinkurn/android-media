@@ -75,6 +75,10 @@ class EditorUiModel(
         }
     }
 
+    fun isImageEdited(): Boolean{
+        return editList.size > backValue
+    }
+
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1

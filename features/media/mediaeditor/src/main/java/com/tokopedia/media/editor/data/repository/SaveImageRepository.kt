@@ -3,19 +3,13 @@ package com.tokopedia.media.editor.data.repository
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
 import com.tokopedia.media.editor.utils.getEditorSaveFolderPath
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
-import com.tokopedia.picker.common.utils.isImageFormat
-import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.FileUtil
-import com.tokopedia.utils.file.PublicFolderUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
 import java.io.FileInputStream
@@ -25,7 +19,6 @@ import java.io.InputStream
 import java.io.OutputStream
 import java.nio.channels.FileChannel
 import javax.inject.Inject
-import kotlin.random.Random
 
 interface SaveImageRepository {
     fun saveToCache(
@@ -71,12 +64,17 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
     ) {
         val listResult = mutableListOf<String>()
         imageList.forEach {
+            if (it.isEmpty()) {
+                listResult.add("")
+                return@forEach
+            }
+
             val file = it.asPickerFile()
 
             val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
             var resultFile: File? = null
-            var fileName = fileName(file.nameWithoutExtension)
+            val fileName = fileName(file.nameWithoutExtension)
 
             val contentValues = ContentValues()
             contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -85,7 +83,7 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 val basePath =
                     ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_PICTURES)
-                resultFile = File("${basePath[0].path}/$fileName")
+                resultFile = File("${basePath.first().path}/$fileName")
                 resultFile.createNewFile()
 
                 // copy image to pictures dir
@@ -147,7 +145,7 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
 
     @Throws(IOException::class)
     private fun copy(source: InputStream, target: OutputStream) {
-        val buf = ByteArray(8192)
+        val buf = ByteArray(source.available())
         var length: Int
         while (source.read(buf).also { length = it } > 0) {
             target.write(buf, 0, length)

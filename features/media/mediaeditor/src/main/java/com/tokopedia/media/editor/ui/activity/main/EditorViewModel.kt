@@ -149,10 +149,18 @@ class EditorViewModel @Inject constructor(
         }
     }
 
-    fun saveToGallery(context: Context, imageList: List<String>, onFinish: (result: List<String>) -> Unit){
+    fun saveToGallery(context: Context, dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit){
+        val filteredData = dataList.map {
+            if (it.isImageEdited()) {
+                it.getImageUrl()
+            } else {
+                ""
+            }
+        }
+
         saveImageRepository.saveToGallery(
             context,
-            imageList
+            filteredData
         ) {
             onFinish(it)
         }
