@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.loginregister.R
 
 /**
  * Created by Ade Fulki on 2019-12-19.
@@ -30,7 +29,10 @@ abstract class BaseShopCreationFragment : BaseDaggerFragment() {
             it.supportActionBar?.apply {
                 setDisplayShowTitleEnabled(false)
                 setDisplayHomeAsUpEnabled(true)
-                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(it, R.color.transparent)))
+                setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(
+                    it,
+                    com.tokopedia.loginregister.R.color.transparent
+                )))
             }
         }
     }
