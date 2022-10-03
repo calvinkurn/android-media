@@ -4,9 +4,10 @@
 
     <string name="product_detail_courier">Pengiriman</string>
     <string name="label_product_info">Informasi Produk</string>
-    <string name="merchant_product_detail_label_product_detail">Detail Produk</string>
+    <string name="merchant_product_detail_label_product_detail">Detail produk</string>
     <string name="merchant_product_detail_shipping">Detail pengiriman</string>
     <string name="label_read_detail">Baca Selengkapnya</string>
+    <string name="pdp_product_info_description_title">Deskripsi produk</string>
     <string name="merchant_product_detail_label_selengkapnya">Selengkapnya</string>
     <string name="label_image_preview_pdp">Gambar produk</string>
     <string name="title_activity_product_detail">Rincian Produk</string>

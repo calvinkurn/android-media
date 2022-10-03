@@ -58,6 +58,7 @@ object RollenceKey {
 
     // Food
     const val KEY_ROLLENCE_FOOD = "m1_gofood"
+    const val KEY_GOFOOD_SEARCH = "gofood_search"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
