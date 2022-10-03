@@ -2,13 +2,10 @@ package com.tokopedia.homenav.mainnav.domain.usecases
 
 import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.membership.MembershipPojo
-import com.tokopedia.homenav.mainnav.data.pojo.user.UserPojo
-import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetMembershipQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -21,22 +18,7 @@ class GetUserMembershipUseCase @Inject constructor(
 ) : UseCase<Result<MembershipPojo>>() {
 
     init {
-        val query =
-                """query getMembership(){
-                  tokopoints {
-                    status {
-                      tier {
-                        id
-                        name
-                        nameDesc
-                        eggImageURL
-                        eggImageHomepageURL
-                      }
-                    }
-                  }
-            } """.trimIndent()
-
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetMembershipQuery())
         graphqlUseCase.setTypeClass(MembershipPojo::class.java)
     }
     var params: RequestParams = RequestParams.EMPTY
