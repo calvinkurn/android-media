@@ -3,6 +3,7 @@ package com.tokopedia.digital_deals.data
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.common_entertainment.data.PassengerForm
 
 data class DealsMetaDataCheckout(
         @SerializedName("category_name")
@@ -173,5 +174,5 @@ data class ItemMapCheckout(
         val productWebUrl:String = "",
         @SerializedName("passenger_forms")
         @Expose
-        var passengerForms : MutableList<PassengerForm> = arrayListOf()
+        var passengerForms : List<PassengerForm> = emptyList()
 )

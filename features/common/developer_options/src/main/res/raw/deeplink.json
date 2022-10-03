@@ -430,7 +430,7 @@
           "deeplink_variable": "ApplinkConstInternalOrder.UNIFY_ORDER"
      }, 
      {
-          "destination_activity": "com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity", 
+          "destination_activity": "com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity", 
           "deeplink": "tokopedia-android-internal://order/invoice", 
           "deeplink_variable": "ApplinkConstInternalOrder.INVOICE"
      }, 
@@ -479,11 +479,6 @@
           "deeplink": "tokopedia-android-internal://now/home", 
           "deeplink_variable": "ApplinkConstInternalTokopediaNow.HOME"
      }, 
-     {
-          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity",
-          "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
-          "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
-     },
      {
           "destination_activity": "com.tokopedia.tokopedianow.categorylist.presentation.activity.TokoNowCategoryListActivity", 
           "deeplink": "tokopedia-android-internal://now/category-list", 
@@ -543,7 +538,7 @@
           "destination_activity": "com.tokopedia.recharge_credit_card.RechargeCCActivity", 
           "deeplink": "tokopedia-android-internal://recharge/cc", 
           "deeplink_variable": "ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE"
-     },
+     }, 
      {
           "destination_activity": "com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity", 
           "deeplink": "tokopedia-android-internal://recharge/home/dynamic", 
@@ -585,7 +580,7 @@
           "deeplink_variable": "ApplinkConsInternalDigital.GENERAL_TEMPLATE"
      }, 
      {
-          "destination_activity": "com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity", 
+          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity", 
           "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
           "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
      }, 

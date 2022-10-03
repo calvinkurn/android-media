@@ -29,7 +29,7 @@ abstract class ScreenState {
     }
 
     open fun getMessageColor(): Int {
-        return R.color.message_color_bad
+        return R.color.csat_dms_message_color_bad
     }
 
     open fun getQuestion(): String {

@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -22,6 +21,7 @@ import com.tokopedia.play_common.ui.leaderboard.adapter.PlayGameAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderBoardItemDecoration
 import com.tokopedia.play_common.ui.leaderboard.viewholder.PlayGameViewHolder
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.view.updatePadding
 import com.tokopedia.play_common.viewcomponent.ViewComponent
@@ -96,7 +96,7 @@ class PlayGameLeaderBoardViewComponent(
 
         registerAdapterObserver()
 
-        btnRefreshError.rootView.addOnImpressionListener(impressHolder) {
+        btnRefreshError.addImpressionListener(impressHolder){
             listener.onRefreshButtonImpressed(this)
         }
     }

@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.play_common.types.PlayChannelStatusType
@@ -59,7 +60,7 @@ class CreateChannelUseCase @Inject constructor(
         ): Map<String, Any> = mapOf(
                 PARAMS_AUTHOR_ID to authorId,
                 PARAMS_AUTHOR_TYPE to authorType,
-                PARAMS_STATUS to status.value.toInt()
+                PARAMS_STATUS to status.value.toIntOrZero()
         )
     }
 
