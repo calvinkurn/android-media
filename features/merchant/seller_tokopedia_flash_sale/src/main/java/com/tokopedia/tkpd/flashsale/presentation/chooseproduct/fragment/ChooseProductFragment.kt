@@ -288,8 +288,9 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             viewModel.selectionValidationResult.collectLatest {
                 if (it.isExceedMaxQuota) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_quota_item))
                 else if (it.isExceedMaxProduct) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_product_item))
-                else if (it.isExceedMaxCriteria) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_criteria_item))
                 else chooseProductAdapter.enable()
+
+                chooseProductAdapter.disableByCriteria(it.disabledCriteriaIds, getString(R.string.chooseproduct_error_max_criteria_item))
             }
         }
     }

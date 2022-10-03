@@ -13,6 +13,22 @@ object ChooseProductUiMapper {
 
     private const val MAX_PRODUCT_SELECTION = 40
 
+    private fun List<CriteriaSelection>.validateMax(): Boolean {
+        return !any { it.selectionCount >= it.selectionCountMax }
+    }
+
+    private fun List<CriteriaSelection>.getDisabledCriteriaIds(): List<Long> {
+        val result = mutableListOf<Long>()
+        forEach {
+            if (it.selectionCount >= it.selectionCountMax) result.add(it.criteriaId)
+        }
+        return result
+    }
+
+    private fun getSelectedProduct(list: List<ChooseProductItem>): List<ChooseProductItem> {
+        return list.filter { it.isSelected && it.isEnabled }
+    }
+
     fun collectAllCategory(categories: List<CriteriaSelection>): MutableList<Category> {
         val result = mutableListOf<Category>()
         categories.forEach { category ->
@@ -23,10 +39,6 @@ object ChooseProductUiMapper {
             }
         }
         return result
-    }
-
-    fun getSelectedProduct(list: List<ChooseProductItem>): List<ChooseProductItem> {
-        return list.filter { it.isSelected && it.isEnabled }
     }
 
     // limit max selected to MAX_PRODUCT_SELECTION due to server limitation
@@ -66,10 +78,6 @@ object ChooseProductUiMapper {
         return productValidation && criteriaValidation
     }
 
-    private fun List<CriteriaSelection>.validateMax(): Boolean {
-        return !any { it.selectionCount >= it.selectionCountMax }
-    }
-
     fun getSelectedProductList(
         selectedProductList: List<ChooseProductItem>?,
         remoteProductList: List<ChooseProductItem>,
@@ -88,10 +96,6 @@ object ChooseProductUiMapper {
         return productCount.orZero() >= maxProduct
     }
 
-    fun isExceedMaxCriteria(criteriaList: List<CriteriaSelection>): Boolean {
-        return !criteriaList.validateMax()
-    }
-
     fun getSelectionValidationResult(
         selectedProductCount: Int,
         criteriaList: List<CriteriaSelection>,
@@ -99,13 +103,13 @@ object ChooseProductUiMapper {
     ): SelectionValidationResult {
         val isExceedMaxProduct = isExceedMaxProduct(selectedProductCount)
         val isExceedMaxQuota = isExceedMaxQuota(selectedProductCount, maxSelectedProduct)
-        val isExceedMaxCriteria =  isExceedMaxCriteria(criteriaList)
-        return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, isExceedMaxCriteria)
+        val disabledCriteriaIds = criteriaList.getDisabledCriteriaIds()
+        return SelectionValidationResult(isExceedMaxProduct, isExceedMaxQuota, disabledCriteriaIds)
     }
 
     data class SelectionValidationResult (
         val isExceedMaxProduct: Boolean = false,
         val isExceedMaxQuota: Boolean = false,
-        val isExceedMaxCriteria: Boolean = false
+        val disabledCriteriaIds: List<Long> = emptyList()
     )
 }
