@@ -98,7 +98,7 @@
         app:textvalue_icon_status="PASSED"
         app:textvalue_subtitle="@string/commonbs_field_required"
         app:textvalue_title="@string/commonbs_criteria_check_other_criteria_field_title"
-        app:textvalue_value="Grosir" />
+        app:textvalue_value="Non-Grosir" />
 
     <com.tokopedia.tkpd.flashsale.presentation.common.customview.TitleValueView
         android:id="@+id/tfOtherCriteriaReadyStock"
@@ -127,7 +127,7 @@
         android:layout_marginVertical="16dp"
         app:closeButtonVisibility="gone"
         app:tickerShapeType="loose"
-        app:tickerType="warning"
+        app:tickerType="announcement"
         tool:descriptionText="2 lokasi tidak sesuai kriteria. Cek Detail Per Lokasi" />
 
 </com.google.android.flexbox.FlexboxLayout>

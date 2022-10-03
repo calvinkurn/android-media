@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.ViewModelProvider
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
@@ -17,11 +16,11 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantMultiLocationAdapter
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import javax.inject.Inject
@@ -220,38 +219,13 @@ class ManageProductMultiLocationVariantFragment :
         val variantProduct = product.childProducts[variantPositionOnProduct]
         val warehouseToRegister = viewModel.findToggleOnInWarehouse(variantProduct)
         warehouseToRegister.forEach { warehouse ->
-            val isValidate =
-                viewModel.validateInput(product.productCriteria, warehouse.discountSetup)
-            if (!isValidate.isAllFieldValid()) {
-                showToasterError()
+            val isValid = viewModel.validateInput(product.productCriteria, warehouse.discountSetup)
+            if (!isValid.isAllFieldValid()) {
+                ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
                 return
             }
         }
-        showToasterValid()
-    }
-
-    private fun showToasterError() {
-        view?.let {
-            Toaster.build(
-                it,
-                getString(R.string.stfs_toaster_error),
-                Snackbar.LENGTH_LONG,
-                TYPE_ERROR,
-                getString(R.string.stfs_toaster_ok)
-            ).show()
-        }
-    }
-
-    private fun showToasterValid() {
-        view?.let {
-            Toaster.build(
-                it,
-                getString(R.string.stfs_toaster_valid),
-                Snackbar.LENGTH_LONG,
-                TYPE_NORMAL,
-                getString(R.string.stfs_toaster_ok)
-            ).show()
-        }
+        ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_valid), TYPE_NORMAL)
     }
 
     fun getIntentResult(): Intent {

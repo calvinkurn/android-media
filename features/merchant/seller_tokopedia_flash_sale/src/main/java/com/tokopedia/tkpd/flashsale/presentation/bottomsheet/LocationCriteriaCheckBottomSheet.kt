@@ -17,7 +17,6 @@ class LocationCriteriaCheckBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<StfsBottomsheetLocationCriteriaCheckBinding>()
     private var locationCheckingResults: List<CriteriaCheckingResult.LocationCheckingResult> = emptyList()
-    private var isVariant: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,8 +33,6 @@ class LocationCriteriaCheckBottomSheet : BottomSheetUnify() {
         setChild(binding?.root)
         setTitle(getString(R.string.commonbs_location_criteria_check_title))
         setupRecyclerView()
-        binding?.tfProductName?.text = if (isVariant) getString(R.string.commonbs_criteria_check_description)
-        else getString(R.string.commonbs_criteria_single_check_description)
     }
 
     private fun setupRecyclerView() {
@@ -50,10 +47,8 @@ class LocationCriteriaCheckBottomSheet : BottomSheetUnify() {
     fun show(
         locationCheckingResults: List<CriteriaCheckingResult.LocationCheckingResult>,
         manager: FragmentManager,
-        tag: String?,
-        isVariant: Boolean = false
+        tag: String?
     ) {
-        this.isVariant = isVariant
         this.locationCheckingResults = locationCheckingResults
         show(manager, tag)
     }
