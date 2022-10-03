@@ -34,6 +34,7 @@ import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget
 import com.tokopedia.common.topupbills.widget.TopupBillsInputDropdownWidget.Companion.SHOW_KEYBOARD_DELAY
 import com.tokopedia.common.topupbills.widget.TopupBillsInputFieldWidget
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam.EXTRA_PARAM_VOUCHER_GAME
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.globalerror.showUnifyError
@@ -323,6 +324,10 @@ class VoucherGameDetailFragment : BaseTopupBillsFragment(),
             Toaster.build(v, ErrorHandler.getErrorMessage(requireContext(), error)
                 ?: "", Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
+    }
+
+    override fun redirectErrorUnVerifiedNumber(error: ErrorAtc) {
+        /*no op*/
     }
 
     private fun setupEnquiryFields(data: VoucherGameDetailData) {

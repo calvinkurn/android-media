@@ -13,6 +13,9 @@ import com.tokopedia.seller.menu.common.view.uimodel.base.RegularMerchant
 import com.tokopedia.seller.menu.common.view.uimodel.base.SettingResponseState
 import com.tokopedia.seller.menu.common.view.uimodel.base.ShopType
 import com.tokopedia.sellerhome.R
+import com.tokopedia.sellerhome.domain.model.MembershipGetSumUserCardMember
+import com.tokopedia.sellerhome.domain.model.SumUserCardMember
+import com.tokopedia.sellerhome.domain.model.TotalTokomemberResponse
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.OtherMenuShopShareData
 import com.tokopedia.sellerhome.settings.view.adapter.uimodel.ShopOperationalData
 import com.tokopedia.sellerhome.utils.observeAwaitValue
@@ -76,6 +79,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.getAllOtherMenuData()
 
             verifyGetShopBadgeCalled()
+            verifyGetTotalTokoMemberCalled()
             verifyGetShopTotalFollowersCalled()
             verifyGetUserShopInfoCalled()
             verifyGetFreeShippingCalled()
@@ -121,6 +125,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     @Test
     fun `when getAllOtherMenuData and two or more (but not all) data fails, should set show multiple error toaster live data true`() =
         runBlocking {
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetUserShopInfo_thenThrow()
             onGetShopOperational_thenThrow()
@@ -138,6 +143,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     fun `when reloadErrorData should reload data that was failed`() =
         coroutineTestRule.runBlockingTest {
             onGetShopBadge_thenThrow()
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetUserShopInfo_thenThrow()
             onGetShopOperational_thenThrow()
@@ -155,6 +161,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.onShownMultipleError()
 
             verifyGetShopBadgeCalled(atLeast = 2)
+            verifyGetTotalTokoMemberCalled(atLeast = 2)
             verifyGetShopTotalFollowersCalled(atLeast = 2)
             verifyGetShopOperationalCalled(atLeast = 2)
             verifyGetUserShopInfoCalled(atLeast = 2)
@@ -168,6 +175,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
     fun `when reloadErrorData should not reload data that was success`() =
         runBlocking {
             onGetShopBadge_thenThrow()
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetUserShopInfo_thenThrow()
             onGetShopOperational_thenThrow()
@@ -191,12 +199,14 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetFreeShippingCalled(atLeast = 2)
             verifyGetTopAdsKreditCalled()
             verifyGetNewIklanPromotionCalled(atLeast = 2)
+            verifyGetTotalTokoMemberCalled(atLeast = 2)
         }
 
     @Test
     fun `when reloadErrorData and error state map hasn't been set, should not reload any data`() =
         coroutineTestRule.runBlockingTest {
             onGetShopBadge_thenThrow()
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetUserShopInfo_thenThrow()
             onGetShopOperational_thenThrow()
@@ -212,6 +222,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             mViewModel.reloadErrorData()
 
             verifyGetShopBadgeNotCalled()
+            verifyGetTotalTokoMemberNotCalled()
             verifyGetShopTotalFollowersNotCalled()
             verifyGetShopOperationalNotCalled()
             verifyGetUserShopInfoNotCalled()
@@ -237,6 +248,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
                 )
             )
             onGetUserShopInfo_thenReturn(UserShopInfoWrapper(null))
+            onGetTotalTokoMember_thenReturn(0L)
             onGetShopTotalFollowers_thenReturn(100L)
             onGetFreeShipping_thenReturn(
                 TokoPlusBadgeUiModel(
@@ -269,6 +281,7 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             onGetShopBadge_thenThrow()
             onGetShopOperational_thenThrow()
             onGetUserShopInfo_thenThrow()
+            onGetTotalTokoMember_thenThrow()
             onGetShopTotalFollowers_thenThrow()
             onGetFreeShipping_thenThrow()
             onGetNewIklanPromotion_thenError()
@@ -499,6 +512,40 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
             verifyGetShopBadgeCalled()
             val expectedResult = SettingResponseState.SettingError(error)
             mViewModel.shopBadgeLiveData.verifyStateErrorEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember success should set live data state success`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTotalTokoMember_thenReturn(0L)
+            mViewModel.getTotalTokoMember()
+
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingSuccess("0")
+            mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember success should set live data state success with data null`() =
+        coroutineTestRule.runBlockingTest {
+            onGetTotalTokoMember_thenReturn(0L)
+            mViewModel.getTotalTokoMember()
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingSuccess("0")
+            mViewModel.totalTokoMemberLiveData.verifyStateSuccessEquals(expectedResult)
+        }
+
+    @Test
+    fun `when getTotalTokoMember error should set live data state error`() =
+        coroutineTestRule.runBlockingTest {
+            val error = IllegalStateException()
+            onGetTotalTokoMember_thenThrow(error)
+
+            mViewModel.getTotalTokoMember()
+
+            verifyGetTotalTokoMemberCalled()
+            val expectedResult = SettingResponseState.SettingError(error)
+            mViewModel.totalTokoMemberLiveData.verifyStateErrorEquals(expectedResult)
         }
 
     @Test
@@ -832,8 +879,16 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
         coVerify(exactly = 0) { getShopBadgeUseCase.executeOnBackground() }
     }
 
+    private suspend fun onGetTotalTokoMember_thenReturn(totalTokoMember:Long) {
+        coEvery { getTotalTokoMemberUseCase.executeOnBackground() } returns totalTokoMember
+    }
+
     private suspend fun onGetShopTotalFollowers_thenReturn(totalFollowers: Long) {
         coEvery { getShopTotalFollowersUseCase.executeOnBackground() } returns totalFollowers
+    }
+
+    private suspend fun onGetTotalTokoMember_thenThrow(exception: Exception = IllegalStateException()) {
+        coEvery { getTotalTokoMemberUseCase.executeOnBackground() } throws exception
     }
 
     private suspend fun onGetShopTotalFollowers_thenThrow(exception: Exception = IllegalStateException()) {
@@ -842,6 +897,14 @@ class OtherMenuViewModelTest : OtherMenuViewModelTestFixture() {
 
     private suspend fun verifyGetShopTotalFollowersCalled(atLeast: Int = 1) {
         coVerify(atLeast = atLeast) { getShopTotalFollowersUseCase.executeOnBackground() }
+    }
+
+    private suspend fun verifyGetTotalTokoMemberCalled(atLeast: Int = 1) {
+        coVerify(atLeast = atLeast) { getTotalTokoMemberUseCase.executeOnBackground() }
+    }
+
+    private suspend fun verifyGetTotalTokoMemberNotCalled() {
+        coVerify(exactly = 0) { getShopTotalFollowersUseCase.executeOnBackground() }
     }
 
     private suspend fun verifyGetShopTotalFollowersNotCalled() {

@@ -7,6 +7,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.digital_product_detail.data.mapper.DigitalAtcMapper
 import com.tokopedia.digital_product_detail.data.mapper.DigitalDenomMapper
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.digital_product_detail.presentation.data.PulsaDataFactory
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -495,6 +496,26 @@ class DigitalPDPPulsaViewModelTest : DigitalPDPPulsaViewModelTestFixture() {
         viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
         verifyAddToCartRepoGetCalled()
         verifyAddToCartSuccess(response)
+    }
+
+    @Test
+    fun `when getting addToCart should run and return notNull error from gql`(){
+        val error = dataFactory.getErrorAtcFromGql()
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", true)
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
+    }
+
+    @Test
+    fun `when getting addToCart should run and return DigitalAtcErrorException when get error atc`(){
+        val error = DigitalAtcErrorException(dataFactory.errorAtcResponse)
+        onGetAddToCart_thenReturn(error)
+
+        viewModel.addToCart(RequestBodyIdentifier(), DigitalSubscriptionParams(), "", false)
+        verifyAddToCartRepoGetCalled()
+        verifyAddToCartErrorNotEmpty(dataFactory.getErrorAtc())
     }
 
     @Test

@@ -2,6 +2,8 @@ package com.tokopedia.chatbot.view.activity
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,6 +18,7 @@ import com.tokopedia.chat_common.view.viewmodel.ChatRoomHeaderUiModel
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.view.fragment.ChatbotFragment
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.pushnotif.PushNotification
@@ -88,7 +91,14 @@ class ChatbotActivity : BaseChatToolbarActivity() {
 
     override fun setupToolbar() {
         super.setupToolbar()
-        findViewById<ImageView>(R.id.user_avatar).setImageResource(R.drawable.chatbot_avatar)
+        val userAvatar = findViewById<ImageView>(R.id.user_avatar)
+        userAvatar.apply {
+            if (userAvatar.isInDarkMode()){
+                setImageResource(R.drawable.ic_tanya_dark_mode)
+            } else {
+                setImageResource(R.drawable.chatbot_avatar)
+            }
+        }
         (findViewById<TextView>(R.id.title)).text = getString(R.string.cb_bot_toolbar_title)
     }
 

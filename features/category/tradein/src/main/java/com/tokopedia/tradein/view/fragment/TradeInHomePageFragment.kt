@@ -558,6 +558,7 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                     setBottomTextStyle("bold")
                     setBottomText(diagnosticReview[i].value)
                     setBottomGravity(Gravity.END)
+                    setBottomTextGravity(Gravity.END)
                 }
                 view?.findViewById<LinearLayout>(R.id.linear_layout_hp_kamu)
                     ?.addView(doubleTextView)
