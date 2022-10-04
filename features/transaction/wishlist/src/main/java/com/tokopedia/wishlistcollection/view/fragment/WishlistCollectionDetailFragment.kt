@@ -2783,6 +2783,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun hideGearIcon() {
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
+            wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
         }
     }
 
