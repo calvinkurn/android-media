@@ -38,7 +38,7 @@ enum class EPharmacyPrescriptionStatus(val status : String){
 const val EPharmacyImageQuality = 60
 
 const val FIRST_INDEX = 0
-const val MAX_MEDIA_SIZE_PICKER = 4_000_000L
+const val MAX_MEDIA_SIZE_PICKER = 100_000_000L
 
 const val ENTRY_POINT_ORDER = "Order"
 const val ENTRY_POINT_CHECKOUT = "Checkout"

@@ -77,8 +77,10 @@ class UploadPrescriptionUseCase @Inject constructor(
                 is NullPointerException -> {
                     if((!compress) || (compress && (compressCounter < 5))){
                         if (compress && !compressedUri?.path.isNullOrBlank()){
+                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${compressedUri?.path}")
                             getBase64OfPrescriptionImage(compressedUri?.path ?: "", true)
                         }else {
+                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${localFilePath}")
                             getBase64OfPrescriptionImage(localFilePath, true)
                         }
                     }
