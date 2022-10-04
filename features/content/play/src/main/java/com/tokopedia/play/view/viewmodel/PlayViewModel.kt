@@ -564,7 +564,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
-    private var delayQuizJob: Job? = null
     private var delayTapJob: Job? = null
 
     init {
@@ -1859,29 +1858,8 @@ class PlayViewModel @AssistedInject constructor(
                 )
             }
 
-            val winnerStatus = _winnerStatus.value
             val interactiveType = _interactive.value.interactive
-            val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
-            val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
-
-            if (!isRewardAvailable) {
-                showLeaderBoard(interactiveId = interactiveType.id)
-            } else {
-                delayQuizJob?.cancel()
-                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
-                    delay(interactive.interactive.waitingDuration)
-                    if(isFinished) {
-                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
-                    }
-                }
-            }
-            /**
-             * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
-             * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
-             * is coming, seller create another quiz it'll ruin the current flow.
-             *
-             * if winner status still didn't come after delay, just showLeaderBoard
-             * */
+            processWinnerStatus(null, interactiveType)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
@@ -1899,7 +1877,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private suspend fun processWinnerStatus(
-        status: PlayUserWinnerStatusUiModel,
+        status: PlayUserWinnerStatusUiModel?,
         interactive: InteractiveUiModel,
     ) {
         if (repo.hasProcessedWinner(interactive.id)) return
@@ -1908,16 +1886,18 @@ class PlayViewModel @AssistedInject constructor(
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+        val (title, subtitle) = Pair(if(interactiveType is InteractiveUiModel.Giveaway) status?.loserTitle ?: "" else "",
+            if(interactiveType is InteractiveUiModel.Giveaway) status?.loserText ?: "" else "Lihat hasil, dan peserta game di sini, ya.")
 
         _interactive.value = InteractiveStateUiModel.Empty
 
-        if (status.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
+        if (status?.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
-                    ShowCoachMarkWinnerEvent(status.loserTitle, status.loserText)
+                    ShowCoachMarkWinnerEvent(title, subtitle)
                 }
             )
             repo.setHasProcessedWinner(interactive.id)
@@ -2605,7 +2585,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun cancelAllDelayFromSocketWinner() {
-        if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 
