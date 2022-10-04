@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.Hotlist.DeeplinkMapperHotlist.getRegisteredHotlist
 import com.tokopedia.applink.account.DeeplinkMapperAccount
+import com.tokopedia.applink.category.DeeplinkMapperCategory
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredCategoryNavigation
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationAffiliate
 import com.tokopedia.applink.category.DeeplinkMapperCategory.getRegisteredNavigationCatalog
@@ -279,6 +280,10 @@ object DeeplinkMapper {
             return getRegisteredNavigationTokopediaNowSearch(deeplink)
         }
 
+        if (pathSize >= 1 && uri.pathSegments[0] == ApplinkConst.AFFILIATE_TOKO_HOST) {
+            return DeeplinkMapperCategory.getRegisteredNavigationAffiliateFromHttp(uri)
+        }
+
         return ""
     }
 
@@ -333,6 +338,7 @@ object DeeplinkMapper {
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
             DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
             DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
             DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
@@ -521,7 +527,9 @@ object DeeplinkMapper {
             }),
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
             DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri)},
-            DLP.exact(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) }
+            DLP.exact(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) },
+            DLP.matchPattern(ApplinkConst.WISHLIST_COLLECTION_DETAIL, targetDeeplink = { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0)) })
         )
 
     fun getTokopediaSchemeList():List<DLP>{

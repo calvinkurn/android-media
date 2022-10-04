@@ -28,6 +28,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.config.GlobalConfig
@@ -1142,11 +1143,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     addressId = address.address_id
                 )
         }
-        var inCollection = ""
+        /*var inCollection = ""
         if (collectionId.isNotEmpty() && collectionId != "0") {
             inCollection = PARAM_INSIDE_COLLECTION
         }
-        paramGetCollectionItems.inCollection = inCollection
+        paramGetCollectionItems.inCollection = inCollection*/
         paramGetCollectionItems.page = currPage
         wishlistCollectionDetailViewModel.getWishlistCollectionItems(
             paramGetCollectionItems, wishlistPref?.getTypeLayout(),
@@ -1369,11 +1370,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 sortFilterPrefix.setOnClickListener {
                     resetAllFilters()
                     paramGetCollectionItems = GetWishlistCollectionItemsParams()
-                    var inCollection = ""
+                    /*var inCollection = ""
                     if (collectionId.isNotEmpty() && collectionId != "0") {
                         inCollection = "inside"
                     }
-                    paramGetCollectionItems.inCollection = inCollection
+                    paramGetCollectionItems.inCollection = inCollection*/
                     paramGetCollectionItems.collectionId = collectionId
                     if (searchQuery.isNotEmpty()) paramGetCollectionItems.query = searchQuery
                     doRefresh()
@@ -1883,9 +1884,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun goToWishlistCollection(collectionId: String) {
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$collectionId"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
@@ -1907,12 +1906,17 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             userSession.userId,
             position
         )
+
         activity?.let {
-            val intent = RouteManager.getIntent(
-                it,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                wishlistItem.id
-            )
+            val intent = if (wishlistItem.url.isNotEmpty()) {
+                RouteManager.getIntent(it, wishlistItem.url)
+            } else {
+                RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    wishlistItem.id
+                )
+            }
             startActivityForResult(intent, REQUEST_CODE_GO_TO_PDP)
         }
     }
@@ -1942,14 +1946,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        TopAdsUrlHitter(context).hitClickUrl(
-            this::class.java.simpleName,
-            topAdsImageViewModel.adClickUrl,
-            "",
-            "",
-            topAdsImageViewModel.imageUrl
-        )
-        WishlistV2Analytics.clickTopAdsBanner(topAdsImageViewModel, userSession.userId, position)
         RouteManager.route(context, topAdsImageViewModel.applink)
     }
 
@@ -2072,9 +2068,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     override fun goToWishlistAllToAddCollection() {
         WishlistCollectionAnalytics.sendClickTambahBarangKeKoleksiOnEmptyStateNoCollectionItemsEvent()
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, "0")
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, true)
         intentCollectionDetail.putExtra(EXTRA_COLLECTION_ID_DESTINATION, collectionId)
         intentCollectionDetail.putExtra(EXTRA_COLLECTION_NAME_DESTINATION, collectionName)
@@ -2344,11 +2338,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             wishlistCollectionDetailSortFilter.run {
                 resetAllFilters()
                 paramGetCollectionItems = GetWishlistCollectionItemsParams()
-                var inCollection = ""
+                /*var inCollection = ""
                 if (collectionId.isNotEmpty() && collectionId != "0") {
                     inCollection = "inside"
                 }
-                paramGetCollectionItems.inCollection = inCollection
+                paramGetCollectionItems.inCollection = inCollection*/
                 if (collectionId != "0") {
                     paramGetCollectionItems.collectionId = collectionId
                 }

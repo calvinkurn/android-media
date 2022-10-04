@@ -35,6 +35,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         private val QUERY = """
             query MPBOMDetail(${'$'}input: BomDetailV2Request!) {
               mp_bom_detail(input: ${'$'}input) {
+                has_reso_status
                 order_id
                 invoice
                 invoice_url
