@@ -346,26 +346,6 @@ class ShippingDurationPresenterTest {
     }
 
     /*
-    getRatesDataFromLogistic
-    */
-
-    // todo
-    @Test
-    fun `When choose promo logistic Then find service data from service id`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
-    }
-
-    // todo
-    @Test
-    fun `When choose promo logistic but service data is not found Then return null`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
-    }
-
-    /*
     OnChooseDuration
     */
 

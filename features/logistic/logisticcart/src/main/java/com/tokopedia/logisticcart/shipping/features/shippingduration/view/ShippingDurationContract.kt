@@ -77,7 +77,6 @@ interface ShippingDurationContract {
             isOcc: Boolean
         ): MutableList<RatesViewModelType>
 
-        fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel?
         fun onChooseDuration(
             shippingCourierUiModelList: List<ShippingCourierUiModel>,
             cartPosition: Int, serviceData: ServiceData
