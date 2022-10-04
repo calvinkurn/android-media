@@ -53,6 +53,9 @@ data class SearchProductModel(
     val backendFilters: String
         get() = searchProduct.backendFilters
 
+    val keywordIntention: Int
+        get() = searchProduct.data.keywordIntention
+
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
         this.topAdsImageViewModelList.clear()
         this.topAdsImageViewModelList.addAll(topAdsImageViewModelList)
@@ -162,6 +165,10 @@ data class SearchProductModel(
             @SerializedName("violation")
             @Expose
             val violation: Violation = Violation(),
+
+            @SerializedName("keywordIntention")
+            @Expose
+            val keywordIntention: Int = 1,
     )
 
     data class Redirection(
