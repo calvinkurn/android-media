@@ -260,7 +260,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     @GqlQuery("ShopInfo", SHOP_AD_INFO)
     fun getShopAdsInfo(onSuccess: ((ShopAdInfo)) -> Unit) {
-        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId)
+        val params = mapOf(ParamObject.SHOP_ID to userSession.shopId, ParamObject.SOURCE to TopAdsDashboardConstant.SOURCE_ANDROID_HEADLINE)
         shopAdInfoUseCase.setTypeClass(ShopAdInfo::class.java)
         shopAdInfoUseCase.setRequestParams(params)
         shopAdInfoUseCase.setGraphqlQuery(ShopInfo.GQL_QUERY)
@@ -301,7 +301,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAdsStatus(resources: Resources) {
         adsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_autoads_shop_info))
-        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId))
+        adsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId, "source" to "android_topads_product_iklan"))
         adsStatusUseCase.setTypeClass(AdStatusResponse::class.java)
         adsStatusUseCase.execute({
             view?.onSuccessAdStatus(it.topAdsGetShopInfo.data)
@@ -312,7 +312,7 @@ class TopAdsDashboardPresenter @Inject constructor(
 
     fun getAutoAdsStatus(resources: Resources, onSuccess: ((data: AutoAdsResponse.TopAdsGetAutoAds.Data) -> Unit)) {
         autoAdsStatusUseCase.setGraphqlQuery(GraphqlHelper.loadRawString(resources, com.tokopedia.topads.common.R.raw.query_auto_ads_status))
-        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId.toIntOrZero()))
+        autoAdsStatusUseCase.setRequestParams(mapOf("shopId" to userSession.shopId, "source" to "android_topads_product_iklan"))
         autoAdsStatusUseCase.setTypeClass(AutoAdsResponse::class.java)
         autoAdsStatusUseCase.execute({
             onSuccess(it.topAdsGetAutoAds.data)
@@ -370,7 +370,7 @@ class TopAdsDashboardPresenter @Inject constructor(
     }
 
     fun validateGroup(groupName: String, onSuccess: ((ResponseGroupValidateName.TopAdsGroupValidateNameV2) -> Unit)) {
-        validGroupUseCase.setParams(groupName)
+        validGroupUseCase.setParams(groupName, "android_topads_validate_group")
         validGroupUseCase.execute(
                 {
                     onSuccess(it.topAdsGroupValidateName)

@@ -45,11 +45,11 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
     val autoAdsStatus = MutableLiveData<TopAdsAutoAdsModel>()
     val adsDeliveryStatus = MutableLiveData<NonDeliveryResponse.TopAdsGetShopStatus.DataItem>()
 
-    fun getAutoAdsStatus(shopId: Int) {
+    fun getAutoAdsStatus(shopId: String) {
         launchCatchError(block = {
             val data = withContext(dispatcher) {
                 val request = GraphqlRequest(GraphqlHelper.loadRawString(context.resources, R.raw.query_auto_ads_status),
-                        TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId))
+                        TopAdsAutoAds.Response::class.java, mapOf(SHOP_ID to shopId, SOURCE to SOURCE_AUTO_ADS))
                 val cacheStrategy = GraphqlCacheStrategy.Builder(CacheType.CLOUD_THEN_CACHE).build()
 
                 repository.response(listOf(request), cacheStrategy)
@@ -86,8 +86,10 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
 
     companion object {
         const val SHOP_ID = "shopId"
+        const val SOURCE = "source"
         const val SHOPID = "shopID"
         const val ADTYPE = "adTypes"
+        const val SOURCE_AUTO_ADS = "android_topads_autoads_common"
     }
 
 }
