@@ -24,7 +24,11 @@ class TokoNowSectionHeaderViewHolder(
 
     override fun bind(section: TokoNowSectionHeaderUiModel) {
         binding?.apply {
-            textTitle.text = section.title
+            textTitle.text = if(section.titleResId != null) {
+                getString(section.titleResId)
+            } else {
+                section.title
+            }
             if (section.seeAllAppLink.isNotEmpty()) {
                 textSeeAll.setOnClickListener {
                     RouteManager.route(it.context, section.seeAllAppLink)
