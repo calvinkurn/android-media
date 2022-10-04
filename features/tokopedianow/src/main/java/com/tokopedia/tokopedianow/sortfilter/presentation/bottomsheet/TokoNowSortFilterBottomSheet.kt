@@ -121,6 +121,11 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         activity?.finish()
     }
 
+    fun submitList(items: List<Visitable<*>>) {
+        sortFilterItems = items
+        adapter.submitList(items)
+    }
+
     fun show(fm: FragmentManager) {
         show(fm, TAG)
     }
@@ -146,7 +151,7 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
             adapter = this@TokoNowSortFilterBottomSheet.adapter
             itemAnimator = null
         }
-        adapter.submitList(sortFilterItems)
+        submitList(sortFilterItems)
     }
 
     private fun setupBtnFilter() {

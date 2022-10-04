@@ -82,7 +82,7 @@
     <string name="tokopedianow_sort_filter_bottomsheet">Terapkan</string>
     <string name="tokopedianow_sort_filter_item_most_frequently_bought_bottomsheet">Sering Kamu Beli</string>
     <string name="tokopedianow_sort_filter_item_last_bought_bottomsheet">Terakhir Kamu Beli</string>
-    <string name="tokopedianow_sort_filter_title_bottomsheet">Urutkan</string>
+    <string name="tokopedianow_sort_filter_title">Urutkan</string>
 
     <string name="tokopedianow_date_filter_title_bottomsheet">Pilih Tanggal</string>
     <string name="tokopedianow_date_filter_all_date_transactions_chip_and_item_bottomsheet_title">Semua Tanggal</string>

@@ -1,17 +1,23 @@
 package com.tokopedia.tokopedianow.recipelist.presentation.fragment
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import androidx.lifecycle.ViewModelProvider
+import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
+import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.setMaxHeight
+import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSectionHeaderUiModel
+import com.tokopedia.tokopedianow.recipelist.di.component.DaggerRecipeListComponent
+import com.tokopedia.tokopedianow.recipelist.presentation.viewmodel.TokoNowRecipeFilterViewModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet
 import java.util.*
+import javax.inject.Inject
 
 class TokoNowRecipeFilterFragment : Fragment() {
 
@@ -28,6 +34,16 @@ class TokoNowRecipeFilterFragment : Fragment() {
         }
     }
 
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    private val viewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory)
+            .get(TokoNowRecipeFilterViewModel::class.java)
+    }
+
+    private var bottomSheet: TokoNowSortFilterBottomSheet? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -40,112 +56,45 @@ class TokoNowRecipeFilterFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val selectedFilterIds = arguments
             ?.getStringArrayList(EXTRA_SELECTED_FILTER_IDS).orEmpty()
-        showSortFilterBottomSheet(selectedFilterIds)
+
+        setupBottomSheet()
+        showBottomSheet()
+        observeLiveData()
+
+        viewModel.getSortFilterOptions(selectedFilterIds)
     }
 
-    private fun showSortFilterBottomSheet(selectedFilterIds: List<String>) {
-        val title = getString(R.string.tokopedianow_filter)
-        // Temporary Hardcode
-        val items = listOf(
-            TokoNowSectionHeaderUiModel(
-                id = "1",
-                title = "Urutkan",
-                seeAllAppLink = ""
-            ),
-            TokoNowChipListUiModel(
-                parentId = "1",
-                items = listOf(
-                    TokoNowChipUiModel(
-                        id = "Newest",
-                        parentId = "1",
-                        text = "Terbaru",
-                        selected = selectedFilterIds.contains("Newest")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "Oldest",
-                        parentId = "1",
-                        text = "Terlama",
-                        selected = selectedFilterIds.contains("Oldest")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "MostPortion",
-                        parentId = "1",
-                        text = "Porsi Terbanyak",
-                        selected = selectedFilterIds.contains("MostPortion")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "LeastPortion",
-                        parentId = "1",
-                        text = "Porsi Paling Sedikit",
-                        selected = selectedFilterIds.contains("LeastPortion")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "ShortestDuration",
-                        parentId = "1",
-                        text = "Waktu Tercepat",
-                        selected = selectedFilterIds.contains("ShortestDuration")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "LongestDuration",
-                        parentId = "1",
-                        text = "Waktu Terlama",
-                        selected = selectedFilterIds.contains("LongestDuration")
-                    )
-                ),
-                isMultiSelect = false
-            ),
-            TokoNowSectionHeaderUiModel(
-                id = "2",
-                title = "Bahan",
-                seeAllAppLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
-            ),
-            TokoNowChipListUiModel(
-                parentId = "2",
-                items = listOf(
-                    TokoNowChipUiModel(
-                        id = "1",
-                        parentId = "2",
-                        text = "Daging Sapi",
-                        imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg",
-                        selected = selectedFilterIds.contains("1")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "2",
-                        parentId = "2",
-                        text = "Daging Ayam",
-                        imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg",
-                        selected = selectedFilterIds.contains("2")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "3",
-                        parentId = "2",
-                        text = "Kubis",
-                        imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg",
-                        selected = selectedFilterIds.contains("3")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "4",
-                        parentId = "2",
-                        text = "Kimchi",
-                        imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg",
-                        selected = selectedFilterIds.contains("4")
-                    ),
-                    TokoNowChipUiModel(
-                        id = "5",
-                        parentId = "2",
-                        text = "Wortel",
-                        imageUrl = "https://images.tokopedia.net/img/now/Tokopedia%20NOW!%20Badge.jpg",
-                        selected = selectedFilterIds.contains("5")
-                    )
-                )
-            )
-        )
-
-        val bottomSheet = TokoNowSortFilterBottomSheet.newInstance().apply {
-            setTitle(title)
-            sortFilterItems = items
+    private fun observeLiveData() {
+        observe(viewModel.visitableItems) {
+            submitList(it)
         }
+    }
 
-        bottomSheet.show(childFragmentManager)
+    override fun onAttach(context: Context) {
+        injectDependencies()
+        super.onAttach(context)
+    }
+
+    private fun setupBottomSheet() {
+        bottomSheet = TokoNowSortFilterBottomSheet.newInstance()
+        bottomSheet?.setTitle(getString(R.string.tokopedianow_filter))
+        bottomSheet?.sortFilterItems = listOf(LoadingMoreModel())
+    }
+
+    private fun showBottomSheet() {
+        bottomSheet?.show(childFragmentManager)
+    }
+
+    private fun submitList(items: List<Visitable<*>>) {
+        bottomSheet?.submitList(items)
+        bottomSheet?.setMaxHeight()
+    }
+
+    private fun injectDependencies() {
+        DaggerRecipeListComponent
+            .builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 }
