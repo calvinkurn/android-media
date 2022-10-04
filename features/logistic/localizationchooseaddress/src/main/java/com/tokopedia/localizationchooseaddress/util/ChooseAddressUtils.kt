@@ -20,8 +20,6 @@ import com.tokopedia.localizationchooseaddress.ui.preference.ChooseAddressShareP
 import com.tokopedia.localizationchooseaddress.ui.preference.CoachMarkStateSharePref
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.DEFAULT_LCA_VERSION
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant.Companion.LCA_VERSION
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
