@@ -67,7 +67,8 @@ class PlayCoverSetupViewModelTest {
                 channelConfigStore,
                 ProductConfigStoreImpl(),
                 titleConfigStore,
-                BroadcastScheduleConfigStoreImpl()
+                BroadcastScheduleConfigStoreImpl(),
+                AccountConfigStoreImpl(),
             ),
             dispatcher = dispatcherProvider,
             setupDataStore = mockSetupDataStore,
