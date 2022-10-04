@@ -283,7 +283,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                 is SelectedEtalaseModel.Campaign -> {
                     val page = when {
                         resetList -> 1
-                        pagingType is PagingType.Page -> pagingType.page
+                        pagingType is PagingType.Page -> pagingType.page + 1
                         else -> 1
                     }
 
