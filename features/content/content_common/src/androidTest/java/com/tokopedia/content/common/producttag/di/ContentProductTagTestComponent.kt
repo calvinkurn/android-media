@@ -3,8 +3,6 @@ package com.tokopedia.content.common.producttag.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.di.ContentProductTagSampleScope
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
-import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
 import dagger.Component
 
 /**

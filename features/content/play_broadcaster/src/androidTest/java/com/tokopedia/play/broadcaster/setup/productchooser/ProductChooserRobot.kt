@@ -25,7 +25,7 @@ import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductSort
 import com.tokopedia.play.broadcaster.setup.product.view.viewholder.ProductListViewHolder
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.PlayBroProductSetupViewModel
 import com.tokopedia.play.broadcaster.setup.productSetupViewModel
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import com.tokopedia.dialog.R as unifyDialogR
 import com.tokopedia.unifycomponents.R as unifyR

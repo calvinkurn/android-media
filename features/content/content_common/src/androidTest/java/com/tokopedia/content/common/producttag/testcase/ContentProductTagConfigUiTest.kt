@@ -19,9 +19,9 @@ import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiMod
 import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.util.*
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.play.test.util.*
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -430,6 +430,8 @@ class ContentProductTagConfigUiTest {
         )
 
         click(R.id.cl_search)
+
+        delay(DEFAULT_DELAY)
 
         isVisible(
             R.id.ic_back,

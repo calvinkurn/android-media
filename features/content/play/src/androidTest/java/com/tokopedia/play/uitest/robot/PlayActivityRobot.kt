@@ -12,8 +12,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
-import com.tokopedia.play.test.espresso.clickOnViewChild
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity

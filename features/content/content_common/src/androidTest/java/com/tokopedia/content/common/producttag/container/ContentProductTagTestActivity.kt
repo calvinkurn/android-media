@@ -6,18 +6,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
-import com.tokopedia.content.common.producttag.di.ContentCreationProductTagTestModule
 import com.tokopedia.content.common.producttag.di.ContentProductTagTestInjector
-import com.tokopedia.content.common.producttag.di.ContentProductTagTestModule
-import com.tokopedia.content.common.producttag.di.DaggerContentProductTagTestComponent
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
-import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProductTagConfig
 import com.tokopedia.content.common.test.R
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
