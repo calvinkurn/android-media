@@ -103,7 +103,9 @@ class EditorFragment @Inject constructor(
             }
 
             val autoCropTotalTime = (System.nanoTime() - autoCropStartTime) / NANO_DIVIDER
-            editorHomeAnalytics.autoCropProcessTime(autoCropTotalTime, viewModel.editStateList.size)
+            editorHomeAnalytics.autoCropProcessTime(autoCropTotalTime, listData.filter {
+                !it.isVideo
+            }.size)
 
             return
         }
