@@ -23,13 +23,6 @@ class NotificationSettingsUtils(private val context: Context) {
     private val postNotificationPermission = "android.permission.POST_NOTIFICATIONS"
     private val userSession: UserSessionInterface = UserSession(context)
     private val sdkLevel33 = 33
-    private val graphRepository: GraphqlRepository by lazy {
-        GraphqlInteractor.getInstance().graphqlRepository
-    }
-
-    private fun getSettingTrackerUseCase() : NotificationSettingTrackerUseCase {
-        return NotificationSettingTrackerUseCase(graphRepository)
-    }
 
     fun checkNotificationsModeForSpecificChannel(channel: String?): NotificationMode {
         return if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
@@ -70,7 +63,6 @@ class NotificationSettingsUtils(private val context: Context) {
                 ) == PackageManager.PERMISSION_GRANTED
             ) {
                 try {
-                    getSettingTrackerUseCase().sendTrackerUserSettings({}, {})
                     NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
                 } catch (_: Exception) {
                 }

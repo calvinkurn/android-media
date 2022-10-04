@@ -25,7 +25,7 @@ class NotificationSettingTrackerUseCase @Inject constructor(graphqlRepository: G
             this.setRequestParams(getRequestParams())
             this.execute(
                 { result ->
-                    if (result.settingTrackerResponse.isSuccess == 200) {
+                    if (result.settingTrackerResponse.isSuccess == 1) {
                         onSuccess(result.settingTrackerResponse)
                     } else {
                         onError(Throwable())

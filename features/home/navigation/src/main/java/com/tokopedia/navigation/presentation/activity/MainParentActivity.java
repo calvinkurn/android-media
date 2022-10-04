@@ -95,6 +95,8 @@ import com.tokopedia.navigation_common.listener.MainParentStatusBarListener;
 import com.tokopedia.navigation_common.listener.OfficialStorePerformanceMonitoringListener;
 import com.tokopedia.navigation_common.listener.RefreshNotificationListener;
 import com.tokopedia.navigation_common.listener.ShowCaseListener;
+import com.tokopedia.notifications.utils.NotificationSettingsUtils;
+import com.tokopedia.notifications.utils.NotificationUserSettingsTracker;
 import com.tokopedia.officialstore.category.presentation.fragment.OfficialHomeContainerFragment;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -207,6 +209,7 @@ public class MainParentActivity extends BaseActivity implements
     private static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
     public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
+    private static final String NOTIFICATION_USER_SETTING_KEY = "isUserSettingSent";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
 
@@ -299,6 +302,17 @@ public class MainParentActivity extends BaseActivity implements
 
         if (pageLoadTimePerformanceCallback != null && pageLoadTimePerformanceCallback.getCustomMetric().containsKey(MAIN_PARENT_ON_CREATE_METRICS)) {
             pageLoadTimePerformanceCallback.stopCustomMetric(MAIN_PARENT_ON_CREATE_METRICS);
+        }
+        sendNotificationUserSetting();
+    }
+
+    private void sendNotificationUserSetting() {
+        boolean isSettingsSent = cacheManager.getBoolean(NOTIFICATION_USER_SETTING_KEY, false);
+        if (userSession.get().isLoggedIn() && !isSettingsSent) {
+            new NotificationUserSettingsTracker(getApplicationContext()).sendNotificationUserSettings();
+            cacheManager.edit()
+                    .putBoolean(NOTIFICATION_USER_SETTING_KEY, true)
+                    .apply();
         }
     }
 
