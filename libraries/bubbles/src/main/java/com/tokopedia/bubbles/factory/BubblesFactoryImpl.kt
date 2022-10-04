@@ -40,6 +40,7 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         builder
             .setBubbleMetadata(bubbleMetadata)
             .setLocusId(LocusIdCompat(model.messageId))
+            .setShortcutId(model.messageId)
             .setCategory(Notification.CATEGORY_MESSAGE)
             .addPerson(person)
             .setStyle(messagingStyle)
