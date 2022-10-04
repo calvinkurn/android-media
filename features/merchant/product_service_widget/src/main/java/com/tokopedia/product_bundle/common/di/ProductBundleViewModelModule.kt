@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
-import com.tokopedia.productbundlewidget.ProductBundleWidgetViewModel
+import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap

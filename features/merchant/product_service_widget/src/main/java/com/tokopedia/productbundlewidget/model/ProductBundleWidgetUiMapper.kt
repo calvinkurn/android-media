@@ -1,4 +1,4 @@
-package com.tokopedia.productbundlewidget
+package com.tokopedia.productbundlewidget.model
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext

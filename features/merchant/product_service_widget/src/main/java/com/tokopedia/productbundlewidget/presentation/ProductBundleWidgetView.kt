@@ -1,4 +1,4 @@
-package com.tokopedia.productbundlewidget
+package com.tokopedia.productbundlewidget.presentation
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,6 +14,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
@@ -27,6 +28,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    private var viewModel: ProductBundleWidgetViewModel? = null
     private val bundleAdapter = ProductBundleWidgetAdapter()
 
     constructor(context: Context) : super(context) {
@@ -39,48 +41,6 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         setup(context, attrs)
-    }
-
-    fun createViewModel(storeOwner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
-        val viewModel = ViewModelProvider(storeOwner, viewModelFactory).get(ProductBundleWidgetViewModel::class.java)
-        viewModel.bundleUiModels.observe(lifecycleOwner) {
-            bundleAdapter.updateDataSet(it)
-        }
-        viewModel.getBundleInfo(2444029649, "", listOf())
-    }
-
-    private fun setup(context: Context, attrs: AttributeSet?) {
-        val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
-        val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
-        setupItems(rvBundles)
-        defineCustomAttributes(attrs)
-        initInjector()
-    }
-
-    private fun setupItems(rvBundles: RecyclerView) {
-        rvBundles.apply {
-            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-            adapter = bundleAdapter
-            bundleAdapter.setListener(this@ProductBundleWidgetView)
-        }
-    }
-
-    private fun initInjector() {
-        DaggerProductBundleComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
-    }
-
-    private fun defineCustomAttributes(attrs: AttributeSet?) {
-        if (attrs != null) {
-            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ProductBundleWidgetView, 0, 0)
-
-            try {
-            } finally {
-                styledAttributes.recycle()
-            }
-        }
     }
 
     override fun onBundleProductClicked(
@@ -138,4 +98,54 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     ) {
         println(selectedProduct)
     }
+
+    private fun setup(context: Context, attrs: AttributeSet?) {
+        val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
+        val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
+        setupItems(rvBundles)
+        defineCustomAttributes(attrs)
+        initInjector()
+    }
+
+    private fun setupItems(rvBundles: RecyclerView) {
+        rvBundles.apply {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = bundleAdapter
+            bundleAdapter.setListener(this@ProductBundleWidgetView)
+        }
+    }
+
+    private fun initInjector() {
+        DaggerProductBundleComponent.builder()
+            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
+    }
+
+    private fun defineCustomAttributes(attrs: AttributeSet?) {
+        if (attrs != null) {
+            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ProductBundleWidgetView, 0, 0)
+
+            try {
+            } finally {
+                styledAttributes.recycle()
+            }
+        }
+    }
+
+    private fun createViewModel(storeOwner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
+        if (viewModel != null) return
+        viewModel = ViewModelProvider(storeOwner, viewModelFactory).get(ProductBundleWidgetViewModel::class.java)
+        viewModel?.bundleUiModels?.observe(lifecycleOwner) {
+            bundleAdapter.updateDataSet(it)
+        }
+    }
+
+    fun getBundleData(param: GetBundleParam) {
+        param.apply {
+            createViewModel(storeOwner, lifecycleOwner)
+            viewModel?.getBundleInfo(productId, warehouseId, bundleList)
+        }
+    }
+
 }

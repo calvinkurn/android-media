@@ -1,4 +1,4 @@
-package com.tokopedia.productbundlewidget
+package com.tokopedia.productbundlewidget.presentation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.productbundlewidget.model.ProductBundleWidgetUiMapper
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -23,7 +24,7 @@ class ProductBundleWidgetViewModel @Inject constructor(
     private val _bundleUiModels: MutableLiveData<List<BundleUiModel>> = MutableLiveData()
     val bundleUiModels: LiveData<List<BundleUiModel>> get() = _bundleUiModels
 
-    fun getBundleInfo(productId: Long, warehouseId: String, bundleIdList: List<Bundle>) {
+    fun getBundleInfo(productId: String, warehouseId: String, bundleIdList: List<Bundle>) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
@@ -47,7 +48,7 @@ class ProductBundleWidgetViewModel @Inject constructor(
                         )
                     ),
                     productData = ProductData(
-                        productID = productId.toString(),
+                        productID = productId,
                         warehouseIDs = listOf(warehouseId)
                     ),
                     bundleIdList = bundleIdList
