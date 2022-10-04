@@ -11,7 +11,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 const val GROUP_VALIDATE_NAME_QUERY: String = """query topAdsGroupValidateNameV2(${'$'}shopID: String!, ${'$'}groupName: String!, ${'$'}source : String!){
-  topAdsGroupValidateNameV2(shopID: ${'$'}shopID, groupName: ${'$'}groupName, ${'$'}source : String!){
+  topAdsGroupValidateNameV2(shopID: ${'$'}shopID, groupName: ${'$'}groupName, source: ${'$'}source){
       data {
         shopID
         groupName
