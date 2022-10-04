@@ -1,4 +1,3 @@
-package com.tokopedia.play.broadcaster.setup.playbroadcastpreparation
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -6,18 +5,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.R as contentR
-import com.tokopedia.content.common.R as unifyR
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
@@ -33,8 +26,6 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.unifycomponents.R.*
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
 
@@ -44,7 +35,6 @@ import kotlin.LazyThreadSafetyMode.NONE
 class PlayBroadcasterPreparationRobot(
     dataStore: PlayBroadcastDataStore,
     hydraConfigStore: HydraConfigStore,
-    userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers,
     repo: PlayBroadcastRepository,
     channelUseCase: GetChannelUseCase,
@@ -56,7 +46,6 @@ class PlayBroadcasterPreparationRobot(
         parentBroViewModel(
             dataStore = dataStore,
             hydraConfigStore = hydraConfigStore,
-            userSession = userSessionInterface,
             dispatcher = dispatcher,
             repo = repo,
             getChannelUseCase = channelUseCase,
@@ -89,7 +78,6 @@ class PlayBroadcasterPreparationRobot(
 
     private val scenario = launchFragmentInContainer {
         parentViewModel.submitAction(PlayBroadcastAction.GetAccountList)
-
         PlayBroadcastPreparationFragment(
             parentViewModelFactoryCreator = parentViewModelFactoryCreator,
             viewModelFactory = viewModelFactory,
@@ -118,7 +106,7 @@ class PlayBroadcasterPreparationRobot(
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_both_account_live_title))))
 
-        delay(500L)
+        delay()
     }
 
     private fun chainable(fn: () -> Unit): PlayBroadcasterPreparationRobot {
