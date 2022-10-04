@@ -36,13 +36,14 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         val person = getBubblePerson(icon, model.fullName)
         val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
         val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
-        builder.applyBubbleData(
-            bubbleMetadata,
-            model.messageId,
-            person,
-            messagingStyle,
-            model.sentTime
-        )
+
+        builder
+            .setBubbleMetadata(bubbleMetadata)
+            .setLocusId(LocusIdCompat(model.messageId))
+            .setCategory(Notification.CATEGORY_MESSAGE)
+            .addPerson(person)
+            .setStyle(messagingStyle)
+            .setWhen(model.sentTime)
     }
 
     override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>) {
@@ -150,24 +151,8 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         return NotificationCompat.BubbleMetadata.Builder(
             pendingIntent,
             icon
-        ).apply {
-            setDesiredHeight(getBubbleHeight())
-        }.build()
-    }
-
-    private fun NotificationCompat.Builder.applyBubbleData(
-        bubbleMetadata: NotificationCompat.BubbleMetadata,
-        shortcutId: String,
-        person: Person,
-        messagingStyle: NotificationCompat.MessagingStyle,
-        sentTime: Long
-    ) {
-        setBubbleMetadata(bubbleMetadata)
-        setLocusId(LocusIdCompat(shortcutId))
-        setCategory(Notification.CATEGORY_MESSAGE)
-        addPerson(person)
-        setStyle(messagingStyle)
-        setWhen(sentTime)
+        ).setDesiredHeight(getBubbleHeight())
+            .build()
     }
 
     private fun createShortcuts(historyModels: List<BubbleHistoryItemModel>): List<ShortcutInfoCompat> {
