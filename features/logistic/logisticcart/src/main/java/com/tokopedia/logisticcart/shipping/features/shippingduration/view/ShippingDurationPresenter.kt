@@ -22,7 +22,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
                                                     private val stateConverter: RatesResponseStateConverter) : BaseDaggerPresenter<ShippingDurationContract.View>(), ShippingDurationContract.Presenter {
 
     private var view: ShippingDurationContract.View? = null
-    private var shippingData: ShippingRecommendationData? = null
+    var shippingData: ShippingRecommendationData? = null
 
     override fun attachView(view: ShippingDurationContract.View) {
         super.attachView(view)
@@ -203,6 +203,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         return null
     }
 
+    // todo: remove from presenter contract
     override fun convertServiceListToUiModel(shippingDurationUiModels: List<ShippingDurationUiModel>, promoUiModel: List<LogisticPromoUiModel>, preOrderModel: PreOrderModel?, isOcc: Boolean) : MutableList<RatesViewModelType> {
         val uiModelList : MutableList<RatesViewModelType> = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
         if (promoUiModel.isNotEmpty()) {
@@ -216,7 +217,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         }
 
         if (!isOcc) {
-            if (shippingDurationUiModels[0].etaErrorCode == 1) {
+            if (shippingDurationUiModels.getOrNull(0)?.etaErrorCode == 1) {
                 uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
             }
             if (promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {

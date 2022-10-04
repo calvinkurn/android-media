@@ -4,14 +4,21 @@ import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.datamock.DummyProvider
+import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.shipping.model.*
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertNull
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import rx.Observable
@@ -31,8 +38,10 @@ class ShippingDurationPresenterTest {
 
     @Before
     fun setup() {
-        presenter = ShippingDurationPresenter(ratesUseCase, ratesApiUseCase,
-                responseConverter)
+        presenter = ShippingDurationPresenter(
+            ratesUseCase, ratesApiUseCase,
+            responseConverter
+        )
     }
 
     @Test
@@ -211,8 +220,14 @@ class ShippingDurationPresenterTest {
         )
 
         // Then
-        assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)
-        assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
+        assertEquals(
+            shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size,
+            shippingDurationUIModels.size
+        )
+        assertEquals(
+            productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size,
+            productsShipping.size
+        )
     }
 
     @Test
@@ -236,9 +251,9 @@ class ShippingDurationPresenterTest {
     fun `When get courier item data return null Then null is returned`() {
         // Given
         val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData()
-                }
+            ShippingCourierUiModel().apply {
+                productData = ProductData()
+            }
         )
 
         // When
@@ -271,11 +286,11 @@ class ShippingDurationPresenterTest {
         // Given
         val sId = 38
         val courierModelNoId: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        shipperProductId = 24
-                    }
+            ShippingCourierUiModel().apply {
+                productData = ProductData().apply {
+                    shipperProductId = 24
                 }
+            }
         )
 
         // When
@@ -285,64 +300,174 @@ class ShippingDurationPresenterTest {
         assertNull(actual)
     }
 
-    // todo
     @Test
     fun `When rates v3 response has eligible courier for promo Then should hit analytic`() {
+        // Given
+        val ratesV3Response = getRatesResponseWithPromo()
+        val shippingRecommendationData =
+            ShippingDurationConverter().convertModel(ratesV3Response.ratesData)
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every {
+            responseConverter.fillState(
+                any(),
+                shopShipments,
+                shipmentDetailData.selectedCourier!!.shipperProductId,
+                0
+            )
+        } returns shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
+        }
+    }
+
+    @Test
+    fun `When rates v3 response Then should hit promo analytic`() {
+        // Given
+        val ratesV3Response = getRatesResponseWithPromo()
+        val shippingRecommendationData =
+            ShippingDurationConverter().convertModel(ratesV3Response.ratesData)
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every {
+            responseConverter.fillState(
+                any(),
+                shopShipments,
+                shipmentDetailData.selectedCourier!!.shipperProductId,
+                0
+            )
+        } returns shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", false, false
+        )
+
+        // Then
+        verify {
+            view.sendAnalyticPromoLogistic(shippingRecommendationData.listLogisticPromo)
         }
     }
 
     /*
-    convertServiceListToUiModel
+    * convertServiceListToUiModel
     */
 
-    // todo
     @Test
     fun `When service list has service with ui rates hidden Then dont show in bottomsheet`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceUiRatesHidden()
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        assertFalse(actual.any { it is ShippingDurationUiModel && it.serviceData.isUiRatesHidden })
     }
 
-    // todo
     @Test
     fun `When rates v3 response has promo logistic Then show divider in bottomsheet`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceUiRatesHidden()
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+        val lastIndexOfPromoModel = actual.indexOfLast { it is LogisticPromoUiModel }
+
+        // Then
+        assertTrue(actual.any { it is LogisticPromoUiModel })
+        assertTrue(actual[lastIndexOfPromoModel + 1] is DividerModel)
     }
 
-    // todo
     @Test
     fun `When pre order model display is true Then show pre order in bottomsheet`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        assertTrue(actual.first() is PreOrderModel)
     }
 
-    // todo
+    @Test
+    fun `When should display pre order model and has promo Then show pre order model before promo`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        assertTrue(actual.first() is PreOrderModel)
+    }
+
     @Test
     fun `When in checkout and promo has error code Then initiate showcase`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoEtaError()
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
+        assertTrue(firstDuration.isShowShowCase)
     }
 
-    // todo
     @Test
     fun `When in checkout and duration has error code Then show notifier model`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
-    }
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceError()
 
-    // todo
-    @Test
-    fun `When duration has error code Then show notifier model`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        assertTrue(actual.first() is NotifierModel)
     }
 
     /*
