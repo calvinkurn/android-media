@@ -43,6 +43,7 @@ ext {
             blockCanary             : ":libraries:blockcanary",
             blockCanaryNoOp         : "com.github.markzhai:blockcanary-no-op:1.5.0",
             bottomSheetBuilder      : ":libraries:bottom_sheet_builder",
+            bubbles                 : ":libraries:bubbles",
             cassavaTest             : ":libraries:cassavatest",
             charts                  : ":libraries:charts",
             circularViewPager       : ":libraries:circular_view_pager",

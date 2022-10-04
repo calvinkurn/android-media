@@ -2,19 +2,6 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 
-android {
-    defaultConfig {
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = ['targetModuleName': 'PushNotification']
-            }
-        }
-    }
-    buildFeatures {
-        buildConfig true
-    }
-}
-
 buildscript {
     repositories {
         google()
@@ -36,12 +23,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.logger)
-    implementation projectOrAar(rootProject.ext.libraries.bubbles)
 
-    implementation rootProject.ext.unifyDependencies.principles
-    implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.global_error
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.graphql)
@@ -50,8 +32,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
 
-    implementation rootProject.ext.firebase.messaging
-    implementation rootProject.ext.firebase.config
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.dbDependencies.dbRoomRuntime
     kapt rootProject.ext.dbDependencies.dbRoomCompiler
@@ -63,11 +43,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'push-notification'
+    artifactId = 'bubbles'
     groupId = 'com.tokopedia.library'
-    versionName = "0.0.2"
-    artifactName = "push_notification-release"
+    versionName = "0.0.1"
+    artifactName = "bubbles-release"
 }
 
 apply from: '../../publish_local.gradle'
-

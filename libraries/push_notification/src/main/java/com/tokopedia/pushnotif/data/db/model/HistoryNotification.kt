@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable
 data class HistoryNotification(
         @Nullable @ColumnInfo(name = "sender_name") var senderName: String?,
         @Nullable @ColumnInfo(name = "message") var message: String?,
+        @Nullable @ColumnInfo(name = "avatar_url") var avatarUrl: String?,
+        @Nullable @ColumnInfo(name = "applink") var appLink: String?,
         @Nullable @ColumnInfo(name = "notification_type") var notificationType: Int?,
         @Nullable @ColumnInfo(name = "notification_id") var notificationId: Int?,
         @Nullable @ColumnInfo(name = "avatar_url") var avatarUrl: String?,
