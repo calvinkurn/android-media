@@ -75,7 +75,7 @@ class EditorUiModel(
         }
     }
 
-    fun isImageEdited(): Boolean{
+    fun isImageEdited(): Boolean {
         return editList.size > backValue
     }
 

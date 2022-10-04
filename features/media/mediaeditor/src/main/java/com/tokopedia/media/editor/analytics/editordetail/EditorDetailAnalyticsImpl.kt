@@ -26,7 +26,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class EditorDetailAnalyticsImpl(
     private val userSession: UserSessionInterface,
     private val cacheManager: ParamCacheManager
-): EditorDetailAnalytics {
+) : EditorDetailAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
 

@@ -33,8 +33,8 @@ class WatermarkToolUiComponent constructor(
         }
     }
 
-    fun setWatermarkTypeSelected(watermarkType: WatermarkType?){
-        when(watermarkType){
+    fun setWatermarkTypeSelected(watermarkType: WatermarkType?) {
+        when (watermarkType) {
             WatermarkType.Diagonal -> setButtonSelected(btnWatermarkDiagonal)
             WatermarkType.Center -> setButtonSelected(btnWatermarkCenter)
             null -> {

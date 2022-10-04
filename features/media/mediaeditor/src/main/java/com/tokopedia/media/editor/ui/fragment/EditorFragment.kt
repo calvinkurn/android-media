@@ -140,8 +140,8 @@ class EditorFragment @Inject constructor(
         observeUpdateIndex()
     }
 
-    private fun editorClickTracker(editorType: Int){
-        when(editorType){
+    private fun editorClickTracker(editorType: Int) {
+        when (editorType) {
             EditorToolType.BRIGHTNESS -> editorHomeAnalytics.clickBrightness()
             EditorToolType.CONTRAST -> editorHomeAnalytics.clickContrast()
             EditorToolType.ROTATE -> editorHomeAnalytics.clickRotate()
@@ -311,7 +311,7 @@ class EditorFragment @Inject constructor(
         }
     }
 
-    private fun setPagerPageChangeListener(viewPager: EditorViewPager){
+    private fun setPagerPageChangeListener(viewPager: EditorViewPager) {
         viewPager.setOnPageChanged { position, isVideo ->
             thumbnailDrawerComponent.clickIndex(position)
         }
@@ -355,7 +355,7 @@ class EditorFragment @Inject constructor(
         }
     }
 
-    private fun updateToolsContainerVisibility(filePath: String){
+    private fun updateToolsContainerVisibility(filePath: String) {
         val isVideo = isVideoFormat(filePath)
         editorToolComponent.container().apply {
             if (isVideo) {

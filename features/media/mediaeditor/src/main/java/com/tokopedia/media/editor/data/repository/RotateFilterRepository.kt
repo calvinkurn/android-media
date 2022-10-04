@@ -41,10 +41,10 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
     // used by rotated via slider & be used as source of truth anchor of zooming 
     override var initialScale = 0f
-    set(value) {
-        field = value
-        if(latestZoomPoint == 0f) latestZoomPoint = value
-    }
+        set(value) {
+            field = value
+            if (latestZoomPoint == 0f) latestZoomPoint = value
+        }
     private var latestZoomPoint = 0f
 
     private var originalTargetWidth: RectF = RectF()
@@ -62,8 +62,8 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
 
             val normalizeDegree = degree * previewWidget.scaleNormalizeValue
 
-            if(initialScale == 0f) initialScale = cropImageView.currentScale
-            if(originalTargetWidth.width() == 0f) {
+            if (initialScale == 0f) initialScale = cropImageView.currentScale
+            if (originalTargetWidth.width() == 0f) {
                 originalTargetWidth.set(previewWidget.overlayView.cropViewRect)
             }
 
@@ -187,7 +187,7 @@ class RotateFilterRepositoryImpl @Inject constructor() : RotateFilterRepository 
         cropImageView.zoomOutImage(cropImageView.currentScale - zoomPointDiff)
     }
 
-    companion object{
+    companion object {
         private const val CROP_VIEW_ZOOM_DELAY = 500L
     }
 }

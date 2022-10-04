@@ -90,10 +90,20 @@ class EditorToolViewHolder(
         txtName.text = context.getString(tool.name)
         when (tool.id) {
             EditorToolType.WATERMARK -> {
-                icTool.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.editor_watermark))
+                icTool.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.editor_watermark
+                    )
+                )
             }
             EditorToolType.REMOVE_BACKGROUND -> {
-                icTool.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.editor_remove_background))
+                icTool.setImageDrawable(
+                    ContextCompat.getDrawable(
+                        context,
+                        R.drawable.editor_remove_background
+                    )
+                )
             }
             else -> icTool.setImage(tool.icon)
         }

@@ -58,9 +58,9 @@ class CropToolUiComponent constructor(
         container().show()
     }
 
-    fun setActiveCropRatio(activeRatio: Pair<Int, Int>){
+    fun setActiveCropRatio(activeRatio: Pair<Int, Int>) {
         availableRatio.forEachIndexed { index, availRatio ->
-            if(activeRatio == availRatio.ratio) {
+            if (activeRatio == availRatio.ratio) {
                 (container() as LinearLayout).getChildAt(index).performClick()
                 return
             }
@@ -70,7 +70,11 @@ class CropToolUiComponent constructor(
     }
 
     private fun generateCropButton(imageRatio: ImageRatioType, isSelected: Boolean = false): View {
-        return View.inflate(container().context, editorR.layout.ui_component_crop_action_layout, null)
+        return View.inflate(
+            container().context,
+            editorR.layout.ui_component_crop_action_layout,
+            null
+        )
             .apply {
                 val boxCrop = findViewById<View>(editorR.id.box_crop).apply {
                     val viewDefaultSize = DEFAULT_SIZE.toPx()
@@ -108,11 +112,11 @@ class CropToolUiComponent constructor(
                     boxCropText.setTextColor(activeColor)
                 }
 
-                if(isSelected) performClick()
+                if (isSelected) performClick()
             }
     }
 
-    private fun setCropInactive(){
+    private fun setCropInactive() {
         viewRefList.forEach {
             it.first.background.setColorFilter(inactiveColor, PorterDuff.Mode.SRC_ATOP)
             it.second.setTextColor(inactiveColor)

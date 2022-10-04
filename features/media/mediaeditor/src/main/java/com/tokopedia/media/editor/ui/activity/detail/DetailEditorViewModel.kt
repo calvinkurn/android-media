@@ -70,7 +70,7 @@ class DetailEditorViewModel @Inject constructor(
         _intentUiModel.postValue(data)
     }
 
-    fun setIntentUiModel(data: EditorUiModel){
+    fun setIntentUiModel(data: EditorUiModel) {
         _intentStateList.postValue(data)
     }
 
@@ -88,7 +88,7 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setRemoveBackground(filePath: String, onError: (t: Throwable) -> Unit) {
-        if(_removeBackground.value != null) {
+        if (_removeBackground.value != null) {
             _removeBackground.value = _removeBackground.value
             return
         }
@@ -117,7 +117,7 @@ class DetailEditorViewModel @Inject constructor(
         detailUiModel: EditorDetailUiModel,
         useStorageColor: Boolean
     ) {
-        if (!watermarkFilterRepository.isAssetInitialize()){
+        if (!watermarkFilterRepository.isAssetInitialize()) {
             initializeWatermarkAsset()
         }
 
@@ -137,7 +137,7 @@ class DetailEditorViewModel @Inject constructor(
         implementedBaseBitmap: Bitmap,
         buttonRef: Pair<ImageView, ImageView>
     ) {
-        if (!watermarkFilterRepository.isAssetInitialize()){
+        if (!watermarkFilterRepository.isAssetInitialize()) {
             initializeWatermarkAsset()
         }
 
@@ -145,7 +145,8 @@ class DetailEditorViewModel @Inject constructor(
             implementedBaseBitmap,
             userSession.shopName
         ).apply {
-            val roundedCorner = resourceProvider.getWatermarkRoundCorner() ?: WATERMARK_CORNER_DEFAULT_SIZE
+            val roundedCorner =
+                resourceProvider.getWatermarkRoundCorner() ?: WATERMARK_CORNER_DEFAULT_SIZE
 
             buttonRef.first.loadImageRounded(this.first, roundedCorner) {
                 centerCrop()
@@ -212,7 +213,7 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     private fun initializeWatermarkAsset() {
-        if (!watermarkFilterRepository.isAssetInitialize()){
+        if (!watermarkFilterRepository.isAssetInitialize()) {
             resourceProvider.getWatermarkLogoDrawable()?.let {
                 val textColor = resourceProvider.getWatermarkTextColor()
                 watermarkFilterRepository.setAsset(

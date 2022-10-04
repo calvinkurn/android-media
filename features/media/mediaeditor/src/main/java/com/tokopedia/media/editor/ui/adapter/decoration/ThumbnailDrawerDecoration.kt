@@ -12,7 +12,8 @@ class ThumbnailDrawerDecoration(context: Context?) : RecyclerView.ItemDecoration
 
     init {
         context?.let {
-            dividerStartEndPadding = it.resources.getDimensionPixelSize(R.dimen.editor_item_drawer_padding)
+            dividerStartEndPadding =
+                it.resources.getDimensionPixelSize(R.dimen.editor_item_drawer_padding)
         }
     }
 

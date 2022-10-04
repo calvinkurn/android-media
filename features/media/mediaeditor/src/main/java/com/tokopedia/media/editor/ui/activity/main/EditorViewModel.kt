@@ -69,11 +69,11 @@ class EditorViewModel @Inject constructor(
         return _editStateList[urlKey]
     }
 
-    fun cleanImageCache(){
+    fun cleanImageCache() {
         saveImageRepository.clearEditorCache()
     }
 
-    fun undoState(activeImageUrl: String): EditorUiModel?{
+    fun undoState(activeImageUrl: String): EditorUiModel? {
         getEditState(activeImageUrl)?.let {
             val imageEditStateCount = it.editList.size
             if (it.backValue >= imageEditStateCount) return@let
@@ -149,7 +149,11 @@ class EditorViewModel @Inject constructor(
         }
     }
 
-    fun saveToGallery(context: Context, dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit){
+    fun saveToGallery(
+        context: Context,
+        dataList: List<EditorUiModel>,
+        onFinish: (result: List<String>) -> Unit
+    ) {
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 it.getImageUrl()

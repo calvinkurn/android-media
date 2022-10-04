@@ -7,4 +7,4 @@ import kotlinx.parcelize.Parcelize
 data class EditorWatermarkUiModel(
     var watermarkType: Int,
     var textColorDark: Boolean
-): Parcelable
+) : Parcelable

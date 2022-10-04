@@ -40,7 +40,11 @@ class RemoveBackgroundRepositoryImpl @Inject constructor(
             }
         }.map {
             val compressFormat = filePath.getCompressFormat()
-            ImageProcessingUtil.writeImageToTkpdPath(it.byteStream(), compressFormat, directoryRelativePath = getEditorSaveFolderPath())
+            ImageProcessingUtil.writeImageToTkpdPath(
+                it.byteStream(),
+                compressFormat,
+                directoryRelativePath = getEditorSaveFolderPath()
+            )
         }
     }
 

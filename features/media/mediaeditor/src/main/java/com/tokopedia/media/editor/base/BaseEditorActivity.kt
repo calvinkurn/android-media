@@ -56,7 +56,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
-    
+
     private fun clearOldToolbar() {
         val parent = toolbar.parent as ViewGroup
         parent.removeView(toolbar)

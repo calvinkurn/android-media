@@ -10,13 +10,15 @@ import com.tokopedia.media.editor.ui.activity.main.EditorActivity
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [
-    EditorModule::class,
-    EditorFragmentModule::class,
-    EditorViewModelModule::class
-], dependencies = [
-    BaseAppComponent::class
-])
+@Component(
+    modules = [
+        EditorModule::class,
+        EditorFragmentModule::class,
+        EditorViewModelModule::class
+    ], dependencies = [
+        BaseAppComponent::class
+    ]
+)
 interface EditorComponent {
     fun inject(activity: EditorActivity)
     fun inject(activity: DetailEditorActivity)

@@ -38,7 +38,7 @@ import com.tokopedia.user.session.UserSessionInterface
 class EditorHomeAnalyticsImpl(
     private val userSession: UserSessionInterface,
     private val cacheManager: ParamCacheManager
-): EditorHomeAnalytics {
+) : EditorHomeAnalytics {
     private val userId: String
         get() = userSession.userId.toZeroStringIfNullOrBlank()
 

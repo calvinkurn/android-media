@@ -247,8 +247,8 @@ class WatermarkFilterRepositoryImpl @Inject constructor() : WatermarkFilterRepos
 }
 
 sealed class WatermarkType(val value: Int) {
-    object Diagonal: WatermarkType(DIAGONAL_INDEX)
-    object Center: WatermarkType(CENTER_INDEX)
+    object Diagonal : WatermarkType(DIAGONAL_INDEX)
+    object Center : WatermarkType(CENTER_INDEX)
 
     companion object {
         private const val DIAGONAL_INDEX = 0
