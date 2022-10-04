@@ -3,6 +3,7 @@ package com.tokopedia.play.viewmodel.play
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.fake.FakePlayWebSocket
 import com.tokopedia.play.model.*
@@ -498,7 +499,7 @@ class PlayViewModelWebSocketTest {
             event.last().isEqualTo(
                 ShowCoachMarkWinnerEvent(
                     PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
+                    UiString.Text(PlayUserWinnerStatusSocketResponse.loserText),
                 )
             )
         }
@@ -639,7 +640,7 @@ class PlayViewModelWebSocketTest {
     }
 
     @Test
-    fun `when quiz is ongoing, user join the game that has a reward, user the winner`() {
+    fun `when quiz is ongoing, user join the game whether they a winner or not show coachmark`() {
         val model = uiModelBuilder.buildQuiz(
             id = "1", listOfChoices =
             listOf(
@@ -698,7 +699,7 @@ class PlayViewModelWebSocketTest {
                 fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
             }
 
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
+            event.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
     }
 
@@ -764,8 +765,8 @@ class PlayViewModelWebSocketTest {
 
             event.last().assertEqualTo(
                 ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
+                    "",
+                    UiString.Resource(R.string.play_quiz_finished),
                 )
             )
         }

@@ -2,6 +2,7 @@ package com.tokopedia.play.viewmodel.interactive
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
+import com.tokopedia.play.R
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.play.createPlayViewModelRobot
@@ -13,6 +14,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.ShowCoachMarkWinnerEvent
 import com.tokopedia.play.view.uimodel.event.ShowWinningDialogEvent
+import com.tokopedia.play.view.uimodel.event.UiString
 import com.tokopedia.play.websocket.response.PlayUserWinnerStatusSocketResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
@@ -384,7 +386,7 @@ class PlayLiveInitialInteractiveTest {
         }
     }
     @Test
-    fun `given has finished channel quiz, has reward and user is the winner, show winning dialog`() {
+    fun `given has finished channel quiz, wheter user is winner or not show coachmar`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
             WebSocketAction.NewMessage(
                 socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
@@ -440,7 +442,7 @@ class PlayLiveInitialInteractiveTest {
                     )
                 )
             }
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
+            event.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
     }
     @Test
@@ -503,8 +505,8 @@ class PlayLiveInitialInteractiveTest {
             }
             event.last().assertEqualTo(
                 ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText,
+                    "",
+                    UiString.Resource(R.string.play_quiz_finished),
                 )
             )
         }
