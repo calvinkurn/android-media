@@ -135,7 +135,6 @@
     <string name="title_item_request_address">Minta alamat ke teman kamu</string>
     <string name="subtitle_item_request_address">Lebih mudah dan cepat mendapatkan alamat teman cukup klik di sini.</string>
     <string name="success_delete_share_address">Alamat berhasil dihapus!</string>
-    <string name="succes_save_share_address">Alamat berhasil ditambahkan!</string>
     <string name="action_cancel_delete_address">Batalkan</string>
     <string name="success_share_address">Alamat berhasil dibagikan</string>
     <string name="success_request_address">Alamat berhasil direquest!</string>

@@ -123,7 +123,7 @@ class FromFriendFragment : BaseDaggerFragment(),
 
         viewModel.saveAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is FromFriendAddressActionState.Success -> onSuccessSaveAddress()
+                is FromFriendAddressActionState.Success -> onSuccessSaveAddress(it.message)
                 is FromFriendAddressActionState.Fail -> showToaster(it.errorMessage, Toaster.TYPE_ERROR)
                 is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
             }
@@ -201,8 +201,8 @@ class FromFriendFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessSaveAddress() {
-        showToaster(getString(R.string.succes_save_share_address))
+    private fun onSuccessSaveAddress(message: String) {
+        showToaster(message)
         mListener?.apply {
             removeArgumentsFromNotif()
             onSuccessSaveShareAddress()

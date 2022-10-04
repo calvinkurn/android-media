@@ -100,9 +100,11 @@ class FromFriendViewModelTest {
 
     @Test
     fun `verify when save share address is success`() {
+        val message = "Success Save Address"
         val mockResponse = spyk(SaveShareAddressResponse(
             data = spyk(SaveShareAddressResponse.KeroAddrSaveSharedAddress(
-                isSuccess = true
+                isSuccess = true,
+                message = message
             ))
         ))
 
@@ -113,7 +115,7 @@ class FromFriendViewModelTest {
         viewModel.saveAddress()
 
         verify {
-            saveShareAddressObserver.onChanged(FromFriendAddressActionState.Success)
+            saveShareAddressObserver.onChanged(FromFriendAddressActionState.Success(message))
         }
     }
 
@@ -138,7 +140,6 @@ class FromFriendViewModelTest {
         verify {
             saveShareAddressObserver.onChanged(
                 FromFriendAddressActionState.Fail(
-                    null,
                     fakeErrorMessage
                 )
             )
@@ -156,7 +157,6 @@ class FromFriendViewModelTest {
         verify {
             saveShareAddressObserver.onChanged(
                 FromFriendAddressActionState.Fail(
-                    mockThrowable,
                     mockThrowable.message.orEmpty()
                 )
             )
@@ -165,11 +165,13 @@ class FromFriendViewModelTest {
 
     @Test
     fun `verify when delete share address is success`() {
+        val message = "Success Delete Address"
         val addressList = arrayListOf<RecipientAddressModel>(spyk(), spyk())
         viewModel.addressList.addAll(addressList)
         val mockResponse = spyk(DeleteShareAddressResponse(
             data = spyk(DeleteShareAddressResponse.KeroAddrDeleteSharedAddress(
-                isSuccess = true
+                isSuccess = true,
+                message = message
             ))
         ))
 
@@ -183,7 +185,7 @@ class FromFriendViewModelTest {
 
         Assert.assertEquals(viewModel.addressList.size, addressList.size - 1)
         verify {
-            deleteShareAddressObserver.onChanged(FromFriendAddressActionState.Success)
+            deleteShareAddressObserver.onChanged(FromFriendAddressActionState.Success(message))
         }
     }
 
@@ -223,7 +225,6 @@ class FromFriendViewModelTest {
         verify {
             deleteShareAddressObserver.onChanged(
                 FromFriendAddressActionState.Fail(
-                    mockThrowable,
                     mockThrowable.message.orEmpty()
                 )
             )

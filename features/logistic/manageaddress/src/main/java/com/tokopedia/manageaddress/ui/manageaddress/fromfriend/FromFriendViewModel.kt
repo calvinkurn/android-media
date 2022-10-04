@@ -94,13 +94,13 @@ class FromFriendViewModel @Inject constructor(
             )
             val result = saveAddressUseCase(param)
             _saveAddressState.value = if (result.isSuccess) {
-                FromFriendAddressActionState.Success
+                FromFriendAddressActionState.Success(result.data?.message.orEmpty())
             } else {
-                FromFriendAddressActionState.Fail(null, result.errorMessage)
+                FromFriendAddressActionState.Fail(result.errorMessage)
             }
             showSaveAddressLoading(false)
         }, onError = {
-            _saveAddressState.value = FromFriendAddressActionState.Fail(it, it.message.orEmpty())
+            _saveAddressState.value = FromFriendAddressActionState.Fail(it.message.orEmpty())
             showSaveAddressLoading(false)
         })
     }
@@ -128,16 +128,16 @@ class FromFriendViewModel @Inject constructor(
             val result = deleteAddressUseCase(param)
             _deleteAddressState.value = if (result.isSuccess) {
                 temporaryList.clear()
-                FromFriendAddressActionState.Success
+                FromFriendAddressActionState.Success(result.data?.message.orEmpty())
             } else {
                 updateAddressList(temporaryList)
-                FromFriendAddressActionState.Fail(null, result.errorMessage)
+                FromFriendAddressActionState.Fail(result.errorMessage)
             }
             onDeletingAddress(false)
         }, onError = {
             updateAddressList(temporaryList)
             _deleteAddressState.value =
-                FromFriendAddressActionState.Fail(it, it.message.orEmpty())
+                FromFriendAddressActionState.Fail(it.message.orEmpty())
             onDeletingAddress(false)
         })
     }
