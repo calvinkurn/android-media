@@ -10,7 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,20 +18,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -42,7 +37,6 @@ import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
 import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
@@ -50,7 +44,6 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
-import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -80,6 +73,7 @@ import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
 import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.imagepicker_insta.common.BundleData
@@ -230,6 +224,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         requestFeedTab()
         initFab()
+    }
+
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when(childFragment) {
+            is FeedPlusTabParentFragment -> childFragment.setContainerListener(this)
+        }
     }
 
     private fun setupView(view: View) {
@@ -515,6 +517,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun shrinkFab() {
         feedFloatingButton.shrink()
+    }
+
+    override fun onChildRefresh() {
+        viewModel.getWhitelist()
     }
 
     override fun onStop() {
