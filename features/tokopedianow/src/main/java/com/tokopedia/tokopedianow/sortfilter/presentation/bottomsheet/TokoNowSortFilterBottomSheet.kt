@@ -127,7 +127,7 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
 
     private fun initView() {
         binding = BottomsheetTokopedianowSortFilterBinding.inflate(LayoutInflater.from(context))
-        rvSort = binding?.rvSortBasedOnBuying
+        rvSort = binding?.rvSortFilter
         btnApplyFilter = binding?.btnApplyFilter
         setChild(binding?.root)
     }
