@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -147,6 +148,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
 
+        if (GlobalConfig.DEBUG) {
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -370,21 +374,18 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         String version = versions.getFirst();
         String suffixVersion = versions.getSecond();
 
-        if (!version.equalsIgnoreCase(AuthHelper.ERROR)) {
-            GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = version;
-            com.tokopedia.config.GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
-        } else {
+        if (TextUtils.isEmpty(suffixVersion)) {
             GlobalConfig.VERSION_NAME = versionName();
-            com.tokopedia.config.GlobalConfig.VERSION_NAME = versionName();
+        } else {
+            GlobalConfig.VERSION_NAME = version;
+            GlobalConfig.VERSION_NAME_SUFFIX = suffixVersion;
         }
-        com.tokopedia.config.GlobalConfig.RAW_VERSION_NAME = versionName();// save raw version name
+        GlobalConfig.RAW_VERSION_NAME = versionName();
     }
 
     /**
      * cannot reference BuildConfig of an app.
      *
-     * @return
      */
     @NonNull
     public abstract String versionName();

@@ -690,4 +690,36 @@ class PlayBroadcasterViewModelTest {
             verify { mockLogger.sendAll("") }
         }
     }
+
+    @Test
+    fun `when trigger startTimer(), then it will trigger broadcasterTimer start`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().startTimer()
+
+            verify { mockTimer.start() }
+        }
+    }
+
+    @Test
+    fun `when trigger stopTimer(), then it will trigger broadcasterTimer stop`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().stopTimer()
+
+            verify { mockTimer.stop() }
+        }
+    }
 }

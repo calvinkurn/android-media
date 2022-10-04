@@ -77,7 +77,6 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -1701,67 +1700,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * Add/Remove Wishlist
-     */
-    @Test
-    fun onSuccessAddWishlist() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorAddWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    @Test
-    fun onSuccessRemoveWishlist() {
-        val productId = "123"
-        every { (removeWishlistUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorRemoveWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (removeWishlistUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    /**
      * Discussion Most Helpful
      */
     @Test
@@ -2380,6 +2318,100 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         }
 
         Assert.assertTrue(isTimeoutException)
+    }
+
+    @Test
+    fun `verify vertical recommendation when return empty list, will be fail`() {
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns emptyList()
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = productId
+        )
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify vertical recommendation throw error, will be fail`() {
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } throws Throwable()
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Fail)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageNumber = 1
+        val pageName = "pdp_8_vertical"
+        val productId = "1234"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(pageName, pageNumber, productId)
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(pageNumber, captured.pageNumber)
+        Assert.assertEquals(listOf(productId), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
+    }
+
+    @Test
+    fun `verify success get vertical recommendation data with null productId and pageNumber`() {
+        val mockResponse = RecommendationWidget(
+            tid = "1",
+            recommendationItemList = listOf(RecommendationItem())
+        )
+
+        val pageName = "pdp_8_vertical"
+
+        coEvery {
+            getRecommendationUseCase.getData(any())
+        } returns arrayListOf(mockResponse)
+
+        viewModel.getVerticalRecommendationData(
+            pageName = pageName,
+            productId = null,
+            page = null
+        )
+
+        val slotRequestParams = slot<GetRecommendationRequestParam>()
+        coVerify {
+            getRecommendationUseCase.getData(capture(slotRequestParams))
+        }
+
+        val captured = slotRequestParams.captured
+        Assert.assertEquals(pageName, captured.pageName)
+        Assert.assertEquals(1, captured.pageNumber)
+        Assert.assertEquals(listOf(""), captured.productIds)
+
+        Assert.assertTrue(viewModel.verticalRecommendation.value is Success)
     }
 
     //======================================END OF PDP SECTION=======================================//

@@ -2,11 +2,13 @@ package com.tokopedia.sellerhome.di.module
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.di.scope.SellerHomeScope
 import com.tokopedia.sellerhome.domain.mapper.NotificationMapper
 import com.tokopedia.sellerhome.domain.mapper.ShopInfoMapper
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetTotalTokoMemberUseCase
 import com.tokopedia.sellerhomecommon.domain.mapper.AnnouncementMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.BarChartMapper
 import com.tokopedia.sellerhomecommon.domain.mapper.CalendarMapper
@@ -216,4 +218,19 @@ class SellerHomeUseCaseModule {
         mapper: TickerMapper,
         dispatchers: CoroutineDispatchers
     ): GetTickerUseCase = GetTickerUseCase(gqlRepository, mapper, dispatchers)
+
+
+    @SellerHomeScope
+    @Provides
+    fun provideShopMultilocWhitelistUseCase(
+        gqlRepository: GraphqlRepository,
+        dispatchers: CoroutineDispatchers
+    ): ShopMultilocWhitelistUseCase = ShopMultilocWhitelistUseCase(gqlRepository, dispatchers)
+
+
+    @SellerHomeScope
+    @Provides
+    fun provideGetTokomemberUseCase(
+        gqlRepository: GraphqlRepository
+    ): GetTotalTokoMemberUseCase = GetTotalTokoMemberUseCase(gqlRepository)
 }

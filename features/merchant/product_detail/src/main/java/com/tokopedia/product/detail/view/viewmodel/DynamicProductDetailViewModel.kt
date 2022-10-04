@@ -61,6 +61,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkLastAction
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADD_WISHLIST
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.ADS_COUNT
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PAGE_NUMBER
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DEFAULT_PRICE_MINIMUM_SHIPPING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.DIMEN_ID
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PAGE_SOURCE
@@ -106,9 +107,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import com.tokopedia.variant_common.util.VariantCommonMapper
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -138,8 +136,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                                                              private val getProductInfoP2OtherUseCase: Lazy<GetProductInfoP2OtherUseCase>,
                                                              private val getP2DataAndMiniCartUseCase: Lazy<GetP2DataAndMiniCartUseCase>,
                                                              private val toggleFavoriteUseCase: Lazy<ToggleFavoriteUseCase>,
-                                                             private val removeWishlistUseCase: Lazy<RemoveWishListUseCase>,
-                                                             private val addWishListUseCase: Lazy<AddWishListUseCase>,
                                                              private val deleteWishlistV2UseCase: Lazy<DeleteWishlistV2UseCase>,
                                                              private val addToWishlistV2UseCase: Lazy<AddToWishlistV2UseCase>,
                                                              private val getProductRecommendationUseCase: Lazy<GetProductRecommendationUseCase>,
@@ -276,6 +272,9 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
 
     private val _toolbarTransparentState = MutableLiveData<Boolean>()
     val toolbarTransparentState: LiveData<Boolean> get() = _toolbarTransparentState
+
+    private val _verticalRecommendation = MutableLiveData<Result<RecommendationWidget>>()
+    val verticalRecommendation: LiveData<Result<RecommendationWidget>> = _verticalRecommendation
 
     var videoTrackerData: Pair<Long, Long>? = null
 
@@ -662,33 +661,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         }
     }
 
-    fun removeWishList(productId: String,
-                       onSuccessRemoveWishlist: ((productId: String?) -> Unit)?,
-                       onErrorRemoveWishList: ((errorMessage: String?) -> Unit)?) {
-        removeWishlistUseCase.get().createObservable(productId,
-            userSessionInterface.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    // no op
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    // no op
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
-                        val extras = mapOf(WISHLIST_STATUS_KEY to REMOVE_WISHLIST).toString()
-                        ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-                    }
-                    onErrorRemoveWishList?.invoke(errorMessage)
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    onSuccessRemoveWishlist?.invoke(productId)
-                }
-        })
-    }
-
     fun removeWishListV2(productId: String, listener: WishlistV2ActionListener) {
         launch(dispatcher.main) {
             deleteWishlistV2UseCase.get().setParams(productId, userSessionInterface.userId)
@@ -699,33 +671,6 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
                 listener.onErrorRemoveWishlist(result.throwable, productId)
             }
         }
-    }
-
-    fun addWishList(productId: String,
-                    onErrorAddWishList: ((errorMessage: String?) -> Unit)?,
-                    onSuccessAddWishlist: ((productId: String?) -> Unit)?) {
-        addWishListUseCase.get().createObservable(productId,
-            userSessionInterface.userId, object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    if (!(errorMessage.isNullOrEmpty() || productId.isNullOrEmpty())) {
-                        val extras = mapOf(WISHLIST_STATUS_KEY to ADD_WISHLIST).toString()
-                        ProductDetailLogger.logMessage(errorMessage, WISHLIST_ERROR_TYPE, productId, deviceId, extras)
-                    }
-                    onErrorAddWishList?.invoke(errorMessage)
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    onSuccessAddWishlist?.invoke(productId)
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {
-                    // no op
-                }
-
-                override fun onSuccessRemoveWishlist(productId: String?) {
-                    // no op
-                }
-        })
     }
 
     fun addWishListV2(productId: String, listener: WishlistV2ActionListener) {
@@ -1204,5 +1149,24 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         } catch (throwable: Throwable) {
             _toolbarTransparentState.value = false
         }
+    }
+
+    fun getVerticalRecommendationData(pageName: String, page: Int? = DEFAULT_PAGE_NUMBER, productId: String?) {
+        val nonNullPage = page ?: DEFAULT_PAGE_NUMBER
+        val nonNullProductId = productId.orEmpty()
+        launchCatchError(block = {
+            val requestParams = GetRecommendationRequestParam(
+                pageNumber = nonNullPage,
+                pageName = pageName,
+                productIds = arrayListOf(nonNullProductId)
+            )
+            val recommendationResponse = getRecommendationUseCase.get().getData(requestParams)
+            val dataResponse = recommendationResponse.firstOrNull()
+            if (dataResponse == null)
+                _verticalRecommendation.value = Fail(Throwable())
+            else _verticalRecommendation.value = dataResponse.asSuccess()
+        }, onError = {
+            _verticalRecommendation.value = Fail(it)
+        })
     }
 }

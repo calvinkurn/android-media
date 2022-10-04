@@ -14,8 +14,6 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import kotlinx.coroutines.launch
@@ -25,7 +23,6 @@ import javax.inject.Inject
 class OrderHistoryViewModel @Inject constructor(
         private val contextProvider: CoroutineDispatchers,
         private val productHistoryUseCase: GetProductOrderHistoryUseCase,
-        private val addWishListUseCase: AddWishListUseCase,
         private val addWishlistV2UseCase: AddToWishlistV2UseCase,
         private var addToCartUseCase: AddToCartUseCase,
 ) : BaseViewModel(contextProvider.main) {
@@ -47,10 +44,6 @@ class OrderHistoryViewModel @Inject constructor(
                 onErrorGetHistoryProduct(it)
             }
         )
-    }
-
-    fun addToWishList(productId: String, userId: String, wishListActionListener: WishListActionListener) {
-        addWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     fun addToWishListV2(productId: String, userId: String, wishlistV2ActionListener: WishlistV2ActionListener) {

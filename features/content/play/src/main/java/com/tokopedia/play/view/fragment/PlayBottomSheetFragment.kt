@@ -28,6 +28,7 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -92,7 +93,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     private val productSheetView by viewComponent {
-        ProductSheetViewComponent(it, this)
+        ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
     private val leaderboardSheetView by viewComponent { PlayInteractiveLeaderboardViewComponent(it, this) }
@@ -189,18 +190,20 @@ class PlayBottomSheetFragment @Inject constructor(
         dismissSheets()
     }
 
-    override fun onProductsImpressed(
+    override fun onProductImpressed(
         view: ProductSheetViewComponent,
-        products: List<Pair<PlayProductUiModel.Product, Int>>,
-        sectionInfo: ProductSectionUiModel.Section
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        position: Int
     ) {
-        if(playViewModel.bottomInsets.isProductSheetsShown) {
-            if(sectionInfo.config.type == ProductSectionType.TokoNow) newAnalytic.impressProductBottomSheetNow(products, sectionInfo)
-            else analytic.impressBottomSheetProducts(products, sectionInfo)
+        if (playViewModel.bottomInsets.isProductSheetsShown) {
+            if(sectionInfo.config.type == ProductSectionType.TokoNow) {
+                newAnalytic.impressProductBottomSheetNow(product, position)
+            } else analytic.impressBottomSheetProduct(product, sectionInfo, position)
         }
     }
 
-    override fun onProductCountChanged(view: ProductSheetViewComponent) {
+    private fun onProductCountChanged() {
         if (playViewModel.bottomInsets.isKeyboardShown) return
 
         doShowToaster(
@@ -652,6 +655,24 @@ class PlayBottomSheetFragment @Inject constructor(
                                 )
                             }
                         }
+                        is ChangeCampaignReminderSuccess -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_NORMAL,
+                                message = event.message.ifBlank {
+                                    getString(R.string.play_product_upcoming_reminder_success)
+                                },
+                            )
+                        }
+                        is ChangeCampaignReminderFailed -> {
+                            doShowToaster(
+                                bottomSheetType = BottomInsetsType.ProductSheet,
+                                toasterType = Toaster.TYPE_ERROR,
+                                message = event.error.localizedMessage.ifBlank {
+                                    getString(R.string.play_product_upcoming_reminder_error)
+                                },
+                            )
+                        }
                         else -> {}
                     }
                 }
@@ -669,6 +690,7 @@ class PlayBottomSheetFragment @Inject constructor(
         view: ProductSheetViewComponent,
         productSectionUiModel: ProductSectionUiModel.Section
     ) {
+        newAnalytic.clickUpcomingReminder(productSectionUiModel, playViewModel.channelId, playViewModel.channelType)
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
@@ -681,7 +703,8 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         newAnalytic.clickInfoNow()
         val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
-        openPageByApplink(appLink , pipMode = false)
+        val intent = RouteManager.getIntent(context, appLink)
+        startActivity(intent)
     }
 
     override fun onInformationImpressed(view: ProductSheetViewComponent) {
@@ -715,6 +738,15 @@ class PlayBottomSheetFragment @Inject constructor(
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
+
+        if (prevTagItem?.product?.productSectionList == tagItem.product.productSectionList) return
+
+        val prevSum = prevTagItem?.product?.productSectionList?.productsSum().orZero()
+        val sum = tagItem.product.productSectionList.productsSum()
+
+        if (prevSum != sum &&
+            prevTagItem?.resultState?.isLoading != true &&
+            sum != 0) onProductCountChanged()
     }
 
     private fun renderVoucherSheet(tagItem: TagItemUiModel) {
@@ -745,5 +777,12 @@ class PlayBottomSheetFragment @Inject constructor(
             childFragmentManager,
             requireActivity().classLoader
         )
+    }
+
+    private fun List<ProductSectionUiModel>.productsSum(): Int {
+        return sumOf {
+            if (it is ProductSectionUiModel.Section) it.productList.size
+            else 0
+        }
     }
 }

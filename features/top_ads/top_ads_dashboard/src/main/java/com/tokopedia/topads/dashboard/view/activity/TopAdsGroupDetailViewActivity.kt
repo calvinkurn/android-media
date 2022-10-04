@@ -26,6 +26,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
+import com.tokopedia.topads.common.analytics.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.DAILY_BUDGET
 import com.tokopedia.topads.common.data.internal.ParamObject.GROUPID
@@ -70,7 +71,6 @@ import com.tokopedia.topads.dashboard.data.model.FragmentTabItem
 import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
-import com.tokopedia.topads.dashboard.tracker.TopAdsGroupDetailTrackerImpl
 import com.tokopedia.topads.dashboard.view.adapter.TopAdsDashboardBasePagerAdapter
 import com.tokopedia.topads.dashboard.view.fragment.*
 import com.tokopedia.topads.dashboard.view.interfaces.ChangePlacementFilter
@@ -149,7 +149,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private var placementType: Int = 0
     private val bidSwitchManualBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
         BidSwitchManualBudgetBottomSheet(maxSuggestKeyword, minSuggestKeyword, suggestedBid,
-            ::onSaveClickedInManualBottomSheet, trackerImpl)
+            ::onSaveClickedInManualBottomSheet)
     }
     private val bidInfoBottomSheet by lazy(LazyThreadSafetyMode.NONE) { BidInfoBottomSheet() }
 
@@ -158,7 +158,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     @set: Inject
-    var trackerImpl: TopAdsGroupDetailTrackerImpl ?= null
+    var trackerImpl: TopAdsGroupDetailTrackerImpl?= null
 
     override fun loadChildStatisticsData() {
         loadData()
@@ -408,7 +408,8 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
             dataMap["groupName"] = groupName
             dataMap[GROUPID] = groupId
             dataMap[NAME_EDIT] = true
-            dataMap[DAILY_BUDGET] = dailyBudget.toString()
+            if (priceDaily != 0.0F)
+                dataMap[DAILY_BUDGET] = dailyBudget.toString()
             if (this.bidType == BID_TYPE_BROWSE) {
                 bidTypeData?.clear()
                 bidTypeData?.add(TopAdsBidSettingsModel(PRODUCT_BROWSE, bid.toFloat()))

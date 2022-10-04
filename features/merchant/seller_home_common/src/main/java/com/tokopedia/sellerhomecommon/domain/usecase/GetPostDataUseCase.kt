@@ -70,6 +70,7 @@ class GetPostDataUseCase(
                     stateMediaURL
                     stateText
                     pinned
+                    postItemID
                   }
                   cta{
                     text
@@ -79,6 +80,7 @@ class GetPostDataUseCase(
                   errorMsg
                   showWidget
                   emphasizeType
+                  widgetDataSign
                 }
               }
             }
