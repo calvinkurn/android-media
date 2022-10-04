@@ -37,6 +37,7 @@ object Tracker {
         const val TM_DASHBOARD_DAFTAR = "tokomember dashboard - daftar tokomember"
         const val TM_DASHBOARD_INTRO = "tokomember dashboard - introduction"
         const val TM_DASHBOARD_KUPON_DETAIL = "tokomember dashboard - detail kupon"
+        const val TM_DASHBOARD_MEMBER_LIST = "tokomember dashboard - member list page"
     }
 
     object Action {
@@ -137,6 +138,9 @@ object Tracker {
         const val VIEW_KUPON_DETAIL = "detail_coupon_page - view page"
         const val CLICK_TAMBAH_KUOTA = "detail_coupon_page - click tambah kuota"
         const val CLICK_SIMPAN_KUPON_DETAIL = "bottomsheet_add_coupon_quota - click simpan"
+
+        //Member List
+        const val VIEW_MEMBER_LIST = "member_list_page - view page"
 
     }
 

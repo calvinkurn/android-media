@@ -228,4 +228,7 @@ class TmTracker {
         trackerImpl.clickAddQuotaCouponDetail(shopId)
     }
 
+    fun viewMemberList(shopId: String){
+        trackerImpl.viewMemberList(shopId)
+    }
 }
