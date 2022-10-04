@@ -363,8 +363,8 @@ class OtherMenuViewModel @Inject constructor(
         _isToasterAlreadyShown.value = isShown
     }
 
-   private fun getIsShowTagCentralizePromo() {
-        launchCatchError(
+    fun getIsShowTagCentralizePromo() {
+       launchCatchError(
             block = {
                 val data = withContext(dispatcher.io) {
                     getNewPromotionUseCase.execute(userSession.shopId)

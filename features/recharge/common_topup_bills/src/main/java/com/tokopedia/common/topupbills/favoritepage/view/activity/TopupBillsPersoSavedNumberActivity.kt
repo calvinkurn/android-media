@@ -14,7 +14,7 @@ import com.tokopedia.common_digital.product.presentation.model.ClientNumberType
 import com.tokopedia.header.HeaderUnify
 import java.util.ArrayList
 
-class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
+open class TopupBillsPersoSavedNumberActivity: BaseSimpleActivity(),
     HasComponent<CommonTopupBillsComponent> {
 
     protected lateinit var clientNumberType: String

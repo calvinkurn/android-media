@@ -16,18 +16,18 @@ import com.tokopedia.tokochat.databinding.FragmentTokoChatExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatListActivity
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
-import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
+import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatFragmentExp: BaseTokoChatFragment<FragmentTokoChatExpBinding>() {
+class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
     private var channelUrl: String = ""
 

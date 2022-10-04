@@ -1,5 +1,7 @@
 package com.tokopedia.tokochat_common.util
 
+import com.tokopedia.url.TokopediaUrl
+
 object TokoChatUrlUtil {
-    const val TNC = "https://www.tokopedia.com/terms#konten"
+    var TNC = "${TokopediaUrl.Companion.getInstance().WEB}terms#konten"
 }

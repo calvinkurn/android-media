@@ -19,6 +19,10 @@ import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatActivity
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import com.tokopedia.tokochat_common.util.ValueUtil
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
@@ -31,12 +35,12 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>(), TokoChatTypingListener, TokoChatReplyTextListener {
+class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoChatTypingListener, TokoChatReplyTextListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: BaseTokoChatAdapter = BaseTokoChatAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
     override fun getScreenName(): String = TAG
 
@@ -67,14 +71,14 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>(), TokoCha
         }
     }
 
-    private fun setupReceiverDummyMessages() {
-        val message = MessageBubbleUiModel.Builder()
+    private fun setupSenderDummyMessages() {
+        val message = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
-            .withIsSender(false)
-            .withIsRead(false)
+            .withIsSender(true)
+            .withIsRead(true)
             .withIsDummy(false)
             .withMsgId("123")
-            .withBubbleStatus(ValueUtil.STATUS_NORMAL)
+            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
             .withFromUid("123")
             .withFromRole("User")
             .withReplyTime("123123123")
@@ -85,7 +89,46 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>(), TokoCha
         adapter.addItem(message)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val deletedMessage = MessageBubbleUiModel.Builder()
+        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(true)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withMarkAsDeleted()
+            .build()
+        adapter.addItem(deletedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(true)
+            .withIsRead(true)
+            .withIsDummy(false)
+            .withFraudStatus(1)
+            .build()
+        adapter.addItem(bannedMessage)
+        adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    private fun setupReceiverDummyMessages() {
+        val message = TokoChatMessageBubbleBaseUiModel.Builder()
+            .withStartTime("")
+            .withIsSender(false)
+            .withIsRead(false)
+            .withIsDummy(false)
+            .withMsgId("123")
+            .withBubbleStatus(TokoChatValueUtil.STATUS_NORMAL)
+            .withFromUid("123")
+            .withFromRole("User")
+            .withReplyTime("123123123")
+            .withMsg("Halooo")
+            .withFraudStatus(0)
+            .withLabel("Label")
+            .build()
+        adapter.addItem(message)
+        adapter.notifyItemInserted(adapter.itemCount)
+
+        val deletedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(false)
             .withIsRead(true)
@@ -95,7 +138,7 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>(), TokoCha
         adapter.addItem(deletedMessage)
         adapter.notifyItemInserted(adapter.itemCount)
 
-        val bannedMessage = MessageBubbleUiModel.Builder()
+        val bannedMessage = TokoChatMessageBubbleBaseUiModel.Builder()
             .withStartTime("")
             .withIsSender(false)
             .withIsRead(true)
