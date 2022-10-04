@@ -29,23 +29,6 @@ import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
  */
 interface PlayBroadcastMapper {
 
-    fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel>
-
-    fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ): List<ProductContentUiModel>
-
-    fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ): List<SearchSuggestionUiModel>
-
-    fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel
-
     fun mapLiveStream(
         channelId: String,
         media: CreateLiveStreamChannelResponse.GetMedia
@@ -59,13 +42,9 @@ interface PlayBroadcastMapper {
 
     fun mapNewMetricList(metric: NewMetricList): List<PlayMetricUiModel>
 
-    fun mapProductTag(productTag: ProductTagging): List<ProductData>
-
     fun mapConfiguration(config: Config): ConfigurationUiModel
 
     fun mapChannelInfo(channel: GetChannelResponse.Channel): ChannelInfoUiModel
-
-    fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>): List<ProductData>
 
     fun mapChannelSchedule(
         timestamp: GetChannelResponse.Timestamp,

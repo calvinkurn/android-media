@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductSummaryUiState
 import com.tokopedia.play.broadcaster.setup.product.model.ProductSetupAction
 import com.tokopedia.play.broadcaster.setup.product.view.model.ProductListPaging
+import com.tokopedia.play.broadcaster.ui.model.PagingType
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
@@ -277,9 +278,15 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
             )
         }
         getProductListJob = viewModelScope.launchCatchError(dispatchers.io, block = {
-            val page = if (resetList) 1 else _focusedProductList.value.page + 1
+            val pagingType = _focusedProductList.value.pagingType
             when (val selectedEtalase = _loadParam.value.etalase) {
                 is SelectedEtalaseModel.Campaign -> {
+                    val page = when {
+                        resetList -> 1
+                        pagingType is PagingType.Page -> pagingType.page
+                        else -> 1
+                    }
+
                     val pagedProductList = repo.getProductsInCampaign(
                         campaignId = selectedEtalase.campaign.id,
                         page = page
@@ -289,17 +296,23 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Page(page),
                         )
                     }
                 }
                 is SelectedEtalaseModel.Etalase,
                 SelectedEtalaseModel.None -> {
+                    val cursor = when {
+                        resetList -> ""
+                        pagingType is PagingType.Cursor -> pagingType.cursor
+                        else -> ""
+                    }
+
                     val pagedProductList = repo.getProductsInEtalase(
                         etalaseId = if (selectedEtalase is SelectedEtalaseModel.Etalase) {
                             selectedEtalase.etalase.id
                         } else "",
-                        page = page,
+                        cursor = cursor,
                         keyword = param.keyword,
                         sort = param.sort ?: SortUiModel.supportedSortList.first(),
                     )
@@ -308,7 +321,7 @@ class PlayBroProductSetupViewModel @AssistedInject constructor(
                         it.copy(
                             productList = it.productList + pagedProductList.dataList,
                             resultState = PageResultState.Success(pagedProductList.hasNextPage),
-                            page = page,
+                            pagingType = PagingType.Cursor(pagedProductList.cursor),
                         )
                     }
                 }
