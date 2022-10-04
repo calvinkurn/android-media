@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.content.Context
+import android.content.Intent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
@@ -16,6 +17,7 @@ import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnifi
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
+import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
@@ -37,6 +39,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
     private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
+    private val parameterListener: ProductListParameterListener,
     @SearchContext
     context: Context,
     searchParameterProvider: SearchParameterProvider,
@@ -47,6 +50,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
 
     companion object {
         private const val DEFAULT_USER_ID = "0"
+        private const val REQUEST_CODE_CHECKOUT = 12382
     }
 
     private val clickedProducts = mutableListOf<InspirationCarouselDataView.Option.Product>()
@@ -58,7 +62,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
 
     override fun onListAtcItemClicked(product: InspirationCarouselDataView.Option.Product) {
         val trackingData = createCarouselTrackingUnificationData(product, getSearchParameter())
-        inspirationCarouselTrackingUnification.trackCarouselAtcClick(trackingData)
+        inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
 
         clickedProducts.add(product)
 
@@ -109,6 +113,14 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                 openApplink(context, ApplinkConst.CART)
             }.show()
         }
+
+        val product = getProductById(addToCartDataModel?.data?.productId.toString())
+        val cartId = addToCartDataModel?.data?.cartId ?: ""
+        val quantity = addToCartDataModel?.data?.quantity ?: 0
+
+        val trackingData =
+            createCarouselTrackingUnificationData(product, getSearchParameter(), cartId, quantity)
+        inspirationCarouselTrackingUnification.trackCarouselAtc(trackingData)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
@@ -141,7 +153,22 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         )
     }
 
-    fun getProductById(id: String): InspirationCarouselDataView.Option.Product? {
+    fun handleOnActivityResult(context: Context, requestCode: Int, data: Intent?) {
+        AtcVariantHelper.onActivityResultAtcVariant(context, requestCode, data) {
+            if (shouldRefreshPreviousPage) parameterListener.reloadData()
+
+            if (this.requestCode == REQUEST_CODE_CHECKOUT) {
+                val product = getProductById(this.selectedProductId)
+
+                val trackingData =
+                    createCarouselTrackingUnificationData(product, getSearchParameter())
+                inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
+            }
+        }
+    }
+
+    private fun getProductById(id: String): InspirationCarouselDataView.Option.Product {
         return clickedProducts.firstOrNull { it.id == id }
+            ?: InspirationCarouselDataView.Option.Product()
     }
 }

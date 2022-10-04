@@ -167,7 +167,6 @@ class ProductListFragment: BaseDaggerFragment(),
         private const val REQUEST_CODE_LOGIN = 561
         private const val ON_BOARDING_DELAY_MS: Long = 200
         private const val CLICK_TYPE_WISHLIST = "&click_type=wishlist"
-        private const val REQUEST_CODE_CHECKOUT = 12382
 
         fun newInstance(searchParameter: SearchParameter?): ProductListFragment {
             val args = Bundle().apply {
@@ -729,23 +728,8 @@ class ProductListFragment: BaseDaggerFragment(),
                         }
                     }
             )
-        }
 
-        context?.let {
-            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if (shouldRefreshPreviousPage) reloadData()
-
-                if (this.requestCode == REQUEST_CODE_CHECKOUT) {
-                    val product =
-                        inspirationListAtcListenerDelegate.getProductById(this.selectedProductId)
-
-                    product?.let {
-                        val trackingData =
-                            createCarouselTrackingUnificationData(product, getSearchParameter())
-                        inspirationCarouselTrackingUnification.trackCarouselAtcClick(trackingData)
-                    }
-                }
-            }
+            inspirationListAtcListenerDelegate.handleOnActivityResult(it, requestCode, data)
         }
     }
 

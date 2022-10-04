@@ -814,9 +814,9 @@ object SearchTracking {
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.PRODUCT_CLICK,
+                SearchTrackingConstant.EVENT, SearchEventTracking.Event.ADD_TO_CART,
                 SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_CAROUSEL_LIST_ATC,
+                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_ADD_TO_CART_CAROUSEL,
                 SearchTrackingConstant.EVENT_LABEL, eventLabel,
                 ECOMMERCE, DataLayer.mapOf("click",
                     DataLayer.mapOf(

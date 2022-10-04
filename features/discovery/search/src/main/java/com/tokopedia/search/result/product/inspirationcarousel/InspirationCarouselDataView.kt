@@ -230,6 +230,31 @@ class InspirationCarouselDataView(
                     "dimension131", externalReference.orNone(),
                 )
             }
+
+            fun asUnificationAtcObjectDataLayer(
+                filterSortParams: String,
+                cartId: String,
+                quantity: Int,
+            ): Any {
+                return DataLayer.mapOf(
+                    "item_name", name,
+                    "item_id", id,
+                    "price", price,
+                    "item_brand", "none / other",
+                    "item_category", "none / other",
+                    "item_variant", "none / other",
+                    "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
+                    "position", optionPosition,
+                    "dimension115", labelGroupDataList.getFormattedPositionName(),
+                    "dimension61", filterSortParams,
+                    "dimension90", dimension90,
+                    "dimension131", externalReference.orNone(),
+                    "dimension45", cartId,
+                    "quantity", quantity,
+                    "shop_id", shopId,
+                    "shop_name", shopName,
+                )
+            }
         }
     }
 
