@@ -267,7 +267,7 @@ class LoginNormalCase : LoginBase() {
         checkEmailExtensionShownAfterAddAt()
         onView(withId(R.id.input_email_phone))
             .perform(pressKey(KeyEvent.KEYCODE_DEL))
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isDisplayingGivenText("yoris.prayogo")
         isEmailExtensionDismissed()
         inputEmailOrPhone("@")
         isEmailExtensionDisplayed()
@@ -285,7 +285,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+        isDisplayingGivenText("yoris.prayogo@gmail.com")
     }
 
     @Test
@@ -304,7 +304,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+        isDisplayingGivenText("yoris.prayogo@outlook.com")
     }
 
     @Test

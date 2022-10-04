@@ -811,21 +811,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingWishlistV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingWishlistV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
         }
     }
 
@@ -837,14 +826,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             shopProductAdapter.updateWishListStatus(productCardOptionsModel.productId, true)
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg), productCardOptionsModel.productId)
         }
     }
 

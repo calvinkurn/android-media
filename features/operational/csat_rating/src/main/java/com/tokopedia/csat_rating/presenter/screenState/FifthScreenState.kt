@@ -25,7 +25,7 @@ class FifthScreenState(private val mCaption: String, private val mQuestion: Stri
     }
 
     override fun getMessageColor(): Int {
-        return R.color.message_color_good
+        return R.color.csat_dms_message_color_good
     }
 
     override fun getMessage(): String {

@@ -266,8 +266,6 @@ public class RemoteConfigKey {
     public static final String SHOW_SHOPADS_FEED_NEW_DESIGN = "app_android_feed_shopads_new_design_flag";
     public static final String ENABLE_QUEST_WIDGET = "android_enable_quest_widget";
 
-    public static final String ENABLE_WISHLIST_REVAMP_v2 = "android_revamp_wishlist_v2";
-    public static final String ENABLE_ADD_REMOVE_WISHLIST_V2 = "android_enable_add_remove_wishlist_v2";
     public static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
 
     public static final String ENABLE_MPC_LIFECYCLE_OBSERVER = "android_mainapp_enable_mpc_lifecycle_observer";
@@ -296,4 +294,5 @@ public class RemoteConfigKey {
 
     public static final String HOME_DC_USE_QUERY_V2 = "android_home_dc_use_query_v2";
 
+    public static final String SEARCH_DEBUG_LOG = "android_search_debug_enable";
 }
