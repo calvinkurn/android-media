@@ -172,7 +172,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getApplinks(),
                 getShortcutNotificationId(notificationId),
                 applinkNotificationModel.getFullName(),
-                applinkNotificationModel.getAvatarUrl(),
+                applinkNotificationModel.getThumbnail(),
                 applinkNotificationModel.getSummary(),
                 applinkNotificationModel.getSentTime()
         );
