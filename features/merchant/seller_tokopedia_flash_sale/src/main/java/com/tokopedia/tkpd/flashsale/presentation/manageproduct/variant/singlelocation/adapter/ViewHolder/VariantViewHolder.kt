@@ -42,10 +42,10 @@ class VariantViewHolder(
                 selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
                 binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
                 listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                discount?.let { it ->
+                discount?.let { disc ->
                     listener?.onDataInputChanged(
                         adapterPosition,
-                        product, it
+                        product, disc
                     )
                 }
             }
@@ -108,10 +108,10 @@ class VariantViewHolder(
 
                 quantityEditor.apply {
                     maxValue = criteria.maxCustomStock
-                    minValue = criteria.maxCustomStock
+                    minValue = criteria.minCustomStock
                     editText.afterTextChanged {
                         discount?.stock = it.digitsOnly()
-                        discount?.stock?.let { it -> listener?.onStockChange(adapterPosition, it) }
+                        discount?.stock?.let { disc -> listener?.onStockChange(adapterPosition, disc) }
                         triggerListener(product, discount)
                     }
                 }

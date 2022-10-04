@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -15,6 +16,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.*
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingRejectedItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
@@ -38,7 +40,8 @@ class CampaignDetailViewModel @Inject constructor(
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     private var _campaign = MutableLiveData<Result<FlashSale>>()
@@ -483,5 +486,14 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun setDeleteStateStatus(isTriggered: Boolean) {
         this.isTriggeredFromDelete = isTriggered
+    }
+
+    fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, false)
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit().putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
+            .apply()
     }
 }

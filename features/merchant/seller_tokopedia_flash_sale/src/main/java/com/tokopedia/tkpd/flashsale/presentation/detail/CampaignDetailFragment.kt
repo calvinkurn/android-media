@@ -22,6 +22,8 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
@@ -106,6 +108,13 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             appLinkData.lastPathSegment?.toLong().orZero()
         } else {
             arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        }
+    }
+
+    //coachmark
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
         }
     }
 
@@ -340,7 +349,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
         setupUpcomingButton()
-        setupChooseProductRedirection()
+//        setupChooseProductRedirection()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
@@ -375,6 +384,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
             btnCheckReason.setOnClickListener {
                 navigateToChooseProductPage()
+            }
+            if (!isCoachMarkShown()) {
+                showCriteriaCoachMark(this)
             }
         }
     }
@@ -513,7 +525,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingButton() {
         binding?.run {
+            cardProductEligible.visible()
             btnRegister.apply {
+                visible()
                 text = getString(R.string.label_register)
                 setOnClickListener {
                     registerToCampaign()
@@ -710,12 +724,16 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     flashSale.productMeta.acceptedProduct
                 )
             )
-            tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.rejectedProduct
+            tpgRejectedProductValue.text = if (flashSale.productMeta.rejectedProduct.isZero()) {
+                MethodChecker.fromHtml(getString(R.string.stfs_dash_label))
+            } else {
+                MethodChecker.fromHtml(
+                    getString(
+                        R.string.stfs_mid_section_product_count_placeholder,
+                        flashSale.productMeta.rejectedProduct
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -922,12 +940,16 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     flashSale.productMeta.acceptedProduct
                 )
             )
-            tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.rejectedProduct
+            tpgRejectedProductValue.text = if (flashSale.productMeta.rejectedProduct.isZero()) {
+                MethodChecker.fromHtml(getString(R.string.stfs_dash_label))
+            } else {
+                MethodChecker.fromHtml(
+                    getString(
+                        R.string.stfs_mid_section_product_count_placeholder,
+                        flashSale.productMeta.rejectedProduct
+                    )
                 )
-            )
+            }
             tpgSoldValue.text = MethodChecker.fromHtml(
                 getString(
                     R.string.stfs_mid_section_product_count_placeholder,
@@ -1079,15 +1101,15 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     getString(R.string.stfs_dash_label)
                 }
             tpgRejectedProductValue.text =
-                if (flashSale.productMeta.rejectedProduct.isMoreThanZero()) {
+                if (flashSale.productMeta.rejectedProduct.isZero()) {
+                    getString(R.string.stfs_dash_label)
+                } else {
                     MethodChecker.fromHtml(
                         getString(
                             R.string.stfs_mid_section_product_count_placeholder,
                             flashSale.productMeta.rejectedProduct
                         )
                     )
-                } else {
-                    getString(R.string.stfs_dash_label)
                 }
             tpgSoldValue.text =
                 if (flashSale.productMeta.totalStockSold.isMoreThanZero()) {
@@ -1374,9 +1396,32 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         ).show(activity.supportFragmentManager, "")
     }
 
+    private fun showCriteriaCoachMark(binding: StfsCdpUpcomingMidBinding) {
+        doOnDelayFinished(DELAY) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachMarkItem.add(
+                CoachMark2Item(
+                    binding.btnSeeCriteria,
+                    getString(R.string.stfs_campaign_detail_upcoming_coachmark_title),
+                    getString(R.string.stfs_campaign_detail_upcoming_coachmark_description)
+                )
+            )
+            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.onDismissListener = { setCoachMarkAlreadyShown() }
+        }
+    }
+
     private fun onProductClicked(itemPosition: Int) {
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id()
         //TODO: Open detail product bottom sheet
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return viewModel.isCoachMarkShown()
+    }
+
+    private fun setCoachMarkAlreadyShown() {
+        viewModel.setSharedPrefCoachMarkAlreadyShown()
     }
 }
