@@ -32,7 +32,10 @@
                     android:host="*"
                     android:pathPrefix="/get-phone-state"
                     android:scheme="wear" />
-
+                <data
+                    android:host="*"
+                    android:pathPrefix="/open-login-page"
+                    android:scheme="wear" />
 
             </intent-filter>
         </service>

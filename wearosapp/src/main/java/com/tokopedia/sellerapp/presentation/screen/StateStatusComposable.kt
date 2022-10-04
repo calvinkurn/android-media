@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.presentation.screen
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
@@ -10,14 +11,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.wear.compose.material.Text
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.*
-import androidx.wear.compose.material.MaterialTheme
-import androidx.wear.compose.material.curvedText
+import androidx.wear.compose.material.*
 import com.tokopedia.tkpd.R
 
 enum class STATE {
@@ -44,6 +43,13 @@ enum class STATE {
             "companion_not_installed" -> COMPANION_NOT_INSTALLED
             else -> SYNC
         }
+    }
+}
+
+fun STATE.getInitialProgress(): Float {
+    return when(this) {
+        STATE.SYNC -> 0.2f
+        else -> 1f
     }
 }
 
@@ -151,8 +157,23 @@ fun StateStatusComposable(status: MutableState<STATE>) {
 }
 
 @Composable
-fun StateStatus(state: MutableState<STATE>) {
+fun StateStatus(state: MutableState<STATE>, progressState: MutableState<Float> = mutableStateOf(0.2f)) {
     StateStatusComposable(state)
+
+    val progress by remember { progressState }
+    val animatedProgress by animateFloatAsState(
+        targetValue = progress,
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec
+    )
+
+    CircularProgressIndicator(
+        progress = animatedProgress,
+        modifier = Modifier.fillMaxSize(),
+        startAngle = 170f,
+        endAngle = 10f,
+        strokeWidth = 4.dp,
+        indicatorColor = state.value.getTextColorBasedOnState()
+    )
 }
 
 @Preview(

@@ -1,7 +1,6 @@
 package com.tokopedia.watch.listenerservice
 
 import android.content.Intent
-import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.util.Log
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
@@ -25,8 +24,6 @@ import rx.Subscriber
 import javax.inject.Inject
 
 class DataLayerServiceListener: WearableListenerService() {
-
-    private val job = SupervisorJob()
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
@@ -97,6 +94,10 @@ class DataLayerServiceListener: WearableListenerService() {
                         )
                     }
                 }
+            }
+            OPEN_LOGIN_PAGE -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
             }
         }
     }
@@ -216,7 +217,7 @@ class DataLayerServiceListener: WearableListenerService() {
 
         const val ACCEPT_BULK_ORDER_PATH = "/accept_bulk-order"
         const val TAG = "DataLayerServiceListener"
-
+        const val OPEN_LOGIN_PAGE = "/open-login-page"
 
     }
 }

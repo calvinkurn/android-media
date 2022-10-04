@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.navigation
 import androidx.navigation.NavController
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.APP_NOT_INSTALLED_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.CONNECTION_FAILED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
@@ -32,6 +33,13 @@ class ScreenNavigation(navController: NavController) {
     }
     val toAppNotInstalledScreen: () -> Unit = {
         navController.navigate(route = APP_NOT_INSTALLED_SCREEN) {
+            popUpTo(SPLASH_SCREEN) {
+                inclusive = true
+            }
+        }
+    }
+    val toConnectionFailureScreen: () -> Unit = {
+        navController.navigate(route = CONNECTION_FAILED_SCREEN) {
             popUpTo(SPLASH_SCREEN) {
                 inclusive = true
             }

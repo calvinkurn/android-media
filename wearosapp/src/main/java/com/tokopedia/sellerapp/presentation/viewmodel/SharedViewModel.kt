@@ -166,17 +166,23 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun openLoginPageInApp() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_LOGIN_PAGE)
+        }
+    }
+
     private suspend fun startRemoteActivity(
         remoteActivityHelper: RemoteActivityHelper,
         intent: Intent,
     ) {
         try {
             remoteActivityHelper.startRemoteActivity(intent).await()
-
         } catch (cancellationException: CancellationException) {
             // Request was cancelled normally
             throw cancellationException
         } catch (throwable: Throwable) {
+            throwable.printStackTrace()
         }
     }
 }
