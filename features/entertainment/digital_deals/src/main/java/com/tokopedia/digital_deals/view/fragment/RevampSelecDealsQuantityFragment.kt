@@ -18,7 +18,7 @@ import com.tokopedia.digital_deals.R
 import com.tokopedia.digital_deals.di.DealsComponent
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity
-import com.tokopedia.digital_deals.view.model.response.DealsDetailsResponse
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks
 import com.tokopedia.digital_deals.view.utils.DealsAnalytics
 import com.tokopedia.digital_deals.view.utils.Utils

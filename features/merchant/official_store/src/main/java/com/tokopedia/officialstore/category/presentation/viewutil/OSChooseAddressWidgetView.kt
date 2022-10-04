@@ -3,7 +3,6 @@ package com.tokopedia.officialstore.category.presentation.viewutil
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,15 +39,18 @@ class OSChooseAddressWidgetView : FrameLayout {
     private val itemContext: Context
     private var animationExpand: ValueAnimator?= null
     private var animationCollapse: ValueAnimator?= null
-    private var isExpand = true
     private var totalScrollUp: Int = 0
     private var itemView: View
     private var viewMaxHeight: Int = 0
-    private var viewMinHeight: Int = 0
     private var chooseAddressWidgetInitialized = false
     private lateinit var osContainerListener: OSContainerListener
     private var widget_choose_address: ChooseAddressWidget? = null
     private var motionlayout_choose_address: MotionLayout? = null
+    var isExpand = true
+
+    companion object {
+        private const val THRESHOLD_COLLAPSING_CHOOSE_ADDRESS = 20
+    }
 
     fun getChooseAddressWidget(): ChooseAddressWidget? {
         return widget_choose_address
@@ -57,6 +59,8 @@ class OSChooseAddressWidgetView : FrameLayout {
     fun setMeasuredHeight() {
         viewMaxHeight = this.measuredHeight
     }
+
+    fun getMeasureHeight(): Int = viewMaxHeight
 
     fun initChooseAddressWidget(needToShowChooseAddress: Boolean,
                                 listener: OSContainerListener,
@@ -96,7 +100,7 @@ class OSChooseAddressWidgetView : FrameLayout {
             totalScrollUp = 0
         }
 
-        adjustCollapseExpandView(totalScrollUp in 0..10, whenWidgetShow, whenWidgetGone)
+        adjustCollapseExpandView(totalScrollUp <= THRESHOLD_COLLAPSING_CHOOSE_ADDRESS, whenWidgetShow, whenWidgetGone)
     }
 
 
@@ -121,7 +125,7 @@ class OSChooseAddressWidgetView : FrameLayout {
         if (itemContext.isDeviceAnimationDisabled()) {
             this.show()
         } else {
-            if (this.measuredHeight == 0) {
+            if (this.measuredHeight <= THRESHOLD_COLLAPSING_CHOOSE_ADDRESS) {
                 animationExpand?.start()
                 isExpand = true
                 motionlayout_choose_address?.setTransitionListener(object : MotionLayout.TransitionListener {

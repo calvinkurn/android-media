@@ -17,7 +17,17 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.util.*
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_IS_SHOW_BS
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ID
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
+import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_HOME
+import com.tokopedia.tokomember_seller_dashboard.util.REQUEST_CODE_REFRESH_PROGRAM_LIST
+import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
+import com.tokopedia.tokomember_seller_dashboard.util.TmPrefManager
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TmDashCouponDetailFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment
 import com.tokopedia.tokomember_seller_dashboard.view.fragment.TokomemberDashHomeMainFragment.Companion.TAG_HOME
@@ -148,7 +158,7 @@ class TokomemberDashHomeActivity : AppCompatActivity(), TmProgramDetailCallback,
                 val state = data?.getIntExtra("REFRESH_STATE", REFRESH)
                 if (state != null) {
                     Toaster.build(container_home, "Program TokoMember kamu berhasil diubah.", Toaster.TYPE_NORMAL).show()
-                    tmProgramListViewModel.refreshList(state)
+                    tmProgramListViewModel.refreshProgramList(state)
                 }
             }
         }

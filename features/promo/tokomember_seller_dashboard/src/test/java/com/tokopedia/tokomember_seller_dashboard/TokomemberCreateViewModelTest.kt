@@ -3,15 +3,35 @@ package com.tokopedia.tokomember_seller_dashboard
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.tokomember_seller_dashboard.domain.*
+import com.tokopedia.tokomember_seller_dashboard.domain.TmCouponDetailUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateValidateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponInitialUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponProgramValidateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponUpdateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TmSingleCouponCreateUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberCardColorMapperUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
+import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
 import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
-import com.tokopedia.tokomember_seller_dashboard.model.*
+import com.tokopedia.tokomember_seller_dashboard.model.CardData
+import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
+import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCardResponse
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
-import io.mockk.*
+import io.mockk.Runs
+import io.mockk.coEvery
+import io.mockk.every
+import io.mockk.just
+import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert
@@ -71,7 +91,7 @@ class TokomemberCreateViewModelTest {
     }
 
     @Test
-    fun failCardInfo() {
+    fun failGetCardInfo() {
         coEvery {
             tokomemberDashCardUsecase.getMembershipCardInfo(any(), any(), 0)
         } coAnswers {
@@ -81,6 +101,43 @@ class TokomemberCreateViewModelTest {
         Assert.assertEquals(
             (viewModel.tmCardResultLiveData.value as TokoLiveDataResult).error,
             mockThrowable
+        )
+    }
+
+    @Test
+    fun successGetCardInfo() {
+        val cardData = mockk<CardData>(relaxed = true)
+        val data = CardDataTemplate(
+            card = cardData.membershipGetCardForm?.card,
+            cardTemplate = cardData.membershipGetCardForm?.cardTemplate,
+            cardTemplateImageList = cardData.membershipGetCardForm?.cardTemplateImageList,
+            shopAvatar = cardData.membershipGetCardForm?.shopAvatar?:""
+        )
+        coEvery {
+            tokomemberDashCardUsecase.getMembershipCardInfo(any(), any(), 0)
+        } coAnswers {
+            firstArg<(CardData) -> Unit>().invoke(cardData)
+        }
+        viewModel.getCardInfo(0)
+        Assert.assertEquals(
+            (viewModel.tmCardResultLiveData.value as TokoLiveDataResult).data,
+            data
+        )
+    }
+
+    @Test
+    fun successGetCardBackgroundData() {
+        val cardData = CardData()
+        val data = mockk<TokomemberCardBgItem>(relaxed = true)
+        coEvery {
+            tokomemeberCardBgUsecase.getCardBgDataN(cardData, "", arrayListOf(), any(), any())
+        } coAnswers {
+            arg<(TokomemberCardBgItem) -> Unit>(3).invoke(data)
+        }
+        viewModel.getCardBackgroundData(cardData, "", arrayListOf())
+        Assert.assertEquals(
+            (viewModel.tmCardResultLiveData.value as TokoLiveDataResult).data,
+            data
         )
     }
 

@@ -110,4 +110,7 @@ object ApplinkConstInternalSellerapp {
     const val TOKOMEMBER_PROGRAM_CREATION = "$TOKOMEMBER/program-creation"
     const val TOKOMEMBER_COUPON_CREATION = "$INTERNAL_SELLERAPP/tokomember/coupon-creation"
     const val TOKOMEMBER_PROGRAM_EXTENSION = "$TOKOMEMBER/program-extension/{program_id}"
+
+    //TokomemberMemberListActivity
+    const val INTERNAL_MEMBER_LIST = "$TOKOMEMBER/member-list"
 }

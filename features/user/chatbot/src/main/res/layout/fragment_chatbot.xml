@@ -36,9 +36,8 @@
                 android:id="@+id/list_quick_reply"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dp_chatbot_3"
                 android:layout_marginRight="@dimen/dp_chatbot_3"
-                android:background="@color/Unify_N50"
+                android:background="@color/chatbot_dms_quick_reply_bg"
                 android:paddingLeft="16dp"
                 android:paddingTop="8dp"
                 android:visibility="gone"
@@ -101,14 +100,14 @@
         android:layout_marginTop="14dp"
         android:visibility="gone"
         app:cardCornerRadius="12dp"
-        app:cardBackgroundColor="#E5F5FF"
+        app:cardBackgroundColor="@color/chatbot_dms_date_indicator_bg"
         tools:visibility="visible">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/dateIndicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/chatbot_color_date"
+            android:textColor="@color/chatbot_dms_date_indicator_text"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingTop="@dimen/spacing_lvl1"
@@ -156,7 +155,7 @@
         android:id="@+id/notifier"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#333333"
+        android:background="@color/Unify_N700"
         android:gravity="center_vertical"
         android:minHeight="56dp"
         android:orientation="horizontal"
@@ -169,7 +168,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/white"
+            android:textColor="@color/Unify_N0"
             tools:text="JJJJ"
             app:typographyType="body_2" />
 
