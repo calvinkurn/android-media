@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.loaderdialog.LoaderDialog
+import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.databinding.FragmentMainEditorBinding
@@ -33,7 +34,9 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
 
-class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiComponent.Listener,
+class EditorFragment @Inject constructor(
+    private val editorHomeAnalytics: EditorHomeAnalytics
+) : BaseEditorFragment(), ToolsUiComponent.Listener,
     DrawerUiComponent.Listener {
 
     private val viewBinding: FragmentMainEditorBinding? by viewBinding()
@@ -43,8 +46,8 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
     private val thumbnailDrawerComponent by uiComponent { DrawerUiComponent(it, this) }
 
     private var activeImageUrl: String = ""
-
     private var loader: LoaderDialog? = null
+    private var autoCropStartTime: Long = 0
 
     fun isShowDialogConfirmation(): Boolean {
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
@@ -85,6 +88,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
             show()
         }
 
+        autoCropStartTime = System.nanoTime()
         cropAll(viewModel.editStateList.values.toList(), 0)
     }
 
@@ -97,6 +101,9 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
                 it.setAdapter(stateList)
                 setPagerPageChangeListener(it)
             }
+
+            val autoCropTotalTime = (System.nanoTime() - autoCropStartTime) / NANO_DIVIDER
+            editorHomeAnalytics.autoCropProcessTime(autoCropTotalTime, viewModel.editStateList.size)
 
             return
         }
@@ -131,8 +138,20 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         observeUpdateIndex()
     }
 
+    private fun editorClickTracker(editorType: Int){
+        when(editorType){
+            EditorToolType.BRIGHTNESS -> editorHomeAnalytics.clickBrightness()
+            EditorToolType.CONTRAST -> editorHomeAnalytics.clickContrast()
+            EditorToolType.ROTATE -> editorHomeAnalytics.clickRotate()
+            EditorToolType.CROP -> editorHomeAnalytics.clickCrop()
+            EditorToolType.REMOVE_BACKGROUND -> editorHomeAnalytics.clickRemoveBackground()
+            EditorToolType.WATERMARK -> editorHomeAnalytics.clickWatermark()
+        }
+    }
+
     override fun onEditorToolClicked(type: Int) {
         activity?.let {
+            editorClickTracker(type)
             val clickedItem = viewModel.getEditState(activeImageUrl)
             clickedItem?.let { editorUiModel ->
                 val paramData = EditorDetailUiModel(
@@ -350,6 +369,7 @@ class EditorFragment @Inject constructor() : BaseEditorFragment(), ToolsUiCompon
         private const val TOAST_UNDO = 0
         private const val TOAST_REDO = 1
         private const val UNDO_REDO_NOTIFY_TIME = 1500L
+        private const val NANO_DIVIDER = 1000000
     }
 
 }

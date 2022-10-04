@@ -5,6 +5,10 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
+import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
+import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
+import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsImpl
 import com.tokopedia.media.editor.data.EditorNetworkServices
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepository
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepositoryImpl
@@ -22,6 +26,7 @@ import com.tokopedia.media.editor.data.repository.WatermarkFilterRepository
 import com.tokopedia.media.editor.data.repository.WatermarkFilterRepositoryImpl
 import com.tokopedia.media.editor.di.EditorQualifier
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
+import com.tokopedia.media.editor.utils.ParamCacheManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -102,5 +107,23 @@ object EditorModule {
     @ActivityScope
     fun provideSaveImageRepository(): SaveImageRepository {
         return SaveImageRepositoryImpl()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideSaveEditorHomeAnalytics(
+        userSession: UserSessionInterface,
+        cacheManager: ParamCacheManager
+    ): EditorHomeAnalytics {
+        return EditorHomeAnalyticsImpl(userSession, cacheManager)
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideSaveEditorDetailAnalytics(
+        userSession: UserSessionInterface,
+        cacheManager: ParamCacheManager
+    ): EditorDetailAnalytics {
+        return EditorDetailAnalyticsImpl(userSession, cacheManager)
     }
 }

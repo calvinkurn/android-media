@@ -7,11 +7,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalytics
 import com.tokopedia.media.editor.base.BaseEditorActivity
 import com.tokopedia.media.editor.di.EditorInjector
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.fragment.EditorFragment
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.utils.ParamCacheManager
 import com.tokopedia.picker.common.*
 import com.tokopedia.picker.common.RESULT_INTENT_EDITOR
 import javax.inject.Inject
@@ -25,9 +27,13 @@ class EditorActivity : BaseEditorActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    lateinit var viewModel: EditorViewModel
+    @Inject
+    lateinit var paramCache: ParamCacheManager
 
-    private var param = EditorParam()
+    @Inject
+    lateinit var editorHomeAnalytics: EditorHomeAnalytics
+
+    lateinit var viewModel: EditorViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -42,7 +48,7 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(CACHE_PARAM_INTENT_DATA, param)
+        outState.putParcelable(CACHE_PARAM_INTENT_DATA, paramCache.getEditorParam())
     }
 
     override fun getNewFragment(): Fragment {
@@ -58,12 +64,16 @@ class EditorActivity : BaseEditorActivity() {
 
     override fun initBundle(savedInstanceState: Bundle?) {
         intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {
-            param = it
+            paramCache.setEditorParam(it)
             viewModel.setEditorParam(it)
         }
 
         intent?.getParcelableExtra<EditorImageSource>(EXTRA_INTENT_EDITOR)?.also {
             viewModel.initStateList(it.originalPaths)
+        }
+
+        intent?.getParcelableExtra<PickerParam>(EXTRA_PICKER_PARAM)?.also {
+            paramCache.setPickerParam(it)
         }
     }
 
@@ -110,11 +120,17 @@ class EditorActivity : BaseEditorActivity() {
                 editedImages = imageResultList
             )
 
+            editorHomeAnalytics.clickUpload()
+
             val intent = Intent()
             intent.putExtra(RESULT_INTENT_EDITOR, result)
             setResult(Activity.RESULT_OK, intent)
             finish()
         }
+    }
+
+    override fun onBackClicked() {
+        editorHomeAnalytics.clickBackButton()
     }
 
     private fun showBackDialogConfirmation() {

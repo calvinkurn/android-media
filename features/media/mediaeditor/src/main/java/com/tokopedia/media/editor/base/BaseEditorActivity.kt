@@ -1,6 +1,8 @@
 package com.tokopedia.media.editor.base
 
+import android.R.id.home
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.header.HeaderUnify
@@ -12,6 +14,7 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
     abstract fun initBundle(savedInstanceState: Bundle?)
     abstract fun initInjector()
     abstract fun onHeaderActionClick()
+    abstract fun onBackClicked()
 
     private val unifyToolbar: HeaderUnify by lazy {
         HeaderUnify(this)
@@ -47,6 +50,13 @@ abstract class BaseEditorActivity : BaseSimpleActivity() {
         }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == home) {
+            onBackClicked()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+    
     private fun clearOldToolbar() {
         val parent = toolbar.parent as ViewGroup
         parent.removeView(toolbar)

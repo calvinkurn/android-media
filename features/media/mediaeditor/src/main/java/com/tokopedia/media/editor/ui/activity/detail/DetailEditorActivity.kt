@@ -98,6 +98,8 @@ class DetailEditorActivity : BaseEditorActivity() {
         }
     }
 
+    override fun onBackClicked() {}
+
     private fun showBackDialogConfirmation(
         onPrimaryClick: () -> Unit,
         onSecondaryClick: () -> Unit

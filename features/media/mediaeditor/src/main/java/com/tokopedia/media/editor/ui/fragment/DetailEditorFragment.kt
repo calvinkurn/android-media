@@ -21,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.R as editorR
 import com.tokopedia.media.editor.base.BaseEditorFragment
 import com.tokopedia.media.editor.data.repository.WatermarkType
@@ -46,7 +47,8 @@ import javax.inject.Inject
 import kotlin.math.max
 
 class DetailEditorFragment @Inject constructor(
-    private val viewModelFactory: ViewModelProvider.Factory
+    private val viewModelFactory: ViewModelProvider.Factory,
+    private val editorDetailAnalytics: EditorDetailAnalytics
 ) : BaseEditorFragment(),
     BrightnessToolUiComponent.Listener,
     ContrastToolsUiComponent.Listener,
@@ -227,11 +229,13 @@ class DetailEditorFragment @Inject constructor(
     }
 
     override fun onImageMirror() {
+        editorDetailAnalytics.clickRotationFlip()
         viewModel.setMirror(viewBinding?.imgUcropPreview)
         isEdited = true
     }
 
     override fun onImageRotate(rotateDegree: Float) {
+        editorDetailAnalytics.clickRotationRotate()
         viewModel.setRotate(
             viewBinding?.imgUcropPreview,
             RotateToolUiComponent.ROTATE_BTN_DEGREE,
@@ -650,6 +654,8 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener { _ ->
+            editorDetailAnalytics.clickSave()
+
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
                 initialImageMatrix?.values()?.let { initialMatrixValue ->
