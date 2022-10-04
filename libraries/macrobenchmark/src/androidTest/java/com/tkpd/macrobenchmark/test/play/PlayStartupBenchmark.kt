@@ -25,7 +25,7 @@ class PlayStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(start
         )
     }
 
-    override fun traceName() = "mp_play"
+    override fun traceName() = "plt_play_page"
 
 }
 
