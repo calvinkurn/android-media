@@ -2427,6 +2427,7 @@ open class DynamicProductDetailFragment :
             if (variantCategory == null) {
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.VARIANT_OPTIONS)
                 pdpUiUpdater?.removeComponent(ProductDetailConstant.MINI_VARIANT_OPTIONS)
+                updateUi()
                 return@observe
             }
             val listOfVariantLevelOne = listOf(variantCategory)
