@@ -13,24 +13,4 @@ data class EduLinkData(
     @SerializedName("appLink")
     @Expose
     val appLink: String = String.EMPTY,
-    @SerializedName("webLink")
-    @Expose
-    val webLink: WebLinkData = WebLinkData()
-) {
-
-    private fun isEmpty() = appLink.isEmpty()
-
-    fun isNotEmpty() = !isEmpty()
-}
-
-data class WebLinkData(
-    @SerializedName("action")
-    @Expose
-    val action: String = String.EMPTY,
-    @SerializedName("query")
-    @Expose
-    val query: String = String.EMPTY
-) {
-
-    fun isEmpty() = action.isEmpty() && query.isEmpty()
-}
+)

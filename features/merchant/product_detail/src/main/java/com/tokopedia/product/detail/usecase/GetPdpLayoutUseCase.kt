@@ -350,10 +350,6 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        isVisible
                        eduLink {
                           appLink
-                          webLink {
-                            action
-                            query
-                          }
                        }
                     }
                   }

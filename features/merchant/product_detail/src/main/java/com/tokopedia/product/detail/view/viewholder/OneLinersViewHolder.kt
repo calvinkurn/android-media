@@ -158,12 +158,14 @@ class OneLinersViewHolder(
     private fun renderIconEnd(content: OneLinersContent) {
         // app-link field is existing flag for stock info
         // and edu-link field is new flag for stock should available
-        val shouldShow = content.applink.isNotBlank() || content.eduLink.isNotEmpty()
+        val eduLinkIsNotEmpty = content.eduLink.appLink.isNotBlank()
+        val appLinkIsNotEmpty = content.applink.isNotBlank()
+        val shouldShow = appLinkIsNotEmpty || eduLinkIsNotEmpty
 
         iconRightArrow?.shouldShowWithAction(shouldShow = shouldShow) {
-            if (content.eduLink.isNotEmpty()) {
+            if (eduLinkIsNotEmpty) {
                 iconRightArrow.setImage(newIconId = IconUnify.INFORMATION)
-            } else if (content.applink.isNotBlank()) {
+            } else if (appLinkIsNotEmpty) {
                 iconRightArrow.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
             }
         }
