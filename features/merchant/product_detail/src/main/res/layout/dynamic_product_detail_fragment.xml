@@ -91,11 +91,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:visibility="visible" />
 
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_footer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="base_btn_follow, pdp_button_container" />
+
     <com.tokopedia.product.detail.view.widget.ProductDetailNavigation
         android:id="@+id/pdp_navigation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@id/pdp_button_container"
+        app:layout_constraintBottom_toTopOf="@id/barrier_footer"
         app:layout_constraintTop_toBottomOf="@id/pdp_navtoolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
