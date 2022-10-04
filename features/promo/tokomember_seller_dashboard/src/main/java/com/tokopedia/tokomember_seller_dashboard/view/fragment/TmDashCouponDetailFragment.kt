@@ -31,6 +31,7 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
 import com.tokopedia.tokomember_seller_dashboard.model.TmCouponDetailData
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.*
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.customview.TmShareBottomSheet
@@ -43,6 +44,7 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.util.*
 import javax.inject.Inject
@@ -54,29 +56,35 @@ import kotlin.math.roundToInt
 class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallback,ShareBottomsheetListener {
 
     private var voucherId:Int = 0
+    private var shopId = ""
     private var shareBottomSheet : TmShareBottomSheet?=null
 
 
-    private lateinit var header:HeaderUnify
-    private lateinit var couponImage:ImageUnify
-    private lateinit var couponTimerBadge:TimerUnifySingle
-    private lateinit var couponStatusTv:Typography
-    private lateinit var couponStartPeriodTv:Typography
-    private lateinit var couponEndPeriodTv:Typography
-    private lateinit var membershipStatusTv:Typography
-    private lateinit var couponTypeTv:TokomemberMultiTextView
-    private lateinit var cashbackTypeTv:TokomemberMultiTextView
-    private lateinit var maxCashbackTv:TokomemberMultiTextView
-    private lateinit var minTransaksiTv:TokomemberMultiTextView
-    private lateinit var currExpenseTv:Typography
-    private lateinit var kuotaTv:TokomemberMultiTextView
-    private lateinit var progressBar:ProgressBarUnify
-    private lateinit var cashbackPercentTv:TokomemberMultiTextView
-    private lateinit var usedQuotaTv:Typography
-    private lateinit var totalQuotaTv:Typography
-    private lateinit var cta:UnifyButton
-    private lateinit var flipper: ViewFlipper
-    private lateinit var shareCouponBtn:LinearLayout
+    private var header:HeaderUnify?=null
+    private var couponImage:ImageUnify?=null
+    private var couponTimerBadge:TimerUnifySingle?=null
+    private var couponStatusTv:Typography?=null
+    private var couponStartPeriodTv:Typography?=null
+    private var couponEndPeriodTv:Typography?=null
+    private var membershipStatusTv:Typography?=null
+    private var couponTypeTv:TokomemberMultiTextView?=null
+    private var cashbackTypeTv:TokomemberMultiTextView?=null
+    private var maxCashbackTv:TokomemberMultiTextView?=null
+    private var minTransaksiTv:TokomemberMultiTextView?=null
+    private var currExpenseTv:Typography?=null
+    private var kuotaTv:TokomemberMultiTextView?=null
+    private var progressBar:ProgressBarUnify?=null
+    private var cashbackPercentTv:TokomemberMultiTextView?=null
+    private var usedQuotaTv:Typography?=null
+    private var totalQuotaTv:Typography?=null
+    private var cta:UnifyButton?=null
+    private var flipper: ViewFlipper?=null
+    private var shareCouponBtn:LinearLayout?=null
+
+    @Inject
+    lateinit var tmTracker:TmTracker
+    @Inject
+    lateinit var userSession:UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -90,6 +98,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         arguments?.let {
             voucherId = it.getInt(VOUCHER_ID,0)
         }
+        shopId = userSession.shopId
     }
 
     override fun onCreateView(
@@ -106,9 +115,12 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         flipper = view.findViewById(R.id.coupon_detail_view_flip)
         observeViewModel()
         tmCouponDetailVm.getCouponDetails(voucherId)
+        if(shopId.isNotEmpty()){
+            tmTracker.viewCouponDetail(shopId)
+        }
     }
 
-    override fun getScreenName() = ""
+    override fun getScreenName() = PATH_TOKOMEMBER_COUPON_DETAIL
 
     override fun initInjector() {
         DaggerTokomemberDashComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
@@ -119,10 +131,10 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             it?.let {
                 when(it.status){
                     TokoLiveDataResult.STATUS.LOADING -> {
-                       flipper.displayedChild = 0
+                       flipper?.displayedChild = 0
                     }
                     TokoLiveDataResult.STATUS.SUCCESS -> {
-                        flipper.displayedChild = 1
+                        flipper?.displayedChild = 1
                         initViews()
                     }
                     else -> {}
@@ -133,7 +145,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     private fun setupHeader(view: View){
         header=view.findViewById(R.id.tm_coupon_detail_header)
-        header.setNavigationOnClickListener {
+        header?.setNavigationOnClickListener {
             activity?.onBackPressed()
         }
     }
@@ -182,8 +194,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             TmDateUtil.getDateFromISO(finishTime)?.let{ it1 ->
                 val calender = Calendar.getInstance(locale)
                 calender.time = it1
-                couponTimerBadge.isShowClockIcon = true
-                couponTimerBadge.targetDate = calender
+                couponTimerBadge?.isShowClockIcon = true
+                couponTimerBadge?.targetDate = calender
             }
         }
     }
@@ -220,8 +232,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE
             )
 
-            couponStartPeriodTv.text=ss1
-            couponEndPeriodTv.text = ss2
+            couponStartPeriodTv?.text=ss1
+            couponEndPeriodTv?.text = ss2
         }
     }
 
@@ -233,8 +245,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             res.minimumTierLevel?.let {
                 when(it){
                     COUPON_VIP -> {
-                        membershipStatusTv.text = context?.getString(R.string.tm_vip_kupon)
-                        membershipStatusTv.setTextColor(
+                        membershipStatusTv?.text = context?.getString(R.string.tm_vip_kupon)
+                        membershipStatusTv?.setTextColor(
                             ColorStateList.valueOf(
                                 ContextCompat.getColor(
                                     requireContext(),
@@ -242,7 +254,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                                 )
                             )
                         )
-                        membershipStatusTv.backgroundTintList = ColorStateList.valueOf(
+                        membershipStatusTv?.backgroundTintList = ColorStateList.valueOf(
                             ContextCompat.getColor(
                                 requireContext(),
                                 com.tokopedia.unifyprinciples.R.color.Unify_YN100
@@ -251,8 +263,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                     }
 
                     COUPON_MEMBER -> {
-                        membershipStatusTv.text = context?.getString(R.string.tm_premium_kupon)
-                        membershipStatusTv.setTextColor(
+                        membershipStatusTv?.text = context?.getString(R.string.tm_premium_kupon)
+                        membershipStatusTv?.setTextColor(
                             ColorStateList.valueOf(
                                 ContextCompat.getColor(
                                     requireContext(),
@@ -260,7 +272,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                                 )
                             )
                         )
-                        membershipStatusTv.backgroundTintList = ColorStateList.valueOf(
+                        membershipStatusTv?.backgroundTintList = ColorStateList.valueOf(
                             ContextCompat.getColor(
                                 requireContext(),
                                 com.tokopedia.unifyprinciples.R.color.Unify_NN100
@@ -289,8 +301,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     //Set the coupon to empty state
     private fun setCouponStateToEmpty(){
-        couponStatusTv.text = COUPON_STATE_EMPTY_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_EMPTY_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -303,8 +315,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     //Set the coupon to active state
     private fun setCouponStateToActive(){
-        couponStatusTv.text = COUPON_STATE_ACTIVE_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_ACTIVE_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -317,8 +329,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     //Set the coupon to active state
     private fun setCouponStateToNotStarted(){
-        couponStatusTv.text = COUPON_STATE_NOT_STARTED_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_NOT_STARTED_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -332,8 +344,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     //Set the coupon to ended state
     private fun setCouponStateToEnded(){
-        couponStatusTv.text = COUPON_STATE_ENDED_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_ENDED_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -342,14 +354,14 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             )
         )
         removeCouponTimer()
-        cta.visibility = View.GONE
+        cta?.visibility = View.GONE
         hideShareButton()
     }
 
     //Set the coupon to deleted state
     private fun setCouponStateToDeleted(){
-        couponStatusTv.text = COUPON_STATE_DELETED_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_DELETED_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -358,15 +370,15 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
             )
         )
         removeCouponTimer()
-        cta.visibility = View.GONE
+        cta?.visibility = View.GONE
         hideShareButton()
     }
 
 
     //Set the coupon to processing state
     private fun setCouponStateToProcessing(){
-        couponStatusTv.text = COUPON_STATE_PROCESSING_LABEL
-        couponStatusTv.setTextColor(
+        couponStatusTv?.text = COUPON_STATE_PROCESSING_LABEL
+        couponStatusTv?.setTextColor(
             ColorStateList.valueOf(
                 ContextCompat.getColor(
                     requireContext(),
@@ -379,10 +391,10 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
 
     private fun removeCouponTimer(){
-        couponTimerBadge.visibility=View.GONE
-        val params = couponStatusTv.layoutParams as ConstraintLayout.LayoutParams
+        couponTimerBadge?.visibility=View.GONE
+        val params = couponStatusTv?.layoutParams as ConstraintLayout.LayoutParams
         params.topMargin = dpToPx(16).toInt()
-        couponStatusTv.layoutParams = params
+        couponStatusTv?.layoutParams = params
     }
 
     //Set the quota progress
@@ -390,12 +402,12 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         tmCouponDetailVm.couponDetailResult.value.let {
             val usedQuota = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota ?: 0
             val totalQuota = it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota ?: 0
-           usedQuotaTv.text = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota.toString()
-            totalQuotaTv.text = "/${it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota.toString()}"
+           usedQuotaTv?.text = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota.toString()
+            totalQuotaTv?.text = "/${it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota.toString()}"
             if(totalQuota!=0){
-                progressBar.setValue((usedQuota*1.0/totalQuota).toInt(),true)
+                progressBar?.setValue((usedQuota*1.0/totalQuota).toInt(),true)
             }
-            else progressBar.setValue(0)
+            else progressBar?.setValue(0)
         }
     }
 
@@ -413,13 +425,13 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
     private fun renderCouponType(type:Int?){
         when(type){
             COUPON_TYPE_CASHBACK -> {
-                couponTypeTv.valueTv.text = COUPON_CASHBACK_PREVIEW
+                couponTypeTv?.valueTv?.text = COUPON_CASHBACK_PREVIEW
             }
             COUPON_TYPE_SHIPPING -> {
-                couponTypeTv.valueTv.text = COUPON_SHIPPING_PREVIEW
+                couponTypeTv?.valueTv?.text = COUPON_SHIPPING_PREVIEW
             }
             COUPON_TYPE_DISCOUNT -> {
-                couponTypeTv.valueTv.text = COUPON_DISCOUNT_PREVIEW
+                couponTypeTv?.valueTv?.text = COUPON_DISCOUNT_PREVIEW
             }
         }
     }
@@ -428,20 +440,20 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
     private fun renderCashbackType(data : TmCouponDetailData){
         when(data.voucherDiscountType){
             COUPON_DISCOUNT_TYPE_IDR -> {
-                cashbackPercentTv.visibility = View.GONE
-                cashbackTypeTv.valueTv.text = requireContext().resources.getString(R.string.tm_coupon_cashback_idr)
-                maxCashbackTv.valueTv.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(data.voucherDiscountAmtMax.toString()))
+                cashbackPercentTv?.visibility = View.GONE
+                cashbackTypeTv?.valueTv?.text = requireContext().resources.getString(R.string.tm_coupon_cashback_idr)
+                maxCashbackTv?.valueTv?.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(data.voucherDiscountAmtMax.toString()))
             }
             COUPON_DISCOUNT_TYPE_PERCENT -> {
-               cashbackPercentTv.visibility = View.VISIBLE
-                cashbackPercentTv.valueTv.text = "${data.voucherDiscountAmt}%"
-                cashbackTypeTv.valueTv.text = requireContext().resources.getString(R.string.tm_coupon_cashback_percent)
+               cashbackPercentTv?.visibility = View.VISIBLE
+                cashbackPercentTv?.valueTv?.text = "${data.voucherDiscountAmt}%"
+                cashbackTypeTv?.valueTv?.text = requireContext().resources.getString(R.string.tm_coupon_cashback_percent)
                 val cashback = (data.voucherDiscountAmt?:0).toFloat() / 100 * (data.voucherDiscountAmtMax ?: 0)
-                maxCashbackTv.valueTv.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(cashback.roundToInt().toString()))
+                maxCashbackTv?.valueTv?.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(cashback.roundToInt().toString()))
             }
         }
-        minTransaksiTv.valueTv.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(data.voucherMinimumAmt.toString()))
-        kuotaTv.valueTv.text = data.voucherQuota.toString()
+        minTransaksiTv?.valueTv?.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(data.voucherMinimumAmt.toString()))
+        kuotaTv?.valueTv?.text = data.voucherQuota.toString()
     }
 
     //Open the add quota bottomsheet
@@ -453,7 +465,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
                 it.voucherQuota ?: 0,
                 it.voucherTypeFormatted ?: "",
                 this,
-                it.voucherDiscountAmtMax ?: 0
+                this,
+                it.voucherDiscountAmtMax ?: 0,
             )
         }
     }
@@ -461,7 +474,7 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
     private fun renderCurrentExpenses(){
         tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let{
             val expense =it.voucherDiscountAmtMax?.times(it.confirmedGlobalQuota ?: 0) ?: 0
-            currExpenseTv.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(expense.toString()))
+            currExpenseTv?.text = requireContext().resources.getString(R.string.tm_currency,CurrencyFormatHelper.convertToRupiah(expense.toString()))
         }
     }
 
@@ -469,11 +482,12 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
 
     // To render the Coupon Image
    private fun renderCouponImage(){
-        tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let{
-            Glide.with(requireContext())
-                .load(it.voucherImageSquare)
-                .into(couponImage)
-
+        couponImage?.let { it1 ->
+            tmCouponDetailVm.couponDetailResult.value?.data?.merchantPromotionGetMVDataByID?.data?.let{
+                Glide.with(requireContext())
+                    .load(it.voucherImageSquare)
+                    .into(it1)
+            }
         }
    }
 
@@ -482,25 +496,28 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         tmCouponDetailVm.couponDetailResult.value?.data.let{
             val status = it?.merchantPromotionGetMVDataByID?.data?.voucherStatus
             if(status == COUPON_NOT_STARTED){
-                cta.text = requireContext().resources.getString(R.string.tm_ubah_kupon)
-                cta.setOnClickListener {
+                cta?.text = requireContext().resources.getString(R.string.tm_ubah_kupon)
+                cta?.setOnClickListener {
                     TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId, this, edit = true)
                 }
             }
             else{
-                cta.text = requireContext().resources.getString(R.string.tm_tambah_kuota)
-                cta.setOnClickListener { openQuotaBottomSheet() }
+                cta?.text = requireContext().resources.getString(R.string.tm_tambah_kuota)
+                cta?.setOnClickListener {
+                    tmTracker.clickTambahQuotaCouponDetail(shopId)
+                    openQuotaBottomSheet()
+                }
             }
         }
     }
 
     private fun hideShareButton(){
-        shareCouponBtn.visibility= View.GONE
+        shareCouponBtn?.visibility= View.GONE
     }
 
     private fun showShareButton(){
-        shareCouponBtn.visibility = View.VISIBLE
-        shareCouponBtn.setOnClickListener {
+        shareCouponBtn?.visibility = View.VISIBLE
+        shareCouponBtn?.setOnClickListener {
             showShareBottomSheet()
         }
     }

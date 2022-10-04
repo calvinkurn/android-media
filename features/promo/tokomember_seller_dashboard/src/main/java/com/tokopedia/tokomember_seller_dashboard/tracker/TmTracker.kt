@@ -216,4 +216,16 @@ class TmTracker {
         trackerImpl.viewProgramDetail(shopId, programId)
     }
 
+    fun viewCouponDetail(shopId:String){
+        trackerImpl.viewCouponDetail(shopId)
+    }
+
+    fun clickTambahQuotaCouponDetail(shopId: String){
+        trackerImpl.clickCouponDetailTambahKuota(shopId)
+    }
+
+    fun clickSimpanQuotaCouponDetail(shopId: String){
+        trackerImpl.clickAddQuotaCouponDetail(shopId)
+    }
+
 }
