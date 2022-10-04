@@ -11,15 +11,15 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryNavNotification.
 internal object QueryNavNotification {
     const val NAV_NOTIFICATION_QUERY_NAME = "NavNotificationQuery"
     const val NAV_NOTIFICATION_QUERY = "" +
-        "query NavNotification(\$input: NotificationRequest){\n" +
-        "        notifications(input: \$input){\n" +
-        "               resolutionAs {\n" +
-        "               buyer\n" +
-        "            }\n" +
-        "            inbox {\n" +
-        "               inbox_ticket\n" +
-        "               inbox_review\n" +
-        "            }\n" +
-        "    }\n" +
+        "query NavNotification(\$input: NotificationRequest){" +
+        "notifications(input: \$input){" +
+        "   resolutionAs {" +
+        "   buyer" +
+        "}" +
+        "inbox {" +
+        "   inbox_ticket" +
+        "   inbox_review" +
+        "}" +
+        "}" +
         "}"
 }

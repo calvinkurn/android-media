@@ -11,17 +11,17 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryPayment.PAYMENT_
 object QueryPayment {
     const val PAYMENT_QUERY_NAME = "GetPaymentQuery"
     const val PAYMENT_QUERY = "" +
-        "query PaymentQuery() {\n" +
-        "  paymentQuery: paymentList(lang: \"ID\", cursor:\"\") {\n" +
-        "    paymentList: payment_list {\n" +
-        "      merchantCode: merchant_code\n" +
-        "      transactionID: transaction_id\n" +
-        "      paymentAmount: payment_amount\n" +
-        "      tickerMessage: ticker_message\n" +
-        "      gatewayImg: gateway_img\n" +
-        "      applink: app_link\n" +
-        "      bankImg: bank_img\n" +
-        "    }\n" +
-        "  }\n" +
+        "query PaymentQuery() {" +
+        "  paymentQuery: paymentList(lang: \"ID\", cursor:\"\") {" +
+        "    paymentList: payment_list {" +
+        "      merchantCode: merchant_code" +
+        "      transactionID: transaction_id" +
+        "      paymentAmount: payment_amount" +
+        "      tickerMessage: ticker_message" +
+        "      gatewayImg: gateway_img" +
+        "      applink: app_link" +
+        "      bankImg: bank_img" +
+        "    }" +
+        "  }" +
         "}"
 }

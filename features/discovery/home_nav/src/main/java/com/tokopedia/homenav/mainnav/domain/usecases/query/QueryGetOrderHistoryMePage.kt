@@ -11,37 +11,37 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryGetOrderHistoryM
 internal object QueryGetOrderHistoryMePage {
     const val GET_ORDER_HISTORY_ME_PAGE_QUERY_NAME = "GetOrderHistoryMePageQuery"
     const val GET_ORDER_HISTORY_ME_PAGE_QUERY = "" +
-        "query GetOrderHistory(${'$'}input:UOHOrdersRequest!){\n" +
-        "              uohOrders(input:${'$'}input) {\n" +
-        "                orders {\n" +
-        "                          orderUUID\n" +
-        "                          status\n" +
-        "                          metadata {\n" +
-        "                            queryParams" +
-        "                            detailURL {\n" +
-        "                              appURL\n" +
-        "                            }\n" +
-        "                            status {\n" +
-        "                              label\n" +
-        "                              textColor\n" +
-        "                              bgColor\n" +
-        "                            }\n" +
-        "                            products {\n" +
-        "                              title\n" +
-        "                              imageURL\n" +
-        "                              inline1 {\n" +
-        "                                label\n" +
-        "                                textColor\n" +
-        "                                bgColor\n" +
-        "                              }\n" +
-        "                              inline2 {\n" +
-        "                                label\n" +
-        "                                textColor\n" +
-        "                                bgColor\n" +
-        "                                }\n" +
-        "                            }\n" +
-        "                        }\n" +
-        "                    }\n" +
-        "                }\n" +
-        "            }"
+        "query GetOrderHistory(${'$'}input:UOHOrdersRequest!){" +
+        "  uohOrders(input:${'$'}input) {" +
+        "    orders {" +
+        "  orderUUID" +
+        "  status" +
+        "  metadata {" +
+        "    queryParams" +
+        "    detailURL {" +
+        "      appURL" +
+        "    }" +
+        "    status {" +
+        "      label" +
+        "      textColor" +
+        "      bgColor" +
+        "    }" +
+        "    products {" +
+        "      title" +
+        "      imageURL" +
+        "      inline1 {" +
+        "        label" +
+        "        textColor" +
+        "        bgColor" +
+        "      }" +
+        "      inline2 {" +
+        "        label" +
+        "        textColor" +
+        "        bgColor" +
+        "        }" +
+        "    }" +
+        "}" +
+        "        }" +
+        "    }" +
+        "}"
 }

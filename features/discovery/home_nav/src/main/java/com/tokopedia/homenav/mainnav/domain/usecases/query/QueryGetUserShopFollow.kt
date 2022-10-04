@@ -12,28 +12,28 @@ object QueryGetUserShopFollow {
     const val GET_USER_SHOP_FOLLOW_QUERY_NAME = "GetUserShopFollowQuery"
     const val GET_USER_SHOP_FOLLOW_QUERY = "" +
         "query GetUserShopFollow(\$userID: Int, \$perPage: Int){ " +
-        "  userShopFollow(input:{userID:\$userID, perPage:\$perPage}){ " +
-        "    result { " +
-        "      userShopFollowDetail{ " +
-        "        shopID " +
-        "        shopName " +
-        "        location " +
-        "        logo " +
-        "        badge{ " +
-        "          title " +
-        "          imageURL " +
-        "        } " +
-        "        reputation{ " +
-        "          score " +
-        "          tooltip " +
-        "          reputationScore " +
-        "          minBadgeScore " +
-        "          badge " +
-        "          badgeLevel " +
-        "        } " +
-        "      } " +
-        "      haveNext " +
-        "    } " +
-        "  } " +
+        "userShopFollow(input:{userID:\$userID, perPage:\$perPage}){ " +
+        "result { " +
+        "userShopFollowDetail{ " +
+        "shopID " +
+        "shopName " +
+        "location " +
+        "logo " +
+        "badge{ " +
+        "title " +
+        "imageURL " +
+        "} " +
+        "reputation{ " +
+        "score " +
+        "tooltip " +
+        "reputationScore " +
+        "minBadgeScore " +
+        "badge " +
+        "badgeLevel " +
+        "} " +
+        "} " +
+        "haveNext " +
+        "} " +
+        "} " +
         "}"
 }

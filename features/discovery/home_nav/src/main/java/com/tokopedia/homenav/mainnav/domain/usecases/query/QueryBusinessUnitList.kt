@@ -11,22 +11,22 @@ import com.tokopedia.homenav.mainnav.domain.usecases.query.QueryBusinessUnitList
 internal object QueryBusinessUnitList {
     const val BUSINESS_UNIT_LIST_QUERY_NAME = "BusinessUnitListQuery"
     const val BUSINESS_UNIT_LIST_QUERY = "" +
-        "query businessUnitList(${'$'}page:String){\n" +
-        "              dynamicHomeIcon{\n" +
-        "                categoryGroup(page:${'$'}page){\n" +
-        "                  id\n" +
-        "                  title\n" +
-        "                  imageUrl\n" +
-        "                  applink\n" +
-        "                  url\n" +
-        "                  categoryRows{\n" +
-        "                    id\n" +
-        "                    name\n" +
-        "                    imageUrl\n" +
-        "                    applinks\n" +
-        "                    url\n" +
-        "                  }\n" +
-        "                }\n" +
-        "              }\n" +
-        "            }"
+        "query businessUnitList(${'$'}page:String){" +
+        "  dynamicHomeIcon{" +
+        "    categoryGroup(page:${'$'}page){" +
+        "      id" +
+        "      title" +
+        "      imageUrl" +
+        "      applink" +
+        "      url" +
+        "      categoryRows{" +
+        "        id" +
+        "        name" +
+        "        imageUrl" +
+        "        applinks" +
+        "        url" +
+        "      }" +
+        "    }" +
+        "  }" +
+        "}"
 }
