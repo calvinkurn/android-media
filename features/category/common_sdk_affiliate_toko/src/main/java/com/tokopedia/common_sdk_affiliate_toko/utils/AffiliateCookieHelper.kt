@@ -27,7 +27,8 @@ class AffiliateCookieHelper @Inject constructor(
         private const val ATC_SOURCE = "shop_page"
     }
 
-    private var affiliateUUID: String = ""
+    var affiliateUUID: String = ""
+        private set
 
     /**
      * Creates cookie if internally saved affiliateUUID is not empty otherwise Checks cookie and updates affiliateUUID
