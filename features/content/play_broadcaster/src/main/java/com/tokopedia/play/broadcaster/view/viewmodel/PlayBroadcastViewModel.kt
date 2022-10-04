@@ -406,6 +406,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
+            } else {
+                if (isFirstOpen) isFirstOpen = false
             }
 
             // create channel when there are no channel exist
@@ -1473,15 +1475,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             _observableConfigInfo.value = NetworkResult.Loading
 
-            val accountList = repo.getAccountList()
+            _accountListState.value = repo.getAccountList()
 
-            _accountListState.value = accountList
-
-            if (accountList.isNotEmpty()) {
+            if (_accountListState.value.isNotEmpty()) {
                 updateSelectedAccount(
                     getSelectedAccount(
                         cacheSelectedType = sharedPref.getLastSelectedAccount(),
-                        accountList = accountList
+                        accountList = _accountListState.value
                     )
                 )
                 getConfiguration(_selectedAccount.value)
