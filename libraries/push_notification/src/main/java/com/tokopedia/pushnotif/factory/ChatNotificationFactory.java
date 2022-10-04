@@ -169,8 +169,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         return new BubbleNotificationModel(
                 notificationType,
                 notificationId,
-                applinkNotificationModel.getApplinks(),
                 getShortcutNotificationId(notificationId),
+                applinkNotificationModel.getApplinks(),
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getThumbnail(),
                 applinkNotificationModel.getSummary(),
