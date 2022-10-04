@@ -18,6 +18,8 @@ import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -57,7 +59,10 @@ fun CampaignListScreen(
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
 ) {
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .semantics { contentDescription = "Campaign List" }
+    ) {
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
