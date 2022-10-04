@@ -41,7 +41,7 @@ class DealsHomeMapper @Inject constructor(@ApplicationContext private val contex
         homeLayout.forEach {
             if (it.title.equals(getString(TYPE_CAROUSEL), true)) {
                 val banners = it.productDetails.map { item ->
-                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.seoUrl, item.imageApp)
+                    val banner = BannersDataView.BannerDataView(item.id, item.title, item.appUrl, item.imageApp)
                     banner
                 }
                 bannersDataView = BannersDataView(list = banners, seeAllUrl = ApplinkConstInternalDeals.DEALS_PROMO)
