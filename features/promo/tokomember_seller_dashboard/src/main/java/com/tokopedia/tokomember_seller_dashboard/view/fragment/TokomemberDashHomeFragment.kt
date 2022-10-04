@@ -1,8 +1,8 @@
 package com.tokopedia.tokomember_seller_dashboard.view.fragment
 
 
-import android.graphics.drawable.Drawable
 import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -85,7 +85,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
 
         iv_home.errorTitle.hide()
         iv_home.errorDescription.hide()
-        observeViewModel()
+        observeDataFromApi()
         arguments?.getInt(BUNDLE_SHOP_ID)?.let{
             shopId = it
         }
@@ -145,7 +145,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun observeViewModel() {
+    private fun observeDataFromApi() {
         tokomemberDashHomeViewmodel.tokomemberHomeResultLiveData.observe(viewLifecycleOwner, {
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING ->{

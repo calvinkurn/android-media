@@ -68,14 +68,14 @@ class TmProgramListViewModelTest {
 
     @Test
     fun refreshProgramListLoaded(){
-        viewModel.refreshList(LOADED)
-        Assert.assertEquals(LOADED, viewModel.tokomemberProgramListLiveData.value)
+        viewModel.refreshProgramList(LOADED)
+        Assert.assertEquals(LOADED, viewModel.tmRefreshProgramListLiveData.value)
     }
 
     @Test
     fun refreshProgramListRefresh(){
-        viewModel.refreshList(REFRESH)
-        Assert.assertEquals(REFRESH, viewModel.tokomemberProgramListLiveData.value)
+        viewModel.refreshProgramList(REFRESH)
+        Assert.assertEquals(REFRESH, viewModel.tmRefreshProgramListLiveData.value)
     }
 
 }

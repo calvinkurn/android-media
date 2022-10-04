@@ -100,8 +100,8 @@ import com.tokopedia.tokomember_seller_dashboard.util.TIME_TITLE_END
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_GEN
 import com.tokopedia.tokomember_seller_dashboard.util.TM_ERROR_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE
-import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TM_SUMMARY_DIALOG_TITLE_START_TEXT
+import com.tokopedia.tokomember_seller_dashboard.util.TM_TNC
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getDayOfWeekID
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
@@ -215,7 +215,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
 
         renderHeader()
         renderButton()
-        observeViewModel()
+        observeDataFromApi()
 
         voucherId = arguments?.getInt(BUNDLE_VOUCHER_ID)?:0
         if(fromEdit){
@@ -295,7 +295,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         dagger.inject(this)
     }
 
-    private fun observeViewModel() {
+    private fun observeDataFromApi() {
 
 
         tmEligibilityViewModel.sellerInfoResultLiveData.observe(viewLifecycleOwner, {
