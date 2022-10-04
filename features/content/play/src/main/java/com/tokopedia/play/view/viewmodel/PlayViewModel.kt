@@ -338,7 +338,7 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD),
         PlayViewerNewUiState.Empty,
     )
 
