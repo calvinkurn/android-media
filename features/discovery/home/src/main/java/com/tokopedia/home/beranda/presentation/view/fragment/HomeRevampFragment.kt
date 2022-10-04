@@ -2112,53 +2112,25 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                         ?: false)
 
                 if (wishlistResult.isAddWishlist) {
-                    if (wishlistResult.isUsingWishlistV2) showToasterSuccessWishlistV2(wishlistResult)
-                    else showToasterSuccessWishlist()
+                    showToasterSuccessWishlistV2(wishlistResult)
                 } else {
-                    if (wishlistResult.isUsingWishlistV2) {
-                        context?.let { context ->
-                            view?.let { v ->
-                                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
-                            }
+                    context?.let { context ->
+                        view?.let { v ->
+                            AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, context, v)
                         }
-                    } else {
-                        showToasterWithAction(
-                            message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg),
-                            typeToaster = TYPE_NORMAL,
-                            actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist),
-                            clickListener = View.OnClickListener {})
                     }
                 }
             } else {
-                if (wishlistResult.isUsingWishlistV2) {
-                    var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
-                    if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
+                var msg = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg)
+                if (wishlistResult.messageV2.isNotEmpty()) msg = wishlistResult.messageV2
 
-                    context?.let { context ->
-                        AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msg,
-                            wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, root, context)
-                    }
-                } else {
-                    showToaster(
-                        message = if (wishlistResult.isAddWishlist) getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg) else getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg),
-                        typeToaster = TYPE_ERROR
-                    )
+                context?.let { context ->
+                    AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(msg,
+                        wishlistResult.ctaTextV2, wishlistResult.ctaActionV2, root, context)
                 }
             }
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    private fun showToasterSuccessWishlist() {
-        if(activity?.isFinishing == false) {
-            showToasterWithAction(
-                message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                typeToaster = TYPE_NORMAL,
-                actionText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                clickListener = View.OnClickListener {
-                    RouteManager.route(context, ApplinkConst.WISHLIST)
-                })
         }
     }
 

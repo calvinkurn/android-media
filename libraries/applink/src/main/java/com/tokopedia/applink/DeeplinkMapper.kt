@@ -273,7 +273,7 @@ object DeeplinkMapper {
             return getRegisteredNavigationTokopediaNowSearch(deeplink)
         }
 
-        if (uri.pathSegments[0] == ApplinkConst.AFFILIATE_TOKO_HOST) {
+        if (pathSize >= 1 && uri.pathSegments[0] == ApplinkConst.AFFILIATE_TOKO_HOST) {
             return DeeplinkMapperCategory.getRegisteredNavigationAffiliateFromHttp(uri)
         }
 
@@ -520,7 +520,9 @@ object DeeplinkMapper {
             }),
             DLP.startWith(ApplinkConst.TokoFood.MAIN_PATH) { _, uri, _, _ -> DeeplinkMapperTokoFood.mapperInternalApplinkTokoFood(uri) },
             DLP.matchPattern(ApplinkConst.RESOLUTION_SUCCESS) { _, uri, _, _ -> ApplinkConstInternalOperational.buildApplinkResolution(uri)},
-            DLP.exact(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) }
+            DLP.exact(ApplinkConst.DISCOVERY_SEARCH_UNIVERSAL) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) },
+            DLP.matchPattern(ApplinkConst.WISHLIST_COLLECTION_DETAIL, targetDeeplink = { _, _, _, idList ->
+                UriUtil.buildUri(ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL, idList?.getOrNull(0)) })
         )
 
     fun getTokopediaSchemeList():List<DLP>{
