@@ -41,9 +41,6 @@ object RollenceKey {
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
 
-    // Logistic
-    const val LCA_REFRESH = "android_lca_refresh"
-
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
