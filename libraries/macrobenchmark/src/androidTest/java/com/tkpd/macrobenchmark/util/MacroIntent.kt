@@ -131,4 +131,21 @@ object MacroIntent {
             return intent
         }
     }
+
+    object Play {
+        /**
+         * Target viewpager
+         * Capture view by resource id
+         */
+        const val VIEW_PAGER_RESOURCE_ID = "vp_fragment"
+
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        fun getPlayIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://play/186068")
+            return intent
+        }
+    }
 }
