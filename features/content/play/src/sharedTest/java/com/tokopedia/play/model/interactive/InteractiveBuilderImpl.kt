@@ -128,6 +128,5 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         waitingDuration = waitingDuration,
         status = status,
         listOfChoices = listOfChoices,
-        reward = reward,
     )
 }

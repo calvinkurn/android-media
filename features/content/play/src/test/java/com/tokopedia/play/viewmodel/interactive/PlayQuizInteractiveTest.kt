@@ -130,7 +130,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
 
@@ -168,7 +167,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
         val err = MessageErrorException("Error gk bs jawab y")
@@ -208,7 +206,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 selectedChoice,
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Default('b')),
@@ -252,7 +249,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -292,7 +288,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "", // no reward
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -329,7 +324,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Ikan Koi",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
