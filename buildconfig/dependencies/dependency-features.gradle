@@ -43,7 +43,6 @@ ext {
             createpostCommon                : ":features:content:createpost_common",
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
-            playTest                        : ":features:content:play_test",
             playBroadcaster                 : ":features:content:play_broadcaster",
             playWidget                      : ":features:content:play_widget",
             contentTest                     : ":features:content:content_test",
