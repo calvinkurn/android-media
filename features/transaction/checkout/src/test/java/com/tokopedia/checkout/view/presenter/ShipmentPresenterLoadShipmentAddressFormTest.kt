@@ -636,22 +636,40 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
-    fun `GIVEN load checkout page with cross sell data WHEN load checkout page THEN should set cross sell data`() {
+    fun `GIVEN load checkout page with cross sell data WHEN load checkout page THEN should set cross sell data with the right index`() {
         // Given
         val groupAddress = GroupAddress().apply {
             userAddress = UserAddress(state = 0)
         }
         val crossSell = listOf(CrossSellModel())
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery {
+            getShipmentAddressFormV3UseCase.setParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
-            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), crossSell = crossSell))
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(
+                CartShipmentAddressFormData(
+                    groupAddress = listOf(groupAddress),
+                    crossSell = crossSell
+                )
+            )
         }
 
         // When
         presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "", false)
 
         // Then
-        assertEquals(listOf(ShipmentCrossSellModel()), presenter.listShipmentCrossSellModel)
+        assertEquals(
+            listOf(ShipmentCrossSellModel(index = 0)),
+            presenter.listShipmentCrossSellModel
+        )
     }
 
     @Test
