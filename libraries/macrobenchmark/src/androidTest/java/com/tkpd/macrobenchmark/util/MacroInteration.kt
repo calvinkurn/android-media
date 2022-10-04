@@ -7,7 +7,11 @@ object MacroInteration {
     private val DEFAULT_TIMEOUT = 60000L
     private val IDLE_DURATION = 2000L
 
-    fun basicRecyclerviewInteraction(packageName: String, rvResourceId: String) {
+    fun basicRecyclerviewInteraction(
+        packageName: String,
+        rvResourceId: String,
+        scrollDirection: Direction = Direction.DOWN,
+    ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
@@ -18,7 +22,7 @@ object MacroInteration {
         // with input events from automation.
         recycler.setGestureMargin(device.displayWidth / 5)
         for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
-            recycler.scroll(Direction.DOWN, 2f)
+            recycler.scroll(scrollDirection, 2f)
             device.waitForIdle()
         }
     }
