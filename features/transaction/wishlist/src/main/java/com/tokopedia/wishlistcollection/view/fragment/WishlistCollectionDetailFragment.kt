@@ -263,6 +263,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
+        private const val TYPE_COLLECTION_PUBLIC_SELF = 3
+        private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -575,6 +577,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
                         countRemovableAutomaticDelete =
                             if (collectionDetail.countRemovableItems > 0) collectionDetail.countRemovableItems else collectionDetail.totalData
+
+                        if (collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_SELF ||
+                            collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                            hideGearIcon()
+                        }
                     }
                 }
                 is Fail -> {
@@ -2770,6 +2777,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
+    }
+
+    // new condition : when shared collection is opened from other user POV
+    private fun hideGearIcon() {
+        binding?.run {
+            wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
+        }
     }
 
     override fun onCollectionItemClicked(name: String, id: String) {
