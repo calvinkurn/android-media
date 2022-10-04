@@ -1077,6 +1077,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
             )
 
+            handleActiveInteractive()
+
             /** Reset Form */
             sharedPref.setNotFirstSelectQuizOption()
             sharedPref.setNotFirstQuizPrice()
@@ -1210,6 +1212,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
         viewModelScope.launchCatchError(dispatcher.io, block = {
             val session = repo.createGiveaway(channelId, title, durationInMs)
+            handleActiveInteractive()
             _interactiveSetup.update {
                 it.copy(
                     type = GameType.Unknown,
