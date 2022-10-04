@@ -2,6 +2,7 @@ package com.tokopedia.unifyorderhistory
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.util.Log
 import androidx.test.espresso.Espresso.onIdle
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.intent.Intents
@@ -91,10 +92,10 @@ class UohListTrackingTest {
             doApplyFilter()
             // Force TrackingQueue to send trackers
             sendTrack(GlobalScope, TrackRepository(context)) {
-                /* no-op */
+                Log.i("UohListTracking", "finish send track")
             }
             // Wait for TrackingQueue to finish
-            Thread.sleep(5_000)
+            Thread.sleep(10_000)
         } submit {
             hasPassedAnalytics(cassavaTestRule, query)
         }
