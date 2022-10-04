@@ -3642,6 +3642,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         checkoutAnalyticsCourierSelection.eventViewGotoplusTicker();
     }
 
+    @Override
+    public void onInsuranceInfoTooltipClickedTrackingAnalytics() {
+        checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionInsuranceInfoTooltip(userSessionInterface.getUserId());
+    }
+
     private void updateLocalCacheAddressData(SaveAddressDataModel saveAddressDataModel) {
         Activity activity = getActivity();
         if (activity != null) {

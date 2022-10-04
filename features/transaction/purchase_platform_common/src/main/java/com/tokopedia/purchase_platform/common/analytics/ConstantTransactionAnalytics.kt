@@ -67,6 +67,7 @@ object ConstantTransactionAnalytics {
         const val VIEW_ITEM = "view_item"
         const val CLICK_PP = "clickPP"
         const val VIEW_PP_IRIS = "viewPPIris"
+        const val CLICK_CX = "clickCX"
     }
 
     object EventCategory {
@@ -79,6 +80,7 @@ object ConstantTransactionAnalytics {
         const val EXPRESS_CHECKOUT = "express checkout"
         const val COURIER_SELECTION_TRADE_IN = "courier selection trade in"
         const val TRACK_SOM = "track seller order management"
+        const val INSURANCE_INFO_TOOLTIP = "disclaimer box - insurance page"
 
         //OCC
         const val PURCHASE_SETTING = "purchase setting"
@@ -116,6 +118,7 @@ object ConstantTransactionAnalytics {
         const val CLICK_GANTI_ALAMAT_ATAU_KIRIM_KE_BEBERAPA_ALAMAT = "click ganti alamat atau kirim ke beberapa alamat"
         const val CLICK_SUBTOTAL = "click subtotal"
         const val CLICK_ASURANSI_PENGIRIMAN = "click asuransi pengiriman"
+        const val CLICK_INSURANCE_INFO_TOOLTIP = "click button info tool tip"
         const val CLICK_DROPSHIP = "click dropship"
         const val CLICK_INPUT_QUANTITY = "click input quantity"
         const val CLICK_TULIS_CATATAN = "click tulis catatan"
@@ -484,5 +487,6 @@ object ConstantTransactionAnalytics {
         const val CLICK_GOTOPLUS_CROSS_SELL_BATAL = "36319"
 
         const val CLICK_BAYAR_OCC = "15570"
+        const val CLICK_INSURANCE_INFO_TOOLTIP = "36048"
     }
 }

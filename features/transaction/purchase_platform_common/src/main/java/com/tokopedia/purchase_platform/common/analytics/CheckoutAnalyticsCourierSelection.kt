@@ -57,6 +57,20 @@ class CheckoutAnalyticsCourierSelection @Inject constructor() : TransactionAnaly
         )
     }
 
+    fun eventClickAtcCourierSelectionInsuranceInfoTooltip(userId: String) {
+        val gtmData = getGtmData(
+            ConstantTransactionAnalytics.EventName.CLICK_CX,
+            ConstantTransactionAnalytics.EventCategory.INSURANCE_INFO_TOOLTIP,
+            ConstantTransactionAnalytics.EventAction.CLICK_INSURANCE_INFO_TOOLTIP,
+            ""
+        )
+        gtmData[ExtraKey.CURRENT_SITE] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.BUSINESS_UNIT] = ConstantTransactionAnalytics.CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.TRACKER_ID] = ConstantTransactionAnalytics.TrackerId.CLICK_INSURANCE_INFO_TOOLTIP
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
     fun eventClickAtcCourierSelectionClickDropship() {
         sendGeneralEvent(
                 ConstantTransactionAnalytics.EventName.CLICK_ATC,
