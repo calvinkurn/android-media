@@ -11,6 +11,7 @@ object MacroInteration {
         packageName: String,
         rvResourceId: String,
         scrollDirection: Direction = Direction.DOWN,
+        scrollPercent: Float = 2f,
     ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
@@ -22,7 +23,7 @@ object MacroInteration {
         // with input events from automation.
         recycler.setGestureMargin(device.displayWidth / 5)
         for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
-            recycler.scroll(scrollDirection, 2f)
+            recycler.scroll(scrollDirection, scrollPercent)
             device.waitForIdle()
         }
     }
