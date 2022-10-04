@@ -1857,27 +1857,30 @@ class PlayViewModel @AssistedInject constructor(
                     isPlaying = false,
                 )
             }
-
-            val interactiveType = _interactive.value.interactive
-            processWinnerStatus(null, interactiveType)
+            showLeaderBoard(_interactive.value.interactive.id)
         }) {
             _interactive.value = InteractiveStateUiModel.Empty
         }
     }
 
-    private fun showLeaderBoard(interactiveId: String){
+    private suspend fun showLeaderBoard(interactiveId: String){
         if (repo.hasProcessedWinner(interactiveId)) return
 
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
+
+        _uiEvent.emit(
+            ShowCoachMarkWinnerEvent("", UiString.Resource(R.string.play_quiz_finished))
+        )
+
         repo.setHasProcessedWinner(interactiveId)
 
         _interactive.value = InteractiveStateUiModel.Empty
     }
 
     private suspend fun processWinnerStatus(
-        status: PlayUserWinnerStatusUiModel?,
+        status: PlayUserWinnerStatusUiModel,
         interactive: InteractiveUiModel,
     ) {
         if (repo.hasProcessedWinner(interactive.id)) return
@@ -1886,18 +1889,16 @@ class PlayViewModel @AssistedInject constructor(
         _leaderboardUserBadgeState.setValue {
             copy(showLeaderboard = true, shouldRefreshData = true)
         }
-        val (title, subtitle) = Pair(if(interactiveType is InteractiveUiModel.Giveaway) status?.loserTitle ?: "" else "",
-            if(interactiveType is InteractiveUiModel.Giveaway) status?.loserText ?: "" else "Lihat hasil, dan peserta game di sini, ya.")
 
         _interactive.value = InteractiveStateUiModel.Empty
 
-        if (status?.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
+        if (status.interactiveId == interactive.id && repo.hasJoined(interactive.id)) {
             _uiEvent.emit(
                 if(status.userId.toString() == userId) {
                     ShowWinningDialogEvent(status.imageUrl, status.winnerTitle, status.winnerText, interactiveType)
                 }
                 else {
-                    ShowCoachMarkWinnerEvent(title, subtitle)
+                    ShowCoachMarkWinnerEvent(status.loserTitle, UiString.Text(status.loserText))
                 }
             )
             repo.setHasProcessedWinner(interactive.id)

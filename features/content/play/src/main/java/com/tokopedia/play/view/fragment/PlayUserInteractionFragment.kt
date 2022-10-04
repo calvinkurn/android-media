@@ -990,7 +990,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     is ShowCoachMarkWinnerEvent -> {
                         if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
-                        interactiveResultView?.showCoachMark(event.title, event.subtitle)
+                        interactiveResultView?.showCoachMark(event.title, getTextFromUiString(event.subtitle))
                         delay(GAME_LOSER_COACHMARK_DELAY)
                         interactiveResultView?.hideCoachMark()
                     }

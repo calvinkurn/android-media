@@ -63,6 +63,9 @@
 
     <string name="play_interactive_follow_success">Berhasil follow toko.</string>
 
+    <string name="play_quiz_finished">Lihat hasil, dan peserta game di sini, ya.</string>
+
+
     <!--Upcoming page-->
     <string name="play_remind_me">Ingatkan Saya</string>
     <string name="play_upcoming_refresh">Refresh</string>
