@@ -53,9 +53,6 @@ class UploadPrescriptionUseCase @Inject constructor(
                 options = BitmapFactory.Options()
                 options.inSampleSize = 2 + compressCounter
                 logBreadCrumb("$EPharmacyModuleName,Options={2 + ${compressCounter}},Path=${localFilePath}")
-                if(compressCounter < MAX_COMPRESSIONS-1){
-                    throw NullPointerException("")
-                }
                 BitmapFactory.decodeFile(localFilePath, options)
             }else {
                 logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
