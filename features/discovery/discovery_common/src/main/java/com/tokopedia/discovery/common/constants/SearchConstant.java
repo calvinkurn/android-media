@@ -84,6 +84,7 @@ public interface SearchConstant {
         String GET_PRODUCT_COUNT_USE_CASE = "get_product_count_use_case";
         String GET_LOCAL_SEARCH_RECOMMENDATION_USE_CASE = "get_local_search_recommendation_use_case";
         String SEARCH_PRODUCT_GET_INSPIRATION_CAROUSEL_CHIPS_PRODUCTS_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
+        String SEARCH_SAME_SESSION_RECOMMENDATION_USE_CASE = "search_product_inspiration_carousel_chips_use_case";
         String SEARCH_PRODUCT_PARAMS = "params";
         String SEARCH_PRODUCT_SKIP_PRODUCT_ADS = "skip_product_ads";
         String SEARCH_PRODUCT_SKIP_HEADLINE_ADS = "skip_headline_ads";
@@ -186,6 +187,7 @@ public interface SearchConstant {
         String TYPE_INSPIRATION_CAROUSEL_KEYWORD = "keyword";
         String TYPE_INSPIRATION_CAROUSEL_SINGLE_BUNDLING = "single_bundling";
         String TYPE_INSPIRATION_CAROUSEL_MULTIPLE_BUNDLING = "multiple_bundling";
+        String TYPE_SAME_SESSION_RECOMMENDATION = "same_session";
     }
 
     interface TopAdsComponent {

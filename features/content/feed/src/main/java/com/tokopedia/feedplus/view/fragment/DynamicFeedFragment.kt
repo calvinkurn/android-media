@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +31,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -41,7 +41,8 @@ class DynamicFeedFragment:
         BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         HighlightAdapter.HighlightListener,
         CardTitleView.CardTitleListener,
-        DynamicFeedContract.View {
+        DynamicFeedContract.View,
+        FeedPlusTabParentFragment {
 
     companion object {
         private const val REQUEST_LOGIN = 345
@@ -74,6 +75,8 @@ class DynamicFeedFragment:
 
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
+    private var mContainerListener: FeedPlusContainerListener? = null
     
     /** View */
     private lateinit var rvDynamicFeed: RecyclerView
@@ -124,6 +127,8 @@ class DynamicFeedFragment:
         updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
+
+        mContainerListener?.onChildRefresh()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -251,6 +256,10 @@ class DynamicFeedFragment:
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
         feedAnalyticTracker.eventTrendingClickMedia(item.postId.toString())
         onGoToLink(item.applink)
+    }
+
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 
     private fun onGoToLink(url: String) {
