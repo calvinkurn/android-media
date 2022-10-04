@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.login.behaviour.base
 
 import android.content.Intent
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
@@ -93,7 +94,9 @@ open class LoginBase: LoginRegisterBase() {
     }
 
     fun inputPassword(value: String) {
-        val viewInteraction = onView(withId(R.id.text_field_input)).check(matches(isDisplayed()))
+        val viewInteraction = onView(withInputType(
+            InputType.TYPE_TEXT_VARIATION_PASSWORD or InputType.TYPE_CLASS_TEXT)
+        ).check(matches(isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
     }
 
