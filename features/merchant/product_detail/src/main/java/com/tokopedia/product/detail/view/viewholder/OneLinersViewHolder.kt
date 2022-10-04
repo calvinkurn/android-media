@@ -97,17 +97,22 @@ class OneLinersViewHolder(
 
     private fun renderCoachMark() {
         iconStart?.let {
-            if (!coachMarkIms.isShowing) {
+            if (shouldCoachMark()) {
                 val item = CoachMark2Item(
                     anchorView = it,
                     title = view.context.getString(R.string.pdp_oneliners_ims100_coachmark_title),
                     description = view.context.getString(R.string.pdp_oneliners_ims100_coachmark_description),
                     position = CoachMark2.POSITION_BOTTOM
                 )
+                coachMarkIms.onDismissListener = {
+                    listener.onOneLinerCoachMarkDismiss()
+                }
                 coachMarkIms.showCoachMark(arrayListOf(item), null, 0)
             }
         }
     }
+
+    private fun shouldCoachMark() = !coachMarkIms.isShowing && listener.shouldShowCoachMark()
 
     private fun renderBestSellerView(element: OneLinersDataModel) {
         val appLink = element.oneLinersContent?.applink.orEmpty()
@@ -144,14 +149,15 @@ class OneLinersViewHolder(
     private fun renderIconStart(content: OneLinersContent) {
         val iconUrl = content.icon
         iconStart?.apply {
-            showWithCondition(iconUrl.isNotBlank())
-            setImageUrl(iconUrl)
+            shouldShowWithAction(iconUrl.isNotBlank()) {
+                setImageUrl(iconUrl)
+            }
         }
     }
 
     private fun renderIconEnd(content: OneLinersContent) {
-        // app-link is existing flag for stock info
-        // otherwise edu-link is new flag for stock should available always
+        // app-link field is existing flag for stock info
+        // and edu-link field is new flag for stock should available
         val shouldShow = content.applink.isNotBlank() || content.eduLink.isNotEmpty()
 
         iconRightArrow?.shouldShowWithAction(shouldShow = shouldShow) {
@@ -174,5 +180,4 @@ class OneLinersViewHolder(
         componentName = element?.name ?: "",
         adapterPosition = bindingAdapterPosition + Int.ONE
     )
-
 }

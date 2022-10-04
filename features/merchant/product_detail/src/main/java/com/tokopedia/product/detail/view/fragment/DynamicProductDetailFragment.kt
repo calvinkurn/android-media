@@ -5152,6 +5152,14 @@ open class DynamicProductDetailFragment :
         goToApplink(appLink)
     }
 
+    override fun shouldShowCoachMark(): Boolean {
+        return true
+    }
+
+    override fun onOneLinerCoachMarkDismiss() {
+
+    }
+
     override fun onImpressionProductBundling(
         bundleId: String,
         bundleType: String,
