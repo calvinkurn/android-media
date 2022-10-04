@@ -44,17 +44,19 @@ class UploadPrescriptionUseCase @Inject constructor(
         )))
     }
 
-    private fun getBase64OfPrescriptionImage(localFilePath: String, compressLocal : Boolean = false): String {
-        var compressCounter = 0
-        var compress  = compressLocal
+    private fun getBase64OfPrescriptionImage(localFilePath: String, compress : Boolean = false, compressCounter : Int = 0): String {
         var prescriptionImageBitmap: Bitmap? = null
-        var compressedUri : Uri? = null
+        val options: BitmapFactory.Options
+        var finalEncodedString = ""
         return try {
             prescriptionImageBitmap = if(compress){
-                compressCounter += 1
-                compressedUri = ImageCompressor.compress(context,imagePath = localFilePath)
-                logBreadCrumb("$EPharmacyModuleName,ImageCompressor,Path=${compressedUri?.path}")
-                BitmapFactory.decodeFile(compressedUri?.path)
+                options = BitmapFactory.Options()
+                options.inSampleSize = 2 + compressCounter
+                logBreadCrumb("$EPharmacyModuleName,Options={2 + ${compressCounter}},Path=${localFilePath}")
+                if(compressCounter < MAX_COMPRESSIONS-1){
+                    throw NullPointerException("")
+                }
+                BitmapFactory.decodeFile(localFilePath, options)
             }else {
                 logBreadCrumb("$EPharmacyModuleName,Normal,Path=${localFilePath}")
                 BitmapFactory.decodeFile(localFilePath)
@@ -69,19 +71,20 @@ class UploadPrescriptionUseCase @Inject constructor(
             prescriptionImageBitmap.recycle()
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
-            "${IMAGE_DATA_PREFIX}${encodedString}"
+            finalEncodedString = "${IMAGE_DATA_PREFIX}${encodedString}"
+            finalEncodedString
         }catch (e : Exception){
             prescriptionImageBitmap?.recycle()
             logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}")
             when(e){
                 is NullPointerException -> {
-                    if((!compress) || (compress && (compressCounter < 5))){
-                        if (compress && !compressedUri?.path.isNullOrBlank()){
-                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${compressedUri?.path}")
-                            getBase64OfPrescriptionImage(compressedUri?.path ?: "", true)
+                    if((!compress) || (compress && (compressCounter < MAX_COMPRESSIONS))){
+                        finalEncodedString = if (compress && localFilePath.isNotBlank()){
+                            logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${localFilePath}")
+                            getBase64OfPrescriptionImage(localFilePath, true,compressCounter + 1)
                         }else {
                             logBreadCrumb("$EPharmacyModuleName,Exception,isCompress=$compress}compressCounter=${compressCounter},path=${localFilePath}")
-                            getBase64OfPrescriptionImage(localFilePath, true)
+                            getBase64OfPrescriptionImage(localFilePath, true,compressCounter +  1)
                         }
                     }
                     EPharmacyUtils.logException(NullPointerException("${e.message} filePath : $localFilePath"))
@@ -90,7 +93,7 @@ class UploadPrescriptionUseCase @Inject constructor(
                     EPharmacyUtils.logException(e)
                 }
             }
-            ""
+            finalEncodedString
         }
     }
 
@@ -119,5 +122,7 @@ class UploadPrescriptionUseCase @Inject constructor(
         private const val IMAGE_DATA_PREFIX = "data:image/jpeg;base64,"
 
         private const val EPharmacyModuleName = "epharmacy"
+        private const val MAX_COMPRESSIONS = 5
+
     }
 }
