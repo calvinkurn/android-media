@@ -253,16 +253,6 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultChangeGrid(gridName: String, screenName: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.GRID_MENU,
-                SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ))
-    }
-
-    @JvmStatic
     fun eventSearchResultTabClick(tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,

@@ -54,6 +54,5 @@ interface ProductListTypeFactory {
     fun type(violationView: ViolationDataView) : Int
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
     fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
-    var recyclerViewItem: Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
