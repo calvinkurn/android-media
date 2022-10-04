@@ -345,6 +345,130 @@ class ShippingDurationPresenterTest {
         }
     }
 
+    /*
+    getRatesDataFromLogistic
+    */
+
+    // todo
+    @Test
+    fun `When choose promo logistic Then find service data from service id`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When choose promo logistic but service data is not found Then return null`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    /*
+    OnChooseDuration
+    */
+
+    // todo
+    @Test
+    fun `When year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is recommended courier Then select the recommended courier`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is selected shipper product Id Then select the selected shipper product`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is recommended courier and selected shipper product Id Then select the selected shipper product`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and get selected courier and courier is pinpoint error Then set pinpoint error flag`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and get selected courier and courier is pinpoint error Then set range price to error message`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is recommended courier Then send recommended courier data`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is selected shipper product Id Then send selected shipper product data`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select duration and there is recommended courier and selected shipper product Id Then send the selected shipper product data`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    /*
+    * OnLogisticPromoClicked
+    */
+
+    // todo
+    @Test
+    fun `When select promo logistic Then send courier data and service data from promo logistic data`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select promo logistic and service data is not found Then should show courier promo error`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
+    // todo
+    @Test
+    fun `When select promo logistic and courier data is not found Then should show courier promo error`() {
+        verify {
+            view.sendAnalyticCourierPromo(any())
+        }
+    }
+
     @Test
     fun `When presenter detached Then all usecases is unsubscribed`() {
         // When
