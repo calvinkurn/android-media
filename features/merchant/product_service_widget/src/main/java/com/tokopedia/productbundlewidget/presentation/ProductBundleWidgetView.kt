@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.productbundlewidget.model.GetBundleParam
@@ -22,6 +23,7 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.BaseCustomView
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
@@ -29,6 +31,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private var viewModel: ProductBundleWidgetViewModel? = null
+    private var tfTitle: Typography? = null
     private val bundleAdapter = ProductBundleWidgetAdapter()
 
     constructor(context: Context) : super(context) {
@@ -102,6 +105,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     private fun setup(context: Context, attrs: AttributeSet?) {
         val view = View.inflate(context, R.layout.customview_product_bundle_widget, this)
         val rvBundles: RecyclerView = view.findViewById(R.id.rv_bundles)
+        tfTitle = view.findViewById(R.id.tf_title)
         setupItems(rvBundles)
         defineCustomAttributes(attrs)
         initInjector()
@@ -127,6 +131,8 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
             val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.ProductBundleWidgetView, 0, 0)
 
             try {
+                val text = styledAttributes.getString(R.styleable.ProductBundleWidgetView_bundlewidget_title).orEmpty()
+                setTitleText(text)
             } finally {
                 styledAttributes.recycle()
             }
@@ -139,6 +145,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         viewModel?.bundleUiModels?.observe(lifecycleOwner) {
             bundleAdapter.updateDataSet(it)
         }
+    }
+
+    fun setTitleText(text: String) {
+        tfTitle?.setTextAndCheckShow(text)
     }
 
     fun getBundleData(param: GetBundleParam) {
