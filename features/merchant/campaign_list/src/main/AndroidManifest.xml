@@ -6,7 +6,7 @@
         <activity
             android:name=".page.presentation.activity.CampaignListActivity"
             android:configChanges="orientation"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
             <intent-filter>
