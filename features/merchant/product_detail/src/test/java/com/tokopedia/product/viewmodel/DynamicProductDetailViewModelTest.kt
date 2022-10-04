@@ -1446,7 +1446,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `determine variant return value`() {
-
         val productVariant = ProductVariant()
         val mapOfSelectedOptionIds = mutableMapOf<String, String>()
 
@@ -1465,7 +1464,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
 
     @Test
     fun `determine variant return null`() {
-
         val productVariant = ProductVariant()
         val mapOfSelectedOptionIds = mutableMapOf<String, String>()
 
