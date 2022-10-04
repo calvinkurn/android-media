@@ -117,7 +117,7 @@ public interface ApplinkConst {
     String PAYMENT_BACK_TO_DEFAULT = "tokopedia://payment/backtodefault";
     String WISHLIST = "tokopedia://wishlist";
     String NEW_WISHLIST = "tokopedia://new-wishlist";
-    String WISHLIST_HOME = "tokopedia://wishlisthome";
+    String WISHLIST_COLLECTION_DETAIL = "tokopedia://wishlist/collection/{collection_id}";
     String RECENT_VIEW = "tokopedia://recentlyviewed";
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
@@ -553,6 +553,7 @@ public interface ApplinkConst {
         String MERCHANT = "tokopedia://food/merchant/{merchantId}?product_id={product_id}";
         String POST_PURCHASE = "tokopedia://food/postpurchase/{orderId}";
         String TOKOFOOD_ORDER = "tokopedia://food/order";
+        String SEARCH = "tokopedia://food/search";
     }
 
     interface TokoMart {

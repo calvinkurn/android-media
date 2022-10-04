@@ -227,7 +227,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
-    private var coachMark: CoachMark2? = null
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -735,7 +734,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
-        coachMark?.dismissCoachMark()
+        onBoardingListenerDelegate.dismissCoachmark()
         trackingQueue?.sendAll()
     }
 
@@ -1123,7 +1122,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         showRefreshLayout()
 
-        coachMark?.dismissCoachMark()
+        onBoardingListenerDelegate.dismissCoachmark()
         presenter?.clearData()
         recyclerViewUpdater.productListAdapter?.clearData()
         productVideoAutoplay.stopVideoAutoplay()

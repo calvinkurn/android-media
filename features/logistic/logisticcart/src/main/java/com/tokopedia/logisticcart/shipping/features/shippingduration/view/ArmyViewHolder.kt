@@ -49,8 +49,15 @@ class ArmyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             lblCodAvailableEta.visibility = View.GONE
         }
 
-        tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
-        if (data.bottomSheetDescription.isEmpty()) tvInfo.visibility = View.GONE
+        if (data.bottomSheetDescription.isNotEmpty()) {
+            tvInfo.text = MethodChecker.fromHtml(data.bottomSheetDescription)
+            tvInfo.visibility = View.VISIBLE
+        } else if (data.promoMessage.isNotBlank()) {
+            tvInfo.text = MethodChecker.fromHtml(data.promoMessage)
+            tvInfo.visibility = View.VISIBLE
+        } else {
+            tvInfo.visibility = View.GONE
+        }
 
         if (data.imageUrl.isNotEmpty()) {
             imgLogo.contentDescription = itemView.context.getString(R.string.content_description_img_logo_rates_promo_prefix, data.title)

@@ -20,6 +20,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentGra
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInfoItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
@@ -34,6 +35,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -92,6 +94,7 @@ open class BuyerOrderDetailTypeFactory(
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
             OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator)
+            PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -176,5 +179,9 @@ open class BuyerOrderDetailTypeFactory(
 
     fun type(orderResolutionUIModel: OrderResolutionUIModel): Int {
         return OrderResolutionViewHolder.LAYOUT
+    }
+
+    fun type(platformFeeInfoUiModel: PlatformFeeInfoUiModel): Int {
+        return PlatformFeeInfoViewHolder.LAYOUT
     }
 }
