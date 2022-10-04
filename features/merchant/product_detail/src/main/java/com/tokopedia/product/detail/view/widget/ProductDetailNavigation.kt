@@ -44,24 +44,28 @@ class ProductDetailNavigation(
             val someItem = layoutManager.findViewByPosition(position)
             val rectItem = Rect()
             someItem?.getGlobalVisibleRect(rectItem)
-            return if (rectItem.bottom <= offsetY) {
-                evaluateViewPosition(layoutManager, offsetY, position + 1)
+            val rectRv = Rect()
+            recyclerView.getGlobalVisibleRect(rectRv)
+            val rectRvTop = rectRv.top
+            return if ((rectItem.bottom - rectRvTop) <= offsetY) {
+                evaluateViewPosition(layoutManager, offsetY, rectRvTop, position + 1)
             } else position
         }
 
         private fun evaluateViewPosition(
             layoutManager: CenterLayoutManager,
             offsetY: Int,
+            rectRvTop: Int,
             position: Int
         ): Int {
             val itemView = layoutManager.findViewByPosition(position) ?: return position - 1
             if (itemView.height == Int.ZERO) {
-                return evaluateViewPosition(layoutManager, offsetY, position + 1)
+                return evaluateViewPosition(layoutManager, offsetY, rectRvTop, position + 1)
             }
             val rectItem = Rect()
             itemView.getGlobalVisibleRect(rectItem)
-            return if (rectItem.bottom <= offsetY) {
-                evaluateViewPosition(layoutManager, offsetY, position + 1)
+            return if (rectItem.bottom - rectRvTop <= offsetY) {
+                evaluateViewPosition(layoutManager, offsetY, rectRvTop, position + 1)
             } else position
         }
     }
