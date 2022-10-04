@@ -2,12 +2,10 @@ package com.tokopedia.sellerapp.navigation
 
 import NewOrderSummaryScreen
 import SplashScreen
+import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
-import com.tokopedia.sellerapp.presentation.screen.AppNotInstalledScreen
-import com.tokopedia.sellerapp.presentation.screen.HomeScreen
-import com.tokopedia.sellerapp.presentation.screen.NewOrderDetailScreen
-import com.tokopedia.sellerapp.presentation.screen.NewOrderListScreen
+import com.tokopedia.sellerapp.presentation.screen.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
 import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
@@ -79,5 +77,23 @@ fun NavGraphBuilder.appNotInstalledScreenComposable(
         route = ScreenConstant.APP_NOT_INSTALLED_SCREEN
     ) {
         AppNotInstalledScreen(sharedViewModel)
+    }
+}
+
+fun NavGraphBuilder.connectionFailedScreenComposable(
+    sharedViewModel: SharedViewModel,
+) {
+    composable(
+        route = ScreenConstant.CONNECTION_FAILED_SCREEN
+    ) {
+        val message = sharedViewModel.currentState.value.data?.let {
+            it.getState().getMessageBasedOnState()
+        }?:""
+
+        ConnectionFailureScreen(
+            mutableStateOf(message),
+            mutableStateOf("Retry"),
+            mutableStateOf({})
+        )
     }
 }
