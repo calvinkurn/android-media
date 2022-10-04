@@ -56,7 +56,7 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
                 val firstVisibleItemPosition: Int =
                     linearLayoutManager.findFirstVisibleItemPosition()
                 if (!merchantVoucherCarouselViewModel.isLoadingData() && !merchantVoucherCarouselViewModel.isLastPage()) {
-                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0 && totalItemCount >= merchantVoucherCarouselViewModel.getPageSize()) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
                         merchantVoucherCarouselViewModel.fetchCarouselPaginatedCoupon()
                     }
                 }

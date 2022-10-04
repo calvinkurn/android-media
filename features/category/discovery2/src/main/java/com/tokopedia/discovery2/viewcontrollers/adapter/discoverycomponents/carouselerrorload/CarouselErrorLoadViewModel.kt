@@ -17,7 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class CarouselErrorLoadViewModel(val application: Application,
+class CarouselErrorLoadViewModel(application: Application,
                                  private val components: ComponentsItem, val position: Int) :
         DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -42,7 +42,7 @@ class CarouselErrorLoadViewModel(val application: Application,
     fun loadData() {
         showLoader.value = true
         launchCatchError(block = {
-            components?.let {
+            components.let {
                 syncData.value = when (components.parentComponentName) {
                     ComponentNames.ShopCardView.componentName ->
                         shopCardUseCase.getShopCardPaginatedData(
