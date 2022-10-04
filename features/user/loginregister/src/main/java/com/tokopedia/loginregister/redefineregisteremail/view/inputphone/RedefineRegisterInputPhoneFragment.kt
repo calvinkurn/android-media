@@ -41,6 +41,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.pa
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.domain.param.UserProfileUpdateParam
 import com.tokopedia.loginregister.registerinitial.const.RegisterConstants
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.sessioncommon.data.register.RegisterV2Param
@@ -94,6 +95,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        loadInitImage()
 
         binding?.unifyToolbar?.title = getString(R.string.register_email_title)
         showNavigateBackToolbar(true)
@@ -120,6 +122,10 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
 
     override fun initInjector() {
         getComponent(RedefineRegisterEmailComponent::class.java).inject(this)
+    }
+
+    private fun loadInitImage() {
+        binding?.ivInputPhone?.loadImageWithoutPlaceholder(URL_INIT_IMAGE)
     }
 
     private fun showNavigateBackToolbar(isShow: Boolean) {
@@ -702,6 +708,7 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val URL_INIT_IMAGE = "https://images.tokopedia.net/img/android/user/register/img_redefine_register_input_phone.png"
 
         private const val OTP_MODE_SMS = "sms"
 
