@@ -7,6 +7,7 @@ import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailUseCase
+import com.tokopedia.buyerorderdetail.domain.usecases.GetDetailWithResolutionUseCase
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -31,7 +32,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
     lateinit var userSession: UserSessionInterface
 
     @RelaxedMockK
-    lateinit var getBuyerOrderDetailUseCase: GetBuyerOrderDetailUseCase
+    lateinit var getBuyerOrderDetailUseCase: GetDetailWithResolutionUseCase
 
     @RelaxedMockK
     lateinit var finishOrderUseCase: FinishOrderUseCase

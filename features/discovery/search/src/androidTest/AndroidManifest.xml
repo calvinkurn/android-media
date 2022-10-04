@@ -8,7 +8,7 @@
         android:label="Search Test"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+        android:debuggable="true">
 
         <activity
             android:name="com.tokopedia.search.env.BlankTestActivity"
