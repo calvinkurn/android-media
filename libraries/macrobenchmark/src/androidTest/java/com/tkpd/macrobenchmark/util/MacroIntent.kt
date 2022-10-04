@@ -208,11 +208,8 @@ object MacroIntent {
         }
 
 
-        fun getCampaignListMacroSetupIntent(): Intent {
-            val intent = Intent("com.tokopedia.internal.VIEW")
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.data = Uri.parse("tokopedia-android-internal://sellerapp/campaign-list-setting/opt/macrobenchmark")
-            return intent
+        fun getCampaignListFrameTimingIntent(): Intent {
+            return getCampaignListIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
 }
