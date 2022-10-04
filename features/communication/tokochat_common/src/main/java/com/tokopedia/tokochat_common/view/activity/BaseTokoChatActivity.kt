@@ -19,6 +19,7 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     override fun onCreate(savedInstanceState: Bundle?) {
         setupFragmentFactory()
         super.onCreate(savedInstanceState)
+        setupViewBinding()
         setupToolbar()
     }
 
@@ -31,7 +32,7 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     }
 
     override fun getToolbarResourceID(): Int {
-        return R.id.partial_tokochat_toolbar
+        return R.id.tokochat_partial_toolbar
     }
 
     override fun onDestroy() {
@@ -48,6 +49,6 @@ abstract class BaseTokoChatActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     protected open fun setupToolbar() {}
 
     fun getToolbar(): HeaderUnify? {
-        return viewBinding?.partialTokochatToolbar as? HeaderUnify
+        return viewBinding?.tokochatPartialToolbar as? HeaderUnify
     }
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
@@ -88,8 +89,8 @@ class TokoChatActivity : BaseTokoChatActivity<TokoChatComponent>() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
         getToolbar()?.run {
-            setSupportActionBar(this)
             customView(mCustomView)
+            setSupportActionBar(this)
             contentInsetStartWithNavigation = Int.ZERO
             contentInsetEndWithActions = Int.ZERO
         }

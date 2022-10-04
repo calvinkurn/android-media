@@ -77,6 +77,13 @@
             tools:text="Terakhir online 3 menit yang lalu"
             tools:visibility="visible" />
 
+        <include
+            android:id="@+id/tokochat_typing"
+            layout="@layout/item_tokochat_typing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

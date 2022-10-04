@@ -8,4 +8,6 @@
     <string name="tokochat_reply_box_title">Tulis Pesan</string>
     <string name="tokochat_edit_text">Tulis pesan …</string>
     <string name="tokochat_desc_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
+    <string name="tokochat_message_closed_chat">Chat ini udah ditutup. Kamu bisa lihat riwayat chat sampai 24 jam setelah pesanan selesai.</string>
+    <string name="tokochat_message_cancelled_order">Pesaanan dibatalkan. Kamu bisa lihat riwayat chat sampai 24 jam setelah dibatalkan.</string>
 </resources>

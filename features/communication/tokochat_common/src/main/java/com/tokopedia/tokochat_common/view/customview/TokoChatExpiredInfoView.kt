@@ -30,4 +30,8 @@ class TokoChatExpiredInfoView: ConstraintLayout {
         super.onDetachedFromWindow()
     }
 
+    fun setExpiredInfoDesc(description: String) {
+        binding?.tokochatTvExpiredInfo?.text = description
+    }
+
 }

@@ -4,8 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
@@ -15,12 +22,16 @@ import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.ValueUtil
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
+import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
+import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.tokochat_common.view.uimodel.MessageBubbleUiModel
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
+class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>(), TokoChatTypingListener, TokoChatReplyTextListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -39,8 +50,21 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
 
     override fun initViews() {
         super.initViews()
+        setupBackground()
         setupToolbarData()
+        setupReplySection(true)
         setupReceiverDummyMessages()
+    }
+
+    private fun renderBackground(url: String) {
+        baseBinding?.tokochatIvBgChat?.let {
+            Glide.with(it.context)
+                .load(url)
+                .centerInside()
+                .dontAnimate()
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .into(it)
+        }
     }
 
     private fun setupReceiverDummyMessages() {
@@ -83,7 +107,46 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
     }
 
     override fun initObservers() {
+        observeTokoChatBackground()
+    }
 
+    override fun disableSendButton(isExceedLimit: Boolean) {
+
+    }
+
+    override fun enableSendButton() {
+
+    }
+
+    override fun onStartTyping() {
+
+    }
+
+    override fun onStopTyping() {
+
+    }
+
+    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatBinding {
+        return FragmentTokoChatBinding.inflate(
+            LayoutInflater.from(context),
+            container,
+            false
+        )
+    }
+
+    private fun setupBackground() {
+        viewModel.getTokoChatBackground()
+    }
+
+    private fun observeTokoChatBackground() {
+        observe(viewModel.chatBackground) {
+            when (it) {
+                is Success -> renderBackground(it.data)
+                is Fail -> {
+                    //no op
+                }
+            }
+        }
     }
 
     private fun setupToolbarData() {
@@ -102,14 +165,25 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
             userTitle.text = uiModel.title
             subTitle.text = uiModel.subTitle
             imageUrl.setImageUrl(uiModel.imageUrl)
+
             callMenu.run {
                 setImage(IconUnify.CALL)
                 setOnClickListener {
-                    //TODO redirect to intent call
+
                 }
             }
         }
     }
+
+    private fun setupReplySection(isShowReplySection: Boolean) {
+        baseBinding?.tokochatReplyBox?.run {
+            shouldShowWithAction(isShowReplySection) {
+                this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
+            }
+        }
+        baseBinding?.tokochatExpiredInfo?.showWithCondition(!isShowReplySection)
+    }
+
 
     companion object {
         private const val TAG = "TokoChatFragment"
@@ -127,13 +201,5 @@ class TokoChatFragment: BaseTokoChatFragment<FragmentTokoChatBinding>() {
                 arguments = bundle
             } as TokoChatFragment
         }
-    }
-
-    override fun getViewBindingInflate(container: ViewGroup?): FragmentTokoChatBinding {
-        return FragmentTokoChatBinding.inflate(
-            LayoutInflater.from(context),
-            container,
-            false
-        )
     }
 }

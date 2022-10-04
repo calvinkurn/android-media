@@ -12,7 +12,6 @@ import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.tokochat.databinding.FragmentTokoChatExpBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatListActivity
@@ -20,7 +19,6 @@ import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.adapter.BaseTokoChatAdapter
 import com.tokopedia.tokochat_common.view.fragment.BaseTokoChatFragment
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 //TODO: Delete this after experiment

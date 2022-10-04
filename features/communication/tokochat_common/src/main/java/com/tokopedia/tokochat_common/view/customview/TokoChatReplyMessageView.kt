@@ -12,6 +12,7 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
@@ -57,8 +58,8 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun initViewBind() {
-        composeArea = findViewById(R.id.new_comment)
-        errorComposeMsg = findViewById(R.id.tp_error_compose)
+        composeArea = findViewById(R.id.tokochat_tf_new_comment)
+        errorComposeMsg = findViewById(R.id.tokochat_tv_error_message)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
@@ -85,10 +86,6 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun setDefaultComposeBackground() {
-        val paddingStart =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl7).toInt()
-        val paddingEnd =
-            resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8).toInt()
         val paddingTop = resources.getDimension(com.tokopedia.tokochat_common.R.dimen.tokochat_11dp).toInt()
         val paddingBottom = resources.getDimension(com.tokopedia.tokochat_common.R.dimen.tokochat_10dp).toInt()
         composeArea?.background = bgComposeArea
