@@ -901,15 +901,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Bundle bundle = RouteManager.getBundleFromAppLinkQueryParams(uriData.toString());
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
 
-        Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructSearchApplink(uriData));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtras(bundle);
-            intent.putExtras(defaultBundle);
-            context.startActivity(intent);
+            RouteManager.route(context, constructSearchApplink(uriData));
         } else {
             String deeplink = UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId);
             RouteManager.route(context, deeplink);
@@ -923,7 +916,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
-        return applink + "?" + uriData.getQuery();
+        return applink + "?" + uriData.getEncodedQuery();
     }
 
     private boolean isHotAlias(Uri uri) {
