@@ -5395,6 +5395,10 @@ open class DynamicProductDetailFragment :
         )
     }
 
+    override fun updateNavigationTabPosition() {
+        binding?.pdpNavigation?.updateItemPosition()
+    }
+
     override fun getRemoteConfigInstance(): RemoteConfig? {
         return remoteConfig
     }
