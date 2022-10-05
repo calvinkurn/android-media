@@ -103,21 +103,11 @@ private fun SearchBar(
     onSearchBarKeywordSubmit: (String) -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
-    val editorAction: (TextView?, Int?, KeyEvent?) -> Boolean = { textView, actionId, event ->
-        if (actionId == EditorInfo.IME_ACTION_SEARCH || event?.keyCode == KeyEvent.KEYCODE_ENTER) {
-            val query = textView?.text.toString()
-            onSearchBarKeywordSubmit(query)
-            true
-        } else {
-            false
-        }
-    }
-
     UnifySearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.search_active_campaign),
         onSearchBarCleared = onSearchbarCleared,
-        onEditorAction = editorAction
+        onKeyboardSearchAction = onSearchBarKeywordSubmit
     )
 }
 
