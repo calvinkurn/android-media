@@ -5,6 +5,7 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.VerificationModes.times
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
@@ -113,6 +114,18 @@ class ContentProductTagAnalyticTest {
      * 4. clickProductTagSourceTest
      * 5. impressProductCardTest
      * 6. clickProductCardTest
+     * 7. clickSearchBarTest
+     * 8. clickGlobalSearchTabTest
+     * 9. clickBackButtonTest
+     * 10. impressShopCardTest
+     * 11. clickShopCardTest
+     * 12. clickSearchBarOnShopTest
+     * 13. impressProductCardOnShopTest
+     * 14. clickProductCardOnShopTest
+     * 15. clickSaveProductTest
+     * 16. clickAdvancedProductFilterTest
+     * 17. clickSaveAdvancedProductFilterTest
+     * 18. clickProductFilterChipsTest
      */
 
     /** trackGlobalSearchProductTest */
@@ -374,6 +387,40 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickGlobalSearchTabTest */
+    @Test
+    fun contentProductTag_ugc_clickGlobalSearchTab_product() {
+        val tabName = targetContext.getString(R.string.content_creation_barang_text)
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        /** Need to go to Toko tab first to trigger tab changing */
+        openGlobalSearchShopSection(targetContext, keyword)
+
+        click(targetContext.getString(R.string.content_creation_barang_text))
+
+        verify { mockAnalytic.clickGlobalSearchTab(tabName.lowercase()) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickGlobalSearchTab_shop() {
+        val tabName = targetContext.getString(R.string.content_creation_toko_text)
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearchShopSection(targetContext, keyword)
+
+        verify { mockAnalytic.clickGlobalSearchTab(tabName.lowercase()) }
+    }
 
     /** clickBackButtonTest */
 

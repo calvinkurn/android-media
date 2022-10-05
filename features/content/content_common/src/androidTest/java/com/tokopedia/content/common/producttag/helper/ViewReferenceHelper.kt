@@ -44,6 +44,9 @@ internal val autocompleteSearchBar = autocompleteR.id.autocompleteSearchBar
 
 /** Global Search */
 internal val globalSearchBar = R.id.cl_search
+internal val globalSearchTab = R.id.tab_layout
+internal val globalSearchTabProduct = R.id.tab_item_product
+internal val globalSearchTabShop = R.id.tab_item_shop
 
 /** Global Search Product */
 internal val globalSearchProductRv = R.id.rv_global_search_product

@@ -13,8 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 
@@ -35,6 +34,14 @@ fun click(@IdRes id: Int) {
 
 fun click(text: String) {
     select(text).clickView()
+}
+
+fun clickTab(
+    @IdRes tabLayoutId: Int,
+    @IdRes tabId: Int,
+) {
+    val matcher = allOf(withId(tabId), isDescendantOfA(withId(tabLayoutId)))
+    onView(matcher).perform(click())
 }
 
 fun type(@IdRes id: Int, text: String) {

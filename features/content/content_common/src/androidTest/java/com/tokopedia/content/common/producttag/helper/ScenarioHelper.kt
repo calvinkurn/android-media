@@ -2,10 +2,7 @@ package com.tokopedia.content.common.producttag.helper
 
 import android.content.Context
 import com.tokopedia.content.common.R
-import com.tokopedia.content.test.util.click
-import com.tokopedia.content.test.util.clickItemRecyclerView
-import com.tokopedia.content.test.util.pressActionSoftKeyboard
-import com.tokopedia.content.test.util.type
+import com.tokopedia.content.test.util.*
 
 /**
  * Created By : Jonathan Darwin on October 05, 2022
