@@ -365,6 +365,6 @@
 
 <!--   invoice-->
     <string name="click_to_copy_icon_content_description">Tombol salin nomor invoice</string>
-    <string name="success_invoice_copied">Nomor resi berhasil tersalin</string>
+    <string name="success_invoice_copied">Nomor invoice berhasil tersalin</string>
 
 </resources>
