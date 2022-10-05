@@ -56,6 +56,7 @@ internal val globalSearchShopRv = R.id.rv_global_search_shop
 
 /** Shop */
 internal val shopSearchBar = R.id.sb_shop_product
+internal val shopRv = R.id.rv_shop_product
 
 /** Others */
 internal val checkboxProduct = R.id.checkbox_product

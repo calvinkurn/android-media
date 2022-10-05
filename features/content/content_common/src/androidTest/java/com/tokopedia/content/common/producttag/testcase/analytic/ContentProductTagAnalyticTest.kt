@@ -537,10 +537,23 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickSearchBarOnShopTest */
+    @Test
+    fun contentProductTag_ugc_clickSearchBarOnShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
+
+        click(shopSearchBar)
+
+        verify { mockAnalytic.clickSearchBarOnShop() }
+    }
 
     /** impressProductCardOnShopTest */
     @Test
-    fun contentProductTag_ugc_impressProductCard_shop() {
+    fun contentProductTag_ugc_impressProductCardOnShop() {
         coEvery { mockRepo.searchAceProducts(any()) } returns aceProductForImpression
         var counter = 0
         val impressedModel = aceProductForImpression.pagedData.dataList.associateWith { counter++ }.toList()
@@ -562,6 +575,21 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickProductCardOnShopTest */
+    @Test
+    fun contentProductTag_ugc_clickProductCardOnShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
+
+        clickItemRecyclerView(shopRv, 0)
+
+        verify {
+            mockAnalytic.clickProductCardOnShop(aceProduct.pagedData.dataList[0], 0)
+        }
+    }
 
     /** clickSaveProductTest */
 
