@@ -1,9 +1,12 @@
 package com.tokopedia.tokochat_common.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.Resources.getSystem
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -14,18 +17,25 @@ import android.util.StateSet
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorRes
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
 
 object TokoChatViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
+    private const val ICON_BOUND_SIZE = 24
     private const val ELLIPSIZE = "..."
 
     const val ZERO_DP = 1
     const val ONE_DP = 1
     const val TWO_DP = 2
+    const val TEN_DP = 10
+    const val ELEVEN_DP = 11
     const val TWENTY_DP = 20
 
     @Suppress("MagicNumber")
@@ -200,5 +210,33 @@ object TokoChatViewUtil {
     fun getOppositeMargin(context: Context?): Float {
         return context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
             ?: 0f
+    }
+
+    private fun scaledDrawable(bmp: Bitmap?, resources: Resources, width: Int, height: Int): Drawable? {
+        return try {
+            bmp?.let {
+                val bmpScaled = Bitmap.createScaledBitmap(it, width, height, false)
+                BitmapDrawable(resources, bmpScaled)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun Toolbar?.setBackIconUnify() {
+        this?.context?.let {
+            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.getBitmap()
+            val scaleDrawable: Drawable? =
+                scaledDrawable(
+                    backIconUnify,
+                    resources,
+                    ICON_BOUND_SIZE.toPx(),
+                    ICON_BOUND_SIZE.toPx()
+                )
+            scaleDrawable?.let { newDrawable ->
+                navigationIcon = newDrawable
+            }
+        }
     }
 }

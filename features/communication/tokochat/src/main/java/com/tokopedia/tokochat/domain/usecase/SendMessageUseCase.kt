@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.domain
+package com.tokopedia.tokochat.domain.usecase
 
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.extensions.ExtensionMessage

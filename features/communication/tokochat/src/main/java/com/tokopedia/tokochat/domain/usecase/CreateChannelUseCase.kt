@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.domain
+package com.tokopedia.tokochat.domain.usecase
 
 import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.network.data.OrderChatType
