@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -20,6 +22,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
@@ -40,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -52,19 +54,69 @@ fun UnifySortFilter(
     filterType: Int,
     onClearFilter: () -> Unit
 ) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            SortFilter(context).apply {
-                dismissListener = onClearFilter
+    val searchIconColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+
+    val borderSelectedColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
+    val backgroundColorSelected =
+        colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+
+    LazyRow(modifier = modifier) {
+        item {
+            Surface(
+                color = backgroundColorSelected,
+                shape = RoundedCornerShape(4.dp),
+                border = BorderStroke(1.dp, borderSelectedColor),
+                modifier = Modifier
+                    .height(32.dp)
+                    .padding(end = 8.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Close,
+                    modifier = Modifier.clickable { onClearFilter() },
+                    contentDescription = "Close Icon",
+                    tint = searchIconColor
+                )
             }
-        },
-        update = {
-            it.filterRelationship = filterRelationship
-            it.filterType = filterType
-            it.addItem(items)
         }
-    )
+        items(items) {
+            UnifySortFilterItem(it.title.toString())
+        }
+    }
+}
+
+
+@Composable
+fun UnifySortFilterItem(
+   text: String
+) {
+    val textColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    val textColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+
+    val borderSelectedColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
+    val borderDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+
+    val backgroundColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
+    val backgroundColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+
+    Surface(
+        color = backgroundColorSelected,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, borderSelectedColor),
+        modifier = Modifier
+            .height(32.dp)
+            .padding(end = 8.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+        ) {
+            Text(text = text, color = textColorSelected)
+            Spacer(modifier = Modifier.width(10.dp))
+            Icon(
+                imageVector = Icons.Outlined.ArrowDropDown,
+                contentDescription = "Dropdown Icon"
+            )
+        }
+    }
 }
 
 @Composable
