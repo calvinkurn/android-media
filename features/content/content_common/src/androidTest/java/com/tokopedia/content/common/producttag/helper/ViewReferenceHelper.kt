@@ -56,6 +56,7 @@ internal val sortFilterChip = filterR.id.sortFilterChipsUnify
 /** Global Search Product */
 internal val globalSearchProductContainer = R.id.cl_global_search_product
 internal val globalSearchProductQuickFilterPrefix = sortFilterR.id.sort_filter_prefix
+internal val globalSearchProductQuickFilterContainer = sortFilterR.id.sort_filter_items
 internal val globalSearchProductRv = R.id.rv_global_search_product
 
 /** Global Search Shop */

@@ -2,7 +2,11 @@ package com.tokopedia.content.common.producttag.testcase.analytic
 
 import android.content.Intent
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.intent.VerificationModes.times
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.R
@@ -25,6 +29,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
+import org.hamcrest.core.AllOf
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -734,4 +739,23 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickProductFilterChipsTest */
+    @Test
+    fun contentProductTag_ugc_clickProductFilterChips() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openGlobalSearch(keyword)
+
+        clickWithMatcher(
+            isDescendantOfA(withId(globalSearchProductContainer)),
+            withParent(withId(globalSearchProductQuickFilterContainer)),
+            withParentIndex(1),
+        )
+
+        verify { mockAnalytic.clickProductFilterChips() }
+    }
 }

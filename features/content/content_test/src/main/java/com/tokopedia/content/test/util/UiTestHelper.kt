@@ -50,6 +50,12 @@ fun click(
     onView(matcher).perform(click())
 }
 
+fun clickWithMatcher(
+    vararg matchers: Matcher<View>
+) {
+    onView(allOf(matchers.toList())).perform(click())
+}
+
 fun type(@IdRes id: Int, text: String) {
     select(id).apply {
         clickView()
