@@ -35,13 +35,14 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationClickListener
+import com.tokopedia.search.result.product.changeview.ChangeViewListener
 import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.banner.BannerListener
 import com.tokopedia.search.result.product.banner.BannerViewHolder
+import com.tokopedia.search.result.product.changeview.ViewType
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListener
 import com.tokopedia.search.result.product.cpm.CpmDataView
@@ -98,7 +99,7 @@ class ProductListTypeFactoryImpl(
     private val broadMatchListener: BroadMatchListener,
     private val inspirationCardListener: InspirationCardListener,
     private val searchInTokopediaListener: SearchInTokopediaListener,
-    private val searchNavigationListener: SearchNavigationClickListener,
+    private val changeViewListener: ChangeViewListener,
     private val topAdsImageViewListener: TopAdsImageViewListener,
     private val chooseAddressListener: ChooseAddressListener,
     private val bannerListener: BannerListener,
@@ -113,8 +114,6 @@ class ProductListTypeFactoryImpl(
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
-    override var recyclerViewItem = 0
-
     override fun type(cpmDataView: CpmDataView): Int {
         return CpmViewHolder.LAYOUT
     }
@@ -128,14 +127,12 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(productItem: ProductItemDataView): Int {
-        return when (recyclerViewItem) {
-            SearchConstant.RecyclerView.VIEW_LIST ->
+        return when (changeViewListener.viewType) {
+            ViewType.LIST ->
                 ListProductItemViewHolder.layout(isUsingViewStub)
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+            ViewType.BIG_GRID ->
                 BigGridProductItemViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
-                SmallGridProductItemViewHolder.layout(isUsingViewStub)
-            else ->
+            ViewType.SMALL_GRID ->
                 SmallGridProductItemViewHolder.layout(isUsingViewStub)
         }
     }
@@ -185,13 +182,11 @@ class ProductListTypeFactoryImpl(
     }
 
     override fun type(inspirationCardDataView: InspirationCardDataView): Int {
-        return when (recyclerViewItem) {
-            SearchConstant.RecyclerView.VIEW_LIST,
-            SearchConstant.RecyclerView.VIEW_PRODUCT_BIG_GRID ->
+        return when (changeViewListener.viewType) {
+            ViewType.LIST, ViewType.BIG_GRID ->
                 BigGridInspirationCardViewHolder.LAYOUT
-            SearchConstant.RecyclerView.VIEW_PRODUCT_SMALL_GRID ->
+            ViewType.SMALL_GRID ->
                 SmallGridInspirationCardViewHolder.LAYOUT
-            else -> SmallGridInspirationCardViewHolder.LAYOUT
         }
     }
 
@@ -278,7 +273,7 @@ class ProductListTypeFactoryImpl(
                 ChooseAddressViewHolder(
                     view,
                     chooseAddressListener,
-                    searchNavigationListener,
+                    changeViewListener,
                     fragmentProvider,
                 )
             BannerViewHolder.LAYOUT -> BannerViewHolder(view, bannerListener)
