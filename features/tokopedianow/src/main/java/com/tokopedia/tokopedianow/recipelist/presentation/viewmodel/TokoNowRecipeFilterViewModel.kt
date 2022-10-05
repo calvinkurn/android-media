@@ -17,19 +17,13 @@ class TokoNowRecipeFilterViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    companion object {
-        private const val PARAM_SOURCE = "source"
-        private const val FILTER_SOURCE = "filter_recipe"
-    }
-
     val visitableItems: LiveData<List<Visitable<*>>>
         get() = _visitableItems
     private val _visitableItems = MutableLiveData<List<Visitable<*>>>()
 
     fun getSortFilterOptions(selectedFilters: List<SelectedFilter>) {
         launchCatchError(block = {
-            val params = mapOf(PARAM_SOURCE to FILTER_SOURCE)
-            val response = getSortFilterUseCase.execute(params)
+            val response = getSortFilterUseCase.execute()
 
             val visitableItems = mutableListOf<Visitable<*>>()
             visitableItems.addSortSection(response, selectedFilters)

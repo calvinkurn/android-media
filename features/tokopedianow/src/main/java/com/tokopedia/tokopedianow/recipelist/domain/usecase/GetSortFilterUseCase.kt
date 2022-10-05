@@ -16,13 +16,19 @@ import javax.inject.Inject
  */
 class GetSortFilterUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
 
+    companion object {
+        private const val PARAM_SOURCE = "source"
+        private const val FILTER_SOURCE = "filter_recipe"
+    }
+
     private val graphql by lazy { GraphqlUseCase<TokonowRecipesFilterSort>(gqlRepository) }
 
-    suspend fun execute(params: Map<String, String?>): RecipeFilterSortDataResponse {
+    suspend fun execute(source: String = FILTER_SOURCE): RecipeFilterSortDataResponse {
         graphql.apply {
             setGraphqlQuery(GetSortFilter)
             setTypeClass(TokonowRecipesFilterSort::class.java)
 
+            val params = mapOf(PARAM_SOURCE to source)
             val queryParams = generateQueryParams(params)
             val requestParams = RequestParams().apply {
                 putString(QUERY_PARAMS, queryParams)

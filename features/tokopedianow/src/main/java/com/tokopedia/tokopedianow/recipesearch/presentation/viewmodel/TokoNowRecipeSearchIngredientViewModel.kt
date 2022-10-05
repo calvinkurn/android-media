@@ -19,11 +19,6 @@ class TokoNowRecipeSearchIngredientViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
 
-    companion object {
-        private const val PARAM_SOURCE = "source"
-        private const val FILTER_SOURCE = "filter_recipe"
-    }
-
     val ingredientItems: LiveData<List<RecipeSearchIngredientUiModel>>
         get() = _ingredientItems
     private val _ingredientItems = MutableLiveData<List<RecipeSearchIngredientUiModel>>()
@@ -34,11 +29,8 @@ class TokoNowRecipeSearchIngredientViewModel @Inject constructor(
 
     fun getIngredients() {
         launchCatchError(block = {
-            val params = mapOf(PARAM_SOURCE to FILTER_SOURCE)
-            val response = getSortFilterUseCase.execute(params)
-
+            val response = getSortFilterUseCase.execute()
             ingredientList.addIngredients(response, selectedFilters)
-
             _ingredientItems.postValue(ingredientList)
         }) {
 
@@ -53,7 +45,6 @@ class TokoNowRecipeSearchIngredientViewModel @Inject constructor(
         }
 
         ingredientList.updateIngredients(selectedFilters)
-
         _ingredientItems.postValue(ingredientList)
     }
 }
