@@ -1,11 +1,7 @@
 package com.tokopedia.content.common.producttag.testcase.config
 
 import android.content.Intent
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.test.core.app.ActivityScenario
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.R
@@ -36,7 +32,6 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.iconunify.R.drawable as iconR
 
 /**
  * Created By : Jonathan Darwin on October 03, 2022

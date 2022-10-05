@@ -1,13 +1,10 @@
 package com.tokopedia.content.test.util
 
 import android.view.View
-import android.widget.ImageView
 import androidx.annotation.IdRes
-import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
@@ -79,7 +76,18 @@ fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, @IdRes id: Int) {
 fun verifyItemRecyclerView(@IdRes id: Int, position: Int, verifyBlock: (RecyclerView.ViewHolder) -> Boolean) {
     select(id)
         .check(
-            matches(atPosition(position, verifyBlock))
+            matches(object: BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
+                override fun describeTo(description: Description?) {
+
+                }
+
+                override fun matchesSafely(item: RecyclerView?): Boolean {
+                    val viewHolder = item?.findViewHolderForAdapterPosition(position)
+                    return viewHolder?.let {
+                        verifyBlock(it)
+                    } ?: false
+                }
+            })
         )
 }
 
@@ -137,22 +145,4 @@ private fun ViewInteraction.isHidden() {
 
 private fun ViewInteraction.verifyText(text: String) {
     check(matches(withText(text)))
-}
-
-private fun atPosition(
-    position: Int,
-    verifyBlock: (RecyclerView.ViewHolder) -> Boolean
-): Matcher<View> {
-    return object: BoundedMatcher<View, RecyclerView>(RecyclerView::class.java) {
-        override fun describeTo(description: Description?) {
-
-        }
-
-        override fun matchesSafely(item: RecyclerView?): Boolean {
-            val viewHolder = item?.findViewHolderForAdapterPosition(position)
-            return viewHolder?.let {
-                verifyBlock(it)
-            } ?: false
-        }
-    }
 }
