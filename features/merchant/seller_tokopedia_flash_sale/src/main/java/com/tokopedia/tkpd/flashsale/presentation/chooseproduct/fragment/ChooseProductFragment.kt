@@ -78,7 +78,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     private var categoryFilterBottomSheet: MultipleSelectionBottomSheet? = null
     private var maxSelectedProductCount: Int = 0
     private var selectedProductCount: Int = 0
-    private var preselectedProductCount: Int = 0
 
     override fun getScreenName(): String = ChooseProductFragment::class.java.canonicalName.orEmpty()
 
@@ -99,6 +98,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel.campaignId = flashSaleId
+        viewModel.tabName = tabName
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         setupObservers()
@@ -106,6 +106,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         setupSearchBar()
         setupCategorySelection()
         setupFilterData()
+        viewModel.getMaxProductSubmission()
         recyclerView?.attachOnScrollListener(onScrollDown = {
             binding?.layoutSearch?.slideDown()
         }, onScrollUp = {
@@ -268,10 +269,6 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
             selectedProductCount = it
             updateSelectionCount()
         }
-        viewModel.preselectedProductCount.observe(viewLifecycleOwner) {
-            preselectedProductCount = it
-            updateSelectionCount()
-        }
         viewModel.maxSelectedProduct.observe(viewLifecycleOwner) {
             maxSelectedProductCount = it
             updateSelectionCount()
@@ -285,6 +282,15 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.validationResult.collectLatest {
                 binding?.btnAddProduct?.isEnabled = it
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.selectionValidationResult.collectLatest {
+                if (it.isExceedMaxQuota) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_quota_item))
+                else if (it.isExceedMaxProduct) chooseProductAdapter.disable(getString(R.string.chooseproduct_error_max_product_item))
+                else chooseProductAdapter.enable()
+
+                chooseProductAdapter.disableByCriteria(it.disabledCriteriaIds, getString(R.string.chooseproduct_error_max_criteria_item))
             }
         }
     }
@@ -310,7 +316,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     }
 
     private fun updateSelectionCount() {
-        binding?.tfSelectedProductCount?.text = "${preselectedProductCount + selectedProductCount}/$maxSelectedProductCount"
+        binding?.tfSelectedProductCount?.text = "$selectedProductCount/$maxSelectedProductCount"
     }
 
     private fun getSearchBarText(): String {

@@ -10,8 +10,20 @@ class ChooseProductAdapter {
         .add(LoadingDelegateAdapter())
         .build()
     private var isLoading = false
+    private var enableSelection = true
+    private var errorMessage = ""
+    private var errorMessageCriteria = ""
+    private var disabledCriteriaIds: List<Long> = emptyList()
 
     fun getRecyclerViewAdapter() = compositeAdapter
+
+    private fun refresh() {
+        getItems().onEach {
+            it.enableSelection = enableSelection
+            it.errorMessage = errorMessage
+        }
+        compositeAdapter.notifyItemRangeChanged(0, compositeAdapter.itemCount)
+    }
 
     fun setListener(listener: ChooseProductDelegateAdapter.ChooseProductListener) {
         delegateAdapter.setListener(listener)
@@ -28,13 +40,42 @@ class ChooseProductAdapter {
     }
 
     fun submit(newList: List<ChooseProductItem>) {
-        compositeAdapter.submit(newList)
+        compositeAdapter.submit(newList.map {
+            ChooseProductDelegateAdapter.AdapterParam(it, enableSelection, errorMessage)
+        })
+        disableByCriteria(disabledCriteriaIds, errorMessageCriteria)
     }
 
     fun addItems(newList: List<ChooseProductItem>) {
-        compositeAdapter.addItems(newList)
+        compositeAdapter.addItems(newList.map {
+            ChooseProductDelegateAdapter.AdapterParam(it, enableSelection, errorMessage)
+        })
+        disableByCriteria(disabledCriteriaIds, errorMessageCriteria)
     }
 
-    fun getItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductItem>()
+    fun getItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductDelegateAdapter.AdapterParam>()
+
+    fun disable(errorMessage: String) {
+        enableSelection = false
+        this.errorMessage = errorMessage
+        refresh()
+    }
+
+    fun enable() {
+        if (enableSelection) return
+        enableSelection = true
+        errorMessage = ""
+        refresh()
+    }
+
+    fun disableByCriteria(disabledCriteriaIds: List<Long>, errorMessage: String) {
+        this.errorMessageCriteria = errorMessage
+        this.disabledCriteriaIds = disabledCriteriaIds
+        getItems().onEachIndexed { index, item ->
+            item.enableSelection = !disabledCriteriaIds.any { item.item.criteriaId == it }
+            item.errorMessage = if (item.enableSelection) "" else errorMessage
+            compositeAdapter.notifyItemChanged(index)
+        }
+    }
 
 }

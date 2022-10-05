@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
