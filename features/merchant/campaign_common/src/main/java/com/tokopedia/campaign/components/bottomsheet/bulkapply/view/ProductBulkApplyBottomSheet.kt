@@ -277,6 +277,8 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
 
     private fun setupQuantityEditor() {
         binding?.run {
+            quantityEditor.minValue = minimumStock
+            quantityEditor.maxValue = maximumStock
             quantityEditor.setValueChangedListener { newValue, _, _ ->
                 viewModel.onMaxPurchaseQuantityChanged(newValue)
                 bottomSheetConfigModel?.let {
