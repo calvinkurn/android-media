@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.compose.runtime.State
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
@@ -10,13 +11,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.STATUS_NEW_ORDER
+import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
+import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
@@ -34,13 +38,22 @@ class SharedViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val orderUseCaseImpl: OrderUseCaseImpl,
     private val getSummaryUseCase: GetSummaryUseCase,
+    private val getOrderUseCase: OrderUseCaseImpl,
     private val capabilityClient: CapabilityClient,
     private val remoteActivityHelper: RemoteActivityHelper,
+    private val clientMessageDatasource: ClientMessageDatasource
 ) : BaseViewModel(dispatchers.io) {
 
     companion object {
         private const val FLOW_STOP_TIMEOUT = 3000L
         private const val INDEX_NOT_FOUND = -1
+    }
+
+    init {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
+        }
     }
 
     val homeMenu: StateFlow<List<MenuItem>> = getSummaryUseCase.getMenuItemCounter().map {
@@ -58,6 +71,13 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _currentState = MutableStateFlow<UiState<PhoneState>>(UiState.Loading())
+    val currentState : StateFlow<UiState<PhoneState>> = _currentState.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _orderDetail = MutableStateFlow<UiState<OrderModel>>(UiState.Loading())
     val orderDetail : StateFlow<UiState<OrderModel>> = _orderDetail.stateIn(
         scope = viewModelScope,
@@ -68,6 +88,12 @@ class SharedViewModel @Inject constructor(
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
+
+    fun checkPhoneState() {
+        viewModelScope.launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+        }
+    }
 
     fun getOrderList(dataKey: String) {
         viewModelScope.launch {
@@ -154,17 +180,23 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun openLoginPageInApp() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_LOGIN_PAGE)
+        }
+    }
+
     private suspend fun startRemoteActivity(
         remoteActivityHelper: RemoteActivityHelper,
         intent: Intent,
     ) {
         try {
             remoteActivityHelper.startRemoteActivity(intent).await()
-
         } catch (cancellationException: CancellationException) {
             // Request was cancelled normally
             throw cancellationException
         } catch (throwable: Throwable) {
+            throwable.printStackTrace()
         }
     }
 }

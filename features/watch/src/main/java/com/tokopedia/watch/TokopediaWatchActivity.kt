@@ -4,13 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.wearable.CapabilityClient
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.Wearable
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.DataEvent
-import com.google.android.gms.wearable.DataMapItem
+import com.google.android.gms.wearable.*
 import com.google.gson.Gson
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -56,6 +50,9 @@ class TokopediaWatchActivity : AppCompatActivity(),
         const val DATA_CLIENT_MESSAGE_KEY_FROM_WATCH = "devara-watch"
 
         const val TAG = "TokopediaWatchActivity"
+
+        const val REQ_PATH_GET_ORDER_LIST = "/get-order-list"
+        const val REQ_PATH_GET_SUMMARY = "/get-summary"
     }
 
     private var binding: ActivityTokopediaWatchBinding? by viewBinding()
@@ -111,9 +108,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
             }
         }
 
-        getSummaryData()
-        getOrderList()
-
         checkIfPhoneHasApp()
     }
 
@@ -137,35 +131,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
             } catch (exception: Exception) {
                 sendLog("Failed, while send data to watch: $message")
                 Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
-
-    private fun sendMessageToWatch(key: String, message: String) {
-        lifecycleScope.launch {
-            try {
-                val nodes = nodeClient.connectedNodes.await()
-
-                // Send a message to all nodes in parallel
-                nodes.map { node ->
-                    async {
-                        messageClient.sendMessage(
-                            node.id,
-                            key,
-                            message.toByteArray()
-                        )
-                            .await()
-                    }
-                }.awaitAll()
-
-                sendLog("Send data to watch success: $message")
-                Log.d(TAG, "Send data to watch success: $message")
-            } catch (cancellationException: CancellationException) {
-                sendLog("Failed: CancellationException, while send data to watch: $message")
-                throw cancellationException
-            } catch (exception: Exception) {
-                sendLog("Failed, while send data to watch: $message")
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -240,71 +205,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
         logList.add("[$currentDate] $logMessage")
         _activityLog.value = logList.toMutableList()
-    }
-
-    private fun getOrderList() {
-        if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
-        }
-
-        val useCase = GetOrderListUseCase(
-            GraphqlUseCase(),
-            OrderListMapper()
-        )
-
-        useCase.execute(RequestParams(), getLoadOrderListDataSubscriber())
-    }
-
-    private fun getSummaryData() {
-        if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
-        }
-
-        val useCase = GetSummaryUseCase(
-            GraphqlUseCase(),
-            SummaryMapper()
-        )
-
-        useCase.execute(RequestParams(), getLoadSummaryDataSubscriber())
-    }
-
-    private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
-        return object: Subscriber<OrderListModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
-
-            override fun onNext(orderListModel: OrderListModel) {
-                sendMessageToWatch(
-                    DataLayerServiceListener.GET_ORDER_LIST_PATH,
-                    Gson().toJson(orderListModel)
-                )
-            }
-        }
-    }
-
-    private fun getLoadSummaryDataSubscriber(): Subscriber<SummaryDataModel> {
-        return object: Subscriber<SummaryDataModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
-
-            override fun onNext(summaryDataModel: SummaryDataModel) {
-                Log.d(TAG, "SUMMARY DATA: ${Gson().toJson(summaryDataModel)}")
-                sendMessageToWatch(
-                    DataLayerServiceListener.GET_SUMMARY_PATH,
-                    Gson().toJson(summaryDataModel)
-                )
-            }
-        }
     }
 
     private fun checkIfPhoneHasApp() {

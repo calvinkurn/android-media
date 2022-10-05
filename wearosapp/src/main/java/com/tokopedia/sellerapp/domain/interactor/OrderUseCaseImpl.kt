@@ -6,6 +6,7 @@ import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.mapToDomainModel
 import com.tokopedia.sellerapp.presentation.model.TITLE_NEW_ORDER
+import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -37,5 +38,9 @@ class OrderUseCaseImpl @Inject constructor(
         ).map {
             Pair(TITLE_NEW_ORDER, it)
         }
+    }
+
+    override suspend fun sendRequest() {
+        orderRepository.sendMessagesToNodes(Action.GET_ORDER_LIST)
     }
 }

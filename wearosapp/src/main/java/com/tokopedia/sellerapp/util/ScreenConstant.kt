@@ -10,4 +10,5 @@ object ScreenConstant {
     const val FORMAT_NAVIGATION_PATH_PARAM = "%s/{%s}"
     const val NEW_ORDER_DETAIL_SCREEN = "new_order_detail_screen"
     const val APP_NOT_INSTALLED_SCREEN = "app_not_installed_screen"
+    const val CONNECTION_FAILED_SCREEN = "connection_failed_screen"
 }

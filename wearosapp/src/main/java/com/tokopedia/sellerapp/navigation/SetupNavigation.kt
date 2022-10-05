@@ -40,5 +40,8 @@ fun SetupNavigation(
         appNotInstalledScreenComposable(
             sharedViewModel = sharedViewModel
         )
+        connectionFailedScreenComposable(
+            sharedViewModel = sharedViewModel
+        )
     }
 }

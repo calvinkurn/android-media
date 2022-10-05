@@ -15,7 +15,7 @@ open class ClientMessageDatasource @Inject constructor(
     private val messageClient: MessageClient,
     private val wearCacheAction: WearCacheAction
 ): MessageClient.OnMessageReceivedListener {
-
+    var activityMessageListener: ActivityMessageListener? = null
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val data = messageEvent.data.decodeToString()
         Log.d("TokopediaWearOS", "onMessageReceived: $data")
@@ -24,10 +24,12 @@ open class ClientMessageDatasource @Inject constructor(
             MessageConstant.GET_SUMMARY_PATH -> wearCacheAction.saveSummaryToCache(data)
             else -> { }
         }
+        activityMessageListener?.onMessageReceived(messageEvent)
     }
 
     suspend fun sendMessagesToNodes(action: Action) {
         val nodes = nodeClient.connectedNodes.await()
+
         nodes.map { node ->
             val message = action.getPath()
             messageClient.sendMessage(node.id, message, byteArrayOf()).await()
@@ -41,4 +43,16 @@ open class ClientMessageDatasource @Inject constructor(
     fun removeMessageClientListener() {
         messageClient.removeListener(this)
     }
+
+    fun addActivityMessageListener(activityMessageListener: ActivityMessageListener) {
+        this.activityMessageListener = activityMessageListener
+    }
+
+    fun removeActivityMessageListener() {
+        this.activityMessageListener = null
+    }
+}
+
+interface ActivityMessageListener {
+    fun onMessageReceived(messageEvent: MessageEvent)
 }
