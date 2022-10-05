@@ -10,4 +10,5 @@
     <string name="tokochat_desc_max_char_exceeded">Coba pendekin %s karakter lagi, ya!</string>
     <string name="tokochat_message_closed_chat">Chat ini udah ditutup. Kamu bisa lihat riwayat chat sampai 24 jam setelah pesanan selesai.</string>
     <string name="tokochat_message_cancelled_order">Pesaanan dibatalkan. Kamu bisa lihat riwayat chat sampai 24 jam setelah dibatalkan.</string>
+    <string name="tokochat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
 </resources>

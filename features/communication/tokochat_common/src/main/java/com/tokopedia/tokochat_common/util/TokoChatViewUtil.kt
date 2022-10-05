@@ -1,9 +1,12 @@
 package com.tokopedia.tokochat_common.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.Resources.getSystem
+import android.graphics.Bitmap
 import android.graphics.Paint
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -14,13 +17,19 @@ import android.util.StateSet
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
+import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
 
 object TokoChatViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
+    private const val ICON_BOUND_SIZE = 24
     private const val ELLIPSIZE = "..."
 
     const val ZERO_DP = 1
@@ -166,6 +175,150 @@ object TokoChatViewUtil {
         return stateDrawable
     }
 
+    @Suppress("MagicNumber")
+    fun generateBackgroundWithShadowBtn(
+        view: View?,
+        @ColorRes backgroundColor: Int,
+        @DimenRes topLeftRadius: Int,
+        @DimenRes topRightRadius: Int,
+        @DimenRes bottomLeftRadius: Int,
+        @DimenRes bottomRightRadius: Int,
+        @ColorRes shadowColor: Int,
+        @DimenRes elevation: Int,
+        @DimenRes shadowRadius: Int,
+        shadowGravity: Int,
+        @ColorRes strokeColor: Int? = null,
+        @DimenRes strokeWidth: Int? = null,
+        strokePaddingBottom: Int? = null,
+        useViewPadding: Boolean = false,
+        pressedDrawable: Drawable? = null,
+        shadowTop: Int? = null,
+        isInsetElevation: Boolean = true
+    ): Drawable? {
+        if (view == null) return null
+        val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
+        val topRightRadiusValue = view.context.resources.getDimension(topRightRadius)
+        val bottomLeftRadiusValue = view.context.resources.getDimension(bottomLeftRadius)
+        val bottomRightRadiusValue = view.context.resources.getDimension(bottomRightRadius)
+        val elevationValue = view.context.resources.getDimension(elevation).toInt()
+        val shadowRadiusValue = view.context.resources.getDimension(shadowRadius)
+        val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
+        val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
+        val strokeColorValue: Int? =
+            strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
+        val strokeWidthValue: Float? =
+            strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
+
+        val stateDrawable = StateListDrawable()
+        val shadowDrawable = ShapeDrawable()
+        val strokeDrawable = ShapeDrawable()
+        val drawableLayer = arrayListOf<Drawable>()
+
+        val outerRadius = floatArrayOf(
+            topLeftRadiusValue,
+            topLeftRadiusValue,
+            topRightRadiusValue,
+            topRightRadiusValue,
+            bottomLeftRadiusValue,
+            bottomLeftRadiusValue,
+            bottomRightRadiusValue,
+            bottomRightRadiusValue
+        )
+
+        val backgroundPaint = Paint()
+        backgroundPaint.style = Paint.Style.FILL
+        backgroundPaint.setShadowLayer(shadowRadiusValue, 0f, 0f, 0)
+
+        val shadowDrawableRect = Rect()
+        shadowDrawableRect.left = elevationValue
+        shadowDrawableRect.right = elevationValue
+
+        val DY: Float
+        when (shadowGravity) {
+            Gravity.CENTER -> {
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue
+                DY = 0.5f.toPx()
+            }
+            Gravity.TOP -> {
+                shadowDrawableRect.top = elevationValue * 2
+                shadowDrawableRect.bottom = elevationValue
+                DY = -1 * elevationValue / ELEVATION_VALUE_DIVIDER
+            }
+            Gravity.BOTTOM -> {
+                shadowDrawableRect.top = elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
+            }
+            else -> {
+                shadowDrawableRect.top = shadowTop?: elevationValue
+                shadowDrawableRect.bottom = elevationValue * 2
+                DY = elevationValue / ELEVATION_VALUE_DIVIDER
+            }
+        }
+
+        if (useViewPadding) {
+            if (view.paddingTop > shadowDrawableRect.top) {
+                shadowDrawableRect.top += view.paddingTop
+            }
+            if (view.paddingBottom > shadowDrawableRect.bottom) {
+                shadowDrawableRect.bottom += view.paddingBottom
+            }
+            if (view.paddingStart > shadowDrawableRect.left) {
+                shadowDrawableRect.left += view.paddingStart
+            }
+            if (view.paddingEnd > shadowDrawableRect.right) {
+                shadowDrawableRect.right += view.paddingEnd
+            }
+        }
+
+        shadowDrawable.apply {
+            setPadding(shadowDrawableRect)
+            paint.color = backgroundColorValue
+            paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
+            shape = RoundRectShape(outerRadius, null, null)
+        }
+        drawableLayer.add(shadowDrawable)
+
+        if (strokePaddingBottom != null) {
+            shadowDrawableRect.bottom = strokePaddingBottom
+        }
+
+        if (strokeColorValue != null && strokeWidthValue != null) {
+            strokeDrawable.apply {
+                setPadding(shadowDrawableRect)
+                paint.style = Paint.Style.STROKE
+                paint.color = strokeColorValue
+                paint.strokeWidth = strokeWidthValue
+                shape = RoundRectShape(outerRadius, null, null)
+            }
+            drawableLayer.add(strokeDrawable)
+        }
+
+        val drawable = LayerDrawable(drawableLayer.toTypedArray())
+        if (isInsetElevation) {
+            drawable.setLayerInset(0,
+                elevationValue, elevationValue, elevationValue, elevationValue)
+        } else {
+            drawable.setLayerInset(0,
+                elevationValue, elevationValue, elevationValue, shadowDrawableRect.bottom)
+        }
+
+        if (strokeColor != null && strokeWidthValue != null && drawableLayer.size > 1) {
+            val strokeMargin = strokeWidthValue.toInt() / 2
+            drawable.setLayerInset(1, strokeMargin, strokeMargin, strokeMargin, strokeMargin)
+        }
+
+        if (pressedDrawable != null) {
+            stateDrawable.addState(
+                intArrayOf(android.R.attr.state_pressed), pressedDrawable
+            )
+        }
+        stateDrawable.addState(StateSet.WILD_CARD, drawable)
+
+        return stateDrawable
+    }
+
     fun areSystemAnimationsEnabled(context: Context?): Boolean {
         if (context == null) return false
         val duration: Float = Settings.Global.getFloat(
@@ -200,5 +353,33 @@ object TokoChatViewUtil {
     fun getOppositeMargin(context: Context?): Float {
         return context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
             ?: 0f
+    }
+
+    private fun scaledDrawable(bmp: Bitmap?, resources: Resources, width: Int, height: Int): Drawable? {
+        return try {
+            bmp?.let {
+                val bmpScaled = Bitmap.createScaledBitmap(it, width, height, false)
+                BitmapDrawable(resources, bmpScaled)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    fun Toolbar?.setBackIconUnify() {
+        this?.context?.let {
+            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.getBitmap()
+            val scaleDrawable: Drawable? =
+                scaledDrawable(
+                    backIconUnify,
+                    resources,
+                    ICON_BOUND_SIZE.toPx(),
+                    ICON_BOUND_SIZE.toPx()
+                )
+            scaleDrawable?.let { newDrawable ->
+                navigationIcon = newDrawable
+            }
+        }
     }
 }

@@ -26,7 +26,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tokochat_barrier_reply_chat"
-        android:layout_alignParentTop="true"
         android:layout_gravity="center"
         android:clipToPadding="false"
         android:descendantFocusability="beforeDescendants"

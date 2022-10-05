@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
@@ -14,6 +13,7 @@ import com.tokopedia.tokochat.di.TokoChatContextModule
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
 import com.tokopedia.tokochat.view.fragment.experiment.TokoChatFragmentExp
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
 /**
@@ -85,12 +85,14 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         }
     }
 
-    override fun setupToolbar() {
+    override fun setupTokoChatHeader() {
         val mInflater = LayoutInflater.from(this)
         val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
-        getToolbar()?.run {
+        getHeaderUnify()?.run {
+            isShowBackButton = true
             customView(mCustomView)
             setSupportActionBar(this)
+            setBackIconUnify()
             contentInsetStartWithNavigation = Int.ZERO
             contentInsetEndWithActions = Int.ZERO
         }

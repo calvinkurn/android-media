@@ -93,7 +93,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun initComposeBackground() {
-        bgComposeArea = TokoChatViewUtil.generateBackgroundWithShadow(
+        bgComposeArea = TokoChatViewUtil.generateBackgroundWithShadowBtn(
             view = composeArea,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
             topLeftRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_20dp,
@@ -130,7 +130,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
                         errorComposeMsg?.text = context?.getString(
                             com.tokopedia.tokochat_common.R.string.tokochat_desc_max_char_exceeded, formattedOffset
                         ) ?: ""
-                        composeArea?.setBackgroundResource(R.drawable.bg_tokochat_error_too_long_msg)
+                        composeArea?.setBackgroundResource(com.tokopedia.tokochat_common.R.drawable.bg_tokochat_error_too_long_msg)
                     }
 
                     override fun hideTextLimitError() {
