@@ -20,7 +20,7 @@ interface GqlDao {
     @Query("Update GqlRecord SET enabled =:isEnabled where id = :gqlId")
     fun toggleGql(gqlId: Int, isEnabled: Boolean)
 
-    @Query("Select * FROM GqlRecord where gqlOperationName = :gqlOperationName AND enabled = :isEnabled")
+    @Query("Select * FROM GqlRecord where gqlOperationName LIKE :gqlOperationName AND enabled = :isEnabled LIMIT 1")
     fun getRecordFromGqlQuery(gqlOperationName: String, isEnabled: Boolean = true): GqlRecord
 
     @Query("Select * FROM GqlRecord where id= :id")

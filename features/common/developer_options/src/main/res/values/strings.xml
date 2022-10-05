@@ -113,6 +113,7 @@
     <string name="view_applink_list">View Applink List</string>
 
     <string name="enable_new_typography_guideline">Enable New Typography Guideline</string>
+    <string name="enable_fake_response_on_notification">Enable Fake Response on Notification</string>
 
 
 </resources>
