@@ -99,7 +99,11 @@ class GlobalSearchModelBuilder {
                         subTitle = "Subtitle $it",
                         options = List(3) { optionIdx ->
                             Option(
-                                name = "Option $optionIdx"
+                                name = "Option $optionIdx",
+                                value = "true",
+                                inputType = "checkbox",
+                                isPopular = true,
+                                isNew = false,
                             )
                         }
                     )

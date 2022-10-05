@@ -57,8 +57,8 @@ class ContentProductTagAnalyticTest {
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val aceShop = globalSearchModelBuilder.buildShopResponseModel()
     private val quickFilter = globalSearchModelBuilder.buildQuickFilterList()
-    private val sortFilter = globalSearchModelBuilder.buildSortFilterResponseModel()
-    private val sortFilterProductCount = "Ada 3 barang loh"
+    private val sortFilter = globalSearchModelBuilder.buildSortFilterResponseModel(sizeFilter = 1, sizeSort = 0)
+    private val sortFilterProductCount = "3"
     private val maxSelectedProduct = 3
     private val keyword = "pokemon"
 
@@ -697,7 +697,7 @@ class ContentProductTagAnalyticTest {
 
     /** clickAdvancedProductFilterTest */
     @Test
-    fun contentProductTag_ugc_clickAdvancedProductFilter_productTab() {
+    fun contentProductTag_ugc_clickAdvancedProductFilter() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(completeSource)
@@ -713,6 +713,25 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickSaveAdvancedProductFilterTest */
+    @Test
+    fun contentProductTag_ugc_clickSaveAdvancedProductFilter() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openGlobalSearch(keyword)
+
+        click(globalSearchProductContainer, globalSearchProductQuickFilterPrefix)
+
+        clickItemRecyclerView(sortFilterOptionRv, 0, sortFilterChip)
+
+        click(sortFilterSaveButtonContainer, sortFilterSaveButton)
+
+        verify { mockAnalytic.clickSaveAdvancedProductFilter() }
+    }
 
     /** clickProductFilterChipsTest */
 }

@@ -13,6 +13,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers.*
+import com.tokopedia.content.test.espresso.clickOnViewChild
 import org.hamcrest.CoreMatchers.*
 import org.hamcrest.Description
 import org.hamcrest.Matcher
@@ -77,6 +78,15 @@ fun clickItemRecyclerView(@IdRes id: Int, position: Int) {
         .perform(
             RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
                 position, click()
+            )
+        )
+}
+
+fun clickItemRecyclerView(@IdRes rvId: Int, position: Int, @IdRes id: Int) {
+    select(rvId)
+        .perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                position, clickOnViewChild(id)
             )
         )
 }
