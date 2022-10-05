@@ -66,7 +66,6 @@ class RedefineRegisterInputPhoneOptionalTest {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
 
         isGlobalErrorShowing()
-        isFailedRegisterV2MessageShowing()
     }
 
     @Test
