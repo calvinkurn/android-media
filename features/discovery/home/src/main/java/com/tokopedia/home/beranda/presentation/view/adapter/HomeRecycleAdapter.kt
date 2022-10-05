@@ -28,7 +28,6 @@ class HomeRecycleAdapter(asyncDifferConfig: AsyncDifferConfig<Visitable<*>>, pri
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbstractViewHolder<*> {
         return try {
-            EmptyBlankViewHolder(parent)
             val view = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             adapterTypeFactory.createViewHolder(view, viewType)
         } catch (e: Exception) {
