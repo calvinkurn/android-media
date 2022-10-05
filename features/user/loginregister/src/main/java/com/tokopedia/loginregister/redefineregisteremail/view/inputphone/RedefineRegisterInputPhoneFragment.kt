@@ -125,7 +125,9 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     private fun loadInitImage() {
-        binding?.ivInputPhone?.loadImageWithoutPlaceholder(URL_INIT_IMAGE)
+        binding?.ivInputPhone?.loadImageWithoutPlaceholder(
+            getString(R.string.redefine_phone_init_image)
+        )
     }
 
     private fun showNavigateBackToolbar(isShow: Boolean) {
@@ -708,8 +710,6 @@ class RedefineRegisterInputPhoneFragment : BaseDaggerFragment() {
     }
 
     companion object {
-        private const val URL_INIT_IMAGE = "https://images.tokopedia.net/img/android/user/register/img_redefine_register_input_phone.png"
-
         private const val OTP_MODE_SMS = "sms"
 
         private const val REGISTRATION_TYPE_EMAIL = "email"
