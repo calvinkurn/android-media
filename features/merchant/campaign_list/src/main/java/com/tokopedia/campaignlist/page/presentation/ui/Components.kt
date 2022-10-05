@@ -1,20 +1,27 @@
 package com.tokopedia.campaignlist.page.presentation.ui
 
-import android.content.res.ColorStateList
 import android.view.KeyEvent
 import android.widget.TextView
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import com.tokopedia.campaignlist.common.util.onTextChanged
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifyprinciples.Typography
@@ -103,16 +110,25 @@ fun UnifyTicker(
 fun UnifyLabel(
     modifier: Modifier = Modifier,
     labelText: CharSequence,
-    labelType: Int
+    unifyLabelType: UnifyLabelType
 ) {
-    AndroidView(
+    val backgroundColor = colorResource(id = unifyLabelType.backgroundColorResourceId)
+    val textColor = colorResource(id = unifyLabelType.textColorResourceId)
+
+    Surface(
         modifier = modifier,
-        factory = { context -> Label(context) },
-        update = {
-            it.setLabelType(labelType)
-            it.setLabel(labelText.toString())
-        }
-    )
+        shape = RoundedCornerShape(4.dp),
+        color = backgroundColor
+    ) {
+        Text(
+            text = labelText.toString(),
+            modifier = Modifier.padding(horizontal = 4.dp, vertical = 3.dp),
+            color = textColor,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold
+        )
+    }
+    
 }
 
 @Composable
@@ -124,19 +140,17 @@ fun UnifyButton(
     buttonType : Int,
     onClick: () -> Unit
 ) {
-    AndroidView(
+
+    Button(
         modifier = modifier,
-        factory = { context ->
-            UnifyButton(context)
-        },
-        update = {
-            it.text = text
-            it.buttonSize = buttonSize
-            it.buttonVariant = buttonVariant
-            it.buttonType = buttonType
-            it.setOnClickListener { onClick() }
-        }
-    )
+        onClick = onClick,
+        shape = RoundedCornerShape(8.dp),
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+        )
+    ) {
+        Text(text = text, color = Color.White)
+    }
 }
 
 @Composable
@@ -147,21 +161,7 @@ fun UnifyTypography(
     weight: Int = Typography.REGULAR,
     colorId: Int
 ) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            Typography(context)
-        },
-        update = {
-            val stateList = arrayOf(intArrayOf(android.R.attr.state_enabled))
-            val color = intArrayOf(ContextCompat.getColor(it.context, colorId))
-            val colorStateList = ColorStateList(stateList, color)
-            it.setType(type)
-            it.setWeight(weight)
-            it.setTextColor(colorStateList)
-            it.text = text
-        }
-    )
+    Text(text = text, modifier = modifier)
 }
 
 @Composable

@@ -27,6 +27,7 @@ import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabelType
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyImage
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyButton
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabel
@@ -43,7 +44,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifyprinciples.Typography
@@ -364,11 +364,11 @@ fun CampaignItemPreview() {
 
 @Composable
 fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
-    val labelType = when (campaignStatusId) {
-        ONGOING_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREEN
-        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_ORANGE
-        AVAILABLE_STATUS_ID.toIntOrZero() -> Label.HIGHLIGHT_LIGHT_GREY
-        else -> Label.HIGHLIGHT_LIGHT_RED
+    val unifyLabelType = when (campaignStatusId) {
+        ONGOING_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_GREEN
+        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE
+        AVAILABLE_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_GREY
+        else -> UnifyLabelType.HIGHLIGHT_LIGHT_RED
     }
-    UnifyLabel(modifier = modifier, labelText = campaignStatus, labelType = labelType)
+    UnifyLabel(modifier = modifier, labelText = campaignStatus, unifyLabelType = unifyLabelType)
 }
