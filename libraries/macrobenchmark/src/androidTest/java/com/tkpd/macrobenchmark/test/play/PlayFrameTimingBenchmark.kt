@@ -21,7 +21,7 @@ class PlayFrameTimingBenchmark: BaseFrameTimingBenchmark() {
             MacroIntent.Play.PACKAGE_NAME,
             MacroIntent.Play.VIEW_PAGER_RESOURCE_ID,
             Direction.RIGHT,
-            scrollPercent = 50f,
+            scrollPercent = 90f,
         )
     }
 
