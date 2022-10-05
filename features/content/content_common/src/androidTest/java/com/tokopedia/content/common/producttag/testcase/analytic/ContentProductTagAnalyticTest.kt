@@ -66,6 +66,7 @@ class ContentProductTagAnalyticTest {
      * */
     private val lastTaggedProductForImpression = lastTaggedModelBuilder.buildPagedDataModel(size = 2, hasNextPage = false)
     private val aceProductForImpression = globalSearchModelBuilder.buildResponseModel(size = 2, hasNextPage = false)
+    private val aceShopForImpression = globalSearchModelBuilder.buildShopResponseModel(size = 2, hasNextPage = false)
 
     private fun launchActivity(argumentBuilder: ContentProductTagArgument.Builder) {
         ActivityScenario.launch<ContentProductTagTestActivity>(
@@ -496,8 +497,44 @@ class ContentProductTagAnalyticTest {
     }
 
     /** impressShopCardTest */
+    @Test
+    fun contentProductTag_ugc_impressShopCard() {
+        coEvery { mockRepo.searchAceShops(any()) } returns aceShopForImpression
+
+        var counter = 0
+        val impressionModel = aceShopForImpression.pagedData.dataList.associateWith { counter++ }.toList()
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearchShopSection(targetContext, keyword)
+
+        click(backButton)
+
+        verify { mockAnalytic.impressShopCard(ProductTagSource.GlobalSearch, impressionModel) }
+    }
 
     /** clickShopCardTest */
+    @Test
+    fun contentProductTag_ugc_clickShopCard() {
+        val positionInRv = 0
+        val positionInAnalytic = positionInRv + 1
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearchShopSection(targetContext, keyword)
+
+        clickItemRecyclerView(globalSearchShopRv, positionInRv)
+
+        verify { mockAnalytic.clickShopCard(aceShop.pagedData.dataList[positionInRv], positionInAnalytic) }
+    }
 
     /** clickSearchBarOnShopTest */
 
