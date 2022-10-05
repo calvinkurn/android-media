@@ -71,7 +71,10 @@ data class Product(
     val notifyMeOOSCount: String,
     @Expose
     @SerializedName("notifyMeOOSWording")
-    val notifyMeOOSWording: String
+    val notifyMeOOSWording: String,
+    @Expose
+    @SerializedName("isEmptyStock")
+    val isEmptyStock: Boolean = false,
 ) {
 
     fun isTopAds(): Boolean {

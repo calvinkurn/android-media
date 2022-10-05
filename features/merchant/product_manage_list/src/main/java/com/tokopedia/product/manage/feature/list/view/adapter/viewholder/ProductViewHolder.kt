@@ -60,7 +60,7 @@ class ProductViewHolder(
     }
 
     private fun impressionView(product: ProductUiModel){
-        if (adapterPosition == Int.ZERO){
+        if (adapterPosition.orZero() == Int.ZERO){
             binding?.imageNotifyMeBuyer?.addOnImpressionListener(product.impressHolder) {
                 listener.onImpressionNotifyMe()
             }
@@ -71,7 +71,9 @@ class ProductViewHolder(
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
         ) {
-            listener.onImpressionMoreOption()
+            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()){
+                listener.onImpressionMoreOption()
+            }
         }
 
     }
@@ -165,7 +167,7 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition((product.isEmpty() && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
+            ?.showWithCondition((product.isEmptyStock && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
@@ -185,8 +187,6 @@ class ProductViewHolder(
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
                         || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
-
-
     }
 
     private fun showStockAlertImage(product: ProductUiModel) {

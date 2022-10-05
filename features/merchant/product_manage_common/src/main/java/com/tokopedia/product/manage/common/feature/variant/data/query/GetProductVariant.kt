@@ -17,6 +17,9 @@ internal object GetProductVariant {
                 price
                 sku
                 stock
+                stockAlertCount
+                stockAlertStatus
+                isBelowStockAlert
                 notifymeCount
                 pictures {
                   picID
@@ -36,6 +39,7 @@ internal object GetProductVariant {
                   name
                   icon_url
                 }
+                
               }
               selections {
                   variantID
