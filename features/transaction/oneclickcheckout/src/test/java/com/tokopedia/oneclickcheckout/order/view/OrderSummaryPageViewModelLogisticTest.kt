@@ -24,6 +24,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderProfileShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPromo
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShipment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderTotal
+import com.tokopedia.oneclickcheckout.utils.callOnCleared
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.clearpromo.ClearPromoUiModel
@@ -2069,6 +2070,17 @@ class OrderSummaryPageViewModelLogisticTest : BaseOrderSummaryPageViewModelTest(
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), any())
         } answers {
             secondArg<(Throwable)-> Unit>().invoke(error)
+        }
+    }
+
+    @Test
+    fun `verify eligible for address cancel jobs when viewmodel call on cleared`() {
+        // When
+        orderSummaryPageViewModel.callOnCleared()
+
+        // Then
+        verify(exactly = 1) {
+            eligibleForAddressUseCase.cancelJobs()
         }
     }
 }
