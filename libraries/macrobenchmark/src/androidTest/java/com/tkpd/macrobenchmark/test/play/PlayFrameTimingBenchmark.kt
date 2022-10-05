@@ -17,11 +17,11 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PlayFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicRecyclerviewInteraction(
+        MacroInteration.basicFlingInteraction(
             MacroIntent.Play.PACKAGE_NAME,
             MacroIntent.Play.VIEW_PAGER_RESOURCE_ID,
             Direction.RIGHT,
-            scrollPercent = 90f,
+            flingSpeed = 500,
         )
     }
 
