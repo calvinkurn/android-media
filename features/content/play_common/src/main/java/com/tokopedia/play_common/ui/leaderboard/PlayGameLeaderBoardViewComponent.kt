@@ -12,6 +12,7 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.play_common.R
@@ -96,8 +97,8 @@ class PlayGameLeaderBoardViewComponent(
 
         registerAdapterObserver()
 
-        btnRefreshError.addImpressionListener(impressHolder){
-            listener.onRefreshButtonImpressed(this)
+        rootView.addImpressionListener(impressHolder){
+            if (btnRefreshError.isVisible) listener.onRefreshButtonImpressed(this)
         }
     }
 

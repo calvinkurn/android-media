@@ -338,7 +338,7 @@ class PlayViewModel @AssistedInject constructor(
         )
     }.stateIn(
         viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
+        SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD),
         PlayViewerNewUiState.Empty,
     )
 
@@ -533,7 +533,7 @@ class PlayViewModel @AssistedInject constructor(
             if (videoLatencyPerformanceMonitoring.hasStarted) {
                 videoLatencyPerformanceMonitoring.stop()
                 val durationInSecond = videoLatencyPerformanceMonitoring.totalDuration / DURATION_DIVIDER
-                playLog.logTimeToFirstByte(durationInSecond.toInt())
+                playLog.logTimeToFirstByte(durationInSecond.toLong())
             }
         }
 
@@ -1602,7 +1602,7 @@ class PlayViewModel @AssistedInject constructor(
                 } else if (diffLike > 0) {
                     _uiEvent.emit(
                         ShowLikeBubbleEvent.Single(
-                            diffLike.toInt(),
+                            diffLike,
                             reduceOpacity = true,
                             config = _likeInfo.value.likeBubbleConfig,
                         )
@@ -2640,7 +2640,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val ONBOARDING_DELAY = 5000L
         private const val INTERACTIVE_FINISH_MESSAGE_DELAY = 2000L
 
-        private const val LIKE_BURST_THRESHOLD = 30
+        private const val LIKE_BURST_THRESHOLD = 30L
 
         /**
          * Request Code When need login

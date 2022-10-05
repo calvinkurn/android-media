@@ -1050,4 +1050,8 @@ class UserProfileFragment @Inject constructor(
     override fun shrinkFab() {
         mainBinding.fabUserProfile.shrink()
     }
+
+    override fun onChildRefresh() {
+        /** Not yet implemented */
+    }
 }

@@ -119,7 +119,7 @@ class PlayUiModelMapper @Inject constructor(
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
-                    discountPercent = child.campaign?.discountedPercentage?.toInt() ?: 0,
+                    discountPercent = child.campaign?.discountedPercentage?.toLong() ?: 0,
                     discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                 )
             } else {
