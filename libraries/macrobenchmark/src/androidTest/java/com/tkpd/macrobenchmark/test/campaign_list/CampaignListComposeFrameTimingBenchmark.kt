@@ -9,13 +9,6 @@ import com.tkpd.macrobenchmark.util.MacroInteration
 import org.junit.Before
 import org.junit.runner.RunWith
 
-/**
- * Created by DevAra
- * This test will measure MainParentActivity janky frames with macro benchmark
- *
- * @see [Testing documentation](http://d.android.com/tools/testing)
- */
-
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
