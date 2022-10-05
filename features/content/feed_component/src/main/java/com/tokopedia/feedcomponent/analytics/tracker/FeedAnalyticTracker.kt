@@ -180,7 +180,7 @@ class FeedAnalyticTracker
         const val ACTION_CLICK_TOPADS_PROMOTED = "click - shop - topads shop recommendation - %s"
         const val FORMAT_TWO_PARAM = "%s - %s"
         const val FORMAT_THREE_PARAM = "%s - %s - %s"
-        const val FORMAT_FOUR_PARAM = "%s - %s - %s"
+        const val FORMAT_FOUR_PARAM = "%s - %s - %s - %s"
 
 
         object Field {
