@@ -156,7 +156,7 @@ class TokopediaWatchActivity : AppCompatActivity(),
                                                 "Please check your wearable device",
                                                 Toaster.LENGTH_SHORT,
                                                 Toaster.TYPE_NORMAL
-                                            )
+                                            ).show()
                                         }
                                     }
 
