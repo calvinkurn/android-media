@@ -47,7 +47,7 @@ class AdChooserViewModel @Inject constructor(
                         context.resources,
                         R.raw.query_autoads_shop_info),
                         AdCreationOption::class.java,
-                        hashMapOf(SHOP_Id to userSession.shopId, SOURCE to SourceConstant.SOURCE_ANDROID_AD_CHOOSER))
+                        hashMapOf(SHOP_Id to userSession.shopId, ParamObject.SOURCE to SourceConstant.SOURCE_ANDROID_AD_CHOOSER))
                     val cacheStrategy = RequestHelper.getCacheStrategy()
                     repository.response(listOf(request), cacheStrategy)
                 }
