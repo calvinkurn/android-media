@@ -13,11 +13,17 @@ import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.AddRecipeBookmar
 import com.tokopedia.tokopedianow.recipebookmark.domain.usecase.RemoveRecipeBookmarkUseCase
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterModel
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.ToasterUiModel
+import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToDuration
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToIngredientIds
+import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToPortion
 import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToSortBy
+import com.tokopedia.tokopedianow.recipelist.domain.mapper.FilterParamMapper.mapToTagIds
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_DURATION
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_PORTION
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TITLE
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetRecipeListUseCase
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addEmptyStateItem
@@ -189,12 +195,18 @@ open class BaseTokoNowRecipeListViewModel(
 
     fun applyFilter(filters: List<SelectedFilter>) {
         val sortBy = mapToSortBy(filters)
+        val tagID = mapToTagIds(filters)
         val ingredientID = mapToIngredientIds(filters)
+        val duration = mapToDuration(filters)
+        val portion = mapToPortion(filters)
         selectedFilters = filters
 
         getRecipeListParam.apply {
             queryParamsMap[PARAM_SORT_BY] = sortBy
+            queryParamsMap[PARAM_TAG_ID] = tagID
             queryParamsMap[PARAM_INGREDIENT_ID] = ingredientID
+            queryParamsMap[PARAM_DURATION] = duration
+            queryParamsMap[PARAM_PORTION] = portion
         }
 
         refreshPage()
