@@ -11,11 +11,12 @@ class CampaignCriteriaCheckingResultAdapter: RecyclerView.Adapter<CampaignCriter
 
     private var data: List<CriteriaCheckingResult> = emptyList()
     private var onClickListener: (locationResult: List<CriteriaCheckingResult.LocationCheckingResult>) -> Unit = {}
+    private var isVariant: Boolean = true
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampaignCriteriaCheckingResultViewHolder {
         val binding = StfsItemCampaignCriteriaResultBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
-        return CampaignCriteriaCheckingResultViewHolder(binding, onClickListener)
+        return CampaignCriteriaCheckingResultViewHolder(binding, onClickListener, isVariant)
     }
 
     override fun getItemCount() = data.size
@@ -35,5 +36,11 @@ class CampaignCriteriaCheckingResultAdapter: RecyclerView.Adapter<CampaignCriter
         listener: (locationResult: List<CriteriaCheckingResult.LocationCheckingResult>) -> Unit
     ) {
         onClickListener = listener
+    }
+
+    fun setVariantFlag(
+        variantFlag: Boolean
+    ) {
+        isVariant = variantFlag
     }
 }

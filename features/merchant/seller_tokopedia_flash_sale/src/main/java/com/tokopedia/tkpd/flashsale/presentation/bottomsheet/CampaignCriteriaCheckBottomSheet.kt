@@ -16,6 +16,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
 
+    companion object {
+        private const val SINGLE_PRODUCT_COUNT = 1
+    }
+
     private var binding by autoClearedNullable<StfsBottomsheetCampaignCriteriaCheckBinding>()
     private var criteriaCheckingResults: List<CriteriaCheckingResult> = emptyList()
     private var productName: String = ""
@@ -52,6 +56,7 @@ class CampaignCriteriaCheckBottomSheet : BottomSheetUnify() {
             adapter = CampaignCriteriaCheckingResultAdapter().apply {
                 setDataList(criteriaCheckingResults)
                 setOnTickerClick(::onListTickerClick)
+                setVariantFlag(criteriaCheckingResults.size > SINGLE_PRODUCT_COUNT)
             }
         }
     }
