@@ -52,7 +52,7 @@ class ProductPostTagViewHolderNew(
     private lateinit var card: CardUnify
     private lateinit var addToWishlistBtnIcon: IconUnify
 
-    override fun bind(item: ProductPostTagViewModelNew) {
+    init {
         productLayout = itemView.findViewById(R.id.productLayout)
         productImage = itemView.findViewById(R.id.productImage)
         productPrice = itemView.findViewById(R.id.productPrice)
@@ -75,6 +75,9 @@ class ProductPostTagViewHolderNew(
         stockProgressBar = itemView.findViewById(R.id.ongoing_progress_bar)
         addToWishlistBtn = itemView.findViewById(R.id.button_add_to_wishlist)
         addToWishlistBtnIcon = itemView.findViewById(R.id.image_add_to_wishlist)
+    }
+
+    override fun bind(item: ProductPostTagViewModelNew) {
         label.showWithCondition(item.isDiscount && item.isUpcoming.not())
         productTag.showWithCondition(item.isDiscount || item.isUpcoming)
         discountlayout.showWithCondition(item.isDiscount || item.isUpcoming)

@@ -3419,7 +3419,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackerId,
                 campaignStatus = getTrackerLabelSuffixForCampaignSaleTracker(feedXCard)
             )
-            val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
+            val intent = RouteManager.getIntent(context, "tokopedia://feedcommunicationdetail/$postId")
             intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
             intent.putExtra(IS_FOLLOWED, isFollowed)
             intent.putExtra(PARAM_SHOP_ID, shopId)
