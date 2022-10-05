@@ -43,7 +43,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         private const val timeoutAdditionalProgress = 0.4f
         private const val timeoutMaxProgress = 1f
         private const val timeoutStartProgress = 0f
-        private const val transitionDelay = 800f
+        private const val transitionDelay = 800L
     }
 
     private lateinit var navController: NavHostController
