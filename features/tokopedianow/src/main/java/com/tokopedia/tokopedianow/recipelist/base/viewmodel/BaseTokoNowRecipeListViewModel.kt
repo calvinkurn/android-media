@@ -252,7 +252,8 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     private fun addQuickFilterItems() {
-        visitableItems.addQuickFilterItems()
+        val selectedFiltersCount = selectedFilters.count()
+        visitableItems.addQuickFilterItems(selectedFiltersCount)
     }
 
     private fun resetPageParam() {
