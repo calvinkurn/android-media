@@ -2120,7 +2120,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     override fun goToHome() {
-        RouteManager.route(context, ApplinkConsInternalHome.INTERNAL_HOME)
+        RouteManager.route(context, ApplinkConst.HOME)
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(
