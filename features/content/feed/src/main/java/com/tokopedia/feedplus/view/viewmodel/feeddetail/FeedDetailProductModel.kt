@@ -50,7 +50,7 @@ data class FeedDetailProductModel (
         val isOngoing: Boolean
                 get() = saleStatus == Ongoing
         val isRilisanSpl: Boolean
-                get() = type == ASGC_RILISAN_SPECIAL
+                get() = saleType == ASGC_RILISAN_SPECIAL
 
         companion object {
                 private const val Upcoming = "upcoming"
