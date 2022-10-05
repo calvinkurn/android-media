@@ -98,7 +98,7 @@ class MixTopComponentViewHolder(
         setChannelDivider(element = element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
-                mixTopComponentListener?.onMixTopImpressed(element.channelModel, absoluteAdapterPosition)
+                mixTopComponentListener?.onMixTopImpressed(element.channelModel, element.channelModel.verticalPosition)
             }
         }
     }
@@ -109,11 +109,11 @@ class MixTopComponentViewHolder(
 
     override fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
         if (!isCacheData)
-            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, absoluteAdapterPosition, position)
+            mixTopComponentListener?.onProductCardImpressed(channel, channelGrid, channel.verticalPosition, position)
     }
 
     override fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, absoluteAdapterPosition, position, applink)
+        mixTopComponentListener?.onProductCardClicked(channel, channelGrid, channel.verticalPosition, position, applink)
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -338,7 +338,7 @@ class MixTopComponentViewHolder(
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, absoluteAdapterPosition, element)
+                homeComponentListener?.onChannelExpired(channelModel, channelModel.verticalPosition, element)
             }
         })
     }
