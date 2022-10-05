@@ -19,8 +19,12 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
     private val dividerHeight =
         context.resources.getDimensionPixelOffset(R.dimen.play_leaderboard_winner_separator_height)
     private val startOffset = context.resources.getDimensionPixelOffset(unifyR.dimen.spacing_lvl6)
-    private val topOffset =
+    private val topOffset by lazy(LazyThreadSafetyMode.NONE) {
         context.resources.getDimensionPixelOffset(R.dimen.play_dp_12)
+    }
+    private val defaultOffset by lazy(LazyThreadSafetyMode.NONE) {
+        context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_8)
+    }
 
     private val mPaint = Paint().apply {
         color = MethodChecker.getColor(context, unifyR.color.Unify_NN300)
@@ -36,6 +40,7 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
         when (parent.findViewHolderForAdapterPosition(index)) {
             is PlayGameViewHolder.Quiz -> outRect.top = topOffset
             is PlayGameViewHolder.Winner -> outRect.top = topOffset
+            is PlayGameViewHolder.Header -> outRect.top = defaultOffset
             else -> super.getItemOffsets(outRect, view, parent, state)
         }
     }
