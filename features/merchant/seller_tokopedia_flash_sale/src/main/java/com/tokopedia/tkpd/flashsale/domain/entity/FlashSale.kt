@@ -61,10 +61,15 @@ data class FlashSale(
         val maxProductAppear: Int,
         val dayPeriodTimeAppear: Int,
         val categories: List<ProductCategories>,
+        val additionalInfo: AdditionalInfo
     )
 
     data class ProductCategories(
         val categoryId: Long,
         val categoryName: String
+    )
+
+    data class AdditionalInfo(
+        val matchedProduct: Long
     )
 }

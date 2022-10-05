@@ -119,6 +119,7 @@
     <string name="stfs_delete_dialog_secondary_cta_text">Batalkan</string>
     <string name="stfs_success_delete_product_message">%d produk berhasil dihapus.</string>
     <string name="stfs_global_error_message">Terjadi kesalahan.</string>
+    <string name="stfs_matched_product_count_placeholder">%d produkmu sesuai</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>

@@ -66,6 +66,9 @@ class GetFlashSaleListForSellerUseCase @Inject constructor(
                     float_total_sold_value
                   }
                   product_criteria {
+                    additional_info{
+                      matched_product
+                    }
                     criteria_id
                     min_price
                     max_price

@@ -117,9 +117,16 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 productCriteria.maxSubmission,
                 productCriteria.maxProductAppear,
                 productCriteria.dayPeriodTimeAppear,
-                productCriteria.toProductCategories()
+                productCriteria.toProductCategories(),
+                productCriteria.additionalInfo.toFLashSaleAdditionalInfo()
             )
         }
+    }
+
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.AdditionalInfo.toFLashSaleAdditionalInfo(): FlashSale.AdditionalInfo {
+        return FlashSale.AdditionalInfo(
+            matchedProduct
+        )
     }
 
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.ProductCriteria.toProductCategories(): List<FlashSale.ProductCategories> {

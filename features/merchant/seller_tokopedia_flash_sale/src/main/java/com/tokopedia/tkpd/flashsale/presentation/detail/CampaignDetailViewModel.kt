@@ -279,7 +279,8 @@ class CampaignDetailViewModel @Inject constructor(
                         productCriteria.minQuantitySold.toLong(),
                         productCriteria.maxSubmission.toLong(),
                         productCriteria.maxProductAppear.toLong(),
-                        productCriteria.dayPeriodTimeAppear.toLong()
+                        productCriteria.dayPeriodTimeAppear.toLong(),
+                        matchedProductCount = productCriteria.additionalInfo.matchedProduct
                     )
                 )
             }
