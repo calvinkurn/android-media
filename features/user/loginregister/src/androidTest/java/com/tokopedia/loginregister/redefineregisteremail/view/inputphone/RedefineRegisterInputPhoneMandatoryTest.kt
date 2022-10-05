@@ -152,37 +152,4 @@ class RedefineRegisterInputPhoneMandatoryTest {
         isGlobalErrorShowing()
     }
 
-    @Test
-    fun getUserInfoThenShowFailedView() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_FAILED
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
-        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-
-        inputValidPhone()
-        clickSubmit()
-        clickOnButtonDialog("Ya, Benar")
-        intended(hasData(ApplinkConstInternalUserPlatform.COTP))
-        isGlobalErrorShowing()
-    }
-
-    @Test
-    fun successRegisterThenGoToHome() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
-        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-
-        inputValidPhone()
-        clickSubmit()
-        clickOnButtonDialog("Ya, Benar")
-        intended(hasData(ApplinkConst.HOME))
-    }
-
 }
