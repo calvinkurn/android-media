@@ -263,7 +263,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
-        private const val TYPE_COLLECTION_PRIVATE_OTHERS = 2
         private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
     }
 
@@ -578,8 +577,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         countRemovableAutomaticDelete =
                             if (collectionDetail.countRemovableItems > 0) collectionDetail.countRemovableItems else collectionDetail.totalData
 
-                        if (collectionDetail.collectionType == TYPE_COLLECTION_PRIVATE_OTHERS ||
-                            collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        if (collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
                             hideGearIcon()
                         }
                     }
