@@ -23,6 +23,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.violation.ViolationDataView
@@ -52,6 +53,6 @@ interface ProductListTypeFactory {
     fun type(sizeDataView: InspirationSizeDataView): Int
     fun type(violationView: ViolationDataView) : Int
     fun type(inspirationProductBundleDataView: InspirationProductBundleDataView) : Int
-    var recyclerViewItem: Int
+    fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView) : Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }
