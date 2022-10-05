@@ -45,9 +45,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.atc_common.AtcFromExternalSource
@@ -4424,10 +4424,7 @@ open class DynamicProductDetailFragment :
     }
 
     private fun goToWishlistCollection(collectionId: String) {
-        val detailCollection =
-            "${WISHLIST_COLLECTION_DETAIL}?${PATH_COLLECTION_ID}=$collectionId"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
-        startActivity(intentCollectionDetail)
+        RouteManager.route(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
     }
 
     override fun gotoShopDetail(componentTrackDataModel: ComponentTrackDataModel) {
