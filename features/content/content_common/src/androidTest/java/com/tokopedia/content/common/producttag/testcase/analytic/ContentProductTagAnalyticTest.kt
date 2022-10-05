@@ -57,6 +57,7 @@ class ContentProductTagAnalyticTest {
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val aceShop = globalSearchModelBuilder.buildShopResponseModel()
     private val quickFilter = globalSearchModelBuilder.buildQuickFilterList()
+    private val maxSelectedProduct = 3
     private val keyword = "pokemon"
 
     /** Model for Impression
@@ -592,6 +593,103 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickSaveProductTest */
+    @Test
+    fun contentProductTag_ugc_clickSaveProduct_lastTagged() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        clickItemRecyclerView(lastTaggedRv, 0)
+        clickItemRecyclerView(lastTaggedRv, 1)
+        click(saveButton)
+
+        verify {
+            mockAnalytic.clickSaveProduct(ProductTagSource.LastTagProduct)
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSaveProduct_lastPurchased() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openLastPurchasedSection()
+
+        clickItemRecyclerView(lastPurchasedRv, 0)
+        clickItemRecyclerView(lastPurchasedRv, 1)
+        click(saveButton)
+
+        verify {
+            mockAnalytic.clickSaveProduct(ProductTagSource.LastPurchase)
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSaveProduct_myShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openMyShopSection()
+
+        clickItemRecyclerView(myShopRv, 0)
+        clickItemRecyclerView(myShopRv, 1)
+        click(saveButton)
+
+        verify {
+            mockAnalytic.clickSaveProduct(ProductTagSource.MyShop)
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSaveProduct_globalSearch() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openGlobalSearch(keyword)
+
+        clickItemRecyclerView(globalSearchProductRv, 0)
+        clickItemRecyclerView(globalSearchProductRv, 1)
+        click(saveButton)
+
+        verify {
+            mockAnalytic.clickSaveProduct(ProductTagSource.GlobalSearch)
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSaveProduct_shop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
+
+        clickItemRecyclerView(shopRv, 0)
+        clickItemRecyclerView(shopRv, 1)
+        click(saveButton)
+
+        verify {
+            mockAnalytic.clickSaveProduct(ProductTagSource.Shop)
+        }
+    }
 
     /** clickAdvancedProductFilterTest */
 
