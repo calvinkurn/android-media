@@ -94,7 +94,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         }
     }
 
-    override fun onLinkClicked(link: String, text: String) {
+    override fun onLinkClicked(link: String) {
         Uri.parse(link).let { uri ->
             when {
                 URLUtil.isValidUrl(link) -> {
@@ -155,7 +155,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
             btnProductManageViolationAction.run {
                 text = uiModel.buttonText
                 setOnClickListener {
-                    onLinkClicked(uiModel.buttonApplink, uiModel.buttonText)
+                    onLinkClicked(uiModel.buttonApplink)
                 }
             }
 
