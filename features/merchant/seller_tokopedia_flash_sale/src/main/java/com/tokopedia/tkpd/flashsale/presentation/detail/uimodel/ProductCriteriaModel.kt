@@ -20,7 +20,8 @@ data class ProductCriteriaModel (
     val maxShownDays: Long = 0,
     val showFullCategories: Boolean = false,
     val otherCriteria: List<String> = emptyList(),
-    val categories: List<String> = emptyList()
+    val categories: List<String> = emptyList(),
+    val matchedProductCount: Long = 0
 ) : Parcelable {
     @Parcelize
     data class ValueRange (

@@ -103,6 +103,8 @@ data class GetFlashSaleListForSellerResponse(
                 val dayPeriodTimeAppear: Int = 0,
                 @SerializedName("categories")
                 val categories: List<ProductCategories> = listOf(),
+                @SerializedName("additional_info")
+                val additionalInfo: AdditionalInfo = AdditionalInfo()
             )
 
             data class ProductCategories(
@@ -110,6 +112,11 @@ data class GetFlashSaleListForSellerResponse(
                 val categoryId: Long = 0,
                 @SerializedName("category_name")
                 val categoryName: String = ""
+            )
+
+            data class AdditionalInfo(
+                @SerializedName("matched_product")
+                val matchedProduct: Long = 0
             )
         }
     }

@@ -546,7 +546,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
     }
 
     private fun navigateToFlashSaleDetailPage(flashSaleId : Long) {
-        CampaignDetailActivity.start(context ?: return, flashSaleId, tabName)
+        CampaignDetailActivity.start(context ?: return, flashSaleId)
     }
 
     private fun handleRegisteredCampaignRedirection(flashSaleId: Long, status: FlashSaleStatus) {

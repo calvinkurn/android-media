@@ -37,7 +37,7 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                 childProduct.disabledReason,
                 childProduct.isDisabled,
                 childProduct.isMultiwarehouse,
-                childProduct.isToggleOn,
+                isToggleOn = false,
                 childProduct.name,
                 childProduct.picture,
                 ReservedProduct.Product.Price(
@@ -72,7 +72,7 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                             warehouse.discountSetup.stock
                         ),
                         warehouse.isDilayaniTokopedia,
-                        warehouse.isToggleOn,
+                        isToggleOn = false,
                         warehouse.isDisabled,
                         warehouse.disabledReason
                     )
@@ -114,7 +114,7 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                     warehouse.discountSetup.stock
                 ),
                 warehouse.isDilayaniTokopedia,
-                warehouse.isToggleOn,
+                isToggleOn = false,
                 warehouse.isDisabled,
                 warehouse.disabledReason
             )

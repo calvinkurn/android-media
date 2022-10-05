@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.domain.entity
 
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import java.util.Date
 
@@ -25,7 +26,8 @@ data class FlashSale(
     val useMultiLocation: Boolean,
     val formattedDate: FormattedDate,
     val status: FlashSaleStatus,
-    val productCriteria: List<ProductCriteria>
+    val productCriteria: List<ProductCriteria>,
+    val tabName: FlashSaleListPageTab
 ) {
     data class ProductMeta(
         val acceptedProduct: Int,
@@ -59,10 +61,15 @@ data class FlashSale(
         val maxProductAppear: Int,
         val dayPeriodTimeAppear: Int,
         val categories: List<ProductCategories>,
+        val additionalInfo: AdditionalInfo
     )
 
     data class ProductCategories(
         val categoryId: Long,
         val categoryName: String
+    )
+
+    data class AdditionalInfo(
+        val matchedProduct: Long
     )
 }

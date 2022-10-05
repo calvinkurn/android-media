@@ -28,7 +28,7 @@ class VariantViewHolder(
         selectedChildProduct: ReservedProduct.Product.ChildProduct
     ) {
         val discount = selectedChildProduct.warehouses.firstOrNull()?.discountSetup
-        val criteria = selectedChildProduct.productCriteria
+        val criteria = product.productCriteria
         binding.containerLayoutProductParent.apply {
             textParentTitle.text = selectedChildProduct.name
             textParentOriginalPrice.text =
@@ -42,10 +42,10 @@ class VariantViewHolder(
                 selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
                 binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
                 listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                discount?.let { it ->
+                discount?.let { disc ->
                     listener?.onDataInputChanged(
                         adapterPosition,
-                        product, it
+                        product, disc
                     )
                 }
             }
@@ -106,10 +106,14 @@ class VariantViewHolder(
                     triggerListener(product, discount)
                 }
 
-                quantityEditor.editText.afterTextChanged {
-                    discount?.stock = it.digitsOnly()
-                    discount?.stock?.let { it -> listener?.onStockChange(adapterPosition, it) }
-                    triggerListener(product, discount)
+                quantityEditor.apply {
+                    maxValue = criteria.maxCustomStock
+                    minValue = criteria.minCustomStock
+                    editText.afterTextChanged {
+                        discount?.stock = it.digitsOnly()
+                        discount?.stock?.let { disc -> listener?.onStockChange(adapterPosition, disc) }
+                        triggerListener(product, discount)
+                    }
                 }
             }
             triggerListener(product, discount)

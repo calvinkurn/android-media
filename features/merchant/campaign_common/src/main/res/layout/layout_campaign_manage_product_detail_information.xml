@@ -156,7 +156,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/text_quantity_editor_title"
         app:qty_default_value="0"
-        app:qty_max_value="99"
         app:qty_min_value="0"
         app:unify_qty_step_value="1" />
 </androidx.constraintlayout.widget.ConstraintLayout>

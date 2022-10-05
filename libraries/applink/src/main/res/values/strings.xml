@@ -170,5 +170,6 @@
 
     <!-- Tokopedia Flash Sale -->
     <string name="title_tokopedia_flash_sale">Flash Sale Tokopedia</string>
+    <string name="title_tokopedia_flash_sale_campaign_detail">Campaign Detail</string>
 
 </resources>

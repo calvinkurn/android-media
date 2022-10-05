@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
@@ -12,8 +13,10 @@ import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
 import com.tokopedia.tkpd.flashsale.domain.entity.*
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.*
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.OngoingRejectedItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
@@ -37,7 +40,8 @@ class CampaignDetailViewModel @Inject constructor(
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatchers.main) {
 
     private var _campaign = MutableLiveData<Result<FlashSale>>()
@@ -69,6 +73,7 @@ class CampaignDetailViewModel @Inject constructor(
         get() = _error
 
     private var campaignStatus = FlashSaleStatus.NO_REGISTERED_PRODUCT
+    private var tabName = FlashSaleListPageTab.UPCOMING
     private var selectedItems = mutableListOf<Pair<Long, Long>>()
     private var isOnCheckboxState = false
     private var isTriggeredFromDelete = false
@@ -79,6 +84,10 @@ class CampaignDetailViewModel @Inject constructor(
         private const val ADD_PRODUCT_TITLE = "Tambah Produk"
         private const val SELECTION_PROCESS_TITLE = "Proses Seleksi"
         private const val ACTIVE_PROMOTION_TITLE = "Promosi Aktif"
+        private const val UPCOMING_TAB = "upcoming"
+        private const val REGISTERED_TAB = "registered"
+        private const val ONGOING_TAB = "ongoing"
+        private const val FINISHED_TAB = "finished"
     }
 
     fun register(campaignId: Long) {
@@ -101,6 +110,7 @@ class CampaignDetailViewModel @Inject constructor(
                     campaignId = campaignId
                 )
                 campaignStatus = result.status
+                tabName = result.tabName
                 _campaign.postValue(Success(result))
             },
             onError = { error ->
@@ -269,7 +279,8 @@ class CampaignDetailViewModel @Inject constructor(
                         productCriteria.minQuantitySold.toLong(),
                         productCriteria.maxSubmission.toLong(),
                         productCriteria.maxProductAppear.toLong(),
-                        productCriteria.dayPeriodTimeAppear.toLong()
+                        productCriteria.dayPeriodTimeAppear.toLong(),
+                        matchedProductCount = productCriteria.additionalInfo.matchedProduct
                     )
                 )
             }
@@ -364,7 +375,9 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            totalSubsidy,
+            statusText
         )
     }
 
@@ -447,6 +460,15 @@ class CampaignDetailViewModel @Inject constructor(
         return this.campaignStatus
     }
 
+    fun getTabName(): String {
+        return when (this.tabName) {
+            FlashSaleListPageTab.UPCOMING -> UPCOMING_TAB
+            FlashSaleListPageTab.REGISTERED -> REGISTERED_TAB
+            FlashSaleListPageTab.ONGOING -> ONGOING_TAB
+            FlashSaleListPageTab.FINISHED -> FINISHED_TAB
+        }
+    }
+
     fun getAddProductButtonVisibility(): Boolean {
         return getCampaignStatus() == FlashSaleStatus.NO_REGISTERED_PRODUCT || getCampaignStatus() == FlashSaleStatus.WAITING_FOR_SELECTION
     }
@@ -465,5 +487,14 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun setDeleteStateStatus(isTriggered: Boolean) {
         this.isTriggeredFromDelete = isTriggered
+    }
+
+    fun isCoachMarkShown(): Boolean {
+        return sharedPreferences.getBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, false)
+    }
+
+    fun setSharedPrefCoachMarkAlreadyShown() {
+        sharedPreferences.edit().putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
+            .apply()
     }
 }

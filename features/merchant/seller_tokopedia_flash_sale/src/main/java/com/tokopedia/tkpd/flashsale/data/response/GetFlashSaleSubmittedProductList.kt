@@ -133,6 +133,10 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("discounted_price")
         val discountedPrice: DiscountedPrice,
         @SerializedName("warehouses")
-        val warehouses: List<Warehouse>
+        val warehouses: List<Warehouse>,
+        @SerializedName("total_subsidy")
+        val totalSubsidy: Long,
+        @SerializedName("status_text")
+        val statusText: String
     )
 }

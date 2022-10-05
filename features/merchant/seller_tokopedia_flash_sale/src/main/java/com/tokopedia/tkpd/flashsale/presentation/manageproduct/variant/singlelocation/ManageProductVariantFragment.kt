@@ -158,8 +158,9 @@ class ManageProductVariantFragment :
         else ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
     }
 
-    private fun setWidgetBulkApplyState(items: List<ReservedProduct.Product.ChildProduct>) {
+    private fun setWidgetBulkApplyState() {
         var activeVariantCount = Int.ZERO
+        val items = viewModel.getProductData().childProducts
         items.filter { it.isToggleOn }.map {
             activeVariantCount++
         }
@@ -197,6 +198,7 @@ class ManageProductVariantFragment :
         if (selectedItem != null) {
             viewModel.validateInputPage(selectedItem.productCriteria)
         }
+        setWidgetBulkApplyState()
 
         return viewModel.validateInput(
             criteria = product.productCriteria,
@@ -206,8 +208,7 @@ class ManageProductVariantFragment :
 
     override fun onToggleSwitch(index: Int, isChecked: Boolean) {
         viewModel.setItemToggleValue(index, isChecked)
-        val product = viewModel.getProductData()
-        setWidgetBulkApplyState(product.childProducts)
+        setWidgetBulkApplyState()
     }
 
     override fun onDiscountChange(index: Int, priceValue: Long, discountValue: Int) {
@@ -241,8 +242,8 @@ class ManageProductVariantFragment :
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION ->{
+        when (requestCode) {
+            REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION -> {
                 if (resultCode == Activity.RESULT_OK) {
                     val appliedProduct =
                         data?.extras?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
