@@ -81,7 +81,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -499,7 +498,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
         if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
                 sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
-            onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
+            onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }
         when (buttonActionType) {
@@ -513,7 +512,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
-                onSuccessAtc(result.errorMessage.firstOrNull())
+                onSuccessAtc(result.errorMessage.firstOrNull(), cartId)
             }
         }
     }
@@ -588,17 +587,20 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         return context as AtcVariantActivity
     }
 
-    private fun onSuccessAtcTokoNow(successMessage: String?) {
+    private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    cartId = cartId
+            )
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
             }
         }
     }
 
-    private fun onSuccessAtc(successMessage: String?) {
+    private fun onSuccessAtc(successMessage: String?, cartId: String) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty())
                 it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
@@ -617,7 +619,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             }
             viewModel.updateActivityResult(
                     atcSuccessMessage = message,
-                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
+                    cartId = cartId
+            )
         }
     }
 
