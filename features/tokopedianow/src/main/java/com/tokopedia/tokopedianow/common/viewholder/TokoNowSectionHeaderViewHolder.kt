@@ -12,7 +12,8 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowSectionHeaderBindi
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowSectionHeaderViewHolder(
-    itemView: View
+    itemView: View,
+    private val listener: SectionHeaderListener? = null
 ) : AbstractViewHolder<TokoNowSectionHeaderUiModel>(itemView) {
 
     companion object {
@@ -31,12 +32,20 @@ class TokoNowSectionHeaderViewHolder(
             }
             if (section.seeAllAppLink.isNotEmpty()) {
                 textSeeAll.setOnClickListener {
-                    RouteManager.route(it.context, section.seeAllAppLink)
+                    if(listener == null) {
+                        RouteManager.route(it.context, section.seeAllAppLink)
+                    } else {
+                        listener.onClickSeeAllText(section.seeAllAppLink)
+                    }
                 }
                 textSeeAll.show()
             } else {
                 textSeeAll.hide()
             }
         }
+    }
+
+    interface SectionHeaderListener {
+        fun onClickSeeAllText(appLink: String)
     }
 }

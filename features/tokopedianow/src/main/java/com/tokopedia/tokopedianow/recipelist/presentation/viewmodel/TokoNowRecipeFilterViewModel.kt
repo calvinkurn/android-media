@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokopedianow.recipelist.domain.usecase.GetSortFilterUseCase
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeSortFilterMapper.addFilterSection
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeSortFilterMapper.addSortSection
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import javax.inject.Inject
 
 class TokoNowRecipeFilterViewModel @Inject constructor(
@@ -25,14 +26,14 @@ class TokoNowRecipeFilterViewModel @Inject constructor(
         get() = _visitableItems
     private val _visitableItems = MutableLiveData<List<Visitable<*>>>()
 
-    fun getSortFilterOptions(selectedFilterIds: List<String>) {
+    fun getSortFilterOptions(selectedFilters: List<SelectedFilter>) {
         launchCatchError(block = {
             val params = mapOf(PARAM_SOURCE to FILTER_SOURCE)
             val response = getSortFilterUseCase.execute(params)
 
             val visitableItems = mutableListOf<Visitable<*>>()
-            visitableItems.addSortSection(response, selectedFilterIds)
-            visitableItems.addFilterSection(response, selectedFilterIds)
+            visitableItems.addSortSection(response, selectedFilters)
+            visitableItems.addFilterSection(response, selectedFilters)
 
             _visitableItems.postValue(visitableItems)
         }) {

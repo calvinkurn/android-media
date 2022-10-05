@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 
 class TokoNowChipListDiffer : BaseTokopediaNowDiffer() {
 
@@ -11,7 +12,11 @@ class TokoNowChipListDiffer : BaseTokopediaNowDiffer() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldList[oldItemPosition]
         val newItem = newList[newItemPosition]
-        return oldItem == newItem
+        return if(oldItem is TokoNowChipUiModel && newItem is TokoNowChipUiModel) {
+            oldItem.id == newItem.id && oldItem.selected == newItem.selected
+        } else {
+            oldItem == newItem
+        }
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {

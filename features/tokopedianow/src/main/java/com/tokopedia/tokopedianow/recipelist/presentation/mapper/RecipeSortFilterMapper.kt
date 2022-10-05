@@ -6,22 +6,30 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSectionHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterSortDataResponse
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterSectionUiModel.RecipeSortSectionHeader
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
 object RecipeSortFilterMapper {
 
-    private const val INGREDIENT_IDS = "ingredient_ids"
+    private val multiSelectFilterTypes = listOf(
+        PARAM_INGREDIENT_ID,
+        PARAM_TAG_ID
+    )
 
     fun MutableList<Visitable<*>>.addSortSection(
         response: RecipeFilterSortDataResponse,
-        selectedFilterIds: List<String>
+        selectedFilterIds: List<SelectedFilter>
     ) {
+        val selectedSortIds = selectedFilterIds.filter { it.parentId == PARAM_SORT_BY }.map { it.id }
         val sortChipItems = response.sort.map {
             TokoNowChipUiModel(
                 id = it.value,
                 parentId = it.key,
                 text = it.name,
-                selected = selectedFilterIds.contains(it.value)
+                selected = selectedSortIds.contains(it.value)
             )
         }
 
@@ -41,12 +49,12 @@ object RecipeSortFilterMapper {
 
     fun MutableList<Visitable<*>>.addFilterSection(
         response: RecipeFilterSortDataResponse,
-        selectedFilterIds: List<String>
+        selectedFilters: List<SelectedFilter>
     ) {
         response.filter.forEach {
             val parentId = it.options.first().key
 
-            val sectionHeader = if(parentId == INGREDIENT_IDS) {
+            val sectionHeader = if(parentId == PARAM_INGREDIENT_ID) {
                 TokoNowSectionHeaderUiModel(
                     title = it.title,
                     seeAllAppLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
@@ -60,6 +68,10 @@ object RecipeSortFilterMapper {
                 items = it.options
                     .filter { option -> option.isPopular }
                     .map { option ->
+                        val selectedFilterIds = selectedFilters
+                            .filter { filter -> filter.parentId == option.key }
+                            .map { filter -> filter.id }
+
                         TokoNowChipUiModel(
                             id = option.value,
                             parentId = option.key,
@@ -67,7 +79,8 @@ object RecipeSortFilterMapper {
                             imageUrl = option.icon,
                             selected = selectedFilterIds.contains(option.value)
                         )
-                    }
+                    },
+                isMultiSelect = multiSelectFilterTypes.contains(parentId)
             )
 
             add(sectionHeader)

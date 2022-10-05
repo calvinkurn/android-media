@@ -3,7 +3,6 @@ package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 import com.tokopedia.tokopedianow.recipecommon.domain.model.RecipeResponse
 import com.tokopedia.tokopedianow.recipelist.domain.model.TokoNowGetRecipes
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
@@ -43,15 +42,7 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
 
         val expectedVisitableList = listOf(
             RecipeHeaderUiModel,
-            RecipeFilterUiModel(
-                chips = listOf(
-                    RecipeChipFilterUiModel(
-                        id = "1",
-                        title = "",
-                        type = RecipeChipFilterUiModel.ChipType.MORE_FILTER
-                    )
-                )
-            ),
+            RecipeFilterUiModel(),
             RecipeEmptyStateUiModel(
                 isFilterSelected = true,
                 title = ""

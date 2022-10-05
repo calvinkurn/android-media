@@ -13,13 +13,15 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipListViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowLoadingMoreViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder.SectionHeaderListener
 import com.tokopedia.tokopedianow.sortfilter.presentation.uimodel.SortFilterUiModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.viewholder.SortFilterViewHolder
 import com.tokopedia.tokopedianow.sortfilter.presentation.viewholder.SortFilterViewHolder.SortFilterViewHolderListener
 
 class SortFilterAdapterTypeFactory(
     private val sortFilterListener: SortFilterViewHolderListener,
-    private val chipListener: ChipListener
+    private val chipListener: ChipListener,
+    private val sectionHeaderListener: SectionHeaderListener? = null
 ) : BaseAdapterTypeFactory(), SortFilterTypeFactory, TokoNowChipListTypeFactory,
     TokoNowSectionHeaderTypeFactory {
 
@@ -35,7 +37,7 @@ class SortFilterAdapterTypeFactory(
         return when (type) {
             SortFilterViewHolder.LAYOUT -> SortFilterViewHolder(view, sortFilterListener)
             TokoNowChipListViewHolder.LAYOUT -> TokoNowChipListViewHolder(view, chipListener)
-            TokoNowSectionHeaderViewHolder.LAYOUT -> TokoNowSectionHeaderViewHolder(view)
+            TokoNowSectionHeaderViewHolder.LAYOUT -> TokoNowSectionHeaderViewHolder(view, sectionHeaderListener)
             TokoNowLoadingMoreViewHolder.LAYOUT -> TokoNowLoadingMoreViewHolder(view)
             else -> super.createViewHolder(view, type)
         }

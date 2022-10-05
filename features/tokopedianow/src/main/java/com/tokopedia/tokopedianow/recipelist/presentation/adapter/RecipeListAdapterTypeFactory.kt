@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUi
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeEmptyStateUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeChipFilterViewHolder.RecipeChipFilterListener
+import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeFilterViewHolder.RecipeChipFilterListener
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeCountViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeFilterViewHolder
 import com.tokopedia.tokopedianow.recipelist.presentation.viewholder.RecipeHeaderViewHolder
