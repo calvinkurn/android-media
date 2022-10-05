@@ -3,6 +3,9 @@ package com.tokopedia.content.common.producttag.testcase.config
 import android.content.Intent
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.test.core.app.ActivityScenario
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.content.common.R
@@ -24,6 +27,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.config.ContentProduc
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.reflection.getPrivateField
 import com.tokopedia.content.test.util.*
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
@@ -435,7 +439,8 @@ class ContentProductTagConfigUiTest {
         )
 
         verify<IconUnify>(backButton) {
-            it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_arrow_back)
+            val iconId = it.getPrivateField<Int>("iconId")
+            iconId == IconUnify.ARROW_BACK
         }
     }
 
@@ -447,7 +452,8 @@ class ContentProductTagConfigUiTest {
         )
 
         verify<IconUnify>(backButton) {
-            it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_close)
+            val iconId = it.getPrivateField<Int>("iconId")
+            iconId == IconUnify.CLOSE
         }
     }
 

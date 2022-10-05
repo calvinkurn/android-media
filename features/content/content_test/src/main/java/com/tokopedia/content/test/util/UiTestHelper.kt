@@ -99,25 +99,20 @@ fun verifyButtonState(@IdRes id: Int, isEnabled: Boolean) {
 fun <T: View> verify(
     @IdRes id: Int,
     verifyBlock: (T) -> Boolean,
-): Matcher<View> {
-    return object: BoundedMatcher<View, View>(View::class.java) {
-        override fun describeTo(description: Description?) {
+) {
+    select(id)
+        .check(matches(object: BoundedMatcher<View, View>(View::class.java) {
+            override fun describeTo(description: Description?) {
 
-        }
-
-        override fun matchesSafely(item: View?): Boolean {
-            val view = item as? T
-            return if(view?.id == id) {
-                verifyBlock(view)
             }
-            else false
 
-//            return view?.let {
-//                if()
-//                verifyBlock(it)
-//            } ?: false
-        }
-    }
+            override fun matchesSafely(item: View?): Boolean {
+                val view = item as? T
+                return view?.let {
+                    verifyBlock(it)
+                } ?: false
+            }
+        }))
 }
 
 private fun select(@IdRes id: Int): ViewInteraction {
