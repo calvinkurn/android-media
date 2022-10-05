@@ -218,6 +218,12 @@ open class BaseTokoNowRecipeListViewModel(
         getRecipeList()
     }
 
+    fun resetFilter() {
+        resetQueryParams()
+        resetSelectedFilter()
+        refreshPage()
+    }
+
     fun setKeywordToSearchbar() {
         _searchKeyword.postValue(getRecipeListParam.getValue(PARAM_TITLE))
     }
@@ -319,5 +325,13 @@ open class BaseTokoNowRecipeListViewModel(
             _showProgressBar.value == false
         val scrolledToBottom = lastVisibleItemIndex == visitableItems.count() - DEFAULT_INDEX
         return scrolledToBottom && notLoading && hasNext
+    }
+
+    private fun resetQueryParams() {
+        getRecipeListParam.queryParamsMap.clear()
+    }
+
+    private fun resetSelectedFilter() {
+        selectedFilters = emptyList()
     }
 }
