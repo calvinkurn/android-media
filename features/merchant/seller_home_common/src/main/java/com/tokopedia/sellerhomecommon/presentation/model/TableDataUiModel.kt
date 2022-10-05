@@ -83,4 +83,17 @@ sealed class TableRowsUiModel(
             return typeFactory.type(this)
         }
     }
+
+    data class RowColumnHtmlWithIcon(
+        override val valueStr: String = "",
+        override val width: Int = 0,
+        val icon:String = "",
+        val isLeftAlign: Boolean = false,
+        var colorInt: Int? = null
+    ) : TableRowsUiModel(valueStr, width) {
+
+        override fun type(typeFactory: TableItemFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
 }
