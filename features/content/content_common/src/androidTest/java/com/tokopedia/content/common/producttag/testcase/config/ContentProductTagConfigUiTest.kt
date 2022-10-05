@@ -83,17 +83,16 @@ class ContentProductTagConfigUiTest {
         )
     }
 
-    /**
-     * Test:
-     * 1. (DONE) authorType -> breadcrumb is not showing
-     * 2. (DONE) productTagSource
-     * 3. (DONE) isMultipleSelectionProduct -> checkbox show or not & select unselect
-     * 4. (DONE) isFullPageAutocomplete -> from us or not
-     * 5. (DONE) BackButton
-     * 6. (DONE) isShowActionBarDivider
+    /** Table of Test (search this keyword below to navigate directly to the section)
+     * 1. authorTypeTest
+     * 2. productTagSourceTest
+     * 3. isMultipleSelectionProductTest
+     * 4. isFullPageAutocompleteTest
+     * 5. backButtonTest
+     * 6. isShowActionBarDividerTest
      */
 
-    /** AuthorType Test */
+    /** authorTypeTest */
     @Test
     fun contentProductTag_ugc_breadcrumbVisible() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -116,7 +115,7 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
     }
 
-    /** ProductTagSource Test */
+    /** productTagSourceTest */
     @Test
     fun contentProductTag_productTagSource_completeSource() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -223,7 +222,7 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
     }
 
-    /** IsMultipleSelectionProduct Test */
+    /** isMultipleSelectionProductTest */
     @Test
     fun contentProductTag_isMultipleSelectionProduct_false_shouldFinishPicker() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -393,7 +392,7 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
     }
 
-    /** isFullPageAutocomplete Test */
+    /** isFullPageAutocompleteTest */
     @Test
     fun contentProductTag_isFullPageAutocomplete_true() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -427,7 +426,7 @@ class ContentProductTagConfigUiTest {
         delay(DEFAULT_DELAY)
     }
 
-    /** BackButton Test */
+    /** backButtonTest */
     @Test
     fun contentProductTag_backButton_back() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -452,7 +451,7 @@ class ContentProductTagConfigUiTest {
         }
     }
 
-    /** isShowActionBarDivider Test */
+    /** isShowActionBarDividerTest */
     @Test
     fun contentProductTag_isShowActionBarDivider_true_showDivider() {
         launchActivity(ContentProductTagArgument.Builder()
