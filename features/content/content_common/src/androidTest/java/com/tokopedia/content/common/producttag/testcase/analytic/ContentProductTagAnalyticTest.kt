@@ -710,9 +710,7 @@ class ContentProductTagAnalyticTest {
             .setIsAutoHandleBackPressed(true)
         )
 
-        openGlobalSearch(keyword)
-
-        click(globalSearchProductContainer, globalSearchProductQuickFilterPrefix)
+        openGlobalSortFilterProduct(keyword)
 
         verify { mockAnalytic.clickAdvancedProductFilter() }
     }
@@ -727,13 +725,14 @@ class ContentProductTagAnalyticTest {
             .setIsAutoHandleBackPressed(true)
         )
 
-        openGlobalSearch(keyword)
-
-        click(globalSearchProductContainer, globalSearchProductQuickFilterPrefix)
+        openGlobalSortFilterProduct(keyword)
 
         clickItemRecyclerView(sortFilterOptionRv, 0, sortFilterChip)
 
-        click(sortFilterSaveButtonContainer, sortFilterSaveButton)
+        clickWithMatcher(
+            withParent(withId(sortFilterSaveButtonContainer)),
+            withId(sortFilterSaveButton)
+        )
 
         verify { mockAnalytic.clickSaveAdvancedProductFilter() }
     }

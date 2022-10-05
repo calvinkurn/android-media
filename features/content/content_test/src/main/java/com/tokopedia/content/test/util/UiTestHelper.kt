@@ -21,33 +21,12 @@ import org.hamcrest.Matcher
 /**
  * Created By : Jonathan Darwin on October 03, 2022
  */
-fun select(@IdRes id: Int): ViewInteraction {
-    return onView(withId(id))
-}
-
-fun select(text: String): ViewInteraction {
-    return onView(withText(text))
-}
-
 fun click(@IdRes id: Int) {
     select(id).clickView()
 }
 
 fun click(text: String) {
     select(text).clickView()
-}
-
-fun click(@IdRes parentId: Int, text: String) {
-    val matcher = allOf(withText(text), isDescendantOfA(withId(parentId)))
-    onView(matcher).perform(click())
-}
-
-fun click(
-    @IdRes parentId: Int,
-    @IdRes id: Int,
-) {
-    val matcher = allOf(withId(id), isDescendantOfA(withId(parentId)))
-    onView(matcher).perform(click())
 }
 
 fun clickWithMatcher(
@@ -128,11 +107,25 @@ fun <T: View> verify(
 
         override fun matchesSafely(item: View?): Boolean {
             val view = item as? T
-            return view?.let {
-                verifyBlock(it)
-            } ?: false
+            return if(view?.id == id) {
+                verifyBlock(view)
+            }
+            else false
+
+//            return view?.let {
+//                if()
+//                verifyBlock(it)
+//            } ?: false
         }
     }
+}
+
+private fun select(@IdRes id: Int): ViewInteraction {
+    return onView(withId(id))
+}
+
+private fun select(text: String): ViewInteraction {
+    return onView(withText(text))
 }
 
 private fun ViewInteraction.clickView() {

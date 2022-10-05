@@ -1,6 +1,8 @@
 package com.tokopedia.content.common.producttag.helper
 
 import android.content.Context
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.content.common.R
 import com.tokopedia.content.test.util.*
 
@@ -31,6 +33,14 @@ fun openGlobalSearch(keyword: String) {
     openAutocomplete()
     type(fakeAutocompleteSearchBar, keyword)
     pressActionSoftKeyboard(fakeAutocompleteSearchBar)
+}
+
+fun openGlobalSortFilterProduct(keyword: String) {
+    openGlobalSearch(keyword)
+    clickWithMatcher(
+        isDescendantOfA(withId(globalSearchProductContainer)),
+        withId(globalSearchProductQuickFilterPrefix),
+    )
 }
 
 fun openGlobalSearchShopSection(context: Context, keyword: String) {
