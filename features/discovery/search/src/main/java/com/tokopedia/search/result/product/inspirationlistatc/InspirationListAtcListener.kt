@@ -8,5 +8,4 @@ interface InspirationListAtcListener {
     fun onListAtcItemClicked(product: InspirationCarouselDataView.Option.Product)
     fun onListAtcItemImpressed(product: InspirationCarouselDataView.Option.Product)
     fun onListAtcItemAddToCart(product: InspirationCarouselDataView.Option.Product, type: String)
-    val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
 }

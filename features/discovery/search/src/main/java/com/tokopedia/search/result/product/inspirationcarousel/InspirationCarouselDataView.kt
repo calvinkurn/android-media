@@ -8,6 +8,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -143,7 +144,7 @@ class InspirationCarouselDataView(
                 return ratingAverage.isNotEmpty()
             }
 
-            fun shouldOpenVariantBottomSheet(): Boolean = parentId.toLong().isMoreThanZero()
+            fun shouldOpenVariantBottomSheet(): Boolean = parentId.toLongOrZero().isMoreThanZero()
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

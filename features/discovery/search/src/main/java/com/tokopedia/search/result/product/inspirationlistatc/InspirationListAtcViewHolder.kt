@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
@@ -17,6 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class InspirationListAtcViewHolder(
     itemView: View,
     private val inspirationListAtcListener: InspirationListAtcListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : AbstractViewHolder<InspirationListAtcDataView>(itemView) {
     companion object {
         val LAYOUT = R.layout.search_inspiration_carousel_option_list_atc
@@ -52,7 +54,7 @@ class InspirationListAtcViewHolder(
         val products = item.option.product
 
         binding?.inspirationCarouselListAtcProductCarousel?.bindCarouselProductCardViewGrid(
-            recyclerViewPool = inspirationListAtcListener.carouselRecycledViewPool,
+            recyclerViewPool = recycledViewPool,
             productCardModelList = products.map { it.toProductCardModel() },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                 override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

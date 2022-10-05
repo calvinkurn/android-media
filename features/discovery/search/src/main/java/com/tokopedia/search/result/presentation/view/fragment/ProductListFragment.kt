@@ -233,7 +233,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
     private var coachMark: CoachMark2? = null
 
-    override val carouselRecycledViewPool by lazy { recycledViewPool }
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
@@ -471,6 +470,7 @@ class ProductListFragment: BaseDaggerFragment(),
             inspirationListAtcListener = inspirationListAtcListenerDelegate,
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
+            recycledViewPool = recycledViewPool
         )
     }
 

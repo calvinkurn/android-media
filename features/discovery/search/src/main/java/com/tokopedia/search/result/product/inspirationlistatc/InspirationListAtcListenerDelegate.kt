@@ -33,7 +33,6 @@ import kotlinx.android.synthetic.main.search_activity_search.*
 import javax.inject.Inject
 
 class InspirationListAtcListenerDelegate @Inject constructor(
-    private val recycledViewPool: RecyclerView.RecycledViewPool,
     private val productListFragment: ProductListFragment,
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
@@ -126,9 +125,6 @@ class InspirationListAtcListenerDelegate @Inject constructor(
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
         throwable?.printStackTrace()
     }
-
-    override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-        get() = recycledViewPool
 
     private fun executeAtcCommon(
         onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit,

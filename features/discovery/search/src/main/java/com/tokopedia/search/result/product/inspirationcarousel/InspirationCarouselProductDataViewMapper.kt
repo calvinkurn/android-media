@@ -64,7 +64,7 @@ class InspirationCarouselProductDataViewMapper {
                 label = product.label,
                 bundleId = product.bundleId,
                 parentId = product.parentId,
-                minOrder = product.minOrder
+                minOrder = product.minOrder,
             )
         }
     }

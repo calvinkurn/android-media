@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -111,6 +112,7 @@ class ProductListTypeFactoryImpl(
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -247,7 +249,7 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener)
+                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool)
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -264,7 +266,8 @@ class ProductListTypeFactoryImpl(
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
             BannedProductsTickerViewHolder.LAYOUT -> BannedProductsTickerViewHolder(view)
-            BroadMatchViewHolder.LAYOUT -> BroadMatchViewHolder(view, broadMatchListener)
+            BroadMatchViewHolder.LAYOUT ->
+                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool)
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
@@ -285,7 +288,8 @@ class ProductListTypeFactoryImpl(
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
             InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)
             ViolationViewHolder.LAYOUT -> ViolationViewHolder(view, violationListener)
-            InspirationListAtcViewHolder.LAYOUT -> InspirationListAtcViewHolder(view, inspirationListAtcListener)
+            InspirationListAtcViewHolder.LAYOUT ->
+                InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
 
             else -> super.createViewHolder(view, type)
         }
