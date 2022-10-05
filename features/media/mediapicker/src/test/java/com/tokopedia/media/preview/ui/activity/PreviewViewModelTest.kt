@@ -53,7 +53,7 @@ class PreviewViewModelTest {
     }
 
     @Test
-    fun `it should get an original media path`() = runBlocking {
+    fun `it should be get an original media path`() = runBlocking {
         viewModel.result.test {
             // Given
             `file format by mime type is`(false)
@@ -68,7 +68,22 @@ class PreviewViewModelTest {
     }
 
     @Test
-    fun `it should get a video file path`() = runBlocking {
+    fun `it should be cannot get an original media path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(false)
+            `image compression is`(false)
+
+            // When
+            viewModel.files(emptyList())
+
+            // Then
+            assert(awaitItem().originalPaths.isEmpty())
+        }
+    }
+
+    @Test
+    fun `it should be get a video file path`() = runBlocking {
         viewModel.result.test {
             // Given
             `file format by mime type is`(true)
@@ -83,7 +98,7 @@ class PreviewViewModelTest {
     }
 
     @Test
-    fun `it should cannot get a video file path`() = runBlocking {
+    fun `it should be cannot get a video file path`() = runBlocking {
         viewModel.result.test {
             // Given
             `file format by mime type is`(true)
@@ -98,7 +113,7 @@ class PreviewViewModelTest {
     }
 
     @Test
-    fun `it should get a compressed image path`() = runBlocking {
+    fun `it should be get a compressed image path`() = runBlocking {
         viewModel.result.test {
             // Given
             `file format by mime type is`(true)
@@ -109,6 +124,21 @@ class PreviewViewModelTest {
 
             // Then
             assert(awaitItem().compressedImages.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `it should be cannot get a compressed image path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+
+            // When
+            viewModel.files(emptyList())
+
+            // Then
+            assert(awaitItem().compressedImages.isEmpty())
         }
     }
 
