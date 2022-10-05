@@ -180,6 +180,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
     private var collectionId = ""
     private var collectionName = ""
+    private var collectionType = 0
     private var countDelete = 1
     private var toolbarTitle = ""
     private var bottomSheetCollection = BottomSheetAddCollectionWishlist()
@@ -263,6 +264,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
+        private const val TYPE_COLLECTION_PRIVATE_SELF = 1
+        private const val TYPE_COLLECTION_PRIVATE_OTHERS = 2
+        private const val TYPE_COLLECTION_PUBLIC_SELF = 3
         private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
     }
 
@@ -577,9 +581,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         countRemovableAutomaticDelete =
                             if (collectionDetail.countRemovableItems > 0) collectionDetail.countRemovableItems else collectionDetail.totalData
 
-                        if (collectionDetail.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        collectionType = collectionDetail.collectionType
+                        if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
                             hideGearIcon()
                         }
+                        setupIconToolbar()
                     }
                 }
                 is Fail -> {
@@ -888,26 +894,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 triggerSearch()
             }
 
-            val pageSource: String
-            val icons: IconBuilder
             viewLifecycleOwner.lifecycle.addObserver(wishlistCollectionDetailNavtoolbar)
-            if (activityWishlistV2 != PARAM_HOME) {
-                wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                icons = IconBuilder(IconBuilderFlag()).apply {
-                    addIcon(IconList.ID_CART) {}
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
-            } else {
-                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
-                wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
-                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
-                    addIcon(IconList.ID_MESSAGE) {}
-                    addIcon(IconList.ID_NOTIFICATION) {}
-                    addIcon(IconList.ID_CART) {}
-                    addIcon(IconList.ID_NAV_GLOBAL) {}
-                }
-            }
-            wishlistCollectionDetailNavtoolbar.setIcon(icons)
             if (isBulkAddShow) {
                 turnOnBulkAddMode()
             } else {
@@ -947,6 +934,48 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (toasterMessageInitial.isNotEmpty()) {
             showToasterInitial(toasterMessageInitial)
         }
+    }
+
+    private fun setupIconToolbar() {
+        val pageSource: String
+        val icons: IconBuilder
+        binding?.run {
+            if (activityWishlistV2 != PARAM_HOME) {
+                wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
+                icons = IconBuilder().apply {
+                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF
+                        || collectionType == TYPE_COLLECTION_PUBLIC_SELF
+                        || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true) {}
+                    }
+                    addIcon(iconId = IconList.ID_CART) {}
+                    addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
+                }
+            } else {
+                pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+                wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_NONE)
+                icons = IconBuilder(IconBuilderFlag(pageSource = pageSource)).apply {
+                    if (collectionType == TYPE_COLLECTION_PUBLIC_SELF || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        addIcon(iconId = IconList.ID_SHARE) {}
+                    }
+                    addIcon(iconId = IconList.ID_MESSAGE) {}
+                    addIcon(iconId = IconList.ID_NOTIFICATION) {}
+                    addIcon(iconId = IconList.ID_CART) {}
+                    addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
+                }
+            }
+            wishlistCollectionDetailNavtoolbar.setIcon(icons)
+        }
+    }
+
+    private fun handleCollectionSharing() {
+        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF) {
+            showDialogSharePermission()
+        }
+    }
+
+    private fun showDialogSharePermission() {
+        // TODO: continue here
     }
 
     private fun hideKeyboardFromSearchBar() {
