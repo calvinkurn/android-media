@@ -50,6 +50,7 @@ internal object GetProductList {
                 haveNotifyMeOOS
                 notifyMeOOSCount
                 notifyMeOOSWording
+                isEmptyStock
             }
         }
     }

@@ -68,7 +68,8 @@ object ProductMapper {
                 maxStock = maxStock,
                 haveNotifyMeOOS = it.haveNotifyMeOOS,
                 notifyMeOOSCount = it.notifyMeOOSCount,
-                notifyMeOOSWording = it.notifyMeOOSWording
+                notifyMeOOSWording = it.notifyMeOOSWording,
+                isEmptyStock = it.isEmptyStock
             )
         } ?: emptyList()
     }

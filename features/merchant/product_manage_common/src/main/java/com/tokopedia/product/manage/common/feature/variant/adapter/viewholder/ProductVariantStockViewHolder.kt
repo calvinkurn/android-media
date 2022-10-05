@@ -5,9 +5,10 @@ import android.text.InputFilter.LengthFilter
 import android.text.TextWatcher
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.R
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.databinding.ItemProductVariantStockBinding
 import com.tokopedia.product.manage.common.feature.list.analytics.ProductManageTracking
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
@@ -25,7 +26,7 @@ class ProductVariantStockViewHolder(
     itemView: View,
     private val listener: ProductVariantStockListener,
     private val campaignListener: ProductCampaignInfoListener
-): AbstractViewHolder<ProductVariant>(itemView) {
+) : AbstractViewHolder<ProductVariant>(itemView) {
 
     companion object {
         @LayoutRes
@@ -45,11 +46,11 @@ class ProductVariantStockViewHolder(
 
     override fun bind(variant: ProductVariant) {
         setProductName(variant)
+        setupIconInfo(variant, variant.stock)
         setupStockQuantityEditor(variant)
         setupStatusSwitch(variant)
         setupStatusLabel(variant)
         setupCampaignInfo(variant)
-        setupNotifyMeInfo(variant)
     }
 
     private fun setProductName(variant: ProductVariant) {
@@ -62,14 +63,15 @@ class ProductVariantStockViewHolder(
         setStockEditorValue(variant.stock, variant.maxStock)
         setAddButtonClickListener(variant)
         setSubtractButtonClickListener(variant)
-        addStockEditorTextChangedListener(variant)
         setupStockEditor(variant)
+        addStockEditorTextChangedListener(variant)
+
     }
 
     private fun setupStockEditor(variant: ProductVariant) {
         val canEditStock = variant.access.editStock
 
-        if(canEditStock) {
+        if (canEditStock) {
             binding?.quantityEditorStock?.show()
             binding?.textStock?.hide()
         } else {
@@ -105,21 +107,87 @@ class ProductVariantStockViewHolder(
 
     private fun setupCampaignInfo(variant: ProductVariant) {
         binding?.tvProductManageVariantStockCountVariant?.run {
-            text = String.format(getString(R.string.product_manage_campaign_count), variant.campaignTypeList?.count().orZero())
+            text = String.format(
+                getString(R.string.product_manage_campaign_count),
+                variant.campaignTypeList?.count().orZero()
+            )
             setOnClickListener {
-                ProductManageVariantMapper.mapVariantCampaignTypeToProduct(variant.campaignTypeList)?.let { campaignList ->
-                    campaignListener.onClickCampaignInfo(campaignList)
-                }
+                ProductManageVariantMapper.mapVariantCampaignTypeToProduct(variant.campaignTypeList)
+                    ?.let { campaignList ->
+                        campaignListener.onClickCampaignInfo(campaignList)
+                    }
             }
             showWithCondition(variant.isCampaign)
         }
     }
 
+    private fun setupIconInfo(variant: ProductVariant, currentStock: Int) {
+        when {
+            variant.haveNotifyMe() && currentStock == Int.ZERO -> {
+                setupNotifyMeInfo(variant)
+            }
+            variant.isEmpty() || currentStock == Int.ZERO -> {
+                setupEmptyStockInfo(variant)
+            }
+            variant.isBelowStockAlert ||
+                    (currentStock < variant.stockAlertCount && variant.haveStockAlertActive()) -> {
+                setupStockAlertActiveInfo(variant)
+            }
+            variant.haveStockAlertActive() -> {
+                setupHasStockAlertInfo(variant)
+            }
+            else -> {
+                binding?.tvIconInfo?.hide()
+            }
+        }
+    }
+
     private fun setupNotifyMeInfo(variant: ProductVariant) {
-        binding?.tvProductManageNotifyMe?.run {
-            text = getString(R.string.product_manage_notify_me_buyer_info_in_edit_stock_variant,
-                variant.notifymeCount.toString()).parseAsHtml()
-            showWithCondition(variant.haveNotifyMe())
+        binding?.tvIconInfo?.run {
+            text = getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_notify_me_buyer_info_in_edit_stock_variant,
+                variant.notifymeCount.toString()
+            ).parseAsHtml()
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_notify_me_buyer, 0, 0, 0)
+            show()
+        }
+    }
+
+    private fun setupEmptyStockInfo(variant: ProductVariant) {
+        binding?.tvIconInfo?.run {
+            text = getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_zero_stock_info_in_edit_stock_variant,
+                variant.notifymeCount.toString()
+            ).parseAsHtml()
+            show()
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_attention, 0, 0, 0)
+        }
+    }
+
+    private fun setupStockAlertActiveInfo(variant: ProductVariant) {
+        binding?.tvIconInfo?.run {
+            text = getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_stock_alert_active_info_in_edit_stock_variant,
+                variant.notifymeCount.toString()
+            ).parseAsHtml()
+            show()
+            setCompoundDrawablesWithIntrinsicBounds(
+                R.drawable.ic_information_filled_yellow,
+                0,
+                0,
+                0
+            )
+        }
+    }
+
+    private fun setupHasStockAlertInfo(variant: ProductVariant) {
+        binding?.tvIconInfo?.run {
+            text = getString(
+                com.tokopedia.product.manage.common.R.string.product_manage_has_stock_alert_info_in_edit_stock_variant,
+                variant.notifymeCount.toString()
+            ).parseAsHtml()
+            show()
+            setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bell_filled, 0, 0, 0)
         }
     }
 
@@ -160,11 +228,11 @@ class ProductVariantStockViewHolder(
             addTextChangedListener(textChangeListener)
 
             setOnFocusChangeListener { _, isFocus ->
-                if(!isFocus) {
+                if (!isFocus) {
                     val currentStock = quantityEditor.getValue()
                     tempStock?.let { previousStock ->
                         // if previous stock is not the same as current stock, hit the tracker
-                        if(previousStock != currentStock) {
+                        if (previousStock != currentStock) {
                             ProductManageTracking.eventClickChangeAmountVariant()
                             tempStock = currentStock
                         }
@@ -175,18 +243,18 @@ class ProductVariantStockViewHolder(
     }
 
     private fun removeStockEditorTextChangedListener() {
-       textChangeListener?.let {
-           binding?.quantityEditorStock?.editText?.run {
-               removeTextChangedListener(it)
-           }
-       }
+        textChangeListener?.let {
+            binding?.quantityEditorStock?.editText?.run {
+                removeTextChangedListener(it)
+            }
+        }
     }
 
     private fun createTextChangeListener(variant: ProductVariant): TextWatcher {
         return object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val input = s?.toString().orEmpty()
-                val stock: Int
+                var stock: Int
                 if (input.isNotEmpty()) {
                     stock = binding?.quantityEditorStock?.getValue().orZero()
                     toggleQuantityEditorBtn(stock, variant.maxStock)
@@ -198,8 +266,11 @@ class ProductVariantStockViewHolder(
                 }
                 setQuantityEditorError(stock, variant.maxStock)
                 binding?.labelInactive?.showWithCondition(
-                    getInactivityByStock(variant) || getInactivityByStatus())
+                    getInactivityByStock(variant) || getInactivityByStatus()
+                )
                 listener.onStockBtnClicked()
+                setupIconInfo(variant, stock)
+
             }
 
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -215,7 +286,7 @@ class ProductVariantStockViewHolder(
             addButton.setOnClickListener {
                 val input = editText.text.toString()
 
-                var stock = if(input.isNotEmpty()) {
+                var stock = if (input.isNotEmpty()) {
                     input.toInt()
                 } else {
                     MINIMUM_STOCK
@@ -223,7 +294,7 @@ class ProductVariantStockViewHolder(
 
                 stock++
 
-                if(stock <= variant.maxStock ?: MAXIMUM_STOCK) {
+                if (stock <= variant.maxStock ?: MAXIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
                     listener.onStockBtnClicked()
@@ -240,7 +311,7 @@ class ProductVariantStockViewHolder(
             subtractButton.setOnClickListener {
                 val input = editText.text.toString()
 
-                var stock = if(input.isNotEmpty()) {
+                var stock = if (input.isNotEmpty()) {
                     input.toInt()
                 } else {
                     MINIMUM_STOCK
@@ -248,7 +319,7 @@ class ProductVariantStockViewHolder(
 
                 stock--
 
-                if(stock >= MINIMUM_STOCK) {
+                if (stock >= MINIMUM_STOCK) {
                     tempStock = stock
                     editText.setText(stock.getNumberFormatted())
                     listener.onStockBtnClicked()
@@ -298,7 +369,7 @@ class ProductVariantStockViewHolder(
     private fun getCurrentStockInput(): Int {
         val quantityEditorStock = binding?.quantityEditorStock
         val input = quantityEditorStock?.editText?.text?.toString().orEmpty()
-        return if(input.isNotEmpty()) {
+        return if (input.isNotEmpty()) {
             quantityEditorStock?.getValue().orZero()
         } else {
             MINIMUM_STOCK

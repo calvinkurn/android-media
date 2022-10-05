@@ -167,7 +167,7 @@ class ProductViewHolder(
 
     private fun showStockHintImage(product: ProductUiModel) {
         binding?.imageStockInformation
-            ?.showWithCondition((product.isEmpty() && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
+            ?.showWithCondition((product.isEmptyStock && product.isNotViolation() && !product.haveNotifyMeOOS) || product.isSuspend())
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
@@ -187,8 +187,6 @@ class ProductViewHolder(
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
                         || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
-
-
     }
 
     private fun showStockAlertImage(product: ProductUiModel) {
