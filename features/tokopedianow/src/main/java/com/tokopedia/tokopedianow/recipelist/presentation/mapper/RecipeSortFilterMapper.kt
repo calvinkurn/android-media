@@ -4,11 +4,11 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowSectionHeaderUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterSortDataResponse
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
+import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterSectionUiModel.RecipeFilterSectionHeader
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterSectionUiModel.RecipeSortSectionHeader
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 
@@ -55,12 +55,12 @@ object RecipeSortFilterMapper {
             val parentId = it.options.first().key
 
             val sectionHeader = if(parentId == PARAM_INGREDIENT_ID) {
-                TokoNowSectionHeaderUiModel(
-                    title = it.title,
-                    seeAllAppLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
+                RecipeFilterSectionHeader(
+                    text = it.title,
+                    appLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
                 )
             } else {
-                TokoNowSectionHeaderUiModel(title = it.title)
+                RecipeFilterSectionHeader(text = it.title)
             }
 
             val filterChipList = TokoNowChipListUiModel(

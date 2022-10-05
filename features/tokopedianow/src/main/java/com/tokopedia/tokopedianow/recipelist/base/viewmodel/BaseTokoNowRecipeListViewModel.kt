@@ -271,7 +271,7 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     private fun showProgressBar() {
-        _showProgressBar.postValue(false)
+        _showProgressBar.postValue(true)
     }
 
     private fun hideProgressBar() {
@@ -315,7 +315,8 @@ open class BaseTokoNowRecipeListViewModel(
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {
-        val notLoading = visitableItems.firstOrNull { it is LoadingMoreModel } == null
+        val notLoading = visitableItems.firstOrNull { it is LoadingMoreModel } == null &&
+            _showProgressBar.value == false
         val scrolledToBottom = lastVisibleItemIndex == visitableItems.count() - DEFAULT_INDEX
         return scrolledToBottom && notLoading && hasNext
     }

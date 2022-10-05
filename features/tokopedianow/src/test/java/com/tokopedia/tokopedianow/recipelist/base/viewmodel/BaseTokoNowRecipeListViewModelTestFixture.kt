@@ -95,7 +95,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         expectedSourcePage: String = "",
         expectedWarehouseId: String,
         expectedSortByParams: String?,
-        expectedIngredientIdsParams: String?,
+        expectedTagIdsParam: String?,
+        expectedIngredientIdsParam: String?,
+        expectedDurationParam: String?,
+        expectedPortionParam: String?,
         actualRecipeListParam: RecipeListParam
     ) {
         val expectedPerPage = 5
@@ -105,7 +108,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         assertEquals(expectedSourcePage, actualRecipeListParam.sourcePage)
         assertEquals(expectedWarehouseId, actualRecipeListParam.warehouseID)
         assertEquals(expectedSortByParams, actualQueryParamsMap["sort_by"])
-        assertEquals(expectedIngredientIdsParams, actualQueryParamsMap["ingredient_ids"])
+        assertEquals(expectedTagIdsParam, actualQueryParamsMap["tag_ids"])
+        assertEquals(expectedIngredientIdsParam, actualQueryParamsMap["ingredient_ids"])
+        assertEquals(expectedDurationParam, actualQueryParamsMap["duration"])
+        assertEquals(expectedPortionParam, actualQueryParamsMap["portion"])
     }
 
     fun addItemToVisitableList(item: Visitable<*>) {

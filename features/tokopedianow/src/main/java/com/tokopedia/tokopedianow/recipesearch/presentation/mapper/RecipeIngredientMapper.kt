@@ -33,14 +33,9 @@ object RecipeIngredientMapper {
         }
     }
 
-    fun MutableList<RecipeSearchIngredientUiModel>.updateIngredients(
-        selectedFilters: List<SelectedFilter>
-    ) {
-        selectedFilters.filter { it.parentId == PARAM_INGREDIENT_ID }.map { it.id }
-            .forEach { selectedIngredientId ->
-                firstOrNull { it.id == selectedIngredientId }?.let {
-                    set(indexOf(it), it.copy(isChecked = true))
-                }
-            }
+    fun MutableList<RecipeSearchIngredientUiModel>.updateIngredients(id: String, isChecked: Boolean) {
+        firstOrNull { it.id == id }?.let {
+            set(indexOf(it), it.copy(isChecked = isChecked))
+        }
     }
 }

@@ -42,7 +42,7 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
 
         val expectedVisitableList = listOf(
             RecipeHeaderUiModel,
-            RecipeFilterUiModel(),
+            RecipeFilterUiModel(selectedFiltersCount = 1),
             RecipeEmptyStateUiModel(
                 isFilterSelected = true,
                 title = ""
@@ -62,15 +62,31 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
         val selectedFilters = listOf(
             SelectedFilter(
                 id = "Newest",
-                parentId = "1"
+                parentId = "sort_by"
             ),
             SelectedFilter(
                 id = "1",
-                parentId = "2"
+                parentId = "ingredient_ids"
             ),
             SelectedFilter(
                 id = "2",
-                parentId = "2"
+                parentId = "ingredient_ids"
+            ),
+            SelectedFilter(
+                id = "3",
+                parentId = "tag_ids"
+            ),
+            SelectedFilter(
+                id = "4",
+                parentId = "tag_ids"
+            ),
+            SelectedFilter(
+                id = "30To60",
+                parentId = "duration"
+            ),
+            SelectedFilter(
+                id = "LessThan5",
+                parentId = "portion"
             )
         )
 
@@ -88,7 +104,10 @@ class BaseTokoNowRecipeListViewModelTestApplyFilter : BaseTokoNowRecipeListViewM
             expectedPage = 1,
             expectedWarehouseId = "5",
             expectedSortByParams = "Newest",
-            expectedIngredientIdsParams = "1,2",
+            expectedTagIdsParam = "3,4",
+            expectedIngredientIdsParam = "1,2",
+            expectedDurationParam = "30To60",
+            expectedPortionParam = "LessThan5",
             actualRecipeListParam = actualRecipeListParam,
         )
         assertEquals(selectedFilters, actualSelectedFilter)

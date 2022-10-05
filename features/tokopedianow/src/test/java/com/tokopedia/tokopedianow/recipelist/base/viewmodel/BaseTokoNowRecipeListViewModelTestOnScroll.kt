@@ -33,7 +33,10 @@ class BaseTokoNowRecipeListViewModelTestOnScroll : BaseTokoNowRecipeListViewMode
             expectedPage = 2,
             expectedWarehouseId = "1",
             expectedSortByParams = null,
-            expectedIngredientIdsParams = null,
+            expectedTagIdsParam = null,
+            expectedIngredientIdsParam = null,
+            expectedDurationParam = null,
+            expectedPortionParam = null,
             actualRecipeListParam = actualRecipeListParam,
         )
         verifyGetRecipeListUseCaseCalled(times = 2)

@@ -44,7 +44,7 @@ class TokoNowRecipeSearchIngredientViewModel @Inject constructor(
             selectedFilters.remove(SelectedFilter(id, PARAM_INGREDIENT_ID))
         }
 
-        ingredientList.updateIngredients(selectedFilters)
+        ingredientList.updateIngredients(id, isChecked)
         _ingredientItems.postValue(ingredientList)
     }
 }
