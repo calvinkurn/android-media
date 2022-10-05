@@ -11,6 +11,8 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
+import com.tokopedia.product.addedit.preview.data.source.api.response.ShopInfo
+import com.tokopedia.product.addedit.preview.data.source.api.response.StatusInfo
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
@@ -457,9 +459,16 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop location should be true`() = runBlocking {
+        val shopStatus = StatusInfo(
+            shopStatus = "1",
+            statusTitle= "Open",
+            statusMessage = "",
+            tickerType ="warning"
+        )
         onGetShopInfoLocation_thenReturn()
+        onGetShopStatus_thenReturn(shopStatus)
 
-        viewModel.validateShopLocation(121313)
+        viewModel.validateShopInformation(121313)
 
         viewModel.locationValidation.getOrAwaitValue()
         verifyValidateShopLocation()
@@ -469,7 +478,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     fun  `When validate shop location error, should post error to observer`() = runBlocking {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } throws MessageErrorException("")
 
-        viewModel.validateShopLocation(121313)
+        viewModel.validateShopInformation(121313)
 
         coVerify {
             getShopInfoLocationUseCase.executeOnBackground()
@@ -882,6 +891,40 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         viewModel.mustFillParentWeight.getOrAwaitValue()
     }
 
+    @Test
+    fun  `When validate shop isModerate should be false`() = runBlocking {
+        val shopStatus = StatusInfo(
+            shopStatus = "1",
+            statusTitle= "Open",
+            statusMessage = "",
+            tickerType ="warning"
+        )
+        onGetShopInfoLocation_thenReturn()
+        onGetShopStatus_thenReturn(shopStatus)
+
+        viewModel.validateShopInformation(121313)
+
+        viewModel.isOnModerationMode.getOrAwaitValue()
+        verifyValidateShopIsNotModerate()
+    }
+
+    @Test
+    fun  `When validate shop isModerate should be true`() = runBlocking {
+        val shopStatus = StatusInfo(
+            shopStatus = "3",
+            statusTitle= "Moderate",
+            statusMessage = "Your shope is on moderate status",
+            tickerType ="warning"
+        )
+        onGetShopInfoLocation_thenReturn()
+        onGetShopStatus_thenReturn(shopStatus)
+
+        viewModel.validateShopInformation(121313)
+
+        viewModel.isOnModerationMode.getOrAwaitValue()
+        verifyValidateShopIsModerate()
+    }
+
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
         coEvery { productLimitationUseCase.executeOnBackground() } returns successResponse
     }
@@ -904,6 +947,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetShopInfoLocation_thenReturn() {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onGetShopStatus_thenReturn(statusInfo: StatusInfo) {
+        coEvery { getStatusShopUseCase.executeOnBackground() } returns statusInfo
     }
 
     private fun onSaveShopShipmentLocation_thenReturn() {
@@ -1055,5 +1102,13 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
                 viewModel.isEditing.value == true -> AccessId.PRODUCT_EDIT
                 else -> AccessId.PRODUCT_ADD
             }
+
+    private fun verifyValidateShopIsModerate() {
+        assertTrue(viewModel.isOnModerationMode.value == Success(true))
+    }
+
+    private fun verifyValidateShopIsNotModerate() {
+        assertTrue(viewModel.isOnModerationMode.value == Success(false))
+    }
 
 }

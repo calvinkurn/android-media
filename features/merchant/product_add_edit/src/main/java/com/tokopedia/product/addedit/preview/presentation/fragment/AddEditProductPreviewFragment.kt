@@ -101,6 +101,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
+import com.tokopedia.product.addedit.preview.presentation.dialog.IneligibleAccessWarningBottomSheet
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductEditService
@@ -140,7 +141,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
-import java.util.*
+import java.net.URLEncoder
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -148,6 +149,10 @@ class AddEditProductPreviewFragment :
         AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         AddEditProductPerformanceMonitoringListener {
+
+    companion object{
+        const val URL_ARTICLE_SELLER_EDU = "https://seller.tokopedia.com/edu/toko-dimoderasi/"
+    }
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
@@ -308,6 +313,7 @@ class AddEditProductPreviewFragment :
         observeAdminPermission()
         observeProductLimitationData()
         observeMustFillParentWeight()
+        observeIsShopModerated()
 
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
@@ -1191,6 +1197,26 @@ class AddEditProductPreviewFragment :
         })
     }
 
+    private fun observeIsShopModerated() {
+        viewModel.isOnModerationMode.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val status = it.data
+                    if (status) {
+                        showBottomSheet()
+                    }
+                }
+                is Fail -> {
+                    AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
+                    AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
+                    if (isStartButtonClicked) {
+                        showToasterFailed(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
     private fun removeObservers() {
         viewModel.isEditing.removeObservers(this)
         viewModel.getProductResult.removeObservers(this)
@@ -1200,6 +1226,7 @@ class AddEditProductPreviewFragment :
         viewModel.isLoading.removeObservers(this)
         viewModel.saveProductDraftResultLiveData.removeObservers(this)
         viewModel.validationResult.removeObservers(this)
+        viewModel.isOnModerationMode.removeObservers(this)
         getNavigationResult(REQUEST_KEY_ADD_MODE)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DETAIL)?.removeObservers(this)
         getNavigationResult(REQUEST_KEY_DESCRIPTION)?.removeObservers(this)
@@ -1692,7 +1719,7 @@ class AddEditProductPreviewFragment :
 
     private fun validateShopLocation() {
         if (isAdding()) {
-            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
+            viewModel.validateShopInformation(userSession.shopId.toIntOrZero())
         }
     }
 
@@ -1810,5 +1837,18 @@ class AddEditProductPreviewFragment :
         if (!isProductLimitEligible && isFragmentFirstTimeLoaded) {
             showProductLimitationBottomSheet()
         }
+    }
+
+    private fun showBottomSheet(){
+        val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
+        bottomSheet.setOnButtonBackClicked { activity?.finish() }
+        bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun routeToArticle(){
+        val encodedUrl = URLEncoder.encode(URL_ARTICLE_SELLER_EDU, "UTF-8")
+        val route = String.format("%s?url=%s", ApplinkConst.WEBVIEW, encodedUrl)
+        RouteManager.route(activity ?: return, route)
     }
 }
