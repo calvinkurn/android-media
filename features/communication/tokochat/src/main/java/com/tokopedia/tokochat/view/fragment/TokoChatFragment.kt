@@ -54,7 +54,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         super.initViews()
         setupBackground()
         setupToolbarData()
-        setupReplySection(false, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
+        setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
         setupReceiverDummyMessages()
     }
 

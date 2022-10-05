@@ -12,12 +12,18 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ELEVEN_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TEN_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
+import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*
@@ -86,28 +92,28 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
     }
 
     private fun setDefaultComposeBackground() {
-        val paddingTop = resources.getDimension(com.tokopedia.tokochat_common.R.dimen.tokochat_11dp).toInt()
-        val paddingBottom = resources.getDimension(com.tokopedia.tokochat_common.R.dimen.tokochat_10dp).toInt()
+        val paddingTop = ELEVEN_DP.toDp()
+        val paddingBottom = TEN_DP.toDp()
         composeArea?.background = bgComposeArea
         composeArea?.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     private fun initComposeBackground() {
-        bgComposeArea = TokoChatViewUtil.generateBackgroundWithShadowBtn(
+        bgComposeArea = TokoChatViewUtil.generateBackgroundWithShadow(
             view = composeArea,
             backgroundColor = com.tokopedia.unifyprinciples.R.color.Unify_Background,
-            topLeftRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_20dp,
-            topRightRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_20dp,
-            bottomLeftRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_20dp,
-            bottomRightRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_20dp,
-            shadowColor = com.tokopedia.tokochat_common.R.color.tokochat_dms_chat_bubble_shadow,
-            elevation = com.tokopedia.tokochat_common.R.dimen.tokochat_1dp,
-            shadowRadius = com.tokopedia.tokochat_common.R.dimen.tokochat_1dp,
+            topLeftRadiusValue = TWENTY_DP,
+            topRightRadiusValue = TWENTY_DP,
+            bottomLeftRadiusValue = TWENTY_DP,
+            bottomRightRadiusValue = TWENTY_DP,
+            shadowColor = com.tokopedia.unifyprinciples.R.color.Unify_Static_Black_20,
+            elevationValue = ONE_DP,
+            shadowRadiusValue = ONE_DP,
             shadowGravity = Gravity.NO_GRAVITY,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
-            strokeWidth = R.dimen.tokochat_1dp,
+            strokeWidthValue = ONE_DP,
             //Hide the top shadow
-            shadowTop = Int.ZERO,
+            shadowTop = ZERO_DP,
             isInsetElevation = false
         )
     }
