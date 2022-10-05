@@ -62,15 +62,12 @@ class TokoChatCourierClientProvider @Inject constructor(
     }
 
     private fun getMqttInterceptors(): List<MqttInterceptor> {
-//        return if (BuildConfig.DEBUG) {
-//            listOf(
-//                MqttChuckInterceptor(context, MqttChuckConfig())
-//            )
-//        } else{
-//            listOf()
-//        }
-        return listOf(
-            MqttChuckInterceptor(context, MqttChuckConfig())
-        )
+        return if (BuildConfig.DEBUG) {
+            listOf(
+                MqttChuckInterceptor(context, MqttChuckConfig())
+            )
+        } else{
+            listOf()
+        }
     }
 }

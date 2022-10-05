@@ -14,30 +14,34 @@ import android.util.StateSet
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.ColorRes
-import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.unifycomponents.toPx
 
 object TokoChatViewUtil {
 
     private const val ELEVATION_VALUE_DIVIDER = 3f
-    private const val FIVE_MARGIN = 5
     private const val ELLIPSIZE = "..."
+
+    const val ZERO_DP = 1
+    const val ONE_DP = 1
+    const val TWO_DP = 2
+    const val TWENTY_DP = 20
 
     @Suppress("MagicNumber")
     fun generateBackgroundWithShadow(
         view: View?,
         @ColorRes backgroundColor: Int,
-        @DimenRes topLeftRadius: Int,
-        @DimenRes topRightRadius: Int,
-        @DimenRes bottomLeftRadius: Int,
-        @DimenRes bottomRightRadius: Int,
+        topLeftRadiusValue: Int,
+        topRightRadiusValue: Int,
+        bottomLeftRadiusValue: Int,
+        bottomRightRadiusValue: Int,
         @ColorRes shadowColor: Int,
-        @DimenRes elevation: Int,
-        @DimenRes shadowRadius: Int,
+        elevationValue: Int,
+        shadowRadiusValue: Int,
         shadowGravity: Int,
         @ColorRes strokeColor: Int? = null,
-        @DimenRes strokeWidth: Int? = null,
+        strokeWidthValue: Int? = null,
         strokePaddingBottom: Int? = null,
         useViewPadding: Boolean = false,
         pressedDrawable: Drawable? = null,
@@ -45,18 +49,10 @@ object TokoChatViewUtil {
         isInsetElevation: Boolean = true
     ): Drawable? {
         if (view == null) return null
-        val topLeftRadiusValue = view.context.resources.getDimension(topLeftRadius)
-        val topRightRadiusValue = view.context.resources.getDimension(topRightRadius)
-        val bottomLeftRadiusValue = view.context.resources.getDimension(bottomLeftRadius)
-        val bottomRightRadiusValue = view.context.resources.getDimension(bottomRightRadius)
-        val elevationValue = view.context.resources.getDimension(elevation).toInt()
-        val shadowRadiusValue = view.context.resources.getDimension(shadowRadius)
         val shadowColorValue = ContextCompat.getColor(view.context, shadowColor)
         val backgroundColorValue = ContextCompat.getColor(view.context, backgroundColor)
         val strokeColorValue: Int? =
             strokeColor?.let { ContextCompat.getColor(view.context, strokeColor) }
-        val strokeWidthValue: Float? =
-            strokeWidth?.let { view.context.resources.getDimension(strokeWidth) }
 
         val stateDrawable = StateListDrawable()
         val shadowDrawable = ShapeDrawable()
@@ -64,19 +60,20 @@ object TokoChatViewUtil {
         val drawableLayer = arrayListOf<Drawable>()
 
         val outerRadius = floatArrayOf(
-            topLeftRadiusValue,
-            topLeftRadiusValue,
-            topRightRadiusValue,
-            topRightRadiusValue,
-            bottomLeftRadiusValue,
-            bottomLeftRadiusValue,
-            bottomRightRadiusValue,
-            bottomRightRadiusValue
+            topLeftRadiusValue.toPx().toFloat(),
+            topLeftRadiusValue.toPx().toFloat(),
+            topRightRadiusValue.toPx().toFloat(),
+            topRightRadiusValue.toPx().toFloat(),
+            bottomLeftRadiusValue.toPx().toFloat(),
+            bottomLeftRadiusValue.toPx().toFloat(),
+            bottomRightRadiusValue.toPx().toFloat(),
+            bottomRightRadiusValue.toPx().toFloat()
         )
 
         val backgroundPaint = Paint()
         backgroundPaint.style = Paint.Style.FILL
-        backgroundPaint.setShadowLayer(shadowRadiusValue, 0f, 0f, 0)
+        backgroundPaint.setShadowLayer(
+            shadowRadiusValue.toPx().toFloat(), 0f, 0f, 0)
 
         val shadowDrawableRect = Rect()
         shadowDrawableRect.left = elevationValue
@@ -124,7 +121,8 @@ object TokoChatViewUtil {
         shadowDrawable.apply {
             setPadding(shadowDrawableRect)
             paint.color = backgroundColorValue
-            paint.setShadowLayer(shadowRadiusValue, 0f, DY, shadowColorValue)
+            paint.setShadowLayer(
+                shadowRadiusValue.toPx().toFloat(), 0f, DY, shadowColorValue)
             shape = RoundRectShape(outerRadius, null, null)
         }
         drawableLayer.add(shadowDrawable)
@@ -138,7 +136,7 @@ object TokoChatViewUtil {
                 setPadding(shadowDrawableRect)
                 paint.style = Paint.Style.STROKE
                 paint.color = strokeColorValue
-                paint.strokeWidth = strokeWidthValue
+                paint.strokeWidth = strokeWidthValue.toPx().toFloat()
                 shape = RoundRectShape(outerRadius, null, null)
             }
             drawableLayer.add(strokeDrawable)

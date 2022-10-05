@@ -85,7 +85,7 @@ class TokoChatMessageChatLayout : ViewGroup {
                 showCheckMark =
                     getBoolean(R.styleable.TokoChatMessageChatLayout_tokochatShowCheckMark, DEFAULT_SHOW_CHECK_MARK)
                 useMaxWidth =
-                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokoChatUseMaxWidth, DEFAULT_USE_MAX_WIDTH)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokochatUseMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }
@@ -158,7 +158,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         val textColor = if (msg.isNotSupported) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
-            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+            com.tokopedia.unifyprinciples.R.color.Unify_NN800
         }
         message?.setTextColor(MethodChecker.getColor(context, textColor))
     }

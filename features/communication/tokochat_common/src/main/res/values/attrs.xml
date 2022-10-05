@@ -10,6 +10,6 @@
     </declare-styleable>
     <declare-styleable name="TokoChatMessageChatLayout">
         <attr name="tokochatShowCheckMark"/>
-        <attr name="tokoChatUseMaxWidth" format="boolean" />
+        <attr name="tokochatUseMaxWidth" format="boolean" />
     </declare-styleable>
 </resources>
