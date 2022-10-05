@@ -43,7 +43,7 @@ class GetOrderListUseCase(
     }
 
     companion object {
-        private val ORDER_STATUS_LIST = listOf(220, 221, 450, 501, 520)
+        private val ORDER_STATUS_LIST = listOf(220, 400, 520)
         private const val ORDER_LIST_QUERY = """
             query OrderList(${'$'}input: OrderListArgs!) {
               orderList(input: ${'$'}input) {

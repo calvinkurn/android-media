@@ -3,6 +3,7 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.runtime.State
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
+import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.STATUS_NEW_ORDER
 import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
@@ -23,15 +25,10 @@ import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -81,6 +78,13 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _orderDetail = MutableStateFlow<UiState<OrderModel>>(UiState.Loading())
+    val orderDetail : StateFlow<UiState<OrderModel>> = _orderDetail.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
     val action: StateFlow<UiState<Boolean>>
         get() = _action
@@ -95,6 +99,16 @@ class SharedViewModel @Inject constructor(
         viewModelScope.launch {
             _orderList.emitAll(
                 orderUseCaseImpl.getOrderList(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
+        }
+    }
+
+    fun getOrderDetail(orderId: String) {
+        viewModelScope.launch {
+            _orderDetail.emitAll(
+                orderUseCaseImpl.getOrderDetail(orderId).map {
                     UiState.Success(data = it)
                 }
             )

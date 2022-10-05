@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.domain.interactor
 
+import com.tokopedia.sellerapp.data.repository.OrderDetailRepository
 import com.tokopedia.sellerapp.data.repository.OrderRepository
 import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper
 import com.tokopedia.sellerapp.domain.model.OrderModel
@@ -11,12 +12,21 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class OrderUseCaseImpl @Inject constructor(
-    private val orderRepository: OrderRepository
-) : OrderUseCase {
+    private val orderRepository: OrderRepository,
+    private val orderDetailRepository: OrderDetailRepository,
+    ) : OrderUseCase {
 
     override fun getOrderList(dataKey: String): Flow<List<OrderModel>> {
         return orderRepository.getCachedData(
             OrderDomainMapper.getOrderStatusByDataKey(dataKey)
+        ).map {
+            it.mapToDomainModel()
+        }
+    }
+
+    override fun getOrderDetail(orderId: String): Flow<OrderModel> {
+        return orderDetailRepository.getCachedData(
+            arrayOf(orderId)
         ).map {
             it.mapToDomainModel()
         }

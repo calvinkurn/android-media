@@ -19,6 +19,10 @@ class OrderRoomDatasource(
         return orderDao.getOrderList(orderStatus)
     }
 
+    fun getOrderDetail(orderId: String) : Flow<OrderWithProduct>{
+        return orderDao.getOrderDetail(orderId)
+    }
+
     fun getOrderCount(orderStatus: Array<String>) : Flow<Int>{
         return orderDao.getOrderCount(orderStatus)
     }

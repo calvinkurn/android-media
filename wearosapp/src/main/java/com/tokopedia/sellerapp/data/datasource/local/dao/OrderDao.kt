@@ -23,6 +23,10 @@ interface OrderDao{
     @Query("SELECT * FROM WearOrder wo WHERE wo.order_status_id IN (:status)")
     fun getOrderList(status: Array<String>) : Flow<List<OrderWithProduct>>
 
+    @Transaction
+    @Query("SELECT * FROM WearOrder wo WHERE wo.order_id IS (:orderId)")
+    fun getOrderDetail(orderId: String) : Flow<OrderWithProduct>
+
     @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id IN (:status)")
     fun getOrderCount(status: Array<String>) : Flow<Int>
 
