@@ -19,7 +19,7 @@ class UpsellWebViewActivity: BaseSimpleWebViewActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        return false
+        return true
     }
 
     companion object {
