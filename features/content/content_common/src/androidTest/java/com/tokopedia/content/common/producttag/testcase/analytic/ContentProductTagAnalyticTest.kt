@@ -423,6 +423,77 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickBackButtonTest */
+    @Test
+    fun contentProductTag_ugc_clickBackButton_lastTagged() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        click(backButton)
+
+        verify { mockAnalytic.clickBackButton(ProductTagSource.LastTagProduct) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickBackButton_lastPurchased() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openLastPurchasedSection()
+
+        click(backButton)
+
+        verify { mockAnalytic.clickBackButton(ProductTagSource.LastPurchase) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickBackButton_myShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openMyShopSection()
+
+        click(backButton)
+
+        verify { mockAnalytic.clickBackButton(ProductTagSource.MyShop) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickBackButton_globalSearch() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearch(keyword)
+
+        click(backButton)
+
+        verify { mockAnalytic.clickBackButton(ProductTagSource.GlobalSearch) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickBackButton_shop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
+
+        click(backButton)
+
+        verify { mockAnalytic.clickBackButton(ProductTagSource.Shop) }
+    }
 
     /** impressShopCardTest */
 
