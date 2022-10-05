@@ -4,6 +4,7 @@ import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
@@ -32,6 +33,30 @@ class CreateChannelUseCase @Inject constructor(
 
     fun isChatConnected(): Boolean {
         return repository.getConversationRepository().isChatConnected()
+    }
+
+    fun getGroupBookingChannel(
+        channelId: String,
+        onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
+        onError: (error: ConversationsNetworkError) -> Unit
+    ) {
+        repository.getConversationRepository().getGroupBookingChannel(
+            channelId = channelId,
+            onSuccess = onSuccess,
+            onError = onError
+        )
+    }
+
+    fun getRefreshedGroupBookingChannel(
+        channelId: String,
+        onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
+        onError: (error: ConversationsNetworkError) -> Unit
+    ) {
+        repository.getConversationRepository().getRefreshedGroupBookingChannel(
+            channelId = channelId,
+            onSuccess = onSuccess,
+            onError = onError
+        )
     }
 
     data class CreateChannelParam(

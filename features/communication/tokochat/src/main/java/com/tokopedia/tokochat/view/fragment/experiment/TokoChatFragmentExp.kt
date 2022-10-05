@@ -75,6 +75,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
         binding?.clearBtn?.setOnClickListener {
             binding?.mainTv?.text = ""
+            viewModel.deRegisterActiveChannel(channelUrl)
         }
 
         binding?.loadmoreBtn?.setOnClickListener {
@@ -134,7 +135,7 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "RB-156893-3535570"
+            "RB-109130-5632035"
         } else {
             text.toString()
         }
@@ -176,8 +177,10 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 }
                 binding?.mainTv?.text = messageText
             }
-//            viewModel.markChatAsRead(channelUrl)
+            viewModel.markChatAsRead(channelUrl)
         }
+
+
     }
 
     private fun getTextWatcherListener(): TextWatcher {

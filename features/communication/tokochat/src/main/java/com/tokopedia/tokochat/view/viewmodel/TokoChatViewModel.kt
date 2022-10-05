@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.view.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
@@ -55,11 +56,11 @@ class TokoChatViewModel @Inject constructor(
     val error: LiveData<Throwable>
         get() = _error
 
-    fun sendMessage(channelUrl: String, text: String) {
+    fun sendMessage(channelId: String, text: String) {
         try {
             val messageMetaData = SendMessageMetaData()
             sendMessageUseCase.sendTextMessage(
-                channelUrl,
+                channelId,
                 text,
                 messageMetaData
             )
@@ -86,9 +87,37 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun getChatHistory(channelUrl: String): LiveData<List<ConversationsMessage>> {
+    fun getGroupBookingChannel(channelId: String) {
+        try {
+            createChannelUseCase.getGroupBookingChannel(
+                channelId, {
+                    Log.d("REMOTE_GB", it.toString())
+                }, {
+                    _error.value = it
+                }
+            )
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun getRefreshedGroupBookingChannel(channelId: String) {
+        try {
+            createChannelUseCase.getRefreshedGroupBookingChannel(
+                channelId, {
+                    Log.d("LOCAL_GB", it.toString())
+                }, {
+                    _error.value = it
+                }
+            )
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+        }
+    }
+
+    fun getChatHistory(channelId: String): LiveData<List<ConversationsMessage>> {
         return try {
-            getChatHistoryUseCase(channelUrl)
+            getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
             MutableLiveData()
@@ -103,25 +132,25 @@ class TokoChatViewModel @Inject constructor(
         }
     }
 
-    fun markChatAsRead(channelUrl: String) {
+    fun markChatAsRead(channelId: String) {
         try {
-            markAsReadUseCase(channelUrl)
+            markAsReadUseCase(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
     }
 
-    fun registerActiveChannel(channelUrl: String) {
+    fun registerActiveChannel(channelId: String) {
         try {
-            registrationActiveChannelUseCase.registerActiveChannel(channelUrl)
+            registrationActiveChannelUseCase.registerActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
     }
 
-    fun deRegisterActiveChannel(channelUrl: String) {
+    fun deRegisterActiveChannel(channelId: String) {
         try {
-            registrationActiveChannelUseCase.deRegisterActiveChannel(channelUrl)
+            registrationActiveChannelUseCase.deRegisterActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
@@ -227,11 +256,11 @@ class TokoChatViewModel @Inject constructor(
      * Not P0
      */
 
-    fun sendExtensionMessage(channelUrl: String) {
+    fun sendExtensionMessage(channelId: String) {
         try {
             val extensionMessage = getExtensionMessage()
             sendMessageUseCase.sendExtensionMessage(
-                channelUrl,
+                channelId,
                 extensionMessage,
                 onSuccess = {},
                 onError = {

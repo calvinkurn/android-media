@@ -83,9 +83,9 @@ class TokoChatMessageChatLayout : ViewGroup {
         )?.apply {
             try {
                 showCheckMark =
-                    getBoolean(R.styleable.TokoChatMessageChatLayout_showCheckMark, DEFAULT_SHOW_CHECK_MARK)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokochatShowCheckMark, DEFAULT_SHOW_CHECK_MARK)
                 useMaxWidth =
-                    getBoolean(R.styleable.TokoChatMessageChatLayout_useMaxWidth, DEFAULT_USE_MAX_WIDTH)
+                    getBoolean(R.styleable.TokoChatMessageChatLayout_tokoChatUseMaxWidth, DEFAULT_USE_MAX_WIDTH)
             } finally {
                 recycle()
             }

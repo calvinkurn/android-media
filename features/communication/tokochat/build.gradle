@@ -93,12 +93,12 @@ dependencies {
 
     // Gojek dependencies
     implementation rootProject.ext.miscDependencies.conversation
-    implementation rootProject.ext.miscDependencies.chuckMqtt
     implementation rootProject.ext.miscDependencies.timerPingSender
     implementation rootProject.ext.miscDependencies.courierMessageAdapter
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
-    implementation files('libs/courier-client-0.0.2-release.aar')
+    implementation files('libs/courier-client-0.0.3-release.aar')
+    debugImplementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions

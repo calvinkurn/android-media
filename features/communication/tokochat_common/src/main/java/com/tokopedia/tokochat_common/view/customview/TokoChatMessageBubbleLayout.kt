@@ -72,11 +72,11 @@ class TokoChatMessageBubbleLayout : ViewGroup {
         )?.apply {
             try {
                 showCheckMark = getBoolean(
-                    R.styleable.TokoChatMessageBubbleLayout_showCheckMark,
+                    R.styleable.TokoChatMessageBubbleLayout_tokochatShowCheckMark,
                     TokoChatMessageChatLayout.DEFAULT_SHOW_CHECK_MARK
                 )
                 msgOrientation = getInteger(
-                    R.styleable.TokoChatMessageBubbleLayout_messageOrientation,
+                    R.styleable.TokoChatMessageBubbleLayout_tokochatMessageOrientation,
                     DEFAULT_MSG_ORIENTATION
                 )
             } finally {
