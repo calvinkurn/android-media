@@ -32,6 +32,7 @@ internal val lastTaggedRv = R.id.rv_last_tagged_product
 internal val lastPurchasedRv = R.id.rv_last_purchased_product
 
 /** MyShop */
+internal val myShopSearchBar = unifyR.id.searchbar_textfield
 internal val myShopRv = R.id.rv_my_shop_product
 
 /** Fake Autocomplete */
@@ -41,11 +42,17 @@ internal val fakeAutocompleteBackButton = R.id.ic_back
 /** Autocomplete Search Tribe */
 internal val autocompleteSearchBar = autocompleteR.id.autocompleteSearchBar
 
+/** Global Search */
+internal val globalSearchBar = R.id.cl_search
+
 /** Global Search Product */
 internal val globalSearchProductRv = R.id.rv_global_search_product
 
 /** Global Search Shop */
 internal val globalSearchShopRv = R.id.rv_global_search_shop
+
+/** Shop */
+internal val shopSearchBar = R.id.sb_shop_product
 
 /** Others */
 internal val checkboxProduct = R.id.checkbox_product

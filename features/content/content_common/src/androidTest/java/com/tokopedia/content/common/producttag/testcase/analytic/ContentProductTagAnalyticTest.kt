@@ -327,6 +327,51 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickSearchBarTest */
+    @Test
+    fun contentProductTag_ugc_clickSearchBar_lastTagged() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        click(lastTaggedSearchBar)
+
+        verify { mockAnalytic.clickSearchBar(ProductTagSource.LastTagProduct) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSearchBar_myShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openMyShopSection()
+
+        click(myShopSearchBar)
+
+        verify { mockAnalytic.clickSearchBar(ProductTagSource.MyShop) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickSearchBar_globalSearch() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearch(keyword)
+
+        click(globalSearchBar)
+
+        verify { mockAnalytic.clickSearchBar(ProductTagSource.GlobalSearch) }
+    }
 
     /** clickGlobalSearchTabTest */
 
