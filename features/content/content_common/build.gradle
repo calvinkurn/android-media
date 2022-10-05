@@ -123,6 +123,9 @@ dependencies {
 
     androidTestImplementation rootProject.ext.miscDependencies.dagger
     kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
+
+    androidTestImplementation rootProject.ext.unifyDependencies.sortFilter
+    androidTestImplementation projectOrAar(rootProject.ext.features.filter)
 }
 
 project.ext {

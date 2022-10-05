@@ -36,11 +36,16 @@ fun click(text: String) {
     select(text).clickView()
 }
 
-fun clickTab(
-    @IdRes tabLayoutId: Int,
-    @IdRes tabId: Int,
+fun click(@IdRes parentId: Int, text: String) {
+    val matcher = allOf(withText(text), isDescendantOfA(withId(parentId)))
+    onView(matcher).perform(click())
+}
+
+fun click(
+    @IdRes parentId: Int,
+    @IdRes id: Int,
 ) {
-    val matcher = allOf(withId(tabId), isDescendantOfA(withId(tabLayoutId)))
+    val matcher = allOf(withId(id), isDescendantOfA(withId(parentId)))
     onView(matcher).perform(click())
 }
 

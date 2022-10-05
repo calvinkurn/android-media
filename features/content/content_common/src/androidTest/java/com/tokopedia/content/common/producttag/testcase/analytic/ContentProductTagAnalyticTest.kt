@@ -57,6 +57,8 @@ class ContentProductTagAnalyticTest {
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val aceShop = globalSearchModelBuilder.buildShopResponseModel()
     private val quickFilter = globalSearchModelBuilder.buildQuickFilterList()
+    private val sortFilter = globalSearchModelBuilder.buildSortFilterResponseModel()
+    private val sortFilterProductCount = "Ada 3 barang loh"
     private val maxSelectedProduct = 3
     private val keyword = "pokemon"
 
@@ -88,6 +90,8 @@ class ContentProductTagAnalyticTest {
         coEvery { mockRepo.searchAceProducts(any()) } returns aceProduct
         coEvery { mockRepo.searchAceShops(any()) } returns aceShop
         coEvery { mockRepo.getQuickFilter(any(), any()) } returns quickFilter
+        coEvery { mockRepo.getSortFilter(any()) } returns sortFilter
+        coEvery { mockRepo.getSortFilterProductCount(any()) } returns sortFilterProductCount
 
         coEvery { mockAnalytic.clickBreadcrumb(any()) } returns Unit
 
@@ -692,6 +696,21 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickAdvancedProductFilterTest */
+    @Test
+    fun contentProductTag_ugc_clickAdvancedProductFilter_productTab() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setMultipleSelectionProduct(true, maxSelectedProduct)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openGlobalSearch(keyword)
+
+        click(globalSearchProductContainer, globalSearchProductQuickFilterPrefix)
+
+        verify { mockAnalytic.clickAdvancedProductFilter() }
+    }
 
     /** clickSaveAdvancedProductFilterTest */
 

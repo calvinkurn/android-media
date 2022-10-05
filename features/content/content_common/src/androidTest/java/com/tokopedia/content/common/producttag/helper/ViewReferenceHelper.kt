@@ -4,6 +4,7 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.test.R as testR
 import com.tokopedia.unifycomponents.R as unifyR
 import com.tokopedia.autocompletecomponent.R as autocompleteR
+import com.tokopedia.sortfilter.R as sortFilterR
 
 /**
  * Created By : Jonathan Darwin on October 05, 2022
@@ -44,11 +45,10 @@ internal val autocompleteSearchBar = autocompleteR.id.autocompleteSearchBar
 
 /** Global Search */
 internal val globalSearchBar = R.id.cl_search
-internal val globalSearchTab = R.id.tab_layout
-internal val globalSearchTabProduct = R.id.tab_item_product
-internal val globalSearchTabShop = R.id.tab_item_shop
 
 /** Global Search Product */
+internal val globalSearchProductContainer = R.id.cl_global_search_product
+internal val globalSearchProductQuickFilterPrefix = sortFilterR.id.sort_filter_prefix
 internal val globalSearchProductRv = R.id.rv_global_search_product
 
 /** Global Search Shop */
