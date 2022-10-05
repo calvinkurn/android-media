@@ -6,11 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
@@ -20,7 +16,7 @@ import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.DaggerMerchantReportComponent
 import com.tokopedia.report.view.adapter.ReportReasonAdapter
-import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
+import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsExtraString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
@@ -49,10 +45,7 @@ class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonC
         injectComponent()
         super.onCreate(savedInstanceState)
 
-
         setContent {
-            val uiState = viewModel.uiState.collectAsState()
-
             LaunchedEffect(key1 = viewModel.uiEvent, block = {
                 viewModel.uiEvent.collectLatest {
                     when (it) {
@@ -68,14 +61,7 @@ class ProductReportActivity : ComponentActivity(), ReportReasonAdapter.OnReasonC
                 }
             })
 
-            Surface(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                ProductReportComposeContent(
-                    uiState = uiState.value,
-                    onEvent = viewModel::onEvent
-                )
-            }
+            ProductReportScreen(viewModel = viewModel)
         }
     }
 
