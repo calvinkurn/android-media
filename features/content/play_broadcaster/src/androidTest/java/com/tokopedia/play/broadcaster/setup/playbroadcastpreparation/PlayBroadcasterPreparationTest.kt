@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.setup.playbroadcastpreparation
 
 import PlayBroadcasterPreparationRobot
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
+import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
@@ -59,21 +60,21 @@ class PlayBroadcasterPreparationTest {
     }
 
     @Test
-    fun test_entryPointWhenBothAccountBanned() {
+    fun test_entryPointWhenAccountBanned() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
         } returns buildConfigurationUiModel(streamAllowed = false)
 
-        createRobot().entryPointWhenBothAccountBanned()
+        createRobot().entryPointWhenAccountBanned()
     }
 
     @Test
-    fun test_entryPointWhenBothAccountLive() {
+    fun test_entryPointWhenAccountLive() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
         } returns buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
 
-        createRobot().entryPointWhenBothAccountLive()
+        createRobot().entryPointWhenAccountLive()
     }
 
     @Test
@@ -81,21 +82,20 @@ class PlayBroadcasterPreparationTest {
         createRobot().switchAccountSellerToBuyer()
     }
 
-    //
-//    @Test
-//    fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
-//        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
-//
-//        createRobot().switchAccountSellerToNotEligibleBuyer()
-//    }
-//
-//    @Test
-//    fun test_switchAccountSellerToBuyerAndNotAcceptTnc() {
-//        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
-//
-//        createRobot().switchAccountSellerToBuyerAndNotAcceptTnc()
-//    }
-//
+    @Test
+    fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
+        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
+
+        createRobot().switchAccountSellerToNotEligibleBuyer()
+    }
+
+    @Test
+    fun test_switchAccountSellerToBuyerAndNotAcceptTnc() {
+        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
+
+        createRobot().switchAccountSellerToBuyerAndNotAcceptTnc()
+    }
+
     @Test
     fun test_switchAccountBuyerToSellerAndNotAcceptTnc() {
         coEvery {

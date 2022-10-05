@@ -107,14 +107,14 @@ class PlayBroadcasterPreparationRobot(
         delay()
     }
 
-    fun entryPointWhenBothAccountBanned() = chainable {
+    fun entryPointWhenAccountBanned() = chainable {
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_account_banned_title))))
 
         delay()
     }
 
-    fun entryPointWhenBothAccountLive() = chainable {
+    fun entryPointWhenAccountLive() = chainable {
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_both_account_live_title))))
 
