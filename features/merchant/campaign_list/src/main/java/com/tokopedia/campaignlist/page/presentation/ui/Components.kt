@@ -165,11 +165,23 @@ fun UnifyButton(
 fun UnifyTypography(
     text: String,
     modifier: Modifier = Modifier,
-    type: Int,
-    weight: Int = Typography.REGULAR,
-    colorId: Int
+    type: UnifyTypographyType,
+    weight: UnifyTypographyWeight = UnifyTypographyWeight.REGULAR,
+    colorId : Int
 ) {
-    Text(text = text, modifier = modifier)
+    val fontSize = type.fontSize.sp
+    val letterSpacing = type.letterSpacing.sp
+    val fontWeight = if (weight == UnifyTypographyWeight.BOLD) FontWeight.Bold else FontWeight.Normal
+    val textColor = colorResource(id = colorId)
+
+    Text(
+        text = text,
+        modifier = modifier,
+        fontSize = fontSize,
+        letterSpacing = letterSpacing,
+        fontWeight = fontWeight,
+        color = textColor
+    )
 }
 
 @Composable
