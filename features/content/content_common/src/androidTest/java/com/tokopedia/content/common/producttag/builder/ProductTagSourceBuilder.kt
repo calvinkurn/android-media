@@ -7,11 +7,13 @@ import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
  */
 class ProductTagSourceBuilder {
 
-    fun buildComplete(): String {
-        return listOf(
-            ProductTagSource.GlobalSearch,
-            ProductTagSource.MyShop,
-            ProductTagSource.LastPurchase,
-        ).joinToString(separator = ",") { it.tag }
+    fun buildSourceList(takeOut: () -> List<ProductTagSource> = { listOf() }): String {
+        return getAllSource().filterNot { takeOut().contains(it) }.joinToString(separator = ",") { it.tag }
     }
+
+    private fun getAllSource() = listOf(
+        ProductTagSource.GlobalSearch,
+        ProductTagSource.LastPurchase,
+        ProductTagSource.MyShop,
+    )
 }

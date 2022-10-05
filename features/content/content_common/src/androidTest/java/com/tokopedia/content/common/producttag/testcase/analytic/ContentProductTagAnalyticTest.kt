@@ -5,7 +5,6 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.intent.VerificationModes.times
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
@@ -16,12 +15,8 @@ import com.tokopedia.content.common.producttag.container.ContentProductTagTestAc
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.*
 import com.tokopedia.content.common.producttag.helper.breadcrumb
-import com.tokopedia.content.common.producttag.helper.fakeSearchBar
-import com.tokopedia.content.common.producttag.helper.globalSearchShopRv
-import com.tokopedia.content.common.producttag.helper.lastTaggedSearchBar
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
-import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.*
@@ -46,16 +41,16 @@ class ContentProductTagAnalyticTest {
     private val mockAnalytic: ContentProductTagAnalytic = mockk(relaxed = true)
 
     /** Builder */
+    private val productTagSourceBuilder = ProductTagSourceBuilder()
     private val lastTaggedModelBuilder = LastTaggedModelBuilder()
     private val lastPurchasedBuilder = LastPurchasedModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
-    private val productTagSourceBuilder = ProductTagSourceBuilder()
 
     /** Helper */
     private val daggerHelper = ContentProductTagDaggerHelper(targetContext)
 
     /** Model */
-    private val completeSource = productTagSourceBuilder.buildComplete()
+    private val completeSource = productTagSourceBuilder.buildSourceList()
     private val lastTaggedProduct = lastTaggedModelBuilder.buildPagedDataModel()
     private val lastPurchasedProduct = lastPurchasedBuilder.buildModel()
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
@@ -180,9 +175,7 @@ class ContentProductTagAnalyticTest {
             .setProductTagSource(completeSource)
         )
 
-        click(breadcrumb)
-
-        click(sourceTokopedia)
+        openTokopediaSection()
 
         verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch) }
     }
@@ -194,9 +187,7 @@ class ContentProductTagAnalyticTest {
             .setProductTagSource(completeSource)
         )
 
-        click(breadcrumb)
-
-        click(sourceLastPurchased)
+        openLastPurchasedSection()
 
         verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase) }
     }
@@ -208,9 +199,7 @@ class ContentProductTagAnalyticTest {
             .setProductTagSource(completeSource)
         )
 
-        click(breadcrumb)
-
-        click(sourceMyShop)
+        openMyShopSection()
 
         verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop) }
     }

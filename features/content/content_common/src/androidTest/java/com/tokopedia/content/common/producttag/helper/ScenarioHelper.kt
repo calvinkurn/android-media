@@ -11,6 +11,11 @@ import com.tokopedia.content.test.util.type
  * Created By : Jonathan Darwin on October 05, 2022
  */
 
+fun openTokopediaSection() {
+    click(breadcrumb)
+    click(sourceTokopedia)
+}
+
 fun openLastPurchasedSection() {
     click(breadcrumb)
     click(sourceLastPurchased)
@@ -21,14 +26,14 @@ fun openMyShopSection() {
     click(sourceMyShop)
 }
 
-fun openFakeAutocomplete() {
+fun openAutocomplete() {
     click(lastTaggedSearchBar)
 }
 
 fun openGlobalSearch(keyword: String) {
-    openFakeAutocomplete()
-    type(fakeSearchBar, keyword)
-    pressActionSoftKeyboard(fakeSearchBar)
+    openAutocomplete()
+    type(fakeAutocompleteSearchBar, keyword)
+    pressActionSoftKeyboard(fakeAutocompleteSearchBar)
 }
 
 fun openGlobalSearchShopSection(context: Context, keyword: String) {

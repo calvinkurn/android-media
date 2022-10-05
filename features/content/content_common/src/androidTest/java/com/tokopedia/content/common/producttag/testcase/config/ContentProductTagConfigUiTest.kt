@@ -9,10 +9,14 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
+import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity.Companion.EXTRA_ARGUMENT
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
-import com.tokopedia.content.common.producttag.helper.ContentProductTagDaggerHelper
+import com.tokopedia.content.common.producttag.helper.*
+import com.tokopedia.content.common.producttag.helper.sourceMyAccountLabel
+import com.tokopedia.content.common.producttag.helper.sourceMyShop
+import com.tokopedia.content.common.producttag.helper.sourceTokopedia
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.producttag.view.uimodel.SelectedProductUiModel
@@ -28,9 +32,7 @@ import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.content.common.test.R as testR
 import com.tokopedia.iconunify.R.drawable as iconR
-import com.tokopedia.autocompletecomponent.R as autocompleteR
 
 /**
  * Created By : Jonathan Darwin on October 03, 2022
@@ -45,6 +47,7 @@ class ContentProductTagConfigUiTest {
     private val mockUserSession: UserSessionInterface = mockk(relaxed = true)
 
     /** Builder */
+    private val productTagSourceBuilder = ProductTagSourceBuilder()
     private val lastTaggedModelBuilder = LastTaggedModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
 
@@ -52,6 +55,7 @@ class ContentProductTagConfigUiTest {
     private val daggerHelper = ContentProductTagDaggerHelper(targetContext)
 
     /** Model */
+    private val completeSource = productTagSourceBuilder.buildSourceList()
     private val lastTaggedProduct = lastTaggedModelBuilder.buildPagedDataModel()
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val maxSelectedProduct = 3
@@ -96,11 +100,7 @@ class ContentProductTagConfigUiTest {
             .setAuthorType(ContentCommonUserType.TYPE_USER)
         )
 
-        isVisible(
-            R.id.tv_cc_product_tag_product_source_label,
-            R.id.tv_cc_product_tag_product_source,
-            R.id.ic_cc_product_tag_chevron_1,
-        )
+        isVisible(breadcrumb)
 
         delay(DEFAULT_DELAY)
     }
@@ -111,11 +111,7 @@ class ContentProductTagConfigUiTest {
             .setAuthorType(ContentCommonUserType.TYPE_SHOP)
         )
 
-        isHidden(
-            R.id.tv_cc_product_tag_product_source_label,
-            R.id.tv_cc_product_tag_product_source,
-            R.id.ic_cc_product_tag_chevron_1,
-        )
+        isHidden(breadcrumb)
 
         delay(DEFAULT_DELAY)
     }
@@ -125,25 +121,19 @@ class ContentProductTagConfigUiTest {
     fun contentProductTag_productTagSource_completeSource() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
-            .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.MyShop,
-                    ProductTagSource.LastPurchase,
-                ).joinToString(separator = ",") { it.tag }
-            )
+            .setProductTagSource(completeSource)
         )
 
-        click(R.id.tv_cc_product_tag_product_source)
+        click(breadcrumb)
 
         isVisible(
-            R.id.cl_global_search,
+            sourceTokopedia,
 
-            R.id.tv_my_account_label,
-            R.id.cl_last_purchase,
+            sourceMyAccountLabel,
+            sourceLastPurchased,
 
-            R.id.tv_my_shop_label,
-            R.id.cl_my_shop,
+            sourceMyShopLabel,
+            sourceMyShop,
         )
 
         delay(DEFAULT_DELAY)
@@ -154,25 +144,24 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.LastPurchase,
-                ).joinToString(separator = ",") { it.tag }
+                productTagSourceBuilder.buildSourceList {
+                    listOf(ProductTagSource.MyShop)
+                }
             )
         )
 
-        click(R.id.tv_cc_product_tag_product_source)
+        click(breadcrumb)
 
         isVisible(
-            R.id.cl_global_search,
+            sourceTokopedia,
 
-            R.id.tv_my_account_label,
-            R.id.cl_last_purchase,
+            sourceMyAccountLabel,
+            sourceLastPurchased,
         )
 
         isHidden(
-            R.id.tv_my_shop_label,
-            R.id.cl_my_shop,
+            sourceMyShopLabel,
+            sourceMyShop,
         )
 
         delay(DEFAULT_DELAY)
@@ -183,25 +172,24 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.MyShop,
-                ).joinToString(separator = ",") { it.tag }
+                productTagSourceBuilder.buildSourceList {
+                    listOf(ProductTagSource.LastPurchase)
+                }
             )
         )
 
-        click(R.id.tv_cc_product_tag_product_source)
+        click(breadcrumb)
 
         isVisible(
-            R.id.cl_global_search,
+            sourceTokopedia,
 
-            R.id.tv_my_shop_label,
-            R.id.cl_my_shop,
+            sourceMyShopLabel,
+            sourceMyShop,
         )
 
         isHidden(
-            R.id.tv_my_account_label,
-            R.id.cl_last_purchase,
+            sourceMyAccountLabel,
+            sourceLastPurchased,
         )
 
         delay(DEFAULT_DELAY)
@@ -212,24 +200,24 @@ class ContentProductTagConfigUiTest {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
             .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                ).joinToString(separator = ",") { it.tag }
+                productTagSourceBuilder.buildSourceList {
+                    listOf(ProductTagSource.LastPurchase, ProductTagSource.MyShop)
+                }
             )
         )
 
-        click(R.id.tv_cc_product_tag_product_source)
+        click(breadcrumb)
 
         isVisible(
-            R.id.cl_global_search,
+            sourceTokopedia,
         )
 
         isHidden(
-            R.id.tv_my_shop_label,
-            R.id.cl_my_shop,
+            sourceMyAccountLabel,
+            sourceLastPurchased,
 
-            R.id.tv_my_account_label,
-            R.id.cl_last_purchase,
+            sourceMyShopLabel,
+            sourceMyShop,
         )
 
         delay(DEFAULT_DELAY)
@@ -247,14 +235,14 @@ class ContentProductTagConfigUiTest {
         val position = 1
         val selectedProduct = listOf(lastTaggedProduct.dataList[position].toSelectedProduct())
 
-        isHidden(R.id.btn_save)
+        isHidden(saveButton)
 
-        verifyText(R.id.tv_cc_product_tag_page_title, targetContext.getString(R.string.content_creation_product_tag_title))
+        verifyText(pageTitle, targetContext.getString(R.string.content_creation_product_tag_title))
 
-        clickItemRecyclerView(R.id.rv_last_tagged_product, 1)
+        clickItemRecyclerView(lastTaggedRv, 1)
 
 
-        verifyText(testR.id.tv_selected_product, selectedProduct.toString())
+        verifyText(testSelectedProductText, selectedProduct.toString())
 
         delay(DEFAULT_DELAY)
     }
@@ -268,16 +256,16 @@ class ContentProductTagConfigUiTest {
         )
 
         verifyText(
-            R.id.tv_cc_product_tag_page_title,
+            pageTitle,
             targetContext.getString(R.string.content_creation_multiple_product_tag_title)
                 .format(0, maxSelectedProduct)
         )
 
-        verifyItemRecyclerView(R.id.rv_last_tagged_product, 0) {
-            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isVisible
+        verifyItemRecyclerView(lastTaggedRv, 0) {
+            it.itemView.findViewById<CheckboxUnify>(checkboxProduct).isVisible
         }
 
-        isVisible(R.id.btn_save)
+        isVisible(saveButton)
 
         delay(DEFAULT_DELAY)
     }
@@ -296,18 +284,18 @@ class ContentProductTagConfigUiTest {
         }
 
         positionList.forEachIndexed { idx, position ->
-            clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+            clickItemRecyclerView(lastTaggedRv, position)
             verifyText(
-                R.id.tv_cc_product_tag_page_title,
+                pageTitle,
                 targetContext.getString(R.string.content_creation_multiple_product_tag_title)
                     .format(idx+1, maxSelectedProduct)
             )
             delay(DEFAULT_DELAY)
         }
 
-        click(R.id.btn_save)
+        click(saveButton)
 
-        verifyText(testR.id.tv_selected_product, selectedProducts.toString())
+        verifyText(testSelectedProductText, selectedProducts.toString())
 
         delay(DEFAULT_DELAY)
     }
@@ -326,18 +314,18 @@ class ContentProductTagConfigUiTest {
         }
 
         positionList.forEach { position ->
-            clickItemRecyclerView(R.id.rv_last_tagged_product, position)
+            clickItemRecyclerView(lastTaggedRv, position)
             delay(DEFAULT_DELAY)
         }
         verifyText(
-            R.id.tv_cc_product_tag_page_title,
+            pageTitle,
             targetContext.getString(R.string.content_creation_multiple_product_tag_title)
                 .format(maxSelectedProduct, maxSelectedProduct)
         )
 
-        click(R.id.btn_save)
+        click(saveButton)
 
-        verifyText(testR.id.tv_selected_product, selectedProducts.toString())
+        verifyText(testSelectedProductText, selectedProducts.toString())
 
         delay(DEFAULT_DELAY)
     }
@@ -351,23 +339,23 @@ class ContentProductTagConfigUiTest {
         )
 
         val position = 0
-        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
-        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
-            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked
+        clickItemRecyclerView(lastTaggedRv, position)
+        verifyItemRecyclerView(lastTaggedRv, position) {
+            it.itemView.findViewById<CheckboxUnify>(checkboxProduct).isChecked
         }
         verifyText(
-            R.id.tv_cc_product_tag_page_title,
+            pageTitle,
             targetContext.getString(R.string.content_creation_multiple_product_tag_title)
                 .format(1, maxSelectedProduct)
         )
         delay(DEFAULT_DELAY)
 
-        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
-        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
-            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked.not()
+        clickItemRecyclerView(lastTaggedRv, position)
+        verifyItemRecyclerView(lastTaggedRv, position) {
+            it.itemView.findViewById<CheckboxUnify>(checkboxProduct).isChecked.not()
         }
         verifyText(
-            R.id.tv_cc_product_tag_page_title,
+            pageTitle,
             targetContext.getString(R.string.content_creation_multiple_product_tag_title)
                 .format(0, maxSelectedProduct)
         )
@@ -384,23 +372,23 @@ class ContentProductTagConfigUiTest {
 
         val position = 0
 
-        verifyButtonState(R.id.btn_save, false)
+        verifyButtonState(saveButton, false)
 
-        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
-        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
-            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked
+        clickItemRecyclerView(lastTaggedRv, position)
+        verifyItemRecyclerView(lastTaggedRv, position) {
+            it.itemView.findViewById<CheckboxUnify>(checkboxProduct).isChecked
         }
         delay(DEFAULT_DELAY)
 
-        verifyButtonState(R.id.btn_save, true)
+        verifyButtonState(saveButton, true)
 
-        clickItemRecyclerView(R.id.rv_last_tagged_product, position)
-        verifyItemRecyclerView(R.id.rv_last_tagged_product, position) {
-            it.itemView.findViewById<CheckboxUnify>(R.id.checkbox_product).isChecked.not()
+        clickItemRecyclerView(lastTaggedRv, position)
+        verifyItemRecyclerView(lastTaggedRv, position) {
+            it.itemView.findViewById<CheckboxUnify>(checkboxProduct).isChecked.not()
         }
         delay(DEFAULT_DELAY)
 
-        verifyButtonState(R.id.btn_save, false)
+        verifyButtonState(saveButton, false)
 
         delay(DEFAULT_DELAY)
     }
@@ -413,11 +401,9 @@ class ContentProductTagConfigUiTest {
             .setFullPageAutocomplete(true, "")
         )
 
-        click(R.id.cl_search)
+        openAutocomplete()
 
-        isVisible(
-            autocompleteR.id.autocompleteSearchBar
-        )
+        isVisible(autocompleteSearchBar)
 
         delay(DEFAULT_DELAY)
     }
@@ -429,13 +415,13 @@ class ContentProductTagConfigUiTest {
             .setFullPageAutocomplete(false, "")
         )
 
-        click(R.id.cl_search)
+        openAutocomplete()
 
         delay(DEFAULT_DELAY)
 
         isVisible(
-            R.id.ic_back,
-            R.id.sb_autocomplete,
+            fakeAutocompleteBackButton,
+            fakeAutocompleteSearchBar,
         )
 
         delay(DEFAULT_DELAY)
@@ -449,7 +435,7 @@ class ContentProductTagConfigUiTest {
             .setBackButton(ContentProductTagConfig.BackButton.Back)
         )
 
-        verify<IconUnify>(R.id.ic_cc_product_tag_back) {
+        verify<IconUnify>(backButton) {
             it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_arrow_back)
         }
     }
@@ -461,7 +447,7 @@ class ContentProductTagConfigUiTest {
             .setBackButton(ContentProductTagConfig.BackButton.Close)
         )
 
-        verify<IconUnify>(R.id.ic_cc_product_tag_back) {
+        verify<IconUnify>(backButton) {
             it.iconImg == AppCompatResources.getDrawable(targetContext, iconR.iconunify_close)
         }
     }
@@ -474,7 +460,7 @@ class ContentProductTagConfigUiTest {
             .setIsShowActionBarDivider(true)
         )
 
-        isVisible(R.id.view_cc_product_tag_divider)
+        isVisible(divider)
 
         delay(DEFAULT_DELAY)
     }
@@ -486,7 +472,7 @@ class ContentProductTagConfigUiTest {
             .setIsShowActionBarDivider(false)
         )
 
-        isHidden(R.id.view_cc_product_tag_divider)
+        isHidden(divider)
 
         delay(DEFAULT_DELAY)
     }
