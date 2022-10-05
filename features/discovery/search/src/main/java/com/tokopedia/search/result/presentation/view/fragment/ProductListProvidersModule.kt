@@ -4,8 +4,11 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
+import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
+import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicatorDelegate
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -42,4 +45,12 @@ abstract class ProductListProvidersModule {
     @Binds
     @SearchScope
     abstract fun provideViewUpdater(viewUpdater: RecyclerViewUpdater): ViewUpdater
+
+    @Binds
+    @SearchScope
+    abstract fun provideProductFilterIndicator(productFilterIndicator: ProductFilterIndicatorDelegate): ProductFilterIndicator
+
+    @Binds
+    @SearchScope
+    abstract fun provideScreenNameProvider(provider: ProductListFragment): ScreenNameProvider
 }
