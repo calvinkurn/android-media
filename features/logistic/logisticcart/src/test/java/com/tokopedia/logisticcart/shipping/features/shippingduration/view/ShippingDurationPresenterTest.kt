@@ -2,6 +2,9 @@ package com.tokopedia.logisticcart.shipping.features.shippingduration.view
 
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_PINPOINT_NEEDED
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
@@ -474,75 +477,190 @@ class ShippingDurationPresenterTest {
     OnChooseDuration
     */
 
-    // todo
     @Test
     fun `When year end promotion toggle is on and service is pinpoint error Then set pinpoint error flag`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        selectedService.serviceData.error = ErrorServiceData().apply {
+            errorId = ERROR_PINPOINT_NEEDED
+            errorMessage = "error pinpoint"
+        }
+        every { view.isToogleYearEndPromotionOn() } returns true
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), selectedService.serviceData.serviceId, selectedService.serviceData,
+                true)
         }
     }
 
-    // todo
     @Test
     fun `When select duration and there is recommended courier Then select the recommended courier`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        assert(recommendedCourier?.isSelected == true)
     }
 
-    // todo
     @Test
     fun `When select duration and there is selected shipper product Id Then select the selected shipper product`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedShipperProductId = 24
+        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        assert(recommendedCourier?.isSelected == true)
     }
 
-    // todo
     @Test
-    fun `When select duration and there is recommended courier and selected shipper product Id Then select the selected shipper product`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
-        }
+    fun `When select duration and there are recommended courier and selected shipper product Id Then select the selected shipper product`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedShipperProductId = 24
+        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        val selectedShipper = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        val recommendCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        assert(recommendCourier?.isSelected == false)
+        assert(selectedShipper?.isSelected == true)
     }
 
-    // todo
     @Test
     fun `When select duration and get selected courier and courier is pinpoint error Then set pinpoint error flag`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val product = selectedService.shippingCourierViewModelList.first()
+        product.productData.error = ErrorProductData().apply {
+            errorId = ERROR_PINPOINT_NEEDED
+            errorMessage = "error pinpoint"
+        }
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), selectedService.serviceData.serviceId, selectedService.serviceData,
+                true)
         }
     }
 
-    // todo
     @Test
     fun `When select duration and get selected courier and courier is pinpoint error Then set range price to error message`() {
-        verify {
-            view.sendAnalyticCourierPromo(any())
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val product = selectedService.shippingCourierViewModelList.first()
+        product.productData.error = ErrorProductData().apply {
+            errorId = ERROR_PINPOINT_NEEDED
+            errorMessage = "error pinpoint"
         }
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        assertTrue(product.serviceData.texts.textRangePrice == product.productData.error.errorMessage)
     }
 
-    // todo
     @Test
     fun `When select duration and there is recommended courier Then send recommended courier data`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+        presenter.attachView(view)
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                recommendedCourier, any(), 0, selectedService.serviceData,
+                false)
         }
     }
 
-    // todo
     @Test
     fun `When select duration and there is selected shipper product Id Then send selected shipper product data`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedShipperProductId = 24
+        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        presenter.attachView(view)
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                recommendedCourier, any(), 0, selectedService.serviceData,
+                false)
         }
     }
 
-    // todo
     @Test
     fun `When select duration and there is recommended courier and selected shipper product Id Then send the selected shipper product data`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val selectedShipperProductId = 24
+        selectedService.serviceData.selectedShipperProductId = selectedShipperProductId
+        val selectedShipper = selectedService.shippingCourierViewModelList.find { it.productData.shipperProductId == selectedShipperProductId }
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                selectedShipper, any(), 0, selectedService.serviceData,
+                false)
         }
     }
 

@@ -233,7 +233,7 @@ class ShippingDurationPresenter @Inject constructor(private val ratesUseCase: Ge
         shippingData?.shippingDurationUiModels?.firstOrNull()?.isShowShowCase = true
     }
 
-    fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
+    private fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
         shippingData?.shippingDurationUiModels?.firstOrNull { it.serviceData.serviceId == serId }
             ?.let {
                 return it
