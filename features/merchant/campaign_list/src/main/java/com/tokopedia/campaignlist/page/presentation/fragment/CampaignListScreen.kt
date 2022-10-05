@@ -27,10 +27,10 @@ import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
-import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabelType
-import com.tokopedia.campaignlist.page.presentation.ui.UnifyImage
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyButton
+import com.tokopedia.campaignlist.page.presentation.ui.UnifyImage
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabel
+import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabelType
 import com.tokopedia.campaignlist.page.presentation.ui.UnifySearchBar
 import com.tokopedia.campaignlist.page.presentation.ui.UnifySortFilter
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTicker
@@ -46,9 +46,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.unifycomponents.UnifyButton
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 
 @Composable
 fun CampaignListScreen(
@@ -166,8 +163,6 @@ private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Un
     UnifyTicker(
         modifier = modifier.fillMaxWidth(),
         text = stringResource(id = R.string.another_campaign_type_wording),
-        tickerShape = Ticker.SHAPE_LOOSE,
-        tickerType = Ticker.TYPE_ANNOUNCEMENT,
         onDismissed = onDismissed
     )
 }

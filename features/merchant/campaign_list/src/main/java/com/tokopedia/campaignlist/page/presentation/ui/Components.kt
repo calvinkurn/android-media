@@ -2,13 +2,22 @@ package com.tokopedia.campaignlist.page.presentation.ui
 
 import android.view.KeyEvent
 import android.widget.TextView
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,9 +33,6 @@ import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifycomponents.ticker.TickerCallback
-import com.tokopedia.unifyprinciples.Typography
 
 @Composable
 fun UnifySortFilter(
@@ -79,32 +85,37 @@ fun UnifySearchBar(
 fun UnifyTicker(
     modifier: Modifier = Modifier,
     text: CharSequence,
-    tickerShape: Int,
-    tickerType: Int,
-    onHyperlinkClicked: (CharSequence) -> Unit = {},
     onDismissed: () -> Unit = {}
 ) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            Ticker(context).apply {
-                setDescriptionClickEvent(object : TickerCallback {
-                    override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        onHyperlinkClicked(linkUrl)
-                    }
+    val iconColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN400)
+    val strokeColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN200)
+    val backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN50)
 
-                    override fun onDismiss() {
-                        onDismissed()
-                    }
-                })
-            }
-        },
-        update = {
-            it.setTextDescription(text)
-            it.tickerShape = tickerShape
-            it.tickerType = tickerType
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(6.dp),
+        color = backgroundColor,
+        border = BorderStroke(1.dp, strokeColor)
+    ) {
+        Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+            Icon(imageVector = Icons.Outlined.Info, contentDescription = "Information Icon", tint = iconColor)
+            Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+            UnifyTypography(
+                text = text.toString(),
+                modifier = Modifier.width(250.dp),
+                weight = UnifyTypographyWeight.REGULAR,
+                type = UnifyTypographyType.DISPLAY_3,
+                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+            )
+            Spacer(modifier = Modifier.padding(horizontal = 10.dp))
+            Icon(
+                imageVector = Icons.Outlined.Close,
+                modifier = Modifier.clickable { onDismissed() },
+                contentDescription = "Close Icon"
+            )
         }
-    )
+    }
+
 }
 
 
