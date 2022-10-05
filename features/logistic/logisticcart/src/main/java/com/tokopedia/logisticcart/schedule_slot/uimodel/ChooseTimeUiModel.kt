@@ -6,8 +6,9 @@ import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 data class ChooseTimeUiModel(
     override val title: String = "",
     override val content: String = "",
-    override val isEnabled: Boolean = true,
-    override val divider: DividerType = DividerType.THIN
+    override var isEnabled: Boolean = true,
+    override var divider: DividerType = DividerType.THIN,
+    val note: String = ""
 )
     : BaseScheduleSlotUiModel<String> {
     override fun type(typeFactory: ScheduleSlotTypeFactory): Int {

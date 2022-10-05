@@ -8,12 +8,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.unifyprinciples.Typography
-import java.util.Locale
 
 class ChooseDateAdapter(private val items: List<ButtonDateUiModel>, private val listener: ScheduleSlotListener) : RecyclerView.Adapter<ChooseDateAdapter.ChooseDateViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChooseDateAdapter.ChooseDateViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        val view = inflater.inflate(com.tokopedia.checkout.R.layout.item_date_card, parent, false)
+        val view = inflater.inflate(com.tokopedia.logisticcart.R.layout.item_date_card, parent, false)
         return ChooseDateViewHolder(view)
     }
 
@@ -21,17 +20,23 @@ class ChooseDateAdapter(private val items: List<ButtonDateUiModel>, private val 
 
     override fun onBindViewHolder(holder: ChooseDateAdapter.ChooseDateViewHolder, position: Int) {
         val data = items[position]
-        holder.title.text = String.format(Locale.getDefault(), "%s\n%s", data.title, data.date)
+        holder.title.text = data.title
+        holder.date.text = data.date
 
-        if (selectedItem == data) {
-            holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.checkout.R.drawable.bg_card_date_selected)
-        } else { 
-            holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.checkout.R.drawable.bg_card_date)
-        }
-
-        holder.itemView.setOnClickListener {
-            selectedItem = data
-            notifyDataSetChanged()
+        if (data.isEnabled) {
+            holder.ticker.visibility = View.GONE
+            holder.itemView.setOnClickListener {
+                selectedItem = data
+                notifyDataSetChanged()
+            }
+            if (selectedItem == data) {
+                holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_date_selected)
+            } else {
+                holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_date)
+            }
+        } else {
+            holder.ticker.visibility = View.VISIBLE
+            holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_disabled)
         }
     }
 
@@ -40,7 +45,9 @@ class ChooseDateAdapter(private val items: List<ButtonDateUiModel>, private val 
     }
 
     inner class ChooseDateViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val title = view.findViewById<Typography>(com.tokopedia.checkout.R.id.tv_date)
-        val container = view.findViewById<ConstraintLayout>(com.tokopedia.checkout.R.id.container_date_item)
+        val title = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_title_date)
+        val date = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_date)
+        val ticker = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_label_out_of_date)
+        val container = view.findViewById<ConstraintLayout>(com.tokopedia.logisticcart.R.id.container_date_item)
     }
 }

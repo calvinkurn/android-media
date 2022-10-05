@@ -12,16 +12,21 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ChooseDateViewHolder(private val view: View, private val listener: ScheduleSlotListener) : AbstractViewHolder<ChooseDateUiModel>(view) {
 
-    private val title: Typography = view.findViewById(com.tokopedia.checkout.R.id.tv_title)
-    private val recyclerView: RecyclerView = view.findViewById(com.tokopedia.checkout.R.id.rv_choose_date)
+    private val title: Typography = view.findViewById(com.tokopedia.logisticcart.R.id.tv_title)
+    private val recyclerView: RecyclerView = view.findViewById(com.tokopedia.logisticcart.R.id.rv_choose_date)
     override fun bind(element: ChooseDateUiModel) {
-        title.text = element.title
+        if (element.title.isNotEmpty()) {
+            title.text = element.title
+            title.visibility = View.VISIBLE
+        } else {
+            title.visibility = View.GONE
+        }
         recyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = ChooseDateAdapter(element.content, listener)
     }
 
     companion object {
         @LayoutRes
-        val LAYOUT_RES = com.tokopedia.checkout.R.layout.viewholder_choose_date
+        val LAYOUT_RES = com.tokopedia.logisticcart.R.layout.viewholder_choose_date
     }
 }

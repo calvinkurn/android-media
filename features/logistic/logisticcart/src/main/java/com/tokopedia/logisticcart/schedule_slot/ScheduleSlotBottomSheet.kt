@@ -13,11 +13,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotAdapter
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BaseScheduleSlotUiModel
+import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ScheduleSlotBottomSheet(private val data: List<BaseScheduleSlotUiModel<out Any>> = listOf())
+class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
     : BottomSheetUnify(), ScheduleSlotListener {
 
     private var listener: (() -> BaseScheduleSlotUiModel<out Any>)? = null
@@ -41,7 +42,7 @@ class ScheduleSlotBottomSheet(private val data: List<BaseScheduleSlotUiModel<out
             findViewById<RecyclerView>(com.tokopedia.logisticcart.R.id.rv_schedule_slot).apply {
                 layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapterScheduleSlot
-                adapterScheduleSlot.setData(data)
+                adapterScheduleSlot.setData(data.date, data.availableTime, data.unavailableTime)
             }
         }
         setChild(view)
@@ -69,7 +70,7 @@ class ScheduleSlotBottomSheet(private val data: List<BaseScheduleSlotUiModel<out
 
     companion object {
 
-        fun show(fm: FragmentManager, data: List<BaseScheduleSlotUiModel<out Any>> = listOf()): ScheduleSlotBottomSheet {
+        fun show(fm: FragmentManager, data: BottomSheetUiModel): ScheduleSlotBottomSheet {
             val bottomsheet = ScheduleSlotBottomSheet(data)
             bottomsheet.show(fm, "")
             return bottomsheet
