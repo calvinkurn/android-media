@@ -333,9 +333,6 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                         end.linkTo(parent.end)
                     },
                 text = stringResource(id = R.string.action_share),
-                buttonSize = UnifyButton.Size.SMALL,
-                buttonType = UnifyButton.Type.MAIN,
-                buttonVariant = UnifyButton.Variant.FILLED,
                 onClick = { onTapShareButton(campaign) }
             )
 

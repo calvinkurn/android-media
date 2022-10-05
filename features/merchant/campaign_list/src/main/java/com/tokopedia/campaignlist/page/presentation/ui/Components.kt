@@ -2,6 +2,7 @@ package com.tokopedia.campaignlist.page.presentation.ui
 
 import android.view.KeyEvent
 import android.widget.TextView
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -135,21 +137,27 @@ fun UnifyLabel(
 fun UnifyButton(
     modifier: Modifier = Modifier,
     text: String,
-    buttonSize: Int,
-    buttonVariant : Int,
-    buttonType : Int,
     onClick: () -> Unit
 ) {
 
+    val backgroundColor = ButtonDefaults.buttonColors(
+        backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+    )
+
     Button(
-        modifier = modifier,
+        modifier = modifier.height(32.dp),
         onClick = onClick,
         shape = RoundedCornerShape(8.dp),
-        colors = ButtonDefaults.buttonColors(
-            backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        )
+        colors = backgroundColor
     ) {
-        Text(text = text, color = Color.White)
+        Text(
+            text = text,
+            color = Color.White,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Bold,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
     }
 }
 
