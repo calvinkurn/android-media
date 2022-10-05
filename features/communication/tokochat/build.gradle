@@ -98,7 +98,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
     implementation files('libs/courier-client-0.0.3-release.aar')
-    debugImplementation rootProject.ext.miscDependencies.chuckMqtt
+    implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
