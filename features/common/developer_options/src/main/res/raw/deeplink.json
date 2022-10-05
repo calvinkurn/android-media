@@ -430,7 +430,7 @@
           "deeplink_variable": "ApplinkConstInternalOrder.UNIFY_ORDER"
      }, 
      {
-          "destination_activity": "com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity", 
+          "destination_activity": "com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity", 
           "deeplink": "tokopedia-android-internal://order/invoice", 
           "deeplink_variable": "ApplinkConstInternalOrder.INVOICE"
      }, 
@@ -540,11 +540,6 @@
           "deeplink_variable": "ApplinkConsInternalDigital.CREDIT_CARD_TEMPLATE"
      }, 
      {
-          "destination_activity": "com.tokopedia.digital.home.old.presentation.activity.DigitalHomePageActivity", 
-          "deeplink": "tokopedia-android-internal://recharge/home", 
-          "deeplink_variable": "ApplinkConsInternalDigital.SUBHOMEPAGE"
-     }, 
-     {
           "destination_activity": "com.tokopedia.digital.home.presentation.activity.RechargeHomepageActivity", 
           "deeplink": "tokopedia-android-internal://recharge/home/dynamic", 
           "deeplink_variable": "ApplinkConsInternalDigital.DYNAMIC_SUBHOMEPAGE"
@@ -585,7 +580,7 @@
           "deeplink_variable": "ApplinkConsInternalDigital.GENERAL_TEMPLATE"
      }, 
      {
-          "destination_activity": "com.tokopedia.common.topupbills.view.activity.TopupBillsFavoriteNumberActivity", 
+          "destination_activity": "com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity", 
           "deeplink": "tokopedia-android-internal://digital/favoritenumber", 
           "deeplink_variable": "ApplinkConsInternalDigital.FAVORITE_NUMBER"
      }, 
@@ -2338,7 +2333,12 @@
           "destination_activity": "com.tokopedia.recentview.view.activity.RecentViewActivity", 
           "deeplink": "tokopedia-android-internal://home/recentlyviewed", 
           "deeplink_variable": "ApplinkConsInternalHome.HOME_RECENT_VIEW"
-     },
+     }, 
+     {
+          "destination_activity": "com.tokopedia.home_wishlist.WishlistActivity", 
+          "deeplink": "tokopedia-android-internal://home/wishlist", 
+          "deeplink_variable": "ApplinkConsInternalHome.HOME_WISHLIST"
+     }, 
      {
           "destination_activity": "com.tokopedia.similarsearch.SimilarSearchActivity", 
           "deeplink": "tokopedia-android-internal://discovery/similar-search-result/.*\\/", 
