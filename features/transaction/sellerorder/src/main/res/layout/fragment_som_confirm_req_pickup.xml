@@ -231,6 +231,7 @@
                                 <com.tokopedia.unifyprinciples.Typography
                                     android:id="@+id/tv_invoice_number"
                                     android:layout_width="0dp"
+                                    app:typographyWeight="bold"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="8dp"
                                     android:paddingEnd="4dp"
