@@ -55,14 +55,7 @@ class ContentProductTagTestActivity : AppCompatActivity() {
             is ProductTagParentFragment -> {
                 fragment.setListener(object : ProductTagParentFragment.Listener {
                     override fun onCloseProductTag() {
-                        supportFragmentManager
-                            .beginTransaction()
-                            .remove(ProductTagParentFragment.getFragment(
-                                supportFragmentManager,
-                                classLoader,
-                                getArgumentBuilder()
-                            ))
-                            .commitNow()
+                        closeProductTag()
                     }
 
                     override fun onFinishProductTag(products: List<SelectedProductUiModel>) {
@@ -77,6 +70,10 @@ class ContentProductTagTestActivity : AppCompatActivity() {
                 fragment.setAnalytic(analytic)
             }
         }
+    }
+
+    override fun onBackPressed() {
+        closeProductTag()
     }
 
     private fun getArgumentBuilder(): ContentProductTagArgument.Builder {
@@ -96,6 +93,17 @@ class ContentProductTagTestActivity : AppCompatActivity() {
 
     private fun inject() {
         ContentProductTagTestInjector.get()?.inject(this)
+    }
+
+    private fun closeProductTag() {
+        supportFragmentManager
+            .beginTransaction()
+            .remove(ProductTagParentFragment.getFragment(
+                supportFragmentManager,
+                classLoader,
+                getArgumentBuilder()
+            ))
+            .commitNow()
     }
 
     companion object {

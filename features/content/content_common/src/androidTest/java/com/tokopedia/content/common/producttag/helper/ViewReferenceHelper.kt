@@ -8,6 +8,7 @@ import com.tokopedia.unifycomponents.R as unifyR
  */
 
 /** Parent */
+internal val backButton = R.id.ic_cc_product_tag_back
 internal val breadcrumb = R.id.tv_cc_product_tag_product_source
 
 /** Product Tag Source */

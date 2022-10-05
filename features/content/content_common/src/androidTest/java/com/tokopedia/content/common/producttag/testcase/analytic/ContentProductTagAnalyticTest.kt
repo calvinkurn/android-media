@@ -10,6 +10,7 @@ import com.tokopedia.content.common.const.DEFAULT_DELAY
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
+import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
 import com.tokopedia.content.common.producttag.domain.repository.ProductTagRepository
 import com.tokopedia.content.common.producttag.helper.*
@@ -45,16 +46,26 @@ class ContentProductTagAnalyticTest {
     /** Builder */
     private val lastTaggedModelBuilder = LastTaggedModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
+    private val productTagSourceBuilder = ProductTagSourceBuilder()
 
     /** Helper */
     private val daggerHelper = ContentProductTagDaggerHelper(targetContext)
 
     /** Model */
+    private val completeSource = productTagSourceBuilder.buildComplete()
     private val lastTaggedProduct = lastTaggedModelBuilder.buildPagedDataModel()
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val aceShop = globalSearchModelBuilder.buildShopResponseModel()
     private val quickFilter = globalSearchModelBuilder.buildQuickFilterList()
     private val keyword = "pokemon"
+
+    /** Model for Impression
+     * Note : Because the number of impression is dependent on test device screen height,
+     * the test might be flaky. so we need to display the products that will fit to all
+     * screen height, 1 or 2 should be okay.
+     * */
+    private val lastTaggedProductForImpression = lastTaggedModelBuilder.buildPagedDataModel(size = 2, hasNextPage = false)
+    private val aceProductForImpression = globalSearchModelBuilder.buildResponseModel(size = 2, hasNextPage = false)
 
     private fun launchActivity(argumentBuilder: ContentProductTagArgument.Builder) {
         ActivityScenario.launch<ContentProductTagTestActivity>(
@@ -96,9 +107,17 @@ class ContentProductTagAnalyticTest {
 
     /**
      * Table of Test (search this keyword below to navigate directly to the section)
-     * 1. clickBreadcrumbTest
-     * 2. clickProductTagSourceTest
+     * 1. trackGlobalSearchProductTest
+     * 2. trackGlobalSearchShopTest
+     * 3. clickBreadcrumbTest
+     * 4. clickProductTagSourceTest
+     * 5. impressProductCardTest
+     * 6. clickProductCardTest
      */
+
+    /** trackGlobalSearchProductTest */
+
+    /** trackGlobalSearchShopTest */
 
     /** clickBreadcrumbTest */
     @Test
@@ -119,23 +138,8 @@ class ContentProductTagAnalyticTest {
             .setFullPageAutocomplete(false, "")
         )
 
-        click(lastTaggedSearchBar)
-        delay()
-
-        type(fakeSearchBar, keyword)
-        delay()
-
-        pressActionSoftKeyboard(fakeSearchBar)
-        delay()
-
-        click(targetContext.getString(R.string.content_creation_toko_text))
-        delay()
-
-        clickItemRecyclerView(globalSearchShopRv, 0)
-        delay()
-
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
         click(breadcrumb)
-        delay()
 
         verify { mockAnalytic.clickBreadcrumb(true) }
     }
@@ -145,13 +149,7 @@ class ContentProductTagAnalyticTest {
     fun contentProductTag_ugc_clickProductTagSource_tokopedia() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
-            .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.MyShop,
-                    ProductTagSource.LastPurchase,
-                ).joinToString(separator = ",") { it.tag }
-            )
+            .setProductTagSource(completeSource)
         )
 
         click(breadcrumb)
@@ -165,13 +163,7 @@ class ContentProductTagAnalyticTest {
     fun contentProductTag_ugc_clickProductTagSource_lastPurchased() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
-            .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.MyShop,
-                    ProductTagSource.LastPurchase,
-                ).joinToString(separator = ",") { it.tag }
-            )
+            .setProductTagSource(completeSource)
         )
 
         click(breadcrumb)
@@ -185,13 +177,7 @@ class ContentProductTagAnalyticTest {
     fun contentProductTag_ugc_clickProductTagSource_myShop() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
-            .setProductTagSource(
-                listOf(
-                    ProductTagSource.GlobalSearch,
-                    ProductTagSource.MyShop,
-                    ProductTagSource.LastPurchase,
-                ).joinToString(separator = ",") { it.tag }
-            )
+            .setProductTagSource(completeSource)
         )
 
         click(breadcrumb)
@@ -200,4 +186,114 @@ class ContentProductTagAnalyticTest {
 
         verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop) }
     }
+
+    /** impressProductCardTest */
+    @Test
+    fun contentProductTag_ugc_impressProductCard_lastTagged() {
+        coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns lastTaggedProductForImpression
+        var counter = 0
+        val impressedModel = lastTaggedProductForImpression.dataList.associateWith { counter++ }.toList()
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        click(backButton)
+
+        verify {
+            mockAnalytic.impressProductCard(ProductTagSource.LastTagProduct, impressedModel, true)
+            mockAnalytic.sendAll()
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_impressProductCard_globalSearch() {
+        coEvery { mockRepo.searchAceProducts(any()) } returns aceProductForImpression
+        var counter = 0
+        val impressedModel = aceProductForImpression.pagedData.dataList.associateWith { counter++ }.toList()
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearch(keyword)
+
+        click(backButton)
+
+        verify {
+            mockAnalytic.impressProductCard(ProductTagSource.GlobalSearch, impressedModel, false)
+            mockAnalytic.sendAll()
+        }
+    }
+
+    @Test
+    fun contentProductTag_ugc_impressProductCard_myShop() {
+        coEvery { mockRepo.searchAceProducts(any()) } returns aceProductForImpression
+        var counter = 0
+        val impressedModel = aceProductForImpression.pagedData.dataList.associateWith { counter++ }.toList()
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setIsAutoHandleBackPressed(true)
+            .setProductTagSource(completeSource)
+        )
+
+        openMyShopSection()
+
+        click(backButton)
+
+        verify {
+            mockAnalytic.impressProductCard(ProductTagSource.MyShop, impressedModel, true)
+            mockAnalytic.sendAll()
+        }
+    }
+
+    /** clickProductCardTest */
+
+    /** clickSearchBarTest */
+
+    /** clickGlobalSearchTabTest */
+
+    /** clickBackButtonTest */
+
+    /** impressShopCardTest */
+
+    /** clickShopCardTest */
+
+    /** clickSearchBarOnShopTest */
+
+    /** impressProductCardOnShopTest */
+    @Test
+    fun contentProductTag_ugc_impressProductCard_shop() {
+        coEvery { mockRepo.searchAceProducts(any()) } returns aceProductForImpression
+        var counter = 0
+        val impressedModel = aceProductForImpression.pagedData.dataList.associateWith { counter++ }.toList()
+
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openShopSectionFromGlobalSearch(targetContext, keyword, 0)
+
+        click(backButton)
+        delay(DEFAULT_DELAY)
+
+        verify {
+            mockAnalytic.impressProductCardOnShop(impressedModel)
+            mockAnalytic.sendAll()
+        }
+    }
+
+    /** clickProductCardOnShopTest */
+
+    /** clickSaveProductTest */
+
+    /** clickAdvancedProductFilterTest */
+
+    /** clickSaveAdvancedProductFilterTest */
+
+    /** clickProductFilterChipsTest */
 }
