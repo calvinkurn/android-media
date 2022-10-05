@@ -2634,10 +2634,10 @@ class ShopPageHomeTracking(
         shopType: String
     ): Bundle {
         return Bundle().apply {
-            putString(CATEGORY_ID, "")
+            putString(CATEGORY_ID, NONE)
             putString(DIMENSION_45, atcTrackerModel.cartId)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, "")
+            putString(ITEM_BRAND, NONE)
+            putString(ITEM_CATEGORY, NONE)
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
