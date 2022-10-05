@@ -424,8 +424,6 @@ class ProductViewModelMapper {
                         data.title,
                         dimension90,
                         externalReference,
-                        keyword,
-                        data.trackingOption.toIntOrZero()
                     ),
                     data.type,
                     data.layout,

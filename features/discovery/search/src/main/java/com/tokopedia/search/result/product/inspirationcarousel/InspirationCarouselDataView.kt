@@ -57,15 +57,7 @@ class InspirationCarouselDataView(
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
         val keyword: String = "",
-    ): Visitable<InspirationCarouselOptionTypeFactory>,
-        SearchComponentTracking by searchComponentTracking(
-            trackingOption = trackingOption,
-            keyword = keyword,
-            valueName = title,
-            componentId = componentId,
-            applink = applink,
-            dimension90 = dimension90,
-        ) {
+    ): Visitable<InspirationCarouselOptionTypeFactory> {
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -127,19 +119,9 @@ class InspirationCarouselDataView(
             val label: String = "",
             val bundleId: String = "",
             val parentId: String = "",
-            val keyword: String = "",
-            val trackingOption: Int = 0,
             val minOrder: String = "",
         ): ImpressHolder(),
-            Visitable<InspirationCarouselOptionTypeFactory>,
-            SearchComponentTracking by searchComponentTracking(
-                trackingOption = trackingOption,
-                keyword = keyword,
-                valueName = name,
-                componentId = componentId,
-                applink = applink,
-                dimension90 = dimension90,
-            ) {
+            Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)

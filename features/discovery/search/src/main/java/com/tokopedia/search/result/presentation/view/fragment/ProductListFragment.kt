@@ -1489,20 +1489,6 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    override fun onInspirationCarouselAtcClicked(product: InspirationCarouselDataView.Option.Product) {
-        context?.let {
-            AtcVariantHelper.goToAtcVariant(
-                it,
-                productId = product.id,
-                pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
-                shopId = product.shopId,
-                startActivitResult = { intent, reqCode ->
-                    startActivityForResult(intent, reqCode)
-                }
-            )
-        }
-    }
-
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(queryKey, option)
     }
