@@ -89,8 +89,6 @@ interface DynamicProductDetailListener {
      * BestSellerViewHolder
      */
     fun onClickBestSeller(componentTrackDataModel: ComponentTrackDataModel, appLink: String)
-    fun shouldShowCoachMark(): Boolean
-    fun onOneLinerCoachMarkDismiss()
 
     /**
      * OneLinerViewHolder

@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -34,6 +35,7 @@ class OneLinersViewHolder(
         val LAYOUT = R.layout.item_one_liners
 
         private const val BOTTOM_PADDING = 12f
+        private const val COACH_MARK_IMS_TAG = "pdp_coachmark_ims"
     }
 
     private val container: View? = view.findViewById(R.id.one_liners_container)
@@ -104,15 +106,22 @@ class OneLinersViewHolder(
                     description = view.context.getString(R.string.pdp_oneliners_ims100_coachmark_description),
                     position = CoachMark2.POSITION_BOTTOM
                 )
-                coachMarkIms.onDismissListener = {
-                    listener.onOneLinerCoachMarkDismiss()
-                }
+                coachMarkIms.onDismissListener = ::setCoachMarkShown
                 coachMarkIms.showCoachMark(arrayListOf(item), null, 0)
             }
         }
     }
 
-    private fun shouldCoachMark() = !coachMarkIms.isShowing && listener.shouldShowCoachMark()
+    private fun shouldCoachMark() = !coachMarkIms.isShowing
+        && !CoachMarkPreference.hasShown(context = view.context, tag = COACH_MARK_IMS_TAG)
+
+    private fun setCoachMarkShown() {
+        CoachMarkPreference.setShown(
+            context = view.context,
+            tag = COACH_MARK_IMS_TAG,
+            hasShown = true
+        )
+    }
 
     private fun renderBestSellerView(element: OneLinersDataModel) {
         val appLink = element.oneLinersContent?.applink.orEmpty()
