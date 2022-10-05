@@ -84,14 +84,14 @@ class PlayBroadcasterPreparationTest {
 
     @Test
     fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
+        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false)
 
         createRobot().switchAccountSellerToNotEligibleBuyer()
     }
 
     @Test
     fun test_switchAccountSellerToBuyerAndNotAcceptTnc() {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerEligible = false)
+        coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasAcceptTnc = false)
 
         createRobot().switchAccountSellerToBuyerAndNotAcceptTnc()
     }

@@ -10,7 +10,11 @@ import java.util.*
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
-fun accountListResponse(shopEligible: Boolean = true, buyerEligible: Boolean = true): List<ContentAccountUiModel> {
+fun accountListResponse(
+    shopEligible: Boolean = true,
+    buyerHasUsername: Boolean = true,
+    buyerHasAcceptTnc: Boolean = true
+): List<ContentAccountUiModel> {
     return if (!shopEligible) {
         listOf(
             ContentAccountUiModel(
@@ -28,50 +32,8 @@ fun accountListResponse(shopEligible: Boolean = true, buyerEligible: Boolean = t
                 name = "Buyer",
                 iconUrl = "icon.url.buyer",
                 badge = "icon.badge",
-                hasUsername = true,
-                hasAcceptTnc = true,
-            ),
-        )
-    } else if (!buyerEligible) {
-        listOf(
-            ContentAccountUiModel(
-                id = "12345",
-                type = ContentCommonUserType.TYPE_SHOP,
-                name = "Shop",
-                iconUrl = "icon.url.shop",
-                badge = "icon.badge",
-                hasUsername = true,
-                hasAcceptTnc = true,
-            ),
-            ContentAccountUiModel(
-                id = "67890",
-                type = ContentCommonUserType.TYPE_USER,
-                name = "Buyer",
-                iconUrl = "icon.url.buyer",
-                badge = "icon.badge",
-                hasUsername = false,
-                hasAcceptTnc = false,
-            ),
-        )
-    } else if (!shopEligible && !buyerEligible) {
-        listOf(
-            ContentAccountUiModel(
-                id = "12345",
-                type = ContentCommonUserType.TYPE_SHOP,
-                name = "Shop",
-                iconUrl = "icon.url.shop",
-                badge = "icon.badge",
-                hasUsername = false,
-                hasAcceptTnc = false,
-            ),
-            ContentAccountUiModel(
-                id = "67890",
-                type = ContentCommonUserType.TYPE_USER,
-                name = "Buyer",
-                iconUrl = "icon.url.buyer",
-                badge = "icon.badge",
-                hasUsername = false,
-                hasAcceptTnc = false,
+                hasUsername = buyerHasUsername,
+                hasAcceptTnc = buyerHasAcceptTnc,
             ),
         )
     } else {
@@ -91,8 +53,8 @@ fun accountListResponse(shopEligible: Boolean = true, buyerEligible: Boolean = t
                 name = "Buyer",
                 iconUrl = "icon.url.buyer",
                 badge = "icon.badge",
-                hasUsername = true,
-                hasAcceptTnc = true,
+                hasUsername = buyerHasUsername,
+                hasAcceptTnc = buyerHasAcceptTnc,
             ),
         )
     }
