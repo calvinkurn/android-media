@@ -25,6 +25,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -2112,6 +2113,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     override fun onChangeCollectionName() {
         showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
         WishlistCollectionAnalytics.sendClickUbahNamaKoleksiButtonOnEmptyStateNoCollectionItemsEvent()
+    }
+
+    override fun goToMyWishlist() {
+        RouteManager.route(context, ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION)
+    }
+
+    override fun goToHome() {
+        RouteManager.route(context, ApplinkConsInternalHome.INTERNAL_HOME)
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(
