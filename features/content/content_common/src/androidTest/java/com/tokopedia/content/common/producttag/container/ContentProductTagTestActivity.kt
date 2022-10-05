@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentContainerView
 import androidx.fragment.app.FragmentFactory
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.di.ContentProductTagTestInjector
 import com.tokopedia.content.common.producttag.view.fragment.base.ProductTagParentFragment
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
@@ -24,6 +25,9 @@ class ContentProductTagTestActivity : AppCompatActivity() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytic: ContentProductTagAnalytic
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
@@ -69,6 +73,8 @@ class ContentProductTagTestActivity : AppCompatActivity() {
 
                     }
                 })
+
+                fragment.setAnalytic(analytic)
             }
         }
     }

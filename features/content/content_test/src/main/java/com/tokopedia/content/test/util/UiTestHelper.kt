@@ -3,11 +3,12 @@ package com.tokopedia.content.test.util
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.BoundedMatcher
@@ -34,6 +35,17 @@ fun click(@IdRes id: Int) {
 
 fun click(text: String) {
     select(text).clickView()
+}
+
+fun type(@IdRes id: Int, text: String) {
+    select(id).apply {
+        clickView()
+        perform(typeText(text))
+    }
+}
+
+fun pressActionSoftKeyboard(@IdRes id: Int) {
+    select(id).perform(pressImeActionButton())
 }
 
 fun selectTag(tag: String): ViewInteraction {

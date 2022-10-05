@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.producttag.testcase
+package com.tokopedia.content.common.producttag.testcase.config
 
 import android.content.Intent
 import androidx.appcompat.content.res.AppCompatResources
