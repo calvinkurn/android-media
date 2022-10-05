@@ -6,7 +6,7 @@ import com.tokopedia.home_component.model.ChannelModel
 /**
  * Created by frenzel
  */
-interface DeclutteredProductCardListener {
+interface LegoProductCardListener {
     fun onSeeAllClicked(channelModel: ChannelModel, position: Int)
     fun onProductCardImpressed(channel: ChannelModel, channelGrid: ChannelGrid, position: Int)
     fun onProductCardClicked(channel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String)

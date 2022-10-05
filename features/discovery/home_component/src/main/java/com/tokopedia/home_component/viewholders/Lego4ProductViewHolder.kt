@@ -8,14 +8,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcLego4ProductBinding
-import com.tokopedia.home_component.listener.DeclutteredProductCardListener
+import com.tokopedia.home_component.listener.LegoProductCardListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.Lego4ProductAdapter
-import com.tokopedia.home_component.visitable.DeclutteredProductCardDataModel
+import com.tokopedia.home_component.visitable.LegoProductCardDataModel
 import com.tokopedia.home_component.visitable.Lego4ProductDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.v2.BlankSpaceConfig
@@ -28,7 +28,7 @@ class Lego4ProductViewHolder(itemView: View,
                              private val homeComponentListener: HomeComponentListener,
                              val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
                              private val cardInteraction: Boolean = false
-): AbstractViewHolder<Lego4ProductDataModel>(itemView), DeclutteredProductCardListener {
+): AbstractViewHolder<Lego4ProductDataModel>(itemView), LegoProductCardListener {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_lego_4_product
@@ -92,20 +92,19 @@ class Lego4ProductViewHolder(itemView: View,
 //            binding?.homeComponentLego4ProductRv?.addItemDecoration(VpsWidgetSpacingItemDecoration())
     }
 
-    private fun convertDataToProductData(channel: ChannelModel): List<DeclutteredProductCardDataModel> {
-        val list = mutableListOf<DeclutteredProductCardDataModel>()
+    private fun convertDataToProductData(channel: ChannelModel): List<LegoProductCardDataModel> {
+        val list = mutableListOf<LegoProductCardDataModel>()
         channel.channelGrids.forEachIndexed { index, element ->
             if(index >= LEGO_4_PRODUCT_SIZE) {
                 return list
             }
             list.add(
-                DeclutteredProductCardDataModel(
+                LegoProductCardDataModel(
                     ChannelModelMapper.mapToProductCardModel(element, cardInteraction),
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
                     listener = this,
-                    componentName = ""
                 )
             )
         }

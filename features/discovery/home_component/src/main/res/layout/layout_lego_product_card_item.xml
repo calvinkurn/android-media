@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.productcard.ProductCardGridView
-    android:id="@+id/declutteredProductCardView"
+    android:id="@+id/productCard"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
