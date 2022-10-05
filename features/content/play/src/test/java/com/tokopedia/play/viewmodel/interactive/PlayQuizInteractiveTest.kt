@@ -310,9 +310,12 @@ class PlayQuizInteractiveTest {
                 setLoggedIn(true)
                 setUserId("1")
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
         }
     }
 
@@ -346,8 +349,11 @@ class PlayQuizInteractiveTest {
                 setLoggedIn(true)
                 setUserId("1")
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
             eventAndState.first.interactive.interactive.assertInstanceOf<InteractiveUiModel.Unknown>()
         }
@@ -386,9 +392,12 @@ class PlayQuizInteractiveTest {
 
                 viewModel.submitAction(PlayViewerNewAction.ClickQuizOptionAction(item = selectedChoice))
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
             mockInteractiveStorage.hasJoined(interactiveId).assertTrue()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
             eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
@@ -423,9 +432,12 @@ class PlayQuizInteractiveTest {
                 setLoggedIn(true)
                 setUserId("1")
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
             eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
@@ -459,9 +471,12 @@ class PlayQuizInteractiveTest {
                 focusPage(mockChannelData)
                 setLoggedIn(false)
 
+                mockInteractiveStorage.hasProcessedWinner(interactiveId).assertFalse()
+
                 viewModel.submitAction(PlayViewerNewAction.QuizEnded)
             }
             mockInteractiveStorage.hasJoined(interactiveId).assertFalse()
+            mockInteractiveStorage.hasProcessedWinner(interactiveId).assertTrue()
             eventAndState.first.winnerBadge.shouldShow.assertTrue()
             eventAndState.second.last().assertInstanceOf<ShowCoachMarkWinnerEvent>()
         }
