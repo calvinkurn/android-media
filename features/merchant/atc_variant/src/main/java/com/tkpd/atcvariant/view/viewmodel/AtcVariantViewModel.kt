@@ -220,7 +220,7 @@ class AtcVariantViewModel @Inject constructor(
             shouldRefreshPreviousPage: Boolean? = null,
             isFollowShop: Boolean? = null,
             requestCode: Int? = null,
-            cartId: String? = ""
+            cartId: String? = null
     ) {
         variantActivityResult = AtcCommonMapper.updateActivityResultData(
                 recentData = variantActivityResult,
