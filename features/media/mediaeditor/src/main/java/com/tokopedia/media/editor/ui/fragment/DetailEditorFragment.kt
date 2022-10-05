@@ -31,8 +31,15 @@ import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+import com.tokopedia.media.editor.utils.cropRatioToText
+import com.tokopedia.media.editor.utils.getToolEditorText
+import com.tokopedia.media.editor.utils.removeBackgroundToText
+import com.tokopedia.media.editor.utils.watermarkToText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.picker.common.ImageRatioType
@@ -170,8 +177,9 @@ class DetailEditorFragment @Inject constructor(
         getImageView()?.let { imageView ->
             data.resultUrl?.let { it ->
                 removeBackgroundType = removeBgType
+                data.removeBackgroundColor = removeBgType
 
-                if (removeBgType == RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_DEFAULT) {
+                if (removeBgType == REMOVE_BG_TYPE_DEFAULT) {
                     loadImageWithEmptyTarget(requireContext(),
                         it,
                         {},
@@ -310,8 +318,8 @@ class DetailEditorFragment @Inject constructor(
                     mediaTarget = MediaBitmapEmptyTarget(
                         onReady = { resultBitmap ->
                             when (removeBackgroundType) {
-                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_GRAY -> principleR.color.Unify_NN200
-                                RemoveBackgroundToolUiComponent.REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
+                                REMOVE_BG_TYPE_GRAY -> principleR.color.Unify_NN200
+                                REMOVE_BG_TYPE_WHITE -> principleR.color.Unify_Static_White
                                 else -> null
                             }?.let { backgroundColor ->
                                 val color =
@@ -654,7 +662,7 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener { _ ->
-            editorDetailAnalytics.clickSave()
+            onEditSaveAnalytics()
 
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
@@ -771,6 +779,47 @@ class DetailEditorFragment @Inject constructor(
             }
         }
         return null
+    }
+
+    private fun onEditSaveAnalytics() {
+        val editHistory = EditorDetailUiModel()
+        detailState.editList.toMutableList().apply {
+            add(data)
+            forEach {
+                when (it.editorToolType) {
+                    EditorToolType.WATERMARK -> editHistory.watermarkMode = it.watermarkMode
+                    EditorToolType.CROP, EditorToolType.ROTATE -> editHistory.cropRotateValue =
+                        it.cropRotateValue
+                    EditorToolType.CONTRAST -> editHistory.contrastValue = it.contrastValue
+                    EditorToolType.BRIGHTNESS -> editHistory.brightnessValue = it.brightnessValue
+                    EditorToolType.REMOVE_BACKGROUND -> editHistory.removeBackgroundColor =
+                        it.removeBackgroundColor
+                }
+            }
+        }
+
+        val cropRatioText = cropRatioToText(editHistory.cropRotateValue.cropRatio)
+        val removeBackgroundText = removeBackgroundToText(editHistory.removeBackgroundColor)
+        val watermarkText = watermarkToText(editHistory.watermarkMode?.watermarkType)
+        val brightnessText = editHistory.brightnessValue?.toInt() ?: 0
+        val contrastText = editHistory.contrastValue?.toInt() ?: 0
+        val rotateText = if (!data.isToolRotate()) {
+            editHistory.cropRotateValue.rotateDegree.toInt()
+        } else {
+            viewModel.rotateSliderValue.toInt()
+        }
+
+        val currentEditorText =
+            requireContext().getText(getToolEditorText(data.editorToolType)).toString()
+        editorDetailAnalytics.clickSave(
+            currentEditorText,
+            brightnessText,
+            contrastText,
+            cropRatioText,
+            rotateText,
+            watermarkText,
+            removeBackgroundText
+        )
     }
 
     override fun getScreenName() = SCREEN_NAME

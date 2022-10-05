@@ -19,7 +19,8 @@ data class EditorDetailUiModel(
     var removeBackgroundUrl: String? = null,
     var isContrastExecuteFirst: Boolean? = null,
     var cropRotateValue: EditorCropRotateUiModel = EditorCropRotateUiModel(),
-    var originalRatio: Float = 1f
+    var originalRatio: Float = 1f,
+    var removeBackgroundColor: Int? = null
 ) : Parcelable {
     // used only for remove background
     fun clearValue() {
@@ -51,5 +52,11 @@ data class EditorDetailUiModel(
 
     fun isToolWatermark(): Boolean {
         return editorToolType == EditorToolType.WATERMARK
+    }
+
+    companion object {
+        const val REMOVE_BG_TYPE_DEFAULT = 0
+        const val REMOVE_BG_TYPE_WHITE = 1
+        const val REMOVE_BG_TYPE_GRAY = 2
     }
 }

@@ -5,7 +5,11 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.editor.R
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_DEFAULT
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
 import com.tokopedia.picker.common.basecomponent.UiComponent
+
 
 class RemoveBackgroundToolUiComponent constructor(
     viewGroup: ViewGroup,
@@ -64,11 +68,5 @@ class RemoveBackgroundToolUiComponent constructor(
 
     interface Listener {
         fun onRemoveBackgroundClicked(removeBgType: Int)
-    }
-
-    companion object {
-        const val REMOVE_BG_TYPE_DEFAULT = 0
-        const val REMOVE_BG_TYPE_WHITE = 1
-        const val REMOVE_BG_TYPE_GRAY = 2
     }
 }

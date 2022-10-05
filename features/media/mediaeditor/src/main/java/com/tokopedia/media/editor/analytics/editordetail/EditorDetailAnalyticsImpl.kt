@@ -19,7 +19,11 @@ import com.tokopedia.media.editor.analytics.KEY_USER_ID
 import com.tokopedia.media.editor.analytics.TRACKER_ID_CLICK_SAVE
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_FLIP
 import com.tokopedia.media.editor.analytics.TRACKER_ID_ROTATION_ROTATE
+import com.tokopedia.media.editor.data.repository.WatermarkType
+import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
+import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.utils.ParamCacheManager
+import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -52,10 +56,26 @@ class EditorDetailAnalyticsImpl(
         )
     }
 
-    override fun clickSave() {
+    override fun clickSave(
+        editorText: String,
+        brightnessValue: Int,
+        contrastValue: Int,
+        cropText: String,
+        rotateValue: Int,
+        watermarkText: String,
+        removeBackgroundText: String
+    ) {
+
+        val historyList = "{$brightnessValue}, " +
+                "{$contrastValue}, " +
+                "{$rotateValue}, " +
+                "{$cropText}, " +
+                "{$removeBackgroundText}, " +
+                "{$watermarkText}"
+
         sendGeneralEvent(
             ACTION_CLICK_SAVE,
-            "$pageSource - $userId - $shopId",
+            "$pageSource - $userId - $shopId - $editorText - $historyList",
             TRACKER_ID_CLICK_SAVE
         )
     }

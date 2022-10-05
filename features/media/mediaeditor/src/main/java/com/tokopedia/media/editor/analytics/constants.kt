@@ -43,3 +43,11 @@ const val TRACKER_ID_ROTATION_FLIP = "30557"
 const val TRACKER_ID_ROTATION_ROTATE = "30558"
 const val TRACKER_ID_CLICK_SAVE = "30561"
 const val TRACKER_ID_AUTO_CROP_TIME = "36009"
+
+// OTHER
+const val REMOVE_BG_TYPE_ORI = "original"
+const val REMOVE_BG_TYPE_WHITE = "white"
+const val REMOVE_BG_TYPE_GREY = "grey"
+
+const val WATERMARK_TYPE_CENTER = "center"
+const val WATERMARK_TYPE_DIAGONAL = "diagonal"
