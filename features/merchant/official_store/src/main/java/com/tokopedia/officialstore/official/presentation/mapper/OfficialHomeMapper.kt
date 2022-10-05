@@ -12,10 +12,7 @@ import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
-import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
-import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
-import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
+import com.tokopedia.officialstore.official.data.model.*
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
@@ -32,6 +29,11 @@ object OfficialHomeMapper {
     const val FEATURE_SHOP_POSITION = 2
     const val RECOM_WIDGET_POSITION = 3
     const val WIDGET_NOT_FOUND = -1
+    private val atfOS = listOf(
+        OfficialBannerDataModel(mutableListOf(), ""), OfficialBenefitDataModel(
+            mutableListOf()
+        ), OfficialFeaturedShopDataModel(listOf(), HeaderShop(), "")
+    )
 
     fun mappingBanners(
         banner: OfficialStoreBanners,
@@ -119,7 +121,8 @@ object OfficialHomeMapper {
     ) {
         val newList = currentList.toMutableList()
         val dcList = mutableListOf<Visitable<*>>()
-        officialStoreChannels.forEachIndexed { position, officialStore ->
+        officialStoreChannels.forEachIndexed { pos, officialStore ->
+            val position = pos + atfOS.size
             when (officialStore.channel.layout) {
                 DynamicChannelLayout.LAYOUT_MIX_LEFT -> {
                     dcList.add(
