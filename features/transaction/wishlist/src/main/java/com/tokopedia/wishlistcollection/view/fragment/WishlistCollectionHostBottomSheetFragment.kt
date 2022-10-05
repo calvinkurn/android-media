@@ -11,6 +11,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_COLLECTION_ID
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.STRING_EXTRA_MESSAGE_TOASTER
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
@@ -74,9 +75,11 @@ class WishlistCollectionHostBottomSheetFragment: Fragment(),
         listProductId.add(productId)
         val addWishlistParam = AddWishlistCollectionsHostBottomSheetParams(collectionId = id, collectionName = name, productIds = listProductId)
         bottomSheetCollection.saveToCollection(addWishlistParam)
+        WishlistCollectionAnalytics.sendClickCollectionFolderEvent(id, listProductId.toString(), src)
     }
 
     override fun onCreateNewCollectionClicked(dataObject: GetWishlistCollectionsBottomSheetResponse.GetWishlistCollectionsBottomsheet.Data) {
+        WishlistCollectionAnalytics.sendClickKoleksiBaruEvent(productId, src)
         if (dataObject.totalCollection < dataObject.maxLimitCollection) {
             val source = if (src == SRC_WISHLIST) SRC_THREE_DOTS_CREATE_COLLECTION else src
             showBottomSheetCreateNewCollection(childFragmentManager, source)

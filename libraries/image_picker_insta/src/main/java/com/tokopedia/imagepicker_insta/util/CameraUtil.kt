@@ -27,7 +27,7 @@ object CameraUtil {
         videoMaxDuration:Long,
         selectedFeedAccountId: String,
         requestCode: Int = NO_REQUEST_CODE,
-        isOpenFrom: Int,
+        isOpenFrom: String,
     ) {
         if(fragment.context!=null){
             val intent = CameraActivity.getIntent(

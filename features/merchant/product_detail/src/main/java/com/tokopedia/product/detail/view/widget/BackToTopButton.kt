@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -115,9 +114,6 @@ class BackToTopButton(
         }
 
         private fun resolveButtonVisibility(recyclerView: RecyclerView) {
-            val layoutManager = recyclerView.layoutManager
-            if (layoutManager !is LinearLayoutManager) return
-
             if (calculateFirstVisibleItemPosition(recyclerView, navTabPositionOffsetY) == 0) {
                 toggle(false)
             } else toggle(true)

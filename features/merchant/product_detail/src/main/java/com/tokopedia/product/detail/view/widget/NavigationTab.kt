@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
 
-
 class NavigationTab(
     context: Context, attributeSet: AttributeSet
 ) : FrameLayout(context, attributeSet), CoroutineScope {
@@ -57,7 +56,7 @@ class NavigationTab(
 
     init {
         addView(view)
-        binding.pdpNavTab.tabLayout.addOnTabSelectedListener(onTabSelectedListener)
+        tabLayout.addOnTabSelectedListener(onTabSelectedListener)
     }
 
     fun start(

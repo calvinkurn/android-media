@@ -60,6 +60,7 @@ import com.tokopedia.topchat.chattemplate.domain.pojo.TemplateData
 import com.tokopedia.topchat.common.TopChatInternalRouter
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.FakeTopchatWebSocket
+import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.topchat.isKeyboardOpened
 import com.tokopedia.topchat.matchers.hasSrwBubble
 import com.tokopedia.topchat.matchers.withIndex
@@ -69,6 +70,7 @@ import com.tokopedia.topchat.stub.chatroom.di.ChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.di.DaggerChatComponentStub
 import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.view.activity.TopChatRoomActivityStub
+import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.di.DaggerFakeBaseAppComponent
 import com.tokopedia.topchat.stub.common.di.module.FakeAppModule
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
@@ -141,9 +143,6 @@ abstract class TopchatRoomTest {
     protected lateinit var websocket: FakeTopchatWebSocket
 
     @Inject
-    protected lateinit var addWishListUseCase: AddWishListUseCaseStub
-
-    @Inject
     protected lateinit var getExistingMessageIdUseCaseNewStub: GetExistingMessageIdUseCaseStub
 
     @Inject
@@ -190,6 +189,9 @@ abstract class TopchatRoomTest {
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
+
+    @Inject
+    lateinit var webSocketPayloadGenerator : DefaultWebsocketPayloadFakeGenerator
 
     protected open lateinit var activity: TopChatRoomActivityStub
 
@@ -360,6 +362,13 @@ abstract class TopchatRoomTest {
             "start_time",
             exStartTime
         )
+    }
+
+    protected fun changeResponseWebSocket(
+        response: WebSocketResponse,
+        webSocketModifier: (WebSocketResponse) -> Unit
+    ) {
+        webSocketModifier(response)
     }
 
     protected fun clickAttachProductMenu() {

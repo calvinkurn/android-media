@@ -22,7 +22,6 @@ class RecyclerViewUpdater @Inject constructor(
     @SearchContext
     context: Context,
 ) : ViewUpdater,
-    ProductListAdapter.OnItemChangeView,
     ContextProvider by WeakReferenceContextProvider(context) {
 
     var recyclerView: RecyclerView? = null
@@ -32,34 +31,38 @@ class RecyclerViewUpdater @Inject constructor(
 
     private val performanceMonitoring = performanceMonitoringProvider.get()
 
+    override val itemCount: Int
+        get() = productListAdapter?.itemCount ?: 0
+
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
-        onScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
         productListTypeFactory: ProductListTypeFactory,
     ) {
         this.recyclerView = recyclerView
-        this.productListAdapter = ProductListAdapter(
-            itemChangeView = this,
-            typeFactory = productListTypeFactory
-        )
+        this.productListAdapter = ProductListAdapter(productListTypeFactory)
 
-        setupRecyclerView(rvLayoutManager, onScrollListener)
+        setupRecyclerView(rvLayoutManager, loadMoreScrollListener, onBoardingScrollListener)
     }
 
     private fun setupRecyclerView(
         rvLayoutManager: RecyclerView.LayoutManager?,
-        rvOnScrollListener: RecyclerView.OnScrollListener?,
+        loadMoreScrollListener: RecyclerView.OnScrollListener?,
+        onBoardingScrollListener: RecyclerView.OnScrollListener?,
     ) {
         rvLayoutManager ?: return
-        rvOnScrollListener ?: return
+        loadMoreScrollListener ?: return
+        onBoardingScrollListener ?: return
 
         this.recyclerView?.run {
             layoutManager = rvLayoutManager
             adapter = productListAdapter
             addItemDecoration(createProductItemDecoration())
             addItemDecoration(SeparatorItemDecoration(context, productListAdapter))
-            addOnScrollListener(rvOnScrollListener)
+            addOnScrollListener(loadMoreScrollListener)
+            addOnScrollListener(onBoardingScrollListener)
         }
     }
 
@@ -71,6 +74,13 @@ class RecyclerViewUpdater @Inject constructor(
             ?.resources
             ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             ?: 0
+
+    override fun getItemAtIndex(index: Int): Visitable<*>? {
+        val itemList = productListAdapter?.itemList ?: return null
+        if (index !in itemList.indices) return null
+        if (itemList.size < index) return null
+        return itemList.getOrNull(index)
+    }
 
     override fun setItems(list: List<Visitable<*>>) {
         productListAdapter?.clearData()
@@ -95,15 +105,15 @@ class RecyclerViewUpdater @Inject constructor(
         productListAdapter?.removeLoading()
     }
 
-    override fun onChangeList() {
+    override fun requestRelayout() {
         recyclerView?.requestLayout()
     }
 
-    override fun onChangeDoubleGrid() {
-        recyclerView?.requestLayout()
+    override fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean) {
+        productListAdapter?.removeFirstItemWithCondition(condition)
     }
 
-    override fun onChangeSingleGrid() {
-        recyclerView?.requestLayout()
+    override fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>) {
+        productListAdapter?.insertItemAfter(item, previousItem)
     }
 }
