@@ -154,7 +154,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     fun getBundleData(param: GetBundleParam) {
         param.apply {
             createViewModel(storeOwner, lifecycleOwner)
-            viewModel?.getBundleInfo(productId, warehouseId, bundleList)
+            viewModel?.getBundleInfo(param)
         }
     }
 

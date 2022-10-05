@@ -4,7 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.orZero
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 data class GetBundleInfoResponse(
         @SerializedName("GetBundleInfo")
@@ -47,12 +47,14 @@ data class BundleInfo(
         @SerializedName("preorder")
         @Expose val preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
-        @Expose val bundleItems: List<BundleItem> = listOf()
+        @Expose val bundleItems: List<BundleItem> = listOf(),
+        @SerializedName("shopInformation")
+        @Expose val shopInformation: ShopInformation = ShopInformation(),
 ): Parcelable
 
 @Parcelize
 data class BundleItem(
-        @SerializedName("productID")
+    @SerializedName("productID")
         @Expose val productID: Long = 0L,
         @SerializedName("name")
         @Expose val name: String = "",
@@ -164,4 +166,16 @@ data class Preorder(
         @Expose val processDay: Long = 0L,
         @SerializedName("processTime")
         @Expose val processTime: String = ""
+): Parcelable
+
+@Parcelize
+data class ShopInformation (
+    @SerializedName("ShopName")
+    @Expose val shopName: String = "",
+    @SerializedName("ShopType")
+    @Expose val shopType: String = "",
+    @SerializedName("ShopBadge")
+    @Expose val shopBadge: String = "",
+    @SerializedName("ShopID")
+    @Expose val shopId: Long = 0L,
 ): Parcelable

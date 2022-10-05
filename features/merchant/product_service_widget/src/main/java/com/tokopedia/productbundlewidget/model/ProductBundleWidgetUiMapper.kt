@@ -4,15 +4,18 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_TYPE_SINGLE
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import javax.inject.Inject
 
@@ -26,12 +29,22 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
     fun mapToBundleUi(bundleInfos: List<BundleInfo>): BundleUiModel {
         val bundleInfo = bundleInfos.firstOrNull() ?: BundleInfo()
         val bundleType = bundleInfo.type.toBundleType()
+        val shopInfo = bundleInfo.shopInformation.toBundleShopInfo()
         return BundleUiModel(
             bundleName = bundleInfo.name,
             bundleType = bundleType,
             actionButtonText = context.getString(R.string.bundlewidget_action_button_text),
-            bundleDetails = if (bundleType == BundleTypes.SINGLE_BUNDLE) bundleInfos.toSingleBundleDetails()
-            else bundleInfo.bundleItems.toMultipleBundleDetails()
+            bundleDetails = if (bundleType == BundleTypes.SINGLE_BUNDLE) bundleInfos.toSingleBundleDetails(shopInfo)
+            else bundleInfo.bundleItems.toMultipleBundleDetails(shopInfo)
+        )
+    }
+
+    private fun ShopInformation.toBundleShopInfo(): BundleShopUiModel? {
+        if (shopId.isZero()) return null
+        return BundleShopUiModel(
+            shopId = shopId.toString(),
+            shopName = shopName,
+            shopIconUrl = shopBadge,
         )
     }
 
@@ -44,7 +57,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
         else BundleTypes.MULTIPLE_BUNDLE
     }
 
-    private fun List<BundleInfo>.toSingleBundleDetails(): List<BundleDetailUiModel> {
+    private fun List<BundleInfo>.toSingleBundleDetails(shopInfo: BundleShopUiModel?): List<BundleDetailUiModel> {
         return map {
             val bundleItem = it.bundleItems.firstOrNull()
             val hasVariant = bundleItem?.children?.isNotEmpty().orFalse()
@@ -59,24 +72,25 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero()
             val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero()
 
-            initializeBundleDetail(originalPrice, bundlePrice, it.bundleItems).apply {
+            initializeBundleDetail(originalPrice, bundlePrice, shopInfo, it.bundleItems).apply {
                 this.minOrder = minOrder
                 this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder)
             }
         }
     }
 
-    private fun List<BundleItem>.toMultipleBundleDetails(): List<BundleDetailUiModel> {
+    private fun List<BundleItem>.toMultipleBundleDetails(shopInfo: BundleShopUiModel?): List<BundleDetailUiModel> {
         val bundlePrice = sumOf { it.getPreviewBundlePrice() }
         val originalPrice = sumOf { it.getPreviewOriginalPrice() }
         return listOf(
-            initializeBundleDetail(originalPrice, bundlePrice, this)
+            initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this)
         )
     }
 
     private fun initializeBundleDetail(
         originalPrice: Double,
         bundlePrice: Double,
+        shopInfo: BundleShopUiModel?,
         bundleItems: List<BundleItem>
     ): BundleDetailUiModel {
         val slashPrice = originalPrice - bundlePrice
@@ -86,6 +100,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             displayPrice = bundlePrice.getCurrencyFormatted(),
             discountPercentage = discountPercentage,
             savingAmountWording = context.getString(R.string.bundlewidget_saving_amount_format, slashPrice.getCurrencyFormatted()),
+            shopInfo = shopInfo,
             products = bundleItems.map {
                 BundleProductUiModel(
                     productId = it.productID.toString(),

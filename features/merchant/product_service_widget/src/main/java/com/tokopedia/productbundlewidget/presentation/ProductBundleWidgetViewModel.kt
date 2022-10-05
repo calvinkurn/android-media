@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.productbundlewidget.model.ProductBundleWidgetUiMapper
 import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlinx.coroutines.withContext
@@ -24,19 +25,15 @@ class ProductBundleWidgetViewModel @Inject constructor(
     private val _bundleUiModels: MutableLiveData<List<BundleUiModel>> = MutableLiveData()
     val bundleUiModels: LiveData<List<BundleUiModel>> get() = _bundleUiModels
 
-    fun getBundleInfo(productId: String, warehouseId: String, bundleIdList: List<Bundle>) {
+    fun getBundleInfo(param: GetBundleParam) {
         val chosenAddress = chosenAddressRequestHelper.getChosenAddress()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
                 getBundleInfoUseCase.setParams(
+                    type = param.widgetType.typeCode,
                     squad = ProductServiceWidgetConstant.SQUAD_VALUE,
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
                     requestData = RequestData(
-                        variantDetail = true,
-                        CheckCampaign = true,
-                        BundleGroup = true,
-                        Preorder = true,
-                        BundleStats = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
@@ -48,10 +45,10 @@ class ProductBundleWidgetViewModel @Inject constructor(
                         )
                     ),
                     productData = ProductData(
-                        productID = productId,
-                        warehouseIDs = listOf(warehouseId)
+                        productID = param.productId,
+                        warehouseIDs = listOf(param.warehouseId)
                     ),
-                    bundleIdList = bundleIdList
+                    bundleIdList = param.bundleList
                 )
                 getBundleInfoUseCase.executeOnBackground()
             }

@@ -26,6 +26,10 @@ class GetBundleParamBuilder(fragment: Fragment) {
         this.shopId = shopId
     }
 
+    fun setWidgetType(widgetType: WidgetType) = apply {
+        this.widgetType = widgetType
+    }
+
     fun setBundleId(bundleIds: List<String>) = apply {
         this.bundleIds = bundleIds.toMutableList()
     }
