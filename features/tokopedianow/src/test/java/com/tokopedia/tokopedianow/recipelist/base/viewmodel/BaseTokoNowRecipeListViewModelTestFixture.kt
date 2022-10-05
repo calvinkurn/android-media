@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
@@ -30,6 +31,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     private val privateVisitableItems by lazy {
         viewModel.getPrivateField<MutableList<Visitable<*>>>("visitableItems")
+    }
+
+    private val showProgressBar by lazy {
+        viewModel.getPrivateField<MutableLiveData<Boolean>>("_showProgressBar")
     }
 
     private lateinit var getRecipeListUseCase: GetRecipeListUseCase
@@ -116,5 +121,9 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     fun addItemToVisitableList(item: Visitable<*>) {
         privateVisitableItems.add(item)
+    }
+
+    fun setShowProgressBar(shown: Boolean) {
+        showProgressBar.value = shown
     }
 }
