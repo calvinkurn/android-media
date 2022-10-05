@@ -9,14 +9,13 @@ import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
-import com.tokopedia.filter.common.data.SavedOption
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
@@ -50,7 +49,6 @@ interface ProductListSectionContract {
         fun showRefreshLayout()
         fun hideRefreshLayout()
         val isFirstActiveTab: Boolean
-        fun setupSearchNavigation()
         fun trackScreenAuthenticated()
         fun reloadData()
         val abTestRemoteConfig: RemoteConfig?
@@ -87,10 +85,6 @@ interface ProductListSectionContract {
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
         fun addLocalSearchRecommendation(visitableList: List<Visitable<*>>)
-        fun trackEventSearchResultChangeView(viewType: String)
-        fun switchSearchNavigationLayoutTypeToListView(position: Int)
-        fun switchSearchNavigationLayoutTypeToBigGridView(position: Int)
-        fun switchSearchNavigationLayoutTypeToSmallGridView(position: Int)
         fun refreshItemAtIndex(index: Int)
         fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option)
         fun trackDynamicProductCarouselImpression(
@@ -149,7 +143,6 @@ interface ProductListSectionContract {
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)
-        fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType)
         fun onViewResumed()
         fun onLocalizingAddressSelected()
         fun onInspirationCarouselChipsClick(
