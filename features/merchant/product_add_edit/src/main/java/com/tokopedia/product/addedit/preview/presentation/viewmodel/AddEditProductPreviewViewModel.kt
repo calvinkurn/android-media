@@ -8,7 +8,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
@@ -27,8 +30,7 @@ import com.tokopedia.product.addedit.draft.mapper.AddEditProductMapper.mapDraftT
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.GetStatusShopUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -60,8 +62,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
     private val getProductDraftUseCase: GetProductDraftUseCase,
     private val saveProductDraftUseCase: SaveProductDraftUseCase,
     private val validateProductNameUseCase: ValidateProductNameUseCase,
-    private val getShopInfoLocationUseCase: GetShopInfoLocationUseCase,
-    private val getStatusShopUseCase: GetStatusShopUseCase,
+    private val getShopInfoLocationUseCase: GetShopInfoUseCase,
     private val saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase,
     private val authorizeAccessUseCase: AuthorizeAccessUseCase,
     private val authorizeEditStockUseCase: AuthorizeAccessUseCase,
@@ -474,17 +475,15 @@ class AddEditProductPreviewViewModel @Inject constructor(
         mIsLoading.value = true
         launchCatchError(block = {
             getShopInfoLocationUseCase.params =
-                GetShopInfoLocationUseCase.createRequestParams(shopId)
-            val shopLocation = withContext(dispatcher.io) {
+                GetShopInfoUseCase.createRequestParams(shopId)
+            val shopInformation = withContext(dispatcher.io) {
                 getShopInfoLocationUseCase.executeOnBackground()
             }
-            getStatusShopUseCase.params =GetStatusShopUseCase.createRequestParams(shopId)
-            val shopStatus = withContext(dispatcher.io){
-                getStatusShopUseCase.executeOnBackground()
-            }
 
-            mLocationValidation.value = Success(shopLocation)
-            mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
+            val isShopLocationNotNull = shopInformation.shippingLoc.provinceId != 0
+            val isShopNotInModerationStatus = shopInformation.statusInfo.isOnModerationMode()
+            mLocationValidation.value = Success(isShopLocationNotNull)
+            mIsOnModerationMode.value = Success(isShopNotInModerationStatus)
             mIsLoading.value = false
         }, onError = {
             mLocationValidation.value = Fail(it)

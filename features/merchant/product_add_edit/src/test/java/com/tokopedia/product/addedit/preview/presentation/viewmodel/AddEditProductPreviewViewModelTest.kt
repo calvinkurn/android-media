@@ -11,6 +11,7 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
+import com.tokopedia.product.addedit.preview.data.source.api.response.ShippingLoc
 import com.tokopedia.product.addedit.preview.data.source.api.response.ShopInfo
 import com.tokopedia.product.addedit.preview.data.source.api.response.StatusInfo
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -459,14 +460,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop location should be true`() = runBlocking {
-        val shopStatus = StatusInfo(
-            shopStatus = "1",
-            statusTitle= "Open",
-            statusMessage = "",
-            tickerType ="warning"
-        )
-        onGetShopInfoLocation_thenReturn()
-        onGetShopStatus_thenReturn(shopStatus)
+        onGetShopInfo_thenReturn(1)
 
         viewModel.validateShopInformation(121313)
 
@@ -893,14 +887,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop isModerate should be false`() = runBlocking {
-        val shopStatus = StatusInfo(
-            shopStatus = "1",
-            statusTitle= "Open",
-            statusMessage = "",
-            tickerType ="warning"
-        )
-        onGetShopInfoLocation_thenReturn()
-        onGetShopStatus_thenReturn(shopStatus)
+        onGetShopInfo_thenReturn(1)
 
         viewModel.validateShopInformation(121313)
 
@@ -910,14 +897,7 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop isModerate should be true`() = runBlocking {
-        val shopStatus = StatusInfo(
-            shopStatus = "3",
-            statusTitle= "Moderate",
-            statusMessage = "Your shope is on moderate status",
-            tickerType ="warning"
-        )
-        onGetShopInfoLocation_thenReturn()
-        onGetShopStatus_thenReturn(shopStatus)
+        onGetShopInfo_thenReturn(3)
 
         viewModel.validateShopInformation(121313)
 
@@ -945,12 +925,8 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
         coEvery { validateProductNameUseCase.executeOnBackground() } returns response
     }
 
-    private fun onGetShopInfoLocation_thenReturn() {
-        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
-    }
-
-    private fun onGetShopStatus_thenReturn(statusInfo: StatusInfo) {
-        coEvery { getStatusShopUseCase.executeOnBackground() } returns statusInfo
+    private fun onGetShopInfo_thenReturn(statusShop: Int) {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns returnShopInfo(statusShop)
     }
 
     private fun onSaveShopShipmentLocation_thenReturn() {
@@ -1109,6 +1085,18 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun verifyValidateShopIsNotModerate() {
         assertTrue(viewModel.isOnModerationMode.value == Success(false))
+    }
+
+    private fun returnShopInfo(shippingStatus : Int) : ShopInfo{
+        return ShopInfo(
+            shippingLoc = ShippingLoc(13),
+            statusInfo = StatusInfo(
+                shopStatus = shippingStatus.toString(),
+                statusTitle= "",
+                statusMessage = "",
+                tickerType ="warning"
+            )
+        )
     }
 
 }

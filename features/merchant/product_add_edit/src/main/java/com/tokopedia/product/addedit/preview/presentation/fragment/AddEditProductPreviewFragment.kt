@@ -143,7 +143,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import java.net.URLEncoder
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class AddEditProductPreviewFragment :
         AddEditProductFragment(),
@@ -1841,9 +1840,14 @@ class AddEditProductPreviewFragment :
 
     private fun showBottomSheet(){
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonBackClicked { activity?.finish() }
+        bottomSheet.setOnButtonBackClicked { activityFinish() }
         bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
+        bottomSheet.setDismissListener { activityFinish() }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun activityFinish(){
+        activity?.finish()
     }
 
     private fun routeToArticle(){

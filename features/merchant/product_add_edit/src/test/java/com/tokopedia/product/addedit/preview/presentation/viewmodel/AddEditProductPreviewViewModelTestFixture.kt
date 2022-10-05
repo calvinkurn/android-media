@@ -7,12 +7,11 @@ import com.tokopedia.product.addedit.draft.domain.usecase.GetProductDraftUseCase
 import com.tokopedia.product.addedit.draft.domain.usecase.SaveProductDraftUseCase
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
-import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
+import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.shop.common.graphql.domain.usecase.shopopen.ShopOpenRevampSaveShipmentLocationUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.usecase.ProductLimitationUseCase
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -45,7 +44,7 @@ abstract class AddEditProductPreviewViewModelTestFixture {
     lateinit var validateProductNameUseCase: ValidateProductNameUseCase
 
     @RelaxedMockK
-    lateinit var getShopInfoLocationUseCase: GetShopInfoLocationUseCase
+    lateinit var getShopInfoLocationUseCase: GetShopInfoUseCase
 
     @RelaxedMockK
     lateinit var saveShopShipmentLocationUseCase: ShopOpenRevampSaveShipmentLocationUseCase
@@ -61,9 +60,6 @@ abstract class AddEditProductPreviewViewModelTestFixture {
 
     @RelaxedMockK
     lateinit var productLimitationUseCase: ProductLimitationUseCase
-
-    @RelaxedMockK
-    lateinit var getStatusShopUseCase: GetStatusShopUseCase
 
     @RelaxedMockK
     lateinit var getProductMapper: GetProductMapper
@@ -94,7 +90,6 @@ abstract class AddEditProductPreviewViewModelTestFixture {
             saveProductDraftUseCase,
             validateProductNameUseCase,
             getShopInfoLocationUseCase,
-            getStatusShopUseCase,
             saveShopShipmentLocationUseCase,
             authorizeAccessUseCase,
             authorizeEditStockUseCase,

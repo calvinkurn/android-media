@@ -4,7 +4,7 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.product.addedit.preview.data.source.api.response.ShopInfoById
 
-data class ShopStatusResponse(
+data class ShopInfoResponse(
         @Expose
         @SerializedName("shopInfoByID")
         val shopInfoById: ShopInfoById
