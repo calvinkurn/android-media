@@ -3,25 +3,15 @@ package com.tokopedia.loginregister.redefineregisteremail.view.inputphone
 import android.content.Context
 import android.os.Bundle
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
-import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.intent.Intents
 import androidx.test.espresso.intent.Intents.intended
 import androidx.test.espresso.intent.Intents.intending
-import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.intent.rule.IntentsTestRule
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnButtonDialog
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.launchFragment
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterRepositoryStub
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterTestState
@@ -147,7 +137,7 @@ class RedefineRegisterInputPhoneMandatoryTest {
 
         inputValidPhone()
         clickSubmit()
-        clickOnButtonDialog("Ya, Benar")
+        clickPrimaryButtonDialog()
         intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         isGlobalErrorShowing()
     }
