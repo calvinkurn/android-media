@@ -111,6 +111,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   errors_unblocking
                   shipping_id
                   sp_id
+                  bo_code
                   is_insurance
                   is_fulfillment_service
                   toko_cabang {
@@ -401,6 +402,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
               }
               tickers {
                 id
+                title
                 message
                 page
               }
@@ -555,6 +557,9 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                         }
                       }
                       poml_auto_applied
+                      bebas_ongkir_info {
+                        is_bo_unstack_enabled
+                      }
                     }
                     benefit_summary_info {
                       final_benefit_amount_str
@@ -620,6 +625,7 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                 app_link
                 image
               }
+              cart_data
             }
           }
         }"""

@@ -533,10 +533,10 @@ class CampaignInformationViewModel @Inject constructor(
 
     fun findSuggestedVpsPackage(
         currentDate: Date,
-        selectedVpsPackage: VpsPackageUiModel?,
+        selectedVpsPackage: VpsPackageUiModel,
         vpsPackages: List<VpsPackageUiModel>
     ): VpsPackageUiModel? {
-        return if (currentDate.after(selectedVpsPackage?.packageEndTime)) {
+        return if (currentDate.after(selectedVpsPackage.packageEndTime)) {
             vpsPackages.firstOrNull()
         } else {
             selectedVpsPackage

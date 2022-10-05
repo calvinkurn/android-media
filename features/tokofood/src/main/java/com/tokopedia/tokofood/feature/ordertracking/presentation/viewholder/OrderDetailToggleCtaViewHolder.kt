@@ -4,13 +4,14 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingOrderDetailToggleBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.OrderDetailToggleCtaUiModel
 
 class OrderDetailToggleCtaViewHolder(
     view: View,
     private val orderTrackingListener: OrderTrackingListener
-) : BaseOrderTrackingViewHolder<OrderDetailToggleCtaUiModel>(view) {
+) : CustomPayloadViewHolder<OrderDetailToggleCtaUiModel>(view) {
 
     companion object {
         @LayoutRes
