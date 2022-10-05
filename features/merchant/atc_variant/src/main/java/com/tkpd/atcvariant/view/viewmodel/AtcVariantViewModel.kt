@@ -212,7 +212,8 @@ class AtcVariantViewModel @Inject constructor(
             atcSuccessMessage: String? = null,
             shouldRefreshPreviousPage: Boolean? = null,
             isFollowShop: Boolean? = null,
-            requestCode: Int? = null
+            requestCode: Int? = null,
+            cartId: String? = null
     ) {
         variantActivityResult = AtcCommonMapper.updateActivityResultData(
                 recentData = variantActivityResult,
@@ -222,7 +223,8 @@ class AtcVariantViewModel @Inject constructor(
                 atcMessage = atcSuccessMessage,
                 shouldRefreshPreviousPage = shouldRefreshPreviousPage,
                 isFollowShop = isFollowShop,
-                requestCode = requestCode
+                requestCode = requestCode,
+                cartId = cartId
         )
     }
 
@@ -325,9 +327,9 @@ class AtcVariantViewModel @Inject constructor(
     private fun assignLocalQuantityWithMiniCartQuantity(miniCart: List<MiniCartItem.MiniCartItemProduct>?) {
         if (miniCart == null) return
         miniCart.forEach {
-                localQuantityData[it.productId] = it.quantity
-            }
+            localQuantityData[it.productId] = it.quantity
         }
+    }
 
     private suspend fun getAggregatorAndMiniCartData(aggregatorParams: ProductVariantBottomSheetParams, isLoggedIn: Boolean) {
         /**
@@ -609,10 +611,10 @@ class AtcVariantViewModel @Inject constructor(
     }
 
     fun onVariantImageClicked(
-        imageUrl: String,
-        productId: String,
-        userId: String,
-        mainImageTag: String
+            imageUrl: String,
+            productId: String,
+            userId: String,
+            mainImageTag: String
     ) {
         val selectedChild = getVariantData()?.getChildByProductId(productId)
         val selectedOptionId = selectedChild?.optionIds?.firstOrNull()
@@ -630,17 +632,17 @@ class AtcVariantViewModel @Inject constructor(
         if (items.isEmpty() && defaultImage.isEmpty()) return
 
         val productDetailGalleryData = ProductDetailGallery(
-            productId = productId,
-            userId = userId,
-            page = ProductDetailGallery.Page.VariantBottomSheet,
-            defaultItem = ProductDetailGallery.Item(
-                "",
-                defaultImage,
-                tag = mainImageTag,
-                type = ProductDetailGallery.Item.Type.Image
-            ),
-            items = items,
-            selectedId = selectedOptionId
+                productId = productId,
+                userId = userId,
+                page = ProductDetailGallery.Page.VariantBottomSheet,
+                defaultItem = ProductDetailGallery.Item(
+                        "",
+                        defaultImage,
+                        tag = mainImageTag,
+                        type = ProductDetailGallery.Item.Type.Image
+                ),
+                items = items,
+                selectedId = selectedOptionId
         )
 
         _variantImagesData.postValue(productDetailGalleryData)
