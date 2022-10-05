@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.result.product.inspirationlistatc.analytics.InspirationListAtcTracking
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
@@ -57,8 +58,8 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         searchComponentTracking.click(TrackApp.getInstance().gtm)
     }
 
-    fun trackCarouselAtc(data: Data) {
-        SearchTracking.trackEventClickAddToCartInspirationCarouselUnification(
+    fun trackCarouselClickAtc(data: Data) {
+        InspirationListAtcTracking.trackEventClickAddToCartInspirationCarouselUnification(
             data.eventLabel,
             data.product.inspirationCarouselType,
             data.product.componentId,

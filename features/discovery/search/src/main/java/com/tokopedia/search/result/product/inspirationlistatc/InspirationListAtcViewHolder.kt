@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionListAtcBinding
@@ -62,6 +63,19 @@ class InspirationListAtcViewHolder(
                     inspirationListAtcListener.onListAtcItemClicked(product)
                 }
             },
+            carouselProductCardOnItemImpressedListener = object : CarouselProductCardListener.OnItemImpressedListener {
+                override fun onItemImpressed(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {
+                    val product = products.getOrNull(carouselProductCardPosition) ?: return
+
+                    inspirationListAtcListener.onListAtcItemImpressed(product)
+                }
+
+                override fun getImpressHolder(carouselProductCardPosition: Int): ImpressHolder? {
+                    return if (carouselProductCardPosition < products.size)
+                        products[carouselProductCardPosition]
+                    else null
+                }
+            },
             carouselProductCardOnItemAddToCartListener = object: CarouselProductCardListener.OnItemAddToCartListener {
                 override fun onItemAddToCart(
                     productCardModel: ProductCardModel,
@@ -101,13 +115,4 @@ class InspirationListAtcViewHolder(
             ProductCardModel.ShopBadge(it.isShown, it.imageUrl)
         } ?: listOf()
     }
-
-    private fun createViewHintListener(product: InspirationCarouselDataView.Option.Product): ViewHintListener {
-        return object: ViewHintListener {
-            override fun onViewHint() {
-//                inspirationListAtcListener.onInspirationCarouselGridProductImpressed(product)
-            }
-        }
-    }
-
 }

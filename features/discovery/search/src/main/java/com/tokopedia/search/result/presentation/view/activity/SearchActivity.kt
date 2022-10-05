@@ -32,6 +32,7 @@ import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerA
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_TRACE
 import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
@@ -47,6 +48,7 @@ import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
+import kotlinx.android.synthetic.main.search_activity_search.*
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named
@@ -70,7 +72,6 @@ class SearchActivity : BaseActivity(),
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
-    private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -146,6 +147,7 @@ class SearchActivity : BaseActivity(),
             .builder()
             .baseAppComponent(component)
             .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
+            .searchNavigationListenerModule(SearchNavigationListenerModule(this))
             .build()
             .inject(this)
     }
@@ -470,13 +472,6 @@ class SearchActivity : BaseActivity(),
         this.autocompleteApplink = autocompleteApplink ?: ""
     }
 
-    override fun setupSearchNavigation(clickListener: SearchNavigationListener.ClickListener?) {
-        searchNavigationClickListener = clickListener
-    }
-
-    override fun refreshMenuItemGridIcon(titleResId: Int, iconResId: Int) {
-    }
-
     override fun getComponent(): BaseAppComponent {
         return (application as BaseMainApplication).baseAppComponent
     }
@@ -491,6 +486,10 @@ class SearchActivity : BaseActivity(),
         this.searchParameter = searchParameter
 
         updateKeyword()
+    }
+
+    override fun updateCartCounter() {
+        searchNavigationToolbar?.updateNotification()
     }
 
     private fun updateKeyword() {

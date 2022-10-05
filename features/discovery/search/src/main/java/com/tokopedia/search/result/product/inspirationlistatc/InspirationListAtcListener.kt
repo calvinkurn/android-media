@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 
 interface InspirationListAtcListener {
@@ -8,4 +9,5 @@ interface InspirationListAtcListener {
     fun onListAtcItemClicked(product: InspirationCarouselDataView.Option.Product)
     fun onListAtcItemImpressed(product: InspirationCarouselDataView.Option.Product)
     fun onListAtcItemAddToCart(product: InspirationCarouselDataView.Option.Product, type: String)
+    fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel?)
 }

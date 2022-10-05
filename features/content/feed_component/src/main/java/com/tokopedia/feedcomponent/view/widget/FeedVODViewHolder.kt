@@ -447,7 +447,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    internal fun onDestroy() {
+    fun onDestroy() {
         onViewDetached()
     }
 

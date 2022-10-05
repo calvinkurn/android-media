@@ -124,6 +124,10 @@ class InspirationCarouselDataView(
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 
+            companion object {
+                private const val ZERO_PARENT_ID = "0"
+            }
+
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
             }
@@ -144,7 +148,8 @@ class InspirationCarouselDataView(
                 return ratingAverage.isNotEmpty()
             }
 
-            fun shouldOpenVariantBottomSheet(): Boolean = parentId.toLongOrZero().isMoreThanZero()
+            fun shouldOpenVariantBottomSheet(): Boolean =
+                parentId != "" && parentId != ZERO_PARENT_ID
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(

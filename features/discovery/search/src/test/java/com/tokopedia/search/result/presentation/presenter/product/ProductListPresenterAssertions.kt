@@ -84,7 +84,6 @@ fun MockKVerificationScope.verifyProcessingNextPage(productListView: ProductList
 }
 
 fun MockKVerificationScope.verifyIsVisible(productListView: ProductListSectionContract.View) {
-    productListView.setupSearchNavigation()
     productListView.trackScreenAuthenticated()
 }
 

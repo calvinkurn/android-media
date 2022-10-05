@@ -69,6 +69,8 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationProductB
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
@@ -87,6 +89,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.separator.VerticalSeparatorMapper
@@ -147,12 +150,15 @@ class ProductListPresenter @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val paginationImpl: PaginationImpl,
     private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
+    private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
     DynamicFilterModelProvider,
-    LastFilterPresenter by lastFilterPresenterDelegate{
+    LastFilterPresenter by lastFilterPresenterDelegate,
+    InspirationListAtcPresenter by inspirationListAtcPresenterDelegate {
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
@@ -281,7 +287,6 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible) {
-            view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
             if (isViewAdded && !hasLoadData)
@@ -478,6 +483,7 @@ class ProductListPresenter @Inject constructor(
                 dimension90,
                 productListType,
                 externalReference,
+                productDataView.keywordIntention,
             )
     }
 
@@ -1286,7 +1292,8 @@ class ProductListPresenter @Inject constructor(
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
-            data.isListAtcLayout() -> convertInspirationCarouselToInspirationListAtc(data)
+            data.isListAtcLayout() ->
+                inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1312,17 +1319,6 @@ class ProductListPresenter @Inject constructor(
             view.queryKey,
             externalReference,
         ))
-    }
-
-    private fun convertInspirationCarouselToInspirationListAtc(
-        data: InspirationCarouselDataView
-    ): List<Visitable<*>> {
-        return data.options.map {
-            InspirationListAtcDataView(
-                option = it,
-                type = data.type,
-            )
-        }
     }
 
     private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
@@ -1971,6 +1967,13 @@ class ProductListPresenter @Inject constructor(
         if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
         else getViewToTrackOnClickOrganicProduct(item)
 
+        sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
+            item,
+            adapterPosition,
+            dimension90,
+            externalReference,
+        )
+
         view.routeToProductDetail(item, adapterPosition)
     }
 
@@ -2299,36 +2302,9 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Change View
-    override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
-        if (isViewNotAttached) return
-
-        when (currentLayoutType) {
-            SearchConstant.ViewType.LIST -> switchToBigGridView(position)
-            SearchConstant.ViewType.SMALL_GRID -> switchToListView(position)
-            SearchConstant.ViewType.BIG_GRID -> switchToSmallGridView(position)
-        }
-    }
-
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
-
-    private fun switchToBigGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToBigGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
-    }
-
-    private fun switchToListView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToListView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST)
-    }
-
-    private fun switchToSmallGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToSmallGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID)
-    }
-    //endregion
 
     override fun onLocalizingAddressSelected() {
         chooseAddressDelegate.updateChooseAddress(::refreshData)

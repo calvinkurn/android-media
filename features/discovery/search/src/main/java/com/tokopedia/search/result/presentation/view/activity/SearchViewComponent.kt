@@ -5,6 +5,7 @@ import com.tokopedia.search.di.module.CartLocalCacheHandlerModule
 import com.tokopedia.search.di.module.RemoteConfigModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModelFactoryModule
 import com.tokopedia.search.result.shop.presentation.viewmodel.SearchShopViewModelFactoryModule
 import dagger.Component
@@ -17,6 +18,7 @@ import dagger.Component
         UserSessionModule::class,
         RemoteConfigModule::class,
         CartLocalCacheHandlerModule::class,
+        SearchNavigationListenerModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

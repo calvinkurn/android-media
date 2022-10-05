@@ -253,16 +253,6 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultChangeGrid(gridName: String, screenName: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.GRID_MENU,
-                SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ))
-    }
-
-    @JvmStatic
     fun eventSearchResultTabClick(tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
@@ -802,30 +792,6 @@ object SearchTracking {
                 SearchTrackingConstant.EVENT_LABEL, optionList?.joinActiveOptionsToString(),
                 SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
                 SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-            )
-        )
-    }
-
-    fun trackEventClickAddToCartInspirationCarouselUnification(
-        eventLabel: String,
-        type: String,
-        componentId: String,
-        products: ArrayList<Any>,
-    ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            DataLayer.mapOf(
-                SearchTrackingConstant.EVENT, SearchEventTracking.Event.ADD_TO_CART,
-                SearchTrackingConstant.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                SearchTrackingConstant.EVENT_ACTION, SearchEventTracking.Action.CLICK_ADD_TO_CART_CAROUSEL,
-                SearchTrackingConstant.EVENT_LABEL, eventLabel,
-                ECOMMERCE, DataLayer.mapOf("click",
-                    DataLayer.mapOf(
-                        "actionField", DataLayer.mapOf(
-                            "list", getInspirationCarouselUnificationListName(type, componentId)
-                        ),
-                        "products", products
-                    )
-                )
             )
         )
     }
