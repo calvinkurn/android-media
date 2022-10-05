@@ -103,7 +103,7 @@ class UohListTrackingTest {
                 }
             }
             // Wait for TrackingQueue to finish
-            Thread.sleep(3_000)
+            Thread.sleep(1_000)
         } submit {
             hasPassedAnalytics(cassavaTestRule, query)
         }
