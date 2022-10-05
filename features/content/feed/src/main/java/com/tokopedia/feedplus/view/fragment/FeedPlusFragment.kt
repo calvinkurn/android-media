@@ -1659,7 +1659,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed,
                     authorId,
                     mediaType,
-                    trackerIdReport
+                    trackerIdReport,
+                    getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -1692,7 +1693,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId, "unfollow",
                     postType,
-                    isFollowed, authorId, mediaType
+                    isFollowed, authorId, mediaType,
+                    getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
@@ -2273,10 +2275,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shopId,
                 postTagItem.id,
                 if (item.isUpcoming) "pre" else "ongoing",
-                postTagItem.productName,
+                postTagItem.name,
                 postTagItem.price.toString(),
                 1,
-                postTagItem.shopName
+                item.shopName
             )
         }
 
