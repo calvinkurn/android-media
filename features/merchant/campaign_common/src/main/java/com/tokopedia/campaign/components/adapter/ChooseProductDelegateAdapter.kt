@@ -7,8 +7,8 @@ import com.tokopedia.campaign.components.viewholder.ChooseProductViewHolder
 import com.tokopedia.campaign.databinding.ItemChooseProductBinding
 import com.tokopedia.campaign.entity.ChooseProductItem
 
-class ChooseProductDelegateAdapter:
-    DelegateAdapter<ChooseProductItem, ChooseProductViewHolder>(ChooseProductItem::class.java) {
+class ChooseProductDelegateAdapter: DelegateAdapter<ChooseProductDelegateAdapter.AdapterParam,
+        ChooseProductViewHolder>(AdapterParam::class.java) {
 
     private var listener: ChooseProductListener? = null
 
@@ -18,7 +18,7 @@ class ChooseProductDelegateAdapter:
         return ChooseProductViewHolder(binding, listener)
     }
 
-    override fun bindViewHolder(item: ChooseProductItem, viewHolder: ChooseProductViewHolder) {
+    override fun bindViewHolder(item: AdapterParam, viewHolder: ChooseProductViewHolder) {
         viewHolder.bind(item)
     }
 
@@ -29,5 +29,13 @@ class ChooseProductDelegateAdapter:
     interface ChooseProductListener {
         fun onChooseProductClicked(index: Int, item: ChooseProductItem)
         fun onDetailClicked(index: Int, item: ChooseProductItem)
+    }
+
+    data class AdapterParam (
+        val item: ChooseProductItem = ChooseProductItem(),
+        var enableSelection: Boolean = true,
+        var errorMessage: String = "",
+    ) : DelegateAdapterItem {
+        override fun id() = item.productId
     }
 }

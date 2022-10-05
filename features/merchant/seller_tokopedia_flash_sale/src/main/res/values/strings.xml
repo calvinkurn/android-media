@@ -60,6 +60,11 @@
     <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
     <string name="stfs_check_reason">Cek Alasan</string>
     <string name="stfs_missed_reason">Terlewat karena kamu tidak mengajukan produk hingga batas waktu yang ditentukan.</string>
+
+    <string name="stfs_ineligible_reason_title">Yah, kamu belum bisa akses ke Flash Sale Tokopedia</string>
+    <string name="stfs_ineligible_reason_description">Pelajari dulu agar tokomu bisa pakai Flash Sale Tokopedia, yuk</string>
+    <string name="stfs_feature_learn_more">Pelajari Flash Sale Tokopedia</string>
+
     <string name="stfs_placeholder_remaining_quota">Sisa %d kuota!</string>
     <string name="stfs_placeholder_original_quota">Tersedia %s kuota</string>
     <string name="stfs_placeholder_timer_days">%s hari</string>
@@ -88,15 +93,14 @@
     <string name="commonbs_location_criteria_check_title">Kriteria lokasi</string>
     <string name="commonbs_product_check_title">Detail produk</string>
     <string name="commonbs_max_shown_format">Maks. %1d kali dalam %2d hari</string>
-    <string name="commonbs_multiloc_desc"><![CDATA[%d lokasi tokomu tidak sesuai dengan kriteria campaign. <a href="#">Cek Lokasi</a>]]></string>
+    <string name="commonbs_criteria_location_desc"><![CDATA[Cek detail kriteria lokasi <a href="#">di sini</a>]]></string>
     <string name="commonbs_criteria_check_description">Menampilkan produk dan lokasi campaign yang belum sesuai kriteria.</string>
     <string name="commonbs_criteria_variant_check_description">Menampilkan produk yang belum sesuai kriteria.</string>
-    <string name="commonbs_criteria_single_check_description">Lihat kenapa produkmu belum sesuai dengan kriteria lokasi di sini, ya.</string>
     <string name="commonbs_criteria_check_original_price_field_title">Kisaran Harga Awal</string>
     <string name="commonbs_criteria_check_min_rating_field_title">Min. Rating</string>
     <string name="commonbs_criteria_check_sold_product_field_title">Produk Terjual</string>
     <string name="commonbs_criteria_check_max_shown_field_title">Maks. Tampil</string>
-    <string name="commonbs_criteria_check_campaign_stock_field_title">Stok Campaign</string>
+    <string name="commonbs_criteria_check_campaign_stock_field_title">Min. Stok Campaign</string>
     <string name="commonbs_criteria_check_min_score_field_title">Min. Skor Produk</string>
     <string name="commonbs_criteria_check_min_buy_field_title">Min. Pembelian</string>
     <string name="commonbs_criteria_check_other_criteria_field_title">Kriteria Khusus</string>
@@ -211,6 +215,9 @@
     <string name="chooseproduct_criteria_variant_format">%d varian sesuai kriteria</string>
     <string name="chooseproduct_filter_criteria_text">Memenuhi Kriteria</string>
     <string name="chooseproduct_filter_category_text">Semua Kategori</string>
+    <string name="chooseproduct_error_max_product_item">Kamu sudah mengajukan 40 produk.</string>
+    <string name="chooseproduct_error_max_quota_item">Kuota pengajuan produkmu sudah habis.</string>
+    <string name="chooseproduct_error_max_criteria_item">Kuota pengajuan untuk kategori produk ini sudah habis.</string>
 
     <!--Manage Product-->
     <string name="manageproductnonvar_stock_title">Stok Campaign</string>

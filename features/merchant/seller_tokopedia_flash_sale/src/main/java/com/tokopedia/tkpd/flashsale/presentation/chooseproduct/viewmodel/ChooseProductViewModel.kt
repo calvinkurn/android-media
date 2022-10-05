@@ -11,10 +11,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
-import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToReserveUseCase
-import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.*
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper.ChooseProductUiMapper
@@ -30,12 +27,13 @@ class ChooseProductViewModel @Inject constructor(
     private val getFlashSaleProductPerCriteriaUseCase: GetFlashSaleProductPerCriteriaUseCase,
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
+    private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main){
 
     // General Livedata
-    private val _preselectedProductCount = MutableLiveData<Int>()
-    val preselectedProductCount: LiveData<Int> get() = _preselectedProductCount
+    private val _selectedProductCount = MutableLiveData<Int>()
+    val selectedProductCount: LiveData<Int> get() = _selectedProductCount
 
     private val _criteriaList = MutableLiveData<List<CriteriaSelection>>()
     val criteriaList: LiveData<List<CriteriaSelection>> get() = _criteriaList
@@ -52,24 +50,27 @@ class ChooseProductViewModel @Inject constructor(
     // Selection related
     private val selectedProductList = MutableLiveData<List<ChooseProductItem>>()
     private val remoteProductList = MutableLiveData<List<ChooseProductItem>>()
+    private val maxProductSubmission = MutableLiveData<Int>()
 
     val categoryAllList = Transformations.map(criteriaList) {
         ChooseProductUiMapper.collectAllCategory(it)
     }
-    val maxSelectedProduct = Transformations.map(criteriaList) {
+    val maxSelectedProduct = Transformations.map(maxProductSubmission) {
         ChooseProductUiMapper.getMaxSelectedProduct(it)
-    }
-    val selectedProductCount = Transformations.map(selectedProductList) {
-        ChooseProductUiMapper.getSelectedProductCount(it)
     }
     val productList = Transformations.map(remoteProductList) {
         ChooseProductUiMapper.getSelectedProductList(selectedProductList.value, it)
     }
 
     val validationResult = combine(
-        selectedProductCount.asFlow(), criteriaList.asFlow()
-    ) { productCount, criteriaList ->
-        ChooseProductUiMapper.validateSelection(productCount, criteriaList)
+        selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
+    ) { productCount, criteriaList, maxSelectedProduct ->
+        ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList)
+    }
+    val selectionValidationResult = combine(
+        selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
+    ) { selectedProductCount, criteriaList, maxSelectedProduct ->
+        ChooseProductUiMapper.getSelectionValidationResult(selectedProductCount, criteriaList, maxSelectedProduct)
     }
 
     // public variables
@@ -77,6 +78,7 @@ class ChooseProductViewModel @Inject constructor(
     var filterCriteria: String = FILTER_PRODUCT_CRITERIA_PASSED
     var filterCategory: List<Long> = emptyList()
     var campaignId: Long = 0
+    var tabName: String = ""
 
     fun getProductList(page: Int, perPage: Int, keyword: String) {
         launchCatchError(
@@ -92,7 +94,7 @@ class ChooseProductViewModel @Inject constructor(
                 )
                 val result = getFlashSaleProductListToReserveUseCase.execute(param)
                 remoteProductList.postValue(result.productList)
-                _preselectedProductCount.postValue(result.selectedProductCount)
+                if (_selectedProductCount.value == null) _selectedProductCount.postValue(result.selectedProductCount)
             },
             onError = { error ->
                 _error.postValue(error)
@@ -121,10 +123,12 @@ class ChooseProductViewModel @Inject constructor(
         val isSelected = item.isSelected
         if (isSelected) {
             selectedProductList.value = selectedProductList.value.orEmpty() + listOf(item)
+            _selectedProductCount.value = _selectedProductCount.value?.inc()
         } else {
             selectedProductList.value = selectedProductList.value.orEmpty().filter {
                 it.productId != item.productId
             }
+            _selectedProductCount.value = _selectedProductCount.value?.dec()
         }
     }
 
@@ -153,6 +157,20 @@ class ChooseProductViewModel @Inject constructor(
                     productCriteriaId = item.criteriaId
                 )
                 _criteriaCheckingResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
+    }
+
+    fun getMaxProductSubmission() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val response = getFlashSaleDetailForSellerUseCase.execute(campaignId)
+                maxProductSubmission.postValue(response.maxProductSubmission)
+                selectedProductList.postValue(listOf())
             },
             onError = { error ->
                 _error.postValue(error)

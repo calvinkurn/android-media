@@ -18,8 +18,11 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Wareho
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
+import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import javax.inject.Inject
 
 class ManageProductNonVariantMultilocFragment :
@@ -120,6 +123,7 @@ class ManageProductNonVariantMultilocFragment :
             }
             rvManageProductDetail?.adapter = inputAdapter
             viewModel.setProduct(appliedProduct)
+            displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
     }
@@ -147,6 +151,17 @@ class ManageProductNonVariantMultilocFragment :
             )
             buttonSubmit?.text = getString(R.string.manageproductnonvar_save)
         }
+    }
+
+    private fun displayToaster(product: ReservedProduct.Product) {
+        val criteria = product.productCriteria
+
+        val isValid = product.warehouses.firstOrNull {
+            viewModel.validateInput(criteria, it.discountSetup).isAllFieldValid()
+        } != null
+
+        if (isValid) ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_valid), TYPE_NORMAL)
+        else ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
     }
 
 }

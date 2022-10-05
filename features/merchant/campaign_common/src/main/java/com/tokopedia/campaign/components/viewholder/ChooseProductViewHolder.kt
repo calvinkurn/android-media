@@ -3,11 +3,11 @@ package com.tokopedia.campaign.components.viewholder
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.ChooseProductDelegateAdapter
 import com.tokopedia.campaign.databinding.ItemChooseProductBinding
-import com.tokopedia.campaign.entity.ChooseProductItem
 import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setViewGroupEnabled
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifyprinciples.Typography
 
 class ChooseProductViewHolder(
     private val binding: ItemChooseProductBinding,
@@ -28,13 +28,14 @@ class ChooseProductViewHolder(
         }
     }
 
-    fun bind(item: ChooseProductItem) {
+    fun bind(param: ChooseProductDelegateAdapter.AdapterParam) {
+        val item = param.item
         binding.apply {
+            setItemInability(param, tvDisabledReason)
             imgProduct.loadImage(item.imageUrl)
             tvProductName.text = item.productName
             labelVariantCount.text = item.variantText
             tvProductPrice.text = item.priceText
-            tvDisabledReason.text = item.errorMessage
             tvVariantTips.text = item.variantTips
             tvStock.text = item.stockText
             tvCheckDetail.isVisible = item.showCheckDetailCta
@@ -49,8 +50,21 @@ class ChooseProductViewHolder(
                 item.isSelected = checkboxItem.isChecked
                 listener?.onChooseProductClicked(adapterPosition, item)
             }
+        }
+    }
 
+    private fun setItemInability(
+        param: ChooseProductDelegateAdapter.AdapterParam,
+        tvDisabledReason: Typography
+    ) {
+        val enableSelection = param.enableSelection
+        val item = param.item
+        if (item.isEnabled && !item.isSelected) {
+            setEnable(enableSelection, binding)
+            tvDisabledReason.text = param.errorMessage
+        } else {
             setEnable(item.isEnabled, binding)
+            tvDisabledReason.text = item.errorMessage
         }
     }
 

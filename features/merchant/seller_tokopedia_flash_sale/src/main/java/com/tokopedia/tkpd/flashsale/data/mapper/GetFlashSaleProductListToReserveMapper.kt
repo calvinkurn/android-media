@@ -31,8 +31,6 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
     }
 
     fun mapProduct(response: GetFlashSaleProductListToReserveResponse) = response.getFlashSaleProductListToReserve.productList.map {
-        val submittedProductIds = response.getFlashSaleProductListToReserve.submittedProductIds
-        val isSubmitted = submittedProductIds.any { productId -> productId == it.productId }
         ChooseProductItem(
             productId = it.productId.toString(),
             productName = it.name,
@@ -44,9 +42,8 @@ class GetFlashSaleProductListToReserveMapper @Inject constructor(
             errorMessage = it.disableDetail.disableTitle,
             hasVariant = it.variantMeta.countVariants.isMoreThanZero(),
             isError = it.disableDetail.isDisabled,
-            isEnabled = !it.disableDetail.isDisabled && !isSubmitted, // only enable not submitted data
+            isEnabled = !it.disableDetail.isDisabled,
             showCheckDetailCta = it.disableDetail.showCriteriaCheckingCta,
-            isSelected = isSubmitted,
             criteriaId = it.productCriteria.criteriaId
         )
     }

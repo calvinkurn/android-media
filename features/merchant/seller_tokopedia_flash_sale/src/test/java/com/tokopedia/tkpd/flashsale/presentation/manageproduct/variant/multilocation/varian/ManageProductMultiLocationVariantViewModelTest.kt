@@ -268,7 +268,7 @@ class ManageProductMultiLocationVariantViewModelTest {
         val targetPositionOfProduct = 0
         viewModel.setProduct(dummyProduct, targetPositionOfProduct)
         val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
-        Assert.assertTrue(actualResult)
+        Assert.assertFalse(actualResult)
     }
 
     @Test
@@ -277,7 +277,7 @@ class ManageProductMultiLocationVariantViewModelTest {
         val targetPositionOfProduct = 0
         viewModel.setProduct(dummyProduct, targetPositionOfProduct)
         val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
-        Assert.assertFalse(actualResult)
+        Assert.assertTrue(actualResult)
     }
 
     @Test
@@ -478,6 +478,13 @@ class ManageProductMultiLocationVariantViewModelTest {
         val dummyProduct = createDummyChildsProduct(false)[0]
         val actualResult = viewModel.findToggleOnInWarehouse(dummyProduct)
         Assert.assertEquals(0, actualResult.size)
+    }
+
+    @Test
+    fun `find toggle on productlist toggle on`() {
+        val dummyProduct = createDummyChildsProduct(true)[0]
+        val actualResult = viewModel.findToggleOnInWarehouse(dummyProduct)
+        Assert.assertEquals(5, actualResult.size)
     }
 
     private fun setDummyChild(
