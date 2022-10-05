@@ -12,6 +12,7 @@ import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
 import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH_PARAM
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
 
@@ -39,23 +40,32 @@ fun NavGraphBuilder.homeComposable(
 }
 
 fun NavGraphBuilder.newOrderListComposable(
+    screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel,
 ) {
     composable(
         route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_LIST_SCREEN, DATAKEY_ARGS)
     ) { backStackEntry ->
         NewOrderListScreen(
+            screenNavigation = screenNavigation,
             sharedViewModel = sharedViewModel,
             dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
         )
     }
 }
 
-fun NavGraphBuilder.newOrderDetailComposable() {
+fun NavGraphBuilder.newOrderDetailComposable(
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel,
+) {
     composable(
-        route = ScreenConstant.NEW_ORDER_DETAIL_SCREEN
-    ) {
-        NewOrderDetailScreen()
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_DETAIL_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
+        NewOrderDetailScreen(
+            screenNavigation = screenNavigation,
+            sharedViewModel = sharedViewModel,
+            orderId = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+        )
     }
 }
 

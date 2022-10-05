@@ -12,6 +12,7 @@ data class OrderModel (
 ){
     data class Product(
         val productName: String = "",
+        val productImage: String = "",
         val orderNote: String = "",
     )
 }

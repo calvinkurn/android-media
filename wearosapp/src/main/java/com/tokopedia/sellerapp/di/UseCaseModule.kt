@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.di
 
+import com.tokopedia.sellerapp.data.repository.OrderDetailRepository
 import com.tokopedia.sellerapp.data.repository.OrderRepository
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
 import dagger.Module
@@ -12,8 +13,9 @@ import dagger.hilt.components.SingletonComponent
 class UseCaseModule {
     @Provides
     fun provideNewOrderUseCase(
-        orderRepository: OrderRepository
+        orderRepository: OrderRepository,
+        orderDetailRepository: OrderDetailRepository,
     ): OrderUseCaseImpl {
-        return OrderUseCaseImpl(orderRepository)
+        return OrderUseCaseImpl(orderRepository, orderDetailRepository)
     }
 }

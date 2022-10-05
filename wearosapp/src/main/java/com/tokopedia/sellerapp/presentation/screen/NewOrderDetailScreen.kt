@@ -4,17 +4,12 @@ package com.tokopedia.sellerapp.presentation.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
 import androidx.wear.compose.material.Icon
@@ -35,6 +31,8 @@ import androidx.wear.compose.material.MaterialTheme
 import androidx.wear.compose.material.Text
 import com.skydoves.landscapist.ShimmerParams
 import com.skydoves.landscapist.glide.GlideImage
+import com.tokopedia.sellerapp.domain.model.OrderModel
+import com.tokopedia.sellerapp.navigation.ScreenNavigation
 import com.tokopedia.sellerapp.presentation.theme.ActionButtonGrayColor
 import com.tokopedia.sellerapp.presentation.theme.DP_10
 import com.tokopedia.sellerapp.presentation.theme.DP_13
@@ -54,6 +52,7 @@ import com.tokopedia.sellerapp.presentation.theme.SP_18
 import com.tokopedia.sellerapp.presentation.theme.SP_20
 import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextYellowColor
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SHIMMERING_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_400
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_500
@@ -61,25 +60,45 @@ import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_700
 import com.tokopedia.sellerapp.util.NumberConstant.MAX_LINES_1
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_DROP_OFF
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_TILT
+import com.tokopedia.sellerapp.util.OrderModelHelper.getOrderType
+import com.tokopedia.sellerapp.util.OrderType
 import com.tokopedia.tkpd.R
 
 @Composable
-fun NewOrderDetailScreen() {
-    LazyColumn {
-        item {
-            NewOrderDetailHeader()
-        }
-        item {
-            NewOrderDetailMain()
-        }
-        item {
-            NewOrderDetailFooter()
+fun NewOrderDetailScreen(
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel,
+    orderId: String
+) {
+    getNewOrderDetailData(sharedViewModel, orderId)
+    val orderDetail by sharedViewModel.orderDetail.collectAsState()
+    orderDetail.data?.let { orderDetailData ->
+        val orderType = listOf(orderDetailData).getOrderType()
+        LazyColumn(
+            contentPadding = PaddingValues(vertical = 20.dp)
+        ) {
+            item {
+                NewOrderDetailHeader(orderType)
+            }
+            item {
+                NewOrderDetailMain(orderDetailData, orderType)
+            }
+            item {
+                NewOrderDetailFooter(orderDetailData, orderType)
+            }
         }
     }
 }
 
+private fun getNewOrderDetailData(
+    sharedViewModel: SharedViewModel,
+    orderId: String
+) {
+    sharedViewModel.getOrderDetail(orderId)
+}
+
 @Composable
-fun NewOrderDetailHeader() {
+fun NewOrderDetailHeader(orderType: String) {
     NewOrderDetailSpacer(
         height = DP_18
     )
@@ -105,7 +124,7 @@ fun NewOrderDetailHeader() {
         )
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL3,
-            text = stringResource(id = R.string.new_order_detail_header_title),
+            text = stringResource(id = getOrderDetailTitle(orderType)),
             color = NestLightNN0,
             lineHeight = SP_18,
             weight = FONT_WEIGHT_500,
@@ -115,8 +134,24 @@ fun NewOrderDetailHeader() {
     }
 }
 
+private fun getOrderDetailTitle(orderType: String): Int {
+    return if (orderType == OrderType.NEW_ORDER_TYPE) {
+        R.string.new_order_detail_header_title
+    } else {
+        R.string.ready_to_shop_order_detail_header_title
+    }
+}
+
+private fun getDueDateStringRes(orderType: String): Int {
+    return if (orderType == OrderType.NEW_ORDER_TYPE) {
+        R.string.new_order_list_text_due_response
+    } else {
+        R.string.ready_to_shop_order_list_text_due_response
+    }
+}
+
 @Composable
-fun NewOrderDetailMain() {
+fun NewOrderDetailMain(orderDetailData: OrderModel, orderType: String) {
     Column(
         modifier = Modifier
             .padding(
@@ -128,22 +163,25 @@ fun NewOrderDetailMain() {
         )
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL4,
-            text = stringResource(id = R.string.new_order_detail_status_response),
+            text = stringResource(id = getDueDateStringRes(orderType)),
             color = NestLightNN0,
             lineHeight = SP_20,
             weight = FONT_WEIGHT_500,
             maxLines = MAX_LINES_1,
             overflow = TextOverflow.Ellipsis
         )
-        NewOrderDetailDate()
-        NewOrderDetailProductDescription()
-        NewOrderDetailMoreProducts()
-        NewOrderDetailLocation()
+        NewOrderDetailDate(orderDetailData)
+        NewOrderDetailProductDescription(orderDetailData)
+        val totalProductData = orderDetailData.products.size
+        if (totalProductData > 1) {
+            NewOrderDetailMoreProducts(totalProductData-1)
+        }
+        NewOrderDetailLocation(orderDetailData)
     }
 }
 
 @Composable
-fun NewOrderDetailDate() {
+fun NewOrderDetailDate(orderDetailData: OrderModel) {
     Row(
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -166,7 +204,7 @@ fun NewOrderDetailDate() {
                     start = NEST_SPACING_LVL2
                 ),
             fontSize = NEST_FONT_SIZE_LVL4,
-            text = "13 Sep; 14:55",
+            text = orderDetailData.deadLineText,
             color = TextYellowColor,
             lineHeight = SP_20,
             weight = FONT_WEIGHT_400,
@@ -177,7 +215,7 @@ fun NewOrderDetailDate() {
 }
 
 @Composable
-fun NewOrderDetailProductDescription() {
+fun NewOrderDetailProductDescription(orderDetailData: OrderModel) {
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL3
     )
@@ -194,7 +232,7 @@ fun NewOrderDetailProductDescription() {
             .background(
                 color = NestLightNN0
             ),
-        imageModel = "https://asset.kompas.com/crops/0goP7FKwWF1qhOgFdSg5Q9QEOXg=/14x0:547x355/750x500/data/photo/2020/02/03/5e37dfdc0013d.png",
+        imageModel = orderDetailData.products.firstOrNull()?.productImage.orEmpty(),
         shimmerParams = ShimmerParams(
             baseColor = MaterialTheme.colors.background,
             highlightColor = NestLightNN0,
@@ -211,7 +249,7 @@ fun NewOrderDetailProductDescription() {
     )
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL4,
-        text = "Air Jorda Gym Red Satin Original Produk Hoops Malaysia Tunai Dong - Red, Black",
+        text = orderDetailData.products.firstOrNull()?.productName.orEmpty(),
         color = NestLightNN0,
         lineHeight = SP_20,
         weight = FONT_WEIGHT_400
@@ -219,13 +257,16 @@ fun NewOrderDetailProductDescription() {
 }
 
 @Composable
-fun NewOrderDetailMoreProducts() {
+fun NewOrderDetailMoreProducts(totalProductLeft: Int) {
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL3
     )
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL4,
-        text = "+2 produk lainnya",
+        text = stringResource(
+            id = com.tokopedia.tkpd.R.string.order_detail_product_left_format,
+            totalProductLeft.toString()
+        ),
         color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
@@ -234,13 +275,13 @@ fun NewOrderDetailMoreProducts() {
 
 
 @Composable
-fun NewOrderDetailLocation() {
+fun NewOrderDetailLocation(orderDetailData: OrderModel) {
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL3
     )
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL3,
-        text = "Reguler - JNE",
+        text = orderDetailData.courierName,
         color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
@@ -250,7 +291,7 @@ fun NewOrderDetailLocation() {
     )
     NewOrderDetailText(
         fontSize = NEST_FONT_SIZE_LVL3,
-        text = "D.I. Aceh",
+        text = orderDetailData.destinationProvince,
         color = TextGrayColor,
         lineHeight = SP_18,
         weight = FONT_WEIGHT_400
@@ -258,7 +299,7 @@ fun NewOrderDetailLocation() {
 }
 
 @Composable
-fun NewOrderDetailFooter() {
+fun NewOrderDetailFooter(orderDetailData: OrderModel, orderType: String) {
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )
@@ -280,9 +321,11 @@ fun NewOrderDetailFooter() {
         lineHeight = SP_18,
         weight = FONT_WEIGHT_700,
     )
-    NewOrderDetailActionButton(
-        text = stringResource(id = R.string.new_order_detail_accept_order)
-    )
+    if(orderType == OrderType.NEW_ORDER_TYPE) {
+        NewOrderDetailActionButton(
+            text = stringResource(id = R.string.new_order_detail_accept_order)
+        )
+    }
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )

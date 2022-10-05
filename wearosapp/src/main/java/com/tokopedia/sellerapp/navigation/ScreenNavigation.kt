@@ -27,8 +27,10 @@ class ScreenNavigation(navController: NavController) {
             route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_LIST_SCREEN, it)
         )
     }
-    val toNewOrderDetailScreen: () -> Unit = {
-        navController.navigate(route = NEW_ORDER_DETAIL_SCREEN)
+    val toNewOrderDetailScreen: (dataKey: String) -> Unit = {
+        navController.navigate(
+            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_DETAIL_SCREEN, it)
+        )
     }
     val toAppNotInstalledScreen: () -> Unit = {
         navController.navigate(route = APP_NOT_INSTALLED_SCREEN) {
