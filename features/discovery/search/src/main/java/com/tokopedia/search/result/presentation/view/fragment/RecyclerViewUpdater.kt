@@ -32,6 +32,9 @@ class RecyclerViewUpdater @Inject constructor(
 
     private val performanceMonitoring = performanceMonitoringProvider.get()
 
+    override val itemCount: Int
+        get() = productListAdapter?.itemCount ?: 0
+
     fun initialize(
         recyclerView: RecyclerView?,
         rvLayoutManager: RecyclerView.LayoutManager?,
@@ -76,6 +79,13 @@ class RecyclerViewUpdater @Inject constructor(
             ?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)
             ?: 0
 
+    override fun getItemAtIndex(index: Int): Visitable<*>? {
+        val itemList = productListAdapter?.itemList ?: return null
+        if (index !in itemList.indices) return null
+        if (itemList.size < index) return null
+        return itemList.getOrNull(index)
+    }
+
     override fun setItems(list: List<Visitable<*>>) {
         productListAdapter?.clearData()
 
@@ -109,5 +119,13 @@ class RecyclerViewUpdater @Inject constructor(
 
     override fun onChangeSingleGrid() {
         recyclerView?.requestLayout()
+    }
+
+    override fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean) {
+        productListAdapter?.removeFirstItemWithCondition(condition)
+    }
+
+    override fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>) {
+        productListAdapter?.insertItemAfter(item, previousItem)
     }
 }

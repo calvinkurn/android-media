@@ -6,11 +6,21 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:maxHeight="@dimen/shc_dimen_74dp"
-    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingStart="8dp"
     android:paddingTop="@dimen/shc_dimen_6dp"
-    android:paddingEnd="@dimen/layout_lvl1"
+    android:paddingEnd="8dp"
     android:paddingBottom="@dimen/shc_dimen_6dp"
     tools:background="@drawable/shc_bg_ripple_radius_4dp">
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbShcItemPostImageEmphasize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgPost"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPost"
@@ -20,13 +30,13 @@
         android:contentDescription="@string/shc_content_desc_image_post"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbShcItemPostImageEmphasize"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvPostTitle"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/shc_dimen_12dp"
         android:ellipsize="end"
@@ -43,7 +53,7 @@
         android:id="@+id/tvPostDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
         android:drawablePadding="10dp"
         android:maxLines="1"
         android:textColor="@color/Unify_N700_68"
