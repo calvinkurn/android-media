@@ -298,6 +298,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
             setPagerDescriptionClickEvent(object: TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+                    mCreditCardActionListener?.onNavigateTokoCardWebView()
                 }
             })
         }
@@ -426,6 +427,7 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
     interface CreditCardActionListener {
         fun onClickNextButton(clientNumber: String)
         fun onManualInput()
+        fun onNavigateTokoCardWebView()
     }
 
     companion object {

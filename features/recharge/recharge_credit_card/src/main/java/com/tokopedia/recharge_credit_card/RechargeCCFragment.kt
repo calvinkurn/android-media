@@ -502,6 +502,11 @@ class RechargeCCFragment :
     override fun onManualInput() {
         token = ""
     }
+
+    override fun onNavigateTokoCardWebView() {
+        // TODO: [Misael] Add tracker here
+    }
+
     //endregion
 
     //region ClientNumberInputFieldListener
