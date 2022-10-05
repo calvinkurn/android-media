@@ -18,6 +18,7 @@ import com.tokopedia.content.common.producttag.helper.fakeSearchBar
 import com.tokopedia.content.common.producttag.helper.globalSearchShopRv
 import com.tokopedia.content.common.producttag.helper.lastTaggedSearchBar
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
+import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.*
@@ -93,6 +94,13 @@ class ContentProductTagAnalyticTest {
      * please do so on your module.
      */
 
+    /**
+     * Table of Test (search this keyword below to navigate directly to the section)
+     * 1. clickBreadcrumbTest
+     * 2. clickProductTagSourceTest
+     */
+
+    /** clickBreadcrumbTest */
     @Test
     fun contentProductTag_clickBreadcrumb_nonShopSource() {
         launchActivity(ContentProductTagArgument.Builder()
@@ -130,5 +138,66 @@ class ContentProductTagAnalyticTest {
         delay()
 
         verify { mockAnalytic.clickBreadcrumb(true) }
+    }
+
+    /** clickProductTagSourceTest */
+    @Test
+    fun contentProductTag_ugc_clickProductTagSource_tokopedia() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.MyShop,
+                    ProductTagSource.LastPurchase,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        click(breadcrumb)
+
+        click(sourceTokopedia)
+
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.GlobalSearch) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickProductTagSource_lastPurchased() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.MyShop,
+                    ProductTagSource.LastPurchase,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        click(breadcrumb)
+
+        click(sourceLastPurchased)
+
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.LastPurchase) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickProductTagSource_myShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(
+                listOf(
+                    ProductTagSource.GlobalSearch,
+                    ProductTagSource.MyShop,
+                    ProductTagSource.LastPurchase,
+                ).joinToString(separator = ",") { it.tag }
+            )
+        )
+
+        click(breadcrumb)
+
+        click(sourceMyShop)
+
+        verify { mockAnalytic.clickProductTagSource(ProductTagSource.MyShop) }
     }
 }
