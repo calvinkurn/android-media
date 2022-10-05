@@ -1,9 +1,14 @@
 package com.tokopedia.review.feature.credibility.presentation.widget
 
+import android.content.Context
+import android.graphics.ColorFilter
+import android.graphics.LightingColorFilter
+import android.graphics.drawable.Drawable
+import androidx.annotation.ColorInt
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.PartialReviewCredibilityAchievementBinding
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
@@ -14,28 +19,65 @@ class PartialReviewCredibilityAchievement(
     private var listener: ReviewCredibilityAchievementBoxWidget.Listener?
 ) {
 
-    fun hide() {
-        binding.root.invisible()
+    companion object {
+        private val DEFAULT_BACKGROUND_COLOR = com.tokopedia.unifyprinciples.R.color.Unify_TN600
+    }
+
+    private fun createAchievementAvatarBorder(context: Context, @ColorInt color: Int): Drawable? {
+        val drawable = MethodChecker.getDrawable(context, R.drawable.border_review_credibility_achievement_avatar)
+        val filter: ColorFilter = LightingColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_Black), color)
+        drawable.colorFilter = filter
+        return drawable
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.hide() {
+        root.invisible()
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.bindAchievementAvatarBorder(colorHex: String) {
+        ivReviewCredibilityAchievementAvatarBorder.setImageDrawable(
+            createAchievementAvatarBorder(
+                context = binding.root.context,
+                color = colorHex.toColorInt(DEFAULT_BACKGROUND_COLOR)
+            )
+        )
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.bindAchievementAvatar(avatar: String) {
+        ivReviewCredibilityAchievementAvatar.urlSrc = avatar
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.bindAchievementName(name: String) {
+        tvReviewCredibilityAchievementName.text = name
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.bindAchievementCard(color: String) {
+        containerReviewCredibilityAchievementDetail.setBackgroundColor(
+            color.toColorInt(DEFAULT_BACKGROUND_COLOR)
+        )
+    }
+
+    private fun PartialReviewCredibilityAchievementBinding.bindListeners(mementoLink: String, name: String) {
+        cardReviewCredibilityAchievement.setOnClickListener {
+            listener?.onClickAchievementSticker(mementoLink, name)
+        }
+        ivReviewCredibilityAchievementAvatar.setOnClickListener {
+            listener?.onClickAchievementSticker(mementoLink, name)
+        }
     }
 
     fun showData(data: ReviewCredibilityAchievementBoxUiModel.ReviewCredibilityAchievementUiModel?) {
-        if (data == null) {
-            hide()
-        } else {
-            binding.ivReviewCredibilityAchievementAvatarBorder.loadImage(R.drawable.border_review_credibility_achievement_avatar)
-            binding.ivReviewCredibilityAchievementAvatar.urlSrc = data.avatar
-            binding.tvReviewCredibilityAchievementName.text = data.name
-            binding.tvReviewCredibilityAchievementCounter.text = data.counter
-            binding.containerReviewCredibilityAchievementDetail.setBackgroundColor(
-                data.color.toColorInt(com.tokopedia.unifyprinciples.R.color.Unify_TN600)
-            )
-            binding.cardReviewCredibilityAchievement.setOnClickListener {
-                listener?.onClickAchievementSticker(data.mementoLink, data.name)
+        with(binding) {
+            if (data == null) {
+                hide()
+            } else {
+                bindAchievementAvatarBorder(data.color)
+                bindAchievementAvatar(data.avatar)
+                bindAchievementName(data.name)
+                bindAchievementCard(data.color)
+                bindListeners(data.mementoLink, data.name)
+                root.visible()
             }
-            binding.ivReviewCredibilityAchievementAvatar.setOnClickListener {
-                listener?.onClickAchievementSticker(data.mementoLink, data.name)
-            }
-            binding.root.visible()
         }
     }
 
