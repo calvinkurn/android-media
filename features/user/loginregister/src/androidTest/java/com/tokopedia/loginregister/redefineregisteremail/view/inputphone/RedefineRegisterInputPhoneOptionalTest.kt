@@ -12,7 +12,6 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.loginregister.R
-import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnButtonDialog
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.launchFragment
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterRepositoryStub
 import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegisterTestState
@@ -179,7 +178,7 @@ class RedefineRegisterInputPhoneOptionalTest {
 
         inputValidPhone()
         clickSubmit()
-        clickOnButtonDialog("Ya, Benar")
+        clickPrimaryButtonDialog()
         intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         isGlobalErrorShowing()
     }
