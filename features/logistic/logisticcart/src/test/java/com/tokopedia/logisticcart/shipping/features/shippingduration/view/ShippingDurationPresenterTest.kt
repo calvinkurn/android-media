@@ -668,27 +668,59 @@ class ShippingDurationPresenterTest {
     * OnLogisticPromoClicked
     */
 
-    // todo
     @Test
     fun `When select promo logistic Then send courier data and service data from promo logistic data`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first()
+        presenter.shippingData = shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.onLogisticPromoChosen(any(), any(), any(), any(), selectedBo.promoCode, selectedBo.serviceId, selectedBo)
         }
     }
 
-    // todo
     @Test
     fun `When select promo logistic and service data is not found Then should show courier promo error`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first().copy(serviceId = 0)
+        shippingRecommendationData.listLogisticPromo = listOf(selectedBo)
+
+        presenter.shippingData = shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.showPromoCourierNotAvailable()
         }
     }
 
-    // todo
     @Test
     fun `When select promo logistic and courier data is not found Then should show courier promo error`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoAndPreOrderModel()
+        val selectedBo = shippingRecommendationData.listLogisticPromo.first()
+        val serviceDataForSelectedBo = shippingRecommendationData.shippingDurationUiModels.find { it.serviceData.serviceId == selectedBo.serviceId }
+        serviceDataForSelectedBo?.shippingCourierViewModelList = listOf()
+
+        presenter.shippingData = shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.onLogisticPromoClicked(selectedBo)
+
+        // Then
         verify {
-            view.sendAnalyticCourierPromo(any())
+            view.showPromoCourierNotAvailable()
         }
     }
 
