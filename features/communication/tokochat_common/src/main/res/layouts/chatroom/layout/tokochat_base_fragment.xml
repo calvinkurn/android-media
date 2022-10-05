@@ -55,6 +55,7 @@
         android:id="@+id/tokochat_expired_info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/Unify_N0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"

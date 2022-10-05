@@ -24,7 +24,6 @@
         android:layout_marginBottom="15dp"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
-        android:background="@color/Unify_N0"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

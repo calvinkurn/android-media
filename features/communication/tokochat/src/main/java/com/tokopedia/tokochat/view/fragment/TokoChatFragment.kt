@@ -54,7 +54,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         super.initViews()
         setupBackground()
         setupToolbarData()
-        setupReplySection(true)
+        setupReplySection(false, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
         setupReceiverDummyMessages()
     }
 
@@ -256,13 +256,15 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
     }
 
-    private fun setupReplySection(isShowReplySection: Boolean) {
+    private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
         baseBinding?.tokochatReplyBox?.run {
             shouldShowWithAction(isShowReplySection) {
                 this.initLayout(this@TokoChatFragment, this@TokoChatFragment)
             }
         }
-        baseBinding?.tokochatExpiredInfo?.showWithCondition(!isShowReplySection)
+        baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
+            baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
+        }
     }
 
 
