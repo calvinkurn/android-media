@@ -99,7 +99,7 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
         }
     }
 
-    override fun onLinkClicked(link: String) {
+    override fun onLinkClicked(link: String, text: String) {
         Uri.parse(link).let { uri ->
             when {
                 URLUtil.isValidUrl(link) -> {
@@ -161,7 +161,7 @@ open class SuspendReasonBottomSheet : BottomSheetUnify(), HasComponent<SuspendRe
             btnProductManageSuspendAction.run {
                 text = uiModel.buttonText
                 setOnClickListener {
-                    onLinkClicked(uiModel.buttonApplink)
+                    onLinkClicked(uiModel.buttonApplink, uiModel.buttonText)
                 }
             }
 

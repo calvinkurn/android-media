@@ -58,7 +58,7 @@ class ViolationReasonItemViewHolder(itemView: View,
     }
 
     interface Listener {
-        fun onLinkClicked(link: String)
+        fun onLinkClicked(link: String, text: String)
     }
 
 }

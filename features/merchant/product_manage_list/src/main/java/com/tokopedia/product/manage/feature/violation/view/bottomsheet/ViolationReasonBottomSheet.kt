@@ -16,7 +16,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.manage.ProductManageInstance
 import com.tokopedia.product.manage.databinding.BottomSheetProductManageViolationBinding
 import com.tokopedia.product.manage.feature.violation.di.DaggerViolationReasonComponent
@@ -26,7 +25,6 @@ import com.tokopedia.product.manage.feature.violation.view.adapter.ViolationReas
 import com.tokopedia.product.manage.feature.violation.view.uimodel.ViolationReasonUiModel
 import com.tokopedia.product.manage.feature.violation.view.viewmodel.ViolationReasonViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -96,7 +94,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
         }
     }
 
-    override fun onLinkClicked(link: String) {
+    override fun onLinkClicked(link: String, text: String) {
         Uri.parse(link).let { uri ->
             when {
                 URLUtil.isValidUrl(link) -> {
@@ -157,7 +155,7 @@ class ViolationReasonBottomSheet : BottomSheetUnify(), HasComponent<ViolationRea
             btnProductManageViolationAction.run {
                 text = uiModel.buttonText
                 setOnClickListener {
-                    onLinkClicked(uiModel.buttonApplink)
+                    onLinkClicked(uiModel.buttonApplink, uiModel.buttonText)
                 }
             }
 
