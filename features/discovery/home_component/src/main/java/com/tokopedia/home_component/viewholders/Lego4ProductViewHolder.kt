@@ -88,8 +88,6 @@ class Lego4ProductViewHolder(itemView: View,
     private fun initItems(element: Lego4ProductDataModel) {
         adapter = Lego4ProductAdapter(element.channelModel, convertDataToProductData(element.channelModel))
         binding?.homeComponentLego4ProductRv?.adapter = adapter
-//        if (binding?.homeComponentLego4ProductRv?.itemDecorationCount == 0)
-//            binding?.homeComponentLego4ProductRv?.addItemDecoration(VpsWidgetSpacingItemDecoration())
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<LegoProductCardDataModel> {
@@ -112,7 +110,7 @@ class Lego4ProductViewHolder(itemView: View,
     }
 
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-
+        // tracker to be added
     }
 
     override fun onProductCardImpressed(
@@ -120,7 +118,7 @@ class Lego4ProductViewHolder(itemView: View,
         channelGrid: ChannelGrid,
         position: Int
     ) {
-
+        // tracker to be added
     }
 
     override fun onProductCardClicked(
@@ -129,10 +127,10 @@ class Lego4ProductViewHolder(itemView: View,
         position: Int,
         applink: String
     ) {
-
+        // tracker to be added
     }
 
     override fun onChannelImpressed(channelModel: ChannelModel, parentPosition: Int) {
-
+        // tracker to be added
     }
 }
