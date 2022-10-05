@@ -9,6 +9,7 @@ import com.tokopedia.content.common.R
 import com.tokopedia.content.common.const.DEFAULT_DELAY
 import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.content.common.producttag.builder.GlobalSearchModelBuilder
+import com.tokopedia.content.common.producttag.builder.LastPurchasedModelBuilder
 import com.tokopedia.content.common.producttag.builder.LastTaggedModelBuilder
 import com.tokopedia.content.common.producttag.builder.ProductTagSourceBuilder
 import com.tokopedia.content.common.producttag.container.ContentProductTagTestActivity
@@ -46,6 +47,7 @@ class ContentProductTagAnalyticTest {
 
     /** Builder */
     private val lastTaggedModelBuilder = LastTaggedModelBuilder()
+    private val lastPurchasedBuilder = LastPurchasedModelBuilder()
     private val globalSearchModelBuilder = GlobalSearchModelBuilder()
     private val productTagSourceBuilder = ProductTagSourceBuilder()
 
@@ -55,6 +57,7 @@ class ContentProductTagAnalyticTest {
     /** Model */
     private val completeSource = productTagSourceBuilder.buildComplete()
     private val lastTaggedProduct = lastTaggedModelBuilder.buildPagedDataModel()
+    private val lastPurchasedProduct = lastPurchasedBuilder.buildModel()
     private val aceProduct = globalSearchModelBuilder.buildResponseModel()
     private val aceShop = globalSearchModelBuilder.buildShopResponseModel()
     private val quickFilter = globalSearchModelBuilder.buildQuickFilterList()
@@ -83,6 +86,7 @@ class ContentProductTagAnalyticTest {
         coEvery { mockUserSession.shopId } returns "456"
 
         coEvery { mockRepo.getLastTaggedProducts(any(), any(), any(), any()) } returns lastTaggedProduct
+        coEvery { mockRepo.getLastPurchasedProducts(any(), any()) } returns lastPurchasedProduct
         coEvery { mockRepo.searchAceProducts(any()) } returns aceProduct
         coEvery { mockRepo.searchAceShops(any()) } returns aceShop
         coEvery { mockRepo.getQuickFilter(any(), any()) } returns quickFilter
@@ -275,6 +279,63 @@ class ContentProductTagAnalyticTest {
     }
 
     /** clickProductCardTest */
+    @Test
+    fun contentProductTag_ugc_clickProductCard_lastTagged() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        clickItemRecyclerView(lastTaggedRv, 0)
+
+        verify { mockAnalytic.clickProductCard(ProductTagSource.LastTagProduct, lastTaggedProduct.dataList[0], 0, true) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickProductCard_lastPurchased() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openLastPurchasedSection()
+
+        clickItemRecyclerView(lastPurchasedRv, 0)
+
+        verify { mockAnalytic.clickProductCard(ProductTagSource.LastPurchase, lastPurchasedProduct.products[0], 0, true) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickProductCard_myShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openMyShopSection()
+
+        clickItemRecyclerView(myShopRv, 0)
+
+        verify { mockAnalytic.clickProductCard(ProductTagSource.MyShop, aceProduct.pagedData.dataList[0], 0, true) }
+    }
+
+    @Test
+    fun contentProductTag_ugc_clickProductCard_globalSearchProduct() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setProductTagSource(completeSource)
+            .setIsAutoHandleBackPressed(true)
+        )
+
+        openGlobalSearch(keyword)
+
+        clickItemRecyclerView(globalSearchProductRv, 0)
+
+        verify { mockAnalytic.clickProductCard(ProductTagSource.GlobalSearch, aceProduct.pagedData.dataList[0], 0, false) }
+    }
 
     /** clickSearchBarTest */
 
