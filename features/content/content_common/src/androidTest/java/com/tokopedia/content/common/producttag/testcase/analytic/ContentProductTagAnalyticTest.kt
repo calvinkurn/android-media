@@ -20,6 +20,7 @@ import com.tokopedia.content.common.producttag.helper.globalSearchShopRv
 import com.tokopedia.content.common.producttag.helper.lastTaggedSearchBar
 import com.tokopedia.content.common.producttag.view.uimodel.ContentProductTagArgument
 import com.tokopedia.content.common.producttag.view.uimodel.ProductTagSource
+import com.tokopedia.content.common.producttag.view.uimodel.SearchParamUiModel
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.content.test.util.*
@@ -116,12 +117,35 @@ class ContentProductTagAnalyticTest {
      */
 
     /** trackGlobalSearchProductTest */
+    @Test
+    fun contentProductTag_ugc_trackGlobalSearchProduct() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearch(keyword)
+        delay()
+
+        verify { mockAnalytic.trackGlobalSearchProduct(aceProduct.header, any()) }
+    }
 
     /** trackGlobalSearchShopTest */
+    @Test
+    fun contentProductTag_ugc_trackGlobalSearchShop() {
+        launchActivity(ContentProductTagArgument.Builder()
+            .setAuthorType(ContentCommonUserType.TYPE_USER)
+            .setFullPageAutocomplete(false, "")
+        )
+
+        openGlobalSearchShopSection(targetContext, keyword)
+
+        verify { mockAnalytic.trackGlobalSearchShop(aceShop.header, any()) }
+    }
 
     /** clickBreadcrumbTest */
     @Test
-    fun contentProductTag_clickBreadcrumb_nonShopSource() {
+    fun contentProductTag_ugc_clickBreadcrumb_nonShopSource() {
         launchActivity(ContentProductTagArgument.Builder()
             .setAuthorType(ContentCommonUserType.TYPE_USER)
         )
