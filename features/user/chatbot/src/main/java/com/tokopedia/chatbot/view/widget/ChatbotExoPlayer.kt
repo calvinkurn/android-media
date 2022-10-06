@@ -16,9 +16,12 @@ import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.upstream.LoadErrorHandlingPolicy
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.chatbot.view.adapter.viewholder.VideoDimensionsListener
+import java.io.IOException
+
 
 class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoControlView? = null) : ChatbotVideoControlView.Listener{
 
@@ -142,17 +145,46 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
             C.TYPE_SS -> SsMediaSource.Factory(dataSourceFactory)
             C.TYPE_DASH -> DashMediaSource.Factory(dataSourceFactory)
             C.TYPE_HLS -> HlsMediaSource.Factory(dataSourceFactory)
+                .setLoadErrorHandlingPolicy(getMyErrorHandlingPolicy())
             C.TYPE_OTHER -> ProgressiveMediaSource.Factory(dataSourceFactory)
             else -> throw IllegalStateException("Unsupported type: $type")
         }
         return mediaSource.createMediaSource(uri)
     }
 
+    private fun getMyErrorHandlingPolicy(): LoadErrorHandlingPolicy {
+        return object : LoadErrorHandlingPolicy {
+            override fun getBlacklistDurationMsFor(
+                dataType: Int,
+                loadDurationMs: Long,
+                exception: IOException?,
+                errorCount: Int
+            ): Long {
+                return BLACK_LIST_SECONDS
+            }
+
+            override fun getRetryDelayMsFor(
+                dataType: Int,
+                loadDurationMs: Long,
+                exception: IOException?,
+                errorCount: Int
+            ): Long {
+                return RETRY_DELAY
+            }
+
+            override fun getMinimumLoadableRetryCount(dataType: Int): Int {
+                return RETRY_COUNT
+            }
+        }
+    }
     companion object {
         const val MUTE_VOLUME = 0F
         const val UNMUTE_VOLUME = 1F
 
         const val VIDEO_AT_FIRST_POSITION = 0L
+        const val RETRY_DELAY = 0L
+        const val RETRY_COUNT = 0
+        const val BLACK_LIST_SECONDS = 0L
 
     }
 
