@@ -9,6 +9,7 @@ import com.tokopedia.home_component.model.ChannelModel
 class LegoProductCallback(val homeCategoryListener: HomeCategoryListener) : LegoProductListener {
     override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
         LegoProductTracking.sendLego4ProductSeeAllClick(channelModel)
+        homeCategoryListener.onDynamicChannelClicked(applink = channelModel.channelHeader.applink)
     }
 
     override fun onProductCardClicked(
@@ -18,6 +19,7 @@ class LegoProductCallback(val homeCategoryListener: HomeCategoryListener) : Lego
         applink: String
     ) {
         LegoProductTracking.sendLego4ProductItemClick(channel, channelGrid, position, applink)
+        homeCategoryListener.onDynamicChannelClicked(applink = applink)
     }
 
     override fun onChannelImpressed(channelModel: ChannelModel, parentPosition: Int) {
