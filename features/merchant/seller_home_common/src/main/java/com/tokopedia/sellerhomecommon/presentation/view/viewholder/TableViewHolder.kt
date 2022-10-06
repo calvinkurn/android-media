@@ -10,8 +10,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -97,7 +97,7 @@ class TableViewHolder(
                     shcTableView.setOnSwipeListener { position, maxPosition, isEmpty ->
                         listener.sendTableOnSwipeEvent(element, position, maxPosition, isEmpty)
                     }
-                    shcTableView.addOnHtmlClickListener { url, isEmpty ->
+                    shcTableView.addOnHtmlClickListener { url, _, isEmpty ->
                         listener.sendTableHyperlinkClickEvent(element.dataKey, url, isEmpty)
                     }
                 }
