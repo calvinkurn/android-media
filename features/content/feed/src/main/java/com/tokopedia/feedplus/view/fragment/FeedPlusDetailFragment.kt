@@ -467,8 +467,11 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onEmptyFeedDetail() {
         adapter.showEmpty()
     }
+
     private fun showFollowerBottomSheet() {
-        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
+        if (!::feedFollowersOnlyBottomSheet.isInitialized) {
+            feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
+        }
         feedFollowersOnlyBottomSheet.show(childFragmentManager, this, status = saleStatus)
     }
 

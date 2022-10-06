@@ -3610,9 +3610,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun showFollowerBottomSheet(positionInFeed: Int, campaignStatus: String) {
-        if (!::feedFollowersOnlyBottomSheet.isInitialized)
-        feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
-        feedFollowersOnlyBottomSheet.show(childFragmentManager, this, positionInFeed, status = campaignStatus)
+        if (!::feedFollowersOnlyBottomSheet.isInitialized) {
+            feedFollowersOnlyBottomSheet = FeedFollowersOnlyBottomSheet()
+        }
+            feedFollowersOnlyBottomSheet.show(
+                childFragmentManager,
+                this,
+                positionInFeed,
+                status = campaignStatus
+            )
     }
 
     override fun onFollowClickedFromFollowBottomSheet(position: Int) {
