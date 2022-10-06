@@ -2049,9 +2049,7 @@ open class ProductManageFragment :
     }
 
     override fun onImpressionNotifyMe() {
-        recyclerView?.post {
-                manageShowCoachMark(isNotifyMe = true)
-        }
+        manageShowCoachMark(isNotifyMe = true)
     }
 
     private fun showCoachMarkNotifyMe() {

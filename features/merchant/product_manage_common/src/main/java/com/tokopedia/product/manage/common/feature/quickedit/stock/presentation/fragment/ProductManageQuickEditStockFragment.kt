@@ -390,8 +390,7 @@ class ProductManageQuickEditStockFragment(
                 binding?.quickEditStockSaveButton?.isEnabled = true
             } else {
                 text = getString(
-                    R.string.product_manage_zero_stock_info_in_edit_stock_variant,
-                    product?.notifyMeOOSCount.orEmpty()
+                    R.string.product_manage_zero_stock_info_in_edit_stock_variant
                 ).parseAsHtml()
             }
             showWithCondition(!product.suspendAccess())
@@ -414,8 +413,7 @@ class ProductManageQuickEditStockFragment(
     private fun setStockAlertActiveInfo() {
         binding?.iconInfo?.run {
             text = getString(
-                R.string.product_manage_stock_alert_active_info_in_edit_stock_variant,
-                product?.notifyMeOOSCount.orEmpty()
+                R.string.product_manage_stock_alert_active_info_in_edit_stock_variant
             ).parseAsHtml()
             showWithCondition(!product.suspendAccess())
             setCompoundDrawablesWithIntrinsicBounds(
@@ -430,8 +428,7 @@ class ProductManageQuickEditStockFragment(
     private fun setHasStockAlertInfo() {
         binding?.iconInfo?.run {
             text = getString(
-                R.string.product_manage_has_stock_alert_info_in_edit_stock_variant,
-                product?.notifyMeOOSCount.orEmpty()
+                R.string.product_manage_has_stock_alert_info_in_edit_stock_variant
             ).parseAsHtml()
             showWithCondition(!product.suspendAccess())
             setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bell_filled, 0, 0, 0)
