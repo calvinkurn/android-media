@@ -1,13 +1,8 @@
 package com.tokopedia.productbundlewidget.model
 
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelStoreOwner
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
 
-class GetBundleParamBuilder(fragment: Fragment) {
-    private val storeOwner: ViewModelStoreOwner = fragment
-    private val lifecycleOwner: LifecycleOwner = fragment.viewLifecycleOwner
+class GetBundleParamBuilder {
     private var productId: String = ""
     private var warehouseId: String = ""
     private var shopId: String = ""
@@ -43,8 +38,6 @@ class GetBundleParamBuilder(fragment: Fragment) {
             Bundle(ID = it, WarehouseID = warehouseId)
         }
         return GetBundleParam(
-            storeOwner = storeOwner,
-            lifecycleOwner = lifecycleOwner,
             productId = if (bundleList.isEmpty()) productId else "",
             warehouseId = if (bundleList.isEmpty()) warehouseId else "",
             shopId = if (bundleList.isEmpty()) shopId else "",

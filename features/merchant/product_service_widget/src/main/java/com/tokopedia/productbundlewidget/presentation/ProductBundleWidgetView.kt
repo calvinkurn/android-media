@@ -4,12 +4,9 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
@@ -29,8 +26,8 @@ import javax.inject.Inject
 class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-    private var viewModel: ProductBundleWidgetViewModel? = null
+    lateinit var viewModel: ProductBundleWidgetViewModel
+
     private var tfTitle: Typography? = null
     private val bundleAdapter = ProductBundleWidgetAdapter()
 
@@ -139,11 +136,13 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         }
     }
 
-    private fun createViewModel(storeOwner: ViewModelStoreOwner, lifecycleOwner: LifecycleOwner) {
-        if (viewModel != null) return
-        viewModel = ViewModelProvider(storeOwner, viewModelFactory).get(ProductBundleWidgetViewModel::class.java)
-        viewModel?.bundleUiModels?.observe(lifecycleOwner) {
-            bundleAdapter.updateDataSet(it)
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        val lifecycleOwner = context as? LifecycleOwner
+        lifecycleOwner?.run {
+            viewModel.bundleUiModels.observe(this) {
+                bundleAdapter.updateDataSet(it)
+            }
         }
     }
 
@@ -153,8 +152,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
 
     fun getBundleData(param: GetBundleParam) {
         param.apply {
-            createViewModel(storeOwner, lifecycleOwner)
-            viewModel?.getBundleInfo(param)
+            viewModel.getBundleInfo(param)
         }
     }
 
