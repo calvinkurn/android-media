@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.play
+package com.tkpd.macrobenchmark.test.play.live
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -15,8 +15,8 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class PlayStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    override fun getIntent() = MacroIntent.Play.getPlayIntent()
+class PlayLiveStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun getIntent() = MacroIntent.Play.getPlayLiveIntent()
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(

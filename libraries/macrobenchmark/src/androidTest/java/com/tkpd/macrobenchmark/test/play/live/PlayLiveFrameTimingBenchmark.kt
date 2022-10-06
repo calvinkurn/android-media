@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.play
+package com.tkpd.macrobenchmark.test.play.live
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -15,7 +15,8 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class PlayFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class PlayLiveFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicFlingInteraction(
             MacroIntent.Play.PACKAGE_NAME,
@@ -25,5 +26,5 @@ class PlayFrameTimingBenchmark: BaseFrameTimingBenchmark() {
         )
     }
 
-    override fun getIntent() = MacroIntent.Play.getPlayIntent()
+    override fun getIntent() = MacroIntent.Play.getPlayLiveIntent()
 }
