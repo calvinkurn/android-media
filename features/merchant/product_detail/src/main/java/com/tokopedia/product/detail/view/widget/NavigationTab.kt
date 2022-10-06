@@ -30,6 +30,8 @@ class NavigationTab(
         private const val NAVIGATION_DELAYED_SHOW_DURATION = 2000L
         private const val SELECT_TAB_THRESHOLD = 300L
         private const val NAVIGATION_SHOW_THRESHOLD = 75f
+        private const val HIDE_THRESHOLD_PX = -1
+        private const val SHOW_THRESHOLD_PX = 0
     }
 
     private val binding = WidgetNavigationTabBinding.inflate(LayoutInflater.from(context))
@@ -183,9 +185,9 @@ class NavigationTab(
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             if (!enableScrollUpListener) return
             val shouldHide = shouldHide(recyclerView)
-            if (shouldHide || dy < 0) {
+            if (shouldHide || dy < HIDE_THRESHOLD_PX) {
                 toggle(false)
-            } else {
+            } else if (dy > SHOW_THRESHOLD_PX) {
                 toggle(true)
             }
         }
