@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.swtichaccount
+package com.tokopedia.play.broadcaster.setup.switchaccount
 
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -14,7 +14,6 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
-import com.tokopedia.test.application.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk

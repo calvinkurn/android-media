@@ -387,7 +387,7 @@ class PlayBroQuizViewModelTest {
     @Test
     fun `when user fill input option data, quiz form state form data options must filled with input option value`(){
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
 
         every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE

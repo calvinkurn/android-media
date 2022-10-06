@@ -24,30 +24,30 @@ class TestDoubleModelBuilder {
      * Data Store
      */
     fun buildSetupDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            coverDataStore: CoverDataStore = buildCoverDataStore(dispatcher),
-            scheduleDataStore: BroadcastScheduleDataStore = buildBroadcastScheduleDataStore(dispatcher),
-            titleDataStore: TitleDataStore = buildTitleDataStore(dispatcher),
-            tagsDataStore: TagsDataStore = buildTagsDataStore(dispatcher),
-            interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore()
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        coverDataStore: CoverDataStore = buildCoverDataStore(dispatcher),
+        scheduleDataStore: BroadcastScheduleDataStore = buildBroadcastScheduleDataStore(dispatcher),
+        titleDataStore: TitleDataStore = buildTitleDataStore(dispatcher),
+        tagsDataStore: TagsDataStore = buildTagsDataStore(dispatcher),
+        interactiveDataStore: InteractiveDataStore = buildInteractiveDataStore()
     ) = MockSetupDataStore(
-            mCoverDataStore = coverDataStore,
-            mScheduleDataStore = scheduleDataStore,
-            mTitleDataStore = titleDataStore,
-            mTagsDataStore = tagsDataStore,
-            mInteractiveDataStore = interactiveDataStore
+        mCoverDataStore = coverDataStore,
+        mScheduleDataStore = scheduleDataStore,
+        mTitleDataStore = titleDataStore,
+        mTagsDataStore = tagsDataStore,
+        mInteractiveDataStore = interactiveDataStore
     )
 
     fun buildCoverDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
     ) = MockCoverDataStore(dispatcher)
 
     fun buildBroadcastScheduleDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true)
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        updateChannelUseCase: PlayBroadcastUpdateChannelUseCase = mockk(relaxed = true)
     ) = BroadcastScheduleDataStoreImpl(
-            dispatcher,
-            updateChannelUseCase
+        dispatcher,
+        updateChannelUseCase
     )
 
     fun buildTitleDataStore(
@@ -59,11 +59,11 @@ class TestDoubleModelBuilder {
     )
 
     fun buildTagsDataStore(
-            dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
-            setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
+        dispatcher: CoroutineDispatchers = CoroutineTestDispatchers,
+        setChannelTagsUseCase: SetChannelTagsUseCase = mockk(relaxed = true),
     ) = TagsDataStoreImpl(
-            dispatcher,
-            setChannelTagsUseCase
+        dispatcher,
+        setChannelTagsUseCase
     )
 
     fun buildInteractiveDataStore() = InteractiveDataStoreImpl()
@@ -72,29 +72,30 @@ class TestDoubleModelBuilder {
      * Config Store
      */
     fun buildHydraConfigStore(
-            channelConfigStore: ChannelConfigStore = buildChannelConfigStore(),
-            productConfigStore: ProductConfigStore = buildProductConfigStore(),
-            titleConfigStore: TitleConfigStore = buildTitleConfigStore(),
-            broadcastScheduleConfigStore: BroadcastScheduleConfigStore = buildBroadcastScheduleConfigStore()
+        channelConfigStore: ChannelConfigStore = buildChannelConfigStore(),
+        productConfigStore: ProductConfigStore = buildProductConfigStore(),
+        titleConfigStore: TitleConfigStore = buildTitleConfigStore(),
+        broadcastScheduleConfigStore: BroadcastScheduleConfigStore = buildBroadcastScheduleConfigStore(),
+        accountConfigStore: AccountConfigStore = buildAccountConfigStore(),
     ) = HydraConfigStoreImpl(
-            channelConfigStore = channelConfigStore,
-            productConfigStore = productConfigStore,
-            titleConfigStore = titleConfigStore,
-            broadcastScheduleConfigStore = broadcastScheduleConfigStore
+        channelConfigStore = channelConfigStore,
+        productConfigStore = productConfigStore,
+        titleConfigStore = titleConfigStore,
+        broadcastScheduleConfigStore = broadcastScheduleConfigStore,
+        accountConfigStore = accountConfigStore,
     )
 
     fun buildChannelConfigStore(
-            channelId: String = "12345"
+        channelId: String = "12345"
     ) = MockChannelConfigStore(channelId)
 
-    fun buildProductConfigStore(
-    ) = ProductConfigStoreImpl()
+    fun buildProductConfigStore() = ProductConfigStoreImpl()
 
-    fun buildTitleConfigStore(
-    ) = TitleConfigStoreImpl()
+    fun buildTitleConfigStore() = TitleConfigStoreImpl()
 
-    fun buildBroadcastScheduleConfigStore(
-    ) = BroadcastScheduleConfigStoreImpl()
+    fun buildBroadcastScheduleConfigStore() = BroadcastScheduleConfigStoreImpl()
+
+    fun buildAccountConfigStore() = AccountConfigStoreImpl()
 
     /**
      * Real Impl

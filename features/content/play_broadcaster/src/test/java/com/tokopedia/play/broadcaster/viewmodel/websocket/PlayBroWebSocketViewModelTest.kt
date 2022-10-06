@@ -260,7 +260,7 @@ class PlayBroWebSocketViewModelTest {
     fun `when user received new channel interactive scheduled event, it should emit scheduled interactive`() {
         val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
 
         val mockChannelInteractiveString = webSocketUiModelBuilder.buildChannelInteractiveString()
 
