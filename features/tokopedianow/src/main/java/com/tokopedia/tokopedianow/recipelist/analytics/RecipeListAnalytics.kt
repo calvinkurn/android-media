@@ -17,6 +17,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT
@@ -30,12 +31,15 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RESET_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_RETRY_FAILED_UNBOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_UNBOOKMARK
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_APPLY_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_FAILED_UNBOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
@@ -84,7 +88,11 @@ class RecipeListAnalytics (
         const val EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE = "click back failed load page"
         const val EVENT_ACTION_CLICK_RETRY_FAILED_LOAD_PAGE = "click retry failed load page"
         const val EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER = "impression failed bookmark"
+        const val EVENT_ACTION_IMPRESS_FAILED_UNBOOKMARK_TOASTER = "impression failed unbookmark"
         const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
+        const val EVENT_ACTION_CLICK_RETRY_FAILED_UNBOOKMARK_TOASTER = "click retry unbookmark"
+        const val EVENT_ACTION_IMPRESS_APPLY_FILTER = "impression apply filter"
+        const val EVENT_ACTION_CLICK_APPLY_FILTER = "click apply filter"
     }
 
     private val category: String
@@ -306,11 +314,31 @@ class RecipeListAnalytics (
         )
     }
 
+    fun impressFailedUnBookmarkToaster() {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_ACTION_IMPRESS_FAILED_UNBOOKMARK_TOASTER,
+                category = category
+            )
+        )
+    }
+
     fun clickRetryFailedBookmarkToaster() {
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER,
+                category = category
+            )
+        )
+    }
+
+    fun clickRetryFailedUnBookmarkToaster() {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_CLICK_PG,
+                action = EVENT_ACTION_CLICK_RETRY_FAILED_UNBOOKMARK_TOASTER,
                 category = category
             )
         )
@@ -342,6 +370,27 @@ class RecipeListAnalytics (
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RESET_FILTER,
                 category = category
+            )
+        )
+    }
+
+    fun impressApplyFilter() {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_VIEW_PG_IRIS,
+                action = EVENT_ACTION_IMPRESS_APPLY_FILTER,
+                category = category
+            )
+        )
+    }
+
+    fun clickApplyFilter(filters: List<String>) {
+        TokoNowCommonAnalytics.hitCommonTracker(
+            TokoNowCommonAnalytics.getDataLayer(
+                event = EVENT_CLICK_PG,
+                action = EVENT_ACTION_CLICK_APPLY_FILTER,
+                category = category,
+                label = filters.joinToString(" - ")
             )
         )
     }
