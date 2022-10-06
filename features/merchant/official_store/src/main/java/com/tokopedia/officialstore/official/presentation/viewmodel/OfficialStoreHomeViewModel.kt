@@ -253,7 +253,7 @@ class OfficialStoreHomeViewModel @Inject constructor(
                 }
                 else if(it.channel.layout == DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL){
                     getTopAdsBannerCarousel(
-                        OfficialTopAdsBannerDataModel()
+                        OfficialTopAdsBannerDataModel(it.channel.header?.name)
                     )
                 }
             }

@@ -145,7 +145,7 @@ object OfficialHomeMapper {
                 }
                 DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL -> {
                     dcList.add(
-                        OfficialTopAdsBannerDataModel()
+                        OfficialTopAdsBannerDataModel(officialStore.channel.header?.name)
                     )
                 }
                 DynamicChannelLayout.LAYOUT_FEATURED_BRAND -> {

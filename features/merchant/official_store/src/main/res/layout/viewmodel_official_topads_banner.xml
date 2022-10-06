@@ -15,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         tools:text="Promo brand pilihan"
-        android:text="@string/selected_brand_promotion"
         android:textColor="@color/Unify_NN950"
         app:typographyType="display_1"
         app:typographyWeight="bold"

@@ -21,11 +21,12 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
         }
 
         if (!tdnBannerList.isNullOrEmpty()) {
+            binding?.topadsTdnBanner?.visibility = View.VISIBLE
+            binding?.topadsBannerTitle?.text = element.title
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(view.context, it)
             })
-        } else
-        {
+        } else {
             binding?.topadsTdnBanner?.visibility = View.GONE
         }
     }
