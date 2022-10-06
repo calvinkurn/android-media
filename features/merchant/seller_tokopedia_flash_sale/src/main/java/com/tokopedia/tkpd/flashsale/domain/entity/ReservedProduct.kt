@@ -111,7 +111,7 @@ data class ReservedProduct(
         }
 
         fun List<Warehouse>.filteredWarehouse(): List<Warehouse> {
-            return filter { !it.isDisabled && !it.discountSetup.stock.isZero()}
+            return filter { !it.isDisabled && !it.discountSetup.stock.isZero() && it.isToggleOn}
         }
 
         @Parcelize
