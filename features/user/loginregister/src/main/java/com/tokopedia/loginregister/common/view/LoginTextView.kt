@@ -35,8 +35,12 @@ class LoginTextView : LinearLayout {
     var imageEnabled = false
     var shape: GradientDrawable? = null
 
-    private val viewBinding: CustomLoginTextViewBinding =
-        CustomLoginTextViewBinding.inflate(LayoutInflater.from(context))
+    private val viewBinding: CustomLoginTextViewBinding = CustomLoginTextViewBinding
+        .inflate(
+            LayoutInflater.from(context)
+        ).also {
+            addView(it.root)
+        }
 
     constructor(context: Context) : super(context) {
         init(context, null)

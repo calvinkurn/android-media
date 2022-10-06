@@ -21,11 +21,12 @@ class EmailExtension @JvmOverloads constructor(
     private var emailExtensionAdapter: EmailExtensionAdapter? = null
     private var listener: EmailExtensionAdapter.ClickListener? = null
 
-    private val viewBinding: LayoutEmailExtensionBinding = LayoutEmailExtensionBinding.inflate(
-        LayoutInflater.from(context)
-    ).also {
-        addView(it.root)
-    }
+    private val viewBinding: LayoutEmailExtensionBinding = LayoutEmailExtensionBinding
+        .inflate(
+            LayoutInflater.from(context)
+        ).also {
+            addView(it.root)
+        }
 
     fun setExtensions(
         emailExtensionList: List<String>,

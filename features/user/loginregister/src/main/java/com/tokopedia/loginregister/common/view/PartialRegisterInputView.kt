@@ -47,10 +47,24 @@ class PartialRegisterInputView : BaseCustomView {
         fun onActionPartialClick(id: String)
     }
 
-    private val viewBinding: LayoutPartialRegisterInputBinding =
-        LayoutPartialRegisterInputBinding.inflate(
+    private val viewBinding: LayoutPartialRegisterInputBinding = LayoutPartialRegisterInputBinding
+        .inflate(
             LayoutInflater.from(context)
-        )
+        ).also {
+            addView(it.root)
+        }
+
+    val inputEmailPhoneField by lazy {
+        viewBinding.inputEmailPhone
+    }
+
+    val wrapperPassword by lazy {
+        viewBinding.wrapperPassword
+    }
+
+    val buttonContinue by lazy {
+        viewBinding.registerBtn
+    }
 
     constructor(context: Context) : super(context) {
         init()
