@@ -46,14 +46,16 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
         }
     }
 
+    fun setProductName(name: String) {
+        this.productName = name
+    }
+
     fun show(
-        productName: String,
         productCheckingResults: List<ProductCheckingResult>,
         manager: FragmentManager,
         tag: String?
     ) {
         this.productCheckingResults = productCheckingResults
-        this.productName = productName
         show(manager, tag)
     }
 }

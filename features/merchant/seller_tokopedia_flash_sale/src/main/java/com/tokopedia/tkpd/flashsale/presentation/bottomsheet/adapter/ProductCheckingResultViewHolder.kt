@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
@@ -41,23 +42,44 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
         binding.apply {
             val priceText: String
             val slashPriceText: String
+            val percentText: String
 
             if (!item.isMultiloc) {
                 priceText = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
                 slashPriceText = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
+                percentText = item.checkingDetailResult.discountPercent.getPercentFormatted()
             } else {
-                val discountedPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountedPrice }.orZero().getCurrencyFormatted()
-                val discountedPriceMin = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountedPrice }.orZero().getCurrencyFormatted()
-                val originalPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.originalPrice }.orZero().getCurrencyFormatted()
-                val originalPriceMin = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.originalPrice }.orZero().getCurrencyFormatted()
+                val discountedPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountedPrice }.orZero()
+                val discountedPriceMin = item.locationCheckingResult.minOfOrNull { it.checkingDetailResult.discountedPrice }.orZero()
+                val originalPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.originalPrice }.orZero()
+                val originalPriceMin = item.locationCheckingResult.minOfOrNull { it.checkingDetailResult.originalPrice }.orZero()
+                val discountMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountPercent }.orZero()
+                val discountMin = item.locationCheckingResult.minOfOrNull { it.checkingDetailResult.discountPercent }.orZero()
 
-                priceText = "$discountedPriceMin - $discountedPriceMax"
-                slashPriceText =  "$originalPriceMin - $originalPriceMax"
+                priceText = getPriceRangeText(discountedPriceMin, discountedPriceMax)
+                slashPriceText = getPriceRangeText(originalPriceMin, originalPriceMax)
+                percentText = getPercentRangeText(discountMin, discountMax)
             }
 
             tfPrice.text = priceText
             tfSlashPrice.text = slashPriceText
-            labelDiscount.text = "${item.checkingDetailResult.discountPercent}%"
+            labelDiscount.text = percentText
+        }
+    }
+
+    private fun getPriceRangeText(min: Long, max: Long): String {
+        return if (min == max) {
+            min.getCurrencyFormatted()
+        } else {
+            "${min.getCurrencyFormatted()} - ${max.getCurrencyFormatted()}"
+        }
+    }
+
+    private fun getPercentRangeText(min: Int, max: Int): String {
+        return if (min == max) {
+            min.getPercentFormatted()
+        } else {
+            "$min - $max%"
         }
     }
 
@@ -84,13 +106,23 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             imgProduct.loadImage(item.imageUrl)
             tfProductName.text = item.name
             tfProductName.isVisible = item.name.isNotEmpty()
-            tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format,
-                item.checkingDetailResult.stock)
             tfSubsidy.text = context.getString(R.string.commonbs_product_check_subsidy_format,
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
         }
         setupPrice(binding, item)
+        setupStock(binding, item)
         setupMultiloc(binding.layoutLocationContent, item)
+    }
+
+    private fun setupStock(
+        binding: StfsItemProductCheckResultBinding,
+        item: ProductCheckingResult,
+    ) {
+        val stock = item.locationCheckingResult.sumOf { it.checkingDetailResult.stock }
+        binding.tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format, stock)
+        if (item.isMultiloc) binding.tfCampaignStock.apply {
+            text = context.getString(R.string.commonbs_product_check_location_count_suffix_format, text, item.locationCheckingResult.size)
+        }
     }
 }

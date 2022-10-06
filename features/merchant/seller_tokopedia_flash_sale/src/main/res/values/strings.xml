@@ -107,6 +107,7 @@
     <string name="commonbs_product_check_stock_format">Stok Campaign: %d</string>
     <string name="commonbs_product_check_subsidy_format">Menerima subsidi sebesar %s dari Tokopedia</string>
     <string name="commonbs_product_check_location_count_format">Detail di %d Lokasi</string>
+    <string name="commonbs_product_check_location_count_suffix_format">%s di %d Lokasi</string>
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
 

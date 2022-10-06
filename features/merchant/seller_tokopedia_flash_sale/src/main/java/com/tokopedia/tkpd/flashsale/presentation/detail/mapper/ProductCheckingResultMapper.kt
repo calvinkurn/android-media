@@ -22,7 +22,7 @@ object ProductCheckingResultMapper {
         split(PRODUCT_NAME_DELIMITER_REMOTE).lastOrNull().orEmpty().replace(
             VARIANT_NAME_DELIMITER_REMOTE, VARIANT_NAME_DELIMITER_LOCAL)
 
-    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult(soldCount: Int) = map {
+    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult() = map {
         val originalPrice = it.discountSetup?.price.orZero().toLong()
         val discountPercent = it.discountSetup?.discount.orZero()
         val discountedPrice = DiscountUtil.calculatePrice(discountPercent, originalPrice)
@@ -37,8 +37,7 @@ object ProductCheckingResultMapper {
                 statusText = it.statusText,
                 isSubsidy = it.subsidy.hasSubsidy,
                 subsidyAmount = it.subsidy.subsidyAmount,
-                rejectionReason = it.rejectionReason,
-                soldCount = soldCount.toLong(),
+                rejectionReason = it.rejectionReason
             )
         )
     }
@@ -58,25 +57,63 @@ object ProductCheckingResultMapper {
                 discountedPrice = item.discountedPrice.price.toLong(),
                 originalPrice = item.price.price.toLong(),
                 discountPercent = item.discount.discount.toInt(),
-                stock = item.campaignStock.toLong(),
-                statusText = "",
-                isSubsidy = false,
-                subsidyAmount = 0,
-                rejectionReason = "",
-                soldCount = item.soldCount.toLong(),
+                stock = item.campaignStock.toLong()
             ),
-            locationCheckingResult = item.warehouses.mapToCheckingResult(item.soldCount)
+            locationCheckingResult = item.warehouses.mapToCheckingResult()
         )
     }
 
-    fun isMultilocOrVariantProduct(selectedProduct: DelegateAdapterItem): Boolean {
+    fun mapFromWarehouses (selectedProduct: DelegateAdapterItem): ProductCheckingResult {
+        val warehouses = getWarehouses(selectedProduct)
+        return ProductCheckingResult (
+            productId = "8",
+            imageUrl = "",
+            isMultiloc = true,
+            locationCheckingResult = warehouses.mapToCheckingResult()
+        )
+    }
+
+    fun isVariantProduct(selectedProduct: DelegateAdapterItem): Boolean {
         return when (selectedProduct) {
-            is OngoingItem -> selectedProduct.isMultiwarehouse || selectedProduct.totalChild.isMoreThanZero()
-            is OngoingRejectedItem -> selectedProduct.isMultiwarehouse || selectedProduct.totalChild.isMoreThanZero()
-            is FinishedProcessSelectionItem -> selectedProduct.isMultiwarehouse || selectedProduct.totalChild.isMoreThanZero()
-            is OnSelectionProcessItem -> selectedProduct.isMultiwarehouse || selectedProduct.totalChild.isMoreThanZero()
-            is WaitingForSelectionItem -> selectedProduct.isMultiwarehouse || selectedProduct.totalChild.isMoreThanZero()
+            is OngoingItem -> selectedProduct.totalChild.isMoreThanZero()
+            is OngoingRejectedItem -> selectedProduct.totalChild.isMoreThanZero()
+            is FinishedProcessSelectionItem -> selectedProduct.totalChild.isMoreThanZero()
+            is OnSelectionProcessItem -> selectedProduct.totalChild.isMoreThanZero()
+            is WaitingForSelectionItem -> selectedProduct.totalChild.isMoreThanZero()
             else -> false
+        }
+    }
+
+    fun isMultiloc(selectedProduct: DelegateAdapterItem): Boolean {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.isMultiwarehouse
+            is OngoingRejectedItem -> selectedProduct.isMultiwarehouse
+            is FinishedProcessSelectionItem -> selectedProduct.isMultiwarehouse
+            is OnSelectionProcessItem -> selectedProduct.isMultiwarehouse
+            is WaitingForSelectionItem -> selectedProduct.isMultiwarehouse
+            else -> false
+        }
+    }
+
+    fun getProductName(selectedProduct: DelegateAdapterItem): String {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.name
+            is OngoingRejectedItem -> selectedProduct.name
+            is FinishedProcessSelectionItem -> selectedProduct.name
+            is OnSelectionProcessItem -> selectedProduct.name
+            is WaitingForSelectionItem -> selectedProduct.name
+            else -> ""
+        }
+    }
+
+    fun getWarehouses(selectedProduct: DelegateAdapterItem): List<SubmittedProduct.Warehouse> {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.warehouses
+            is OngoingRejectedItem -> selectedProduct.warehouses
+            is FinishedProcessSelectionItem -> selectedProduct.warehouses
+            is OnSelectionProcessItem -> selectedProduct.warehouses
+            is WaitingForSelectionItem -> selectedProduct.warehouses.orEmpty()
+            else -> emptyList()
         }
     }
 }

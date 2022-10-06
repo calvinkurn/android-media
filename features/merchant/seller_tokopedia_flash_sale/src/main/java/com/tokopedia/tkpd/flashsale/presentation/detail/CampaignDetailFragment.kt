@@ -86,6 +86,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
+    private val checkProductBottomSheet = ProductCheckBottomSheet()
 
     //main binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
@@ -170,11 +171,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         observeProductReserveResult()
         observeDeletedProductResult()
         observeCampaignRegistrationResult()
+        observeSubmittedProductVariant()
         loadCampaignDetailData()
-        viewModel.submittedProductVariant.observe(viewLifecycleOwner) {
-            val bottomSheet = ProductCheckBottomSheet()
-            bottomSheet.show("asd sad", it, childFragmentManager, "")
-        }
     }
 
     private fun observeCampaignDetail() {
@@ -277,6 +275,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     showErrorToaster(result.errorMessage)
                 }
             }
+        }
+    }
+
+    private fun observeSubmittedProductVariant() {
+        viewModel.submittedProductVariant.observe(viewLifecycleOwner) {
+            checkProductBottomSheet.show(it, childFragmentManager, "")
         }
     }
 
@@ -1366,9 +1370,18 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun onProductClicked(itemPosition: Int) {
         val selectedProduct = productAdapter.getItems()[itemPosition]
         val selectedProductId = selectedProduct.id() as? Long
-        val isMultilocOrVariantProduct = ProductCheckingResultMapper.isMultilocOrVariantProduct(selectedProduct)
-        if (isMultilocOrVariantProduct)
+        val isVariantProduct = ProductCheckingResultMapper.isVariantProduct(selectedProduct)
+        val isMultiloc = ProductCheckingResultMapper.isMultiloc(selectedProduct)
+        val productName = ProductCheckingResultMapper.getProductName(selectedProduct)
+
+        checkProductBottomSheet.setProductName(productName)
+
+        if (isVariantProduct) {
             viewModel.getSubmittedProductVariant(flashSaleId, selectedProductId.orZero())
+        } else if (isMultiloc) {
+            val productCheckingResult = ProductCheckingResultMapper.mapFromWarehouses(selectedProduct)
+            checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
+        }
     }
 
     private fun createDummyProduct(): ReservedProduct.Product {
