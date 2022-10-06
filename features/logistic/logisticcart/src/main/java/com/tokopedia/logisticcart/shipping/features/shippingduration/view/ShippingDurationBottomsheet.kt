@@ -85,10 +85,9 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
         isLeasing: Boolean = false, pslCode: String = "",
         products: ArrayList<Product>, cartString: String,
         isDisableOrderPrioritas: Boolean,
-
         isTradeInDropOff: Boolean = false,
         isFulFillment: Boolean = false, preOrderTime: Int = -1,
-        mvc: String = "", isOcc: Boolean, cartData: String
+        mvc: String = "", cartData: String, isOcc: Boolean
     ) {
         this.activity = activity
         this.shippingDurationBottomsheetListener = shippingDurationBottomsheetListener

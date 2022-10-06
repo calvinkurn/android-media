@@ -204,7 +204,6 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Irfan Khoirul on 23/04/18.

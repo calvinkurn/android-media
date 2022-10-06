@@ -1095,7 +1095,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                         selectedServiceId = orderShipment.value.serviceId.toZeroIfNull(),
                         products = products,
                         cartString = orderCart.cartString,
-                        pslCode = pslCode
+                        pslCode = pslCode,
+                        cartData = orderCart.cartData
                     )
                 )
             }

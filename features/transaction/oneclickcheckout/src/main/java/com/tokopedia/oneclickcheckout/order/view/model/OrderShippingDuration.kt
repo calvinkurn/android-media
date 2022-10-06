@@ -11,5 +11,6 @@ data class OrderShippingDuration(
     val products: ArrayList<Product> = arrayListOf(),
     val cartString: String = "",
     val isDisableOrderPrioritas: Boolean = false,
-    val pslCode: String = ""
+    val pslCode: String = "",
+    val cartData: String = ""
 )

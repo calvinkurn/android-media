@@ -578,7 +578,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 isDisableOrderPrioritas = true,
                 isOcc = true,
                 pslCode = data.pslCode,
-                shippingDurationBottomsheetListener = getShippingDurationListener())
+                shippingDurationBottomsheetListener = getShippingDurationListener(),
+                cartData = data.cartData)
         }
 
     }
