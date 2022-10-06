@@ -47,7 +47,9 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDeleg
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
@@ -92,8 +94,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         CompositeAdapter.Builder()
             .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked, onUpcomingFlashSaleButtonClicked))
             .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onRegisteredFlashSaleButtonClicked))
-            .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
-            .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(OngoingFlashSaleDelegateAdapter(onOngoingFlashSaleCardClicked))
+            .add(FinishedFlashSaleDelegateAdapter(onFinishedFlashSaleCardClicked))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -544,6 +546,35 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
             handleRegisteredCampaignRedirection(selectedFlashSaleId, status)
         }
     }
+
+    private val onOngoingFlashSaleCardClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : OngoingFlashSaleItem? = (selectedFlashSale as? OngoingFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            navigateToFlashSaleDetailPage(selectedFlashSaleId)
+        }
+    }
+
+    private val onFinishedFlashSaleCardClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : FinishedFlashSaleItem? = (selectedFlashSale as? FinishedFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            navigateToFlashSaleDetailPage(selectedFlashSaleId)
+        }
+    }
+
 
     private fun navigateToFlashSaleDetailPage(flashSaleId : Long) {
         CampaignDetailActivity.start(context ?: return, flashSaleId, tabName)
