@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductCheckResultBinding
@@ -45,10 +46,10 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
                 priceText = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
                 slashPriceText = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
             } else {
-                val discountedPriceMax = item.locationCheckingResult.maxOf { it.checkingDetailResult.discountedPrice }.getCurrencyFormatted()
-                val discountedPriceMin = item.locationCheckingResult.minOf { it.checkingDetailResult.discountedPrice }.getCurrencyFormatted()
-                val originalPriceMax = item.locationCheckingResult.maxOf { it.checkingDetailResult.originalPrice }.getCurrencyFormatted()
-                val originalPriceMin = item.locationCheckingResult.minOf { it.checkingDetailResult.originalPrice }.getCurrencyFormatted()
+                val discountedPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountedPrice }.orZero().getCurrencyFormatted()
+                val discountedPriceMin = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.discountedPrice }.orZero().getCurrencyFormatted()
+                val originalPriceMax = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.originalPrice }.orZero().getCurrencyFormatted()
+                val originalPriceMin = item.locationCheckingResult.maxOfOrNull { it.checkingDetailResult.originalPrice }.orZero().getCurrencyFormatted()
 
                 priceText = "$discountedPriceMin - $discountedPriceMax"
                 slashPriceText =  "$originalPriceMin - $originalPriceMax"

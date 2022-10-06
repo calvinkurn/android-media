@@ -67,6 +67,15 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                               status_id
                               status_text
                               rejection_reason
+                              subsidy {
+                                has_subsidy
+                                subsidy_amount
+                              }
+                              discount_setup {
+                                price
+                                stock
+                                discount
+                              }
                             }
                             product_criteria {
                                criteria_id
@@ -94,7 +103,7 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
         pagination: Pagination = Pagination(),
         filter: Filter = Filter()
     ): SubmittedProductData {
-        val request = buildRequest(campaignId = campaignId, pagination = pagination, filter = filter)
+        val request = buildRequest(campaignId = campaignId, productId = productId, pagination = pagination, filter = filter)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetFlashSaleSubmittedProductListResponse>()
         return mapper.map(data)
@@ -108,8 +117,8 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
     ): GraphqlRequest {
         val payload = GetFlashSaleSubmittedProductListRequest(
             requestHeader = SubmittedProductListRequestHeader(),
-            campaignId = campaignId.toInt(),
-            productId = productId.toInt(),
+            campaignId = campaignId,
+            productId = productId,
             pagination = pagination,
             filter = filter,
         )
