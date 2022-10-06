@@ -30,7 +30,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
@@ -395,12 +394,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseId.split("_").let { it[1].toIntOrZero() }
                 } else 0
                 val restrictionParam = RestrictionEngineRequestParams().apply {
-                    userId = userIdFromSession
+                    userId = userIdFromSession.toLong()
                     dataRequest = mutableListOf(
                         RestrictionEngineDataRequest(
                                 product = RestrictionEngineDataRequestProduct(productID = 0.toString()),
-                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toIntOrZero()),
-                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId)
+                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toLongOrZero()),
+                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId.toLong())
                         )
                     )
                 }
