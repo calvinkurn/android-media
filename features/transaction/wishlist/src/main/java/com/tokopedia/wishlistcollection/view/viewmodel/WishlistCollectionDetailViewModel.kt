@@ -32,14 +32,9 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProd
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
-import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.*
+import com.tokopedia.wishlistcollection.domain.*
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,7 +51,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
     private val atcUseCase: AddToCartUseCase,
-    private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
+    private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase,
+    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -100,6 +96,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val _addWishlistCollectionItem = MutableLiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>()
     val addWishlistCollectionItem: LiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>
         get() = _addWishlistCollectionItem
+
+    private val _updateWishlistCollectionResult = MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
+    val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
+        get() = _updateWishlistCollectionResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -263,6 +263,19 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             }
         }, onError = {
             _addWishlistCollectionItem.value = Fail(it)
+        })
+    }
+
+    fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
+        launchCatchError(block = {
+            val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
+            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.errorMessage.isEmpty()) {
+                _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
+            } else {
+                _updateWishlistCollectionResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _updateWishlistCollectionResult.value = Fail(it)
         })
     }
 

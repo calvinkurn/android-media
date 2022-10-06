@@ -106,6 +106,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomShee
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
@@ -266,7 +267,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
         private const val TYPE_COLLECTION_PRIVATE_SELF = 1
-        private const val TYPE_COLLECTION_PRIVATE_OTHERS = 2
+        private const val TYPE_COLLECTION_SHARE = "2"
         private const val TYPE_COLLECTION_PUBLIC_SELF = 3
         private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
     }
@@ -337,6 +338,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingDeleteProgress()
         observingAtc()
         observeSavingItemToCollections()
+        observeUpdateAccessWishlistCollection()
     }
 
     private fun observingDeleteProgress() {
@@ -715,6 +717,22 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         }
     }
 
+    private fun observeUpdateAccessWishlistCollection() {
+        wishlistCollectionDetailViewModel.updateWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.data.success) {
+                        // TODO: open bottomsheet sharing
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
     private fun showRvWishlist() {
         binding?.run {
             globalErrorWishlistCollectionDetail.gone()
@@ -947,7 +965,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                     if (collectionType == TYPE_COLLECTION_PRIVATE_SELF
                         || collectionType == TYPE_COLLECTION_PUBLIC_SELF
                         || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
-                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true) {}
+                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
                     }
                     addIcon(iconId = IconList.ID_CART) {}
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
@@ -976,7 +994,29 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showDialogSharePermission() {
-        // TODO: continue here
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE) }
+        dialog?.setTitle(getString(Rv2.string.sharing_collection_confirmation_title))
+        dialog?.setDescription(getString(Rv2.string.sharing_collection_confirmation_desc))
+        dialog?.setPrimaryCTAText(getString(Rv2.string.sharing_collection_primary_button))
+        dialog?.setPrimaryCTAClickListener {
+            dialog.dismiss()
+            updateCollectionAccess()
+        }
+        dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
+        dialog?.setSecondaryCTAClickListener {
+            dialog.dismiss()
+        }
+        dialog?.show()
+    }
+
+    private fun updateCollectionAccess() {
+        val params = UpdateWishlistCollectionParams(
+            id = collectionId,
+            name = collectionName,
+            access = TYPE_COLLECTION_SHARE
+        )
+        wishlistCollectionDetailViewModel.updateAccessWishlistCollection(params)
     }
 
     private fun hideKeyboardFromSearchBar() {

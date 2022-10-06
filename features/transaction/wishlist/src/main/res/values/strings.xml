@@ -95,4 +95,8 @@
     <string name="collection_bulk_add">Tambahkan ke Koleksi (%d)</string>
     <string name="collection_bulk_add_button">Tambahkan</string>
 
+    <string name="sharing_collection_confirmation_title">Bagikan Koleksi pribadi ini?</string>
+    <string name="sharing_collection_confirmation_desc">Nanti orang lain akan bisa lihat Koleksi ini dan namamu. Mereka juga bisa menyalin Koleksi ini untuk Wishlist-nya sendiri.</string>
+    <string name="sharing_collection_primary_button">Bagikan</string>
+
 </resources>
