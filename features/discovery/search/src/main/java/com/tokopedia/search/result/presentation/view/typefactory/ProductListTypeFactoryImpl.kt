@@ -68,6 +68,9 @@ import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSiz
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.result.product.lastfilter.LastFilterListener
 import com.tokopedia.search.result.product.lastfilter.LastFilterViewHolder
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationDataView
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationViewHolder
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaViewHolder
@@ -107,6 +110,7 @@ class ProductListTypeFactoryImpl(
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
+    private val sameSessionRecommendationListener: SameSessionRecommendationListener,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override var recyclerViewItem = 0
@@ -224,6 +228,9 @@ class ProductListTypeFactoryImpl(
     override fun type(inspirationProductBundleDataView: InspirationProductBundleDataView): Int =
         InspirationProductBundleViewHolder.LAYOUT
 
+    override fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView): Int =
+        SameSessionRecommendationViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -278,6 +285,11 @@ class ProductListTypeFactoryImpl(
             LastFilterViewHolder.LAYOUT -> LastFilterViewHolder(view, lastFilterListener)
             InspirationSizeViewHolder.LAYOUT -> InspirationSizeViewHolder(view, inspirationSizeListener)
             ViolationViewHolder.LAYOUT -> ViolationViewHolder(view, violationListener)
+            SameSessionRecommendationViewHolder.LAYOUT -> SameSessionRecommendationViewHolder(
+                view,
+                inspirationCarouselListener,
+                sameSessionRecommendationListener,
+            )
 
             else -> super.createViewHolder(view, type)
         }

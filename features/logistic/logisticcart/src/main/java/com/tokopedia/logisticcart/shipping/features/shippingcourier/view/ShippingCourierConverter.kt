@@ -122,6 +122,9 @@ class ShippingCourierConverter @Inject constructor() {
         courierData.etaErrorCode = data.etaData.errorCode
         courierData.freeShippingChosenCourierTitle = data.freeShippingChosenCourierTitle
         courierData.freeShippingMetadata = data.freeShippingMetadata
+        courierData.benefitClass = data.benefitClass
+        courierData.shippingSubsidy = data.shippingSubsidy
+        courierData.boCampaignId = data.boCampaignId
         return courierData
     }
 }

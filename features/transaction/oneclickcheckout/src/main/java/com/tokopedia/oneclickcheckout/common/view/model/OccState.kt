@@ -38,6 +38,7 @@ sealed class OccGlobalEvent {
     data class UpdateLocalCacheAddress(val addressModel: ChosenAddressModel) : OccGlobalEvent()
     data class PopUp(val popUp: PopUpData) : OccGlobalEvent()
     object AdjustAdminFeeError : OccGlobalEvent()
+    object AdjustShippingToaster : OccGlobalEvent()
 }
 
 data class OccEvent<out T : Any>(private val data: T) {
