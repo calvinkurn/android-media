@@ -782,6 +782,33 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun onEditSaveAnalytics() {
+        getHistoryState().apply {
+            val cropRatioText = cropRatioToText(cropRotateValue.cropRatio)
+            val removeBackgroundText = removeBackgroundToText(removeBackgroundColor)
+            val watermarkText = watermarkToText(watermarkMode?.watermarkType)
+            val brightnessText = brightnessValue?.toInt() ?: 0
+            val contrastText = contrastValue?.toInt() ?: 0
+            val rotateText = if (!data.isToolRotate()) {
+                cropRotateValue.rotateDegree.toInt()
+            } else {
+                viewModel.rotateSliderValue.toInt()
+            }
+
+            val currentEditorText =
+                requireContext().getText(getToolEditorText(data.editorToolType)).toString()
+            editorDetailAnalytics.clickSave(
+                currentEditorText,
+                brightnessText,
+                contrastText,
+                cropRatioText,
+                rotateText,
+                watermarkText,
+                removeBackgroundText
+            )
+        }
+    }
+
+    private fun getHistoryState(): EditorDetailUiModel {
         val editHistory = EditorDetailUiModel()
         detailState.editList.toMutableList().apply {
             add(data)
@@ -798,28 +825,7 @@ class DetailEditorFragment @Inject constructor(
             }
         }
 
-        val cropRatioText = cropRatioToText(editHistory.cropRotateValue.cropRatio)
-        val removeBackgroundText = removeBackgroundToText(editHistory.removeBackgroundColor)
-        val watermarkText = watermarkToText(editHistory.watermarkMode?.watermarkType)
-        val brightnessText = editHistory.brightnessValue?.toInt() ?: 0
-        val contrastText = editHistory.contrastValue?.toInt() ?: 0
-        val rotateText = if (!data.isToolRotate()) {
-            editHistory.cropRotateValue.rotateDegree.toInt()
-        } else {
-            viewModel.rotateSliderValue.toInt()
-        }
-
-        val currentEditorText =
-            requireContext().getText(getToolEditorText(data.editorToolType)).toString()
-        editorDetailAnalytics.clickSave(
-            currentEditorText,
-            brightnessText,
-            contrastText,
-            cropRatioText,
-            rotateText,
-            watermarkText,
-            removeBackgroundText
-        )
+        return editHistory
     }
 
     override fun getScreenName() = SCREEN_NAME
