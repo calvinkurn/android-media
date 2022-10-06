@@ -193,6 +193,7 @@ class DetailEditorFragment @Inject constructor(
                     )
                 } else {
                     viewModel.setRemoveBackground(it) { _ ->
+                        if (activity?.isFinishing != false) return@setRemoveBackground
                         viewBinding?.let {
                             Toaster.build(
                                 it.editorFragmentDetailRoot,
