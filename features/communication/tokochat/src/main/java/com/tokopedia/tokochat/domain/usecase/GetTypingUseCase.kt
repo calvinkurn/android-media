@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.domain
+package com.tokopedia.tokochat.domain.usecase
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tokochat.data.repository.TokoChatRepository

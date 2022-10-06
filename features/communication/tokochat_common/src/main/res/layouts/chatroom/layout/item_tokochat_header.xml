@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tokoChatMainHeader"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:layout_gravity="center"
+    android:gravity="center_vertical"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:id="@+id/tokochat_layout_photo_container"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true">
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tokochat_user_avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            app:unify_image_corner_radius="0"
+            android:contentDescription="@string/tokochat_content_desc_user_avatar"
+            tools:src="@color/Unify_Y500" />
+
+    </FrameLayout>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/tokochat_icon_header_menu"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="4dp"
+        android:background="@color/Unify_N0"
+        android:contentDescription="@string/tokochat_content_desc_header_menu"
+        android:visibility="visible"
+        app:icon_name="MENU_KEBAB_VERTICAL"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="9dp"
+        android:layout_marginEnd="60dp"
+        android:layout_toEndOf="@+id/tokochat_layout_photo_container"
+        android:gravity="center_vertical">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_text_user_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_1"
+            app:typographyWeight="bold"
+            tools:text="@tools:sample/lorem/random" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tokochat_text_user_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:includeFontPadding="false"
+            android:textColor="@color/Unify_N700_32"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
+            app:typographyType="display_3"
+            tools:text="Terakhir online 3 menit yang lalu"
+            tools:visibility="visible" />
+
+        <include
+            android:id="@+id/tokochat_typing"
+            layout="@layout/item_tokochat_typing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</RelativeLayout>

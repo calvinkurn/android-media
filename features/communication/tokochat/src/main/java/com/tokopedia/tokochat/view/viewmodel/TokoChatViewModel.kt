@@ -15,20 +15,22 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokochat.domain.CreateChannelUseCase
-import com.tokopedia.tokochat.domain.GetAllChannelsUseCase
-import com.tokopedia.tokochat.domain.GetChatHistoryUseCase
-import com.tokopedia.tokochat.domain.GetTypingUseCase
-import com.tokopedia.tokochat.domain.MarkAsReadUseCase
-import com.tokopedia.tokochat.domain.RegistrationActiveChannelUseCase
-import com.tokopedia.tokochat.domain.SendMessageUseCase
+import com.tokopedia.tokochat.domain.usecase.CreateChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.GetAllChannelsUseCase
+import com.tokopedia.tokochat.domain.usecase.GetChatHistoryUseCase
+import com.tokopedia.tokochat.domain.usecase.GetTypingUseCase
+import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
+import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.SendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.MutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -40,6 +42,7 @@ class TokoChatViewModel @Inject constructor(
     private val registrationActiveChannelUseCase: RegistrationActiveChannelUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getTypingUseCase: GetTypingUseCase,
+    private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val profileUseCase: MutationProfileUseCase,
     private val dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.main) {
@@ -51,6 +54,10 @@ class TokoChatViewModel @Inject constructor(
     private val _isChatConnected = MutableLiveData<Boolean>()
     val isChatConnected: LiveData<Boolean>
         get() = _isChatConnected
+
+    private val _chatBackground = MutableLiveData<Result<String>>()
+    val chatBackground: MutableLiveData<Result<String>>
+        get() = _chatBackground
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
@@ -225,6 +232,16 @@ class TokoChatViewModel @Inject constructor(
             _error.value = throwable
             MutableLiveData()
         }
+    }
+
+    fun getTokoChatBackground() {
+        launchCatchError(block = {
+            getTokoChatBackgroundUseCase(Unit).collect {
+                _chatBackground.value = Success(it)
+            }
+        }, onError = {
+            _chatBackground.value = Fail(it)
+        })
     }
 
     fun initializeProfile() {

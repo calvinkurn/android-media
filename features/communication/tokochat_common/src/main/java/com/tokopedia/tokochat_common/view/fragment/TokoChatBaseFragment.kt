@@ -49,10 +49,10 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     }
 
     private fun setupChatRoomRecyclerView() {
-        baseBinding?.tokochatRvChatroom?.layoutManager = LinearLayoutManager(
+        baseBinding?.tokochatChatroomRv?.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL, false
         )
-        baseBinding?.tokochatRvChatroom?.adapter = adapter
+        baseBinding?.tokochatChatroomRv?.adapter = adapter
     }
 }

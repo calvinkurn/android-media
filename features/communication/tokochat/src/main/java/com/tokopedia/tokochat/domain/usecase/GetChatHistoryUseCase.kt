@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.domain
+package com.tokopedia.tokochat.domain.usecase
 
 import androidx.lifecycle.LiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
