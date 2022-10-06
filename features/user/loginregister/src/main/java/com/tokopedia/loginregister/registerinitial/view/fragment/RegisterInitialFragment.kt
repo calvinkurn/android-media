@@ -18,10 +18,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.ScrollView
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -91,6 +88,7 @@ import com.tokopedia.loginregister.registerinitial.view.util.RegisterInitialRout
 import com.tokopedia.loginregister.registerinitial.view.util.isRedefineRegisterEmailActivated
 import com.tokopedia.loginregister.registerinitial.viewmodel.RegisterInitialViewModel
 import com.tokopedia.loginregister.registerpushnotif.services.RegisterPushNotificationWorker
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -101,24 +99,19 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
 import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -128,21 +121,10 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     PartialRegisterInputView.PartialRegisterInputViewListener,
     RegisterInitialRouter {
 
-    private lateinit var optionTitle: Typography
-    private lateinit var partialRegisterInputView: PartialRegisterInputView
-    private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
-    private var emailPhoneEditText: AutoCompleteTextView? = null
-    private lateinit var registerButton: LoginTextView
-    private var textTermAndCondition: Typography? = null
-    private lateinit var container: ScrollView
-    private lateinit var progressBar: RelativeLayout
-    private lateinit var tickerAnnouncement: Ticker
-    private lateinit var bannerRegister: ImageUnify
-    private lateinit var socmedButton: UnifyButton
     private var bottomSheet: SocmedBottomSheet? = null
     private var bottomSheetOtherMethod: OtherMethodBottomSheet? = null
     private var socmedButtonsContainer: LinearLayout? = null
-    private lateinit var sharedPrefs: SharedPreferences
+    private var sharedPrefs: SharedPreferences? = null
 
     private var phoneNumber: String? = ""
     private var source: String = ""
@@ -255,7 +237,13 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     ): View? {
         initCheckingIsUsingRedefineRegisterEmail()
         setHasOptionsMenu(true)
-        viewBinding = FragmentInitialRegisterBinding.inflate(inflater, container, false)
+        viewBinding = FragmentInitialRegisterBinding.inflate(inflater, parent, false)
+        return viewBinding?.root
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         prepareView()
         if (isSmartLogin) {
             showProgressBar()
@@ -274,12 +262,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
             }
         }
-        return viewBinding?.root
-    }
 
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
         initInputType()
         fetchRemoteConfig()
         initObserver()
@@ -288,7 +271,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun initInputType() {
-        fieldUnifyInputEmailPhone?.apply {
+        viewBinding?.registerInputView?.inputEmailPhoneField?.apply {
             if (isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
                 setInputType(InputType.TYPE_CLASS_PHONE)
                 setLabel(requireActivity().getString(R.string.text_field_label_phone_number))
@@ -356,12 +339,12 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun initData() {
         showLoadingDiscover()
         registerInitialViewModel.getProvider()
-        partialRegisterInputView.setListener(this)
+        viewBinding?.registerInputView?.setListener(this)
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
-        partialRegisterInputView.setEmailExtension(viewBinding?.emailExtension, emailExtensionList)
-        partialRegisterInputView.initKeyboardListener(view)
+        viewBinding?.registerInputView?.setEmailExtension(viewBinding?.emailExtension, emailExtensionList)
+        viewBinding?.registerInputView?.initKeyboardListener(view)
 
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
@@ -384,7 +367,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
             }
 
-            socmedButton.setOnClickListener {
+            viewBinding?.socmedBtn?.setOnClickListener {
                 if (!isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
                     if (isUsingRedefineRegisterEmailControlVariant()) {
                         redefineRegisterInitialAnalytics.sendClickOnButtonMetodeLainEvent(
@@ -400,21 +383,21 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
             }
 
-            registerButton.visibility = View.GONE
-            partialRegisterInputView.visibility = View.VISIBLE
-            partialRegisterInputView.setButtonValidator(true)
+            viewBinding?.register?.visibility = View.GONE
+            viewBinding?.registerInputView?.visibility = View.VISIBLE
+            viewBinding?.registerInputView?.setButtonValidator(true)
             checkPermissionGetPhoneNumber()
-            optionTitle.setText(R.string.register_option_title)
+            viewBinding?.registerOptionTitle?.setText(R.string.register_option_title)
 
             context?.let {
-                registerButton.setColor(MethodChecker.getColor(context,
+                viewBinding?.register?.setColor(MethodChecker.getColor(context,
                     com.tokopedia.unifyprinciples.R.color.Unify_N0))
             }
-            registerButton.setBorderColor(MethodChecker.getColor(activity,
+            viewBinding?.register?.setBorderColor(MethodChecker.getColor(activity,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_32))
-            registerButton.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
-            registerButton.setImageResource(R.drawable.ic_email)
-            registerButton.setOnClickListener {
+            viewBinding?.register?.setRoundCorner(REGISTER_BUTTON_CORNER_SIZE)
+            viewBinding?.register?.setImageResource(R.drawable.ic_email)
+            viewBinding?.register?.setOnClickListener {
                 TrackApp.getInstance().moEngage.sendRegistrationStartEvent(LoginRegisterAnalytics.LABEL_EMAIL)
                 goToRegisterEmailPage()
             }
@@ -446,19 +429,19 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun initObserver() {
-        registerInitialViewModel.getProviderResponse.observe(viewLifecycleOwner, Observer {
+        registerInitialViewModel.getProviderResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetProvider(it.data)
                 is Fail -> onFailedGetProvider(it.throwable)
             }
-        })
-        registerInitialViewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRegisterGoogle()
                 is Fail -> onFailedRegisterGoogle(it.throwable)
             }
-        })
-        registerInitialViewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessReloginAfterSQ()
                 is Fail -> {
@@ -474,55 +457,56 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     validateToken?.let { onFailedReloginAfterSQ(it, loginToken.throwable) }
                 }
             }
-        registerInitialViewModel.getUserInfoResponse.observe(viewLifecycleOwner, Observer {
+        registerInitialViewModel.getUserInfoResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> onFailedGetUserInfo(it.throwable)
             }
-        })
-        registerInitialViewModel.getUserInfoAfterAddPinResponse.observe(viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> onSuccessGetUserInfoAfterAddPin()
-                    is Fail -> onFailedGetUserInfoAfterAddPin(it.throwable)
-                }
-            })
-        registerInitialViewModel.getTickerInfoResponse.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.getUserInfoAfterAddPinResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessGetUserInfoAfterAddPin()
+                is Fail -> onFailedGetUserInfoAfterAddPin(it.throwable)
+            }
+        }
+        registerInitialViewModel.getTickerInfoResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerInfo(it.data)
                 is Fail -> onErrorGetTickerInfo(it.throwable)
             }
-        })
-        registerInitialViewModel.registerCheckResponse.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.registerCheckResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRegisterCheck(it.data)
                 is Fail -> onFailedRegisterCheck(it.throwable)
             }
-        })
-        registerInitialViewModel.activateUserResponse.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.activateUserResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessActivateUser(it.data)
                 is Fail -> onFailedActivateUser(it.throwable)
             }
-        })
-        registerInitialViewModel.showPopup.observe(viewLifecycleOwner, Observer {
-            if (it != null) PopupErrorDialog.createDialog(context, it.header, it.body, it.action)
-                ?.show()
-        })
-        registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.showPopup.observe(viewLifecycleOwner) {
+            if (it != null){
+                PopupErrorDialog
+                    .createDialog(context, it.header, it.body, it.action)
+                    ?.show()
+            }
+        }
+        registerInitialViewModel.goToActivationPage.observe(viewLifecycleOwner) {
             if (it != null) onGoToActivationPage(it)
-        })
-        registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner, Observer {
+        }
+        registerInitialViewModel.goToSecurityQuestion.observe(viewLifecycleOwner) {
             if (it != null) {
-                activity?.let { act ->
+                activity?.run {
                     val intent = registerInitialRouter.goToVerification(email = it,
                         otpType = RegisterConstants.OtpType.OTP_SECURITY_QUESTION,
                         context = requireContext())
-                    startActivityForResult(intent,
-                        RegisterConstants.Request.REQUEST_SECURITY_QUESTION)
+                    startActivityForResult(intent, RegisterConstants.Request.REQUEST_SECURITY_QUESTION)
                 }
             }
-        })
+        }
         registerInitialViewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner,
             Observer {
                 if (it != null) onGoToActivationPageAfterRelogin()
@@ -531,15 +515,15 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             Observer {
                 if (it != null) onGoToSecurityQuestionAfterRelogin()
             })
-        registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner, Observer {
+        registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> setDynamicBannerView(it.data)
                 is Fail -> {
-                    bannerRegister.hide()
+                    viewBinding?.bannerRegister?.hide()
                     showTicker()
                 }
             }
-        })
+        }
     }
 
     fun doRegisterCheck() {
@@ -608,7 +592,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         } else {
             NetworkErrorHelper.createSnackbarWithAction(activity,
                 errorMessage) { registerInitialViewModel.getProvider() }.showRetrySnackbar()
-            textTermAndCondition?.isEnabled = false
+            viewBinding?.textTermPrivacy?.isEnabled = false
         }
     }
 
@@ -663,7 +647,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private fun onSuccessGetTickerInfo(listTickerInfo: List<TickerInfoPojo>) {
         if (listTickerInfo.isNotEmpty()) {
-            tickerAnnouncement.visibility = View.VISIBLE
+            viewBinding?.tickerAnnouncement?.visibility = View.VISIBLE
             if (listTickerInfo.size > 1) {
                 val mockData = arrayListOf<TickerData>()
                 listTickerInfo.forEach {
@@ -682,14 +666,14 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     }
 
                 })
-                tickerAnnouncement.addPagerView(adapter, mockData)
+                viewBinding?.tickerAnnouncement?.addPagerView(adapter, mockData)
             } else {
                 listTickerInfo.first().let {
-                    tickerAnnouncement.tickerTitle = it.title
-                    tickerAnnouncement.setHtmlDescription(it.message)
-                    tickerAnnouncement.tickerShape = getTickerType(it.color)
+                    viewBinding?.tickerAnnouncement?.tickerTitle = it.title
+                    viewBinding?.tickerAnnouncement?.setHtmlDescription(it.message)
+                    viewBinding?.tickerAnnouncement?.tickerShape = getTickerType(it.color)
                 }
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                viewBinding?.tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         registerAnalytics.trackClickLinkTicker(linkUrl.toString())
                         RouteManager.route(context,
@@ -703,7 +687,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 })
             }
         }
-        tickerAnnouncement.setOnClickListener {
+        viewBinding?.tickerAnnouncement?.setOnClickListener {
             registerAnalytics.trackClickTicker()
         }
     }
@@ -770,7 +754,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         }
         registerAnalytics.trackFailedClickSignUpButton(messageError.removeErrorCode())
 
-        partialRegisterInputView.onErrorInputEmailPhoneValidate(messageError)
+        viewBinding?.registerInputView?.onErrorInputEmailPhoneValidate(messageError)
         phoneNumber = ""
     }
 
@@ -1163,15 +1147,15 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun showProgressBar() {
-        progressBar.visibility = View.VISIBLE
-        container.visibility = View.GONE
-        textTermAndCondition?.visibility = View.GONE
+        viewBinding?.progressBar?.visibility = View.VISIBLE
+        viewBinding?.container?.visibility = View.GONE
+        viewBinding?.textTermPrivacy?.visibility = View.GONE
     }
 
     private fun dismissProgressBar() {
-        progressBar.visibility = View.GONE
-        container.visibility = View.VISIBLE
-        textTermAndCondition?.visibility = View.VISIBLE
+        viewBinding?.progressBar?.visibility = View.GONE
+        viewBinding?.container?.visibility = View.VISIBLE
+        viewBinding?.textTermPrivacy?.visibility = View.VISIBLE
     }
 
     private fun onErrorRegister(errorMessage: String) {
@@ -1290,7 +1274,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun setTempPhoneNumber(maskedPhoneNumber: String) {
         //use masked phone number form backend when needed
         //we need unmasked phone number (without dash) to be provided to backend
-        this.phoneNumber = partialRegisterInputView.textValue
+        this.phoneNumber = viewBinding?.registerInputView?.textValue
     }
 
     private fun sendTrackingSuccessRegister() {
@@ -1384,7 +1368,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         activity?.let {
             val phoneNumbers = PhoneUtils.getPhoneNumber(it, permissionCheckerHelper)
             if (phoneNumbers.isNotEmpty()) {
-                partialRegisterInputView.setAdapterInputEmailPhone(
+                viewBinding?.registerInputView?.setAdapterInputEmailPhone(
                     ArrayAdapter(it,
                         androidx.appcompat.R.layout.select_dialog_item_material,
                         phoneNumbers)
@@ -1392,10 +1376,10 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     if (v?.windowVisibility == View.VISIBLE) {
                         activity?.isFinishing?.let { isFinishing ->
                             if (!isFinishing) {
-                                if (hasFocus && emailPhoneEditText?.hasFocus() == true) {
-                                    emailPhoneEditText?.showDropDown()
+                                if (hasFocus && viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.hasFocus() == true) {
+                                    viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.showDropDown()
                                 } else {
-                                    emailPhoneEditText?.dismissDropDown()
+                                    viewBinding?.registerInputView?.inputEmailPhoneField?.editText?.dismissDropDown()
                                 }
                             }
                         }
@@ -1438,8 +1422,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
         context?.let {
             sharedPrefs = it.getSharedPreferences(
                 LoginConstants.PrefKey.KEY_FIRST_INSTALL_SEARCH, Context.MODE_PRIVATE)
-            sharedPrefs.edit().putLong(
-                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0).apply()
+            sharedPrefs?.edit()?.putLong(
+                LoginConstants.PrefKey.KEY_FIRST_INSTALL_TIME_SEARCH, 0)?.apply()
         }
     }
 
@@ -1460,17 +1444,17 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun showTicker() {
         if (!GlobalConfig.isSellerApp()) {
             if (isFromAtc() && isShowTicker) {
-                tickerAnnouncement.visibility = View.VISIBLE
-                tickerAnnouncement.tickerTitle = getString(R.string.title_ticker_from_atc)
-                tickerAnnouncement.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
-                tickerAnnouncement.tickerShape = Ticker.TYPE_ANNOUNCEMENT
-                tickerAnnouncement.setDescriptionClickEvent(object : TickerCallback {
+                viewBinding?.tickerAnnouncement?.visibility = View.VISIBLE
+                viewBinding?.tickerAnnouncement?.tickerTitle = getString(R.string.title_ticker_from_atc)
+                viewBinding?.tickerAnnouncement?.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
+                viewBinding?.tickerAnnouncement?.tickerShape = Ticker.TYPE_ANNOUNCEMENT
+                viewBinding?.tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}
                     override fun onDismiss() {
                         registerAnalytics.trackClickCloseTickerButton()
                     }
                 })
-                tickerAnnouncement.setOnClickListener {
+                viewBinding?.tickerAnnouncement?.setOnClickListener {
                     registerAnalytics.trackClickTicker()
                 }
             } else {
@@ -1482,18 +1466,15 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun setDynamicBannerView(dynamicBannerDataModel: DynamicBannerDataModel) {
         if (dynamicBannerDataModel.banner.isEnable) {
             context?.let {
-                ImageUtils.loadImage(
-                    imageView = bannerRegister,
-                    url = dynamicBannerDataModel.banner.imgUrl,
-                    imageLoaded = {
-                        if (it) {
-                            bannerRegister.show()
-                            registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
-                        } else {
-                            bannerRegister.hide()
-                            showTicker()
-                        }
+                viewBinding?.bannerRegister?.loadImage(dynamicBannerDataModel.banner.imgUrl) {
+                    listener(onSuccess = { _, _ ->
+                        viewBinding?.bannerRegister?.show()
+                        registerAnalytics.eventViewBanner(dynamicBannerDataModel.banner.imgUrl)
+                    }, onError = {
+                        viewBinding?.bannerRegister?.hide()
+                        showTicker()
                     })
+                }
             }
         } else {
             showTicker()
@@ -1562,9 +1543,9 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 endIndexPrivacyPolicy,
                 0)
 
-            textTermAndCondition?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-            textTermAndCondition?.movementMethod = LinkMovementMethod.getInstance()
-            textTermAndCondition?.isSelected = false
+            viewBinding?.textTermPrivacy?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+            viewBinding?.textTermPrivacy?.movementMethod = LinkMovementMethod.getInstance()
+            viewBinding?.textTermPrivacy?.isSelected = false
         }
     }
 
