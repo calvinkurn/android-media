@@ -63,7 +63,7 @@ object LegoProductTracking : BaseTrackerConst() {
             eventAction = IMPRESSION_ON_PRODUCT.format(LEGO_4_PRODUCT_NAME),
             eventLabel = Label.NONE,
             list = getItemList(trackerName = LEGO_4_PRODUCT_NAME, channel = channel, position = position),
-            products = channel.channelGrids.subList(0,4).mapIndexed { index, grid ->
+            products = channel.channelGrids.take(4).mapIndexed { index, grid ->
                 Product(
                     name = grid.name,
                     id = grid.id,
