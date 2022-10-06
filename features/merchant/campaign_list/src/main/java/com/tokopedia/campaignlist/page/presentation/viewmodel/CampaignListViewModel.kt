@@ -77,6 +77,7 @@ class CampaignListViewModel @Inject constructor(
         data class TapShareButton(val campaignId: Int): UiEvent()
         data class CampaignStatusFilterApplied(val selectedCampaignStatus: CampaignStatusSelection) : UiEvent()
         data class CampaignTypeFilterApplied(val selectedCampaignType: CampaignTypeSelection) : UiEvent()
+        object ClearFilter : UiEvent()
         object NoCampaignStatusFilterApplied : UiEvent()
         object DismissTicker: UiEvent()
     }
@@ -92,7 +93,8 @@ class CampaignListViewModel @Inject constructor(
         val campaignType: List<CampaignTypeSelection> = emptyList(),
         val selectedCampaignStatus: CampaignStatusSelection? = null,
         val selectedCampaignType: CampaignTypeSelection? = null,
-        val isTickerDismissed: Boolean = false
+        val isTickerDismissed: Boolean = false,
+        val showClearFilterIcon : Boolean = true
     )
 
     private val _uiState = MutableStateFlow(UiState())
@@ -359,19 +361,23 @@ class CampaignListViewModel @Inject constructor(
     fun onEvent(event: UiEvent) {
         when(event) {
             is UiEvent.CampaignStatusFilterApplied -> {
-                _uiState.update { it.copy(selectedCampaignStatus = event.selectedCampaignStatus) }
+                _uiState.update { it.copy(selectedCampaignStatus = event.selectedCampaignStatus, showClearFilterIcon = true) }
             }
             is UiEvent.CampaignTypeFilterApplied -> {
-                _uiState.update { it.copy(selectedCampaignType = event.selectedCampaignType) }
+                _uiState.update { it.copy(selectedCampaignType = event.selectedCampaignType, showClearFilterIcon = true) }
             }
             UiEvent.NoCampaignStatusFilterApplied -> {
-                _uiState.update { it.copy(selectedCampaignStatus = null) }
+                _uiState.update { it.copy(selectedCampaignStatus = null, showClearFilterIcon = true) }
             }
             UiEvent.DismissTicker -> {
                 preferenceDataStore.markTickerAsDismissed()
                 _uiState.update { it.copy(isTickerDismissed = true) }
             }
             is UiEvent.TapShareButton -> { getSellerBanner(event.campaignId) }
+            UiEvent.ClearFilter -> {
+                _uiState.update { it.copy(showClearFilterIcon = false, selectedCampaignType = selectedCampaignTypeSelection, selectedCampaignStatus = null ) }
+                getCampaignList()
+            }
         }
     }
 

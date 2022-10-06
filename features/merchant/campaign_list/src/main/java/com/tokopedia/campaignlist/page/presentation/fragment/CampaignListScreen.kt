@@ -1,8 +1,5 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
-import android.view.KeyEvent
-import android.view.inputmethod.EditorInfo
-import android.widget.TextView
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,6 +12,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,6 +28,7 @@ import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.campaignlist.page.presentation.ui.SortFilter
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyButton
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyImage
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyLabel
@@ -43,9 +45,6 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignVie
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.campaignlist.page.presentation.ui.SortFilter as SortFilter
 
 @Composable
 fun CampaignListScreen(
@@ -74,7 +73,8 @@ fun CampaignListScreen(
             selectedCampaignType = uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
             onTapCampaignStatusFilter = { onTapCampaignStatusFilter(uiState.value.campaignStatus) },
             onTapCampaignTypeFilter = { onTapCampaignTypeFilter(uiState.value.campaignType) },
-            onClearFilter = onClearFilter
+            onClearFilter = onClearFilter,
+            shouldShowClearFilterIcon = uiState.value.showClearFilterIcon
         )
 
         if (!uiState.value.isTickerDismissed) {
@@ -118,7 +118,8 @@ private fun SortFilter(
     selectedCampaignType: String,
     onTapCampaignStatusFilter: () -> Unit,
     onTapCampaignTypeFilter: () -> Unit,
-    onClearFilter: () -> Unit
+    onClearFilter: () -> Unit,
+    shouldShowClearFilterIcon: Boolean
 ) {
 
     val campaignStatus = SortFilter(
@@ -133,10 +134,13 @@ private fun SortFilter(
         onClick = onTapCampaignTypeFilter
     )
 
+    val sortFilterItems = arrayListOf(campaignStatus, campaignType)
+
     UnifySortFilter(
         modifier = modifier.fillMaxWidth(),
-        items = arrayListOf(campaignStatus, campaignType),
-        onClearFilter = onClearFilter
+        items = sortFilterItems,
+        onClearFilter = onClearFilter,
+        showClearFilterIcon = shouldShowClearFilterIcon
     )
 }
 

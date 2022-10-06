@@ -107,7 +107,7 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                         viewModel.setSelectedActiveCampaign(campaign)
                         viewModel.onEvent(CampaignListViewModel.UiEvent.TapShareButton(campaign.campaignId.toIntOrZero()))
                     },
-                    onClearFilter = { viewModel.getCampaignList() },
+                    onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
                     onSearchBarKeywordSubmit = { searchQuery ->
                         viewModel.setCampaignName(searchQuery)
                         val campaignTypeId = viewModel.getCampaignTypeId()

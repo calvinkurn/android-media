@@ -53,11 +53,12 @@ data class SortFilter(val title: String, val isSelected : Boolean, val onClick: 
 fun UnifySortFilter(
     modifier: Modifier = Modifier,
     items: ArrayList<SortFilter>,
-    onClearFilter: () -> Unit
+    onClearFilter: () -> Unit,
+    showClearFilterIcon: Boolean
 ) {
-    //Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK,
+    //Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
     LazyRow(modifier = modifier) {
-        item { ClearSortFilterItem(onClearFilter) }
+        if (showClearFilterIcon) item { ClearSortFilterItem(onClearFilter) }
         items(items) { UnifySortFilterItem(it) }
     }
 }
@@ -123,7 +124,9 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
             .padding(end = 8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            modifier = Modifier
+                .clickable { sortFilter.onClick() }
+                .padding(horizontal = 16.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(text = sortFilter.title, color = textColor)
@@ -271,7 +274,7 @@ fun UnifyLabel(
             fontWeight = FontWeight.Bold
         )
     }
-    
+
 }
 
 @Composable
@@ -345,7 +348,7 @@ fun UnifySortFilterPreview() {
         SortFilter("Lokasi", true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
-    UnifySortFilter(modifier = Modifier, items = items, onClearFilter = {})
+    UnifySortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
 }
 
 @Preview(name = "Sort Filter Item (Selected)")
