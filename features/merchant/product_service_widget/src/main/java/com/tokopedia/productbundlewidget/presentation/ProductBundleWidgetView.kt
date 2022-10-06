@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common.ProductServiceWidgetConstant.BUNDLE_ID_DEFAULT_VALUE
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
@@ -29,6 +31,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     lateinit var viewModel: ProductBundleWidgetViewModel
 
     private var tfTitle: Typography? = null
+    private var pageSource: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
 
     constructor(context: Context) : super(context) {
@@ -57,14 +60,16 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedMultipleBundle: BundleDetailUiModel,
         productDetails: List<BundleProductUiModel>
     ) {
-        RouteManager.route(context, ApplinkConst.PRODUCT_BUNDLE, selectedMultipleBundle.bundleId)
+        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
+            selectedMultipleBundle.bundleId, pageSource)
     }
 
     override fun addSingleBundleToCart(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     ) {
-        RouteManager.route(context, ApplinkConst.PRODUCT_BUNDLE, selectedBundle.bundleId)
+        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
+            selectedBundle.bundleId, pageSource)
     }
 
     override fun onTrackSingleVariantChange(
@@ -151,6 +156,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     }
 
     fun getBundleData(param: GetBundleParam) {
+        pageSource = param.pageSource
         param.apply {
             viewModel.getBundleInfo(param)
         }

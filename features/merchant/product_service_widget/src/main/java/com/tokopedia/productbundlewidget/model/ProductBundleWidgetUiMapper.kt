@@ -35,7 +35,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             bundleType = bundleType,
             actionButtonText = context.getString(R.string.bundlewidget_action_button_text),
             bundleDetails = if (bundleType == BundleTypes.SINGLE_BUNDLE) bundleInfos.toSingleBundleDetails(shopInfo)
-            else bundleInfo.bundleItems.toMultipleBundleDetails(shopInfo)
+            else bundleInfo.bundleItems.toMultipleBundleDetails(bundleInfo.bundleID, shopInfo)
         )
     }
 
@@ -75,15 +75,21 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, it.bundleItems).apply {
                 this.minOrder = minOrder
                 this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder)
+                this.bundleId = it.bundleID.toString()
             }
         }
     }
 
-    private fun List<BundleItem>.toMultipleBundleDetails(shopInfo: BundleShopUiModel?): List<BundleDetailUiModel> {
+    private fun List<BundleItem>.toMultipleBundleDetails(
+        bundleId: Long,
+        shopInfo: BundleShopUiModel?
+    ): List<BundleDetailUiModel> {
         val bundlePrice = sumOf { it.getPreviewBundlePrice() }
         val originalPrice = sumOf { it.getPreviewOriginalPrice() }
         return listOf(
-            initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this)
+            initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
+                this.bundleId = bundleId.toString()
+            }
         )
     }
 

@@ -8,5 +8,6 @@ data class GetBundleParam(
     @SerializedName("warehouseId") val warehouseId: String = "",
     @SerializedName("shopId") val shopId: String = "",
     @SerializedName("bundleList") val bundleList: List<Bundle> = emptyList(),
-    @SerializedName("widgetType") val widgetType: WidgetType = WidgetType.TYPE_1
+    @SerializedName("widgetType") val widgetType: WidgetType = WidgetType.TYPE_1,
+    @SerializedName("pageSource") val pageSource: String = ""
 )

@@ -6,6 +6,7 @@ class GetBundleParamBuilder {
     private var productId: String = ""
     private var warehouseId: String = ""
     private var shopId: String = ""
+    private var pageSource: String = ""
     private var bundleIds: MutableList<String> = mutableListOf()
     private var widgetType: WidgetType = WidgetType.TYPE_1
 
@@ -33,6 +34,10 @@ class GetBundleParamBuilder {
         this.bundleIds.addAll(bundleIds)
     }
 
+    fun setPageSource(source: String) = apply {
+        pageSource = source
+    }
+
     fun build(): GetBundleParam {
         val bundleList = bundleIds.map {
             Bundle(ID = it, WarehouseID = warehouseId)
@@ -42,7 +47,8 @@ class GetBundleParamBuilder {
             warehouseId = if (bundleList.isEmpty()) warehouseId else "",
             shopId = if (bundleList.isEmpty()) shopId else "",
             bundleList = bundleList,
-            widgetType = widgetType
+            widgetType = widgetType,
+            pageSource = pageSource
         )
     }
 }
