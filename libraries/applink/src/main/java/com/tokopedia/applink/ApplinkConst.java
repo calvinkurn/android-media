@@ -547,6 +547,7 @@ public interface ApplinkConst {
     }
 
     interface TokoFood {
+        String GOFOOD = "tokopedia://gofood";
         String MAIN_PATH = "tokopedia://food";
         String HOME = "tokopedia://food/home";
         String CATEGORY = "tokopedia://food/category";
