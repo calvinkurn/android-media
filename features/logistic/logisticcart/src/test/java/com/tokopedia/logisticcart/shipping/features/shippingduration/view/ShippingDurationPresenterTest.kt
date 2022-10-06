@@ -35,8 +35,10 @@ class ShippingDurationPresenterTest {
 
     @Before
     fun setup() {
-        presenter = ShippingDurationPresenter(ratesUseCase, ratesApiUseCase,
-                responseConverter)
+        presenter = ShippingDurationPresenter(
+            ratesUseCase, ratesApiUseCase,
+            responseConverter
+        )
     }
 
     @Test
@@ -52,9 +54,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -78,9 +82,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", "", false)
+            products, "1479278-30-740525-99367774", true, addressData, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -103,9 +109,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -125,9 +133,11 @@ class ShippingDurationPresenterTest {
         } returns shippingData
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", "", true)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -144,9 +154,11 @@ class ShippingDurationPresenterTest {
         every { ratesUseCase.execute(any()) } returns Observable.error(err)
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", "", true)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -169,9 +181,11 @@ class ShippingDurationPresenterTest {
         shipmentDetailData.selectedCourier = null
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
-                shopShipments, -1, false, false, "",
-                products, "1479278-30-740525-99367774", false, address, false, 0, "", "", true)
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false
+        )
 
         // Then
         verify {
@@ -191,19 +205,27 @@ class ShippingDurationPresenterTest {
         every {
             responseConverter.fillState(any(), shopShipments, 0, 0)
         } returns shippingData
-        every {view.isDisableCourierPromo()} returns true
+        every { view.isDisableCourierPromo() } returns true
 
         val shipmentDetailData = DummyProvider.getShipmentDetailData()
         shipmentDetailData.selectedCourier = null
 
         // When
-        presenter.loadCourierRecommendation(shipmentDetailData, 0,
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, address, false, 0, "", "", true)
+            products, "1479278-30-740525-99367774", true, address, false, 0, "", "", false
+        )
 
         // Then
-        assertEquals(shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size, shippingDurationUIModels.size)
-        assertEquals(productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size, productsShipping.size)
+        assertEquals(
+            shippingDurationUIModels.filter { it.serviceData.isPromo == 0 }.size,
+            shippingDurationUIModels.size
+        )
+        assertEquals(
+            productsShipping.filter { product -> product.any { item -> item.promoCode.isEmpty() } }.size,
+            productsShipping.size
+        )
     }
 
     @Test
@@ -227,9 +249,9 @@ class ShippingDurationPresenterTest {
     fun `When get courier item data return null Then null is returned`() {
         // Given
         val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData()
-                }
+            ShippingCourierUiModel().apply {
+                productData = ProductData()
+            }
         )
 
         // When
@@ -262,11 +284,11 @@ class ShippingDurationPresenterTest {
         // Given
         val sId = 38
         val courierModelNoId: List<ShippingCourierUiModel> = listOf(
-                ShippingCourierUiModel().apply {
-                    productData = ProductData().apply {
-                        shipperProductId = 24
-                    }
+            ShippingCourierUiModel().apply {
+                productData = ProductData().apply {
+                    shipperProductId = 24
                 }
+            }
         )
 
         // When

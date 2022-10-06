@@ -1577,7 +1577,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         ) {
             if (selectedCourier != null && serviceData != null) {
                 orderSummaryAnalytics.eventClickSelectedDurationOptionNew(
-                    selectedCourier.toString(),
+                    selectedCourier.productData.shipperProductId.toString(),
                     userSession.get().userId
                 )
                 val serviceId =
