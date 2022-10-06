@@ -15,7 +15,6 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
     private var binding: ViewmodelOfficialTopadsBannerBinding? by viewBinding()
 
     override fun bind(element: OfficialTopAdsBannerDataModel) {
-
         val tdnBannerList =
         element.tdnBanner?.toList()?.let {
              TdnHelper.categoriesTdnBanners(it)
@@ -25,6 +24,9 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(view.context, it)
             })
+        } else
+        {
+            binding?.topadsTdnBanner?.visibility = View.GONE
         }
     }
 

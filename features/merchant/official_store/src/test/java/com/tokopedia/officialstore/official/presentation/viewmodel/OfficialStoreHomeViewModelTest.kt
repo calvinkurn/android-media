@@ -24,14 +24,7 @@ import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.*
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -40,10 +33,7 @@ import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestS
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Cpm
-import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
+import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
@@ -506,6 +496,42 @@ class OfficialStoreHomeViewModelTest {
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is FeaturedShopDataModel && it.channelModel.id == expectedFeaturedShopDataModel.channelModel.id })
     }
 
+    @Test
+    fun given_get_tdn_carousel_success_when_get_osDynamicChannel_banner_ads_carousel_then_update_list() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf(
+                TopAdsImageViewModel(),
+                TopAdsImageViewModel(),
+            ))
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } returns tdnCarouselResponse
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertFalse(resultTdnBannerAdsModel.isNullOrEmpty())
+        assertNotNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
+    }
 
     // ===================================== //
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
