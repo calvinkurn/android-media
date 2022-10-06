@@ -27,7 +27,7 @@
       "items": [
         {
           "dimension40": "/ - p.* - dynamic channel 4 product - product - .* - .* - .* - .* - .* - .*",
-          "dimension83": "bebas ongkir",
+          "dimension83": ".*",
           "dimension84": ".*",
           "dimension96": ".*_.*",
           "index": ".*",
@@ -53,7 +53,7 @@
       "item_list": "/ - p.* - dynamic channel 4 product - product - .* - .* - .* - .* - .* - .*",
       "items": [
         {
-          "dimension83": "bebas ongkir",
+          "dimension83": ".*",
           "dimension84": ".*",
           "dimension96": ".*_.*",
           "index": ".*",

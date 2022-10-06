@@ -22,7 +22,6 @@ object LegoProductTracking : BaseTrackerConst() {
     private const val CLICK_ON_PRODUCT = "click on product %s"
 
     private const val TRACKER_ID = "trackerId"
-    private const val KEY_DIMENSION_40 = "dimension40"
     private const val KEY_DIMENSION_84 = "dimension84"
     private const val KEY_DIMENSION_96 = "dimension96"
     private const val TOPADS = "topads"

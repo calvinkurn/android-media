@@ -11,7 +11,6 @@ import com.tokopedia.home_component.databinding.GlobalDcLego4ProductBinding
 import com.tokopedia.home_component.listener.LegoProductListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
-import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.viewholders.adapter.Lego4ProductAdapter
