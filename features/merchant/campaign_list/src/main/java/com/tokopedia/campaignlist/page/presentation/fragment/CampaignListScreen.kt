@@ -43,9 +43,9 @@ import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignVie
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.campaignlist.page.presentation.ui.SortFilter as SortFilter
 
 @Composable
 fun CampaignListScreen(
@@ -121,29 +121,21 @@ private fun SortFilter(
     onClearFilter: () -> Unit
 ) {
 
-    val campaignStatus = SortFilterItem(
+    val campaignStatus = SortFilter(
         title = if (selectedCampaignStatus.isEmpty()) stringResource(id = R.string.campaign_list_label_status) else selectedCampaignStatus,
-        type = if (selectedCampaignStatus.isEmpty()) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED,
-        size = ChipsUnify.TYPE_NORMAL,
-        listener = onTapCampaignStatusFilter
-    ).apply {
-        chevronListener = onTapCampaignStatusFilter
-    }
+        isSelected = selectedCampaignStatus.isNotEmpty(),
+        onClick = onTapCampaignStatusFilter
+    )
 
-    val campaignType = SortFilterItem(
+    val campaignType = SortFilter(
         title = if (selectedCampaignType.isEmpty()) stringResource(id = R.string.campaign_type) else selectedCampaignType,
-        type = if (selectedCampaignType.isEmpty()) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED,
-        size = ChipsUnify.TYPE_NORMAL,
-        listener = onTapCampaignTypeFilter
-    ).apply {
-        chevronListener = onTapCampaignTypeFilter
-    }
+        isSelected = selectedCampaignType.isNotEmpty(),
+        onClick = onTapCampaignTypeFilter
+    )
 
     UnifySortFilter(
         modifier = modifier.fillMaxWidth(),
         items = arrayListOf(campaignStatus, campaignType),
-        filterRelationship = SortFilter.RELATIONSHIP_AND,
-        filterType = SortFilter.TYPE_QUICK,
         onClearFilter = onClearFilter
     )
 }

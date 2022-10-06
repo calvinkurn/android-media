@@ -22,7 +22,6 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
@@ -35,84 +34,102 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.tokopedia.campaignlist.R
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ImageUnify
+
+data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
 
 @Composable
 fun UnifySortFilter(
     modifier: Modifier = Modifier,
-    items: ArrayList<SortFilterItem>,
-    filterRelationship: Int,
-    filterType: Int,
+    items: ArrayList<SortFilter>,
     onClearFilter: () -> Unit
 ) {
-    val searchIconColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
-
-    val borderSelectedColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
-    val backgroundColorSelected =
-        colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-
+    //Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK,
     LazyRow(modifier = modifier) {
-        item {
-            Surface(
-                color = backgroundColorSelected,
-                shape = RoundedCornerShape(4.dp),
-                border = BorderStroke(1.dp, borderSelectedColor),
-                modifier = Modifier
-                    .height(32.dp)
-                    .padding(end = 8.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Close,
-                    modifier = Modifier.clickable { onClearFilter() },
-                    contentDescription = "Close Icon",
-                    tint = searchIconColor
-                )
-            }
-        }
-        items(items) {
-            UnifySortFilterItem(it.title.toString())
-        }
+        item { ClearSortFilterItem(onClearFilter) }
+        items(items) { UnifySortFilterItem(it) }
     }
 }
 
+@Composable
+fun ClearSortFilterItem(onClearFilter: () -> Unit) {
+    val backgroundColor= colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
+    val borderColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+    Surface(
+        color = backgroundColor,
+        shape = RoundedCornerShape(12.dp),
+        border = BorderStroke(1.dp, borderColor),
+        modifier = Modifier
+            .height(32.dp)
+            .padding(end = 8.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Close,
+            modifier = Modifier
+                .clickable { onClearFilter() }
+                .padding(horizontal = 12.dp),
+            contentDescription = "Clear Filter Icon",
+            tint = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        )
+    }
+}
 
 @Composable
-fun UnifySortFilterItem(
-   text: String
-) {
+private fun UnifySortFilterItem(sortFilter: SortFilter) {
     val textColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
     val textColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN600)
 
-    val borderSelectedColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
-    val borderDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN50)
+    val textColor = if (sortFilter.isSelected) {
+        textColorSelected
+    } else {
+        textColorDefault
+    }
+
+    val borderColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
+    val borderDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+
+    val borderColor = if (sortFilter.isSelected) {
+        borderColorSelected
+    } else {
+        borderDefault
+    }
 
     val backgroundColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
     val backgroundColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
+    val backgroundColor = if (sortFilter.isSelected) {
+        backgroundColorSelected
+    } else {
+        backgroundColorDefault
+    }
+
     Surface(
-        color = backgroundColorSelected,
+        color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
-        border = BorderStroke(1.dp, borderSelectedColor),
+        border = BorderStroke(1.dp, borderColor),
         modifier = Modifier
             .height(32.dp)
             .padding(end = 8.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = text, color = textColorSelected)
+            Text(text = sortFilter.title, color = textColor)
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
-                imageVector = Icons.Outlined.ArrowDropDown,
+                painter = painterResource(id = R.drawable.ic_chevron_down),
                 contentDescription = "Dropdown Icon"
             )
         }
@@ -148,7 +165,10 @@ fun UnifySearchBar(
         ),
         keyboardActions = KeyboardActions(onSearch = { onKeyboardSearchAction(text) }),
         decorationBox = { innerTextField ->
-            Row(modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.padding(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Icon(
                     imageVector = Icons.Outlined.Search,
                     modifier = Modifier.size(16.dp),
@@ -316,4 +336,26 @@ fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
             it.loadImage(imageUrl)
         }
     )
+}
+
+@Preview(name = "Sort Filter")
+@Composable
+fun UnifySortFilterPreview() {
+    val items = arrayListOf(
+        SortFilter("Lokasi", true, onClick = {}),
+        SortFilter("Status", false, onClick = {})
+    )
+    UnifySortFilter(modifier = Modifier, items = items, onClearFilter = {})
+}
+
+@Preview(name = "Sort Filter Item (Selected)")
+@Composable
+fun UnifySortFilterItemSelectedPreview() {
+    UnifySortFilterItem(SortFilter("Lokasi", true, {}))
+}
+
+@Preview(name = "Sort Filter Item (Default)")
+@Composable
+fun UnifySortFilterItemPreview() {
+    UnifySortFilterItem(SortFilter("Lokasi", false, {}))
 }
