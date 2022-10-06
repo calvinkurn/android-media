@@ -45,8 +45,10 @@ class ManageProductVariantViewModel @Inject constructor(
     fun setItemToggleValue(itemPosition: Int, value: Boolean) {
         val selectedItem = productData.childProducts[itemPosition]
         selectedItem.isToggleOn = value
-        selectedItem.warehouses.map {
-            it.isToggleOn = value
+        if (!selectedItem.isMultiwarehouse) {
+            selectedItem.warehouses.map {
+                it.isToggleOn = value
+            }
         }
     }
 
@@ -56,8 +58,6 @@ class ManageProductVariantViewModel @Inject constructor(
             warehouse.discountSetup.price = priceValue
             warehouse.discountSetup.discount = discountValue
         }
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.price = priceValue
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.discount = discountValue
     }
 
     fun setStockValue(itemPosition: Int, stockValue: Long) {
@@ -65,7 +65,6 @@ class ManageProductVariantViewModel @Inject constructor(
         selectedItem.warehouses.map { warehouse ->
             warehouse.discountSetup.stock = stockValue
         }
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.stock = stockValue
     }
 
     fun validateInputPage(
@@ -75,14 +74,18 @@ class ManageProductVariantViewModel @Inject constructor(
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
                 .all { childProduct ->
-                    childProduct.warehouses
-                        .filter { warehouse ->  warehouse.isToggleOn }
-                        .all { warehouse ->
-                            validateInput(
-                                criteria,
-                                warehouse.discountSetup
-                            ).isAllFieldValid()
-                        }
+                    if (childProduct.warehouses.any { it.isToggleOn }) {
+                        childProduct.warehouses
+                            .filter { warehouse -> warehouse.isToggleOn }
+                            .all { warehouse ->
+                                validateInput(
+                                    criteria,
+                                    warehouse.discountSetup
+                                ).isAllFieldValid()
+                            }
+                    } else {
+                        false
+                    }
                 }
         } else {
             _isInputPageValid.value = false
