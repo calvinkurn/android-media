@@ -346,7 +346,7 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         coEvery { updateCartOccUseCase.executeSuspend(any()) } returns null
         val promoUiModel = PromoUiModel(codes = listOf("promo"), messageUiModel = MessageUiModel(state = "green"),
                 voucherOrderUiModels = listOf(PromoCheckoutVoucherOrdersItemUiModel(code = "promo", type = "type", messageUiModel = MessageUiModel(state = "green"))))
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", promoUiModel = promoUiModel)
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200", promoUiModel = promoUiModel)
         coEvery {
             checkoutOccUseCase.executeSuspend(match {
                 val globalCode = it.carts.promos.first()
@@ -855,7 +855,11 @@ class OrderSummaryPageViewModelCheckoutTest : BaseOrderSummaryPageViewModelTest(
         coEvery { checkoutOccUseCase.executeSuspend(any()) } returns CheckoutOccData(status = STATUS_OK, result = CheckoutOccResult(success = 1, paymentParameter = CheckoutOccPaymentParameter(redirectParam = CheckoutOccRedirectParam(url = "testurl"))))
         coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(PromoUiModel(voucherOrderUiModels = listOf(
                 PromoCheckoutVoucherOrdersItemUiModel(code = "bbo", messageUiModel = MessageUiModel(state = "green"))
-        ), globalSuccess = true), status = "OK")
+        ),
+            globalSuccess = true
+            ),
+            status = "OK", errorCode = "200"
+        )
 
         // When
         orderSummaryPageViewModel.chooseLogisticPromo(helper.logisticPromo)

@@ -1,0 +1,844 @@
+[
+  {
+    "data": {
+      "ratesV3": {
+        "ratesv3": {
+          "id": ":6497:2289:90",
+          "rates_id": "1661225596818609139",
+          "type": "rates",
+          "error": {
+            "error_id": "",
+            "error_message": ""
+          },
+          "services": [
+            {
+              "service_name": "Instan (3 jam)",
+              "service_id": 1000,
+              "service_order": 0,
+              "status": 400,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 0,
+                "max_price": 0
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "",
+                "text_etd": "",
+                "text_notes": "",
+                "text_service_desc": " ",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "502",
+                "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "GoSend Bike",
+                  "shipper_id": 10,
+                  "shipper_product_id": 28,
+                  "shipper_product_name": "Instant Courier",
+                  "shipper_product_desc": "Dengan kurir instan, kamu bisa pakai GoSend Car* dan GoSend Bike (pengiriman maks. 3 jam \u0026 berat maks. 150kg). Setelah aktif, GoSend Car dan GoSend Bike otomatis masuk pilihan kurir, tidak ditampilkan di menu ini.  \n\n*GoSend Car hanya tersedia di Surabaya.",
+                  "is_show_map": 0,
+                  "shipper_weight": 0,
+                  "status": 400,
+                  "recommend": false,
+                  "checksum": "TEqB4RAN4UAGcwgSxzhWfwtRTYQ%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 0,
+                    "formatted_price": ""
+                  },
+                  "etd": {
+                    "min_etd": 0,
+                    "max_etd": 0
+                  },
+                  "texts": {
+                    "text_price": "",
+                    "text_etd": ""
+                  },
+                  "insurance": {
+                    "insurance_price": 0,
+                    "insurance_type": 0,
+                    "insurance_type_info": "",
+                    "insurance_used_type": 0,
+                    "insurance_used_info": "",
+                    "insurance_used_default": 0
+                  },
+                  "error": {
+                    "error_id": "502",
+                    "error_message": "Jarak pengiriman melebihi batas maks. 40 km."
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Next Day (1 hari)",
+              "service_id": 1003,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 15000,
+                "max_price": 16000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp15.000 - Rp16.000",
+                "text_etd": "1-2 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "Paxel",
+                  "shipper_id": 28,
+                  "shipper_product_id": 54,
+                  "shipper_product_name": "Same Day",
+                  "shipper_product_desc": "Paxel adalah layanan kurir dengan spesialisasi di bidang pengiriman berbagai jenis paket makanan dan minuman dengan layanan \"Cold Chain\" sehingga paket kamu tetap aman ketika diterima oleh pembeli",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "8PPUI4W7ZHeNq1EaB7wDZxJpAwU%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 16000,
+                    "formatted_price": "Rp16.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp16.000",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                },
+                {
+                  "shipper_name": "JNE",
+                  "shipper_id": 1,
+                  "shipper_product_id": 6,
+                  "shipper_product_name": "YES",
+                  "shipper_product_desc": "JNE YES adalah paket dengan prioritas pengiriman tercepat yang ditawarkan JNE. Hanya saja perlu diperhatikan kecepatan barang diterima juga dipengaruhi oleh kecepatan penjual melakukan pengiriman barang.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "CKO%2B9NfTV1UWqPCiSGGBmPZA%2F0M%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 15000,
+                    "formatted_price": "Rp15.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 86400
+                  },
+                  "texts": {
+                    "text_price": "Rp15.000",
+                    "text_etd": "1 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Reguler (2-4 hari)",
+              "service_id": 1104,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 9000,
+                "max_price": 13000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp9.000 - Rp13.000",
+                "text_etd": "1-4 hari",
+                "text_notes": "",
+                "text_service_desc": "",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "JNE Reg",
+                  "shipper_id": 1,
+                  "shipper_product_id": 1,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "JNE Reguler adalah paket reguler yang ditawarkan JNE. Kecepatan pengiriman tergantung dari lokasi pengiriman dan lokasi tujuan. Untuk kota yang sama, umumnya memakan waktu 2-3 hari.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "bbNuPuhBUZFpwv3LQ9KbNw42TOo%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 11000,
+                    "formatted_price": "Rp11.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp11.000",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                },
+                {
+                  "shipper_name": "J\u0026T",
+                  "shipper_id": 14,
+                  "shipper_product_id": 27,
+                  "shipper_product_name": "Reguler",
+                  "shipper_product_desc": "J\u0026T Express adalah layanan ekspres pertama di Indonesia berbasis teknologi, memberikan kemudahan dalam satu layanan.",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": false,
+                  "checksum": "TdF0DB7kthRipToywlnv3Jko7tw%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 9000,
+                    "formatted_price": "Rp9.000"
+                  },
+                  "etd": {
+                    "min_etd": 172800,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp9.000",
+                    "text_etd": "2-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                },
+                {
+                  "shipper_name": "SiCepat Reg",
+                  "shipper_id": 11,
+                  "shipper_product_id": 18,
+                  "shipper_product_name": "Regular Package",
+                  "shipper_product_desc": "Layanan Pengiriman biasa dengan lead time 1-2 hari (kota besar) dan lead time 3-4 hari (Kabupaten/transit)",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "D7l4o1duxlIvyTOTuqCPa%2Fn1SCM%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 13000,
+                    "formatted_price": "Rp13.000"
+                  },
+                  "etd": {
+                    "min_etd": 86400,
+                    "max_etd": 172800
+                  },
+                  "texts": {
+                    "text_price": "Rp13.000",
+                    "text_etd": "1-2 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 200,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            },
+            {
+              "service_name": "Kargo (3-4 hari)",
+              "service_id": 1001,
+              "service_order": 0,
+              "status": 200,
+              "is_promo": 0,
+              "ui_rates_hidden": false,
+              "selected_shipper_product_id": 0,
+              "range_price": {
+                "min_price": 30000,
+                "max_price": 30000
+              },
+              "etd": {
+                "min_etd": 0,
+                "max_etd": 0
+              },
+              "texts": {
+                "text_range_price": "Rp30.000",
+                "text_etd": "3-4 hari",
+                "text_notes": "",
+                "text_service_desc": "Rekomendasi berat di atas 5kg",
+                "text_eta_summarize": "",
+                "error_code": 1
+              },
+              "features": {
+                "dynamic_price": {
+                  "text_label": ""
+                }
+              },
+              "order_priority": {
+                "is_now": false,
+                "inactive_message": "",
+                "price": 0,
+                "formatted_price": "",
+                "static_messages": {
+                  "duration_message": "",
+                  "checkbox_message": "",
+                  "warningbox_message": "",
+                  "fee_message": "",
+                  "pdp_message": ""
+                }
+              },
+              "error": {
+                "error_id": "",
+                "error_message": ""
+              },
+              "cod": {
+                "is_cod": 0,
+                "cod_text": ""
+              },
+              "mvc": {
+                "is_mvc": 0,
+                "mvc_title": "",
+                "mvc_logo": "",
+                "mvc_error_message": ""
+              },
+              "products": [
+                {
+                  "shipper_name": "JNE",
+                  "shipper_id": 1,
+                  "shipper_product_id": 22,
+                  "shipper_product_name": "JNE Trucking",
+                  "shipper_product_desc": "JNE Trucking merupakan layanan service pengiriman dari JNE untuk barang yang bersifat kargo. Pengiriman dilakukan melalui jalur darat dan laut dengan durasi pengiriman 3-9 Hari",
+                  "is_show_map": 0,
+                  "shipper_weight": 1000,
+                  "status": 200,
+                  "recommend": true,
+                  "checksum": "%2B3965wfKkI0n5CmJXmExVirdy54%3D",
+                  "ut": "1661225596",
+                  "promo_code": "",
+                  "ui_rates_hidden": false,
+                  "price": {
+                    "price": 30000,
+                    "formatted_price": "Rp30.000"
+                  },
+                  "etd": {
+                    "min_etd": 259200,
+                    "max_etd": 345600
+                  },
+                  "texts": {
+                    "text_price": "Rp30.000",
+                    "text_etd": "3-4 hari"
+                  },
+                  "insurance": {
+                    "insurance_price": 300,
+                    "insurance_type": 2,
+                    "insurance_type_info": "Optional insurance",
+                    "insurance_used_type": 2,
+                    "insurance_used_info": "Biaya ganti rugi senilai harga invoice hingga Rp100.000.000, dengan biaya sebesar 0.50% dari harga invoice dan berlaku pembulatan ke atas",
+                    "insurance_used_default": 2
+                  },
+                  "error": {
+                    "error_id": "",
+                    "error_message": ""
+                  },
+                  "cod": {
+                    "is_cod_available": 0,
+                    "cod_price": 0,
+                    "cod_text": "",
+                    "formatted_price": "",
+                    "tnc_text": "",
+                    "tnc_link": ""
+                  },
+                  "features": {
+                    "ontime_delivery_guarantee": {
+                      "available": false,
+                      "value": 0,
+                      "text_label": "",
+                      "text_detail": "",
+                      "url_detail": "",
+                      "icon_url": ""
+                    },
+                    "mvc": {
+                      "is_mvc": 0,
+                      "mvc_logo": "",
+                      "mvc_error_message": ""
+                    },
+                    "dynamic_price": {
+                      "text_label": ""
+                    }
+                  },
+                  "eta": {
+                    "text_eta": "",
+                    "error_code": 1
+                  }
+                }
+              ]
+            }
+          ],
+          "promo_stacking": {
+            "is_promo": 1,
+            "promo_code": "BONONREG50",
+            "title": "Bebas Ongkir (3-5 hari)",
+            "shipper_id": 11,
+            "shipper_product_id": 18,
+            "shipper_name": "SiCepat Reg",
+            "shipper_desc": "2-4 hari|1104",
+            "promo_detail": "",
+            "benefit_desc": "Kamu belum memenuhi min. pembelian Rp50.000",
+            "point_change": 0,
+            "user_point": 0,
+            "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia\u003c/b\u003e",
+            "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+            "service_id": 1104,
+            "is_applied": 0,
+            "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
+            "discounted_rate": 0,
+            "shipping_rate": 13000,
+            "benefit_amount": 20000,
+            "disabled": true,
+            "hide_shipper_name": true,
+            "cod": {
+              "is_cod_available": 0,
+              "cod_text": "",
+              "cod_price": 0,
+              "formatted_price": "",
+              "tnc_text": "",
+              "tnc_link": ""
+            },
+            "eta": {
+              "text_eta": "",
+              "error_code": 1
+            },
+            "is_bebas_ongkir_extra": false,
+            "texts": {
+              "bottom_sheet": "\u003cb\u003eEstimasi tiba 3-5 hari (Rp0)\u003c/b\u003e",
+              "chosen_courier": "",
+              "ticker_courier": "Tersedia Bebas Ongkir (3-5 hari)",
+              "bottom_sheet_description": "Kamu belum memenuhi min. pembelian Rp50.000"
+            },
+            "free_shipping_metadata": {
+              "sent_shipper_partner": false,
+              "benefit_class": "",
+              "shipping_subsidy": 20000
+            }
+          },
+          "promo_stackings": [
+            {
+              "is_promo": 1,
+              "promo_code": "BONONREG50",
+              "title": "Bebas Ongkir (3-5 hari)",
+              "shipper_id": 11,
+              "shipper_product_id": 18,
+              "shipper_name": "SiCepat Reg",
+              "shipper_desc": "2-4 hari|1104",
+              "promo_detail": "",
+              "benefit_desc": "Kamu belum memenuhi min. pembelian Rp50.000",
+              "point_change": 0,
+              "user_point": 0,
+              "promo_tnc_html": "Anda akan menggunakan promo \u003cb\u003eBebas Ongkir Tokopedia\u003c/b\u003e",
+              "shipper_disable_text": "Tidak dapat \u003cb\u003eubah kurir\u003c/b\u003e karena promo hanya berlaku untuk kurir yang ditentukan",
+              "service_id": 1104,
+              "is_applied": 0,
+              "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png",
+              "discounted_rate": 0,
+              "shipping_rate": 13000,
+              "benefit_amount": 20000,
+              "disabled": true,
+              "hide_shipper_name": true,
+              "cod": {
+                "is_cod_available": 0,
+                "cod_text": "",
+                "cod_price": 0,
+                "formatted_price": "",
+                "tnc_text": "",
+                "tnc_link": ""
+              },
+              "eta": {
+                "text_eta": "",
+                "error_code": 1
+              },
+              "is_bebas_ongkir_extra": false,
+              "texts": {
+                "bottom_sheet": "\u003cb\u003eEstimasi tiba 3-5 hari (Rp0)\u003c/b\u003e",
+                "chosen_courier": "",
+                "ticker_courier": "Tersedia Bebas Ongkir (3-5 hari)",
+                "bottom_sheet_description": "Kamu belum memenuhi min. pembelian Rp50.000"
+              },
+              "free_shipping_metadata": {
+                "sent_shipper_partner": false,
+                "benefit_class": "",
+                "shipping_subsidy": 20000
+              }
+            }
+          ],
+          "pre_order": {
+            "header": "",
+            "label": "",
+            "display": false
+          },
+          "info": {
+            "blackbox_info": {
+              "text_info": ""
+            }
+          }
+        }
+      }
+    }
+  }
+]

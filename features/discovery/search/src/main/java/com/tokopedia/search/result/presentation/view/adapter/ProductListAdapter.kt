@@ -240,6 +240,19 @@ class ProductListAdapter(
         notifyItemRangeRemoved(index, 1)
     }
 
+    fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean) {
+        removeItem(list.indexOfFirst { condition(it) })
+    }
+
+    fun insertItemAfter(visitable: Visitable<*>, previousVisitable: Visitable<*>) : Int {
+        val previousItemIndex = list.indexOfFirst { it == previousVisitable }
+        if(previousItemIndex == -1) return -1
+        val targetIndex = previousItemIndex + 1
+        list.add(targetIndex, visitable)
+        notifyItemInserted(targetIndex)
+        return targetIndex
+    }
+
     interface OnItemChangeView {
         fun onChangeList()
         fun onChangeDoubleGrid()
