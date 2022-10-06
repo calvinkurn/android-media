@@ -21,7 +21,9 @@ import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.SendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
+import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
+import com.tokopedia.tokochat.domain.usecase.GetRoomTickerUseCase
+import com.tokopedia.tokochat.domain.usecase.GetBackgroundUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -39,7 +41,8 @@ class TokoChatViewModel @Inject constructor(
     private val registrationActiveChannelUseCase: RegistrationActiveChannelUseCase,
     private val sendMessageUseCase: SendMessageUseCase,
     private val getTypingUseCase: GetTypingUseCase,
-    private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
+    private val getBackgroundUseCase: GetBackgroundUseCase,
+    private val getRoomTickerUseCase: GetRoomTickerUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -54,6 +57,10 @@ class TokoChatViewModel @Inject constructor(
     private val _chatBackground = MutableLiveData<Result<String>>()
     val chatBackground: MutableLiveData<Result<String>>
         get() = _chatBackground
+
+    private val _chatRoomTicker = MutableLiveData<Result<TokochatRoomTickerResponse>>()
+    val chatRoomTicker: LiveData<Result<TokochatRoomTickerResponse>>
+        get() = _chatRoomTicker
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
@@ -202,11 +209,20 @@ class TokoChatViewModel @Inject constructor(
 
     fun getTokoChatBackground() {
         launchCatchError(block = {
-            getTokoChatBackgroundUseCase(Unit).collect {
+            getBackgroundUseCase(Unit).collect {
                 _chatBackground.value = Success(it)
             }
         }, onError = {
             _chatBackground.value = Fail(it)
+        })
+    }
+
+    fun loadChatRoomTicker(messageId: String) {
+        launchCatchError(block = {
+            val result = getRoomTickerUseCase(messageId)
+            _chatRoomTicker.value = Success(result)
+        }, onError = {
+            _chatRoomTicker.value = Fail(it)
         })
     }
 

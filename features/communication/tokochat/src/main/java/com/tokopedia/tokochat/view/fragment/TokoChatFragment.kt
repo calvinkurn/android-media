@@ -149,6 +149,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     override fun initObservers() {
         observeTokoChatBackground()
+        observeChatRoomTicker()
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
@@ -225,6 +226,19 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         observe(viewModel.chatBackground) {
             when (it) {
                 is Success -> renderBackground(it.data)
+                is Fail -> {
+                    //no op
+                }
+            }
+        }
+    }
+
+    private fun observeChatRoomTicker() {
+        observe(viewModel.chatRoomTicker) {
+            when (it) {
+                is Success -> {
+                    //TODO will adjust by kelvin
+                }
                 is Fail -> {
                     //no op
                 }

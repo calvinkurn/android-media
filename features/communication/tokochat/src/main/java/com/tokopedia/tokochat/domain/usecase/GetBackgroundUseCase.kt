@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class GetTokoChatBackgroundUseCase @Inject constructor(
+class GetBackgroundUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val cacheManager: TokoChatCacheManager,
     dispatcher: CoroutineDispatchers,
