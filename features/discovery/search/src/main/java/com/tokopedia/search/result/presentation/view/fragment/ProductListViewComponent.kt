@@ -17,10 +17,12 @@ import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.G
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
+import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
@@ -40,6 +42,8 @@ import dagger.Component
     ProductionSchedulersProviderModule::class,
     GetInspirationCarouselChipsProductUseCaseModule::class,
     SaveLastFilterUseCaseModule::class,
+    SearchSameSessionRecommendationUseCaseModule::class,
+    SameSessionRecommendationModule::class,
     IrisModule::class,
     PerformanceMonitoringModule::class,
     ChooseAddressViewModule::class,

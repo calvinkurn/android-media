@@ -97,7 +97,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     fun renderPageError(errorModel: PageErrorDataModel) {
-        context?.let { ctx ->
+        context?.let { _ ->
             productAdapter?.showError(errorModel)
             swipeToRefresh?.let {
                 it.isEnabled = false

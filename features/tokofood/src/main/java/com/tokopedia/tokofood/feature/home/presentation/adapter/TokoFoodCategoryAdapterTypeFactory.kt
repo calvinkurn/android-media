@@ -4,11 +4,13 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodCategoryEmptyStateViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodCategoryLoadingViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.TokoFoodCategoryTypeFactory
+import com.tokopedia.tokofood.common.presentation.adapter.TokoFoodCommonTypeFactory
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCategoryEmptyStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCategoryLoadingViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodMerchantListViewHolder
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryEmptyStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel

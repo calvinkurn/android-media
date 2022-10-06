@@ -106,6 +106,7 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetLi
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
@@ -209,6 +210,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var staggeredGridLayoutManager: StaggeredGridLayoutManager
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var sameSessionRecommendationListener: SameSessionRecommendationListener
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -227,7 +232,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
         )
     }
-    private var coachMark: CoachMark2? = null
 
     override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
@@ -457,6 +461,7 @@ class ProductListFragment: BaseDaggerFragment(),
             ),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
+            sameSessionRecommendationListener = sameSessionRecommendationListener,
         )
     }
 
@@ -735,7 +740,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onPause() {
         super.onPause()
 
-        coachMark?.dismissCoachMark()
+        onBoardingListenerDelegate.dismissCoachmark()
         trackingQueue?.sendAll()
     }
 
@@ -943,10 +948,6 @@ class ProductListFragment: BaseDaggerFragment(),
             RecommendationTracking.eventImpressionProductRecommendationNonLogin(trackingQueue, item, item.position.toString())
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-
-    }
-
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) { }
 
     override fun onThreeDotsClick(item: RecommendationItem, vararg position: Int) {
@@ -1127,7 +1128,7 @@ class ProductListFragment: BaseDaggerFragment(),
 
         showRefreshLayout()
 
-        coachMark?.dismissCoachMark()
+        onBoardingListenerDelegate.dismissCoachmark()
         presenter?.clearData()
         recyclerViewUpdater.productListAdapter?.clearData()
         productVideoAutoplay.stopVideoAutoplay()
@@ -1530,24 +1531,14 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view = view ?: return
 
-        if (wishlistResult.isUsingWishlistV2) {
-            if (wishlistResult.isAddWishlist) {
-                context?.let {
-                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, it, view)
-                }
-            } else {
-                context?.let {
-                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, it, view)
-                }
+        if (wishlistResult.isAddWishlist) {
+            context?.let {
+                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(wishlistResult, it, view)
             }
         } else {
-            if (wishlistResult.isAddWishlist)
-                Toaster.build(view, getString(R.string.msg_add_wishlist),
-                    Snackbar.LENGTH_SHORT, TYPE_NORMAL, getString(R.string.cta_add_wishlist))
-                { goToWishlistPage() }.show()
-            else
-                Toaster.build(view, getString(R.string.msg_remove_wishlist),
-                    Snackbar.LENGTH_SHORT, TYPE_NORMAL).show()
+            context?.let {
+                AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(wishlistResult, it, view)
+            }
         }
     }
 
@@ -1563,39 +1554,22 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private fun goToWishlistPage() {
-        val intent = RouteManager.getIntent(context, ApplinkConst.NEW_WISHLIST)
-        startActivity(intent)
-    }
-
     override fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         val view = view ?: return
 
-        if (wishlistResult.isUsingWishlistV2) {
-            val errorMessage = if (wishlistResult.messageV2.isNotEmpty()) {
-                wishlistResult.messageV2
-            } else if (wishlistResult.isAddWishlist) {
-                getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
-            } else {
-                getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
-            }
-
-            val ctaText = wishlistResult.ctaTextV2.ifEmpty { "" }
-
-            context?.let {
-                AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, ctaText,
-                    wishlistResult.ctaActionV2, view, it)
-            }
-
+        val errorMessage = if (wishlistResult.messageV2.isNotEmpty()) {
+            wishlistResult.messageV2
+        } else if (wishlistResult.isAddWishlist) {
+            getString(Rwishlist.string.on_failed_add_to_wishlist_msg)
         } else {
-            if (wishlistResult.isAddWishlist)
-                Toaster.build(view, ErrorHandler.getErrorMessage(context,
-                    MessageErrorException(getString(R.string.msg_add_wishlist_failed))),
-                    Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
-            else
-                Toaster.build(view, ErrorHandler.getErrorMessage(context,
-                    MessageErrorException(getString(R.string.msg_remove_wishlist_failed))),
-                    Snackbar.LENGTH_SHORT, TYPE_ERROR).show()
+            getString(Rwishlist.string.on_failed_remove_from_wishlist_msg)
+        }
+
+        val ctaText = wishlistResult.ctaTextV2.ifEmpty { "" }
+
+        context?.let {
+            AddRemoveWishlistV2Handler.showWishlistV2ErrorToasterWithCta(errorMessage, ctaText,
+                wishlistResult.ctaActionV2, view, it)
         }
     }
     //endregion

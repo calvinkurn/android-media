@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerLabelInitialState"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="Terakhir Dicari"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/headerActionInitialState"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/headerActionInitialState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Hapus Semua"
+        android:textColor="@color/Unify_RN500"
+        app:layout_constraintStart_toEndOf="@id/headerLabelInitialState"
+        app:layout_constraintTop_toTopOf="@id/headerLabelInitialState"
+        app:layout_constraintBottom_toBottomOf="@id/headerLabelInitialState"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
