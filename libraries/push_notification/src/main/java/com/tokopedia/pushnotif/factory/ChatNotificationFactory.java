@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
@@ -49,7 +50,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     public ChatNotificationFactory(Context context) {
         super(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
-        bubblesFactory = new BubblesFactoryImpl(context);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            bubblesFactory = new BubblesFactoryImpl(context);
+        }
     }
 
     @Override
@@ -81,7 +84,11 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             }
         }
 
-        setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
+        if (GlobalConfig.isSellerApp()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
+            }
+        }
 
         return builder.build();
     }
@@ -128,14 +135,15 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
-        updateBubblesShortcuts(notificationType);
+        updateBubblesShortcuts(notificationType, notificationId, applinkNotificationModel);
         updateBubblesBuilder(builder, applinkNotificationModel, notificationType, notificationId);
     }
 
-    private void updateBubblesShortcuts(int notificationType) {
+    private void updateBubblesShortcuts(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
         listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
+        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
         List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
-        bubblesFactory.updateShorcuts(historyItemModels);
+        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
     }
 
     private void updateBubblesBuilder(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
@@ -149,8 +157,9 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             String applink = item.getAppLink() == null ? "" : item.getAppLink();
             String senderName = item.getSenderName() == null ? "" : item.getSenderName();
             String avatarUrl = item.getAvatarUrl() == null ? "" : item.getAvatarUrl();
+            String shortcutId = getMessageId(item.getAppLink());
             BubbleHistoryItemModel historyItemModel = new BubbleHistoryItemModel(
-                    getShortcutNotificationId(item.getNotificationId()),
+                    shortcutId,
                     applink,
                     senderName,
                     avatarUrl
@@ -160,16 +169,12 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
         return mappedResult;
     }
 
-    private String getShortcutNotificationId(Integer notificationId) {
-        int notificationIdNonNull = notificationId != null ? notificationId : 0;
-        return String.valueOf(notificationIdNonNull);
-    }
-
     private BubbleNotificationModel getBubbleNotificationModel(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        String shortcutId = getMessageId(applinkNotificationModel.getApplinks());
         return new BubbleNotificationModel(
                 notificationType,
                 notificationId,
-                getShortcutNotificationId(notificationId),
+                shortcutId,
                 applinkNotificationModel.getApplinks(),
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getThumbnail(),
