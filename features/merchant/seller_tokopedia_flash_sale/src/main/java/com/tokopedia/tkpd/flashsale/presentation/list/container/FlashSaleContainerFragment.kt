@@ -45,6 +45,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val REDIRECTION_DELAY : Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
+        private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val INELIGIBLE_ACCESS_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access_fs_tokopedia.png"
         @JvmStatic
@@ -300,7 +301,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun showIneligibleAccessBottomSheet() {
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonClicked { routeToUrl(SELLER_EDU_ARTICLE_URL) }
+        bottomSheet.setOnButtonClicked { routeToUrl(FEATURE_LEARN_MORE_ARTICLE_URL) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }
