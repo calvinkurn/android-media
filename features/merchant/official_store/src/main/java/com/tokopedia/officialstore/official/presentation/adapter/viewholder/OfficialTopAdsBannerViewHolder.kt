@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.officialstore.R
 import com.tokopedia.officialstore.databinding.ViewmodelOfficialTopadsBannerBinding
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
@@ -21,13 +23,13 @@ class OfficialTopAdsBannerViewHolder(private val view: View) : AbstractViewHolde
         }
 
         if (!tdnBannerList.isNullOrEmpty()) {
-            binding?.topadsTdnBanner?.visibility = View.VISIBLE
+            binding?.topadsTdnBanner?.show()
             binding?.topadsBannerTitle?.text = element.title
             binding?.topadsBanner?.renderTdnBanner(tdnBannerList.first(), 8.toPx(), onTdnBannerClicked = {
                 if (it.isNotEmpty()) RouteManager.route(view.context, it)
             })
         } else {
-            binding?.topadsTdnBanner?.visibility = View.GONE
+            binding?.topadsTdnBanner?.hide()
         }
     }
 
