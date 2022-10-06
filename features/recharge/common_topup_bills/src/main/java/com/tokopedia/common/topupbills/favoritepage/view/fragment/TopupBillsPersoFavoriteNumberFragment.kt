@@ -236,12 +236,14 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun onSuccessUndoDeleteFavoriteNumber(favoriteDetail: UpdateFavoriteDetail) {
+        val formattedClientNumber = pageConfig.clientNumberFormatter
+            ?.invoke(favoriteDetail.clientNumber) ?: favoriteDetail.clientNumber
         view?.let {
             Toaster.build(
                 it,
                 getString(
                     R.string.common_topup_fav_number_success_undo_delete,
-                    favoriteDetail.clientNumber
+                    formattedClientNumber
                 ),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL
@@ -355,12 +357,14 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun onSuccessDeleteClientName(deletedFavoriteNumber: UpdateFavoriteDetail) {
+        val formattedClientNumber = pageConfig.clientNumberFormatter
+            ?.invoke(deletedFavoriteNumber.clientNumber) ?: deletedFavoriteNumber.clientNumber
         view?.let {
             Toaster.build(
                 it,
                 getString(
                     R.string.common_topup_fav_number_success_delete_name,
-                    deletedFavoriteNumber.clientNumber
+                    formattedClientNumber
                 ),
                 Toaster.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
@@ -575,9 +579,11 @@ class TopupBillsPersoFavoriteNumberFragment :
     }
 
     private fun showDeleteConfirmationDialog(favNumberItem: TopupBillsPersoFavNumberDataView) {
+        val formattedClientNumber = pageConfig.clientNumberFormatter
+            ?.invoke(favNumberItem.getClientNumber()) ?: favNumberItem.getClientNumber()
         val description = when (pageConfig) {
             FavoriteNumberPageConfig.CREDIT_CARD -> {
-                val clientDetail = "${favNumberItem.operatorName} (${favNumberItem.getClientNumber()})"
+                val clientDetail = "${favNumberItem.operatorName} ($formattedClientNumber)"
                 Html.fromHtml(
                     getString(
                         pageConfig.deleteDialogTextRes,
@@ -587,7 +593,7 @@ class TopupBillsPersoFavoriteNumberFragment :
             }
             else -> {
                 val clientDetail = if (favNumberItem.getClientName().isNotEmpty()) {
-                    "${favNumberItem.getClientName()} (${favNumberItem.getClientNumber()})"
+                    "${favNumberItem.getClientName()} ($formattedClientNumber)"
                 } else {
                     favNumberItem.getClientNumber()
                 }
