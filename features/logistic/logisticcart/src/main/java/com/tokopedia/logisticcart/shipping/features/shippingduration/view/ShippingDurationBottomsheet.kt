@@ -197,7 +197,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val isLeasing = it.getBoolean(ARGUMENT_IS_LEASING)
             val pslCode = it.getString(ARGUMENT_PSL_CODE, "")
             val products: ArrayList<Product> = it.getParcelableArrayList(ARGUMENT_PRODUCTS)!!
-            val cartString = it.getString(ARGUMENT_CART_STRING)
+            val cartString = it.getString(ARGUMENT_CART_STRING, "")
             isDisableOrderPrioritas = it.getBoolean(ARGUMENT_DISABLE_ORDER_PRIORITAS)
             val isTradeInDropOff = it.getBoolean(ARGUMENT_IS_TRADE_IN_DROP_OFF)
             val mvc = it.getString(ARGUMENT_MVC, "")
@@ -214,7 +214,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 isLeasing,
                 pslCode,
                 products,
-                cartString!!,
+                cartString,
                 isTradeInDropOff,
                 mRecipientAddress,
                 isFulfillment,

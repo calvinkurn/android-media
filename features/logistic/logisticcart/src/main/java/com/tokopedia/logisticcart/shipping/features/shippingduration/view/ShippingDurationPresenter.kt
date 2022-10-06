@@ -64,15 +64,15 @@ class ShippingDurationPresenter @Inject constructor(
         isFulfillment: Boolean, preOrderTime: Int,
         mvc: String, cartData: String, isOcc: Boolean, isDisableCourierPromo: Boolean
     ) {
-        if (view != null) {
-            view!!.showLoading()
+        view?.let {
+            it.showLoading()
             val shippingParam = getShippingParam(
                 shipmentDetailData, products, cartString,
                 isTradeInDropOff, recipientAddressModel
             )
             var selectedSpId = 0
-            if (shipmentDetailData.selectedCourier != null) {
-                selectedSpId = shipmentDetailData.selectedCourier!!.shipperProductId
+            shipmentDetailData.selectedCourier?.let { selectedCourier ->
+                selectedSpId = selectedCourier.shipperProductId
             }
             loadDuration(
                 selectedSpId,
@@ -127,9 +127,9 @@ class ShippingDurationPresenter @Inject constructor(
                     }
 
                     override fun onError(e: Throwable) {
-                        if (view != null) {
-                            view!!.showErrorPage(getErrorMessage(view!!.getActivity(), e))
-                            view!!.stopTrace()
+                        view?.let {
+                            it.showErrorPage(getErrorMessage(it.getActivity(), e))
+                            it.stopTrace()
                         }
                     }
 
@@ -250,7 +250,7 @@ class ShippingDurationPresenter @Inject constructor(
         }
         return null
     }
-    
+
     override fun convertServiceListToUiModel(
         shippingDurationUiModels: List<ShippingDurationUiModel>,
         promoUiModel: List<LogisticPromoUiModel>,
@@ -314,7 +314,7 @@ class ShippingDurationPresenter @Inject constructor(
         } else {
             for (shippingCourierUiModel in shippingCourierUiModelList) {
                 shippingCourierUiModel.isSelected =
-                    if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else shippingCourierUiModel.productData.isRecommend
+                    if (serviceData.selectedShipperProductId > 0) shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId else (shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden)
                 if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorMessage != null && shippingCourierUiModel.productData.error.errorId != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                     flagNeedToSetPinpoint = true
                     selectedServiceId = shippingCourierUiModel.serviceData.serviceId
@@ -323,11 +323,7 @@ class ShippingDurationPresenter @Inject constructor(
                 }
             }
         }
-        val courierData =
-            if (serviceData.selectedShipperProductId > 0) getCourierItemDataById(
-                serviceData.selectedShipperProductId,
-                shippingCourierUiModelList
-            ) else getCourierItemData(shippingCourierUiModelList)
+        val courierData = shippingCourierUiModelList.find { it.isSelected }
         view?.onShippingDurationAndRecommendCourierChosen(
             shippingCourierUiModelList,
             courierData, cartPosition, selectedServiceId, serviceData,
