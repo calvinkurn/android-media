@@ -4,9 +4,11 @@ import android.app.Activity
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ServiceData
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel
 import com.tokopedia.logisticcart.shipping.model.Product
+import com.tokopedia.logisticcart.shipping.model.RatesViewModelType
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingDurationUiModel
@@ -20,16 +22,33 @@ interface ShippingDurationContract {
         fun showLoading()
         fun hideLoading()
         fun showErrorPage(message: String)
-        fun showData(
-            serviceDataList: List<ShippingDurationUiModel>,
-            promoViewModelList: List<LogisticPromoUiModel>,
-            preOrderModel: PreOrderModel?
-        )
-
+        fun showData(uiModelList: MutableList<RatesViewModelType>)
         fun showNoCourierAvailable(message: String?)
         fun stopTrace()
-        fun isDisableCourierPromo(): Boolean
         fun getActivity(): Activity
+        fun sendAnalyticCourierPromo(shippingDurationUiModelList: List<ShippingDurationUiModel>)
+        fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>)
+        fun isToogleYearEndPromotionOn(): Boolean
+        fun onShippingDurationAndRecommendCourierChosen(
+            shippingCourierUiModelList: List<ShippingCourierUiModel>,
+            courierData: ShippingCourierUiModel?,
+            cartPosition: Int,
+            selectedServiceId: Int,
+            serviceData: ServiceData,
+            flagNeedToSetPinpoint: Boolean
+        )
+
+        fun onLogisticPromoChosen(
+            shippingCourierViewModelList: List<ShippingCourierUiModel>,
+            courierData: ShippingCourierUiModel,
+            serviceData: ServiceData,
+            needToSetPinpoint: Boolean,
+            promoCode: String,
+            serviceId: Int,
+            data: LogisticPromoUiModel
+        )
+
+        fun showPromoCourierNotAvailable()
     }
 
     interface Presenter : CustomerPresenter<View> {
@@ -49,7 +68,8 @@ interface ShippingDurationContract {
             preOrderTime: Int,
             mvc: String,
             cartData: String,
-            isOcc: Boolean
+            isOcc: Boolean,
+            isDisableCourierPromo: Boolean
         )
 
         fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel?
@@ -57,5 +77,19 @@ interface ShippingDurationContract {
             spId: Int,
             shippingCourierUiModels: List<ShippingCourierUiModel>
         ): ShippingCourierUiModel?
+
+        fun convertServiceListToUiModel(
+            shippingDurationUiModels: List<ShippingDurationUiModel>,
+            promoUiModel: List<LogisticPromoUiModel>,
+            preOrderModel: PreOrderModel?,
+            isOcc: Boolean
+        ): MutableList<RatesViewModelType>
+
+        fun onChooseDuration(
+            shippingCourierUiModelList: List<ShippingCourierUiModel>,
+            cartPosition: Int, serviceData: ServiceData
+        )
+
+        fun onLogisticPromoClicked(data: LogisticPromoUiModel)
     }
 }
