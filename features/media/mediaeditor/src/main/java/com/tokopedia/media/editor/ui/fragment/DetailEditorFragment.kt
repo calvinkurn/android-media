@@ -662,8 +662,6 @@ class DetailEditorFragment @Inject constructor(
         }
 
         viewBinding?.btnSave?.setOnClickListener { _ ->
-            onEditSaveAnalytics()
-
             if (data.isToolCrop()) {
                 // check if user move crop area via image matrix translation, works for crop
                 initialImageMatrix?.values()?.let { initialMatrixValue ->
@@ -681,12 +679,15 @@ class DetailEditorFragment @Inject constructor(
             if (isEdited) {
                 if (data.isToolRemoveBackground()) {
                     showRemoveBackgroundSaveConfirmation {
+                        onEditSaveAnalytics()
                         saveAndExit()
                     }
                 } else {
+                    onEditSaveAnalytics()
                     saveAndExit()
                 }
             } else {
+
                 activity?.finish()
             }
         }
