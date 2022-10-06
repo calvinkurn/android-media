@@ -562,8 +562,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         )
     }
 
-    fun setDateIndicator() :(String) ->Unit ={
-        if (it.isNotEmpty()){
+    fun setDateIndicator(): (String) -> Unit = {
+        if (it.isNotEmpty() && it != getString(R.string.chatbot_placeholder_date)) {
             dateIndicator.text = it
             dateIndicatorContainer.show()
         }
