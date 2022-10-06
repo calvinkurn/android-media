@@ -8,8 +8,6 @@ class ChatbotDefaultWebSocketStateHandler : ChatbotWebSocketStateHandler {
     private var isWaiting = false
     private val lock = Any()
 
-
-
     companion object {
         private const val INCREMENTAL_RETRY_TIME = 1000L
         private const val MAX_RETRY_TIME = 5000L
@@ -35,8 +33,9 @@ class ChatbotDefaultWebSocketStateHandler : ChatbotWebSocketStateHandler {
     private fun updateWaitingTime() {
         synchronized(lock) {
             waitingTime += INCREMENTAL_RETRY_TIME
-            if (waitingTime > MAX_RETRY_TIME)
+            if (waitingTime > MAX_RETRY_TIME) {
                 waitingTime = MAX_RETRY_TIME
+            }
         }
     }
 

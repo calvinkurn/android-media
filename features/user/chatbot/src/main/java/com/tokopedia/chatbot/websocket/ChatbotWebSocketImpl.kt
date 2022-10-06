@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit
 class ChatbotWebSocketImpl(
     interceptors: List<Interceptor>?,
     private val accessToken: String,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : ChatbotWebSocket {
 
     private val client: OkHttpClient
@@ -78,7 +78,7 @@ class ChatbotWebSocketImpl(
         override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
             mWebSocket = null
             webSocketFlow.tryEmit(ChatbotWebSocketAction.Failure(ChatbotWebSocketException(t)))
-            //Can Log Here
+            // Can Log Here
         }
 
         override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
@@ -91,14 +91,16 @@ class ChatbotWebSocketImpl(
         }
     }
 
-    //TODO change this
     override fun getDataFromSocketAsFlow(): Flow<ChatbotWebSocketAction> {
         return webSocketFlow.filterNotNull().flowOn(dispatchers.io)
     }
 
-    //TODO add null check
     override fun send(message: JsonObject?, interceptors: List<Interceptor>?) {
-        mWebSocket?.send(message.toString())
+        try {
+            mWebSocket?.send(message.toString())
+        } catch (e: Exception) {
+            // Log here
+        }
     }
 
     override fun connect(url: String) {

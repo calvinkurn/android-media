@@ -227,7 +227,7 @@ class ChatbotPresenter @Inject constructor(
                     }
             },
             onError = {
-                Timber.d("connectWebSocket: $it")
+
             }
         )
     }
@@ -280,7 +280,8 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun retryConnectToWebSocket(messageId: String) {
+    @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+    fun retryConnectToWebSocket(messageId: String) {
         chatbotWebSocket.close()
         networkMode = MODE_WEBSOCKET
         autoRetryJob = launchCatchError(
