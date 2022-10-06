@@ -33,7 +33,10 @@ class BaseTokoNowRecipeListViewModelTestOnScroll : BaseTokoNowRecipeListViewMode
             expectedPage = 2,
             expectedWarehouseId = "1",
             expectedSortByParams = null,
-            expectedIngredientIdsParams = null,
+            expectedTagIdsParam = null,
+            expectedIngredientIdsParam = null,
+            expectedDurationParam = null,
+            expectedPortionParam = null,
             actualRecipeListParam = actualRecipeListParam,
         )
         verifyGetRecipeListUseCaseCalled(times = 2)
@@ -158,5 +161,22 @@ class BaseTokoNowRecipeListViewModelTestOnScroll : BaseTokoNowRecipeListViewMode
         }
 
         assertEquals(expectedLoadMoreProgressBar, actualLoadMoreProgressBar)
+    }
+
+    @Test
+    fun `given progress bar shown when onScroll should call get recipe list use case ONCE`() {
+        val lastVisibleItemIndex = 1 // last item index
+        val getRecipesResponse = "recipelist/get_recipes_response.json"
+            .jsonToObject<TokoNowGetRecipes>()
+
+        onGetRecipes_thenReturn(getRecipesResponse)
+
+        viewModel.getRecipeList()
+
+        setShowProgressBar(shown = true)
+
+        viewModel.onScroll(lastVisibleItemIndex)
+
+        verifyGetRecipeListUseCaseCalled(times = 1)
     }
 }

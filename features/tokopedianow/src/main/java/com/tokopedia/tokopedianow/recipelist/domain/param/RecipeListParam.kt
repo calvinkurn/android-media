@@ -23,8 +23,11 @@ class RecipeListParam {
         private const val DEFAULT_PER_PAGE = 5
 
         const val PARAM_TITLE = "title"
+        const val PARAM_TAG_ID = "tag_ids"
         const val PARAM_INGREDIENT_ID = "ingredient_ids"
         const val PARAM_SORT_BY = "sort_by"
+        const val PARAM_DURATION = "duration"
+        const val PARAM_PORTION = "portion"
 
         private const val AMP = "&"
         private const val EQUAL = "="

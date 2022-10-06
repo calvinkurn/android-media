@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowChipBinding
@@ -35,7 +36,7 @@ class TokoNowChipViewHolder(
     private fun renderImage(chip: TokoNowChipUiModel) {
         binding?.chip?.chip_image_icon?.apply {
             visibility = if (chip.imageUrl.isNotEmpty()) {
-                setImageUrl(chip.imageUrl)
+                loadImage(chip.imageUrl)
                 View.VISIBLE
             } else {
                 View.GONE

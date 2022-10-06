@@ -25,4 +25,13 @@ object BottomSheetUtil {
             )
         }
     }
+
+    internal fun BottomSheetUnify.setMaxHeight() {
+        val maxHeight = (getScreenHeight() * 0.9f).toInt()
+
+        bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            maxHeight
+        )
+    }
 }

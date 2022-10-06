@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipebookmark.domain.model.AddRecipeBookmarkResponse
@@ -30,6 +31,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
 
     private val privateVisitableItems by lazy {
         viewModel.getPrivateField<MutableList<Visitable<*>>>("visitableItems")
+    }
+
+    private val showProgressBar by lazy {
+        viewModel.getPrivateField<MutableLiveData<Boolean>>("_showProgressBar")
     }
 
     private lateinit var getRecipeListUseCase: GetRecipeListUseCase
@@ -95,7 +100,10 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         expectedSourcePage: String = "",
         expectedWarehouseId: String,
         expectedSortByParams: String?,
-        expectedIngredientIdsParams: String?,
+        expectedTagIdsParam: String?,
+        expectedIngredientIdsParam: String?,
+        expectedDurationParam: String?,
+        expectedPortionParam: String?,
         actualRecipeListParam: RecipeListParam
     ) {
         val expectedPerPage = 5
@@ -105,10 +113,17 @@ open class BaseTokoNowRecipeListViewModelTestFixture {
         assertEquals(expectedSourcePage, actualRecipeListParam.sourcePage)
         assertEquals(expectedWarehouseId, actualRecipeListParam.warehouseID)
         assertEquals(expectedSortByParams, actualQueryParamsMap["sort_by"])
-        assertEquals(expectedIngredientIdsParams, actualQueryParamsMap["ingredient_ids"])
+        assertEquals(expectedTagIdsParam, actualQueryParamsMap["tag_ids"])
+        assertEquals(expectedIngredientIdsParam, actualQueryParamsMap["ingredient_ids"])
+        assertEquals(expectedDurationParam, actualQueryParamsMap["duration"])
+        assertEquals(expectedPortionParam, actualQueryParamsMap["portion"])
     }
 
     fun addItemToVisitableList(item: Visitable<*>) {
         privateVisitableItems.add(item)
+    }
+
+    fun setShowProgressBar(shown: Boolean) {
+        showProgressBar.value = shown
     }
 }

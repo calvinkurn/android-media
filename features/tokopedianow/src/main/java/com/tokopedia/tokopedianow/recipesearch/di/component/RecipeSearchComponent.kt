@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.recipesearch.di.module.RecipeSearchModule
 import com.tokopedia.tokopedianow.recipesearch.di.module.RecipeSearchViewModelModule
 import com.tokopedia.tokopedianow.recipesearch.presentation.fragment.TokoNowRecipeSearchFragment
 import com.tokopedia.tokopedianow.recipesearch.di.scope.RecipeSearchScope
+import com.tokopedia.tokopedianow.recipesearch.presentation.bottomsheet.TokoNowRecipeSearchIngredientBottomSheet
 import dagger.Component
 
 @RecipeSearchScope
@@ -17,4 +18,5 @@ import dagger.Component
 )
 interface RecipeSearchComponent {
     fun inject(fragment: TokoNowRecipeSearchFragment)
+    fun inject(fragment: TokoNowRecipeSearchIngredientBottomSheet)
 }

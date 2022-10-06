@@ -149,6 +149,7 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
     }
 
     override fun onClickResetFilter() {
+        viewModel.resetFilter()
         analytics.clickResetFilter()
     }
 

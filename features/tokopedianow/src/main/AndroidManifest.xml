@@ -252,7 +252,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.tokopedianow.recipehome.presentation.activity.TokoNowRecipeFilterActivity"
+            android:name="com.tokopedia.tokopedianow.recipelist.presentation.activity.TokoNowRecipeFilterActivity"
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
