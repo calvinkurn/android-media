@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -538,8 +539,9 @@ class NewShopPageFragment :
     }
 
     private fun initViewPager() {
-        viewPager?.isUserInputEnabled = false
+        @SuppressLint("WrongConstant")
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
+        viewPager?.isUserInputEnabled = false
         viewPager?.adapter = viewPagerAdapter
     }
 
