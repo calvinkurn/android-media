@@ -174,6 +174,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
                 discountPercentage = "20",
                 similarProducts = emptyList(),
                 categoryId = "983",
+                categoryName = "Dapur",
                 position = 1
             )
         )

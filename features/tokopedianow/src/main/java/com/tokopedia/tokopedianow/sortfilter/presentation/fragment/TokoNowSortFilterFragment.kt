@@ -37,7 +37,7 @@ class TokoNowSortFilterFragment : Fragment() {
     }
 
     private fun showSortFilterBottomSheet() {
-        val title = getString(R.string.tokopedianow_sort_filter_title_bottomsheet)
+        val title = getString(R.string.tokopedianow_sort_filter_title)
         val sort = arguments?.getInt(SORT_VALUE).orZero()
         val items = listOf(
             SortFilterUiModel(

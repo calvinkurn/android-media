@@ -5,8 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeCountUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
@@ -18,20 +16,13 @@ object RecipeListMapper {
 
     private const val MAX_LABEL_COUNT = 3
     private const val TAKE_LABEL_COUNT = 4
-    private const val DEFAULT_ID = "1"
 
     fun MutableList<Visitable<*>>.addHeaderItem() {
         add(RecipeHeaderUiModel)
     }
 
-    fun MutableList<Visitable<*>>.addQuickFilterItems() {
-        val chips = listOf(
-            RecipeChipFilterUiModel(
-                id = DEFAULT_ID,
-                type = MORE_FILTER
-            )
-        )
-        add(RecipeFilterUiModel(chips))
+    fun MutableList<Visitable<*>>.addQuickFilterItems(selectedFiltersCount: Int) {
+        add(RecipeFilterUiModel(selectedFiltersCount))
     }
 
     fun MutableList<Visitable<*>>.addRecipeItems(response: GetRecipeListResponse) {

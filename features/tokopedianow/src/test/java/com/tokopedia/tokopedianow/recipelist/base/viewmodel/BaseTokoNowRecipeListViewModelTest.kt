@@ -1,7 +1,5 @@
 package com.tokopedia.tokopedianow.recipelist.base.viewmodel
 
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel
-import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeChipFilterUiModel.ChipType.MORE_FILTER
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeFilterUiModel
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeHeaderUiModel
 import com.tokopedia.unit.test.ext.verifyValueEquals
@@ -18,14 +16,13 @@ class BaseTokoNowRecipeListViewModelTest : BaseTokoNowRecipeListViewModelTestFix
 
         viewModel.onViewCreated()
 
-        val moreFilterChip = RecipeChipFilterUiModel(
-            id = "1",
-            type = MORE_FILTER
+        val filterChip = RecipeFilterUiModel(
+            selectedFiltersCount = 0
         )
 
         val expectedVisitableList = listOf(
             RecipeHeaderUiModel,
-            RecipeFilterUiModel(listOf(moreFilterChip))
+            filterChip
         )
 
         val expectedEnableHeaderBackground = true
@@ -46,14 +43,11 @@ class BaseTokoNowRecipeListViewModelTest : BaseTokoNowRecipeListViewModelTestFix
 
         viewModel.onViewCreated()
 
-        val moreFilterChip = RecipeChipFilterUiModel(
-            id = "1",
-            type = MORE_FILTER
+        val filterChip = RecipeFilterUiModel(
+            selectedFiltersCount = 0
         )
 
-        val expectedVisitableList = listOf(
-            RecipeFilterUiModel(listOf(moreFilterChip))
-        )
+        val expectedVisitableList = listOf(filterChip)
 
         val expectedEnableHeaderBackground = false
         val actualEnableHeaderBackground = viewModel.enableHeaderBackground

@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder.SectionHeaderListener
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSortFilterBinding
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.adapter.SortFilterAdapter
@@ -47,6 +48,7 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
 
     var sortValue: Int = FREQUENTLY_BOUGHT
     var sortFilterItems: List<Visitable<*>> = listOf()
+    var sectionHeaderListener: SectionHeaderListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSortFilterBinding>()
 
@@ -57,7 +59,8 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         SortFilterAdapter(
             SortFilterAdapterTypeFactory(
                 sortFilterListener = this,
-                chipListener = this
+                chipListener = this,
+                sectionHeaderListener = sectionHeaderListener
             ),
             SortFilterDiffer()
         )
@@ -121,13 +124,31 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         activity?.finish()
     }
 
+    fun getSelectedFilters(): ArrayList<SelectedFilter> {
+        val selectedChip = mutableListOf<TokoNowChipUiModel>()
+
+        adapter.list.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
+            val chips = chipList.items.filter { it.selected }
+            selectedChip.addAll(chips)
+        }
+
+        return ArrayList(selectedChip.map {
+            SelectedFilter(it.id, it.parentId)
+        })
+    }
+
+    fun submitList(items: List<Visitable<*>>) {
+        sortFilterItems = items
+        adapter.submitList(items)
+    }
+
     fun show(fm: FragmentManager) {
         show(fm, TAG)
     }
 
     private fun initView() {
         binding = BottomsheetTokopedianowSortFilterBinding.inflate(LayoutInflater.from(context))
-        rvSort = binding?.rvSortBasedOnBuying
+        rvSort = binding?.rvSortFilter
         btnApplyFilter = binding?.btnApplyFilter
         setChild(binding?.root)
     }
@@ -146,29 +167,16 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
             adapter = this@TokoNowSortFilterBottomSheet.adapter
             itemAnimator = null
         }
-        adapter.submitList(sortFilterItems)
+        submitList(sortFilterItems)
     }
 
     private fun setupBtnFilter() {
         btnApplyFilter?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(SORT_VALUE, sortValue)
-            intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, createSelectedFilters())
+            intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, getSelectedFilters())
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
-    }
-
-    private fun createSelectedFilters(): ArrayList<SelectedFilter> {
-        val selectedChip = mutableListOf<TokoNowChipUiModel>()
-
-        adapter.list.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
-            val chips = chipList.items.filter { it.selected }
-            selectedChip.addAll(chips)
-        }
-
-        return ArrayList(selectedChip.map {
-            SelectedFilter(it.id, it.parentId)
-        })
     }
 }
