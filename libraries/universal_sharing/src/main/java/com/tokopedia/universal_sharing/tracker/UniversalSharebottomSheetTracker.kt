@@ -21,7 +21,6 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         private const val VALUE_ACTION_IMPRESSION_AFFILIATE = "impression - ticker affiliate"
         private const val VALUE_EVENT_VIEW = "view_item"
         private const val VALUE_EVENT_CLICK = "clickCommunication"
-        private const val VALUE_CATEGORY = "product detail page"
         private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
         private const val VALUE_BUSINESS_UNIT = "sharingexperience"
 
@@ -31,15 +30,15 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
     }
 
 
-    fun viewOnAffiliateRegisterTicker(isAffiliate: Boolean, productId: String) {
-        val data = generateDefaultTracker(VALUE_EVENT_VIEW, VALUE_ACTION_IMPRESSION_AFFILIATE, isAffiliate, productId).apply {
+    fun viewOnAffiliateRegisterTicker(isAffiliate: Boolean, id: String, page: String) {
+        val data = generateDefaultTracker(VALUE_EVENT_VIEW, VALUE_ACTION_IMPRESSION_AFFILIATE, isAffiliate, id, getCategory(page)).apply {
             this[EVENT_PROMOTIONS] = generatePromotions()
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun onClickRegisterTicker(isAffiliate: Boolean, productId: String) {
-        val data = generateDefaultTracker(VALUE_EVENT_CLICK, VALUE_ACTION_CLICK_AFFILIATE, isAffiliate, productId)
+    fun onClickRegisterTicker(isAffiliate: Boolean, productId: String, page: String) {
+        val data = generateDefaultTracker(VALUE_EVENT_CLICK, VALUE_ACTION_CLICK_AFFILIATE, isAffiliate, productId, getCategory(page))
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
@@ -52,8 +51,16 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         return listOf(mapOf(EVENT_CREATIVE_NAME to NOT_SET, EVENT_CREATIVE_SLOT to NOT_SET, EVENT_ITEM_ID to NOT_SET, EVENT_ITEM_NAME to NOT_SET))
     }
 
-    private fun generateDefaultTracker(event: String, eventAction: String, isAffiliate: Boolean, productId: String): MutableMap<String, Any> {
-        val data = TrackAppUtils.gtmData(event, VALUE_CATEGORY, eventAction, "${getTickerType(isAffiliate)} - $productId")
+    private fun getCategory(page: String): String {
+        return when (page) {
+            PageType.PDP.value -> EventCategoryAffiliate.PDP.value
+            PageType.SHOP.value -> EventCategoryAffiliate.SHOP_PAGE.value
+            else -> ""
+        }
+    }
+
+    private fun generateDefaultTracker(event: String, eventAction: String, isAffiliate: Boolean, id: String, category: String): MutableMap<String, Any> {
+        val data = TrackAppUtils.gtmData(event, category, eventAction, "${getTickerType(isAffiliate)} - $id")
         return data.apply {
             this[EVENT_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
             this[EVENT_CURRENT_SITE] = VALUE_CURRENT_SITE

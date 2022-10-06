@@ -457,8 +457,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateCommissionTextView?.text = Html.fromHtml(commissionMessage)
             }
             affiliateCommissionTextView?.visibility = View.VISIBLE
-            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.product?.productID
-                    ?: "")
+            tracker.viewOnAffiliateRegisterTicker(true, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
             isAffiliateUser = KEY_AFFILIATE_USER
             return
         }
@@ -471,9 +470,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
-            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+            tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
             affiliateRegisterContainer?.setOnClickListener { _ ->
-                tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
+                tracker.onClickRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
                 dismiss()
                 RouteManager.route(context, ApplinkConst.AFFILIATE)
             }
