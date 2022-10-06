@@ -32,4 +32,5 @@ interface ShippingDurationBottomsheetListener {
     fun onNoCourierAvailable(message: String?) {}
     fun onShippingDurationButtonCloseClicked() {}
     fun onShowDurationListWithCourierPromo(isCourierPromo: Boolean, duration: String?) {}
+    fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {}
 }

@@ -768,8 +768,6 @@ class OrderPreferenceCard(
     companion object {
         const val VIEW_TYPE = 4
 
-        private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
-
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
 

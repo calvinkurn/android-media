@@ -282,6 +282,7 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
                 mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
             }
         }
+        shippingDurationBottomsheetListener?.onShowLogisticPromo(promoViewModelList)
     }
 
     override fun showNoCourierAvailable(message: String?) {

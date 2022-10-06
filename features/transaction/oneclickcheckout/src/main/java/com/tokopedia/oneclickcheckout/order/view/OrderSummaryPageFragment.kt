@@ -1603,6 +1603,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         ) {
             onChoosePromoLogisticShipping(logisticPromo)
         }
+
+        override fun onShowLogisticPromo(listLogisticPromo: List<LogisticPromoUiModel>) {
+            listLogisticPromo.forEach { promo ->
+                if (promo.disabled && promo.description.contains(BBO_DESCRIPTION_MINIMUM_LIMIT[0]) && promo.description.contains(
+                        BBO_DESCRIPTION_MINIMUM_LIMIT[1]
+                    )
+                ) {
+                    orderSummaryAnalytics.eventViewErrorMessage(OrderSummaryAnalytics.ERROR_ID_LOGISTIC_BBO_MINIMUM)
+                }
+            }
+        }
     }
 
     private fun getOrderInsuranceCardListener(): OrderInsuranceCard.OrderInsuranceCardListener {
@@ -1707,6 +1718,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         private const val SOURCE_FINTECH = "fintech"
 
         private const val SAVE_HAS_DONE_ATC = "has_done_atc"
+
+        private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
 
         @JvmStatic
         fun newInstance(productId: String?, gatewayCode: String?,
