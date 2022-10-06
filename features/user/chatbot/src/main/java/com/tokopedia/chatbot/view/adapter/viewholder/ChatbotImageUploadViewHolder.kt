@@ -54,18 +54,18 @@ class ChatbotImageUploadViewHolder(itemView: View?,
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
 
     private val bgSender = ViewUtil.generateBackgroundWithShadow(
-        chatBalloon,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
-        com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-        R.dimen.dp_chatbot_2,
-        R.dimen.dp_chatbot_1,
-        Gravity.CENTER,
-        com.tokopedia.unifyprinciples.R.color.Unify_G200,
-        getStrokeWidthSenderDimenRes()
+            chatBalloon,
+            com.tokopedia.unifyprinciples.R.color.Unify_G200,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3,
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
+            R.dimen.dp_chatbot_2,
+            R.dimen.dp_chatbot_1,
+            Gravity.CENTER,
+            R.color.chatbot_dms_stroke,
+            getStrokeWidthSenderDimenRes()
     )
     private val bgOpposite = ViewUtil.generateBackgroundWithShadow(
         view = chatBalloon,
