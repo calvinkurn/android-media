@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -240,7 +239,6 @@ class ChatbotPresenter @Inject constructor(
             }
             is ChatbotWebSocketAction.NewMessage -> {
                 handleNewMessage(socketResponse.message, messageId)
-                Log.d("EREN", "handleWebSocketResponse: ${socketResponse.message}")
             }
             is ChatbotWebSocketAction.Failure -> {
                 handleSocketFailure(messageId)

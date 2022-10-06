@@ -200,6 +200,20 @@ class ChatbotPresenterTest {
     }
 
     @Test
+    fun `connectWebSocket - when Socket is Closed with code other than 1000`() {
+        val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
+            ChatbotWebSocketAction.Closed(126)
+        )
+        coEvery { chatbotWebSocket.getDataFromSocketAsFlow() } returns socketJob
+
+        coEvery { chatbotWebSocket.connect("aaa") } just runs
+
+        presenter.connectWebSocket("123")
+
+        assertNotNull(socketJob)
+    }
+
+    @Test
     fun `connectWebSocket - when Socket connection is Failure`() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
             ChatbotWebSocketAction.Failure(ChatbotWebSocketException(Exception()))
@@ -311,7 +325,6 @@ class ChatbotPresenterTest {
         assertNotNull(socketJob)
     }
 
-
     @Test
     fun `handleAttachment When receiving attachment type 13 to open csat`() {
         val fullResponse = SocketResponse.getResponse(SocketResponse.ATTACHMENT_13_OPEN_CSAT)
@@ -390,6 +403,19 @@ class ChatbotPresenterTest {
         presenter.handleAttachmentTypes(fullResponse, "4058088")
 
         assertNotNull(socketJob)
+    }
+
+    @Test
+    fun `destroyWebSocket success`() {
+        every {
+            chatbotWebSocket.close()
+        } just runs
+
+        presenter.destroyWebSocket()
+
+        verify {
+            chatbotWebSocket.close()
+        }
     }
 
     @Test

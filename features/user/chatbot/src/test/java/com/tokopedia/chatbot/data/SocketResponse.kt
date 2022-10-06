@@ -387,6 +387,6 @@ object SocketResponse {
             .fromJson<ChatWebSocketResponse>(
                 response,
                 ChatWebSocketResponse::class.java
-        )
+            )
     }
 }
