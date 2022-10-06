@@ -66,8 +66,8 @@ object ProductCheckingResultMapper {
     fun mapFromWarehouses (selectedProduct: DelegateAdapterItem): ProductCheckingResult {
         val warehouses = getWarehouses(selectedProduct)
         return ProductCheckingResult (
-            productId = "8",
-            imageUrl = "",
+            productId = getProductId(selectedProduct),
+            imageUrl = getImageUrl(selectedProduct),
             isMultiloc = true,
             locationCheckingResult = warehouses.mapToCheckingResult()
         )
@@ -115,6 +115,28 @@ object ProductCheckingResultMapper {
             is WaitingForSelectionItem -> selectedProduct.warehouses.orEmpty()
             else -> emptyList()
         }
+    }
+
+    fun getProductId(selectedProduct: DelegateAdapterItem): String {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.productId
+            is OngoingRejectedItem -> selectedProduct.productId
+            is FinishedProcessSelectionItem -> selectedProduct.productId
+            is OnSelectionProcessItem -> selectedProduct.productId
+            is WaitingForSelectionItem -> selectedProduct.productId
+            else -> ""
+        }.toString()
+    }
+
+    fun getImageUrl(selectedProduct: DelegateAdapterItem): String {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.picture
+            is OngoingRejectedItem -> selectedProduct.picture
+            is FinishedProcessSelectionItem -> selectedProduct.picture
+            is OnSelectionProcessItem -> selectedProduct.picture
+            is WaitingForSelectionItem -> selectedProduct.picture
+            else -> ""
+        }.toString()
     }
 }
 
