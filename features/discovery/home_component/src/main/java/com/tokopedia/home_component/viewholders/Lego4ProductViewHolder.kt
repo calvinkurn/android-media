@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcLego4ProductBinding
-import com.tokopedia.home_component.listener.LegoProductCardListener
+import com.tokopedia.home_component.listener.LegoProductListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
 import com.tokopedia.home_component.model.ChannelGrid
@@ -25,10 +25,11 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Created by frenzel
  */
 class Lego4ProductViewHolder(itemView: View,
+                             private val legoProductListener: LegoProductListener,
                              private val homeComponentListener: HomeComponentListener,
                              val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
                              private val cardInteraction: Boolean = false
-): AbstractViewHolder<Lego4ProductDataModel>(itemView), LegoProductCardListener {
+): AbstractViewHolder<Lego4ProductDataModel>(itemView) {
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.global_dc_lego_4_product
@@ -37,7 +38,6 @@ class Lego4ProductViewHolder(itemView: View,
     }
     private val binding: GlobalDcLego4ProductBinding? by viewBinding()
     private val layoutManager: GridLayoutManager by lazy { GridLayoutManager(itemView.context, SPAN_COUNT) }
-    private lateinit var adapter: Lego4ProductAdapter
 
     private var isCacheData = false
 
@@ -55,6 +55,7 @@ class Lego4ProductViewHolder(itemView: View,
     private fun setHeaderComponent(element: Lego4ProductDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
+                legoProductListener.onSeeAllClicked(element.channelModel, adapterPosition)
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
@@ -76,6 +77,7 @@ class Lego4ProductViewHolder(itemView: View,
         initItems(element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
+                legoProductListener.onChannelImpressed(element.channelModel, adapterPosition)
             }
         }
     }
@@ -86,7 +88,7 @@ class Lego4ProductViewHolder(itemView: View,
     }
 
     private fun initItems(element: Lego4ProductDataModel) {
-        adapter = Lego4ProductAdapter(element.channelModel, convertDataToProductData(element.channelModel))
+        val adapter = Lego4ProductAdapter(element.channelModel, convertDataToProductData(element.channelModel))
         binding?.homeComponentLego4ProductRv?.adapter = adapter
     }
 
@@ -102,35 +104,10 @@ class Lego4ProductViewHolder(itemView: View,
                     blankSpaceConfig = BlankSpaceConfig(),
                     grid = element,
                     applink = element.applink,
-                    listener = this,
+                    listener = legoProductListener,
                 )
             )
         }
         return list
-    }
-
-    override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
-        // tracker to be added
-    }
-
-    override fun onProductCardImpressed(
-        channel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int
-    ) {
-        // tracker to be added
-    }
-
-    override fun onProductCardClicked(
-        channel: ChannelModel,
-        channelGrid: ChannelGrid,
-        position: Int,
-        applink: String
-    ) {
-        // tracker to be added
-    }
-
-    override fun onChannelImpressed(channelModel: ChannelModel, parentPosition: Int) {
-        // tracker to be added
     }
 }

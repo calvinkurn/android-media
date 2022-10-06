@@ -99,6 +99,7 @@ import com.tokopedia.home_component.listener.ReminderWidgetListener
 import com.tokopedia.home_component.listener.SpecialReleaseComponentListener
 import com.tokopedia.home_component.listener.VpsWidgetListener
 import com.tokopedia.home_component.listener.MissionWidgetComponentListener
+import com.tokopedia.home_component.listener.LegoProductListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CampaignWidgetViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
@@ -188,7 +189,8 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                          private val cueWidgetCategoryListener: CueWidgetCategoryListener,
                          private val vpsWidgetListener: VpsWidgetListener,
                          private val categoryWidgetV2Listener: CategoryWidgetV2Listener,
-                         private val missionWidgetComponentListener: MissionWidgetComponentListener
+                         private val missionWidgetComponentListener: MissionWidgetComponentListener,
+                         private val legoProductListener: LegoProductListener
                          ) :
         BaseAdapterTypeFactory(),
         HomeTypeFactory, HomeComponentTypeFactory, RecommendationTypeFactory,
@@ -625,7 +627,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             CueWidgetCategoryViewHolder.LAYOUT -> viewHolder = CueWidgetCategoryViewHolder(view, cueWidgetCategoryListener)
             VpsWidgetViewHolder.LAYOUT -> viewHolder = VpsWidgetViewHolder(view, vpsWidgetListener, homeComponentListener, parentRecycledViewPool)
             MissionWidgetViewHolder.LAYOUT -> viewHolder = MissionWidgetViewHolder(view, missionWidgetComponentListener, cardInteraction = true)
-            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
+            Lego4ProductViewHolder.LAYOUT -> viewHolder = Lego4ProductViewHolder(view, legoProductListener, homeComponentListener, parentRecycledViewPool, cardInteraction = true)
             else -> viewHolder = super.createViewHolder(view, type)
 
         }
