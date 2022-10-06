@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.schedule_slot.viewholder
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.LayoutRes
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
@@ -73,14 +74,14 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
      */
     private fun setState(element: ChooseTimeUiModel) {
         if (element.isEnabled) {
-            description.setTextColor(view.context.resources.getColor(com.tokopedia.logisticcart.R.color.Unify_NN950))
+            description.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.logisticcart.R.color.Unify_NN950))
 
             view.setOnClickListener {
                 iconCheck.visibility = View.VISIBLE
                 listener.onClickTimeListener(element)
             }
         } else {
-            description.setTextColor(view.context.resources.getColor(com.tokopedia.logisticcart.R.color.Unify_NN400))
+            description.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.logisticcart.R.color.Unify_NN400))
         }
     }
 

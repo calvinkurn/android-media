@@ -1,9 +1,11 @@
 package com.tokopedia.logisticcart.schedule_slot.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
@@ -30,13 +32,13 @@ class ChooseDateAdapter(private val items: List<ButtonDateUiModel>, private val 
                 notifyDataSetChanged()
             }
             if (selectedItem == data) {
-                holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_date_selected)
+                holder.container.background = ContextCompat.getDrawable(holder.itemView.context, com.tokopedia.logisticcart.R.drawable.bg_card_date_selected)
             } else {
-                holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_date)
+                holder.container.background = ContextCompat.getDrawable(holder.itemView.context, com.tokopedia.logisticcart.R.drawable.bg_card_date)
             }
         } else {
             holder.ticker.visibility = View.VISIBLE
-            holder.container.background = holder.itemView.context.resources.getDrawable(com.tokopedia.logisticcart.R.drawable.bg_card_disabled)
+            holder.container.background = ContextCompat.getDrawable(holder.itemView.context, com.tokopedia.logisticcart.R.drawable.bg_card_disabled)
         }
     }
 
