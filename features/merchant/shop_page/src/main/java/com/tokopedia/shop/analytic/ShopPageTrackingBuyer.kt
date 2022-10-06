@@ -1317,7 +1317,7 @@ class ShopPageTrackingBuyer(
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DIRECT_PURCHASE_ADD_TO_CART, eventBundle)
     }
 
     private fun createClickProductAtcDirectPurchaseButtonItems(
