@@ -63,10 +63,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     @Inject
     var shippingDurationAdapter: ShippingDurationAdapter? = null
 
-    @JvmField
-    @Inject
-    var mPromoTracker: CheckoutAnalyticsCourierSelection? = null
-
     private var mIsCorner = false
 
     fun show(
@@ -276,12 +272,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun sendAnalyticPromoLogistic(promoViewModelList: List<LogisticPromoUiModel>) {
-        promoViewModelList.forEach {
-            mPromoTracker?.eventViewPromoLogisticTicker(it.promoCode)
-            if (it.disabled) {
-                mPromoTracker?.eventViewPromoLogisticTickerDisable(it.promoCode)
-            }
-        }
         shippingDurationBottomsheetListener?.onShowLogisticPromo(promoViewModelList)
     }
 
@@ -375,7 +365,6 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
     }
 
     override fun onLogisticPromoClicked(data: LogisticPromoUiModel) {
-        mPromoTracker?.eventClickPromoLogisticTicker(data.promoCode)
         presenter?.onLogisticPromoClicked(data)
     }
 

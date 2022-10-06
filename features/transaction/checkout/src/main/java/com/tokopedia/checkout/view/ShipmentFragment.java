@@ -41,6 +41,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
@@ -2057,6 +2058,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                       @Nullable ShippingCourierUiModel courierData, @Nullable RecipientAddressModel recipientAddressModel,
                                       int cartPosition, @Nullable ServiceData serviceData, boolean flagNeedToSetPinpoint,
                                       @Nullable String promoCode, int selectedServiceId, @NotNull LogisticPromoUiModel logisticPromo) {
+        checkoutAnalyticsCourierSelection.eventClickPromoLogisticTicker(promoCode);
         setStateLoadingCourierStateAtIndex(cartPosition, true);
         CourierItemData courierItemData = shippingCourierConverter.convertToCourierItemData(courierData, logisticPromo);
         onShippingDurationChoosen(shippingCourierUiModels, courierItemData, recipientAddressModel,
@@ -2242,6 +2244,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onShowDurationListWithCourierPromo(boolean isCourierPromo, String duration) {
         sendAnalyticsOnDisplayDurationThatContainPromo(isCourierPromo, duration);
+    }
+
+    @Override
+    public void onShowLogisticPromo(@NonNull List<LogisticPromoUiModel> listLogisticPromo) {
+        for (LogisticPromoUiModel promoLogistic: listLogisticPromo) {
+            checkoutAnalyticsCourierSelection.eventViewPromoLogisticTicker(promoLogistic.getPromoCode());
+            if (promoLogistic.getDisabled()) {
+                checkoutAnalyticsCourierSelection.eventViewPromoLogisticTickerDisable(promoLogistic.getPromoCode());
+            }
+        }
     }
 
     @Override

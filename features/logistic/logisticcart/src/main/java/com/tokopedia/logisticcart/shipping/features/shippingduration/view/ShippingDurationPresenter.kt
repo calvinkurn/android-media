@@ -323,7 +323,11 @@ class ShippingDurationPresenter @Inject constructor(
                 }
             }
         }
-        val courierData = shippingCourierUiModelList.find { it.isSelected }
+        val courierData =
+            if (serviceData.selectedShipperProductId > 0) getCourierItemDataById(
+                serviceData.selectedShipperProductId,
+                shippingCourierUiModelList
+            ) else getCourierItemData(shippingCourierUiModelList)
         view?.onShippingDurationAndRecommendCourierChosen(
             shippingCourierUiModelList,
             courierData, cartPosition, selectedServiceId, serviceData,
