@@ -63,7 +63,7 @@ fun UnifySortFilter(
 }
 
 @Composable
-fun ClearSortFilterItem(onClearFilter: () -> Unit) {
+private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     val backgroundColor= colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
     val borderColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN200)
     Surface(
@@ -358,4 +358,81 @@ fun UnifySortFilterItemSelectedPreview() {
 @Composable
 fun UnifySortFilterItemPreview() {
     UnifySortFilterItem(SortFilter("Lokasi", false, {}))
+}
+
+@Preview(name = "Searchbar")
+@Composable
+fun UnifySearchBarPreview() {
+    UnifySearchBar(
+        Modifier,
+        "Cari sesuatu..",
+        onTextChanged = {},
+        onSearchBarCleared = {},
+        onKeyboardSearchAction = {}
+    )
+}
+
+@Preview(name = "Ticker")
+@Composable
+fun UnifyTickerPreview() {
+    UnifyTicker(
+        Modifier,
+        text = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
+        onDismissed = {},
+    )
+}
+
+@Preview(name = "Label (Green)")
+@Composable
+fun UnifyLabelPreview() {
+    UnifyLabel(
+        Modifier,
+        labelText = "Berlangsung",
+        unifyLabelType = UnifyLabelType.HIGHLIGHT_LIGHT_GREEN
+    )
+}
+
+
+@Preview(name = "Label (Red)")
+@Composable
+fun UnifyLabelRedPreview() {
+    UnifyLabel(
+        Modifier,
+        labelText = "Dibatalkan",
+        unifyLabelType = UnifyLabelType.HIGHLIGHT_LIGHT_RED
+    )
+}
+
+@Preview(name = "Button")
+@Composable
+fun UnifyButtonPreview() {
+    UnifyButton(
+        Modifier,
+        text = "Bagikan",
+        onClick = {}
+    )
+}
+
+@Preview(name = "Typography")
+@Composable
+fun UnifyTypographyPreview() {
+    UnifyTypography(
+        text = "Flash Sale",
+        Modifier,
+        type = UnifyTypographyType.DISPLAY_3,
+        weight = UnifyTypographyWeight.REGULAR,
+        colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN500
+    )
+}
+
+@Preview(name = "Typography (Bold)")
+@Composable
+fun UnifyTypographyBoldPreview() {
+    UnifyTypography(
+        text = "Flash Sale",
+        Modifier,
+        type = UnifyTypographyType.DISPLAY_3,
+        weight = UnifyTypographyWeight.BOLD,
+        colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN500
+    )
 }
