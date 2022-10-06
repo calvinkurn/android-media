@@ -99,12 +99,13 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
     }
 
     fun bind(item: ProductCheckingResult) {
+        val statusText = item.checkingDetailResult.statusText
         binding.apply {
             imgProduct.loadImage(item.imageUrl)
             tfProductName.text = item.name
             tfProductName.isVisible = item.name.isNotEmpty()
-            labelStatus.setTextAndCheckShow(item.locationCheckingResult.firstOrNull()?.checkingDetailResult?.statusText.orEmpty())
-            labelStatus.isVisible = !item.isMultiloc
+            labelStatus.text = statusText
+            labelStatus.isVisible = !item.isMultiloc && statusText.isNotEmpty()
             tfSubsidy.text = context.getString(R.string.commonbs_product_check_subsidy_format,
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy

@@ -48,18 +48,15 @@ object ProductCheckingResultMapper {
 
     fun mapItem (item: SubmittedProduct): ProductCheckingResult {
         val productName = item.name.getVariantName()
+        val warehouses = item.warehouses.mapToCheckingResult()
         return ProductCheckingResult (
             productId = item.productId.toString(),
             name = productName,
             imageUrl = item.picture,
             isMultiloc = item.isMultiwarehouse,
-            checkingDetailResult = ProductCheckingResult.CheckingDetailResult(
-                discountedPrice = item.discountedPrice.price.toLong(),
-                originalPrice = item.price.price.toLong(),
-                discountPercent = item.discount.discount.toInt(),
-                stock = item.campaignStock.toLong()
-            ),
-            locationCheckingResult = item.warehouses.mapToCheckingResult()
+            checkingDetailResult = warehouses.firstOrNull()?.checkingDetailResult
+                ?: ProductCheckingResult.CheckingDetailResult(),
+            locationCheckingResult = warehouses
         )
     }
 
