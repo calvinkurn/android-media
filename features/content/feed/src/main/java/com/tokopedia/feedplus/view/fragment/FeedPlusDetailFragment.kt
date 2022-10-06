@@ -60,7 +60,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
@@ -636,6 +635,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     postId,
                     productId,
                     shopId,
+                    0,
                     productItemPostion,
                     type,
                     isFollowed,
@@ -676,7 +676,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.TYPE_NORMAL,
             getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = if(saleStatus == FeedDetailProductModel.UPCOMING) "pre" else "ongoing")
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
     }
@@ -687,6 +687,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             type: String,
             isFollowed: Boolean,
             rowNumber: Int,
+            positionInFeed: Int,
             result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
         Toaster.build(
@@ -696,7 +697,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.TYPE_NORMAL,
             getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = if(saleStatus == FeedDetailProductModel.UPCOMING) "pre" else "ongoing" )
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
         adapter.notifyItemChanged(rowNumber, FeedDetailViewHolder.PAYLOAD_CLICK_WISHLIST)

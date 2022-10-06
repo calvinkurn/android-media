@@ -487,18 +487,27 @@ class FeedViewModel @Inject constructor(
         activityId: String,
         productId: String,
         shopId: String,
+        positionInFeed: Int,
         position: Int,
         type: String,
         isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean,Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
+        onSuccess: (String, String, String, Boolean,Int,Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
         context: Context
     ) {
         launch(baseDispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userSession.userId)
             val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
-                onSuccess.invoke(activityId, shopId, type, isFollowed, position, result.data)
+                onSuccess.invoke(
+                    activityId,
+                    shopId,
+                    type,
+                    isFollowed,
+                    position,
+                    positionInFeed,
+                    result.data
+                )
             } else if (result is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                 onFail.invoke(errorMessage)

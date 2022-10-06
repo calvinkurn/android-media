@@ -536,9 +536,28 @@ class FeedAnalyticTracker
         activityId: String, type: String,
         isFollowed: Boolean,
         shopId: String,
-        mediaType: String = ""
+        mediaType: String = "",
+        campaignStatus: String = ""
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        val trackerId = if (campaignStatus.isNotEmpty()){
+            if (isFollowed) "13446" else "13432"
+        } else ""
+
+        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) {
+            String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                shopId,
+                campaignStatus
+            )
+        } else {
+            String.format(
+                FORMAT_TWO_PARAM,
+                activityId,
+                shopId
+            )
+        }
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -547,17 +566,15 @@ class FeedAnalyticTracker
                     "lihat wishlist",
                     getPostType(type,isFollowed, mediaType)
                 ),
-                KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
-                    activityId,
-                    shopId
-                ),
+                KEY_EVENT_LABEL to finalLabel,
                 KEY_BUSINESS_UNIT_EVENT to CONTENT,
                 KEY_CURRENT_SITE_EVENT to MARKETPLACE,
 
                 KEY_EVENT_USER_ID to userSessionInterface.userId
             )
         )
+        if (trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
@@ -919,7 +936,7 @@ class FeedAnalyticTracker
                 activityId,
                 shopId
             )
-        var map = getCommonMap()
+        var map = getCommonMap(campaignStatus = campaignStatus)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1216,7 +1233,7 @@ class FeedAnalyticTracker
                 activityId,
                 shopId
             )
-        var map = getCommonMap()
+        var map = getCommonMap(campaignStatus = campaignStatus)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1573,7 +1590,7 @@ class FeedAnalyticTracker
                 activityId,
                 shopId
             )
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(

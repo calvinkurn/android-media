@@ -31,12 +31,13 @@ data class FeedXCampaign(
         get() = name == ASGC_RILISAN_SPECIAL ||  name == RILISAN_SPECIAL
 
     val isFlashSaleToko: Boolean
-        get() = name == ASGC_FLASH_SALE_TOKO
+        get() = name == ASGC_FLASH_SALE_TOKO || name == FLASH_SALE_TOKO
 
     companion object {
         private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"//Rilisan Spesial
         private const val RILISAN_SPECIAL = "Rilisan Spesial"
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        private const val FLASH_SALE_TOKO = "Flash Sale Toko"
         const val ONGOING = "ongoing"
         const val UPCOMING = "upcoming"
     }

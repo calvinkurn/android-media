@@ -52,7 +52,7 @@ data class FeedDetailProductModel (
                 get() = saleType == ASGC_RILISAN_SPECIAL
 
         companion object {
-                private const val UPCOMING = "upcoming"
+                const val UPCOMING = "upcoming"
                 private const val ONGOING = "ongoing"
                 private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
 

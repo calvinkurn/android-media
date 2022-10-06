@@ -1659,8 +1659,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed,
                     authorId,
                     mediaType,
-                    trackerIdReport,
-                    getTrackerLabelSuffixFromPosition(positionInFeed)
+                    trackerId = trackerIdReport,
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -1694,7 +1694,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     finalId, "unfollow",
                     postType,
                     isFollowed, authorId, mediaType,
-                    getTrackerLabelSuffixFromPosition(positionInFeed)
+                    trackerId = "17986",
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
@@ -2509,6 +2510,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         playChannelId: String,
         mediaType: String,
         productRowNumber: Int = 0,
+        positionInFeed: Int,
         trackerid: String = "",
         campaignStatus: String = ""
     ) {
@@ -2534,6 +2536,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     postId,
                     productId,
                     shopId,
+                    positionInFeed,
                     productRowNumber,
                     type,
                     isFollowed,
@@ -2585,6 +2588,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         itemRowNumber: Int,
+        positionInFeed: Int,
         result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
         Toaster.build(
@@ -2594,7 +2598,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toaster.TYPE_NORMAL,
             getString(Rwishlist.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed))
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
         productTagBS.changeWishlistIconOnWishlistSuccess(itemRowNumber)
@@ -3052,7 +3056,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     if (feedXCardData.followers.isFollowed)
                         "13423"
                     else
-                        "17986"
+                        ""
                 } else ""
 
                 feedAnalytics.eventClickFollowitem(
@@ -3062,7 +3066,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     !item.feedXCard.followers.isFollowed,
                     item.feedXCard.author.id,
                     item.feedXCard.media.firstOrNull()?.type ?: "",
-                    trackerId
+                    trackerId = trackerId
                 )
 
                 if (item.feedXCard.followers.isFollowed)
@@ -3677,7 +3681,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.isFollowed,
                 item.shopId,
                 item.playChannelId,
-                item.mediaType
+                item.mediaType,
+                positionInFeed = item.positionInFeed
             )
         }
     }
@@ -3720,6 +3725,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             item.playChannelId,
             item.mediaType,
             rowNumber,
+            item.positionInFeed,
             trackerId,
             getTrackerLabelSuffixFromPosition(item.positionInFeed)
         )
