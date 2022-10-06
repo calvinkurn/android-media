@@ -2058,7 +2058,6 @@ open class ProductManageFragment :
 
         if (item != null) {
             if (getVisiblePercent(item) == 0) {
-                isShowCoachMarkNotifyMe = true
                 recyclerView?.removeOnScrollListener(recyclerViewScrollListener)
                 coachMarkNotifyMe?.showCoachMark(
                     step = getCoachMarkNotifyMe(item)
@@ -3244,6 +3243,7 @@ open class ProductManageFragment :
                     it,
                     SHARED_PREF_PRODUCT_MANAGE_SHOW_NOTIFY_ME_COACH_MARK
                 ) -> {
+                    isShowCoachMarkNotifyMe = true
                     showCoachMarkNotifyMe()
                 }
                 isFlagStockreminder && !CoachMarkPreference.hasShown(
