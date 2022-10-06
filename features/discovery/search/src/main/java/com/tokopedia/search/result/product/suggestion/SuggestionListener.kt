@@ -1,6 +1,4 @@
-package com.tokopedia.search.result.presentation.view.listener
-
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+package com.tokopedia.search.result.product.suggestion
 
 interface SuggestionListener {
     fun onSuggestionImpressed(suggestionDataView: SuggestionDataView)

@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.suggestion
 
 import android.text.Html
 import android.view.View
@@ -8,13 +8,11 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductSuggestionLayoutBinding
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SuggestionViewHolder(
-        itemView: View,
-        private val suggestionListener: SuggestionListener,
+    itemView: View,
+    private val suggestionListener: SuggestionListener,
 ) : AbstractViewHolder<SuggestionDataView>(itemView) {
 
     companion object {

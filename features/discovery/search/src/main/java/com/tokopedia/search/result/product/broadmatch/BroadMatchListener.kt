@@ -1,9 +1,7 @@
-package com.tokopedia.search.result.presentation.view.listener
+package com.tokopedia.search.result.product.broadmatch
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productcard.ProductCardLifecycleObserver
-import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 
 interface BroadMatchListener {
     fun onBroadMatchImpressed(broadMatchDataView: BroadMatchDataView)
