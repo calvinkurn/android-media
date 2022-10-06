@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:gravity="center_vertical">
+    android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvTableColumnHtml"
@@ -28,7 +26,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/icon"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        />
+        android:layout_width="14dp"
+        android:layout_height="14dp"
+        android:scaleType="fitXY"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp" />
 </LinearLayout>
