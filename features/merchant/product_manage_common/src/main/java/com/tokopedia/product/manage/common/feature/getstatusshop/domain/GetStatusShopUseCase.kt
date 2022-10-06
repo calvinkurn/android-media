@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.preview.domain.usecase
+package com.tokopedia.product.manage.common.feature.getstatusshop.domain
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.GraphqlConstant
@@ -7,8 +7,8 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.product.addedit.preview.data.model.responses.ShopStatusResponse
-import com.tokopedia.product.addedit.preview.data.source.api.response.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.response.ShopStatusResponse
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
@@ -16,7 +16,7 @@ import javax.inject.Inject
 @GqlQuery("GetShopStatusGqlQuery", GetStatusShopUseCase.QUERY)
 class GetStatusShopUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
-) : UseCase<StatusInfo>(){
+) : UseCase<StatusInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 

@@ -1,4 +1,4 @@
-package com.tokopedia.product.addedit.preview.data.source.api.response
+package com.tokopedia.product.manage.common.feature.getstatusshop.data.model
 
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toIntOrZero

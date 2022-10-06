@@ -28,7 +28,6 @@ import com.tokopedia.product.addedit.preview.data.source.api.response.Product
 import com.tokopedia.product.addedit.preview.domain.mapper.GetProductMapper
 import com.tokopedia.product.addedit.preview.domain.usecase.GetProductUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.GetShopInfoLocationUseCase
-import com.tokopedia.product.addedit.preview.domain.usecase.GetStatusShopUseCase
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.DRAFT_SHOWCASE_ID
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -40,6 +39,7 @@ import com.tokopedia.product.addedit.specification.presentation.model.Specificat
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel.Result.*
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation

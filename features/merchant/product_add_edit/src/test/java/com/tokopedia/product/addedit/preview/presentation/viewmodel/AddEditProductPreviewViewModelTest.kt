@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
-import com.tokopedia.product.addedit.preview.data.source.api.response.StatusInfo
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductLimitationData
@@ -26,6 +25,7 @@ import com.tokopedia.product.addedit.variant.presentation.model.ProductVariantIn
 import com.tokopedia.product.addedit.variant.presentation.model.ValidationResultModel
 import com.tokopedia.product.addedit.variant.presentation.model.VariantInputModel
 import com.tokopedia.product.manage.common.feature.draft.data.model.ProductDraft
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.graphql.data.shopopen.SaveShipmentLocation
 import com.tokopedia.usecase.coroutines.Fail
