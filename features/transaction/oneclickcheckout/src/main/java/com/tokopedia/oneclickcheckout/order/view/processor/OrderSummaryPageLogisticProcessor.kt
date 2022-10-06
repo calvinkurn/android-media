@@ -797,6 +797,11 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 if (shippingDurationViewModel.serviceData.serviceId == selectedServiceId) {
                     shippingDurationViewModel.isSelected = true
                     selectedShippingDurationViewModel = shippingDurationViewModel
+                    // Update courier recommendation selection state
+                    // based from selectedShippingCourierUiModel from bottomsheet shipping
+                    for (courier in selectedShippingDurationViewModel.shippingCourierViewModelList) {
+                        courier.isSelected = courier.productData.shipperProductId == selectedShippingCourierUiModel.productData.shipperProductId
+                    }
                 } else {
                     shippingDurationViewModel.isSelected = false
                 }
