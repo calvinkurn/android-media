@@ -16,18 +16,16 @@ import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat.view.mapper.TokoChatConversationMapper.mapToMessageBubbleUi
 import com.tokopedia.tokochat.view.activity.TokoChatActivity
+import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
-import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -41,6 +39,9 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
+
+    @Inject
+    lateinit var mapper: TokoChatConversationUiMapper
 
     private var channelUrl = ""
 
@@ -246,10 +247,12 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     private fun observeChatHistory() {
         viewModel.getChatHistory(channelUrl).observe(viewLifecycleOwner) {
-            val result = it.mapToMessageBubbleUi(viewModel.getUserId())
-            adapter.addItems(result)
+            val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
+            adapter.setItems(result)
             adapter.notifyDataSetChanged()
         }
+
+        viewModel.getGroupBookingChannel(channelUrl)
     }
 
     companion object {

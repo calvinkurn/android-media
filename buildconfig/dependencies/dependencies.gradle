@@ -93,7 +93,7 @@ ext {
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
-    conversationsVersion = '7.3.2'
+    conversationsVersion = '7.6.0'
     gojekCourierVersion = '0.0.9'
 
     benchmarkTestVersion = '1.0.0'

@@ -21,10 +21,10 @@ import com.tokopedia.tokochat.domain.usecase.GetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.SendMessageUseCase
+import com.tokopedia.tokochat.domain.usecase.MutationTokoChatMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
-import com.tokopedia.tokochat.domain.MutationProfileUseCase
+import com.tokopedia.tokochat.domain.usecase.MutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -40,7 +40,7 @@ class TokoChatViewModel @Inject constructor(
     private val getChatHistoryUseCase: GetChatHistoryUseCase,
     private val markAsReadUseCase: MarkAsReadUseCase,
     private val registrationActiveChannelUseCase: RegistrationActiveChannelUseCase,
-    private val sendMessageUseCase: SendMessageUseCase,
+    private val mutationTokoChatMessageUseCase: MutationTokoChatMessageUseCase,
     private val getTypingUseCase: GetTypingUseCase,
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val profileUseCase: MutationProfileUseCase,
@@ -66,7 +66,7 @@ class TokoChatViewModel @Inject constructor(
     fun sendMessage(channelId: String, text: String) {
         try {
             val messageMetaData = SendMessageMetaData()
-            sendMessageUseCase.sendTextMessage(
+            mutationTokoChatMessageUseCase.sendTextMessage(
                 channelId,
                 text,
                 messageMetaData
@@ -276,7 +276,7 @@ class TokoChatViewModel @Inject constructor(
     fun sendExtensionMessage(channelId: String) {
         try {
             val extensionMessage = getExtensionMessage()
-            sendMessageUseCase.sendExtensionMessage(
+            mutationTokoChatMessageUseCase.sendExtensionMessage(
                 channelId,
                 extensionMessage,
                 onSuccess = {},

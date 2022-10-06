@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat_common.view.adapter.viewholder.message_bubble
+package com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history
 
 import android.graphics.drawable.Drawable
 import android.view.Gravity

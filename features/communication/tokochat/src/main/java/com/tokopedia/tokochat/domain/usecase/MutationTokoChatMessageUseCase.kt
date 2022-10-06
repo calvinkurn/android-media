@@ -6,7 +6,7 @@ import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
 
-class SendMessageUseCase @Inject constructor(
+class MutationTokoChatMessageUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
     fun sendTextMessage(

@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MILLISECONDS
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
@@ -109,7 +108,7 @@ object TokoChatMessageBubbleViewHolderBinder {
 
     private fun getHourTime(replyTime: Long): String {
         return try {
-            TokoChatTimeConverter.formatTime(replyTime / MILLISECONDS)
+            TokoChatTimeConverter.formatTime(replyTime)
         } catch (error: Throwable) {
             ""
         }

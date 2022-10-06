@@ -127,6 +127,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return "tokopedia://tokochat?orderIdGojek=RB-109130-5632035"
+        return "tokopedia://tokochat?orderIdGojek=RB-172615-6841279"
     }
 }

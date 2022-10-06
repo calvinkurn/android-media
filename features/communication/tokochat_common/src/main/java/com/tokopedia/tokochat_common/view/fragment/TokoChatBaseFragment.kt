@@ -50,9 +50,12 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     private fun setupChatRoomRecyclerView() {
         baseBinding?.tokochatChatroomRv?.layoutManager = LinearLayoutManager(
-            context,
-            LinearLayoutManager.VERTICAL, false
+            context, LinearLayoutManager.VERTICAL, false
         )
+        baseBinding?.tokochatChatroomRv?.setHasFixedSize(true)
+        baseBinding?.tokochatChatroomRv?.itemAnimator = null
+        (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).stackFromEnd = false
+        (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).reverseLayout = true
         baseBinding?.tokochatChatroomRv?.adapter = adapter
     }
 }

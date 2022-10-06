@@ -9,9 +9,9 @@ import com.tokopedia.tokochat.domain.usecase.CreateChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.GetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.usecase.GetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
-import com.tokopedia.tokochat.domain.MutationProfileUseCase
+import com.tokopedia.tokochat.domain.usecase.MutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.SendMessageUseCase
+import com.tokopedia.tokochat.domain.usecase.MutationTokoChatMessageUseCase
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.tokochat_common.util.TokoChatCacheManagerImpl
 import dagger.Module
@@ -70,8 +70,8 @@ object TokoChatUseCaseModule {
     @Provides
     fun provideSendMessageUseCase(
         repository: TokoChatRepository
-    ): SendMessageUseCase {
-        return SendMessageUseCase(repository)
+    ): MutationTokoChatMessageUseCase {
+        return MutationTokoChatMessageUseCase(repository)
     }
 
 
