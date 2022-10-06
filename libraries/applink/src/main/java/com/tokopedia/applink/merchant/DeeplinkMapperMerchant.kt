@@ -389,7 +389,7 @@ object DeeplinkMapperMerchant {
         } else {
             deeplink.split(path).firstOrNull()
         }
-        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE && pathSegmentSize == FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE
+        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE && pathSegmentSize >= FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE
     }
 
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {

@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -104,8 +105,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
-        if (appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size == APPLINK_SEGMENTS_SIZE) {
-            appLinkData.lastPathSegment?.toLong().orZero()
+        if (isOpenedFromApplink(appLinkData)) {
+            appLinkData?.lastPathSegment?.toLong().orZero()
         } else {
             arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
         }
@@ -1423,5 +1424,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setCoachMarkAlreadyShown() {
         viewModel.setSharedPrefCoachMarkAlreadyShown()
+    }
+
+    private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
+        return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
     }
 }
