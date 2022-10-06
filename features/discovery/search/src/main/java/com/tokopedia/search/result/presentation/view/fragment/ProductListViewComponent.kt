@@ -9,6 +9,7 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchOnBoardingLocalCacheModule
 import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
+import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
@@ -16,10 +17,13 @@ import com.tokopedia.search.result.domain.usecase.getlocalsearchrecommendation.G
 import com.tokopedia.search.result.domain.usecase.getproductcount.GetProductCountUseCaseModule
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
+import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
+import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.pagination.PaginationModule
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationModule
 import com.tokopedia.search.utils.ProductionSchedulersProviderModule
 import com.tokopedia.topads.sdk.di.TopAdsUrlHitterModule
 import dagger.Component
@@ -39,6 +43,8 @@ import dagger.Component
     ProductionSchedulersProviderModule::class,
     GetInspirationCarouselChipsProductUseCaseModule::class,
     SaveLastFilterUseCaseModule::class,
+    SearchSameSessionRecommendationUseCaseModule::class,
+    SameSessionRecommendationModule::class,
     IrisModule::class,
     PerformanceMonitoringModule::class,
     ChooseAddressViewModule::class,
@@ -48,6 +54,8 @@ import dagger.Component
     ProductListPresenterModule::class,
     FilterControllerModule::class,
     ProductListPresenterModule::class,
+    StaggeredGridLayoutManagerModule::class,
+    BannedProductsViewModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

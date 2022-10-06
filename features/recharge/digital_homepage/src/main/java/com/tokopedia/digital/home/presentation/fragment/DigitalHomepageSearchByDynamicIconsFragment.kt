@@ -3,7 +3,6 @@ package com.tokopedia.digital.home.presentation.fragment
 import android.os.Bundle
 import android.view.View
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**

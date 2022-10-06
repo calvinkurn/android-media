@@ -36,5 +36,24 @@ data class PriceSuggestionSuggestedPriceGet (
 
         @SerializedName("title")
         @Expose
-        val title: String = ""
+        val title: String = "",
+
+        @SerializedName("productRecommendation")
+        @Expose
+        val productRecommendation: List<ProductRecommendationResponse> = listOf()
+)
+
+data class ProductRecommendationResponse(
+        @SerializedName("productID")
+        val productID: String? = "",
+        @SerializedName("price")
+        val price: Double? = 0.0,
+        @SerializedName("imageURL")
+        val imageURL: String? = "",
+        @SerializedName("sold")
+        val sold: Int? = 0,
+        @SerializedName("rating")
+        val rating: Double? = 0.0,
+        @SerializedName("title")
+        val title: String? = ""
 )

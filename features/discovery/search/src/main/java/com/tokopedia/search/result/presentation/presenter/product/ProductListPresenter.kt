@@ -37,8 +37,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -58,6 +56,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -65,6 +64,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -85,6 +85,7 @@ import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_P
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.separator.VerticalSeparatorMapper
@@ -145,6 +146,8 @@ class ProductListPresenter @Inject constructor(
     private val requestParamsGenerator: RequestParamsGenerator,
     private val paginationImpl: PaginationImpl,
     private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
+    private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -162,12 +165,15 @@ class ProductListPresenter @Inject constructor(
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
                 SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
+                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
         )
         private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val DEFAULT_USER_ID = "0"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
+        private const val PRODUCT_BUNDLE_MINIMUM_SIZE = 2
+        private const val PRODUCT_BUNDLE_MAXIMUM_SIZE = 7
         private val LOCAL_SEARCH_KEY_PARAMS = listOf(
                 SearchApiConst.NAVSOURCE,
                 SearchApiConst.SRP_PAGE_ID,
@@ -275,7 +281,6 @@ class ProductListPresenter @Inject constructor(
 
     override fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean) {
         if (isViewVisible) {
-            view.setupSearchNavigation()
             view.trackScreenAuthenticated()
 
             if (isViewAdded && !hasLoadData)
@@ -472,6 +477,7 @@ class ProductListPresenter @Inject constructor(
                 dimension90,
                 productListType,
                 externalReference,
+                productDataView.keywordIntention,
             )
     }
 
@@ -713,8 +719,11 @@ class ProductListPresenter @Inject constructor(
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
-            if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
+            if (bannedProductsPresenterDelegate.isBannedProducts(searchProduct)) {
+                bannedProductsPresenterDelegate.processBannedProducts(
+                    searchProduct,
+                    getGlobalNavViewModel(productDataView)
+                )
             } else if(productDataView.violation != null) {
                 getViewToHandleViolation(productDataView)
             } else {
@@ -761,31 +770,6 @@ class ProductListPresenter @Inject constructor(
             relatedDataView = null
         }
     }
-
-    private fun getViewToHandleEmptySearchWithErrorMessage(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ) {
-        val bannedProductsVisitableList =
-            createBannedProductsVisitableList(searchProduct, productDataView)
-
-        view.removeLoading()
-        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
-        view.trackEventImpressionBannedProducts(true)
-    }
-
-    private fun createBannedProductsVisitableList(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-        }
-
 
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
@@ -995,11 +979,6 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
-        if (searchProduct.header.errorMessage.isNotEmpty()) {
-            list.add(createBannedProductsTickerDataView(searchProduct.header.errorMessage))
-            view.trackEventImpressionBannedProducts(false)
-        }
-
         adsInjector.resetTopAdsPosition()
         productList = createProductItemVisitableList(
             productDataView,
@@ -1175,11 +1154,6 @@ class ProductListPresenter @Inject constructor(
         visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
     }
 
-    private fun createBannedProductsTickerDataView(errorMessage: String): BannedProductsTickerDataView {
-        val htmlErrorMessage = "$errorMessage Gunakan browser"
-        return BannedProductsTickerDataView(htmlErrorMessage)
-    }
-
     private fun processInspirationWidgetPosition(
         searchParameter: Map<String, Any>,
         list: MutableList<Visitable<*>>,
@@ -1255,9 +1229,15 @@ class ProductListPresenter @Inject constructor(
     private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
         return !isABTestVideoWidget && isVideoLayout() && isFirstOptionHasNoProducts()
     }
+    private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
+        return isBundleLayout()
+            && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
+    }
 
     private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout() || data.isInvalidCarouselVideoLayout()
+        return data.isInvalidCarouselChipsLayout()
+            || data.isInvalidCarouselVideoLayout()
+            || data.isInvalidProductBundleLayout()
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -1273,6 +1253,7 @@ class ProductListPresenter @Inject constructor(
         when {
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
+            data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1286,6 +1267,17 @@ class ProductListPresenter @Inject constructor(
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
     private fun InspirationCarouselDataView.isVideoLayout() =
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+    private fun InspirationCarouselDataView.isBundleLayout() =
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
+
+    private fun convertInspirationCarouselToInspirationProductBundle(
+        data: InspirationCarouselDataView
+    ): List<Visitable<*>> {
+        return listOf(data.convertToInspirationProductBundleDataView(
+            view.queryKey,
+            externalReference,
+        ))
+    }
 
     private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
         return listOf(InspirationCarouselVideoDataView(data))
@@ -1933,6 +1925,13 @@ class ProductListPresenter @Inject constructor(
         if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
         else getViewToTrackOnClickOrganicProduct(item)
 
+        sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
+            item,
+            adapterPosition,
+            dimension90,
+            externalReference,
+        )
+
         view.routeToProductDetail(item, adapterPosition)
     }
 
@@ -2261,36 +2260,9 @@ class ProductListPresenter @Inject constructor(
     }
     //endregion
 
-    //region Change View
-    override fun handleChangeView(position: Int, currentLayoutType: SearchConstant.ViewType) {
-        if (isViewNotAttached) return
-
-        when (currentLayoutType) {
-            SearchConstant.ViewType.LIST -> switchToBigGridView(position)
-            SearchConstant.ViewType.SMALL_GRID -> switchToListView(position)
-            SearchConstant.ViewType.BIG_GRID -> switchToSmallGridView(position)
-        }
-    }
-
     override fun onViewResumed() {
         chooseAddressDelegate.reCheckChooseAddressData(::refreshData)
     }
-
-    private fun switchToBigGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToBigGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_BIG_GRID)
-    }
-
-    private fun switchToListView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToListView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_LIST)
-    }
-
-    private fun switchToSmallGridView(position: Int) {
-        view.switchSearchNavigationLayoutTypeToSmallGridView(position)
-        view.trackEventSearchResultChangeView(SearchConstant.DefaultViewType.VIEW_TYPE_NAME_SMALL_GRID)
-    }
-    //endregion
 
     override fun onLocalizingAddressSelected() {
         chooseAddressDelegate.updateChooseAddress(::refreshData)

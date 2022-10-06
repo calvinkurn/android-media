@@ -5,6 +5,7 @@ import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
+import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
@@ -49,6 +50,7 @@ class InspirationCarouselDataView(
         val trackingOption: Int = 0,
         val dimension90: String = "",
         val cardButton: CardButton = CardButton(),
+        val bundle: Bundle = Bundle(),
     ): Visitable<InspirationCarouselOptionTypeFactory>{
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -106,6 +108,9 @@ class InspirationCarouselDataView(
             val dimension90: String = "",
             val customVideoURL : String = "",
             val externalReference: String = "",
+            val discount : String = "",
+            val label: String = "",
+            val bundleId: String = "",
         ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
@@ -199,6 +204,39 @@ class InspirationCarouselDataView(
     }
 
     data class CardButton(val title: String = "", val applink: String = "")
+
+    data class Bundle(
+        val shop: Shop = Shop(),
+        val countSold: String = "",
+        val price: Long = 0,
+        val originalPrice: String = "",
+        val discount: String = "",
+        val discountPercentage: Int = 0,
+    ) {
+        companion object {
+            fun create(option: SearchProductModel.InspirationCarouselOption): Bundle {
+                return Bundle(
+                    Shop.create(option.bundle.shop),
+                    option.bundle.countSold,
+                    option.bundle.price,
+                    option.bundle.originalPrice,
+                    option.bundle.discount,
+                    option.bundle.discountPercentage,
+                )
+            }
+        }
+
+        data class Shop(
+            val name: String = "",
+            val url: String = "",
+        ) {
+            companion object {
+                fun create(shop: SearchProductModel.InspirationCarouselBundle.Shop): Shop {
+                    return Shop(shop.name, shop.url)
+                }
+            }
+        }
+    }
 }
 
 

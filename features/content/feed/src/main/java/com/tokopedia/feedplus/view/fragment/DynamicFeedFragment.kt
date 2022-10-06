@@ -1,7 +1,5 @@
 package com.tokopedia.feedplus.view.fragment
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +19,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedplus.R
@@ -35,6 +31,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
 /**
  * @author by yoasfs on 2019-08-06
@@ -43,7 +41,8 @@ class DynamicFeedFragment:
         BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
         HighlightAdapter.HighlightListener,
         CardTitleView.CardTitleListener,
-        DynamicFeedContract.View {
+        DynamicFeedContract.View,
+        FeedPlusTabParentFragment {
 
     companion object {
         private const val REQUEST_LOGIN = 345
@@ -76,6 +75,8 @@ class DynamicFeedFragment:
 
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
+    private var mContainerListener: FeedPlusContainerListener? = null
     
     /** View */
     private lateinit var rvDynamicFeed: RecyclerView
@@ -126,6 +127,8 @@ class DynamicFeedFragment:
         updateCursor("")
         swipeToRefresh.isRefreshing = true
         presenter.getFeedFirstPage(true)
+
+        mContainerListener?.onChildRefresh()
     }
 
     override fun getRecyclerView(view: View?): RecyclerView {
@@ -163,8 +166,6 @@ class DynamicFeedFragment:
     }
 
     override fun onTitleCtaClick(redirectUrl: String, adapterPosition: Int) {
-        val item = ((adapter.list[adapterPosition]) as HighlightViewModel)
-        feedAnalyticTracker.eventTrendingClickSeeAll(item.postId)
         onGoToLink(redirectUrl)
     }
 
@@ -206,8 +207,6 @@ class DynamicFeedFragment:
     }
 
     override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta, type: String, isFollowed: Boolean, shopId: String, mediaType: String, isCaption: Boolean) {
-        val item = ((adapter.list[positionInFeed]) as HighlightViewModel)
-        feedAnalyticTracker.eventTrendingClickProfile(item.postId)
         onGoToLink(redirectUrl)
     }
 
@@ -241,14 +240,6 @@ class DynamicFeedFragment:
         onGoToLink(redirectUrl)
     }
 
-    override fun onSuccessLike(rowNumber: Int, columnNumber: Int) {
-        onSuccessLikeUnlike(rowNumber, columnNumber)
-    }
-
-    override fun onSuccessUnlike(rowNumber: Int, columnNumber: Int) {
-        onSuccessLikeUnlike(rowNumber, columnNumber)
-    }
-
     override fun onErrorLikeUnlike(err: String) {
         showSnackbar(err)
     }
@@ -267,18 +258,8 @@ class DynamicFeedFragment:
         onGoToLink(item.applink)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            KOL_COMMENT_CODE -> {
-                if (resultCode == Activity.RESULT_OK && data != null) {
-                    onSuccessAddDeleteKolComment(
-                            data.getIntExtra(COMMENT_ARGS_POSITION, -1),
-                            data.getIntExtra(COMMENT_ARGS_POSITION_COLUMN, -1),
-                            data.getIntExtra(COMMENT_ARGS_TOTAL_COMMENT, 0))
-                }
-            }
-        }
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 
     private fun onGoToLink(url: String) {
@@ -289,61 +270,6 @@ class DynamicFeedFragment:
                     activity,
                     String.format("%s?url=%s", ApplinkConst.WEBVIEW, url)
             )
-        }
-    }
-
-    private fun onSuccessLikeUnlike(rowNumber: Int, columnNumber: Int) {
-        try {
-            if (adapter.data.size > rowNumber
-                    && adapter.data[rowNumber] != null
-                    && adapter.data[rowNumber] is HighlightViewModel) {
-                val model = adapter.data[rowNumber] as HighlightViewModel
-                val like = model.cards[columnNumber].footer.like
-                like.isChecked = !like.isChecked
-                if (like.isChecked) {
-                    try {
-                        val likeValue = Integer.valueOf(like.fmt) + 1
-                        like.fmt = likeValue.toString()
-                    } catch (ignored: NumberFormatException) {
-                    }
-
-                    like.value = like.value + 1
-                } else {
-                    try {
-                        val likeValue = Integer.valueOf(like.fmt) - 1
-                        like.fmt = likeValue.toString()
-                    } catch (ignored: NumberFormatException) {
-                    }
-
-                    like.value = like.value - 1
-                }
-                val payloads: MutableList<Int> = ArrayList()
-                payloads.add(HighlightViewHolder.PAYLOAD_UPDATE_LIKE)
-                payloads.add(columnNumber)
-                adapter.notifyItemChanged(rowNumber, payloads)
-            }
-        } catch(e: Exception) {
-            e.localizedMessage
-        }
-    }
-
-    private fun onSuccessAddDeleteKolComment(rowNumber: Int, columnNumber: Int, totalNewComment: Int) {
-
-        if (adapter.data.size > rowNumber &&
-                adapter.data[rowNumber] != null &&
-                adapter.data[rowNumber] is HighlightViewModel) {
-            val comment = ((adapter.data[rowNumber]) as HighlightViewModel).cards[columnNumber].footer.comment
-            try {
-                val commentValue = Integer.valueOf(comment.fmt) + totalNewComment
-                comment.fmt = commentValue.toString()
-            } catch (ignored: NumberFormatException) {
-            }
-
-            comment.value = comment.value + totalNewComment
-            val payloads: MutableList<Int> = ArrayList()
-            payloads.add(HighlightViewHolder.PAYLOAD_UPDATE_COMMENT)
-            payloads.add(columnNumber)
-            adapter.notifyItemChanged(rowNumber, payloads)
         }
     }
 
