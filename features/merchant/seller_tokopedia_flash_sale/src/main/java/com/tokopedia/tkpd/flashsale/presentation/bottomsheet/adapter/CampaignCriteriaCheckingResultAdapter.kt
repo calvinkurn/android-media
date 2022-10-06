@@ -9,13 +9,17 @@ import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 
 class CampaignCriteriaCheckingResultAdapter: RecyclerView.Adapter<CampaignCriteriaCheckingResultViewHolder>() {
 
+    companion object {
+        private const val SINGLE_PRODUCT_COUNT = 1
+    }
+
     private var data: List<CriteriaCheckingResult> = emptyList()
     private var onClickListener: (locationResult: List<CriteriaCheckingResult.LocationCheckingResult>) -> Unit = {}
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CampaignCriteriaCheckingResultViewHolder {
         val binding = StfsItemCampaignCriteriaResultBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
-        return CampaignCriteriaCheckingResultViewHolder(binding, onClickListener)
+        return CampaignCriteriaCheckingResultViewHolder(binding, onClickListener, isVariant = data.size > SINGLE_PRODUCT_COUNT)
     }
 
     override fun getItemCount() = data.size
