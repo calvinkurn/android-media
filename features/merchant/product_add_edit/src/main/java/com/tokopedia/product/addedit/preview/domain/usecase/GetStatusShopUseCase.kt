@@ -1,7 +1,10 @@
 package com.tokopedia.product.addedit.preview.domain.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.GraphqlConstant
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.product.addedit.preview.data.model.responses.ShopStatusResponse
@@ -18,12 +21,18 @@ class GetStatusShopUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     override suspend fun executeOnBackground(): StatusInfo {
+
         val gqlRequest = GraphqlRequest(
             GetShopStatusGqlQuery(),
             ShopStatusResponse::class.java,
             params.parameters
         )
-        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
+
+        val cacheStrategy = GraphqlCacheStrategy
+            .Builder(CacheType.CACHE_FIRST)
+            .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build()
+
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
 
         val gqlErrors = gqlResponse.getError(ShopStatusResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {

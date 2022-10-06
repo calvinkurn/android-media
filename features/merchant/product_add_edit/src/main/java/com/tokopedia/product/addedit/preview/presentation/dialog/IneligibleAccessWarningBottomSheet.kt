@@ -1,5 +1,6 @@
 package com.tokopedia.product.addedit.preview.presentation.dialog
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val DEFAULT_IMAGE_URL = "https://assets.tokopedia.net/assets-tokopedia-lite/v2/icarus/kratos/d56aca5b.png "
+        private const val DEFAULT_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access.png"
 
         @JvmStatic
         fun newInstance() = IneligibleAccessWarningBottomSheet()
@@ -21,6 +22,7 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetIneligibleAccessWarningBinding>()
     private var onButtonBackClicked : () -> Unit = {}
     private var onButtonLearningProblem : () -> Unit = {}
+    private var dismissListener : () -> Unit = {}
 
     init {
         clearContentPadding = true
@@ -49,6 +51,11 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
         setupView()
     }
 
+    override fun onDismiss(dialog: DialogInterface) {
+        dismissListener()
+        super.onDismiss(dialog)
+    }
+
     private fun setupView() {
         binding?.run {
             imageView.loadImage(DEFAULT_IMAGE_URL)
@@ -71,5 +78,7 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
         this.onButtonLearningProblem = onButtonClicked
     }
 
-
+    fun setDismissListener(onDismissListener : () -> Unit = {}){
+        this.dismissListener = onDismissListener
+    }
 }

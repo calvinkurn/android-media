@@ -11,7 +11,6 @@ import com.tokopedia.product.addedit.detail.presentation.model.PictureInputModel
 import com.tokopedia.product.addedit.detail.presentation.model.WholeSaleInputModel
 import com.tokopedia.product.addedit.preview.data.model.responses.ValidateProductNameResponse
 import com.tokopedia.product.addedit.preview.data.source.api.response.Product
-import com.tokopedia.product.addedit.preview.data.source.api.response.ShopInfo
 import com.tokopedia.product.addedit.preview.data.source.api.response.StatusInfo
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.productlimitation.domain.model.ProductAddRuleResponse
@@ -459,26 +458,31 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     @Test
     fun  `When validate shop location should be true`() = runBlocking {
-        val shopStatus = StatusInfo(
-            shopStatus = "1",
-            statusTitle= "Open",
-            statusMessage = "",
-            tickerType ="warning"
-        )
-        onGetShopInfoLocation_thenReturn()
-        onGetShopStatus_thenReturn(shopStatus)
 
-        viewModel.validateShopInformation(121313)
+        onGetShopInfoLocation_thenReturn()
+
+        viewModel.validateShopLocation(121313)
 
         viewModel.locationValidation.getOrAwaitValue()
         verifyValidateShopLocation()
     }
 
     @Test
+    fun  `When validate shop location should be false`() = runBlocking {
+
+        onGetShopInfoLocation_thenReturn_false()
+
+        viewModel.validateShopLocation(121313)
+
+        viewModel.locationValidation.getOrAwaitValue()
+        verifyValidateShopLocationIsFlase()
+    }
+
+    @Test
     fun  `When validate shop location error, should post error to observer`() = runBlocking {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } throws MessageErrorException("")
 
-        viewModel.validateShopInformation(121313)
+        viewModel.validateShopLocation(121313)
 
         coVerify {
             getShopInfoLocationUseCase.executeOnBackground()
@@ -899,10 +903,9 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
             statusMessage = "",
             tickerType ="warning"
         )
-        onGetShopInfoLocation_thenReturn()
         onGetShopStatus_thenReturn(shopStatus)
 
-        viewModel.validateShopInformation(121313)
+        viewModel.validateShopIsOnModerated(121313)
 
         viewModel.isOnModerationMode.getOrAwaitValue()
         verifyValidateShopIsNotModerate()
@@ -916,13 +919,25 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
             statusMessage = "Your shope is on moderate status",
             tickerType ="warning"
         )
-        onGetShopInfoLocation_thenReturn()
         onGetShopStatus_thenReturn(shopStatus)
 
-        viewModel.validateShopInformation(121313)
+        viewModel.validateShopIsOnModerated(121313)
 
         viewModel.isOnModerationMode.getOrAwaitValue()
         verifyValidateShopIsModerate()
+    }
+
+    @Test
+    fun  `When validate shop isModerate error, should post error to observer`() = runBlocking {
+        coEvery { getStatusShopUseCase.executeOnBackground() } throws MessageErrorException("")
+
+        viewModel.validateShopIsOnModerated(121313)
+
+        coVerify {
+            getStatusShopUseCase.executeOnBackground()
+        }
+
+        assert(viewModel.isOnModerationMode.value is Fail)
     }
 
     private fun onGetProductLimitation_thenReturn(successResponse: ProductAddRuleResponse) {
@@ -947,6 +962,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun onGetShopInfoLocation_thenReturn() {
         coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns true
+    }
+
+    private fun onGetShopInfoLocation_thenReturn_false() {
+        coEvery { getShopInfoLocationUseCase.executeOnBackground() } returns false
     }
 
     private fun onGetShopStatus_thenReturn(statusInfo: StatusInfo) {
@@ -1081,6 +1100,10 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun verifyValidateShopLocation() {
         assertTrue(viewModel.locationValidation.value == Success(true))
+    }
+
+    private fun verifyValidateShopLocationIsFlase() {
+        assertTrue(viewModel.locationValidation.value == Success(false))
     }
 
     private fun verifyGetAdminProductPermissionFailed() {

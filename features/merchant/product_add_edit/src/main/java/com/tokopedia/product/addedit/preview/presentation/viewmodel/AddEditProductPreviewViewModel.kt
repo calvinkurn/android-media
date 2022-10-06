@@ -470,7 +470,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
         })
     }
 
-    fun validateShopInformation(shopId: Int) {
+    fun validateShopLocation(shopId: Int) {
         mIsLoading.value = true
         launchCatchError(block = {
             getShopInfoLocationUseCase.params =
@@ -478,17 +478,24 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val shopLocation = withContext(dispatcher.io) {
                 getShopInfoLocationUseCase.executeOnBackground()
             }
-            getStatusShopUseCase.params =GetStatusShopUseCase.createRequestParams(shopId)
-            val shopStatus = withContext(dispatcher.io){
-                getStatusShopUseCase.executeOnBackground()
-            }
 
             mLocationValidation.value = Success(shopLocation)
-            mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
             mIsLoading.value = false
         }, onError = {
             mLocationValidation.value = Fail(it)
             mIsLoading.value = false
+        })
+    }
+
+    fun validateShopIsOnModerated(shopId: Int){
+        launchCatchError(block = {
+            getStatusShopUseCase.params =GetStatusShopUseCase.createRequestParams(shopId)
+            val shopStatus = withContext(dispatcher.io){
+                getStatusShopUseCase.executeOnBackground()
+            }
+            mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
+        }, onError = {
+            mIsOnModerationMode.value = Fail(it)
         })
     }
 

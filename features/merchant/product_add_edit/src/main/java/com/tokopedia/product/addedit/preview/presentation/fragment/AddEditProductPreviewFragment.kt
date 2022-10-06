@@ -315,6 +315,8 @@ class AddEditProductPreviewFragment :
         observeMustFillParentWeight()
         observeIsShopModerated()
 
+        //validate shop status information
+        validateShopStatus()
         // validate whether shop has location
         validateShopLocationWhenPageOpened()
         // stop prepare page PLT monitoring
@@ -1209,9 +1211,6 @@ class AddEditProductPreviewFragment :
                 is Fail -> {
                     AddEditProductErrorHandler.logExceptionToCrashlytics(it.throwable)
                     AddEditProductErrorHandler.logMessage("$TIMBER_PREFIX_LOCATION_VALIDATION: ${it.throwable.message}")
-                    if (isStartButtonClicked) {
-                        showToasterFailed(it.throwable)
-                    }
                 }
             }
         }
@@ -1719,8 +1718,12 @@ class AddEditProductPreviewFragment :
 
     private fun validateShopLocation() {
         if (isAdding()) {
-            viewModel.validateShopInformation(userSession.shopId.toIntOrZero())
+            viewModel.validateShopLocation(userSession.shopId.toIntOrZero())
         }
+    }
+
+    private fun validateShopStatus(){
+        viewModel.validateShopIsOnModerated(userSession.shopId.toIntOrZero())
     }
 
     private fun saveShippingLocation() {
@@ -1841,9 +1844,14 @@ class AddEditProductPreviewFragment :
 
     private fun showBottomSheet(){
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonBackClicked { activity?.finish() }
+        bottomSheet.setOnButtonBackClicked { activityFinish() }
         bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
+        bottomSheet.setDismissListener { activityFinish() }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun activityFinish(){
+        activity?.finish()
     }
 
     private fun routeToArticle(){
