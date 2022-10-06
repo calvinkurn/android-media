@@ -70,7 +70,6 @@ class SearchActivity : BaseActivity(),
     private var productTabTitle = ""
     private var shopTabTitle = ""
     private var autocompleteApplink = ""
-    private var searchNavigationClickListener: SearchNavigationListener.ClickListener? = null
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -468,13 +467,6 @@ class SearchActivity : BaseActivity(),
 
     override fun setAutocompleteApplink(autocompleteApplink: String?) {
         this.autocompleteApplink = autocompleteApplink ?: ""
-    }
-
-    override fun setupSearchNavigation(clickListener: SearchNavigationListener.ClickListener?) {
-        searchNavigationClickListener = clickListener
-    }
-
-    override fun refreshMenuItemGridIcon(titleResId: Int, iconResId: Int) {
     }
 
     override fun getComponent(): BaseAppComponent {

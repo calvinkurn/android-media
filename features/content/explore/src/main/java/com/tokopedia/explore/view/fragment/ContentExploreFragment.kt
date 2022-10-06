@@ -40,6 +40,8 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
 /**
  * @author by milhamj on 19/07/18.
@@ -48,7 +50,8 @@ import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 class ContentExploreFragment :
         BaseDaggerFragment(),
         ContentExploreContract.View,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        FeedPlusTabParentFragment {
 
     companion object {
 
@@ -102,6 +105,8 @@ class ContentExploreFragment :
     private var hasLoadedOnce: Boolean = false
     private var isTraceStopped: Boolean = false
     private var coachMarkItemList: MutableList<CoachMarkItem> = arrayListOf()
+
+    private var mContainerListener: FeedPlusContainerListener? = null
 
     override fun getScreenName(): String {
         return ContentExloreEventTracking.Screen.SCREEN_CONTENT_STREAM
@@ -384,6 +389,8 @@ class ContentExploreFragment :
         presenter.onPullToRefreshTriggered()
         presenter.updateCursor("")
         presenter.getExploreData(true)
+
+        mContainerListener?.onChildRefresh()
     }
 
     override fun dropKeyboard() {
@@ -470,5 +477,9 @@ class ContentExploreFragment :
             }
         }
         return scrollListener
+    }
+
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 }
