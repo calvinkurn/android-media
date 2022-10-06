@@ -60,7 +60,7 @@ class PlayBroProductRepositoryImpl @Inject constructor(
     ): PagedDataUiModel<ProductUiModel> = withContext(dispatchers.io) {
         if (userSession.shopId.isBlank()) error("User does not has shop")
 
-        val response = getProductsInEtalaseUseCase.executeWithParam(
+        val param = GetProductsInEtalaseUseCase.Param(
             authorId = userSession.shopId,
             authorType = AUTHOR_TYPE_SELLER,
             cursor = cursor,
@@ -69,6 +69,8 @@ class PlayBroProductRepositoryImpl @Inject constructor(
             sort = sort,
             etalaseId = etalaseId,
         )
+
+        val response = getProductsInEtalaseUseCase.executeWithParam(param)
 
         return@withContext productMapper.mapProductsInEtalase(response)
     }

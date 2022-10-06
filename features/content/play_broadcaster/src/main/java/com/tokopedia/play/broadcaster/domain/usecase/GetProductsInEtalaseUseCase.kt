@@ -28,37 +28,41 @@ class GetProductsInEtalaseUseCase @Inject constructor(
     }
 
     suspend fun executeWithParam(
-        authorId: String,
-        authorType: Int,
-        cursor: String,
-        limit: Int,
-        keyword: String,
-        sort: SortUiModel,
-        etalaseId: String,
+        param: Param,
     ): GetProductsByEtalaseResponse {
         setRequestParams(
             mapOf(
                 PARAM_AUTHOR to mapOf(
-                    PARAM_AUTHOR_ID to authorId,
-                    PARAM_AUTHOR_TYPE to authorType,
+                    PARAM_AUTHOR_ID to param.authorId,
+                    PARAM_AUTHOR_TYPE to param.authorType,
                 ),
                 PARAM_FILTER to mapOf(
-                    PARAM_FILTER_KEYWORD to keyword,
-                    PARAM_FILTER_ETALASE to if(etalaseId.isEmpty()) emptyList<String>() else listOf(etalaseId),
+                    PARAM_FILTER_KEYWORD to param.keyword,
+                    PARAM_FILTER_ETALASE to if(param.etalaseId.isEmpty()) emptyList<String>() else listOf(param.etalaseId),
                 ),
                 PARAM_SORT to mapOf(
-                    PARAM_SORT_ID to sort.key,
-                    PARAM_SORT_VALUE to sort.direction.value,
+                    PARAM_SORT_ID to param.sort.key,
+                    PARAM_SORT_VALUE to param.sort.direction.value,
                 ),
                 PARAM_PAGER_CURSOR to mapOf(
-                    PARAM_CURSOR to cursor,
-                    PARAM_LIMIT to limit,
+                    PARAM_CURSOR to param.cursor,
+                    PARAM_LIMIT to param.limit,
                 ),
             )
         )
 
         return this.executeOnBackground()
     }
+
+    data class Param(
+        val authorId: String,
+        val authorType: Int,
+        val cursor: String,
+        val limit: Int,
+        val keyword: String,
+        val sort: SortUiModel,
+        val etalaseId: String,
+    )
 
     companion object {
 
