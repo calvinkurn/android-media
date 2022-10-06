@@ -243,6 +243,39 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `When get courier item data and product is recommended Then return courier Ui model`() {
+        // Given
+        val expected = ShippingCourierUiModel().apply {
+            productData = ProductData().apply {
+                isRecommend = true
+            }
+        }
+        val courierModelWithOneRecc: List<ShippingCourierUiModel> = listOf(expected)
+
+        // When
+        val actual = presenter.getCourierItemData(courierModelWithOneRecc)
+
+        // Then
+        assertEquals(actual, expected)
+    }
+
+    @Test
+    fun `When get courier item data return null Then null is returned`() {
+        // Given
+        val courierWithNoRecc: List<ShippingCourierUiModel> = listOf(
+            ShippingCourierUiModel().apply {
+                productData = ProductData()
+            }
+        )
+
+        // When
+        val actual = presenter.getCourierItemData(courierWithNoRecc)
+
+        // Then
+        assertNull(actual)
+    }
+
+    @Test
     fun `When get courier item data with id Then return the courier Ui model with the same shipper product id`() {
         // Given
         val spId = 24

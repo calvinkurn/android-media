@@ -230,6 +230,15 @@ class ShippingDurationPresenter @Inject constructor(
         return shippingParam
     }
 
+    override fun getCourierItemData(shippingCourierUiModels: List<ShippingCourierUiModel>): ShippingCourierUiModel? {
+        for (shippingCourierUiModel in shippingCourierUiModels) {
+            if (shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden) {
+                return shippingCourierUiModel
+            }
+        }
+        return null
+    }
+
     override fun getCourierItemDataById(
         spId: Int,
         shippingCourierUiModels: List<ShippingCourierUiModel>
