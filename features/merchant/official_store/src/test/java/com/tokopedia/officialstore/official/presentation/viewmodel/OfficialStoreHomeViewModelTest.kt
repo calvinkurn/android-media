@@ -533,6 +533,42 @@ class OfficialStoreHomeViewModelTest {
         assertNotNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
     }
 
+    @Test
+    fun given_get_tdn_carousel_error_when_get_osDynamicChannel_banner_ads_carousel_then_remove_from_list() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf(
+                TopAdsImageViewModel(),
+                TopAdsImageViewModel(),
+            ))
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } throws Exception("this is mock exception")
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertTrue(resultTdnBannerAdsModel.isNullOrEmpty())
+    }
+
     // ===================================== //
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
         coEvery { getOfficialStoreBannersUseCase.executeOnBackground(any()) } returns osBanners
