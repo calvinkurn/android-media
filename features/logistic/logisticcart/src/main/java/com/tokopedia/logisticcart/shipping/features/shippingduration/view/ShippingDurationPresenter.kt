@@ -250,8 +250,7 @@ class ShippingDurationPresenter @Inject constructor(
         }
         return null
     }
-
-    // todo: remove from presenter contract
+    
     override fun convertServiceListToUiModel(
         shippingDurationUiModels: List<ShippingDurationUiModel>,
         promoUiModel: List<LogisticPromoUiModel>,
