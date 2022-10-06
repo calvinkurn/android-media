@@ -32,6 +32,25 @@ object LegoProductTracking : BaseTrackerConst() {
     private const val TRACKER_ID_LEGO_4_PRODUCT_IMPRESSION = "37307"
     private const val TRACKER_ID_LEGO_4_PRODUCT_CLICK = "37308"
 
+    private fun getItemList(
+        position: Int,
+        trackerName: String,
+        channel: ChannelModel,
+        isTopAds: Boolean? = null,
+        recomType: String = ""
+    ): String {
+        return LIST_LEGO_PRODUCT.format(
+            position + 1,
+            trackerName,
+            if(isTopAds == null) "" else if (isTopAds) TOPADS else NONTOPADS,
+            NON_CAROUSEL,
+            recomType,
+            channel.pageName,
+            channel.trackingAttributionModel.galaxyAttribution,
+            channel.channelHeader.name
+        )
+    }
+
     fun getLego4ProductImpression(
         channel: ChannelModel,
         position: Int,
@@ -43,7 +62,7 @@ object LegoProductTracking : BaseTrackerConst() {
             eventCategory = Category.HOMEPAGE,
             eventAction = IMPRESSION_ON_PRODUCT.format(LEGO_4_PRODUCT_NAME),
             eventLabel = Label.NONE,
-            list = "",
+            list = getItemList(trackerName = LEGO_4_PRODUCT_NAME, channel = channel, position = position),
             products = channel.channelGrids.subList(0,4).mapIndexed { index, grid ->
                 Product(
                     name = grid.name,
@@ -66,7 +85,7 @@ object LegoProductTracking : BaseTrackerConst() {
                     pageName = channel.pageName,
                     isCarousel = true
                 )
-            }, buildCustomList = buildCustomListLegoProduct(position, channel.trackingAttributionModel.galaxyAttribution))
+            }, buildCustomList = { getItemList(position, LEGO_4_PRODUCT_NAME, channel, it.isTopAds, it.recommendationType,) })
             .appendBusinessUnit(TrackingConst.DEFAULT_BUSINESS_UNIT)
             .appendCurrentSite(TrackingConst.DEFAULT_CURRENT_SITE)
             .appendUserId(userId)
@@ -74,30 +93,8 @@ object LegoProductTracking : BaseTrackerConst() {
             .build() as HashMap<String, Any>
     }
 
-    private fun buildCustomListLegoProduct(position: Int, buType: String): (BaseTrackerConst.Product) -> String {
-        return {
-            LIST_LEGO_PRODUCT.format(
-                position + 1,
-                LEGO_4_PRODUCT_NAME,
-                if (it.isTopAds == true) TOPADS else NONTOPADS,
-                NON_CAROUSEL,
-                it.recommendationType,
-                it.pageName,
-                buType,
-                it.headerName
-            )
-        }
-    }
-
-    fun sendLego4ProductItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
-        getTracker().sendEnhanceEcommerceEvent(
-            PRODUCT_CLICK,
-            getLego4ProductClick(channelModel, channelGrid, position, userId)
-        )
-    }
-
-    private fun getLego4ProductClick(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String): Bundle {
-        return Bundle().apply {
+    fun sendLego4ProductItemClick(channel: ChannelModel, grid: ChannelGrid, position: Int, userId: String) {
+        val bundle = Bundle().apply {
             putString(Event.KEY, Event.SELECT_CONTENT)
             putString(Action.KEY, CLICK_ON_PRODUCT.format(LEGO_4_PRODUCT_NAME))
             putString(Category.KEY, Category.HOMEPAGE)
@@ -111,20 +108,8 @@ object LegoProductTracking : BaseTrackerConst() {
             putString(CurrentSite.KEY, CurrentSite.DEFAULT)
             putString(UserId.KEY, userId)
             putString(TRACKER_ID, TRACKER_ID_LEGO_4_PRODUCT_CLICK)
+            putString(ItemList.KEY, getItemList(channel.verticalPosition, LEGO_4_PRODUCT_NAME, channel, grid.isTopads, grid.recommendationType))
             val items = Bundle().apply {
-                putString(
-                    KEY_DIMENSION_40,
-                    LIST_LEGO_PRODUCT.format(
-                        position + 1,
-                        LEGO_4_PRODUCT_NAME,
-                        if (grid.isTopads) TOPADS else NONTOPADS,
-                        NON_CAROUSEL,
-                        grid.recommendationType,
-                        channel.pageName,
-                        channel.trackingAttributionModel.galaxyAttribution,
-                        channel.channelHeader.name
-                    )
-                )
                 putString(Items.DIMENSION_83, Items.DIMENSION_83_DEFAULT)
                 putString(KEY_DIMENSION_84, channel.id)
                 putString(KEY_DIMENSION_96, Value.FORMAT_2_ITEMS_UNDERSCORE.format(
@@ -142,12 +127,13 @@ object LegoProductTracking : BaseTrackerConst() {
             }
             putParcelableArrayList(Items.KEY, arrayListOf(items))
         }
+        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
     }
 
     fun sendLego4ProductSeeAllClick(channel: ChannelModel) {
         val bundle = Bundle().apply {
             putString(Event.KEY, CLICK_HOMEPAGE)
-            putString(Category.KEY, CLICK_HOMEPAGE)
+            putString(Category.KEY, Category.HOMEPAGE)
             putString(Action.KEY, CLICK_VIEW_ALL_ON_PRODUCT.format(LEGO_4_PRODUCT_NAME))
             putString(Label.KEY, Label.FORMAT_2_ITEMS.format(
                 channel.id, channel.channelHeader.name
