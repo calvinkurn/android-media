@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:orientation="horizontal">
 
     <com.tokopedia.unifyprinciples.Typography
@@ -24,11 +25,10 @@
         app:typographyType="body_3"
         tools:text="Text Of Table" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <ImageView
         android:id="@+id/icon"
-        android:layout_width="14dp"
-        android:layout_height="14dp"
-        android:scaleType="fitXY"
-        android:layout_marginTop="6dp"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="6dp" />
 </LinearLayout>

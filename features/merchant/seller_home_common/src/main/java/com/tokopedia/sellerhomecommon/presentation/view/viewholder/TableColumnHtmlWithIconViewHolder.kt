@@ -16,6 +16,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.setClickableUrlHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.sellerhomecommon.R
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTableColumnHtmlBinding
@@ -68,8 +69,8 @@ class TableColumnHtmlWithIconViewHolder(
             )
             element.colorInt = textColorInt
             icon.showWithCondition(element.icon.isNotEmpty())
-            icon.loadImage(element.icon)
-            tvTableColumnHtml?.run {
+            icon.loadIcon(element.icon)
+            tvTableColumnHtml.run {
                 setClickableUrlHtml(
                     element.valueStr,
                     applyCustomStyling = {
