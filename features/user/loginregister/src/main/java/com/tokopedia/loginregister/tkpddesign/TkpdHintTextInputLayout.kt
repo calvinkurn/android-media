@@ -79,10 +79,20 @@ class TkpdHintTextInputLayout : LinearLayout {
     var mHintEnabled = false
 
     private val viewBinding: LegacyTextInputHintLayoutBinding = LegacyTextInputHintLayoutBinding
-        .inflate(LayoutInflater.from(context))
+        .inflate(
+            LayoutInflater.from(context)
+        ).also {
+            addView(it.root)
+        }
 
     private val viewBindingPasswordIcon: LegacyTextInputPasswordIconBinding = LegacyTextInputPasswordIconBinding
-        .inflate(LayoutInflater.from(context), viewBinding.frameContent, true)
+        .inflate(
+            LayoutInflater.from(context),
+            viewBinding.frameContent,
+            true
+        ).also {
+            viewBinding.frameContent.addView(it.root)
+        }
 
     constructor(context: Context?) : super(context) {
         apply(null, 0)
@@ -522,13 +532,13 @@ class TkpdHintTextInputLayout : LinearLayout {
             viewBindingPasswordIcon.root.apply {
                 setImageDrawable(mPasswordToggleDrawable)
                 contentDescription = mPasswordToggleContentDesc
-                setOnClickListener { 
-                    passwordVisibilityToggleRequested() 
+                setOnClickListener {
+                    passwordVisibilityToggleRequested()
                 }
             }
-            
+
             viewBinding.frameContent.addView(viewBindingPasswordIcon.root)
-            editText?.let { 
+            editText?.let {
                 if (ViewCompat.getMinimumHeight(it) <= 0) {
                     // We should make sure that the EditText has the same min-height as the password
                     // toggle view. This ensure focus works properly, and there is no visual jump
