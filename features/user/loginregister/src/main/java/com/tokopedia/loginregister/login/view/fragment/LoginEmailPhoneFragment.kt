@@ -19,7 +19,6 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -77,7 +76,6 @@ import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
-import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
@@ -208,10 +206,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var currentEmail = ""
     private var tempValidateToken = ""
 
-    private var partialRegisterInputView: PartialRegisterInputView? = null
-    private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
-    private var emailPhoneEditText: EditText? = null
-    var partialActionButton: UnifyButton? = null
     private var sharedPrefs: SharedPreferences? = null
 
     private var needHelpBottomSheetUnify: NeedHelpBottomSheet? = null
@@ -387,8 +381,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         val emailExtensionList = mutableListOf<String>()
         emailExtensionList.addAll(requireContext().resources.getStringArray(R.array.email_extension))
-        partialRegisterInputView?.setEmailExtension(viewBinding?.emailExtension, emailExtensionList)
-        partialRegisterInputView?.initKeyboardListener(view)
+        viewBinding?.loginInputView?.setEmailExtension(viewBinding?.emailExtension, emailExtensionList)
+        viewBinding?.loginInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
 
@@ -396,7 +390,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun initInputType() {
-        fieldUnifyInputEmailPhone?.apply {
+        viewBinding?.loginInputView?.inputEmailPhoneField?.apply {
             setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
             setLabel(requireActivity().getString(R.string.phone_or_email_input))
         }
@@ -431,14 +425,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             isFromRegister = it.getBoolean(ApplinkConstInternalGlobal.PARAM_IS_FROM_REGISTER, false)
 
             if (phone.isNotEmpty()) {
-                emailPhoneEditText?.setText(phone)
+                viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(phone)
             } else if (email.isNotEmpty()) {
-                emailPhoneEditText?.setText(email)
+                viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(email)
             }
 
             when {
                 isAutoFill -> {
-                    emailPhoneEditText?.setText(arguments?.getString(LoginConstants.AutoLogin.AUTO_FILL_EMAIL, ""))
+                    viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(arguments?.getString(LoginConstants.AutoLogin.AUTO_FILL_EMAIL, ""))
                 }
                 isAutoLogin -> {
                     when (method) {
@@ -463,119 +457,119 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         }
 
-        viewModel.registerCheckResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.registerCheckResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRegisterCheck().invoke(it.data)
                 is Fail -> onErrorRegisterCheck().invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.registerCheckFingerprint.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.registerCheckFingerprint.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     onSuccessRegisterCheckFingerprint(it.data.data)
                 }
                 is Fail -> disableFingerprint()
             }
-        })
+        }
 
-        viewModel.discoverResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.discoverResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessDiscoverLogin(it.data)
                 is Fail -> onErrorDiscoverLogin(it.throwable)
             }
-        })
+        }
 
-        viewModel.activateResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.activateResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessActivateUser(it.data)
                 is Fail -> onFailedActivateUser(it.throwable)
             }
-        })
+        }
 
-        viewModel.loginTokenResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.loginTokenResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessLoginEmail(it.data)
                 is Fail -> onErrorLoginEmail(currentEmail).invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.loginTokenV2Response.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.loginTokenV2Response.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessLoginEmail()
                 is Fail -> onErrorLoginEmail(currentEmail).invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.profileResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.profileResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetUserInfo(it.data)
                 is Fail -> onErrorGetUserInfo().invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.loginTokenAfterSQResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessReloginAfterSQ(it.data)
                 is Fail -> onErrorReloginAfterSQ().invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.loginTokenGoogleResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> viewModel.getUserInfo()
                 is Fail -> onErrorLoginGoogle("").invoke(it.throwable)
             }
-        })
+        }
 
-        viewModel.getTickerInfoResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.getTickerInfoResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessGetTickerInfo(it.data)
                 is Fail -> onErrorGetTickerInfo(it.throwable)
             }
-        })
+        }
 
-        viewModel.dynamicBannerResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.dynamicBannerResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onGetDynamicBannerSuccess(it.data)
                 is Fail -> onGetDynamicBannerError(it.throwable)
             }
-        })
+        }
 
-        viewModel.showLocationAdminPopUp.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.showLocationAdminPopUp.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> showLocationAdminPopUp()
                 is Fail -> showGetAdminTypeError(it.throwable)
             }
-        })
+        }
 
-        viewModel.loginBiometricResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.loginBiometricResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessLoginBiometric()
                 is Fail -> onErrorLoginBiometric(it.throwable)
             }
             dismissLoadingLogin()
-        })
+        }
 
-        viewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner) {
             onGoToActivationPageAfterRelogin().invoke(it)
-        })
+        }
 
-        viewModel.goToActivationPage.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.goToActivationPage.observe(viewLifecycleOwner) {
             onGoToActivationPage(it)
-        })
+        }
 
-        viewModel.showPopup.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.showPopup.observe(viewLifecycleOwner) {
             showPopup().invoke(it)
-        })
+        }
 
-        viewModel.goToSecurityQuestion.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.goToSecurityQuestion.observe(viewLifecycleOwner) {
             onGoToSecurityQuestion(it).invoke()
-        })
+        }
 
-        viewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
+        viewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner) {
             onGoToSecurityQuestionAfterRelogin().invoke()
-        })
+        }
 
         viewModel.getTemporaryKeyResponse.observe(viewLifecycleOwner) {
             if(it) {
@@ -642,8 +636,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun onLoginEmailClick() {
         val email = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_EMAIL, "") ?: ""
         val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
-        partialRegisterInputView?.showLoginEmailView(email)
-        emailPhoneEditText?.setText(email)
+        viewBinding?.loginInputView?.showLoginEmailView(email)
+        viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(email)
         viewBinding?.loginInputView?.setPassword(pw)
         loginEmail(email, pw)
         activity?.let {
@@ -695,7 +689,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun prepareView() {
-        partialRegisterInputView?.showForgotPassword()
+        viewBinding?.loginInputView?.showForgotPassword()
         socmedBottomSheet = SocmedBottomSheet()
         socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
         socmedBottomSheet?.setCloseClickListener {
@@ -710,19 +704,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         checkFingerprintAvailability()
 
-        partialActionButton?.text = getString(R.string.next)
-        partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
-        partialActionButton?.setOnClickListener {
+        viewBinding?.loginInputView?.buttonContinue?.text = getString(R.string.next)
+        viewBinding?.loginInputView?.buttonContinue?.contentDescription = getString(R.string.content_desc_register_btn)
+        viewBinding?.loginInputView?.buttonContinue?.setOnClickListener {
             showLoadingLogin()
-            analytics.trackClickOnNext(emailPhoneEditText?.text.toString())
+            analytics.trackClickOnNext(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString())
             activity?.let { it1 -> analytics.eventClickLoginEmailButton(it1) }
-            registerCheck(emailPhoneEditText?.text.toString())
+            registerCheck(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString())
         }
 
         viewBinding?.loginInputView?.setPasswordListener { v, _, _ ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 loginEmail(
-                    emailPhoneEditText?.text.toString().trim(),
+                    viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString().trim(),
                     v.text.toString(),
                     useHash = isUseHash
                 )
@@ -737,11 +731,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         }
 
-        partialRegisterInputView?.setButtonValidator(true)
-        partialRegisterInputView?.findViewById<Typography>(R.id.change_button)?.setOnClickListener {
-            val email = emailPhoneEditText?.text.toString()
+        viewBinding?.loginInputView?.setButtonValidator(true)
+        viewBinding?.loginInputView?.findViewById<Typography>(R.id.change_button)?.setOnClickListener {
+            val email = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
             onChangeButtonClicked()
-            emailPhoneEditText?.setText(email)
+            viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(email)
         }
 
         activity?.let { it ->
@@ -760,7 +754,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun setUpRollenceNeedHelpView(){
-        val forgotPassword = partialRegisterInputView?.findViewById<Typography>(R.id.forgot_pass)
+        val forgotPassword = viewBinding?.loginInputView?.findViewById<Typography>(R.id.forgot_pass)
         forgotPassword?.text = setUpForgotPasswordTitle()
         forgotPassword?.setOnClickListener {
             if (isUsingRollenceNeedHelp) {
@@ -884,20 +878,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun onChangeButtonClicked() {
         analytics.trackChangeButtonClicked()
 
-        emailPhoneEditText?.imeOptions = EditorInfo.IME_ACTION_DONE
+        viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.imeOptions = EditorInfo.IME_ACTION_DONE
 
-        partialActionButton?.text = getString(R.string.next)
-        partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
-        partialActionButton?.setOnClickListener {
+        viewBinding?.loginInputView?.buttonContinue?.text = getString(R.string.next)
+        viewBinding?.loginInputView?.buttonContinue?.contentDescription = getString(R.string.content_desc_register_btn)
+        viewBinding?.loginInputView?.buttonContinue?.setOnClickListener {
             showLoadingLogin()
-            registerCheck(emailPhoneEditText?.text.toString())
+            registerCheck(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString())
         }
-        partialRegisterInputView?.showDefaultView()
+        viewBinding?.loginInputView?.showDefaultView()
     }
 
     override fun goToForgotPassword() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
-        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText?.text.toString().trim())
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString().trim())
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
         activity?.applicationContext?.let { analytics.eventClickForgotPasswordFromLogin(it) }
@@ -1012,22 +1006,20 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         var isValid = true
 
-        view?.let { view ->
-            if (TextUtils.isEmpty(password)) {
-                showErrorPassword(R.string.error_field_password_required)
-                isValid = false
-            } else if (password.length < PASSWORD_MIN_LENGTH) {
-                showErrorPassword(R.string.error_incorrect_password)
-                isValid = false
-            }
+        if (TextUtils.isEmpty(password)) {
+            showErrorPassword(R.string.error_field_password_required)
+            isValid = false
+        } else if (password.length < PASSWORD_MIN_LENGTH) {
+            showErrorPassword(R.string.error_incorrect_password)
+            isValid = false
+        }
 
-            if (TextUtils.isEmpty(email)) {
-                showErrorEmail(R.string.error_field_required)
-                isValid = false
-            } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                showErrorEmail(R.string.error_invalid_email)
-                isValid = false
-            }
+        if (TextUtils.isEmpty(email)) {
+            showErrorEmail(R.string.error_field_required)
+            isValid = false
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            showErrorEmail(R.string.error_invalid_email)
+            isValid = false
         }
 
         return isValid
@@ -1083,12 +1075,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    private fun getErrorHandlerBuilder(): ErrorHandler.Builder {
-        return ErrorHandler.Builder().apply {
-            className = this.javaClass.name
-        }.build()
-    }
-
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
         dismissLoadingDiscover()
@@ -1129,8 +1115,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         activityShouldEnd = true
 
-        if (emailPhoneEditText?.text?.isNotBlank() == true)
-            userSession.autofillUserData = emailPhoneEditText?.text.toString()
+        if (viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isNotBlank() == true)
+            userSession.autofillUserData = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
 
         registerPushNotif()
         submitIntegrityApi()
@@ -1206,7 +1192,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
-            if (!GlobalConfig.DEBUG && crashlytics != null)
+            if (!GlobalConfig.DEBUG)
                 crashlytics.setUserId(userId)
             ctx?.let {
                 TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
@@ -1281,19 +1267,19 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun trackSuccessValidate() {
-        analytics.trackClickOnNextSuccess(emailPhoneEditText?.text.toString())
+        analytics.trackClickOnNextSuccess(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString())
     }
 
     override fun onErrorValidateRegister(throwable: Throwable) {
         dismissLoadingLogin()
         val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
-        analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.removeErrorCode())
-        partialRegisterInputView?.onErrorInputEmailPhoneValidate(message)
+        analytics.trackClickOnNextFail(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString(), message.removeErrorCode())
+        viewBinding?.loginInputView?.onErrorInputEmailPhoneValidate(message)
     }
 
     override fun onErrorEmptyEmailPhone() {
         dismissLoadingLogin()
-        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(R.string.must_insert_email_or_phone))
+        viewBinding?.loginInputView?.onErrorInputEmailPhoneValidate(getString(R.string.must_insert_email_or_phone))
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
@@ -1317,8 +1303,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onEmailExist(email: String) {
         dismissLoadingLogin()
-        partialRegisterInputView?.showLoginEmailView(email)
-        partialActionButton?.setOnClickListener {
+        viewBinding?.loginInputView?.showLoginEmailView(email)
+        viewBinding?.loginInputView?.buttonContinue?.setOnClickListener {
             loginEmail(
                 email,
                 viewBinding?.loginInputView?.getPassword().orEmpty(),
@@ -1360,8 +1346,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     analytics.eventClickNoSmartLoginDialogButton()
                     dialog.dismiss()
                     onChangeButtonClicked()
-                    emailPhoneEditText?.setText(email)
-                    emailPhoneEditText?.setSelection(emailPhoneEditText?.text?.length.toZeroIfNull())
+                    viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(email)
+                    viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setSelection(viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.length.toZeroIfNull())
                 }
                 dialog.show()
             }
@@ -1369,15 +1355,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun resetError() {
-        partialRegisterInputView?.resetErrorWrapper()
+        viewBinding?.loginInputView?.resetErrorWrapper()
     }
 
     override fun showErrorPassword(resId: Int) {
-        partialRegisterInputView?.onErrorPassword(getString(resId))
+        viewBinding?.loginInputView?.onErrorPassword(getString(resId))
     }
 
     override fun showErrorEmail(resId: Int) {
-        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(resId))
+        viewBinding?.loginInputView?.onErrorInputEmailPhoneValidate(getString(resId))
     }
 
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
@@ -1754,10 +1740,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onBackPressed() {
         analytics.trackOnBackPressed()
-        if (partialRegisterInputView?.findViewById<Typography>(R.id.change_button)?.visibility == View.VISIBLE) {
-            val email = emailPhoneEditText?.text.toString()
+        if (viewBinding?.loginInputView?.findViewById<Typography>(R.id.change_button)?.visibility == View.VISIBLE) {
+            val email = viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text.toString()
             onChangeButtonClicked()
-            emailPhoneEditText?.setText(email)
+            viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.setText(email)
         } else if (isReturnHomeWhenBackPressed) {
             goToHome()
         } else if (activity != null) {
@@ -1842,7 +1828,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
             if (TextUtils.equals(it.registerType, LoginConstants.LoginType.PHONE_TYPE)) {
                 userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
-                userSession.tempPhoneNumber = partialRegisterInputView?.textValue
+                userSession.tempPhoneNumber = viewBinding?.loginInputView?.textValue
                 if (it.isExist) {
                     goToLoginPhoneVerifyPage(it.view.replace("-", ""))
                 } else {
@@ -1856,7 +1842,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 if (it.isExist) {
                     if (!it.isPending) {
                         isUseHash = it.useHash
-                        userSession.setTempLoginEmail(partialRegisterInputView?.textValue)
+                        userSession.setTempLoginEmail(viewBinding?.loginInputView?.textValue)
                         onEmailExist(it.view)
                     } else {
                         showNotRegisteredEmailDialog(it.view, true)
@@ -1997,8 +1983,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun autoFillWithDataFromLatestLoggedIn() {
-        if (!userSession.autofillUserData.isNullOrEmpty() && emailPhoneEditText?.text?.isEmpty() == true) {
-            emailPhoneEditText?.let {
+        if (!userSession.autofillUserData.isNullOrEmpty() && viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.text?.isEmpty() == true) {
+            viewBinding?.loginInputView?.inputEmailPhoneField?.editText?.let {
                 it.setText(userSession.autofillUserData)
                 it.setSelection(it.text.length)
             }
