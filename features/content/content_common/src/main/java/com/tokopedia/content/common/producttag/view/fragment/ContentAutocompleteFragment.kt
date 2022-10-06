@@ -14,6 +14,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.action.ProductTagAct
 import com.tokopedia.content.common.producttag.view.viewmodel.ProductTagViewModel
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.content.common.util.showKeyboard
+import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -98,7 +99,12 @@ class ContentAutocompleteFragment @Inject constructor(
         }
 
         viewModel.submitAction(
-            ProductTagAction.SetDataFromAutoComplete(ProductTagSource.GlobalSearch, query, "0", "")
+            ProductTagAction.SetDataFromAutoComplete(
+                ProductTagSource.GlobalSearch,
+                query,
+                "0",
+                SearchComponentTrackingConst.Component.AUTO_COMPLETE_MANUAL_ENTER,
+            )
         )
     }
 
