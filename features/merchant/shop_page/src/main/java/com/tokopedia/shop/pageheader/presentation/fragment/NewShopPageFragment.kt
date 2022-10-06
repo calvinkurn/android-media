@@ -879,8 +879,8 @@ class NewShopPageFragment :
                             buttonLabel ?: ""
                     )
                     {
-                        if (!shopId.isNullOrBlank()) {
-                            showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                        if (shopId.isNotBlank()) {
+                            showMerchantVoucherCouponBottomSheet(shopId.toIntOrZero())
                             shopPageTracking?.clickCekToasterSuccess(
                                     shopId,
                                     shopViewModel?.userId
