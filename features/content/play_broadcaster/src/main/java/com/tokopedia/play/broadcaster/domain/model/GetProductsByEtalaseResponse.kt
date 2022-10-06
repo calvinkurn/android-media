@@ -19,7 +19,7 @@ data class GetProductsByEtalaseResponse(
     )
 
     data class Product(
-        @SerializedName("id")
+        @SerializedName("ID")
         val id: String = "",
 
         @SerializedName("name")
