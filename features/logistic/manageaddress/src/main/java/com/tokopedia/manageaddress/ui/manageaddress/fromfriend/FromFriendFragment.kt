@@ -178,8 +178,8 @@ class FromFriendFragment : BaseDaggerFragment(),
                     setType(GlobalError.MAINTENANCE)
                     errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
                     errorIllustration.adjustViewBounds = true
-                    errorTitle.text = getString(R.string.title_already_saved_share_address)
-                    errorDescription.text = getString(R.string.description_already_saved_share_address)
+                    errorTitle.text = getString(R.string.title_failed_saved_share_address_from_notif)
+                    errorDescription.text = getString(R.string.description_failed_saved_share_address_from_notif)
                 }
             } else {
                 globalError.gone()

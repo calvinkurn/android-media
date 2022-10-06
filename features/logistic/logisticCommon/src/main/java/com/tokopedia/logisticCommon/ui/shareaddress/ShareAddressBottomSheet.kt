@@ -118,16 +118,18 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     }
 
     private fun bindView() {
-        setTitle()
+        setRequestAddressView()
         setInputField()
         setBtnShare()
     }
 
-    private fun setTitle() {
-        binding.txtTitleShareAddress.text = if (isRequestAddress) {
-            getString(R.string.share_address_bottom_sheet_title_request)
-        } else {
-            getString(R.string.share_address_bottom_sheet_title_share)
+    private fun setRequestAddressView() {
+        if (isRequestAddress) {
+            binding.apply {
+                txtTitleShareAddress.text = getString(R.string.share_address_bottom_sheet_title_request)
+                txtContentShareAddress.text = getString(R.string.request_address_bottom_sheet_description)
+                btnShare.text = getString(R.string.request_address_bottom_sheet_btn_request)
+            }
         }
     }
 

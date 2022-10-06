@@ -12,6 +12,7 @@
         android:id="@+id/txt_title_share_address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:text="@string/share_address_bottom_sheet_title_share"
         android:textColor="@color/Unify_N700"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_4"

@@ -142,14 +142,14 @@
     <string name="btn_no">Tidak</string>
     <string name="title_select_share_address">Pilih Alamat Untuk Dibagikan</string>
     <string name="btn_share_adddress">Bagikan Alamat</string>
-    <string name="title_already_saved_share_address">Ops!, alamat sudah disimpan</string>
-    <string name="description_already_saved_share_address">Kamu bisa cek alamat yang sudah di simpan di menu utama.</string>
+    <string name="title_failed_saved_share_address_from_notif">Oops, alamat gagal disimpan</string>
+    <string name="description_failed_saved_share_address_from_notif">Pastikan alamatnya belum pernah kamu simpan dan link dari temanmu masih aktif, ya.</string>
 
     <!--    remove address-->
     <string name="toaster_remove_address_success">Anda telah berhasil menghapus alamat</string>
 
 <!--    tab layout label-->
-    <string name="tablayout_label_main">Utama</string>
+    <string name="tablayout_label_main">Semua Alamat</string>
     <string name="tablayout_label_from_friend">Dari teman</string>
     <string name="tablayout_label_from_friend_with_value">Dari teman (+%1$s)</string>
 
