@@ -4,4 +4,9 @@
 
     <string name="picker_video_duration_max_limit_sec">detik</string>
     <string name="picker_video_duration_max_limit_min">menit</string>
+
+    <string name="picker_cd_item_selection_placeholder_border">placeholder border</string>
+    <string name="picker_cd_item_selection_placeholder_image">placeholder image</string>
+    <string name="picker_cd_item_selection_thumbnail">thumbnail widget image</string>
+    <string name="picker_cd_widget_thumbnail_preview">thumbnail preview</string>
 </resources>
