@@ -27,8 +27,7 @@ class AffiliateCookieHelper @Inject constructor(
         private const val ATC_SOURCE = "shop_page"
     }
 
-    var affiliateUUID: String = ""
-        private set
+    private var affiliateUUID: String = ""
 
     /**
      * Creates cookie if internally saved affiliateUUID is not empty otherwise Checks cookie and updates affiliateUUID
@@ -50,7 +49,7 @@ class AffiliateCookieHelper @Inject constructor(
         additionalParam: List<AdditionalParam> = emptyList(),
     ) {
         val params = AffiliateCookieParams(
-            affiliateUUID,
+            if (isATC) this.affiliateUUID else affiliateUUID,
             affiliateChannel,
             affiliatePageDetail,
             uuid,
@@ -68,7 +67,7 @@ class AffiliateCookieHelper @Inject constructor(
             }
             else -> {
                 this.affiliateUUID = params.affiliateUUID
-                if (affiliateUUID.isNotEmpty()) {
+                if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
                         userSession.deviceId,
