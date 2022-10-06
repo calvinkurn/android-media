@@ -5,7 +5,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
@@ -14,8 +13,9 @@ import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationM
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.QueryKeyProvider
-import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
+import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
+import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
@@ -70,7 +70,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val topAdsHeadlineHelper = mockk<TopAdsHeadlineHelper>(relaxed = true)
     protected val performanceMonitoring = mockk<PageLoadTimePerformanceInterface>(relaxed = true)
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
-    protected val remoteConfigAbTest = mockk<RemoteConfig>(relaxed = true)
+    protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
     protected val pagination = PaginationImpl()
     protected val testSchedulersProvider = object : SchedulersProvider {
         override fun io() = Schedulers.immediate()
@@ -127,6 +127,7 @@ internal open class ProductListPresenterTestFixtures {
                 chooseAddressPresenterDelegate
             ) { saveLastFilterUseCase },
             sameSessionRecommendationPresenterDelegate,
+            BannedProductsPresenterDelegate(bannedProductsView, viewUpdater)
         )
         productListPresenter.attachView(productListView)
     }
