@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductLocationCheckResultBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductCheckingResult
@@ -48,6 +49,7 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 tfSubsidiary.isVisible = item.checkingDetailResult.isSubsidy
                 tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format,
                     item.checkingDetailResult.stock)
+                labelStatus.setTextAndCheckShow(item.checkingDetailResult.statusText)
             }
         }
     }

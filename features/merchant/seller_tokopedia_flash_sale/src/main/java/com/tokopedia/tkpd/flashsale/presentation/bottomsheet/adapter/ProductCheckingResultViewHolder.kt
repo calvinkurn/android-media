@@ -3,10 +3,7 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.getPercentFormatted
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductCheckResultBinding
@@ -106,6 +103,8 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             imgProduct.loadImage(item.imageUrl)
             tfProductName.text = item.name
             tfProductName.isVisible = item.name.isNotEmpty()
+            labelStatus.setTextAndCheckShow(item.locationCheckingResult.firstOrNull()?.checkingDetailResult?.statusText.orEmpty())
+            labelStatus.isVisible = !item.isMultiloc
             tfSubsidy.text = context.getString(R.string.commonbs_product_check_subsidy_format,
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
