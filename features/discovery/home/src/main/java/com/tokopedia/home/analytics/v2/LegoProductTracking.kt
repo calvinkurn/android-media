@@ -14,6 +14,8 @@ import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_VIEW
  * Created by frenzel
  */
 object LegoProductTracking : BaseTrackerConst() {
+    private const val LEGO_4_PRODUCT_SIZE = 4
+
     private const val LIST_LEGO_PRODUCT = "/ - p%s - %s - product - %s - %s - %s - %s - %s - %s"
     private const val CLICK_VIEW_ALL_ON_PRODUCT = "click view all on product %s"
     private const val IMPRESSION_ON_PRODUCT = "impression on product %s"
@@ -63,7 +65,7 @@ object LegoProductTracking : BaseTrackerConst() {
             eventAction = IMPRESSION_ON_PRODUCT.format(LEGO_4_PRODUCT_NAME),
             eventLabel = Label.NONE,
             list = getItemList(trackerName = LEGO_4_PRODUCT_NAME, channel = channel, position = position),
-            products = channel.channelGrids.take(4).mapIndexed { index, grid ->
+            products = channel.channelGrids.take(LEGO_4_PRODUCT_SIZE).mapIndexed { index, grid ->
                 Product(
                     name = grid.name,
                     id = grid.id,
