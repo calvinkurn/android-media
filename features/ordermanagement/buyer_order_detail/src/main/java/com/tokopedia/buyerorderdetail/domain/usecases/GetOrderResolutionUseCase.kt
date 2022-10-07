@@ -21,15 +21,17 @@ class GetOrderResolutionUseCase @Inject constructor(
         }.parameters
     }
 
+    private suspend fun sendRequest(
+        params: Long
+    ): GetResolutionTicketStatusResponse {
+        return repository.request(graphqlQuery(), createRequestParam(params))
+    }
+
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: Long) = flow {
         emit(GetOrderResolutionRequestState.Requesting)
-        repository.request<Map<String, Any>, GetResolutionTicketStatusResponse>(
-            graphqlQuery(), createRequestParam(params)
-        ).let { response ->
-            emit(GetOrderResolutionRequestState.Success(response.resolutionGetTicketStatus?.data))
-        }
+        emit(GetOrderResolutionRequestState.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {
         emit(GetOrderResolutionRequestState.Error(it))
     }

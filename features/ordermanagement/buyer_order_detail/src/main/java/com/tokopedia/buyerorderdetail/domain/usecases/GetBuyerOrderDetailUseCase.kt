@@ -22,15 +22,17 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
         }.parameters
     }
 
+    private suspend fun sendRequest(
+        params: GetBuyerOrderDetailParams
+    ): GetBuyerOrderDetailResponse.Data {
+        return repository.request(graphqlQuery(), createRequestParam(params))
+    }
+
     override fun graphqlQuery() = QUERY
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
         emit(GetBuyerOrderDetailRequestState.Requesting)
-        repository.request<Map<String, Any>, GetBuyerOrderDetailResponse.Data>(
-            graphqlQuery(), createRequestParam(params)
-        ).let { response ->
-            emit(GetBuyerOrderDetailRequestState.Success(response.buyerOrderDetail))
-        }
+        emit(GetBuyerOrderDetailRequestState.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
         emit(GetBuyerOrderDetailRequestState.Error(it))
     }
