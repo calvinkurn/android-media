@@ -588,10 +588,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 shopId,
                 postTagItem.id,
                 campaignStatusValue,
-                postTagItem.productName,
+                postTagItem.name,
                 postTagItem.price.toString(),
                 1,
-                postTagItem.shopName
+                shopName
             )
         }
         if (userSession.isLoggedIn) {
