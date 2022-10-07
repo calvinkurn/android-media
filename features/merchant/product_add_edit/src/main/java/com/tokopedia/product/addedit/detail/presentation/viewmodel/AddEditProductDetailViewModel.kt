@@ -880,7 +880,7 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     fun isFreeOfServiceFee(totalTxSuccess: Int, shopTier: Int): Boolean {
         // shopTier => from shop service; do not use commission info shop type in this function
-        return shopTier == ShopStatusLevelDef.LEVEL_REGULAR && totalTxSuccess <= SERVICE_FEE_LIMIT
+        return shopTier == ShopStatusLevelDef.LEVEL_REGULAR || shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE && totalTxSuccess <= SERVICE_FEE_LIMIT
     }
 
     fun getCommissionRate(commissionRules: List<CommissionRule>, shopTier: Int): Double {
