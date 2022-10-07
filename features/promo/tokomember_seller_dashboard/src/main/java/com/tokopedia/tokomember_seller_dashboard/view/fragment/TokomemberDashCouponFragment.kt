@@ -458,7 +458,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             ADD_QUOTA ->{
-                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, maxCashback)
+                TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, this,maxCashback)
             }
             DUPLICATE ->{
                 TmDashCreateActivity.openActivity(activity, CreateScreenType.COUPON_SINGLE, voucherId.toIntOrZero(), this, edit = false, duplicate = true)

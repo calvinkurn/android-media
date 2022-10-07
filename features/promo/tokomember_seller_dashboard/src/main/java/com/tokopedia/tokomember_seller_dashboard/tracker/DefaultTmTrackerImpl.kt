@@ -5,6 +5,8 @@ import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DAS
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_HOME
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_KUPON_DETAIL
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_MEMBER_LIST
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Event.EVENT_CLICK_BGP_IRIS
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Event.EVENT_VIEW_BGP_IRIS
 
@@ -666,6 +668,46 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_DETAIL_PROGRAM
         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_PROGRAM_DETAIL
         map[Tracker.Constants.EVENT_LABEL] = "$shopId - $programId"
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewCouponDetail(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_KUPON_DETAIL
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_KUPON_DETAIL
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickCouponDetailTambahKuota(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_KUPON_DETAIL
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_TAMBAH_KUOTA
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickAddQuotaCouponDetail(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_KUPON_DETAIL
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_SIMPAN_KUPON_DETAIL
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun viewMemberList(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_MEMBER_LIST
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MEMBER_LIST
+        map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
     }

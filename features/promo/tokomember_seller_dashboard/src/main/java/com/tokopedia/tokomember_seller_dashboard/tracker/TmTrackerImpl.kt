@@ -92,4 +92,12 @@ interface TmTrackerImpl {
     fun clickProgramItemButton(shopId: String, programId: String)
     fun viewProgramDetail(shopId: String, programId: String)
 
+    //Coupon Detail
+    fun viewCouponDetail(shopId:String)
+    fun clickCouponDetailTambahKuota(shopId:String)
+    fun clickAddQuotaCouponDetail(shopId:String)
+
+    //Member List
+    fun viewMemberList(shopId: String)
+
 }
