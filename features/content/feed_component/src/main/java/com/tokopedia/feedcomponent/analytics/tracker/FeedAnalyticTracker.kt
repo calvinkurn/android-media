@@ -697,7 +697,7 @@ class FeedAnalyticTracker
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
-                "unremind campaign",
+                "remind campaign",
                 "asgc"
             ),
             KEY_EVENT_LABEL to String.format(
