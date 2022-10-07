@@ -92,7 +92,6 @@ internal open class ProductListPresenterTestFixtures {
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
     protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
-    protected val context = mockk<Context>(relaxed = true)
     protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
     protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
 
