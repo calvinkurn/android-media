@@ -39,8 +39,8 @@ import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastUiState
 import com.tokopedia.play.broadcaster.view.bottomsheet.ProductPickerUGCBottomSheet
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play.test.espresso.clickOnViewChild
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.flow.MutableStateFlow
