@@ -1,7 +1,6 @@
 package com.tokopedia.productbundlewidget.model
 
 import com.tokopedia.product_bundle.common.data.model.request.Bundle
-import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 
 class GetBundleParamBuilder {
     private var productId: String = ""
@@ -10,7 +9,6 @@ class GetBundleParamBuilder {
     private var pageSource: String = ""
     private var bundleIds: MutableList<String> = mutableListOf()
     private var widgetType: WidgetType = WidgetType.TYPE_1
-    private var listener: ProductBundleWidgetListener? = null
 
     fun setProductId(productId: String) = apply {
         this.productId = productId
@@ -40,10 +38,6 @@ class GetBundleParamBuilder {
         pageSource = source
     }
 
-    fun setListener(listener: ProductBundleWidgetListener) = apply {
-        this.listener = listener
-    }
-
     fun build(): GetBundleParam {
         val bundleList = bundleIds.map {
             Bundle(ID = it, WarehouseID = warehouseId)
@@ -54,8 +48,7 @@ class GetBundleParamBuilder {
             shopId = if (bundleList.isEmpty()) shopId else "",
             bundleList = bundleList,
             widgetType = widgetType,
-            pageSource = pageSource,
-            listener = listener
+            pageSource = pageSource
         )
     }
 }

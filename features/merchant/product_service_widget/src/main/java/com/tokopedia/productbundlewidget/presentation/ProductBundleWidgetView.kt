@@ -160,6 +160,10 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         tfTitle?.setTextAndCheckShow(text)
     }
 
+    fun setListener(listener: ProductBundleWidgetListener) {
+        this.listener = listener
+    }
+
     fun getBundleData(param: GetBundleParam) {
         pageSource = param.pageSource
         param.apply {
