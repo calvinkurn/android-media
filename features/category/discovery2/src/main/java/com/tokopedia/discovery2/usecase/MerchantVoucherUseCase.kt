@@ -111,7 +111,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                 getQueryParameterMap(component.pageLoadedCounter,
                     productsLimit,
                     component.nextPageKey,
-                    component.userAddressData),
+                    component.userAddressData,
+                    component.selectedFilters,
+                    component.selectedSort),
                 pageEndPoint,
                 it.name)
             component.nextPageKey = nextPage
