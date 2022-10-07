@@ -285,9 +285,8 @@
 
                 </LinearLayout>
 
-                <include
+                <com.tokopedia.feedcomponent.shoprecom.ShopRecomWidget
                     android:id="@+id/shop_recommendation"
-                    layout="@layout/layout_shop_recommendation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/unify_space_4"
