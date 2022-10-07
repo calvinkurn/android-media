@@ -101,6 +101,7 @@ import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.SHOP_ID
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_LOCATION_VALIDATION
 import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.TIMBER_PREFIX_PRODUCT_NAME_VALIDATION
+import com.tokopedia.product.addedit.preview.presentation.constant.AddEditProductPreviewConstants.Companion.URL_ARTICLE_SELLER_EDU
 import com.tokopedia.product.addedit.preview.presentation.dialog.IneligibleAccessWarningBottomSheet
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
 import com.tokopedia.product.addedit.preview.presentation.service.AddEditProductAddService
@@ -149,10 +150,6 @@ class AddEditProductPreviewFragment :
         AddEditProductFragment(),
         ProductPhotoViewHolder.OnPhotoChangeListener,
         AddEditProductPerformanceMonitoringListener {
-
-    companion object{
-        const val URL_ARTICLE_SELLER_EDU = "https://seller.tokopedia.com/edu/toko-dimoderasi/"
-    }
 
     private var countTouchPhoto = 0
     private var dataBackPressed: Int? = null
