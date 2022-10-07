@@ -257,8 +257,10 @@ class ShippingDurationPresenter @Inject constructor(
         preOrderModel: PreOrderModel?,
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
-        val uiModelList: MutableList<RatesViewModelType> =
-            shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }.toMutableList()
+        val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
+        val uiModelList: MutableList<RatesViewModelType> = mutableListOf<RatesViewModelType>().apply {
+            addAll(eligibleServices)
+        }
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
@@ -270,7 +272,7 @@ class ShippingDurationPresenter @Inject constructor(
         }
 
         if (!isOcc) {
-            if (shippingDurationUiModels.getOrNull(0)?.etaErrorCode == 1) {
+            if (eligibleServices.getOrNull(0)?.etaErrorCode == 1) {
                 uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
             }
             if (promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {

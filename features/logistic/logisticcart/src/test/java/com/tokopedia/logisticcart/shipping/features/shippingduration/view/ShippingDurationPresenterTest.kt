@@ -17,6 +17,7 @@ import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithProm
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
 import com.tokopedia.logisticcart.shipping.model.DividerModel
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.logisticcart.shipping.model.NotifierModel
@@ -313,6 +314,35 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `When rates v3 response dont have eligible courier for promo Then should not hit analytic`() {
+        // Given
+        val ratesV3Response = getRatesResponseWithPromo()
+        val shippingRecommendationData = getShippingDataWithoutEligibleCourierPromo()
+        every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
+        every {
+            responseConverter.fillState(
+                any(),
+                shopShipments,
+                shipmentDetailData.selectedCourier!!.shipperProductId,
+                0
+            )
+        } returns shippingRecommendationData
+        presenter.attachView(view)
+
+        // When
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+        )
+
+        // Then
+        verify(exactly = 0) {
+            view.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
+        }
+    }
+
+    @Test
     fun `When rates v3 response has eligible courier for promo Then should hit analytic`() {
         // Given
         val ratesV3Response = getRatesResponseWithPromo()
@@ -447,7 +477,7 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When in checkout and promo has error code Then initiate showcase`() {
+    fun `When in checkout and promo has eta error code Then initiate showcase`() {
         // Given
         val shippingRecommendationData = getShippingDataWithPromoEtaError()
         presenter.shippingData = shippingRecommendationData
@@ -466,7 +496,26 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
-    fun `When in checkout and duration has error code Then show notifier model`() {
+    fun `When in occ and promo has eta error code Then dont initiate showcase`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoEtaError()
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            true
+        )
+
+        // Then
+        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
+        assertFalse(firstDuration.isShowShowCase)
+    }
+
+    @Test
+    fun `When in checkout and duration has eta error code Then show notifier model`() {
         // Given
         val shippingRecommendationData = getShippingDataWithServiceError()
 
@@ -480,6 +529,42 @@ class ShippingDurationPresenterTest {
 
         // Then
         assertTrue(actual.first() is NotifierModel)
+    }
+
+    @Test
+    fun `When in checkout and duration is hidden and has eta error code Then dont show notifier model`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceError()
+        val hiddenServiceWithEtaError = shippingRecommendationData.shippingDurationUiModels.first()
+        hiddenServiceWithEtaError.serviceData.isUiRatesHidden = true
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        assertFalse(actual.first() is NotifierModel)
+    }
+
+    @Test
+    fun `When in occ and duration has eta error code Then show notifier model`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithServiceError()
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            true
+        )
+
+        // Then
+        assertFalse(actual.first() is NotifierModel)
     }
 
     /*
@@ -499,7 +584,6 @@ class ShippingDurationPresenterTest {
         presenter.attachView(view)
 
         // When
-        // onChooseDuration
         presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
 
         // Then
@@ -507,6 +591,29 @@ class ShippingDurationPresenterTest {
             view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
                 any(), any(), selectedService.serviceData.serviceId, selectedService.serviceData,
                 true)
+        }
+    }
+
+    @Test
+    fun `When year end promotion toggle is on and service is error Then pinpoint error flag is false`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        selectedService.serviceData.error = ErrorServiceData().apply {
+            errorId = "1"
+            errorMessage = "error"
+        }
+        every { view.isToogleYearEndPromotionOn() } returns true
+        presenter.attachView(view)
+
+        // When
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), 0, selectedService.serviceData,
+                false)
         }
     }
 
@@ -524,6 +631,23 @@ class ShippingDurationPresenterTest {
 
         // Then
         assert(recommendedCourier?.isSelected == true)
+    }
+
+    @Test
+    fun `When select duration and there is recommended courier but is hidden Then dont select the recommended courier`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+        recommendedCourier?.productData?.isUiRatesHidden = true
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        assert(recommendedCourier?.isSelected == false)
     }
 
     @Test
@@ -608,6 +732,30 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `When select duration and get selected courier and courier is error Then pinpoint error flag is false`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val product = selectedService.shippingCourierViewModelList.first()
+        product.productData.error = ErrorProductData().apply {
+            errorId = "1"
+            errorMessage = "error"
+        }
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), 0, selectedService.serviceData,
+                false)
+        }
+    }
+
+    @Test
     fun `When select duration and there is recommended courier Then send recommended courier data`() {
         // Given
         // selected shipping duration ui model
@@ -624,6 +772,28 @@ class ShippingDurationPresenterTest {
         verify {
             view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
                 recommendedCourier, any(), 0, selectedService.serviceData,
+                false)
+        }
+    }
+
+    @Test
+    fun `When select duration and there is recommended courier but is hidden Then dont send recommended courier data`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val recommendedCourier = selectedService.shippingCourierViewModelList.find { it.productData.isRecommend }
+        recommendedCourier?.productData?.isUiRatesHidden = true
+        presenter.attachView(view)
+
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                null, any(), 0, selectedService.serviceData,
                 false)
         }
     }

@@ -57,6 +57,16 @@ internal object DummyProvider {
         return shippingRecomData
     }
 
+    fun getShippingDataWithoutEligibleCourierPromo() : ShippingRecommendationData {
+        val ratesData = getRatesResponseWithPromo()
+        val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
+        val durationUiModels = shippingRecomData.shippingDurationUiModels.toMutableList()
+        durationUiModels.removeAt(1)
+        shippingRecomData.shippingDurationUiModels = durationUiModels
+        shippingRecomData.listLogisticPromo = listOf()
+        return shippingRecomData
+    }
+
     fun getShippingDataWithPromoAndPreOrderModel() : ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
