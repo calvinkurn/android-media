@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.play.vod
+package com.tkpd.macrobenchmark.test.playvod
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest

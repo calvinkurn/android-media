@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.play.live
+package com.tkpd.macrobenchmark.test.playvod
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
@@ -15,8 +15,8 @@ import org.junit.runners.Parameterized
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
-class PlayLiveStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
-    override fun getIntent() = MacroIntent.Play.getPlayLiveIntent()
+class PlayVODStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun getIntent() = MacroIntent.Play.getPlayVODIntent()
 
     override fun waitUntil() {
         MacroInteration.waitForRecyclerViewContent(

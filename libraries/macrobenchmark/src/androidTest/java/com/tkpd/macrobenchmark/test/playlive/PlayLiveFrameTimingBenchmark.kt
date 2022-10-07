@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.play.live
+package com.tkpd.macrobenchmark.test.playlive
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
