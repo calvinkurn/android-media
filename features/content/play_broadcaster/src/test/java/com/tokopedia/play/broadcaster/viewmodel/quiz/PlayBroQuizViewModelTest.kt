@@ -48,11 +48,7 @@ class PlayBroQuizViewModelTest {
         channelId = "123"
     )
 
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
-            showPrizeCoachMark = false,
-        )
-    )
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
     private val mockException = uiModelBuilder.buildException()
 
