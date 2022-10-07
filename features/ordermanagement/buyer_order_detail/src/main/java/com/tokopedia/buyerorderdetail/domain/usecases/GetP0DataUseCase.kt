@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -29,23 +30,23 @@ class GetP0DataUseCase @Inject constructor(
                 if (getBuyerOrderDetailRequestState.result.hasResoStatus == true) {
                     emitAll(combineWithOrderResolutionData(getBuyerOrderDetailRequestState))
                 } else {
-                    emit(
-                        GetP0DataRequestState.Success(getBuyerOrderDetailRequestState)
-                    )
+                    emit(GetP0DataRequestState.Success(getBuyerOrderDetailRequestState))
                 }
             }
             is GetBuyerOrderDetailRequestState.Error -> {
-                emit(GetP0DataRequestState.Error(
-                    getBuyerOrderDetailRequestState,
-                    GetOrderResolutionRequestState.Error(getBuyerOrderDetailRequestState.throwable)
-                ))
+                emit(
+                    GetP0DataRequestState.Error(
+                        getBuyerOrderDetailRequestState,
+                        GetOrderResolutionRequestState.Error(getBuyerOrderDetailRequestState.throwable)
+                    )
+                )
             }
         }
     }
 
-    private fun combineWithOrderResolutionData(
+    private suspend fun combineWithOrderResolutionData(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
-    ) = getOrderResolutionUseCase.getOrderResolution(
+    ) = getOrderResolutionUseCase(
         buyerOrderDetailRequestState.result.orderId.toLongOrZero()
     ).flatMapLatest { getOrderResolutionRequestState ->
         flow {
@@ -53,24 +54,21 @@ class GetP0DataUseCase @Inject constructor(
                 is GetOrderResolutionRequestState.Requesting -> {
                     emit(
                         GetP0DataRequestState.Requesting(
-                            buyerOrderDetailRequestState,
-                            getOrderResolutionRequestState
+                            buyerOrderDetailRequestState, getOrderResolutionRequestState
                         )
                     )
                 }
                 is GetOrderResolutionRequestState.Success -> {
                     emit(
                         GetP0DataRequestState.Success(
-                            buyerOrderDetailRequestState,
-                            getOrderResolutionRequestState
+                            buyerOrderDetailRequestState, getOrderResolutionRequestState
                         )
                     )
                 }
                 is GetOrderResolutionRequestState.Error -> {
                     emit(
                         GetP0DataRequestState.Success(
-                            buyerOrderDetailRequestState,
-                            getOrderResolutionRequestState
+                            buyerOrderDetailRequestState, getOrderResolutionRequestState
                         )
                     )
                 }
@@ -78,7 +76,13 @@ class GetP0DataUseCase @Inject constructor(
         }
     }
 
-    fun getP0Data(params: GetP0DataParams) = getBuyerOrderDetailUseCase.getBuyerOrderDetail(
+    suspend fun getP0Data(params: GetP0DataParams) = getBuyerOrderDetailUseCase(
         GetBuyerOrderDetailParams(params.cart, params.orderId, params.paymentId)
-    ).flatMapLatest(::mapToGetP0DataRequestState).flowOn(Dispatchers.IO)
+    ).flatMapLatest(::mapToGetP0DataRequestState).catch {
+        emit(
+            GetP0DataRequestState.Error(
+                GetBuyerOrderDetailRequestState.Error(it), GetOrderResolutionRequestState.Error(it)
+            )
+        )
+    }.flowOn(Dispatchers.IO)
 }

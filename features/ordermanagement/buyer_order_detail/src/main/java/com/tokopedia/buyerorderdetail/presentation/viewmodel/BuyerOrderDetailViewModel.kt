@@ -51,10 +51,12 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -90,6 +92,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val multiAtcResult: LiveData<MultiATCState>
         get() = _multiAtcResult
 
+    private val getP0DataRequestParams: MutableSharedFlow<GetP0DataParams> = MutableSharedFlow()
     private val singleAtcRequestStates: MutableStateFlow<Map<String, AddToCartSingleRequestState>> = MutableStateFlow(mapOf())
     private val getP0DataRequestState: MutableStateFlow<GetP0DataRequestState> = MutableStateFlow(GetP0DataRequestState.Idle)
     private val actionButtonsUiState = getP0DataRequestState.mapLatest(
@@ -127,6 +130,16 @@ class BuyerOrderDetailViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = BuyerOrderDetailUiState.FullscreenLoading
     )
+
+    init {
+        viewModelScope.launch {
+            getP0DataRequestParams.collectLatest { params ->
+                getP0DataUseCase.get().getP0Data(params).collect { requestState ->
+                    getP0DataRequestState.value = requestState
+                }
+            }
+        }
+    }
 
     private fun mapActionButtonsUiState(
         getP0DataRequestState: GetP0DataRequestState,
@@ -223,9 +236,11 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun getP0Data(orderId: String, paymentId: String, cart: String) {
         viewModelScope.launch {
-            getP0DataUseCase.get().getP0Data(GetP0DataParams(cart, orderId, paymentId)).collect {
-                getP0DataRequestState.value = it
-            }
+            getP0DataRequestParams.emit(GetP0DataParams(
+                cart = cart,
+                orderId = orderId,
+                paymentId = paymentId
+            ))
         }
     }
 

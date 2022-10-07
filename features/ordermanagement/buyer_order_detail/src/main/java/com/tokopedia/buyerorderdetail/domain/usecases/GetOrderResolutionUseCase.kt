@@ -1,27 +1,19 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
-import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-@BuyerOrderDetailScope
-@GqlQuery("GetOrderResolutionQuery", GetOrderResolutionUseCase.QUERY)
 class GetOrderResolutionUseCase @Inject constructor(
-    private val useCase: GraphqlUseCase<GetResolutionTicketStatusResponse>
-) {
-
-    init {
-        useCase.setTypeClass(GetResolutionTicketStatusResponse::class.java)
-        useCase.setGraphqlQuery(GetOrderResolutionQuery())
-    }
+    dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
+) : FlowUseCase<Long, GetOrderResolutionRequestState>(dispatchers.io) {
 
     private fun createRequestParam(orderId: Long): Map<String, Any> {
         return RequestParams.create().apply {
@@ -29,13 +21,18 @@ class GetOrderResolutionUseCase @Inject constructor(
         }.parameters
     }
 
-    fun getOrderResolution(orderId: Long) = flow {
+    override fun graphqlQuery() = QUERY
+
+    override suspend fun execute(params: Long) = flow {
         emit(GetOrderResolutionRequestState.Requesting)
-        useCase.setRequestParams(createRequestParam(orderId))
-        emit(GetOrderResolutionRequestState.Success(useCase.executeOnBackground().resolutionGetTicketStatus?.data))
+        repository.request<Map<String, Any>, GetResolutionTicketStatusResponse>(
+            graphqlQuery(), createRequestParam(params)
+        ).let { response ->
+            emit(GetOrderResolutionRequestState.Success(response.resolutionGetTicketStatus?.data))
+        }
     }.catch {
         emit(GetOrderResolutionRequestState.Error(it))
-    }.flowOn(Dispatchers.IO)
+    }
 
     companion object {
         private const val PARAM_ORDER_ID = "orderID"

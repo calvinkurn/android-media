@@ -1,39 +1,38 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.data.extensions.request
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
-@GqlQuery("MPBOMDetail", GetBuyerOrderDetailUseCase.QUERY)
 class GetBuyerOrderDetailUseCase @Inject constructor(
-    private val useCase: GraphqlUseCase<GetBuyerOrderDetailResponse.Data>
-) {
-
-    init {
-        useCase.setTypeClass(GetBuyerOrderDetailResponse.Data::class.java)
-        useCase.setGraphqlQuery(MPBOMDetail())
-    }
-
-    fun getBuyerOrderDetail(params: GetBuyerOrderDetailParams) = flow {
-        emit(GetBuyerOrderDetailRequestState.Requesting)
-        useCase.setRequestParams(createRequestParam(params))
-        emit(GetBuyerOrderDetailRequestState.Success(useCase.executeOnBackground().buyerOrderDetail))
-    }.catch {
-        emit(GetBuyerOrderDetailRequestState.Error(it))
-    }.flowOn(Dispatchers.IO)
+    dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
+) : FlowUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers.io) {
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
         return RequestParams.create().apply {
             putObject(PARAM_INPUT, params)
         }.parameters
+    }
+
+    override fun graphqlQuery() = QUERY
+
+    override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
+        emit(GetBuyerOrderDetailRequestState.Requesting)
+        repository.request<Map<String, Any>, GetBuyerOrderDetailResponse.Data>(
+            graphqlQuery(), createRequestParam(params)
+        ).let { response ->
+            emit(GetBuyerOrderDetailRequestState.Success(response.buyerOrderDetail))
+        }
+    }.catch {
+        emit(GetBuyerOrderDetailRequestState.Error(it))
     }
 
     companion object {
