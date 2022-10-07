@@ -88,6 +88,8 @@ object Tracker {
         const val VIEW_HOME_BOTTOM_SHEET = "homepage_bottomsheet - view bottomsheet"
         const val CLICK_DISMISS_HOME_BOTTOM_SHEET = "homepage_bottomsheet - click balik or close"
         const val VIEW_HOME_TAB_SECTION = "home_tab - view section"
+        const val VIEW_HOME_CLICK_EDIT_CARD = "home_tab - click ubah kartu"
+        const val VIEW_HOME_CLICK_FEEDBACK_SURVEY = "home_tab - click feedback survey"
 
         //Program List
         const val VIEW_PROGRAM_LIST_TAB_SECTION = "program_tab - view section"

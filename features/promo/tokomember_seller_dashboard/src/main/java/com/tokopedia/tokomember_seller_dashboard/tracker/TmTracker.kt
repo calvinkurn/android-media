@@ -84,6 +84,14 @@ class TmTracker {
         trackerImpl.viewHomeTabsSection(shopId)
     }
 
+    fun clickHomeUbahKartu(shopId: String) {
+        trackerImpl.clickHomeUbahKartu(shopId)
+    }
+
+    fun clickHomeFeedback(shopId: String) {
+        trackerImpl.clickHomeFeedback(shopId)
+    }
+
     fun viewProgramListTabSection(shopId: String) {
         trackerImpl.viewProgramListTabSection(shopId)
     }

@@ -88,6 +88,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
             feedbackIcon.setOnClickListener {
+                tmTracker?.clickHomeFeedback(shopId = arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://docs.google.com/forms/d/e/1FAIpQLSf5deaECcXAlznho4PuP6lnMvCDMeVbuieAWpDrJ83f-bX3vA/viewform?usp=sf_link"))
             }
 

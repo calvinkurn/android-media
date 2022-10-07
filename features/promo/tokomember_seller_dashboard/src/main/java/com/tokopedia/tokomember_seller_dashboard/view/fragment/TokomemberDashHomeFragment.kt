@@ -123,6 +123,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             btn_edit_card.background = ContextCompat.getDrawable(it, R.drawable.tm_dash_edit_card)
             btn_edit_card.setOnClickListener {
                 if (shopId != null) {
+                    tmTracker?.clickHomeUbahKartu(shopId.toString())
                     prefManager?.cardId?.let { it1 ->
                         TmDashCreateActivity.setCardEditCallback(object : EditCardCallback{
                             override fun cardEdit() {
