@@ -102,6 +102,27 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         return false
     }
 
+    suspend fun getCarouselPaginatedData(componentId: String, pageEndPoint: String, productsLimit: Int = VOUCHER_PER_PAGE): Boolean {
+        val component = getComponent(componentId, pageEndPoint)
+        component?.let {
+            val isDynamic = it.properties?.dynamic ?: false
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                getQueryParameterMap(component.pageLoadedCounter,
+                    productsLimit,
+                    component.nextPageKey,
+                    component.userAddressData),
+                pageEndPoint,
+                it.name)
+            component.nextPageKey = nextPage
+            if (voucherListData.isEmpty()) return false else it.pageLoadedCounter += 1
+            updatePaginatedData(voucherListData,it)
+            (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(voucherListData)
+            return true
+        }
+        return false
+    }
+
     private fun updatePaginatedData(voucherListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
         voucherListData.forEach {
             it.parentComponentId = parentComponentsItem.id

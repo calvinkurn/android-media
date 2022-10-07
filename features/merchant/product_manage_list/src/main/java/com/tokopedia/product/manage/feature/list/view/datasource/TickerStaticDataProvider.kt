@@ -6,6 +6,16 @@ import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
+    private fun MutableList<TickerData>.addMaxStockTicker() {
+        add(
+            TickerData(
+                title = resourceProvider.getTickerMaxStockTitle(),
+                description = resourceProvider.getTickerMaxStockDescription(),
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                isFromHtml = false
+            )
+        )
+    }
     private fun MutableList<TickerData>.addMultiLocationTicker(multiLocationSeller: Boolean) {
         if (multiLocationSeller) {
             add(
@@ -21,6 +31,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
 
     fun getTickers(multiLocationSeller: Boolean): List<TickerData> {
         return mutableListOf<TickerData>().apply {
+            addMaxStockTicker()
             addMultiLocationTicker(multiLocationSeller)
         }.filter { it.description.isNotBlank() }
     }

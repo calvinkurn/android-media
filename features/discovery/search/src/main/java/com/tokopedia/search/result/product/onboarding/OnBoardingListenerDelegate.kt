@@ -26,10 +26,11 @@ class OnBoardingListenerDelegate @Inject constructor(
     }
 
     private var coachMark: CoachMark2? = null
+    private var shouldShowCoachmark = true
     private var firstProductPosition = -1
 
     fun showOnBoarding(firstProductPosition: Int) {
-        if (coachMark != null) return
+        if (coachMark != null || !shouldShowCoachmark) return
 
         this.firstProductPosition = firstProductPosition
 
@@ -39,6 +40,10 @@ class OnBoardingListenerDelegate @Inject constructor(
         recyclerViewUpdater.recyclerView?.postDelayed({
             showCoachmark(productWithBOELabel)
         }, ON_BOARDING_DELAY_MS)
+    }
+
+    fun dismissCoachmark() {
+        coachMark?.dismissCoachMark()
     }
 
     private fun getFirstProductWithBOELabel(firstProductPositionWithBOELabel: Int): View? {
@@ -55,7 +60,12 @@ class OnBoardingListenerDelegate @Inject constructor(
         val context = context ?: return
 
         coachMark = CoachMark2(context).apply {
-            setOnDismissListener { coachMark = null }
+            setOnDismissListener {
+                coachMark = null
+            }
+            onDismissListener = {
+                shouldShowCoachmark = false
+            }
         }
     }
 
@@ -87,8 +97,8 @@ class OnBoardingListenerDelegate @Inject constructor(
     fun createScrollListener(): RecyclerView.OnScrollListener {
         return object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val visibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(IntArray(2))
-                val lastVisibleItems = staggeredGridLayoutManager.findLastVisibleItemPositions(IntArray(2))
+                val visibleItems = staggeredGridLayoutManager.findFirstVisibleItemPositions(null)
+                val lastVisibleItems = staggeredGridLayoutManager.findLastVisibleItemPositions(null)
                 if (max(lastVisibleItems.asList()) >= firstProductPosition
                     && max(visibleItems.asList()) < firstProductPosition) {
                     showOnBoarding(firstProductPosition)

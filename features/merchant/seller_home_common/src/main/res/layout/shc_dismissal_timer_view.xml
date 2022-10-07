@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="visible"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcDismissalTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/shc_info_deleted"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcDismissalDesc"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcDismissalDesc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="@string/shc_thanks_for_the_suggestion"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintBottom_toTopOf="@+id/tvShcDismissalTimer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcDismissalTitle"
+        app:typographyType="display_2" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvShcDismissalTimer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:textColor="@color/Unify_GN500"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvShcDismissalDesc"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="Batalkan (7 detik)" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

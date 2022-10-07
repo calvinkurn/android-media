@@ -68,6 +68,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.globalerror.GlobalError;
+import com.tokopedia.locationmanager.LocationDetectorHelper;
+import com.tokopedia.locationmanager.RequestLocationType;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.network.utils.ErrorHandler;
@@ -562,22 +564,25 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     private void checkLocationPermission(GeolocationPermissions.Callback callback, String origin) {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
             permissionCheckerHelper = new PermissionCheckerHelper();
-            permissionCheckerHelper.checkPermission(this, PermissionCheckerHelper.Companion.PERMISSION_ACCESS_FINE_LOCATION, new PermissionCheckerHelper.PermissionCheckListener() {
-                @Override
-                public void onPermissionDenied(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
 
-                @Override
-                public void onNeverAskAgain(String permissionText) {
-                    callback.invoke(origin, false, false);
-                }
+            permissionCheckerHelper.checkPermissions(this,
+                    LocationDetectorHelper.Companion.getPermissions(RequestLocationType.APPROXIMATE_OR_PRECISE),
+                    new PermissionCheckerHelper.PermissionCheckListener() {
+                        @Override
+                        public void onPermissionDenied(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
 
-                @Override
-                public void onPermissionGranted() {
-                    callback.invoke(origin, true, false);
-                }
-            }, getString(R.string.webview_rationale_need_location));
+                        @Override
+                        public void onNeverAskAgain(String permissionText) {
+                            callback.invoke(origin, false, false);
+                        }
+
+                        @Override
+                        public void onPermissionGranted() {
+                            callback.invoke(origin, true, false);
+                        }
+                    }, getString(R.string.webview_rationale_need_location));
         } else callback.invoke(origin, true, false);
     }
 
@@ -592,7 +597,9 @@ public abstract class BaseWebViewFragment extends BaseDaggerFragment {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        if (permissionCheckerHelper != null) {
+            permissionCheckerHelper.onRequestPermissionsResult(getContext(), requestCode, permissions, grantResults);
+        }
     }
 
     class MyWebViewClient extends WebViewClient {
