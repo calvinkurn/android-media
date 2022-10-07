@@ -564,7 +564,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private val gson by lazy { Gson() }
 
-    private var delayQuizJob: Job? = null
     private var delayTapJob: Job? = null
 
     init {
@@ -1848,7 +1847,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            val interactive = _interactive.updateAndGet {
+            _interactive.update {
                 if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
                 val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished
@@ -1859,22 +1858,10 @@ class PlayViewModel @AssistedInject constructor(
                 )
             }
 
-            val winnerStatus = _winnerStatus.value
             val interactiveType = _interactive.value.interactive
-            val isFinished = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.status is InteractiveUiModel.Quiz.Status.Finished else false
-            val isRewardAvailable = if (interactiveType is InteractiveUiModel.Quiz) interactiveType.reward.isNotEmpty() else false
 
-            if (!isRewardAvailable) {
-                showLeaderBoard(interactiveId = interactiveType.id)
-            } else {
-                delayQuizJob?.cancel()
-                delayQuizJob = viewModelScope.launch(dispatchers.computation) {
-                    delay(interactive.interactive.waitingDuration)
-                    if(isFinished) {
-                        if(winnerStatus == null) showLeaderBoard(interactiveId = interactiveType.id) else processWinnerStatus(winnerStatus, interactiveType)
-                    }
-                }
-            }
+            showLeaderBoard(interactiveId = interactiveType.id)
+
             /**
              * _interactive.value = InteractiveStateUiModel.Empty (resetting interactive) is available on
              * processWinnerStatus() / showLeaderBoard() if we use both there's a case when the delay is still on but the socket
@@ -2605,7 +2592,6 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun cancelAllDelayFromSocketWinner() {
-        if(delayQuizJob?.isActive == true) delayQuizJob?.cancel()
         if(delayTapJob?.isActive == true) delayTapJob?.cancel()
     }
 

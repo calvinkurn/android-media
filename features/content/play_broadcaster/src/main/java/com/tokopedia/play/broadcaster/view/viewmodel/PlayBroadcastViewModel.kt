@@ -537,23 +537,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val gameConfig = repo.getInteractiveConfig()
 
-            _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
+            _interactiveConfig.value = gameConfig
 
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
             }
         }) { }
-    }
-
-    private fun mergeInteractiveConfigWithPreference(
-        gameConfig: InteractiveConfigUiModel
-    ): InteractiveConfigUiModel {
-        return gameConfig.copy(
-            quizConfig = gameConfig.quizConfig.copy(
-                showPrizeCoachMark = sharedPref.isFirstQuizPrice(),
-            )
-        )
     }
 
     private suspend fun updateCurrentInteractiveStatus() {
@@ -1073,7 +1063,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             /** Reset Form */
             sharedPref.setNotFirstSelectQuizOption()
-            sharedPref.setNotFirstQuizPrice()
             sharedPref.setNotFirstInteractive()
             _onboarding.update {
                 it.copy(firstInteractive = sharedPref.isFirstInteractive())
