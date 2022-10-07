@@ -50,7 +50,6 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
-import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
