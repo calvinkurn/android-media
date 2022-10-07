@@ -218,15 +218,17 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         return uiModel
     }
 
-    private fun setNotifierModel(uiModel: MutableList<RatesViewModelType>, shippingCourierUiModel: ShippingCourierUiModel, isOcc: Boolean) {
+    private fun setNotifierModel(
+        uiModel: MutableList<RatesViewModelType>,
+        shippingCourierUiModel: ShippingCourierUiModel,
+        isOcc: Boolean
+    ) {
         if (isOcc && shippingCourierUiModel.productData.shipperId in CourierConstant.INSTANT_SAMEDAY_COURIER) {
-             uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
-        } else {
-            if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
-                uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
-            } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
-                uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
-            }
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
+        } else if (shippingCourierUiModel.serviceData.serviceName == INSTAN_VIEW_TYPE) {
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_INSTAN))
+        } else if (shippingCourierUiModel.serviceData.serviceName == SAME_DAY_VIEW_TYPE) {
+            uiModel.add(0, NotifierModel(NotifierModel.TYPE_SAMEDAY))
         }
     }
 

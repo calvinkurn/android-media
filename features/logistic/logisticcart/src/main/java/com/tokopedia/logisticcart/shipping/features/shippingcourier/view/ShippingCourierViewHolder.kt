@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticcart.R
@@ -87,10 +87,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                 flDisableContainer.context,
                 R.drawable.fg_enabled_item
             )
-            ImageHandler.LoadImage(
-                imgMvc,
-                shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo
-            )
+            imgMvc.loadImage(shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo)
             tvMvc.setText(R.string.tv_mvc_text)
             tvMvcError.visibility = View.GONE
         } else if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null && shippingCourierUiModel.productData.features.merchantVoucherProductData.isMvc == -1) {
@@ -99,8 +96,7 @@ class ShippingCourierViewHolder(itemView: View, private val cartPosition: Int) :
                 flDisableContainer.context,
                 R.drawable.fg_disabled_item
             )
-            ImageHandler.LoadImage(
-                imgMvc,
+            imgMvc.loadImage(
                 shippingCourierUiModel.productData.features.merchantVoucherProductData.mvcLogo
             )
             tvMvc.setText(R.string.tv_mvc_text)
