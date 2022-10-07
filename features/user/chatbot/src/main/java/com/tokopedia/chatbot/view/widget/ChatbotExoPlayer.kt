@@ -182,9 +182,9 @@ class ChatbotExoPlayer(val context : Context, var videoControl: ChatbotVideoCont
         const val UNMUTE_VOLUME = 1F
 
         const val VIDEO_AT_FIRST_POSITION = 0L
-        const val RETRY_DELAY = 0L
-        const val RETRY_COUNT = 0
-        const val BLACK_LIST_SECONDS = 0L
+        const val RETRY_DELAY = 1000L
+        const val RETRY_COUNT = 5
+        const val BLACK_LIST_SECONDS = 4000L
 
     }
 
