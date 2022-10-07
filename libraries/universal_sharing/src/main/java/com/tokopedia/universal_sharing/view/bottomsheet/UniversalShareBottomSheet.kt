@@ -29,6 +29,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.linker.LinkerManager
@@ -43,8 +44,11 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
+import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
+import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
 import com.tokopedia.universal_sharing.usecase.ImageGeneratorUseCase
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ImageListAdapter
 import com.tokopedia.universal_sharing.view.bottomsheet.adapter.ShareBottomSheetAdapter
@@ -66,6 +70,7 @@ import org.json.JSONArray
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import javax.inject.Inject
 import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -130,6 +135,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         const val KEY_NO_IMAGE = "no image"
         const val KEY_IMAGE_DEFAULT = "default"
         const val KEY_CONTEXTUAL_IMAGE = "contextual image"
+        const val KEY_PRODUCT_ID = "productId";
+
 
         fun createInstance(): UniversalShareBottomSheet = UniversalShareBottomSheet()
 
@@ -311,6 +318,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     private var onViewReadyAction: (() -> Unit)? = null
 
 
+    @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        inject()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -321,6 +335,13 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         initRecyclerView()
         initImageOptionsRecyclerView()
         onViewReadyAction?.invoke()
+    }
+
+    private fun inject() {
+        activity?.let {
+            DaggerUniversalShareComponent.builder().baseAppComponent((it.application as BaseMainApplication).baseAppComponent)
+                .universalShareModule(UniversalShareModule()).build().inject(this)
+        }
     }
 
     fun init(bottomSheetListener: ShareBottomsheetListener) {
@@ -403,8 +424,12 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 val generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility = affiliateUseCase.apply {
                     params = AffiliateEligibilityCheckUseCase.createParam(affiliateQueryData!!)
                 }.executeOnBackground()
+                var deeplink = ""
+                if (isExecuteExtractBranchLink(generateAffiliateLinkEligibility)) {
+                    deeplink = executeExtractBranchLink(generateAffiliateLinkEligibility)
+                }
                 withContext(Dispatchers.Main) {
-                    showAffiliateTicker(generateAffiliateLinkEligibility)
+                    showAffiliateTicker(generateAffiliateLinkEligibility, deeplink)
                 }
             }
         }, onError = {
@@ -424,14 +449,26 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }, DELAY_TIME_AFFILIATE_ELIGIBILITY_CHECK)
     }
 
-    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+    private suspend fun executeExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): String {
+        return try {
+            extractBranchLinkUseCase(generateAffiliateLinkEligibility.banner?.ctaLink ?: "").android_deeplink
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
+    private fun isExecuteExtractBranchLink(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
+        return generateAffiliateLinkEligibility.banner?.ctaLink?.isNotEmpty() == true && isShowAffiliateRegister(generateAffiliateLinkEligibility)
+    }
+
+    private fun showAffiliateTicker(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String = "") {
         clearLoader()
         removeHandlerTimeout()
 
         if (isShowAffiliateComission(generateAffiliateLinkEligibility)) {
             showAffiliateCommission(generateAffiliateLinkEligibility)
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
-            showAffiliateRegister(generateAffiliateLinkEligibility)
+            showAffiliateRegister(generateAffiliateLinkEligibility, deeplink)
         }
     }
 
@@ -465,7 +502,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         affiliateQueryData = null
     }
 
-    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
+    private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility, deeplink: String) {
         affiliateRegisterContainer?.visible()
         generateAffiliateLinkEligibility.banner?.let { banner ->
             if (banner.title.isBlank() && banner.message.isBlank()) return
@@ -475,7 +512,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
             affiliateRegisterContainer?.setOnClickListener { _ ->
                 tracker.onClickRegisterTicker(false, affiliateQueryData?.product?.productID ?: "")
                 dismiss()
-                RouteManager.route(context, ApplinkConst.AFFILIATE)
+                RouteManager.route(context, Uri.parse(ApplinkConst.AFFILIATE_ONBOARDING).buildUpon().appendQueryParameter(KEY_PRODUCT_ID, "").build().toString())
             }
             affiliateRegisterIcon?.loadImage(banner.icon)
 
