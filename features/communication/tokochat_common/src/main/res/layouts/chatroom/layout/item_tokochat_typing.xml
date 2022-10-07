@@ -29,7 +29,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toLeftOf="@id/tokochat_tv_typing"
-        tools:srcCompat="@drawable/tokochat_typing_motion"
         android:visibility="gone"
         tools:visibility="visible" />
 

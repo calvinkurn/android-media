@@ -40,19 +40,7 @@ class CreateChannelUseCase @Inject constructor(
         onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
         onError: (error: ConversationsNetworkError) -> Unit
     ) {
-        repository.getConversationRepository().getGroupBookingChannel(
-            channelId = channelId,
-            onSuccess = onSuccess,
-            onError = onError
-        )
-    }
-
-    fun getRefreshedGroupBookingChannel(
-        channelId: String,
-        onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
-        onError: (error: ConversationsNetworkError) -> Unit
-    ) {
-        repository.getConversationRepository().getRefreshedGroupBookingChannel(
+        repository.getConversationRepository().getRemoteGroupBookingChannelDetails(
             channelId = channelId,
             onSuccess = onSuccess,
             onError = onError

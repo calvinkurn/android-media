@@ -23,8 +23,4 @@ class MutationProfileUseCase @Inject constructor(
     fun getUserId(): String {
         return repository.getConversationRepository().getUserId()?: ""
     }
-
-    fun resetConversationData() {
-        repository.getConversationRepository().resetConversationsData()
-    }
 }

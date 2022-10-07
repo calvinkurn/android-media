@@ -7,7 +7,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.header.HeaderUnify
+import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
+import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -36,7 +39,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         additionalSetup()
-        initViews(savedInstanceState)
+        initViews(view, savedInstanceState)
         initObservers()
     }
 
@@ -44,7 +47,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     abstract fun additionalSetup()
     abstract fun initObservers()
 
-    protected open fun initViews(savedInstanceState: Bundle?) {
+    protected open fun initViews(view: View, savedInstanceState: Bundle?) {
         setupChatRoomRecyclerView()
     }
 
@@ -57,5 +60,17 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).stackFromEnd = false
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).reverseLayout = true
         baseBinding?.tokochatChatroomRv?.adapter = adapter
+    }
+
+    protected fun getTokoChatHeader(): HeaderUnify? {
+        return (activity as? TokoChatBaseActivity<*>)?.getHeaderUnify()
+    }
+
+    protected fun showInterlocutorTypingStatus() {
+        (activity as? TokoChatBaseActivity<*>)?.showInterlocutorTyping()
+    }
+
+    protected fun hideInterlocutorTypingStatus() {
+        (activity as? TokoChatBaseActivity<*>)?.hideInterlocutorTyping()
     }
 }

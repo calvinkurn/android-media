@@ -12,6 +12,7 @@ import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.extensions.ExtensionMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -47,9 +48,9 @@ class TokoChatViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
 ): BaseViewModel(dispatcher.main) {
 
-    private val _conversationsChannel = MutableLiveData<Result<ConversationsChannel>>()
-    val conversationsChannel: LiveData<Result<ConversationsChannel>>
-        get() = _conversationsChannel
+    private val _channelDetail = MutableLiveData<Result<GroupBookingChannelDetails>>()
+    val channelDetail: LiveData<Result<GroupBookingChannelDetails>>
+        get() = _channelDetail
 
     private val _isChatConnected = MutableLiveData<Boolean>()
     val isChatConnected: LiveData<Boolean>
@@ -96,27 +97,11 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            createChannelUseCase.getGroupBookingChannel(
-                channelId, {
-                    Log.d("REMOTE_GB", it.toString())
-                }, {
-                    _error.value = it
-                }
-            )
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    fun getRefreshedGroupBookingChannel(channelId: String) {
-        try {
-            createChannelUseCase.getRefreshedGroupBookingChannel(
-                channelId, {
-                    Log.d("LOCAL_GB", it.toString())
-                }, {
-                    _error.value = it
-                }
-            )
+            createChannelUseCase.getGroupBookingChannel(channelId, onSuccess = {
+                _channelDetail.postValue(Success(it))
+            }, onError = {
+                _channelDetail.postValue(Fail(it))
+            })
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
@@ -225,6 +210,10 @@ class TokoChatViewModel @Inject constructor(
         })
     }
 
+    fun isChatConnected(): Boolean {
+        return createChannelUseCase.isChatConnected()
+    }
+
     fun getTotalUnreadCount(): LiveData<Int> {
         return try {
             getChatHistoryUseCase.getTotalUnreadCount(listOf(ChannelType.GroupBooking))
@@ -259,68 +248,5 @@ class TokoChatViewModel @Inject constructor(
             _error.value = throwable
             ""
         }
-    }
-
-    fun resetData() {
-        try {
-            profileUseCase.resetConversationData()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    /**
-     * Not P0
-     */
-
-    fun sendExtensionMessage(channelId: String) {
-        try {
-            val extensionMessage = getExtensionMessage()
-            mutationTokoChatMessageUseCase.sendExtensionMessage(
-                channelId,
-                extensionMessage,
-                onSuccess = {},
-                onError = {
-                    _error.value = it
-                }
-            )
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    private fun getExtensionMessage(): ExtensionMessage {
-        return ExtensionMessage(
-            extensionId = "",
-            extensionMessageId = "",
-            extensionVersion = 0,
-            payload = "",
-            message = "",
-            messageId = "",
-            senderId = "",
-            transientId = null,
-            extensionWidgetId = null,
-            isCanned = null,
-            cannedMessagePayload = null
-        )
-    }
-
-    private fun getChannelParam(
-        name: String,
-        memberIds: List<String>,
-        type: String,
-        source: String
-    ): CreateChannelUseCase.CreateChannelParam {
-        return CreateChannelUseCase.CreateChannelParam(
-            createChannelInfo = CreateChannelInfo(
-                name, memberIds, type, source
-            ),
-            onSuccess = {
-                _conversationsChannel.value = Success(it)
-            },
-            onError = {
-                _conversationsChannel.value = Fail(it)
-            }
-        )
     }
 }

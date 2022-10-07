@@ -16,4 +16,10 @@ object TokoChatValueUtil {
     const val RELATIVE_TODAY = "Hari ini"
     const val RELATIVE_YESTERDAY = "Kemarin"
     const val HEADER_DATE_FORMAT = "d MMMM, yyyy"
+
+    /**
+     * Compose Message
+     */
+    const val MAX_DISPLAYED_OFFSET = 10_000
+    const val MAX_DISPLAYED_STRING = "10.000+"
 }

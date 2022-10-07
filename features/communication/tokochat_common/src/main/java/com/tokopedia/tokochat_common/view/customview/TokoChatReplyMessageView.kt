@@ -14,6 +14,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_OFFSET
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MAX_DISPLAYED_STRING
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ELEVEN_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
@@ -30,7 +32,7 @@ import java.util.*
 
 class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
-    private var composeArea: EditText? = null
+    var composeArea: EditText? = null
     private var errorComposeMsg: Typography? = null
 
     private var textWatcher: TokoChatMessageTextWatcher? = null
@@ -150,7 +152,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     private fun getFormattedOffset(offset: Int): String {
         return if (offset > MAX_DISPLAYED_OFFSET) {
-            "10.000+"
+            MAX_DISPLAYED_STRING
         } else {
             numberFormat.format(offset)
         }
@@ -158,6 +160,5 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     companion object {
         val LAYOUT = R.layout.tokochat_partial_message_area
-        private const val MAX_DISPLAYED_OFFSET = 10_000
     }
 }

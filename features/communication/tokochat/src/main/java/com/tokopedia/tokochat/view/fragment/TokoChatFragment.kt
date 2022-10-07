@@ -1,31 +1,33 @@
 package com.tokopedia.tokochat.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
-import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
+import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
-import com.tokopedia.tokochat.view.activity.TokoChatActivity
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
+import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.unifycomponents.ImageUnify
@@ -35,7 +37,8 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoChatTypingListener, TokoChatReplyTextListener {
+class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoChatTypingListener,
+    TokoChatReplyTextListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -43,7 +46,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
 
-    private var channelUrl = ""
+    private var channelId = ""
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
@@ -57,13 +60,29 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         AndroidThreeTen.init(context?.applicationContext)
     }
 
-    override fun initViews(savedInstanceState: Bundle?) {
-        super.initViews(savedInstanceState)
+    override fun initViews(view: View, savedInstanceState: Bundle?) {
+        super.initViews(view, savedInstanceState)
         setupBackground()
-        setupToolbarData()
-        setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
+        setupReplySection(
+            true,
+            getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+        )
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (channelId.isNotEmpty()) {
+            viewModel.registerActiveChannel(channelId)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (channelId.isNotEmpty()) {
+            viewModel.deRegisterActiveChannel(channelId)
+        }
     }
 
     private fun renderBackground(url: String) {
@@ -79,12 +98,19 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     override fun initObservers() {
         observeTokoChatBackground()
+        observeChannelDetails()
+        observerTyping()
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
         val chatSendButton = getChatSendButton()
         chatSendButton?.background =
-            context?.let { ContextCompat.getDrawable(it, com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn_disabled) }
+            context?.let {
+                ContextCompat.getDrawable(
+                    it,
+                    com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn_disabled
+                )
+            }
         chatSendButton?.setOnClickListener {
             if (!isExceedLimit) {
                 showSnackbarError(getString(com.tokopedia.tokochat_common.R.string.tokochat_desc_empty_text_box))
@@ -94,7 +120,12 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     override fun enableSendButton() {
         val chatSendButton = getChatSendButton()
-        chatSendButton?.background = context?.let { ContextCompat.getDrawable(it, com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn) }
+        chatSendButton?.background = context?.let {
+            ContextCompat.getDrawable(
+                it,
+                com.tokopedia.tokochat_common.R.drawable.bg_tokochat_send_btn
+            )
+        }
         chatSendButton?.setOnClickListener {
             onSendButtonClicked()
         }
@@ -104,22 +135,22 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         return baseBinding?.tokochatReplyBox?.findViewById(com.tokopedia.tokochat_common.R.id.tokochat_ic_send_btn)
     }
 
-    fun onSendButtonClicked() {
-        //todo sent chat
-    }
-
-    fun showSnackbarError(message: String) {
-        view?.let {
-            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+    private fun onSendButtonClicked() {
+        if (isValidComposedMessage() && channelId.isNotEmpty()) {
+            viewModel.sendMessage(channelId, getComposedMessage())
+            getComposeMessageArea()?.onSendMessage()
+            clearReplyBoxMessage()
         }
     }
 
-    override fun onStartTyping() {
-        //todo call start typing by viewmodel
+    private fun clearReplyBoxMessage() {
+        getComposeMessageArea()?.composeArea?.setText("")
     }
 
-    override fun onStopTyping() {
-        //todo call stop typing by viewmodel
+    private fun showSnackbarError(message: String) {
+        view?.let {
+            Toaster.build(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun isValidComposedMessage(): Boolean {
@@ -162,22 +193,41 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
     }
 
-    private fun setupToolbarData() {
-        val uiModel = TokoChatHeaderUiModel(
-            title = "Omar Maryadi",
-            subTitle = "D7088FGX",
-            imageUrl = "https://i-integration.gojekapi.com/darkroom/gomart-public-integration/v2/images/public/images/f9054d3d-7346-4b39-8385-61f6dfa81874_pertamax-icon.jpg",
-            phoneNumber = "08123456789"
-        )
-        (activity as? TokoChatActivity)?.getHeaderUnify()?.run {
+    private fun observeChannelDetails() {
+        observe(viewModel.channelDetail) {
+            when (it) {
+                is Success -> {
+                    var uiModel: TokoChatHeaderUiModel? = null
+                    it.data.members.forEach { member ->
+                        if (member.ownerType == "driver") {
+                            uiModel = TokoChatHeaderUiModel(
+                                member.name, member.userMetadata?.licencePlate ?: "",
+                                member.profileUrl?: "", member.phone
+                            )
+                        }
+                    }
+                    uiModel?.let { header ->
+                        setupToolbarData(header)
+                    }
+                }
+                is Fail -> {
+                    showSnackbarError(it.throwable.message.toString())
+                }
+            }
+        }
+    }
+
+    private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
+        getTokoChatHeader()?.run {
             val userTitle = findViewById<Typography>(R.id.tokochat_text_user_title)
             val subTitle = findViewById<Typography>(R.id.tokochat_text_user_subtitle)
             val imageUrl = findViewById<ImageUnify>(R.id.tokochat_user_avatar)
             val callMenu = findViewById<IconUnify>(R.id.tokochat_icon_header_menu)
 
-            userTitle.text = uiModel.title
-            subTitle.text = uiModel.subTitle
-            imageUrl.setImageUrl(uiModel.imageUrl)
+            userTitle.text = headerUiModel.title
+            subTitle.text = headerUiModel.subTitle
+            imageUrl.setImageUrl(headerUiModel.imageUrl)
+            imageUrl.show()
 
             callMenu.run {
                 setImage(IconUnify.CALL)
@@ -196,7 +246,6 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
         }
     }
-
 
     //TODO: Replace this with updated SDK
     private fun initializeChatProfile() {
@@ -227,32 +276,48 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
                     var errorMessage = error.getErrorMessage()
                     if (errorMessage.isEmpty()) {
                         errorMessage = error.toString()
+                        showSnackbarError(errorMessage)
                     }
-                    Toaster.build(
-                        it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR
-                    ).show()
                 }
             }
 
             override fun onGroupBookingChannelCreationStarted() {}
 
             override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                this@TokoChatFragment.channelUrl = channelUrl
+                this@TokoChatFragment.channelId = channelUrl
                 viewModel.registerActiveChannel(channelUrl)
+                viewModel.getGroupBookingChannel(channelId)
                 observeChatHistory()
             }
 
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun observeChatHistory() {
-        viewModel.getChatHistory(channelUrl).observe(viewLifecycleOwner) {
+        observe(viewModel.getChatHistory(channelId)) {
             val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
             adapter.setItems(result)
             adapter.notifyDataSetChanged()
         }
+    }
 
-        viewModel.getGroupBookingChannel(channelUrl)
+    override fun onStartTyping() {
+        viewModel.setTypingStatus(true)
+    }
+
+    override fun onStopTyping() {
+        viewModel.setTypingStatus(false)
+    }
+
+    private fun observerTyping() {
+        viewModel.getTypingStatus().observe(viewLifecycleOwner) {
+            if (it.isEmpty()) {
+                hideInterlocutorTypingStatus()
+            } else {
+                showInterlocutorTypingStatus()
+            }
+        }
     }
 
     companion object {

@@ -21,6 +21,8 @@
             android:layout_height="40dp"
             app:unify_image_corner_radius="0"
             android:contentDescription="@string/tokochat_content_desc_user_avatar"
+            android:visibility="gone"
+            tools:visibility="visible"
             tools:src="@color/Unify_Y500" />
 
     </FrameLayout>
@@ -78,7 +80,7 @@
             tools:visibility="visible" />
 
         <include
-            android:id="@+id/tokochat_typing"
+            android:id="@+id/tokochat_layout_typing"
             layout="@layout/item_tokochat_typing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
