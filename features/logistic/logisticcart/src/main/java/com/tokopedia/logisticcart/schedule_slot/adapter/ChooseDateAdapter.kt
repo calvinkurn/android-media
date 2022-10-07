@@ -31,6 +31,7 @@ class ChooseDateAdapter(private val items: List<ButtonDateUiModel>, private val 
                 selectedItem = data
                 notifyDataSetChanged()
             }
+            // todo need to adjust here
             if (selectedItem == data) {
                 holder.container.background = ContextCompat.getDrawable(holder.itemView.context, com.tokopedia.logisticcart.R.drawable.bg_card_date_selected)
             } else {

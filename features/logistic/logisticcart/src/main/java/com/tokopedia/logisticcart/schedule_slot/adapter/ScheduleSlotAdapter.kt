@@ -25,22 +25,23 @@ class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)
         factory.listener.onClickTimeListener(item)
     }
 
-    fun setData(date: ChooseDateUiModel, availableTime: List<ChooseTimeUiModel>, unavailableTime: List<ChooseTimeUiModel>) {
+    fun setData(date: ChooseDateUiModel) {
         visitables?.clear()
         visitables.add(date)
         visitables.add(TitleSectionUiModel(
             title = "Jadwal tersedia",
             content = "Kuota gratis ongkirmu habis",
             icon = IconUnify.INFORMATION))
-        visitables.addAll(availableTime.apply {
-            last().divider = DividerType.THICK
-        })
-        visitables.add(TitleSectionUiModel(title = "Jadwal habis atau tidak tersedia"))
-        visitables.addAll(unavailableTime.map {
-            it.apply {
-                it.isEnabled = false
+        val selectedDate = date.content.find { it.isSelected }
+        selectedDate?.let {
+            visitables.addAll(it.availableTime.apply {
+                last().divider = DividerType.THICK
+            })
+            if (selectedDate.unavailableTime.isNotEmpty()) {
+                visitables.add(TitleSectionUiModel(title = "Jadwal habis atau tidak tersedia"))
+                visitables.addAll(selectedDate.unavailableTime)
             }
-        })
+        }
         notifyDataSetChanged()
     }
 }

@@ -42,7 +42,7 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
             findViewById<RecyclerView>(com.tokopedia.logisticcart.R.id.rv_schedule_slot).apply {
                 layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapterScheduleSlot
-                adapterScheduleSlot.setData(data.date, data.availableTime, data.unavailableTime)
+                adapterScheduleSlot.setData(data.date)
             }
         }
         setChild(view)
