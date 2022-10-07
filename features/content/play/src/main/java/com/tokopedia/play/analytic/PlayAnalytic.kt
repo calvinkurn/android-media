@@ -53,7 +53,8 @@ class PlayAnalytic(
                         KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value} - $mSourceType - $nextId",
                         KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
                         KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                        KEY_TRACKER_ID to "6663"
                 )
         )
     }
@@ -863,6 +864,7 @@ class PlayAnalytic(
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
+        private const val KEY_TRACKER_ID = "trackerId"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"
