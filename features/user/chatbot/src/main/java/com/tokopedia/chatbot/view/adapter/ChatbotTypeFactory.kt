@@ -46,5 +46,9 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
 
     fun type(stickyActionButtonUiModel: StickyActionButtonUiModel): Int
 
+    fun type(videoUploadUiModel: VideoUploadUiModel) : Int
+
+    fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int
+
     fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int
 }

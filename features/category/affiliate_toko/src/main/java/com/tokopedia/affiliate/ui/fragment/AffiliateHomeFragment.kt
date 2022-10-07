@@ -439,7 +439,7 @@ class AffiliateHomeFragment : AffiliateBaseFragment<AffiliateHomeViewModel>(),
                     null,null,productId , productName , productImage, productUrl,productIdentifier,
                     AffiliatePromotionBottomSheet.ORIGIN_HOME,!isUserBlackListed, type = type).show(childFragmentManager, "")
         }else {
-            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE).show(childFragmentManager, "")
+            AffiliateHowToPromoteBottomSheet.newInstance(AffiliateHowToPromoteBottomSheet.STATE_PRODUCT_INACTIVE, type= type).show(childFragmentManager, "")
         }
     }
 

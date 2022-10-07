@@ -20,6 +20,7 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
@@ -37,6 +38,7 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -51,6 +53,8 @@ import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.interceptor.FingerprintInterceptor
@@ -72,6 +76,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -103,7 +108,9 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
+    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -132,6 +139,8 @@ class ChatbotPresenterTest {
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
+        uploaderUseCase = mockk(relaxed = true)
+        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -151,7 +160,9 @@ class ChatbotPresenterTest {
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
                 chatBotSecureImageUploadUseCase,
-                getExistingChatMapper
+                uploaderUseCase,
+                chatbotVideoUploadVideoEligibilityUseCase,
+                getExistingChatMapper,
             )
         )
 
@@ -1767,6 +1778,100 @@ class ChatbotPresenterTest {
         )
     }
 
+    @Test
+    fun `sendVideoAttachment message via socket success` () {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                any(), any(), any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendVideoAttachment("","","")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `startNewUploadMediaJob success when uploaderUseCase returns success`() {
+        val response = mockk<UploadResult.Success>(relaxed = true)
+        var result : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            result = response.videoUrl
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(result)
+
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure` () {
+        val response = mockk<UploadResult.Error>(relaxed = true)
+        var message : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            message = response.message
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(message)
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure` () {
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } answers {
+            throw mockThrowable
+        }
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        verify {
+            presenter.updateMediaUploadResults(any(), any())
+        }
     private fun getAttachSingleInvoiceUiModel(hashMap: Map<String, String>): AttachInvoiceSingleUiModel {
         return AttachInvoiceSingleUiModel(
             typeString = "",
@@ -1783,6 +1888,27 @@ class ChatbotPresenterTest {
             amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: "",
             color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
         )
+    }
+
+    }
+
+    @Test
+    fun `checkUploadVideoEligibility success`() {
+
+        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
+
+        coEvery {
+            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.checkUploadVideoEligibility("1234")
+
+        verify {
+            view.videoUploadEligibilityHandler(any())
+        }
+
     }
 
     private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {

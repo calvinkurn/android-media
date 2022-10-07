@@ -31,7 +31,6 @@ class CreateReviewTextArea @JvmOverloads constructor(
 ) : BaseReviewCustomView<WidgetCreateReviewTextAreaBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
         const val PADDING_BOTTOM = 8
     }
 
@@ -200,7 +199,7 @@ class CreateReviewTextArea @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutTextArea.root)
                 addTarget(binding.layoutTextAreaLoading.root)
                 interpolator = AccelerateInterpolator()

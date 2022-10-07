@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.ConnectionDividerUiModel
@@ -26,6 +27,8 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
+import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_AGENT_QUEUE
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
@@ -73,6 +76,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CSAT_VIEW -> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
@@ -314,4 +318,18 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             .withImageUrlThumbnail(pojoAttribute.thumbnail)
             .build()
     }
+
+    private fun convertToVideoUpload(chatItemPojoByDateByTime: Reply):
+            VideoUploadUiModel {
+        val pojoAttribute = gson.fromJson<ChatbotVideoUploadAttributes>(
+            chatItemPojoByDateByTime.attachment.attributes,
+            ChatbotVideoUploadAttributes::class.java
+        )
+
+        return VideoUploadUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withVideoUrl(pojoAttribute.videoUrl)
+            .build()
+    }
+
 }

@@ -45,6 +45,8 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onImageUpload(it: ImageUploadUiModel)
 
+    fun onVideoUpload(it: VideoUploadUiModel)
+
     fun scrollToBottom()
 
     fun showDividerViewOnConnection(connectionDividerUiModel: ConnectionDividerUiModel)
@@ -77,6 +79,8 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun handleReplyBox(isEnable: Boolean)
 
+    fun showRetryUploadVideos(it: VideoUploadUiModel)
+
     fun onSendingMessage(it: MessageUiModel)
 
     fun onSendingMessage(
@@ -87,5 +91,9 @@ interface ChatbotViewState : BaseChatViewState {
         startTime: String,
         parentReply: ParentReply?
     )
+    fun hideDummyVideoAttachment()
+
+    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
+                         startTime: String,parentReply: ParentReply?)
     fun hideQuickReplyOnClick()
 }

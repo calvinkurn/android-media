@@ -34,6 +34,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
@@ -291,6 +292,11 @@ class ChatbotViewStateImpl(
         scrollDownWhenInBottom()
     }
 
+    override fun onVideoUpload(it: VideoUploadUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
     private fun isMyMessage(fromUid: String?): Boolean {
         return fromUid != null && userSession.userId == fromUid
     }
@@ -393,6 +399,14 @@ class ChatbotViewStateImpl(
         getAdapter().showRetryFor(image, retry)
     }
 
+    override fun showRetryUploadVideos(video: VideoUploadUiModel) {
+        getAdapter().showRetryForVideo(video)
+    }
+
+    override fun hideDummyVideoAttachment() {
+        getAdapter().removeDummyVideo()
+    }
+
     override fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
     }
@@ -440,12 +454,6 @@ class ChatbotViewStateImpl(
         } else {
             action.hide()
             notifier.hide()
-        }
-    }
-
-    override fun setupChatMenu() {
-        chatMenuButton.setOnClickListener {
-            onChatMenuButtonClicked.invoke()
         }
     }
 

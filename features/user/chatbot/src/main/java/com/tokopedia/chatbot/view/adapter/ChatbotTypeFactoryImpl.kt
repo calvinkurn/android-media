@@ -48,6 +48,32 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterList
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ConnectionDividerViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.view.adapter.viewholder.AttachedInvoiceSelectionViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.AttachedInvoiceSentViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatActionListBubbleViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatBotTypingChatViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatHelpfullQuestionViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatRatingViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotFallbackAttachmentViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotImageUploadViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotLiveChatSeparatorViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.ChatbotVideoUploadViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.CsatOptionListViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.QuickReplyViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.StickyActionButtonViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.CustomChatbotMessageViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.LeftChatMessageUnifyViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.chatbubble.RightChatMessageUnifyViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubbleListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ConnectionDividerViewHolder
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -67,8 +93,9 @@ open class ChatbotTypeFactoryImpl(
     private val chatOptionListListener: ChatOptionListListener,
     private val csatOptionListListener: CsatOptionListListener,
     private val actionButtonClickListener: StickyActionButtonClickListener,
+    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener,
+    private val videoUploadListener: VideoUploadListener,
     private val userSession: UserSessionInterface,
-    private val replyBubbleListener: ReplyBubbleAreaMessage.Listener
 ) :
     BaseChatTypeFactoryImpl(
         imageAnnouncementListener,
@@ -178,6 +205,10 @@ open class ChatbotTypeFactoryImpl(
         return ChatBotTypingChatViewHolder.LAYOUT
     }
 
+    override fun type(videoUploadUiModel: VideoUploadUiModel): Int {
+        return ChatbotVideoUploadViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
@@ -188,6 +219,7 @@ open class ChatbotTypeFactoryImpl(
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)
             ChatActionListBubbleViewHolder.LAYOUT -> ChatActionListBubbleViewHolder(parent, chatActionListBubbleListener, chatLinkHandlerListener)
             ChatbotImageUploadViewHolder.LAYOUT -> ChatbotImageUploadViewHolder(parent, imageUploadListener, userSession)
+            ChatbotVideoUploadViewHolder.LAYOUT -> ChatbotVideoUploadViewHolder(parent, videoUploadListener)
             else -> super.createViewHolder(parent, type)
         }
     }
