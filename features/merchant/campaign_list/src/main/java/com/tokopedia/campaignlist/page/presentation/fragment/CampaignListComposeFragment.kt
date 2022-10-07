@@ -25,6 +25,7 @@ import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBo
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBottomSheet
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
+import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -99,28 +100,34 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                CampaignListScreen(
-                    uiState = viewModel.uiState.collectAsState(),
-                    onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
-                    onTapCampaignTypeFilter = { campaignType -> showCampaignTypeBottomSheet(campaignType) },
-                    onTapShareCampaignButton = { campaign ->
-                        viewModel.setSelectedActiveCampaign(campaign)
-                        viewModel.onEvent(CampaignListViewModel.UiEvent.TapShareButton(campaign.campaignId.toIntOrZero()))
-                    },
-                    onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
-                    onSearchBarKeywordSubmit = { searchQuery ->
-                        viewModel.setCampaignName(searchQuery)
-                        val campaignTypeId = viewModel.getCampaignTypeId()
-                        val campaignStatusId = viewModel.getCampaignStatusId()
-                        viewModel.getCampaignList(
-                            campaignName = searchQuery,
-                            campaignTypeId = campaignTypeId,
-                            statusId = campaignStatusId
-                        )
-                    },
-                    onSearchbarCleared = { viewModel.getCampaignList() },
-                    onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) }
-                )
+
+                UnifyTheme(true) {
+                    CampaignListScreen(
+                        uiState = viewModel.uiState.collectAsState(),
+                        onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
+                        onTapCampaignTypeFilter = { campaignType -> showCampaignTypeBottomSheet(campaignType) },
+                        onTapShareCampaignButton = { campaign ->
+                            viewModel.setSelectedActiveCampaign(campaign)
+                            viewModel.onEvent(CampaignListViewModel.UiEvent.TapShareButton(campaign.campaignId.toIntOrZero()))
+                        },
+                        onClearFilter = { viewModel.onEvent(CampaignListViewModel.UiEvent.ClearFilter) },
+                        onSearchBarKeywordSubmit = { searchQuery ->
+                            viewModel.setCampaignName(searchQuery)
+                            val campaignTypeId = viewModel.getCampaignTypeId()
+                            val campaignStatusId = viewModel.getCampaignStatusId()
+                            viewModel.getCampaignList(
+                                campaignName = searchQuery,
+                                campaignTypeId = campaignTypeId,
+                                statusId = campaignStatusId
+                            )
+                        },
+                        onSearchbarCleared = { viewModel.getCampaignList() },
+                        onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) }
+                    )
+                }
+
+
+
 
                 val uiEffect = viewModel.uiEffect.collectAsState(initial = CampaignListViewModel.UiEffect.None)
                 when (uiEffect.value) {

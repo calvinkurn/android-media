@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -97,13 +100,10 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
         textColorDefault
     }
 
-    val borderColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN400)
-    val borderDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN300)
-
     val borderColor = if (sortFilter.isSelected) {
-        borderColorSelected
+        UnifyGN400
     } else {
-        borderDefault
+        UnifyNN300
     }
 
     val backgroundColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
@@ -187,8 +187,7 @@ fun UnifySearchBar(
                         UnifyTypography(
                             text = placeholderText,
                             weight = UnifyTypographyWeight.REGULAR,
-                            type = UnifyTypographyType.DISPLAY_2,
-                            colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            type = UnifyTypographyType.DISPLAY_2
                         )
                     }
 
@@ -237,8 +236,7 @@ fun UnifyTicker(
                 text = text.toString(),
                 modifier = Modifier.width(250.dp),
                 weight = UnifyTypographyWeight.REGULAR,
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                type = UnifyTypographyType.DISPLAY_3
             )
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             Icon(
@@ -311,12 +309,11 @@ fun UnifyTypography(
     modifier: Modifier = Modifier,
     type: UnifyTypographyType,
     weight: UnifyTypographyWeight = UnifyTypographyWeight.REGULAR,
-    colorId : Int
+    textStyle: TextStyle = TextStyle()
 ) {
     val fontSize = type.fontSize.sp
     val letterSpacing = type.letterSpacing.sp
     val fontWeight = if (weight == UnifyTypographyWeight.BOLD) FontWeight.Bold else FontWeight.Normal
-    val textColor = colorResource(id = colorId)
 
     Text(
         text = text,
@@ -324,7 +321,7 @@ fun UnifyTypography(
         fontSize = fontSize,
         letterSpacing = letterSpacing,
         fontWeight = fontWeight,
-        color = textColor
+        style = textStyle
     )
 }
 
@@ -423,8 +420,7 @@ fun UnifyTypographyPreview() {
         text = "Flash Sale",
         Modifier,
         type = UnifyTypographyType.DISPLAY_3,
-        weight = UnifyTypographyWeight.REGULAR,
-        colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN500
+        weight = UnifyTypographyWeight.REGULAR
     )
 }
 
@@ -435,7 +431,6 @@ fun UnifyTypographyBoldPreview() {
         text = "Flash Sale",
         Modifier,
         type = UnifyTypographyType.DISPLAY_3,
-        weight = UnifyTypographyWeight.BOLD,
-        colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN500
+        weight = UnifyTypographyWeight.BOLD
     )
 }

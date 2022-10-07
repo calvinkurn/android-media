@@ -1,27 +1,28 @@
 package com.tokopedia.campaignlist.page.presentation.activity
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.campaignlist.common.di.DaggerCampaignListComponent
+import androidx.appcompat.app.AppCompatActivity
+import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListComposeFragment
+import com.tokopedia.header.HeaderUnify
 
-class CampaignListActivity : BaseSimpleActivity() {
+class CampaignListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initInjector()
+        setContentView(R.layout.activity_campaign_list)
+
+        val toolbar = findViewById<HeaderUnify>(R.id.header)
+        toolbar.headerTitle = "Daftar Campaign Aktif"
+        toolbar.setNavigationOnClickListener { finish() }
+
+        if (savedInstanceState == null) {
+            val fragment = CampaignListComposeFragment.createInstance()
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.container, fragment)
+                .commit()
+        }
+
     }
 
-    override fun getNewFragment(): Fragment {
-        return CampaignListComposeFragment.createInstance()
-    }
-
-    private fun initInjector() {
-        DaggerCampaignListComponent.builder()
-                .baseAppComponent((applicationContext as BaseMainApplication).baseAppComponent)
-                .build()
-                .inject(this)
-    }
 }

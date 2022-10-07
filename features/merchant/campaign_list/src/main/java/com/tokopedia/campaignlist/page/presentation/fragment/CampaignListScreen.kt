@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.fragment
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +11,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
@@ -17,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -35,6 +38,7 @@ import com.tokopedia.campaignlist.page.presentation.ui.UnifyTicker
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypography
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypographyType
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypographyWeight
+import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.AVAILABLE_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.ONGOING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_IN_NEAR_TIME_STATUS_ID
@@ -54,6 +58,7 @@ fun CampaignListScreen(
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
 ) {
     Column(modifier = Modifier
+        .background(color = MaterialTheme.colors.primary)
         .fillMaxSize()
         .semantics { contentDescription = "Campaign List" }
     ) {
@@ -203,7 +208,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 },
                 type = UnifyTypographyType.DISPLAY_3,
                 weight = UnifyTypographyWeight.BOLD,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                textStyle = TextStyle(color = UnifyTheme.customColor.GN500)
             )
 
             CampaignLabel(
@@ -233,8 +238,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     start.linkTo(campaignImage.end, margin = 12.dp)
                 },
                 type = UnifyTypographyType.DISPLAY_2,
-                weight = UnifyTypographyWeight.BOLD,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                weight = UnifyTypographyWeight.BOLD
             )
 
             UnifyTypography(
@@ -243,8 +247,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                type = UnifyTypographyType.DISPLAY_3
             )
 
             UnifyTypography(
@@ -253,8 +256,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                type = UnifyTypographyType.DISPLAY_3
             )
 
 
@@ -264,8 +266,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                type = UnifyTypographyType.DISPLAY_3
             )
 
             UnifyTypography(
@@ -275,8 +276,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(campaignStartDate.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                type = UnifyTypographyType.DISPLAY_3
             )
 
             UnifyTypography(
@@ -286,8 +286,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartDate.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                type = UnifyTypographyType.DISPLAY_3
             )
 
             UnifyTypography(
@@ -297,8 +296,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                type = UnifyTypographyType.DISPLAY_3
             )
 
             UnifyButton(
