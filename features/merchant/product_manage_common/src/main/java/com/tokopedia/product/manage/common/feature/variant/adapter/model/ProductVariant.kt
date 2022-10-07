@@ -29,7 +29,7 @@ data class ProductVariant(
 ): Visitable<ProductVariantAdapterFactory> {
 
     companion object {
-        private val HAVE_STOCK_ALERT = 1
+        private val HAVE_STOCK_ALERT = 2
     }
 
     override fun type(typeFactory: ProductVariantAdapterFactory): Int {
