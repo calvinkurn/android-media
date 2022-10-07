@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.data.pojo.shoprecom
+package com.tokopedia.feedcomponent.shoprecom.model
 
 data class ShopRecomUiModel(
     val isShown: Boolean = false,

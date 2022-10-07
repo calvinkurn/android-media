@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.data.pojo.shoprecom
+package com.tokopedia.feedcomponent.shoprecom.model
 
 import com.google.gson.annotations.SerializedName
 

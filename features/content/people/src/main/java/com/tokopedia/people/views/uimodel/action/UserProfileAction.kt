@@ -1,7 +1,5 @@
 package com.tokopedia.people.views.uimodel.action
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
-
 /**
  * Created By : Jonathan Darwin on June 28, 2022
  */

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.feedcomponent.view.widget.shoprecom.ShopRecomView
+<com.tokopedia.feedcomponent.shoprecom.view.ShopRecomView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/people_shop_recommendation"
     android:layout_width="wrap_content"

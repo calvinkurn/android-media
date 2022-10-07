@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder

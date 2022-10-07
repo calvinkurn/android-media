@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.view.widget.shoprecom.decor
+package com.tokopedia.feedcomponent.shoprecom.decor
 
 import android.content.Context
 import android.graphics.Rect

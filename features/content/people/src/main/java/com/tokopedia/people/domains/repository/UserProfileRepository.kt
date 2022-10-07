@@ -1,6 +1,6 @@
 package com.tokopedia.people.domains.repository
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase

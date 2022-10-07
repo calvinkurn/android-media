@@ -1,6 +1,6 @@
 package com.tokopedia.people.analytic.cordinator
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import timber.log.Timber
 import javax.inject.Inject

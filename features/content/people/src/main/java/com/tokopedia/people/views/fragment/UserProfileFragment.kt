@@ -19,13 +19,13 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.widget.shoprecom.adapter.ShopRecomAdapter
-import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
-import com.tokopedia.feedcomponent.view.widget.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.shoprecom.adapter.ShopRecomAdapter
+import com.tokopedia.feedcomponent.shoprecom.listener.ShopRecomCallback
+import com.tokopedia.feedcomponent.shoprecom.decor.ShopRecomItemDecoration
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.globalerror.GlobalError.Companion.NO_CONNECTION
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
@@ -94,7 +94,7 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
-    ShopRecommendationCallback,
+    ShopRecomCallback,
     FeedPlusContainerListener {
 
     private val linearLayoutManager by lazy(LazyThreadSafetyMode.NONE) {

@@ -1,4 +1,4 @@
-package com.tokopedia.feedcomponent.view.widget.shoprecom
+package com.tokopedia.feedcomponent.shoprecom.view
 
 import android.content.Context
 import android.util.AttributeSet
@@ -10,10 +10,10 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.tokopedia.feedcomponent.R.string.btn_text_follow
 import com.tokopedia.feedcomponent.R.string.btn_text_following
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomFollowState
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
-import com.tokopedia.feedcomponent.view.widget.shoprecom.listener.ShopRecommendationCallback
+import com.tokopedia.feedcomponent.shoprecom.listener.ShopRecomCallback
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -32,7 +32,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         defStyleAttr
     )
 
-    private var mListener: ShopRecommendationCallback? = null
+    private var mListener: ShopRecomCallback? = null
 
     private var binding = ItemShopRecommendationBinding.inflate(
         LayoutInflater.from(this.context),
@@ -44,7 +44,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         if (context is LifecycleOwner) (context as LifecycleOwner).lifecycle.addObserver(this)
     }
 
-    fun setListener(listener: ShopRecommendationCallback?) {
+    fun setListener(listener: ShopRecomCallback?) {
         mListener = listener
     }
 
