@@ -136,20 +136,14 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
 
-    private lateinit var viewModel: ShopSearchProductViewModel
+    private val viewModel: ShopSearchProductViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopSearchProductViewModel::class.java)
+    }
     private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
 
-    private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isMyShop(shopId)
-        } else false
-
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else {
-            ""
-        }
+        get() = viewModel.userId
+
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
@@ -166,7 +160,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        initViewModel()
         getArgumentsData()
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
@@ -460,11 +453,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(ShopSearchProductViewModel::class.java)
     }
 
     private fun onClickCancel() {
