@@ -35,6 +35,7 @@ class InspirationListAtcListenerDelegate @Inject constructor(
                 getSearchParameter()
             )
         inspirationListAtcView.trackItemClick(trackingData)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
         openApplink(context, product.applink)
     }
 

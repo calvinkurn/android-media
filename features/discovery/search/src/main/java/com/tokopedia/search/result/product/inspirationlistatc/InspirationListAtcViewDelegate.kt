@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.search.R
@@ -11,6 +12,7 @@ import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -21,6 +23,7 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
@@ -31,7 +34,9 @@ class InspirationListAtcViewDelegate @Inject constructor(
     private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val trackingQueue: TrackingQueue,
     private val searchNavigationListener: SearchNavigationListener,
+    private val topAdsUrlHitter: TopAdsUrlHitter,
     searchParameterProvider: SearchParameterProvider,
+    classNameProvider: ClassNameProvider,
     @SearchContext
     context: Context,
     fragmentProvider: FragmentProvider,
@@ -41,7 +46,8 @@ class InspirationListAtcViewDelegate @Inject constructor(
     ContextProvider by WeakReferenceContextProvider(context),
     FragmentProvider by fragmentProvider,
     QueryKeyProvider by queryKeyProvider,
-    ApplinkOpener by ApplinkOpenerDelegate {
+    ApplinkOpener by ApplinkOpenerDelegate,
+    ClassNameProvider by classNameProvider {
 
     override fun trackSeeMoreClick(data: InspirationCarouselDataView.Option) {
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(data.keyword, data)
@@ -105,5 +111,20 @@ class InspirationListAtcViewDelegate @Inject constructor(
 
     override fun updateSearchBarNotification() {
         searchNavigationListener.updateSearchBarNotification()
+    }
+
+    override fun trackAdsClick(product: InspirationCarouselDataView.Option.Product) {
+        sendTrackingClickInspirationCarouselAds(product)
+    }
+
+    private fun sendTrackingClickInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
+        topAdsUrlHitter.hitClickUrl(
+            className,
+            product.topAdsClickUrl,
+            product.id,
+            product.name,
+            product.imgUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
+        )
     }
 }
