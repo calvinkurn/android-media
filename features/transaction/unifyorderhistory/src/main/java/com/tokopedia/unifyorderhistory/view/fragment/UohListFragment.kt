@@ -357,6 +357,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         userSession = UserSession(context)
+        if (arguments?.getString(SOURCE_FILTER) != null) {
+            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
+        }
         checkLogin()
         initTrackingQueue()
     }
@@ -484,128 +487,125 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun initialLoadOrderHistoryList() {
-        if (arguments?.getString(SOURCE_FILTER) != null) {
-            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
-            if (filterStatus.isNotEmpty()) {
-                var status = ""
-                var statusLabel = ""
-                when (filterStatus) {
-                    PARAM_DALAM_PROSES -> {
-                        status = DALAM_PROSES
-                        statusLabel = TRANSAKSI_BERLANGSUNG
-                        paramUohOrder.createTimeStart = ""
-                        paramUohOrder.createTimeEnd = ""
-                    }
-                    PARAM_E_TIKET -> {
-                        status = E_TIKET
-                        statusLabel = status
-                        paramUohOrder.createTimeStart = ""
-                        paramUohOrder.createTimeEnd = ""
-                    }
-                    PARAM_SEMUA_TRANSAKSI -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                    }
-                    PARAM_MARKETPLACE -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                    }
-                    PARAM_MARKETPLACE_DALAM_PROSES -> {
-                        status = DALAM_PROSES
-                        statusLabel = TRANSAKSI_BERLANGSUNG
-                        paramUohOrder.verticalCategory = CATEGORIES_MP
-                    }
-                    PARAM_UOH_WAITING_CONFIRMATION -> {
-                        status = STATUS_MENUNGGU_KONFIRMASI
-                        statusLabel = MENUNGGU_KONFIRMASI
-                        paramUohOrder.verticalCategory = CATEGORIES_MP
-                    }
-                    PARAM_UOH_PROCESSED -> {
-                        status = STATUS_DIPROSES
-                        statusLabel = DIPROSES
-                        paramUohOrder.verticalCategory = CATEGORIES_MP
-                    }
-                    PARAM_UOH_SENT -> {
-                        status = STATUS_DIKIRIM
-                        statusLabel = DIKIRIM
-                        paramUohOrder.verticalCategory = CATEGORIES_MP
-                    }
-                    PARAM_UOH_DELIVERED -> {
-                        status = STATUS_TIBA_DI_TUJUAN
-                        statusLabel = TIBA_DI_TUJUAN
-                        paramUohOrder.verticalCategory = CATEGORIES_MP
-                    }
-                    PARAM_DIGITAL -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = CATEGORIES_DIGITAL
-                    }
-                    PARAM_EVENTS -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
-                    }
-                    PARAM_DEALS -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
-                    }
-                    PARAM_PESAWAT -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
-                    }
-                    PARAM_TRAIN -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAIN
-                    }
-                    PARAM_GIFTCARDS -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
-                    }
-                    PARAM_INSURANCE -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
-                    }
-                    PARAM_MODALTOKO -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
-                    }
-                    PARAM_HOTEL -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
-                    }
-                    PARAM_TRAVEL_ENTERTAINMENT -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
-                    }
-                    PARAM_TOKOFOOD -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TOKOFOOD
-                    }
-                    PARAM_PLUS -> {
-                        status = ""
-                        statusLabel = ALL_STATUS_TRANSACTION
-                        paramUohOrder.verticalCategory = VERTICAL_CATEGORY_PLUS
-                    }
-                    PARAM_UOH_ONGOING -> {
-                        status = DALAM_PROSES
-                        statusLabel = TRANSAKSI_BERLANGSUNG
-                        paramUohOrder.verticalCategory = ""
-                    }
+        if (filterStatus.isNotEmpty()) {
+            var status = ""
+            var statusLabel = ""
+            when (filterStatus) {
+                PARAM_DALAM_PROSES -> {
+                    status = DALAM_PROSES
+                    statusLabel = TRANSAKSI_BERLANGSUNG
+                    paramUohOrder.createTimeStart = ""
+                    paramUohOrder.createTimeEnd = ""
                 }
-                paramUohOrder.status = status
-                currFilterType = UohConsts.TYPE_FILTER_STATUS
-                currFilterStatusKey = status
-                currFilterStatusLabel = statusLabel
+                PARAM_E_TIKET -> {
+                    status = E_TIKET
+                    statusLabel = status
+                    paramUohOrder.createTimeStart = ""
+                    paramUohOrder.createTimeEnd = ""
+                }
+                PARAM_SEMUA_TRANSAKSI -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                }
+                PARAM_MARKETPLACE -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                }
+                PARAM_MARKETPLACE_DALAM_PROSES -> {
+                    status = DALAM_PROSES
+                    statusLabel = TRANSAKSI_BERLANGSUNG
+                    paramUohOrder.verticalCategory = CATEGORIES_MP
+                }
+                PARAM_UOH_WAITING_CONFIRMATION -> {
+                    status = STATUS_MENUNGGU_KONFIRMASI
+                    statusLabel = MENUNGGU_KONFIRMASI
+                    paramUohOrder.verticalCategory = CATEGORIES_MP
+                }
+                PARAM_UOH_PROCESSED -> {
+                    status = STATUS_DIPROSES
+                    statusLabel = DIPROSES
+                    paramUohOrder.verticalCategory = CATEGORIES_MP
+                }
+                PARAM_UOH_SENT -> {
+                    status = STATUS_DIKIRIM
+                    statusLabel = DIKIRIM
+                    paramUohOrder.verticalCategory = CATEGORIES_MP
+                }
+                PARAM_UOH_DELIVERED -> {
+                    status = STATUS_TIBA_DI_TUJUAN
+                    statusLabel = TIBA_DI_TUJUAN
+                    paramUohOrder.verticalCategory = CATEGORIES_MP
+                }
+                PARAM_DIGITAL -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = CATEGORIES_DIGITAL
+                }
+                PARAM_EVENTS -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_EVENTS
+                }
+                PARAM_DEALS -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_DEALS
+                }
+                PARAM_PESAWAT -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_FLIGHT
+                }
+                PARAM_TRAIN -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TRAIN
+                }
+                PARAM_GIFTCARDS -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_GIFTCARD
+                }
+                PARAM_INSURANCE -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_INSURANCE
+                }
+                PARAM_MODALTOKO -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_MODALTOKO
+                }
+                PARAM_HOTEL -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_HOTEL
+                }
+                PARAM_TRAVEL_ENTERTAINMENT -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = CATEGORIES_TRAVELENT
+                }
+                PARAM_TOKOFOOD -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_TOKOFOOD
+                }
+                PARAM_PLUS -> {
+                    status = ""
+                    statusLabel = ALL_STATUS_TRANSACTION
+                    paramUohOrder.verticalCategory = VERTICAL_CATEGORY_PLUS
+                }
+                PARAM_UOH_ONGOING -> {
+                    status = DALAM_PROSES
+                    statusLabel = TRANSAKSI_BERLANGSUNG
+                    paramUohOrder.verticalCategory = ""
+                }
             }
+            paramUohOrder.status = status
+            currFilterType = UohConsts.TYPE_FILTER_STATUS
+            currFilterStatusKey = status
+            currFilterStatusLabel = statusLabel
         }
         setInitialValue()
         loadOrderHistoryList("")
@@ -1145,10 +1145,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         var titleInvestment = ""
         var titleTokofood = ""
         var titlePlus = ""
-
-        if (arguments?.getString(SOURCE_FILTER) != null) {
-            filterStatus = arguments?.getString(SOURCE_FILTER).toString()
-        }
 
         categoryDataList.forEach { category ->
             _arrayListCategoryProductFilterBundle.add(UohFilterBundle(key = category.value, value = category.label, desc = category.description, type = 0))
