@@ -1,0 +1,56 @@
+apply plugin: 'com.android.library'
+apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
+apply plugin: 'io.hansel.preprocessor.module'
+
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+    }
+    dependencies {
+        classpath rootProject.ext.miscDependencies.hansel
+    }
+}
+
+android {
+    namespace 'com.tokopedia.compose_principles'
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = rootProject.ext.composeCompiler
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
+    }
+}
+
+dependencies {
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation rootProject.ext.unifyDependencies.principles
+
+    // Compose lib
+    implementation rootProject.ext.composeDependencies.composeCompiler
+    implementation rootProject.ext.composeDependencies.composeUi
+    implementation rootProject.ext.composeDependencies.composeMaterial
+    implementation rootProject.ext.composeDependencies.composeUiTooling
+    implementation rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeFoundation
+    implementation rootProject.ext.composeDependencies.composeRuntime
+    implementation rootProject.ext.composeDependencies.composeActivity
+    implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeLiveData
+}
+
+project.ext {
+    artifactId = 'compose_principles'
+    groupId = 'com.tokopedia.common_compose'
+    versionName = "0.0.1"
+    artifactName = "compose_principles-release"
+}
+
+apply from: '../../publish_local.gradle'

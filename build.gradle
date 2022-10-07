@@ -2,6 +2,7 @@
 apply from: 'buildconfig/dependencies/dependencies.gradle'
 apply from: 'buildconfig/dependencies/dependency-libraries.gradle'
 apply from: 'buildconfig/dependencies/dependency-features.gradle'
+apply from: 'buildconfig/dependencies/dependency-compose.gradle'
 apply from: 'tools/quality.gradle'
 apply from: 'tools/composite_build.gradle'
 apply from: "buildconfig/aar/local-aar-config.gradle"
