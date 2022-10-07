@@ -232,8 +232,18 @@ class FeedViewModel @Inject constructor(
                 campaignId = campaign.campaignId,
                 reminderType = campaign.reminder
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
+            if (data.first) {
+                val reminderStatusRes = campaign.reminder.reversed(campaign.campaignId)
+                _asgcReminderButtonStatus.value = Success(
+                    FeedAsgcCampaignResponseModel(
+                        rowNumber = rowNumber,
+                        campaignId = campaign.campaignId,
+                        reminderStatus = reminderStatusRes
+                    )
+                )
+            } else {
+                _asgcReminderButtonStatus.value = Fail(Throwable(data.second))
+            }
         }) {
             _asgcReminderButtonStatus.value = Fail(it)
         }
