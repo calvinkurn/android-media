@@ -29,9 +29,9 @@ interface DynamicFeedContract {
 
         fun getFeed()
 
-        fun likeKol(id: Int, rowNumber: Int, columnNumber: Int)
+        fun likeKol(id: Long, rowNumber: Int, columnNumber: Int)
 
-        fun unlikeKol(id: Int, rowNumber: Int, columnNumber: Int)
+        fun unlikeKol(id: Long, rowNumber: Int, columnNumber: Int)
 
         fun trackAffiliate(url: String)
     }

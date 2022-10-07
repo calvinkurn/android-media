@@ -18,6 +18,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
@@ -30,7 +31,6 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
@@ -77,7 +77,7 @@ class DynamicFeedFragment:
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
 
     private var mContainerListener: FeedPlusContainerListener? = null
-    
+
     /** View */
     private lateinit var rvDynamicFeed: RecyclerView
 
@@ -206,11 +206,22 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onAvatarClick(positionInFeed: Int, redirectUrl: String, activityId: Int, activityName: String, followCta: FollowCta, type: String, isFollowed: Boolean, shopId: String, mediaType: String, isCaption: Boolean) {
+    override fun onAvatarClick(
+        positionInFeed: Int,
+        redirectUrl: String,
+        activityId: String,
+        activityName: String,
+        followCta: FollowCta,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        mediaType: String,
+        isCaption: Boolean
+    ) {
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, positionInFeed, columnNumber)
         } else {
@@ -218,7 +229,7 @@ class DynamicFeedFragment:
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String) {
         if (userSession.isLoggedIn) {
             RouteManager.getIntent(
                     requireContext(),
@@ -229,7 +240,7 @@ class DynamicFeedFragment:
                                     COMMENT_ARGS_POSITION_COLUMN to columnNumber.toString()
                             )
                     ),
-                    id.toString()
+                    id
             ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
         } else {
             routeToLogin()
@@ -254,7 +265,7 @@ class DynamicFeedFragment:
     }
 
     override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
-        feedAnalyticTracker.eventTrendingClickMedia(item.postId.toString())
+        feedAnalyticTracker.eventTrendingClickMedia(item.postId)
         onGoToLink(item.applink)
     }
 
