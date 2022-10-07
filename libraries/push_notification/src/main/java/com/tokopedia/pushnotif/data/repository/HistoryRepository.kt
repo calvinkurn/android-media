@@ -1,6 +1,7 @@
 package com.tokopedia.pushnotif.data.repository
 
 import android.content.Context
+import com.tokopedia.pushnotif.data.constant.Constant
 import com.tokopedia.pushnotif.data.db.PushNotificationDB.Companion.getInstance
 import com.tokopedia.pushnotif.data.db.model.HistoryNotification
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
@@ -11,7 +12,6 @@ import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel
 object HistoryRepository {
 
     private const val HISTORY_NOTIFICATION_LIMIT = 5
-    private const val DEFAULT_AVATAR_URL = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg"
 
     @JvmStatic
     fun storeNotification(
@@ -21,7 +21,7 @@ object HistoryRepository {
         notificationId: Int
     ) {
         val thumbnailUrl = if (applinkNotificationModel.thumbnail.isNullOrBlank()) {
-            DEFAULT_AVATAR_URL
+            Constant.DEFAULT_AVATAR_URL
         } else {
             applinkNotificationModel.thumbnail
         }
