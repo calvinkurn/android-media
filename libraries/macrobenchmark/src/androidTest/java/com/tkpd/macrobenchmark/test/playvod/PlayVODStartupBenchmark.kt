@@ -16,6 +16,11 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class PlayVODStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+
+    override fun setupEnvironment() {}
+
+    override fun setupMock() {}
+
     override fun getIntent() = MacroIntent.Play.getPlayVODIntent()
 
     override fun waitUntil() {

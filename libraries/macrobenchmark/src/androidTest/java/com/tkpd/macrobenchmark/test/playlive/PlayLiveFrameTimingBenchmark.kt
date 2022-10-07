@@ -17,6 +17,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class PlayLiveFrameTimingBenchmark: BaseFrameTimingBenchmark() {
 
+    override fun setupEnvironment() {}
+
+    override fun setupMock() {}
+
     override fun pageInteractionTest(currentIteration: Int) {
         MacroInteration.basicFlingInteraction(
             MacroIntent.Play.PACKAGE_NAME,
