@@ -4,9 +4,9 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.atcvariant.R
-import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tkpd.atcvariant.view.viewholder.item.ItemContainerViewHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 
 /**
  * Created by Yehezkiel on 08/03/20
@@ -26,12 +26,21 @@ class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerVie
     }
 
     override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int) {
-        holder.bind(variantContainerData[position])
+        holder.bind(
+                variantContainerData[position],
+                variantContainerData[position].variantOptions.size
+        )
     }
 
     override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int, payloads: MutableList<Any>) {
-        super.onBindViewHolder(holder, position, payloads)
-        holder.bind(variantContainerData[position], true)
+        if (payloads.isNotEmpty()) {
+            holder.bind(variantContainerData[position],
+                    true,
+                    variantContainerData[position].variantOptions.size
+            )
+        } else {
+            super.onBindViewHolder(holder, position, payloads)
+        }
     }
 
     override fun getItemCount(): Int = variantContainerData.size
