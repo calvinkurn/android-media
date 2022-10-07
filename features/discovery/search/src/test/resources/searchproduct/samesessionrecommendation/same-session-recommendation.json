@@ -1,0 +1,148 @@
+{
+  "title": "Sepertinya kamu tertarik produk berikut",
+  "component_id": "03.41.00.00",
+  "tracking_option": "3",
+  "products": [
+    {
+      "id": 2101962392,
+      "name": "Lenovo Ideapad Slim 3 14 Ryzen 3 5300 8GB 512ssd Vega6 W10+OHS 14\" FHD",
+      "price": 8199000,
+      "price_str": "Rp8.199.000",
+      "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/8/24/a69c9966-4e3f-4b2d-a0d2-32a85aa79321.jpg",
+      "rating": 5,
+      "count_review": 1,
+      "url": "https://www.tokopedia.com/erbka/lenovo-ideapad-slim-3-14-ryzen-3-5300-8gb-512ssd-vega6-w10-ohs-14-fhd-laptop-only",
+      "applink": "tokopedia://product/2101962392",
+      "description": [],
+      "rating_average": "5.0",
+      "component_id": "03.41.00.01",
+      "label_groups": [
+        {
+          "title": "Cashback",
+          "type": "lightGreen",
+          "position": "promo",
+          "url": ""
+        },
+        {
+          "title": "Cashback",
+          "type": "lightGreen",
+          "position": "price",
+          "url": ""
+        },
+        {
+          "title": "Terjual 1",
+          "type": "textDarkGrey",
+          "position": "integrity",
+          "url": ""
+        }
+      ],
+      "original_price": "",
+      "discount_percentage": 0,
+      "label": "",
+      "discount": "",
+      "badges": [
+        {
+          "title": "Power Merchant Pro Badge",
+          "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+          "show": true
+        }
+      ],
+      "shop": {
+        "name": "ERBKA TECH",
+        "city": "Jakarta Pusat"
+      },
+      "freeOngkir": {
+        "isActive": true,
+        "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+      },
+      "ads": {
+        "id": "",
+        "productClickUrl": "",
+        "productWishlistUrl": "",
+        "productViewUrl": ""
+      },
+      "customvideo_url": "",
+      "bundle_id": 0
+    },
+    {
+      "id": 6336555118,
+      "name": "LAPTOP LENOVO IDEAPAD SLIM 3 RYZEN 3-5300U 8GB 512SSD 14\"FHD WIN10 OHS",
+      "price": 7049000,
+      "price_str": "Rp7.049.000",
+      "image_url": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/7a79ad0f-8f8d-4e87-8176-a585c7c182bd.png",
+      "rating": 5,
+      "count_review": 17,
+      "url": "https://www.tokopedia.com/spacetech/laptop-lenovo-ideapad-slim-3-ryzen-3-5300u-8gb-512ssd-14-fhd-win10-ohs-31id-cloud-grey-8-gb",
+      "applink": "tokopedia://product/6336555118",
+      "description": [],
+      "rating_average": "4.9",
+      "component_id": "03.41.00.02",
+      "label_groups": [
+        {
+          "title": "Cashback",
+          "type": "lightGreen",
+          "position": "promo",
+          "url": ""
+        },
+        {
+          "title": "Terjual 28",
+          "type": "textDarkGrey",
+          "position": "integrity",
+          "url": ""
+        }
+      ],
+      "original_price": "Rp7.999.000",
+      "discount_percentage": 12,
+      "label": "",
+      "discount": "",
+      "badges": [
+        {
+          "title": "Power Merchant Pro Badge",
+          "image_url": "https://images.tokopedia.net/img/goldmerchant/pm_activation/badge/PM%20Pro%20Small.png",
+          "show": true
+        }
+      ],
+      "shop": {
+        "name": "Space Tech",
+        "city": "Jakarta Barat"
+      },
+      "freeOngkir": {
+        "isActive": true,
+        "image_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/BO_reguler.png"
+      },
+      "ads": {
+        "id": "",
+        "productClickUrl": "",
+        "productWishlistUrl": "",
+        "productViewUrl": ""
+      },
+      "customvideo_url": "",
+      "bundle_id": 0
+    }
+  ],
+  "feedback": {
+    "title": "Rekomendasi disembunyikan",
+    "component_id": "03.42.00.00",
+    "tracking_option": "2",
+    "data": [
+      {
+        "name": "Hasil tidak sesuai",
+        "applink": "",
+        "url": "",
+        "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/30/91367b93-cb35-4f12-a4cc-120d6d370cb3.png",
+        "component_id": "03.42.01.00",
+        "title_on_click": "Terima kasih masukannya",
+        "message_on_click": "Feedback kamu akan jadi masukan buat Tokopedia"
+      },
+      {
+        "name": "Tidak tertarik dengan penawarannya",
+        "applink": "",
+        "url": "",
+        "image_url": "https://images.tokopedia.net/img/jbZAUJ/2022/8/30/fa873196-cf66-4e51-9670-b272e2268b48.png",
+        "component_id": "03.42.02.00",
+        "title_on_click": "Kami tidak akan menawarkan hal ini dalam 24 jam",
+        "message_on_click": "Feedback kamu akan jadi masukan buat Tokopedia"
+      }
+    ]
+  }
+}

@@ -6,11 +6,11 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
@@ -18,18 +18,15 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliatecommon.DISCOVERY_BY_ME
 import com.tokopedia.affiliatecommon.data.util.AffiliatePreference
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
@@ -38,7 +35,8 @@ import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.util.coachmark.CoachMarkConfig
+import com.tokopedia.feedcomponent.util.coachmark.CoachMarkHelper
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
@@ -46,7 +44,6 @@ import com.tokopedia.feedplus.view.adapter.FeedPlusTabAdapter
 import com.tokopedia.feedplus.view.analytics.FeedToolBarAnalytics
 import com.tokopedia.feedplus.view.analytics.entrypoint.FeedEntryPointAnalytic
 import com.tokopedia.feedplus.view.customview.FeedMainToolbar
-import com.tokopedia.feedplus.view.di.DaggerFeedContainerComponent
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -76,8 +73,11 @@ import kotlinx.android.synthetic.main.partial_feed_error.*
 import timber.log.Timber
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.custom.FeedFloatingButton
+import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.feedcomponent.R as feedComponentR
 
 
@@ -113,6 +113,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
+        private const val USER_ICON_COACH_MARK_DURATION = 7000L
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -133,9 +134,13 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
 
+    @JvmField @Inject
+    var dispatchers: CoroutineDispatchers? = null
+
     /** View */
     private lateinit var fabFeed: FloatingButtonUnify
     private lateinit var feedFloatingButton: FeedFloatingButton
+    private var ivFeedUser: ImageUnify? = null
 
     private val keyIsLightThemeStatusBar = "is_light_theme_status_bar"
     private var mainParentStatusBarListener: MainParentStatusBarListener? = null
@@ -161,6 +166,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         feedFloatingButton.expand()
                     }
                 }
+    }
+
+    private val coachMarkHelper by lazy(LazyThreadSafetyMode.NONE) {
+        CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
     }
 
     private var badgeNumberNotification: Int = 0
@@ -217,9 +226,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initFab()
     }
 
+    override fun onAttachFragment(childFragment: Fragment) {
+        super.onAttachFragment(childFragment)
+
+        when(childFragment) {
+            is FeedPlusTabParentFragment -> childFragment.setContainerListener(this)
+        }
+    }
+
     private fun setupView(view: View) {
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
+        ivFeedUser = view.findViewById(R.id.iv_feed_user)
     }
 
     private fun initNavRevampAbTest() {
@@ -325,17 +343,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
+        coachMarkHelper.dismissAllCoachMark()
         super.onDestroy()
     }
 
     override fun getScreenName(): String? = null
 
     override fun initInjector() {
-        DaggerFeedContainerComponent.builder()
-                .baseAppComponent(
-                        (requireContext().applicationContext as BaseMainApplication).baseAppComponent
-                )
-                .build().inject(this)
+        FeedInjector.get(requireContext())
+            .inject(this)
     }
 
     override fun onScrollToTop() {
@@ -490,6 +506,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feedFloatingButton.shrink()
     }
 
+    override fun onChildRefresh() {
+        viewModel.getWhitelist()
+    }
+
     override fun onStop() {
         super.onStop()
         activity?.run {
@@ -531,7 +551,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun requestFeedTab() {
         showLoading()
         viewModel.getDynamicTabs()
-        viewModel.getContentForm()
     }
 
     private fun showLoading() {
@@ -573,7 +592,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             goToExplore()
         }
         if (userSession.isLoggedIn) {
-            viewModel.getWhitelist(authorList.isEmpty())
+            viewModel.getWhitelist()
         }
     }
 
@@ -582,6 +601,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         authorList.addAll(whitelistDomain.authors)
 
         renderCompleteFab()
+        renderUserProfileEntryPoint(whitelistDomain.userAccount)
     }
 
     private fun renderCompleteFab() {
@@ -628,6 +648,51 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
+    private fun renderUserProfileEntryPoint(userAccount: Author?) {
+        ivFeedUser?.let { ivFeedUser ->
+            if(userAccount == null) {
+                ivFeedUser.setOnClickListener(null)
+                ivFeedUser.hide()
+                return
+            }
+
+            ivFeedUser.onUrlLoaded = { isSuccess ->
+                if(!isSuccess) {
+                    ivFeedUser.post {
+                        ivFeedUser.setImageDrawable(MethodChecker.getDrawable(requireContext(), R.drawable.ic_user_profile_default))
+                    }
+                }
+            }
+            ivFeedUser.setImageUrl(userAccount.thumbnail)
+            ivFeedUser.setOnClickListener {
+                toolBarAnalytics.clickUserProfileIcon(userSession.userId)
+                dismissUserProfileCoachMark()
+
+                RouteManager.route(requireContext(), ApplinkConst.PROFILE, userAccount.id)
+            }
+            ivFeedUser.show()
+
+            if(!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
+                coachMarkHelper.showCoachMark(
+                    CoachMarkConfig(ivFeedUser)
+                        .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
+                        .setDuration(USER_ICON_COACH_MARK_DURATION)
+                        .setOnClickCloseListener {
+                            affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
+                        }
+                        .setOnClickListener {
+                            dismissUserProfileCoachMark()
+                        }
+                )
+            }
+        }
+    }
+
+    private fun dismissUserProfileCoachMark() {
+        affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
+        ivFeedUser?.let { coachMarkHelper.dismissCoachmark(it) }
+    }
+
     private fun createCreateLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
@@ -646,7 +711,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 if (userSession.isLoggedIn) {
-                    viewModel.getWhitelist(authorList.isEmpty())
+                    viewModel.getWhitelist()
                 }
             })
         }
