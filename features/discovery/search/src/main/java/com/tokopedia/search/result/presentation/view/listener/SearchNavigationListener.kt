@@ -13,10 +13,10 @@ interface SearchNavigationListener {
 
 @Module
 internal class SearchNavigationListenerModule(
-    private val searchNavigationListener: SearchNavigationListener
+    private val searchNavigationListener: SearchNavigationListener?
 ) {
 
     @SearchScope
     @Provides
-    fun provideSearchNavigationListener(): SearchNavigationListener = searchNavigationListener
+    fun provideSearchNavigationListener(): SearchNavigationListener? = searchNavigationListener
 }

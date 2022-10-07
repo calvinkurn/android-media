@@ -33,7 +33,7 @@ import javax.inject.Inject
 class InspirationListAtcViewDelegate @Inject constructor(
     private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
     private val trackingQueue: TrackingQueue,
-    private val searchNavigationListener: SearchNavigationListener,
+    private val searchNavigationListener: SearchNavigationListener?,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     searchParameterProvider: SearchParameterProvider,
     classNameProvider: ClassNameProvider,
@@ -110,7 +110,7 @@ class InspirationListAtcViewDelegate @Inject constructor(
     }
 
     override fun updateSearchBarNotification() {
-        searchNavigationListener.updateSearchBarNotification()
+        searchNavigationListener?.updateSearchBarNotification()
     }
 
     override fun trackAdsClick(product: InspirationCarouselDataView.Option.Product) {

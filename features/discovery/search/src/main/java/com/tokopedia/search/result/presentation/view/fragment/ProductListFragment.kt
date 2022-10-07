@@ -286,7 +286,7 @@ class ProductListFragment: BaseDaggerFragment(),
             .searchContextModule(SearchContextModule(activity))
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
             .productListFragmentModule(ProductListFragmentModule(this))
-            .searchNavigationListenerModule(SearchNavigationListenerModule(searchNavigationListener!!))
+            .searchNavigationListenerModule(SearchNavigationListenerModule(searchNavigationListener))
             .build()
             .inject(this)
     }
