@@ -206,6 +206,9 @@ object ShipmentInfoUiStateMapper {
                     )
                 )
             }
+            is GetP0DataRequestState.Error -> {
+                ShipmentInfoUiState.Error(getP0DataRequestState.getThrowable())
+            }
             else -> {
                 ShipmentInfoUiState.Loading
             }

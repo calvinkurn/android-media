@@ -6,10 +6,12 @@ import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
@@ -73,8 +75,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing)
-            assertTrue(uiStates[2] is BuyerOrderDetailUiState.PullRefreshLoading)
-            assertTrue(uiStates[3] is BuyerOrderDetailUiState.Showing)
+            for (i in 2 until uiStates.size.dec()) {
+                assertTrue(uiStates[i] is BuyerOrderDetailUiState.PullRefreshLoading)
+            }
+            assertTrue(uiStates.last() is BuyerOrderDetailUiState.Showing)
         }
 
     @Test
@@ -84,54 +88,54 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             userId = userId,
             action = "event_dialog_deliver_finish"
         )
-        val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId } returns "540"
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderId } returns orderId
+        val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+            every { data.orderStatusHeaderUiModel.orderStatusId } returns "540"
+            every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
         createSuccessGetP0DataResult()
         createSuccessFinishOrderResult()
-        mockBuyerOrderDetailUiModelMapper(uiModel)
+        mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.finishOrder()
 
-        viewModel.getP0Data(orderId, paymentId, cart)
-        viewModel.finishOrder()
-
-        coVerify {
-            finishOrderUseCase.execute(expectedParams)
+            coVerify {
+                finishOrderUseCase.execute(expectedParams)
+            }
         }
     }
 
     @Test
     fun `finishOrder should success when set order as delivered`() = runCollectingUiState {
-        val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId } returns "540"
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderId } returns orderId
+        val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+            every { data.orderStatusHeaderUiModel.orderStatusId } returns "540"
+            every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
         createSuccessGetP0DataResult()
-        mockBuyerOrderDetailUiModelMapper(uiModel)
+        mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.finishOrder()
 
-        viewModel.getP0Data(orderId, paymentId, cart)
-        viewModel.finishOrder()
-
-        assertTrue(viewModel.finishOrderResult.value is Success)
+            assertTrue(viewModel.finishOrderResult.value is Success)
+        }
     }
 
     @Test
     fun `finishOrder should success when set order as arrived`() = runCollectingUiState {
-        val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId } returns "600"
-            every { orderStatusUiModel.orderStatusHeaderUiModel.orderId } returns orderId
+        val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+            every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+            every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
         createSuccessGetP0DataResult()
         createSuccessFinishOrderResult()
-        mockBuyerOrderDetailUiModelMapper(uiModel)
+        mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.finishOrder()
 
-        viewModel.getP0Data(orderId, paymentId, cart)
-        viewModel.finishOrder()
-
-        assertTrue(viewModel.finishOrderResult.value is Success)
+            assertTrue(viewModel.finishOrderResult.value is Success)
+        }
     }
 
     @Test
@@ -139,95 +143,95 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
         runCollectingUiState {
             val expectedErrorMessage = "Tidak dapat menyelesaikan pesanan, silahkan muat ulang dan coba lagi!"
             val expectedException = MessageErrorException(expectedErrorMessage)
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId } returns "600"
-                every { orderStatusUiModel.orderStatusHeaderUiModel.orderId } returns orderId
+            val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns "600"
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
             }
 
             createSuccessGetP0DataResult()
             createFailedFinishOrderResult(expectedException)
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.finishOrder()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-            viewModel.finishOrder()
-
-            val result = viewModel.finishOrderResult.value as Fail
-            assertTrue(result.throwable is MessageErrorException)
-            assertEquals(expectedErrorMessage, result.throwable.message)
+                val result = viewModel.finishOrderResult.value as Fail
+                assertTrue(result.throwable is MessageErrorException)
+                assertEquals(expectedErrorMessage, result.throwable.message)
+            }
         }
 
     @Test
     fun `addSingleToCart should execute UseCase with expected params`() = runCollectingUiState {
-        val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+        val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+            every { data.productListHeaderUiModel.shopId } returns shopId
         }
 
         createSuccessGetP0DataResult()
         createSuccessATCResult()
-        mockBuyerOrderDetailUiModelMapper(uiModel)
+        mockProductListUiStateMapper(showingState = productListShowingState) {
+            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.addSingleToCart(product)
 
-        viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
-        viewModel.addSingleToCart(product)
-
-        coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
+            coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
+        }
     }
 
     @Test
     fun `addSingleToCart should success when atc use case return expected data`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
             createSuccessGetP0DataResult()
             createSuccessATCResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.addSingleToCart(product)
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
-            viewModel.addSingleToCart(product)
-
-            val result = viewModel.singleAtcResult.value
-            assertNotNull(result)
-            assertEquals(product, result?.first)
-            assertTrue(result?.second is Success)
+                val result = viewModel.singleAtcResult.value
+                assertNotNull(result)
+                assertEquals(product, result?.first)
+                assertTrue(result?.second is Success)
+            }
         }
 
     @Test
     fun `addSingleToCart should failed when atc use case throw an exception`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
             createFailedATCResult()
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.addSingleToCart(product)
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
-            viewModel.addSingleToCart(product)
-
-            val result = viewModel.singleAtcResult.value
-            assertNotNull(result)
-            assertEquals(product, result?.first)
-            assertTrue(result?.second is Fail)
+                val result = viewModel.singleAtcResult.value
+                assertNotNull(result)
+                assertEquals(product, result?.first)
+                assertTrue(result?.second is Fail)
+            }
         }
 
     @Test
     fun `addMultipleToCart should execute UseCase with expected params when UI state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
-                every { productListUiModel.productList } returns listOf(product)
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
+                every { data.productList } returns listOf(product)
             }
 
             createSuccessGetP0DataResult()
             createSuccessATCResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.addMultipleToCart()
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
-            viewModel.addMultipleToCart()
-
-            coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
+                coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
+            }
         }
 
     @Test
@@ -244,60 +248,60 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should success when atc use case return expected data`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
-                every { productListUiModel.productList } returns listOf(product)
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
+                every { data.productList } returns listOf(product)
             }
 
             createSuccessGetP0DataResult()
             createSuccessATCResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.addMultipleToCart()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-            viewModel.addMultipleToCart()
-
-            val result = viewModel.multiAtcResult.value
-            assertNotNull(result)
-            assertTrue(result is MultiATCState.Success)
+                val result = viewModel.multiAtcResult.value
+                assertNotNull(result)
+                assertTrue(result is MultiATCState.Success)
+            }
         }
 
     @Test
     fun `addMultipleToCart should failed when atc use case return fail`() = runCollectingUiState {
-        val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-            every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
-            every { productListUiModel.productList } returns listOf(product)
+        val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+            every { data.productListHeaderUiModel.shopId } returns shopId
+            every { data.productList } returns listOf(product)
         }
 
         createSuccessGetP0DataResult()
         createSuccessATCResult(Fail(mockk(relaxed = true)))
-        mockBuyerOrderDetailUiModelMapper(uiModel)
-
-        viewModel.getP0Data(orderId, paymentId, cart)
-        viewModel.addMultipleToCart()
-
-        val result = viewModel.multiAtcResult.value
-        assertNotNull(result)
-        assertTrue(result is MultiATCState.Fail)
-    }
-
-    @Test
-    fun `addMultipleToCart should failed when atc use case throw an exception`() =
-        runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
-                every { productListUiModel.productList } returns listOf(product)
-            }
-
-            createSuccessGetP0DataResult()
-            createFailedATCResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
-
+        mockProductListUiStateMapper(showingState = productListShowingState) {
             viewModel.getP0Data(orderId, paymentId, cart)
             viewModel.addMultipleToCart()
 
             val result = viewModel.multiAtcResult.value
             assertNotNull(result)
             assertTrue(result is MultiATCState.Fail)
+        }
+    }
+
+    @Test
+    fun `addMultipleToCart should failed when atc use case throw an exception`() =
+        runCollectingUiState {
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
+                every { data.productList } returns listOf(product)
+            }
+
+            createSuccessGetP0DataResult()
+            createFailedATCResult()
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.addMultipleToCart()
+
+                val result = viewModel.multiAtcResult.value
+                assertNotNull(result)
+                assertTrue(result is MultiATCState.Fail)
+            }
         }
 
     @Test
@@ -317,17 +321,17 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     fun `getSecondaryActionButtons should return list of ActionButton when UI state is equals to Showing`() =
         runCollectingUiState {
             val actionButton = mockk<ActionButtonsUiModel.ActionButton>(relaxed = true)
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { actionButtonsUiModel.secondaryActionButtons } returns listOf(actionButton)
+            val actionButtonsShowingState = mockk<ActionButtonsUiState.Showing>(relaxed = true) {
+                every { data.secondaryActionButtons } returns listOf(actionButton)
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockActionButtonsUiStateMapper(showingState = actionButtonsShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            val actionButtonList = viewModel.getSecondaryActionButtons()
-            assertEquals(actionButton, actionButtonList.firstOrNull())
+                val actionButtonList = viewModel.getSecondaryActionButtons()
+                assertEquals(actionButton, actionButtonList.firstOrNull())
+            }
         }
 
     @Test
@@ -343,16 +347,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getProducts should return list of products when UI state is Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productList } returns listOf(product)
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productList } returns listOf(product)
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(product, viewModel.getProducts().firstOrNull())
+                assertEquals(product, viewModel.getProducts().firstOrNull())
+            }
         }
 
     @Test
@@ -368,16 +372,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopId should return shop id when UI state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopId } returns shopId
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(shopId, viewModel.getShopId())
+                assertEquals(shopId, viewModel.getShopId())
+            }
         }
 
     @Test
@@ -393,16 +397,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopName should return shop name when UI state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopName } returns shopName
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopName } returns shopName
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(shopName, viewModel.getShopName())
+                assertEquals(shopName, viewModel.getShopName())
+            }
         }
 
     @Test
@@ -418,16 +422,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopType should return shop type when ui state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productListHeaderUiModel.shopType } returns shopType
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productListHeaderUiModel.shopType } returns shopType
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(shopType, viewModel.getShopType())
+                assertEquals(shopType, viewModel.getShopType())
+            }
         }
 
     @Test
@@ -443,18 +447,18 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getCategoryId should return category id when ui state is not equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productList } returns listOf(product)
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productList } returns listOf(product)
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            val categoryId = viewModel.getCategoryId()
-            assertEquals(1, categoryId.size)
-            assertEquals(10, categoryId[0])
+                val categoryId = viewModel.getCategoryId()
+                assertEquals(1, categoryId.size)
+                assertEquals(10, categoryId[0])
+            }
         }
 
     @Test
@@ -489,8 +493,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 totalPriceText = "Rp500.000",
                 isProcessing = false
             )
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productList } returns listOf(
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productList } returns listOf(
                     product,
                     product,
                     anotherProduct
@@ -498,14 +502,14 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            val categoryId = viewModel.getCategoryId()
-            assertEquals(2, categoryId.size)
-            assertTrue(categoryId.contains(13))
-            assertTrue(categoryId.contains(10))
+                val categoryId = viewModel.getCategoryId()
+                assertEquals(2, categoryId.size)
+                assertTrue(categoryId.contains(13))
+                assertTrue(categoryId.contains(10))
+            }
         }
 
     @Test
@@ -529,18 +533,18 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                     totalPriceText = "Rp100.0",
                     bundleItemList = listOf(product)
                 )
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { productListUiModel.productBundlingList } returns listOf(productBundlingItem)
+            val productListShowingState = mockk<ProductListUiState.Showing>(relaxed = true) {
+                every { data.productBundlingList } returns listOf(productBundlingItem)
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockProductListUiStateMapper(showingState = productListShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            val categoryId = viewModel.getCategoryId()
-            assertEquals(1, categoryId.size)
-            assertEquals(10, categoryId[0])
+                val categoryId = viewModel.getCategoryId()
+                assertEquals(1, categoryId.size)
+                assertEquals(10, categoryId[0])
+            }
         }
 
     @Test
@@ -551,16 +555,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderStatusId should not empty when ui state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId } returns orderStatusId
+            val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderStatusId } returns orderStatusId
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(orderStatusId, viewModel.getOrderStatusId())
+                assertEquals(orderStatusId, viewModel.getOrderStatusId())
+            }
         }
 
     @Test
@@ -576,16 +580,16 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderId should not empty when ui state is equals to Showing`() =
         runCollectingUiState {
-            val uiModel = mockk<BuyerOrderDetailUiModel>(relaxed = true) {
-                every { orderStatusUiModel.orderStatusHeaderUiModel.orderId } returns orderId
+            val orderStatusShowingState = mockk<OrderStatusUiState.Showing>(relaxed = true) {
+                every { data.orderStatusHeaderUiModel.orderId } returns orderId
             }
 
             createSuccessGetP0DataResult()
-            mockBuyerOrderDetailUiModelMapper(uiModel)
+            mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
+                viewModel.getP0Data(orderId, paymentId, cart)
 
-            viewModel.getP0Data(orderId, paymentId, cart)
-
-            assertEquals(orderId, viewModel.getOrderId())
+                assertEquals(orderId, viewModel.getOrderId())
+            }
         }
 
     @Test

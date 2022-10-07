@@ -8,17 +8,22 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetP0DataUseCase
-import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiModelMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.ProductListUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
+import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -27,6 +32,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.mockk
+import io.mockk.mockkObject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.flow.flow
@@ -37,9 +43,6 @@ import org.junit.Before
 import org.junit.Rule
 
 abstract class BuyerOrderDetailViewModelTestFixture {
-
-    @RelaxedMockK
-    lateinit var buyerOrderDetailUiModelMapper: BuyerOrderDetailUiModelMapper
 
     @RelaxedMockK
     lateinit var gson: Gson
@@ -128,8 +131,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             finishOrderUseCase = { finishOrderUseCase },
             atcUseCase = { atcUseCase },
             resourceProvider = { resourceProvider },
-            gson = { gson },
-            buyerOrderDetailUiModelMapper = { buyerOrderDetailUiModelMapper }
+            gson = { gson }
         )
 
         every { userSession.userId } returns userId
@@ -147,8 +149,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         coEvery {
             getP0DataUseCase.getP0Data(any())
         } returns flow {
-            emit(GetP0DataRequestState.Requesting)
-            emit(GetP0DataRequestState.Success(GetP0DataResponse(getBuyerOrderDetailResult, getOrderResolutionResult)))
+            emit(GetP0DataRequestState.Requesting())
+            emit(GetP0DataRequestState.Success(
+                GetBuyerOrderDetailRequestState.Success(getBuyerOrderDetailResult),
+                GetOrderResolutionRequestState.Success(getOrderResolutionResult)
+            ))
         }
     }
 
@@ -156,8 +161,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         coEvery {
             getP0DataUseCase.getP0Data(any())
         } returns flow {
-            emit(GetP0DataRequestState.Requesting)
-            emit(GetP0DataRequestState.Error(throwable))
+            emit(GetP0DataRequestState.Requesting())
+            emit(GetP0DataRequestState.Error(
+                GetBuyerOrderDetailRequestState.Error(throwable),
+                GetOrderResolutionRequestState.Error(throwable)
+            ))
         }
     }
 
@@ -185,13 +193,121 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         } throws throwable
     }
 
-    fun mockBuyerOrderDetailUiModelMapper(result: BuyerOrderDetailUiModel = mockk(relaxed = true)) {
-        every {
-            buyerOrderDetailUiModelMapper.mapDomainModelToUiModel(any(), any())
-        } returns result
-        every {
-            buyerOrderDetailUiModelMapper.update(any(), any())
-        } returns result
+    fun mockOrderStatusUiStateMapper(
+        loadingState: OrderStatusUiState.Loading = mockk(relaxed = true),
+        showingState: OrderStatusUiState.Showing = mockk(relaxed = true),
+        errorState: OrderStatusUiState.Error = mockk(relaxed = true),
+        block: () -> Unit
+    ) {
+        mockkObject(OrderStatusUiStateMapper) {
+            every {
+                OrderStatusUiStateMapper.mapGetP0DataRequestStateToOrderStatusUiState(any())
+            } answers {
+                when (val getP0DataRequestState = firstArg<GetP0DataRequestState>()) {
+                    is GetP0DataRequestState.Requesting -> {
+                        when (getP0DataRequestState.getBuyerOrderDetailRequestState) {
+                            is GetBuyerOrderDetailRequestState.Requesting -> {
+                                loadingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Success -> {
+                                showingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Error -> {
+                                errorState
+                            }
+                        }
+                    }
+                    is GetP0DataRequestState.Success -> {
+                        showingState
+                    }
+                    is GetP0DataRequestState.Error -> {
+                        errorState
+                    }
+                    else -> {
+                        loadingState
+                    }
+                }
+            }
+            block()
+        }
+    }
+
+    fun mockProductListUiStateMapper(
+        loadingState: ProductListUiState.Loading = mockk(relaxed = true),
+        showingState: ProductListUiState.Showing = mockk(relaxed = true),
+        errorState: ProductListUiState.Error = mockk(relaxed = true),
+        block: () -> Unit
+    ) {
+        mockkObject(ProductListUiStateMapper) {
+            every {
+                ProductListUiStateMapper.mapGetP0DataRequestStateToProductListUiState(any(), any())
+            } answers {
+                when (val getP0DataRequestState = firstArg<GetP0DataRequestState>()) {
+                    is GetP0DataRequestState.Requesting -> {
+                        when (getP0DataRequestState.getBuyerOrderDetailRequestState) {
+                            is GetBuyerOrderDetailRequestState.Requesting -> {
+                                loadingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Success -> {
+                                showingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Error -> {
+                                errorState
+                            }
+                        }
+                    }
+                    is GetP0DataRequestState.Success -> {
+                        showingState
+                    }
+                    is GetP0DataRequestState.Error -> {
+                        errorState
+                    }
+                    else -> {
+                        loadingState
+                    }
+                }
+            }
+            block()
+        }
+    }
+
+    fun mockActionButtonsUiStateMapper(
+        loadingState: ActionButtonsUiState.Loading = mockk(relaxed = true),
+        showingState: ActionButtonsUiState.Showing = mockk(relaxed = true),
+        errorState: ActionButtonsUiState.Error = mockk(relaxed = true),
+        block: () -> Unit
+    ) {
+        mockkObject(ActionButtonsUiStateMapper) {
+            every {
+                ActionButtonsUiStateMapper.mapGetP0DataRequestStateToActionButtonsUiState(any())
+            } answers {
+                when (val getP0DataRequestState = firstArg<GetP0DataRequestState>()) {
+                    is GetP0DataRequestState.Requesting -> {
+                        when (getP0DataRequestState.getBuyerOrderDetailRequestState) {
+                            is GetBuyerOrderDetailRequestState.Requesting -> {
+                                loadingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Success -> {
+                                showingState
+                            }
+                            is GetBuyerOrderDetailRequestState.Error -> {
+                                errorState
+                            }
+                        }
+                    }
+                    is GetP0DataRequestState.Success -> {
+                        showingState
+                    }
+                    is GetP0DataRequestState.Error -> {
+                        errorState
+                    }
+                    else -> {
+                        loadingState
+                    }
+                }
+            }
+            block()
+        }
     }
 
     fun runCollectingUiState(block: (List<BuyerOrderDetailUiState>) -> Unit) {

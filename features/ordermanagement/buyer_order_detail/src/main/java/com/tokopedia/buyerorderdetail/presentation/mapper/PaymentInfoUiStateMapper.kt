@@ -114,6 +114,9 @@ object PaymentInfoUiStateMapper {
                     )
                 )
             }
+            is GetP0DataRequestState.Error -> {
+                PaymentInfoUiState.Error(getP0DataRequestState.getThrowable())
+            }
             else -> {
                 PaymentInfoUiState.Loading
             }

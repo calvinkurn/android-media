@@ -44,7 +44,7 @@ object OrderResolutionTicketStatusUiStateMapper {
                 }
             }
             is GetP0DataRequestState.Error -> {
-                OrderResolutionTicketStatusUiState.Loading
+                OrderResolutionTicketStatusUiState.Hidden
             }
             else -> {
                 OrderResolutionTicketStatusUiState.Loading

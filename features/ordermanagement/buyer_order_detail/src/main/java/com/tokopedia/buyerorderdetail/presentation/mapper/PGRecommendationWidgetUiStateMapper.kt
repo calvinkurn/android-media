@@ -50,6 +50,9 @@ object PGRecommendationWidgetUiStateMapper {
                     )
                 )
             }
+            is GetP0DataRequestState.Error -> {
+                PGRecommendationWidgetUiState.Error(getP0DataRequestState.getThrowable())
+            }
             else -> {
                 PGRecommendationWidgetUiState.Loading
             }

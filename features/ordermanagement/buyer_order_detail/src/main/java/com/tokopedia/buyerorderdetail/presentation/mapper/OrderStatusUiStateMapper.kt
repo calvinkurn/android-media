@@ -104,7 +104,7 @@ object OrderStatusUiStateMapper {
     }
 
     fun mapGetP0DataRequestStateToOrderStatusUiState(
-        getP0DataRequestState: GetP0DataRequestState,
+        getP0DataRequestState: GetP0DataRequestState
     ): OrderStatusUiState {
         return when (getP0DataRequestState) {
             is GetP0DataRequestState.Requesting -> {
@@ -145,6 +145,9 @@ object OrderStatusUiStateMapper {
                         getBuyerOrderDetailRequestState.result.orderId
                     )
                 )
+            }
+            is GetP0DataRequestState.Error -> {
+                OrderStatusUiState.Error(getP0DataRequestState.getThrowable())
             }
             else -> {
                 OrderStatusUiState.Loading

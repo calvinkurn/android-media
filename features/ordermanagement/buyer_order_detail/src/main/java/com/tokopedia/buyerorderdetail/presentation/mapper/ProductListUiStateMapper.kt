@@ -276,6 +276,9 @@ object ProductListUiStateMapper {
                     )
                 )
             }
+            is GetP0DataRequestState.Error -> {
+                ProductListUiState.Error(getP0DataRequestState.getThrowable())
+            }
             else -> {
                 ProductListUiState.Loading
             }

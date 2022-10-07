@@ -98,6 +98,9 @@ object ActionButtonsUiStateMapper {
                     )
                 )
             }
+            is GetP0DataRequestState.Error -> {
+                ActionButtonsUiState.Error(getP0DataRequestState.getThrowable())
+            }
             else -> {
                 ActionButtonsUiState.Loading
             }
