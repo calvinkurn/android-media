@@ -50,6 +50,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import java.util.*
 import java.util.concurrent.Executors
 import javax.inject.Inject
 
@@ -66,9 +67,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: BsProductDetailInfoViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
-    }
+    private var viewModel: BsProductDetailInfoViewModel? = null
 
     private var productDetailComponent: ProductDetailComponent? = null
     private var currentList: List<ProductDetailInfoVisitable>? = null
@@ -106,11 +105,22 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
     override fun onCreate(savedInstanceState: Bundle?) {
         productDetailComponent?.inject(this)
         super.onCreate(savedInstanceState)
+        setupViewModel()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         observeData()
+    }
+
+    private fun setupViewModel() {
+        /**
+         * fix crash when open bottom sheet in case of don't keep activity from developer setting
+         * caused by lateinit when don't keep activity which is initialized in bottom-sheet not created
+         */
+        if (::viewModelFactory.isInitialized) {
+            viewModel = ViewModelProvider(this, viewModelFactory).get(BsProductDetailInfoViewModel::class.java)
+        }
     }
 
     override fun onCreateView(
@@ -124,6 +134,19 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        /**
+         * if [viewModelFactory] still un-initialized until onViewCreated
+         * so dismiss this view
+         */
+        view.post {
+            if (!::viewModelFactory.isInitialized && isVisible) {
+                dismiss()
+            }
+        }
+    }
+
     private fun getDataParcel() {
         arguments?.let {
             context?.let { ctx ->
@@ -134,12 +157,12 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                     ProductInfoParcelData::class.java
                 ) ?: ProductInfoParcelData()
 
-                viewModel.setParams(parcelData)
+                viewModel?.setParams(parcelData)
             }
         }
     }
 
-    private fun observeData() = with(viewModel) {
+    private fun observeData() = viewModel?.apply {
         viewLifecycleOwner.observe(bottomSheetDetailData) { data ->
             data.doSuccessOrFail({
                 currentList = ArrayList(it.data)
