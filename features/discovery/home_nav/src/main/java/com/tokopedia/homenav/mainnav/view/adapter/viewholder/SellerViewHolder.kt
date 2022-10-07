@@ -37,8 +37,9 @@ class SellerViewHolder(
     }
 
     private fun shopClicked(profileSeller: ProfileSellerDataModel, context: Context) {
-        //if canGotoSellerAccount is false, then equals location admin
-        if (!profileSeller.canGoToSellerAccount) {
+        if (profileSeller.isLocationAdmin &&
+            profileSeller.adminStatus == ProfileSellerDataModel.ADMIN_ACTIVE
+        ) {
             LocationAdminDialog(itemView.context).show()
             return
         }

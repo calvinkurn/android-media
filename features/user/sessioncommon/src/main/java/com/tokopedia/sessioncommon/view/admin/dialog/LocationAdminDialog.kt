@@ -14,9 +14,10 @@ class LocationAdminDialog(context: Context?, dismissListener: (() -> Unit)? = nu
 
     init {
         context?.let {
+            val gn500Color = com.tokopedia.unifyprinciples.R.color.Unify_GN500.toString()
             dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
                 setTitle(it.getString(R.string.dialog_location_admin_title))
-                setDescription(it.getString(R.string.dialog_location_admin_description))
+                setDescription(it.getString(R.string.dialog_location_admin_description, gn500Color))
                 setPrimaryCTAText(it.getString(R.string.dialog_location_admin_primary_cta))
                 setPrimaryCTAClickListener { dismiss() }
                 setOnDismissListener { dismissListener?.invoke() }
