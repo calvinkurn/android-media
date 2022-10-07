@@ -42,12 +42,12 @@ class InspirationListAtcListenerDelegate @Inject constructor(
     @SearchContext
     context: Context,
     searchParameterProvider: SearchParameterProvider,
-    productListFragment: ProductListFragment,
+    fragmentProvider: FragmentProvider,
 ): InspirationListAtcListener,
     ApplinkOpener by ApplinkOpenerDelegate,
     ContextProvider by WeakReferenceContextProvider(context),
     SearchParameterProvider by searchParameterProvider,
-    FragmentProvider by productListFragment {
+    FragmentProvider by fragmentProvider {
 
     override fun onListAtcSeeMoreClicked(data: InspirationCarouselDataView.Option) {
         inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(data.keyword, data)
@@ -71,21 +71,5 @@ class InspirationListAtcListenerDelegate @Inject constructor(
         type: String
     ) {
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
-    }
-
-    override fun onAddToCartSuccess(addToCartDataModel: AddToCartDataModel?) {
-        (getFragment().activity as SearchActivity).searchNavigationToolbar?.updateNotification()
-
-        getFragment().view?.let {
-            Toaster.build(
-                it,
-                addToCartDataModel?.data?.message?.firstOrNull() ?: "",
-                Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                getFragment().getString(R.string.search_see_cart),
-            ) {
-                openApplink(context, ApplinkConst.CART)
-            }.show()
-        }
     }
 }

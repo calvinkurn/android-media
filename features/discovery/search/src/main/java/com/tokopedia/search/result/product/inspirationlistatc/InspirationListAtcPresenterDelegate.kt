@@ -17,6 +17,8 @@ import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.view.activity.SearchActivity
 import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
@@ -26,6 +28,7 @@ import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
+import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.search_activity_search.*
@@ -36,15 +39,19 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
     private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
-    productListFragment: ProductListFragment,
     @SearchContext
     context: Context,
     searchParameterProvider: SearchParameterProvider,
+    queryKeyProvider: QueryKeyProvider,
+    searchNavigationListener: SearchNavigationListener,
+    fragmentProvider: FragmentProvider,
 ): InspirationListAtcPresenter,
     ContextProvider by WeakReferenceContextProvider(context),
-    FragmentProvider by productListFragment,
+    FragmentProvider by fragmentProvider,
     ApplinkOpener by ApplinkOpenerDelegate,
-    SearchParameterProvider by searchParameterProvider {
+    SearchParameterProvider by searchParameterProvider,
+    QueryKeyProvider by queryKeyProvider,
+    SearchNavigationListener by searchNavigationListener {
 
     companion object {
         private const val DEFAULT_USER_ID = "0"
@@ -59,6 +66,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         productAddedToCart = product
 
         if (product.shouldOpenVariantBottomSheet()) {
+            product.asSearchComponentTracking(queryKey).click(TrackApp.getInstance().gtm)
+
             context?.let {
                 AtcVariantHelper.goToAtcVariant(
                     it,
@@ -80,7 +89,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     }
 
     private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
-        (getFragment().activity as SearchActivity).searchNavigationToolbar?.updateNotification()
+        updateCartCounter()
 
         getFragment().view?.let {
             Toaster.build(
@@ -105,6 +114,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
                 cartId,
                 quantity
             )
+        inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
         inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
     }
 

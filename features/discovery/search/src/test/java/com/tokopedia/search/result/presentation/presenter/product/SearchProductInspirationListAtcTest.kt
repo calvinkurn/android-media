@@ -8,11 +8,13 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.every
 import io.mockk.slot
+import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Test
 import rx.Subscriber
@@ -53,9 +55,65 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         productListPresenter.loadData(searchParameter)
     }
 
+    private fun `Given Load Data`() {
+        productListPresenter.loadData(searchParameter)
+    }
+
     private fun `Then verify view set product list`() {
         verifyOrder {
             productListView.setProductList(capture(visitableListSlot))
+        }
+    }
+
+    @Test
+    fun `User click add to cart non variant`() {
+        val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
+
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given Load Data`()
+
+        `When user click add to cart non variant`()
+
+        `Then verify add to cart API will hit`()
+    }
+
+    @Test
+    fun `User click add to cart with variant`() {
+        val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
+
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given Load Data`()
+
+        `When user click add to cart with variant`()
+
+        `Then verify variant bottomsheet will show`()
+    }
+
+    private fun `When user click add to cart non variant`() {
+        inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
+            InspirationCarouselDataView.Option.Product(),
+            ""
+        )
+    }
+
+    private fun `When user click add to cart with variant`() {
+        inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
+            InspirationCarouselDataView.Option.Product(
+                parentId = "123123"
+            ),
+            ""
+        )
+    }
+
+    private fun `Then verify add to cart API will hit`() {
+        verify {
+            addToCartUseCase.execute(any(), any())
+        }
+    }
+
+    private fun `Then verify variant bottomsheet will show`() {
+        verify {
+
         }
     }
 
@@ -121,7 +179,6 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         option.bannerApplinkUrl shouldBe expectedOption.bannerApplinkUrl
         option.componentId shouldBe expectedOption.componentId
         option.dimension90 shouldBe expectedDimension90
-        option.keyword shouldBe keyword
         option.product.assert(
             expectedOption.inspirationCarouselProducts,
             expectedData.title,

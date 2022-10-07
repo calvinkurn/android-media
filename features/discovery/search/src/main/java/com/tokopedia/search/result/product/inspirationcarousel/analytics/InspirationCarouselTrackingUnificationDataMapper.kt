@@ -16,6 +16,7 @@ object InspirationCarouselTrackingUnificationDataMapper {
         searchParameter: SearchParameter?,
         cartId: String = "",
         quantity: Int = 0,
+        variant: String = "",
     ): InspirationCarouselTrackingUnification.Data {
         return InspirationCarouselTrackingUnification.Data(
             searchParameter.queryKey,
@@ -23,6 +24,7 @@ object InspirationCarouselTrackingUnificationDataMapper {
             getSortFilterParamStringFromSearchParameter(searchParameter),
             cartId,
             quantity,
+            variant,
         )
     }
 

@@ -121,6 +121,7 @@ class InspirationCarouselDataView(
             val bundleId: String = "",
             val parentId: String = "",
             val minOrder: String = "",
+            val trackingOption: Int = 0,
         ): ImpressHolder(),
             Visitable<InspirationCarouselOptionTypeFactory> {
 
@@ -223,6 +224,7 @@ class InspirationCarouselDataView(
                 filterSortParams: String,
                 cartId: String,
                 quantity: Int,
+                variant: String,
             ): Any {
                 return DataLayer.mapOf(
                     "item_name", name,
@@ -230,7 +232,7 @@ class InspirationCarouselDataView(
                     "price", price,
                     "item_brand", "none / other",
                     "item_category", "none / other",
-                    "item_variant", "none / other",
+                    "item_variant", variant.ifEmpty { "none / other" },
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "position", optionPosition,
                     "dimension115", labelGroupDataList.getFormattedPositionName(),
@@ -243,6 +245,17 @@ class InspirationCarouselDataView(
                     "shop_name", shopName,
                 )
             }
+
+            fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
+                searchComponentTracking(
+                    trackingOption = trackingOption,
+                    keyword = keyword,
+                    valueId = id,
+                    valueName = name,
+                    componentId = componentId,
+                    applink = applink,
+                    dimension90 = dimension90
+                )
         }
     }
 

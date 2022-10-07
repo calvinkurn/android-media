@@ -74,15 +74,8 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
-import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
-import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
-import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
-import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.presentation.view.listener.*
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
@@ -293,6 +286,7 @@ class ProductListFragment: BaseDaggerFragment(),
             .searchContextModule(SearchContextModule(activity))
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
             .productListFragmentModule(ProductListFragmentModule(this))
+            .searchNavigationListenerModule(SearchNavigationListenerModule(searchNavigationListener!!))
             .build()
             .inject(this)
     }

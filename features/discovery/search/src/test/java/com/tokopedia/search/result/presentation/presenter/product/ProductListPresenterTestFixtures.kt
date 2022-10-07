@@ -1,7 +1,10 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
+import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -13,12 +16,15 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -26,6 +32,7 @@ import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGe
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.shouldBe
+import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Data
@@ -86,9 +93,15 @@ internal open class ProductListPresenterTestFixtures {
         mockk<SameSessionRecommendationPreference>(relaxed = true)
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
     protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
+    protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    protected val productListFragment = mockk<FragmentProvider>(relaxed = true)
+    protected val context = mockk<Context>(relaxed = true)
+    protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
+    protected val searchNavigationListener = mockk<SearchNavigationListener>(relaxed = true)
 
     protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
+    protected lateinit var inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate
 
     @Before
     open fun setUp() {
@@ -101,6 +114,16 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPreference,
             queryKeyProvider,
             productFilterIndicator,
+        )
+        inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
+            addToCartUseCase,
+            userSession,
+            InspirationCarouselTrackingUnification(),
+            context,
+            searchParameterProvider,
+            queryKeyProvider,
+            searchNavigationListener,
+            productListFragment,
         )
 
         productListPresenter = ProductListPresenter(
@@ -127,6 +150,7 @@ internal open class ProductListPresenterTestFixtures {
                 chooseAddressPresenterDelegate
             ) { saveLastFilterUseCase },
             sameSessionRecommendationPresenterDelegate,
+            inspirationListAtcPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }

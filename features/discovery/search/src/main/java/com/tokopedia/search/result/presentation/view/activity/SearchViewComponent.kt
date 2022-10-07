@@ -18,7 +18,6 @@ import dagger.Component
         UserSessionModule::class,
         RemoteConfigModule::class,
         CartLocalCacheHandlerModule::class,
-        SearchNavigationListenerModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

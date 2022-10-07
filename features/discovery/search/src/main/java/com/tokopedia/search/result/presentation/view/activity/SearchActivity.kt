@@ -147,7 +147,6 @@ class SearchActivity : BaseActivity(),
             .builder()
             .baseAppComponent(component)
             .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
-            .searchNavigationListenerModule(SearchNavigationListenerModule(this))
             .build()
             .inject(this)
     }

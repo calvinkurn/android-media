@@ -25,8 +25,4 @@ abstract class ProductListPresenterModule {
     @SearchScope
     @Binds
     abstract fun provideLastFilterPresenter(provider: LastFilterPresenterDelegate): LastFilterPresenter
-
-    @SearchScope
-    @Binds
-    abstract fun provideInspirationListAtcPresenter(provider: InspirationListAtcPresenterDelegate): InspirationListAtcPresenter
 }

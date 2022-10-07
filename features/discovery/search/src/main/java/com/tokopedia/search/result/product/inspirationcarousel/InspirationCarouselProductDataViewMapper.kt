@@ -21,6 +21,7 @@ class InspirationCarouselProductDataViewMapper {
         carouselTitle: String,
         dimension90: String,
         externalReference: String,
+        trackingOption: Int = 0,
     ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
@@ -65,6 +66,7 @@ class InspirationCarouselProductDataViewMapper {
                 bundleId = product.bundleId,
                 parentId = product.parentId,
                 minOrder = product.minOrder,
+                trackingOption = trackingOption
             )
         }
     }

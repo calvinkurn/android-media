@@ -2,6 +2,7 @@ package com.tokopedia.search.result.product.inspirationlistatc
 
 import android.content.Context
 import android.content.Intent
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
@@ -27,9 +28,12 @@ class InspirationListAtcActivityResult @Inject constructor(
                     val trackingData =
                         InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                             product,
-                            getSearchParameter()
+                            getSearchParameter(),
+                            this.cartId,
+                            product.minOrder.toIntOrZero(),
                         )
                     inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
+                    inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
                 }
             }
         }
