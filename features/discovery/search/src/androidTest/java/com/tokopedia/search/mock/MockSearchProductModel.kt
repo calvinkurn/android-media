@@ -1,7 +1,7 @@
 package com.tokopedia.search.mock
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
+import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView

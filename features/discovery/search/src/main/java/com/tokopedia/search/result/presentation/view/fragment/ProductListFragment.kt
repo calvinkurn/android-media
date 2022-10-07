@@ -385,9 +385,12 @@ class ProductListFragment: BaseDaggerFragment(),
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
             staggeredGridLayoutManager,
-            staggeredGridLayoutLoadMoreTriggerListener,
-            onBoardingListenerDelegate.createScrollListener(),
+            listOf(
+                staggeredGridLayoutLoadMoreTriggerListener,
+                onBoardingListenerDelegate.createScrollListener(),
+            ),
             createProductListTypeFactory(),
+            viewLifecycleOwner,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -485,12 +488,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
-
-    private fun getDimension90(): String =
-        Dimension90Utils.getDimension90(getSearchParameterMap())
-
-    private fun getSearchParameterMap(): Map<String, Any> =
-        searchParameter?.getSearchParameterMap() ?: mapOf()
     //endregion
 
     //region onAttach
@@ -548,10 +545,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun addRecommendationList(list: List<Visitable<*>>) {
         recyclerViewUpdater.appendItems(list)
-    }
-
-    override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
-        recyclerViewUpdater.appendItems(bannedProductsErrorMessageAsList)
     }
 
     override fun addLoading() {
@@ -1042,15 +1035,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
         searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
-    }
-    //endregion
-
-    //region banned products
-    override fun trackEventImpressionBannedProducts(isEmptySearch: Boolean) {
-        if (isEmptySearch)
-            SearchTracking.trackEventImpressionBannedProductsEmptySearch(queryKey)
-        else
-            SearchTracking.trackEventImpressionBannedProductsWithResult(queryKey)
     }
     //endregion
 
