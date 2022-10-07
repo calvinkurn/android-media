@@ -78,4 +78,13 @@ class TmProgramListViewModelTest {
         Assert.assertEquals(REFRESH, viewModel.tmRefreshProgramListLiveData.value)
     }
 
+
+    @Test
+    fun programListLoadingState(){
+        viewModel.programListLoadingState(1)
+        Assert.assertEquals(
+            viewModel.tmProgramListLoadingStateLiveData.value,
+            1
+        )
+    }
 }

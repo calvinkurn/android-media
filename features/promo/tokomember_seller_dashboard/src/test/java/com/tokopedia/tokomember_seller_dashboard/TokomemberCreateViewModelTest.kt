@@ -2,7 +2,9 @@ package com.tokopedia.tokomember_seller_dashboard
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.tokomember_seller_dashboard.domain.TmCouponDetailUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TmKuponCreateValidateUsecase
@@ -16,17 +18,14 @@ import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashEditCardUs
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashGetProgramFormUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemberDashUpdateProgramUsecase
 import com.tokopedia.tokomember_seller_dashboard.domain.TokomemeberCardBgUsecase
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.ProgramUpdateDataInput
-import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.TmCardModifyInput
-import com.tokopedia.tokomember_seller_dashboard.model.CardData
-import com.tokopedia.tokomember_seller_dashboard.model.CardDataTemplate
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCard
-import com.tokopedia.tokomember_seller_dashboard.model.MembershipCreateEditCardResponse
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramDetailData
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramUpdateResponse
+import com.tokopedia.tokomember_seller_dashboard.domain.requestparam.*
+import com.tokopedia.tokomember_seller_dashboard.model.*
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardBgItem
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColor
+import com.tokopedia.tokomember_seller_dashboard.view.adapter.model.TokomemberCardColorItem
 import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.Runs
 import io.mockk.coEvery
@@ -39,6 +38,8 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class TokomemberCreateViewModelTest {
@@ -143,6 +144,22 @@ class TokomemberCreateViewModelTest {
     }
 
     @Test
+    fun failureGetCardBackgroundData() {
+        val cardData = CardData()
+        coEvery {
+            tokomemeberCardBgUsecase.getCardBgDataN(cardData, "", arrayListOf(), any(), any())
+        } coAnswers {
+            lastArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getCardBackgroundData(cardData, "", arrayListOf())
+        Assert.assertEquals(
+            (viewModel.tokomemberCardBgResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+
+    @Test
     fun successProgramForm(){
         val data = mockk<ProgramDetailData>(relaxed = true)
         coEvery {
@@ -235,4 +252,325 @@ class TokomemberCreateViewModelTest {
         )
     }
 
+    @Test
+    fun `create coupon success`(){
+        val couponCreateRes = mockk<CouponCreateMultiple>()
+        val merchantRequest = mockk<TmMerchantCouponUnifyRequest>()
+       every {
+           tmKuponCreateUsecase.createKupon(any(),any(),any())
+       } answers {
+           firstArg<(CouponCreateMultiple) -> Unit>().invoke(couponCreateRes)
+       }
+        viewModel.createCoupon(merchantRequest)
+        assertEquals(
+            (viewModel.tmCouponCreateLiveData.value as Success).data,
+            couponCreateRes
+        )
+    }
+
+    @Test
+    fun `create coupon failure`(){
+        val merchantRequest = mockk<TmMerchantCouponUnifyRequest>()
+        every {
+            tmKuponCreateUsecase.createKupon(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.createCoupon(merchantRequest)
+        assertEquals(
+            (viewModel.tmCouponCreateLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun `create single coupon success`(){
+        val couponSingleRes = mockk<CouponCreateSingle>()
+        val merchantRequest = mockk<TmCouponCreateRequest>()
+        every {
+            tmSingleCouponCreateUsecase.createSingleCoupon(any(),any(),any())
+        } answers {
+            firstArg<(CouponCreateSingle) -> Unit>().invoke(couponSingleRes)
+        }
+        viewModel.createSingleCoupon(merchantRequest)
+        assertEquals(
+            (viewModel.tmSingleCouponCreateLiveData.value as Success).data,
+            couponSingleRes
+        )
+    }
+
+    @Test
+    fun `create single coupon failure`(){
+        val merchantRequest = mockk<TmCouponCreateRequest>()
+        every {
+            tmSingleCouponCreateUsecase.createSingleCoupon(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.createSingleCoupon(merchantRequest)
+        assertEquals(
+            (viewModel.tmSingleCouponCreateLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
+
+    @Test
+    fun `update coupon success`(){
+        val updateCouponRes = mockk<TmKuponUpdateMVResponse>()
+        val updateRequest = mockk<TmCouponUpdateRequest>()
+        every {
+            tmKuponUpdateUsecase.updateCoupon(any(),any(),any())
+        } answers {
+            firstArg<(TmKuponUpdateMVResponse) -> Unit>().invoke(updateCouponRes)
+        }
+        viewModel.updateCoupon(updateRequest)
+        assertEquals(
+            viewModel.tmCouponUpdateLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `update coupon failure`(){
+        val updateRequest = mockk<TmCouponUpdateRequest>()
+        every {
+            tmKuponUpdateUsecase.updateCoupon(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.updateCoupon(updateRequest)
+        assertEquals(
+            viewModel.tmCouponUpdateLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `get initial coupon data success`(){
+        val couponInitialRes = mockk<TmCouponInitialResponse>()
+        every {
+            tmKuponInitialUsecase.getInitialCoupon(any(),any(),any(),any())
+        } answers {
+            firstArg<(TmCouponInitialResponse) -> Unit>().invoke(couponInitialRes)
+        }
+        viewModel.getInitialCouponData("","")
+        assertEquals(
+            viewModel.tmCouponInitialLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `get initial coupon data failure`(){
+        every {
+            tmKuponInitialUsecase.getInitialCoupon(any(),any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getInitialCouponData("","")
+        assertEquals(
+            viewModel.tmCouponInitialLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `validate program success`(){
+        val response = mockk<MemberShipValidateResponse>()
+        every {
+            tmKuponProgramValidateUsecase.getMembershipValidateInfo(any(),any(),any(),any(),any(),any())
+        } answers {
+            firstArg<(MemberShipValidateResponse) -> Unit>().invoke(response)
+        }
+        viewModel.validateProgram("","","","")
+        assertEquals(
+            viewModel.tmProgramValidateLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `validate program failure`(){
+        every {
+            tmKuponProgramValidateUsecase.getMembershipValidateInfo(any(),any(),any(),any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.validateProgram("","","","")
+        assertEquals(
+            viewModel.tmProgramValidateLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `pre validate coupon success`(){
+        val response = mockk<TmVoucherValidationPartialResponse>()
+        val request = mockk<TmCouponValidateRequest>()
+        every {
+            tmKuponCreateValidateUsecase.getPartialValidateData(any(),any(),any())
+        } answers {
+            firstArg<(TmVoucherValidationPartialResponse) -> Unit>().invoke(response)
+        }
+        viewModel.preValidateCoupon(request)
+        assertEquals(
+            viewModel.tmCouponPreValidateSingleCouponLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `pre validate coupon failure`(){
+        val request = mockk<TmCouponValidateRequest>()
+        every {
+            tmKuponCreateValidateUsecase.getPartialValidateData(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.preValidateCoupon(request)
+        assertEquals(
+            viewModel.tmCouponPreValidateSingleCouponLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `pre validate multiple coupon success`(){
+        val response = mockk<TmVoucherValidationPartialResponse>()
+        val request = mockk<TmCouponValidateRequest>()
+        every {
+            tmKuponCreateValidateUsecase.getPartialValidateData(any(),any(),any())
+        } answers {
+            firstArg<(TmVoucherValidationPartialResponse) -> Unit>().invoke(response)
+        }
+        viewModel.preValidateMultipleCoupon(request)
+        assertEquals(
+            viewModel.tmCouponPreValidateMultipleCouponLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `pre validate multiple coupon failure`(){
+        val request = mockk<TmCouponValidateRequest>()
+        every {
+            tmKuponCreateValidateUsecase.getPartialValidateData(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.preValidateMultipleCoupon(request)
+        assertEquals(
+            viewModel.tmCouponPreValidateMultipleCouponLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `upload image vip success`(){
+        val imageFile = mockk<File>()
+        coEvery { uploaderUseCase(any()) } returns UploadResult.Success()
+        viewModel.uploadImageVip(imageFile)
+        assertEquals(
+            viewModel.tmCouponUploadLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `upload image vip failure`(){
+        val imageFile = mockk<File>()
+        coEvery { uploaderUseCase(any()) } throws  mockThrowable
+        viewModel.uploadImageVip(imageFile)
+        assertEquals(
+            viewModel.tmCouponUploadLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `upload image premium success`(){
+        val imageFile = mockk<File>()
+        coEvery { uploaderUseCase(any()) } returns UploadResult.Success()
+        viewModel.uploadImagePremium(imageFile)
+        assertEquals(
+            viewModel.tmCouponUploadMultipleLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `upload image premium failure`(){
+        val imageFile = mockk<File>()
+        coEvery { uploaderUseCase(any()) } throws  mockThrowable
+        viewModel.uploadImagePremium(imageFile)
+        assertEquals(
+            viewModel.tmCouponUploadMultipleLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `get coupon detail success`(){
+        val response = mockk<TmCouponDetailResponseData>()
+        every {
+            tmCouponDetailUsecase.getCouponDetail(any(),any(),any())
+        } answers {
+            firstArg<(TmCouponDetailResponseData) -> Unit>().invoke(response)
+        }
+        viewModel.getCouponDetail(0)
+        assertEquals(
+            viewModel.tmCouponDetaillLiveData.value?.status,
+            TokoLiveDataResult.STATUS.SUCCESS
+        )
+    }
+
+    @Test
+    fun `get coupon detail failure`(){
+        every {
+            tmCouponDetailUsecase.getCouponDetail(any(),any(),any())
+        } answers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getCouponDetail(0)
+        assertEquals(
+            viewModel.tmCouponDetaillLiveData.value?.status,
+            TokoLiveDataResult.STATUS.ERROR
+        )
+    }
+
+    @Test
+    fun `get card color data success`(){
+        val cardData = mockk<CardData>()
+        val cardColor = mockk<TokomemberCardColor>(relaxed = true)
+        val response = TokomemberCardColorItem(
+            ArrayList<Visitable<*>>().apply {
+                add(cardColor)
+            }
+        )
+        every{
+            tokomemberCardColorMapperUsecase.getCardColorData(any(),any(),any())
+        } answers {
+            secondArg<(TokomemberCardColorItem) -> Unit>().invoke(response)
+        }
+        viewModel.getCardColorData(cardData)
+        assertEquals(
+            (viewModel.tokomemberCardColorResultLiveData.value as Success).data,
+            response
+        )
+    }
+
+    @Test
+    fun `get card color data failure`(){
+        val cardData = mockk<CardData>()
+        every{
+            tokomemberCardColorMapperUsecase.getCardColorData(any(),any(),any())
+        } answers {
+            lastArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getCardColorData(cardData)
+        assertEquals(
+            (viewModel.tokomemberCardColorResultLiveData.value as Fail).throwable,
+            mockThrowable
+        )
+    }
 }

@@ -135,4 +135,13 @@ class TmCouponViewModelTest {
         assertEquals(mockThrowable, (viewModel.tmCouponQuotaUpdateLiveData.value as TokoLiveDataResult).error)
     }
 
+    @Test
+    fun refreshListState(){
+        viewModel.refreshListState(1)
+        assertEquals(
+            viewModel.tmCouponListStateLiveData.value,
+            1
+        )
+    }
+
 }
