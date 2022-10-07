@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewOutlineProvider
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
@@ -56,7 +57,7 @@ class ChatbotVideoUploadViewHolder(
     private val cancelUpload = itemView?.findViewById<ImageView>(R.id.progress_cross)
     private val chatStatus: ImageView? = itemView?.findViewById(getReadStatusId())
     private val action: ImageView? = itemView?.findViewById(getLeftActionId())
-    private val progressBarSendVideo: View? = itemView?.findViewById(getProgressBarSendVideoId())
+    private val progressBarSendVideo: FrameLayout? = itemView?.findViewById(getProgressBarSendVideoId())
     private val videoPlayerView: PlayerView? = itemView?.findViewById(getVideoPlayerId())
     private var chatbotExoPlayer: ChatbotExoPlayer? = null
     private var videoWidth = 0
