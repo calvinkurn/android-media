@@ -639,7 +639,7 @@ class PlayViewModelWebSocketTest {
     }
 
     @Test
-    fun `when quiz is ongoing, user join the game that has a reward, user the winner`() {
+    fun `when quiz is ongoing, user join the game, show leaderboard`() {
         val model = uiModelBuilder.buildQuiz(
             id = "1", listOfChoices =
             listOf(
@@ -659,140 +659,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
-        )
-
-        coEvery { repo.getCurrentInteractive(any()) } returns model
-
-        coEvery { repo.answerQuiz(any(), any()) } returns "12"
-        coEvery { repo.getActiveInteractiveId() } returns "1"
-        coEvery { repo.hasJoined(any()) } returns true
-
-        val robot = createPlayViewModelRobot(
-            playChannelWebSocket = fakePlayWebSocket,
-            repo = repo,
-            dispatchers = testDispatcher,
-            userSession = mockUserSession,
-            remoteConfig = mockRemoteConfig,
-        )
-
-        robot.use {
-            it.setUserId("1")
-            it.setLoggedIn(true)
-            it.createPage(channelData)
-            it.focusPage(channelData)
-
-            val event = robot.recordEvent {
-                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-                viewModel.submitAction(
-                    PlayViewerNewAction.ClickQuizOptionAction(
-                        modelBuilder.buildQuizChoices(
-                            id = "12",
-                            text = "25 June",
-                            type = PlayQuizOptionState.Default('a')
-                        )
-                    )
-                )
-                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-            }
-
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
-        }
-    }
-
-    @Test
-    fun `when quiz is ongoing, user join the game that has a reward, user the loser - wrong answer`() {
-        val model = uiModelBuilder.buildQuiz(
-            id = "1", listOfChoices =
-            listOf(
-                modelBuilder.buildQuizChoices(
-                    id = "12",
-                    text = "25 June",
-                    type = PlayQuizOptionState.Default('a')
-                ),
-                modelBuilder.buildQuizChoices(
-                    id = "13",
-                    text = "26 June",
-                    type = PlayQuizOptionState.Default('b')
-                ),
-                modelBuilder.buildQuizChoices(
-                    id = "14",
-                    text = "27 June",
-                    type = PlayQuizOptionState.Default('c')
-                )
-            ),
-            reward = "Ikan Hiu",
-            status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
-        )
-
-        coEvery { repo.getCurrentInteractive(any()) } returns model
-
-        coEvery { repo.answerQuiz(any(), any()) } returns "12"
-        coEvery { repo.getActiveInteractiveId() } returns "1"
-        coEvery { repo.hasJoined(any()) } returns true
-
-        val robot = createPlayViewModelRobot(
-            playChannelWebSocket = fakePlayWebSocket,
-            repo = repo,
-            dispatchers = testDispatcher,
-            userSession = mockUserSession,
-            remoteConfig = mockRemoteConfig,
-        )
-
-        robot.use {
-            it.setUserId("9")
-            it.setLoggedIn(true)
-            it.createPage(channelData)
-            it.focusPage(channelData)
-
-            val event = robot.recordEvent {
-                fakePlayWebSocket.fakeReceivedMessage(PlayInteractiveStatusSocketResponse.generateResponse())
-                viewModel.submitAction(
-                    PlayViewerNewAction.ClickQuizOptionAction(
-                        modelBuilder.buildQuizChoices(
-                            id = "14",
-                            text = "27 June",
-                            type = PlayQuizOptionState.Default('a')
-                        )
-                    )
-                )
-                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                fakePlayWebSocket.fakeReceivedMessage(PlayUserWinnerStatusSocketResponse.generateResponse())
-            }
-
-            event.last().assertEqualTo(
-                ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText
-                )
-            )
-        }
-    }
-
-    @Test
-    fun `when quiz is ongoing, user join the game that has no  reward just show leaderboard`() {
-        val model = uiModelBuilder.buildQuiz(
-            id = "1", listOfChoices =
-            listOf(
-                modelBuilder.buildQuizChoices(
-                    id = "12",
-                    text = "25 June",
-                    type = PlayQuizOptionState.Default('a')
-                ),
-                modelBuilder.buildQuizChoices(
-                    id = "13",
-                    text = "26 June",
-                    type = PlayQuizOptionState.Default('b')
-                ),
-                modelBuilder.buildQuizChoices(
-                    id = "14",
-                    text = "27 June",
-                    type = PlayQuizOptionState.Default('c')
-                )
-            ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -856,7 +722,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu"
         )
 
         val err = MessageErrorException("Error gk bs jawab y")
@@ -917,7 +782,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 

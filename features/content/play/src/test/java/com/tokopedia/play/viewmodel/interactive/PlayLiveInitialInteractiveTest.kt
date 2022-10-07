@@ -224,7 +224,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -284,7 +283,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
 
@@ -360,7 +358,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(false)),
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(true)),
@@ -402,7 +399,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
@@ -463,7 +459,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
@@ -530,7 +525,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
