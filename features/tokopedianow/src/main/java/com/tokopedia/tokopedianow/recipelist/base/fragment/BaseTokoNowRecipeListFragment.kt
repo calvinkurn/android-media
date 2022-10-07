@@ -79,7 +79,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
-                    analytics = analytics
+                    analytics = analytics,
+                    pageName = pageName
                 ),
                 serverErrorListener = this,
                 serverErrorAnalytics = this,

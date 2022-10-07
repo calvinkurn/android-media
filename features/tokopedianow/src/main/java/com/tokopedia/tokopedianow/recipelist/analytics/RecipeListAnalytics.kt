@@ -44,7 +44,13 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_DURATION
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_PORTION
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
 import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
+import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -384,13 +390,24 @@ class RecipeListAnalytics (
         )
     }
 
-    fun clickApplyFilter(filters: List<String>) {
+    fun clickApplyFilter(filters: List<SelectedFilter>) {
+        val map = mutableMapOf<String, String>()
+        map[PARAM_SORT_BY] = "null"
+        map[PARAM_INGREDIENT_ID] = "null"
+        map[PARAM_DURATION] = "null"
+        map[PARAM_PORTION] = "null"
+        map[PARAM_TAG_ID] = "null"
+
+        filters.forEach {
+            map[it.parentId] = it.text
+        }
+
         TokoNowCommonAnalytics.hitCommonTracker(
             TokoNowCommonAnalytics.getDataLayer(
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_APPLY_FILTER,
                 category = category,
-                label = filters.joinToString(" - ")
+                label = map.values.joinToString(" - ")
             )
         )
     }

@@ -17,27 +17,37 @@ import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.setMaxHeight
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder.SectionHeaderListener
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
 import com.tokopedia.tokopedianow.recipelist.di.component.DaggerRecipeListComponent
 import com.tokopedia.tokopedianow.recipelist.presentation.viewmodel.TokoNowRecipeFilterViewModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
-import java.util.*
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class TokoNowRecipeFilterFragment : Fragment() {
+class TokoNowRecipeFilterFragment : Fragment(), TokoNowSortFilterBottomSheet.TokoNowSortFilterTracker {
 
     companion object {
+        const val EXTRA_PAGE_NAME = "extra_page_name"
+
         private const val REQUEST_CODE_FILTER_INGREDIENTS = 1001
 
-        fun newInstance(selectedFilters: ArrayList<SelectedFilter>): TokoNowRecipeFilterFragment {
+        fun newInstance(
+            selectedFilters: ArrayList<SelectedFilter>,
+            pageName: String
+        ): TokoNowRecipeFilterFragment {
             return TokoNowRecipeFilterFragment().apply {
                 arguments = Bundle().apply {
                     putParcelableArrayList(EXTRA_SELECTED_FILTER, selectedFilters)
+                    putString(EXTRA_PAGE_NAME, pageName)
                 }
             }
         }
     }
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -45,6 +55,14 @@ class TokoNowRecipeFilterFragment : Fragment() {
     private val viewModel by lazy {
         ViewModelProvider(requireActivity(), viewModelFactory)
             .get(TokoNowRecipeFilterViewModel::class.java)
+    }
+
+    private val analytics by lazy {
+        RecipeListAnalytics(
+            userSession = userSession,
+            pageName = arguments?.getString(EXTRA_PAGE_NAME).orEmpty(),
+            warehouseId = ""
+        )
     }
 
     private var bottomSheet: TokoNowSortFilterBottomSheet? = null
@@ -67,6 +85,7 @@ class TokoNowRecipeFilterFragment : Fragment() {
         observeLiveData()
 
         viewModel.getSortFilterOptions(selectedFilters)
+        analytics.impressApplyFilter()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -93,7 +112,7 @@ class TokoNowRecipeFilterFragment : Fragment() {
     }
 
     private fun setupBottomSheet() {
-        bottomSheet = TokoNowSortFilterBottomSheet.newInstance()
+        bottomSheet = TokoNowSortFilterBottomSheet.newInstance(this)
         bottomSheet?.setTitle(getString(R.string.tokopedianow_filter))
         bottomSheet?.sortFilterItems = listOf(LoadingMoreModel())
         bottomSheet?.sectionHeaderListener = sectionHeaderListener()
@@ -123,5 +142,9 @@ class TokoNowRecipeFilterFragment : Fragment() {
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    override fun trackApplyFilters(filters: List<SelectedFilter>) {
+        analytics.clickApplyFilter(filters)
     }
 }

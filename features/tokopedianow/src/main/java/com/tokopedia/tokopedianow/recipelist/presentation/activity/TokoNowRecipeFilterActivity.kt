@@ -10,8 +10,11 @@ import java.util.ArrayList
 class TokoNowRecipeFilterActivity : BaseTokoNowActivity() {
 
     override fun getFragment(): Fragment {
-        val selectedFilters = intent
-            .getParcelableArrayListExtra<SelectedFilter>(EXTRA_SELECTED_FILTER).orEmpty()
-        return TokoNowRecipeFilterFragment.newInstance(ArrayList(selectedFilters))
+        val selectedFilters = intent.getParcelableArrayListExtra<SelectedFilter>(EXTRA_SELECTED_FILTER).orEmpty()
+        val pageName = intent.getStringExtra(TokoNowRecipeFilterFragment.EXTRA_PAGE_NAME).orEmpty()
+        return TokoNowRecipeFilterFragment.newInstance(
+            selectedFilters = ArrayList(selectedFilters),
+            pageName = pageName
+        )
     }
 }
