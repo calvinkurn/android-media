@@ -232,6 +232,26 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         Tracker.getTracker().sendGeneralEvent(map)
     }
 
+    override fun clickHomeUbahKartu(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_HOME_CLICK_EDIT_CARD
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickHomeFeedback(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_HOME_CLICK_FEEDBACK_SURVEY
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
     override fun viewProgramListTabSection(shopId: String) {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
@@ -376,7 +396,7 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
         map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_BUTTON_COUPON_LIST
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BUTTON
         map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)
@@ -386,7 +406,7 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         val map = mutableMapOf<String, Any>()
         map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
         map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_CREATE_COUPON
-        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BACK_FROM_P_LIST
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_COUPON_CREATION_BACK
         map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)

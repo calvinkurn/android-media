@@ -155,6 +155,9 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
                             }
                             setPrimaryCTAClickListener {
+                                val arg = supportFragmentManager.fragments.firstOrNull()?.arguments
+                                val shopId  = arg?.getInt(BUNDLE_SHOP_ID)
+                                tmTracker?.clickCouponCancelPopUpPrimary(shopId.toString())
                                 dismiss()
                             }
                             setSecondaryCTAClickListener {

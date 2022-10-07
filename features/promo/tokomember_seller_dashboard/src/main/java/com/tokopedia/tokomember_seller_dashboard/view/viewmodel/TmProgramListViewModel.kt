@@ -34,7 +34,12 @@ class TmProgramListViewModel @Inject constructor(
 
     fun getProgramList(shopId: Int, cardID: Int, status: Int = -1, page: Int = 1, pageSize: Int = 10){
         tokomemberDashGetProgramListUsecase.cancelJobs()
-        _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.loading())
+        if(page>1){
+            _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.infiniteLoading())
+        }
+        else {
+            _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.loading())
+        }
         tokomemberDashGetProgramListUsecase.getProgramList({
             _tokomemberProgramListResultLiveData.postValue(TokoLiveDataResult.success(it))
         }, {

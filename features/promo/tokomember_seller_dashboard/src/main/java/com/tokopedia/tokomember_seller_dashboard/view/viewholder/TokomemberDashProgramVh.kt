@@ -148,4 +148,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
     private fun getTime(time: String): String {
         return time.substringAfter(" ")
     }
+    companion object{
+        val LAYOUT = R.layout.tm_dash_program_item
+    }
 }

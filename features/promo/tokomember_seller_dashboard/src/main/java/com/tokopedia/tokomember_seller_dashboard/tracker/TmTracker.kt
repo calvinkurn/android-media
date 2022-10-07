@@ -84,6 +84,14 @@ class TmTracker {
         trackerImpl.viewHomeTabsSection(shopId)
     }
 
+    fun clickHomeUbahKartu(shopId: String) {
+        trackerImpl.clickHomeUbahKartu(shopId)
+    }
+
+    fun clickHomeFeedback(shopId: String) {
+        trackerImpl.clickHomeFeedback(shopId)
+    }
+
     fun viewProgramListTabSection(shopId: String) {
         trackerImpl.viewProgramListTabSection(shopId)
     }
@@ -162,6 +170,14 @@ class TmTracker {
 
     fun viewCouponListTabSection(shopId: String) {
         trackerImpl.viewCouponListTabSection(shopId)
+    }
+
+    fun clickButtonCouponList(shopId: String) {
+        trackerImpl.clickButtonCouponList(shopId)
+    }
+
+    fun clickCreateCouponList(shopId: String) {
+        trackerImpl.clickCreateCouponList(shopId)
     }
 
     fun clickCouponListBack(shopId: String) {

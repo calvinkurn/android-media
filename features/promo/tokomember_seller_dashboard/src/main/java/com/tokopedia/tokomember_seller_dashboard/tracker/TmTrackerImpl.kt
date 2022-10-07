@@ -31,6 +31,8 @@ interface TmTrackerImpl {
     fun viewBottomSheetHome(shopId: String)
     fun clickDismissBottomSheetHome(shopId: String)
     fun viewHomeTabsSection(shopId: String)
+    fun clickHomeUbahKartu(shopId: String)
+    fun clickHomeFeedback(shopId: String)
 
     fun viewProgramListTabSection(shopId: String)
     fun clickProgramListButton(shopId: String)

@@ -20,6 +20,7 @@ import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -36,19 +37,23 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallbac
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmFilterCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.model.CouponItem
+import com.tokopedia.tokomember_seller_dashboard.model.LayoutType
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.DELETE
 import com.tokopedia.tokomember_seller_dashboard.util.DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.EDIT
 import com.tokopedia.tokomember_seller_dashboard.util.LOADED
 import com.tokopedia.tokomember_seller_dashboard.util.REFRESH
+import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.STOP
 import com.tokopedia.tokomember_seller_dashboard.util.TM_EMPTY_COUPON
-import com.tokopedia.tokomember_seller_dashboard.util.SHARE
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.view.activity.TmDashCreateActivity
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TmCouponAdapter
@@ -85,6 +90,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     private var selectedType = "0"
     private lateinit var selectedStatus: StringBuilder
     private var selectedStatusList = arrayListOf<String>()
+    private var tmTracker : TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -110,12 +116,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        tmTracker = TmTracker()
         return inflater.inflate(R.layout.tm_dash_coupon_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         val filterData = ArrayList<SortFilterItem>()
         filterStatus = SortFilterItem("Semua Status")
         selectedStatus = StringBuilder()
@@ -166,12 +172,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         else{
                             filterStatus?.type = ChipsUnify.TYPE_SELECTED
                         }
-                        if(selectedType.toIntOrZero() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
-                        }
-                        else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
-                        }
+                        currentPage = 1
+                        getCouponList()
                     }
                 }
             )
@@ -225,12 +227,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                         else{
                             filterType?.type = ChipsUnify.TYPE_SELECTED
                         }
-                        if(selectedType.toIntOrZero() == 0){
-                            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
-                        }
-                        else {
-                            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
-                        }
+                        currentPage = 1
+                        getCouponList()
                     }
                 },
             )
@@ -253,6 +251,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         if(showButton) {
             btn_create_coupon.show()
             btn_create_coupon.setOnClickListener {
+                tmTracker?.clickButtonCouponList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 TmDashCreateActivity.openActivity(
                     activity,
                     CreateScreenType.COUPON_SINGLE,
@@ -267,15 +266,23 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
         }
 
         observeViewModel()
+        getCouponList()
+
+        setEmptyCouponListData()
+        handleCouponListPagination()
+    }
+
+    private fun isFilterApplied() : Boolean{
+        return !(selectedType.toIntOrZero() == 0 && voucherStatus == "1,2,3,4")
+    }
+
+    private fun getCouponList() {
         if(selectedType.toIntOrZero() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
         else {
             tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
         }
-
-        setEmptyCouponListData()
-        handleCouponListPagination()
     }
 
     private fun setEmptyCouponListData() {
@@ -296,7 +303,12 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     viewFlipperCoupon.displayedChild = 0
                     filter_error.hide()
                 }
+                TokoLiveDataResult.STATUS.INFINITE_LOADING ->{
+                    viewFlipperCoupon.displayedChild = 1
+                    addLoader()
+                }
                 TokoLiveDataResult.STATUS.SUCCESS ->{
+                    removeLoader()
                     tmCouponViewModel.refreshListState(LOADED)
                     hasNext = it.data?.merchantPromotionGetMVList?.data?.paging?.hasNext == true
                     it.data?.merchantPromotionGetMVList?.data?.paging?.perPage?.let{
@@ -309,7 +321,21 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     else {
                         filter_error.hide()
                         viewFlipperCoupon.displayedChild = 1
-                        tmCouponAdapter.vouchersItemList.addAll(it.data?.merchantPromotionGetMVList?.data?.vouchers as ArrayList<VouchersItem>)
+                        if(isFilterApplied()){
+                            tmCouponAdapter.vouchersItemList.clear()
+                            val list = arrayListOf<CouponItem>()
+                            it.data?.merchantPromotionGetMVList?.data?.vouchers?.forEach {
+                                it?.let { it1 -> CouponItem(it1) }?.let { it2 -> list.add(it2) }
+                            }
+                            tmCouponAdapter.vouchersItemList.addAll(list)
+                        }
+                        else{
+                            val list = arrayListOf<CouponItem>()
+                            it.data?.merchantPromotionGetMVList?.data?.vouchers?.forEach {
+                                it?.let { it1 -> CouponItem(it1) }?.let { it2 -> list.add(it2) }
+                            }
+                            tmCouponAdapter.vouchersItemList.addAll(list)
+                        }
                         tmCouponAdapter.notifyDataSetChanged()
                     }
                 }
@@ -355,6 +381,20 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 }
             }
         })
+    }
+
+    private fun addLoader(){
+        val currentCount = tmCouponAdapter.vouchersItemList.size.toZeroIfNull()
+        tmCouponAdapter.vouchersItemList.add(CouponItem(VouchersItem(), LayoutType.LOADER))
+        tmCouponAdapter.notifyItemInserted(currentCount)
+    }
+
+    private fun removeLoader() {
+        if(tmCouponAdapter.vouchersItemList.any { it.layout == LayoutType.LOADER }) {
+            val currentCount = tmCouponAdapter.vouchersItemList.size.toZeroIfNull()
+            tmCouponAdapter.vouchersItemList.removeAt(currentCount-1)
+            tmCouponAdapter.notifyItemRemoved(currentCount)
+        }
     }
 
     override fun getScreenName() = ""
@@ -438,12 +478,8 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     override fun refreshCouponList(action: String) {
-        if(selectedType.toIntOrZero() == 0){
-            tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
-        }
-        else {
-            tmCouponViewModel.getCouponList(voucherStatus, selectedType.toIntOrZero(), page = currentPage, perPage = perPage)
-        }
+
+        getCouponList()
         var message = ""
         when(action){
             ACTION_EDIT -> {
