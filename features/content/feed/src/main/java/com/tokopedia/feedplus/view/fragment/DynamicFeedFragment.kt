@@ -31,7 +31,6 @@ import com.tokopedia.feedplus.view.listener.DynamicFeedContract
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.fragment_dynamic_feed.*
 import javax.inject.Inject
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
