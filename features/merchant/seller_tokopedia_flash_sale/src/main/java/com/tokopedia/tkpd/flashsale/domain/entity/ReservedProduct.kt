@@ -38,7 +38,7 @@ data class ReservedProduct(
             }
         }
 
-        fun getCampaignStock(): Long {
+        fun getDiscountedProductCampaignStock(): Long {
             return if (isParentProduct) {
                 childProducts.sumOf {
                     it.warehouses.filteredWarehouse().getWarehouseDiscountedStock()
