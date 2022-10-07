@@ -7,22 +7,18 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.ItemTokochatReminderTickerBinding
+import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
 import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.utils.view.binding.viewBinding
 
 class TokochatReminderTickerViewHolder(
     view: View,
-    private val listener: Listener?
+    private val listener: TokochatReminderTickerListener?
 ) : BaseViewHolder(view) {
 
-    private val binding = ItemTokochatReminderTickerBinding.bind(itemView)
-
-    interface Listener {
-        fun trackSeenTicker(element: TokochatReminderTickerUiModel)
-        fun onClickLinkReminderTicker(element: TokochatReminderTickerUiModel, linkUrl: String)
-        fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int)
-    }
+    private val binding: ItemTokochatReminderTickerBinding? by viewBinding()
 
     fun bind(element: TokochatReminderTickerUiModel) {
         bindImpression(element)
@@ -31,14 +27,14 @@ class TokochatReminderTickerViewHolder(
     }
 
     private fun bindImpression(element: TokochatReminderTickerUiModel) {
-        binding.tokochatTkPrompt.addOnImpressionListener(element.impressHolder) {
+        binding?.tokochatTkPrompt?.addOnImpressionListener(element.impressHolder) {
             listener?.trackSeenTicker(element)
         }
     }
 
     private fun bindDescAndClose(element: TokochatReminderTickerUiModel) {
-        binding.tokochatTkPrompt.setHtmlDescription(element.message)
-        binding.tokochatTkPrompt.setDescriptionClickEvent(object: TickerCallback {
+        binding?.tokochatTkPrompt?.setHtmlDescription(element.message)
+        binding?.tokochatTkPrompt?.setDescriptionClickEvent(object: TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
                 listener?.onClickLinkReminderTicker(element, linkUrl.toString())
             }
@@ -49,8 +45,8 @@ class TokochatReminderTickerViewHolder(
     }
 
     private fun bindTickerType(element: TokochatReminderTickerUiModel) {
-        binding.tokochatTkPrompt.tickerType = getTickerType(element)
-        binding.tokochatTkPrompt.show()
+        binding?.tokochatTkPrompt?.tickerType = getTickerType(element)
+        binding?.tokochatTkPrompt?.show()
     }
 
     private fun getTickerType(element: TokochatReminderTickerUiModel): Int {

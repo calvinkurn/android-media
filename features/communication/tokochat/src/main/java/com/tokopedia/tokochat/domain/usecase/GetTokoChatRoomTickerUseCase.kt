@@ -7,14 +7,14 @@ import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import javax.inject.Inject
 
-class GetRoomTickerUseCase @Inject constructor(
+class GetTokoChatRoomTickerUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ): CoroutineUseCase<String, TokochatRoomTickerResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         query getTokochatRoomTicker($$PARAM_SERVICE_TYPE: String!){
-             tokochatRoomTicker(serviceType:"tokofood") {
+             tokochatRoomTicker(serviceType: $$PARAM_SERVICE_TYPE) {
                 message
                 status
                 tickerType
