@@ -8,7 +8,7 @@ interface BubblesFactory {
 
     fun setupBubble(builder: NotificationCompat.Builder,
                     model: BubbleNotificationModel)
-    fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>)
+    fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel)
     fun getBitmapWidth(): Int
     fun getBitmapHeight(): Int
     fun getBubbleHeight(): Int

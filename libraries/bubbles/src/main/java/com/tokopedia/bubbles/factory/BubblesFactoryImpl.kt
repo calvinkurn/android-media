@@ -39,18 +39,26 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
 
         builder
             .setBubbleMetadata(bubbleMetadata)
-            .setLocusId(LocusIdCompat(model.messageId))
-            .setShortcutId(model.messageId)
+            .setLocusId(LocusIdCompat(model.shortcutId))
+            .setShortcutId(model.shortcutId)
             .setCategory(Notification.CATEGORY_MESSAGE)
             .addPerson(person)
             .setStyle(messagingStyle)
             .setWhen(model.sentTime)
     }
 
-    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>) {
-        val shortcuts = createShortcuts(historyModels)
+    override fun updateShorcuts(historyModels: List<BubbleHistoryItemModel>, bubbleModel: BubbleNotificationModel) {
+        var shortcuts = createShortcuts(historyModels)
+
+        shortcuts = shortcuts.sortedByDescending { it.id == bubbleModel.shortcutId }
+
         val maxShortcutCount = ShortcutManagerCompat.getMaxShortcutCountPerActivity(context)
-        shortcuts.take(maxShortcutCount).forEach { shortcut ->
+
+        if (shortcuts.size > maxShortcutCount) {
+            shortcuts = shortcuts.take(maxShortcutCount)
+        }
+
+        shortcuts.forEach { shortcut ->
             ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
         }
     }
@@ -75,9 +83,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         notificationId: Int
     ): Bundle {
         return Bundle().apply {
-            putBoolean(BubblesConst.EXTRA_APPLINK_FROM_PUSH, true);
-            putInt(BubblesConst.EXTRA_NOTIFICATION_TYPE, notificationType);
-            putInt(BubblesConst.EXTRA_NOTIFICATION_ID, notificationId);
+            putBoolean(BubblesConst.EXTRA_APPLINK_FROM_PUSH, true)
+            putInt(BubblesConst.EXTRA_NOTIFICATION_TYPE, notificationType)
+            putInt(BubblesConst.EXTRA_NOTIFICATION_ID, notificationId)
+            putString(BubblesConst.EXTRA_IS_FROM_BUBBLE, BubblesConst.EXTRA_BUBBLE_SOURCE)
         }
     }
 

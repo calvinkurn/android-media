@@ -673,6 +673,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             this, this, this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics
         ).also {
+            val bubbleSource = getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null)
+            it.isFromBubble = bubbleSource == Constant.EXTRA_BUBBLE_SOURCE
             topchatViewState = it
         }
     }
