@@ -76,6 +76,7 @@ class ProductViewModelMapper {
             isLocalSearchRecommendation,
             searchProductModel.getProductListType(),
             externalReference,
+            searchProductData.keywordIntention,
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -91,7 +92,6 @@ class ProductViewModelMapper {
         productDataView.totalDataText = searchProductHeader.totalDataText
         productDataView.responseCode = searchProductHeader.responseCode
         productDataView.keywordProcess = searchProductHeader.keywordProcess
-        productDataView.errorMessage = searchProductHeader.errorMessage
         productDataView.pageComponentId = searchProductHeader.componentId
         productDataView.isQuerySafe = searchProductData.isQuerySafe
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
@@ -121,6 +121,7 @@ class ProductViewModelMapper {
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
         productDataView.backendFilters = searchProductModel.backendFilters
+        productDataView.keywordIntention = searchProductModel.keywordIntention
 
         return productDataView
     }
@@ -231,6 +232,7 @@ class ProductViewModelMapper {
             isLocalSearchRecommendation: Boolean,
             productListType: String,
             externalReference: String,
+            keywordIntention: Int,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
@@ -242,6 +244,7 @@ class ProductViewModelMapper {
                 isLocalSearchRecommendation,
                 productListType,
                 externalReference,
+                keywordIntention,
             )
         }
     }
@@ -254,6 +257,7 @@ class ProductViewModelMapper {
             isLocalSearchRecommendation: Boolean,
             productListType: String,
             externalReference: String,
+            keywordIntention: Int,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -298,6 +302,7 @@ class ProductViewModelMapper {
         productItem.customVideoURL = productModel.customVideoURL
         productItem.productListType = productListType
         productItem.dimension131 = externalReference
+        productItem.keywordIntention = keywordIntention
         return productItem
     }
 

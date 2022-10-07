@@ -471,7 +471,7 @@ class CreateReviewBottomSheet : BottomSheetUnify() {
             secondaryCtaAction: () -> Unit
         ) {
             context?.let {
-                DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(title)
                     setDescription(description)
                     setPrimaryCTAText(primaryCtaText)

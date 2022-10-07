@@ -138,6 +138,8 @@ import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 
 /**
  * @author by nisie on 5/15/17.
@@ -169,7 +171,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     HighlightAdapter.HighlightListener,
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
-    ShareCallback, ProductItemInfoBottomSheet.Listener {
+    ShareCallback, ProductItemInfoBottomSheet.Listener,
+    FeedPlusTabParentFragment {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
@@ -198,6 +201,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context)
     }
+
+    private var mContainerListener: FeedPlusContainerListener? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -763,6 +768,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         fetchFirstPage()
         afterRefresh = true
         TopAdsHeadlineActivityCounter.page = 1
+
+        mContainerListener?.onChildRefresh()
     }
 
     fun onRefreshForNewPostUpdated() {
@@ -2311,31 +2318,17 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismiss()
         }
         context?.let {
-            if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                feedViewModel.addWishlistV2(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccessV2,
-                    it
-                )
-            } else {
-                feedViewModel.addWishlist(
-                    postId,
-                    productId,
-                    shopId,
-                    0,
-                    type,
-                    isFollowed,
-                    ::onWishListFail,
-                    ::onWishListSuccess,
-                    it
-                )
-            }
+            feedViewModel.addWishlistV2(
+                postId,
+                productId,
+                shopId,
+                0,
+                type,
+                isFollowed,
+                ::onWishListFail,
+                ::onWishListSuccessV2,
+                it
+            )
         }
     }
 
@@ -3420,5 +3413,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sendTopadsUrlClick(getAdClickUrl(positionInFeed))
         }
         onGoToLink(redirectUrl)
+    }
+
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 }

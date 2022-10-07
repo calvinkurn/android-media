@@ -7,4 +7,4 @@ sealed class ProductStock
 
 object OutOfStock : ProductStock()
 data class StockAvailable(val stock: Int) : ProductStock()
-object ComingSoon: ProductStock()
+object ComingSoon : ProductStock()

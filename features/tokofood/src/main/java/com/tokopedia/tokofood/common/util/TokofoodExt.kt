@@ -42,13 +42,10 @@ object TokofoodExt {
         return when (this) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
+            }
+            is MessageErrorException -> {
+                getGlobalErrorTypeFromErrorCode(errorCode?.toIntOrNull())
             }
             else -> GlobalError.SERVER_ERROR
         }
@@ -65,14 +62,18 @@ object TokofoodExt {
                 }
             }
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
             }
+            else -> GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun getGlobalErrorTypeFromErrorCode(errorCode: Int?): Int {
+        return when (errorCode) {
+            ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
+            ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
+            ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
+            ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
             else -> GlobalError.SERVER_ERROR
         }
     }
