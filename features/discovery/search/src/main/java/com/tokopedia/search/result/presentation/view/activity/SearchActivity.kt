@@ -487,7 +487,7 @@ class SearchActivity : BaseActivity(),
         updateKeyword()
     }
 
-    override fun updateCartCounter() {
+    override fun updateSearchBarNotification() {
         searchNavigationToolbar?.updateNotification()
     }
 

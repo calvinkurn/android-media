@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 class InspirationListAtcActivityResult @Inject constructor(
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
+    private val inspirationListAtcView: InspirationListAtcView,
     searchParameterProvider: SearchParameterProvider,
 ): SearchParameterProvider by searchParameterProvider {
 
@@ -32,8 +32,8 @@ class InspirationListAtcActivityResult @Inject constructor(
                             this.cartId,
                             product.minOrder.toIntOrZero(),
                         )
-                    inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
-                    inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
+                    inspirationListAtcView.trackItemClick(trackingData)
+                    inspirationListAtcView.trackAddToCart(trackingData)
                 }
             }
         }

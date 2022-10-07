@@ -9,49 +9,21 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.product.detail.common.AtcVariantHelper
-import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.search.R
-import com.tokopedia.search.analytics.SearchTracking
-import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
-import com.tokopedia.search.utils.FragmentProvider
-import com.tokopedia.search.utils.applinkopener.ApplinkOpener
-import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
-import com.tokopedia.search.utils.contextprovider.ContextProvider
-import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
-import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.search_activity_search.*
 import javax.inject.Inject
 
 @SearchScope
 class InspirationListAtcPresenterDelegate @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
-    private val inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification,
-    @SearchContext
-    context: Context,
+    private val inspirationListAtcView: InspirationListAtcView,
     searchParameterProvider: SearchParameterProvider,
-    queryKeyProvider: QueryKeyProvider,
-    searchNavigationListener: SearchNavigationListener,
-    fragmentProvider: FragmentProvider,
 ): InspirationListAtcPresenter,
-    ContextProvider by WeakReferenceContextProvider(context),
-    FragmentProvider by fragmentProvider,
-    ApplinkOpener by ApplinkOpenerDelegate,
-    SearchParameterProvider by searchParameterProvider,
-    QueryKeyProvider by queryKeyProvider,
-    SearchNavigationListener by searchNavigationListener {
+    SearchParameterProvider by searchParameterProvider {
 
     companion object {
         private const val DEFAULT_USER_ID = "0"
@@ -61,47 +33,23 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
 
     override fun onListAtcItemAddToCart(
         product: InspirationCarouselDataView.Option.Product,
-        type: String
+        type: String,
     ) {
         productAddedToCart = product
 
         if (product.shouldOpenVariantBottomSheet()) {
-            product.asSearchComponentTracking(queryKey).click(TrackApp.getInstance().gtm)
+            inspirationListAtcView.trackAddToCartVariant(product)
 
-            context?.let {
-                AtcVariantHelper.goToAtcVariant(
-                    it,
-                    productId = product.id,
-                    pageSource = VariantPageSource.SRP_PAGESOURCE,
-                    shopId = product.shopId,
-                    trackerCdListName = SearchTracking.getInspirationCarouselUnificationListName(
-                        type,
-                        product.componentId,
-                    ),
-                    startActivitResult = { intent, reqCode ->
-                        getFragment().startActivityForResult(intent, reqCode)
-                    }
-                )
-            }
+            inspirationListAtcView.openVariantBottomSheet(product, type)
         } else {
             executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, product)
         }
     }
 
     private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
-        updateCartCounter()
+        inspirationListAtcView.updateSearchBarNotification()
 
-        getFragment().view?.let {
-            Toaster.build(
-                it,
-                addToCartDataModel?.data?.message?.firstOrNull() ?: "",
-                Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                getFragment().getString(R.string.search_see_cart),
-            ) {
-                openApplink(context, ApplinkConst.CART)
-            }.show()
-        }
+        inspirationListAtcView.openAddToCartToaster(addToCartDataModel)
 
         val product = productAddedToCart ?: InspirationCarouselDataView.Option.Product()
         val cartId = addToCartDataModel?.data?.cartId ?: ""
@@ -114,8 +62,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
                 cartId,
                 quantity
             )
-        inspirationCarouselTrackingUnification.trackCarouselClick(trackingData)
-        inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
+        inspirationListAtcView.trackItemClick(trackingData)
+        inspirationListAtcView.trackAddToCart(trackingData)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {

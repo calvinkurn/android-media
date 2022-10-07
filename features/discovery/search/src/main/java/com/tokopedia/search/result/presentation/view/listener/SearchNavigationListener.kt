@@ -8,7 +8,7 @@ import dagger.Provides
 interface SearchNavigationListener {
     fun removeSearchPageLoading()
     fun updateSearchParameter(searchParameter: SearchParameter?)
-    fun updateCartCounter()
+    fun updateSearchBarNotification()
 }
 
 @Module
