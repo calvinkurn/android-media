@@ -22,8 +22,14 @@ data class WhitelistDomain(
     val isShopAccountExists: Boolean
         get() = authors.find { it.type == TYPE_SHOP } != null
 
-    val isUserAccountPostEligible: Boolean
+    val isBuyerAccountPostEligible: Boolean
         get() = authors.find{ it.type == TYPE_USER && it.post.hasAcceptTnc } != null
+
+    val isBuyerAccountExists: Boolean
+        get() = authors.find{ it.type == TYPE_USER } != null
+
+    val isShopAccountLiveEligible: Boolean
+        get() = authors.find { it.type == TYPE_SHOP && it.livestream.hasAcceptTnc } != null
 
     companion object {
         val Empty: WhitelistDomain
