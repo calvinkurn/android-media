@@ -37,8 +37,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -58,6 +56,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -151,6 +150,7 @@ class ProductListPresenter @Inject constructor(
     private val paginationImpl: PaginationImpl,
     private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
     private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
@@ -725,8 +725,11 @@ class ProductListPresenter @Inject constructor(
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
-            if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
+            if (bannedProductsPresenterDelegate.isBannedProducts(searchProduct)) {
+                bannedProductsPresenterDelegate.processBannedProducts(
+                    searchProduct,
+                    getGlobalNavViewModel(productDataView)
+                )
             } else if(productDataView.violation != null) {
                 getViewToHandleViolation(productDataView)
             } else {
@@ -773,31 +776,6 @@ class ProductListPresenter @Inject constructor(
             relatedDataView = null
         }
     }
-
-    private fun getViewToHandleEmptySearchWithErrorMessage(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ) {
-        val bannedProductsVisitableList =
-            createBannedProductsVisitableList(searchProduct, productDataView)
-
-        view.removeLoading()
-        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
-        view.trackEventImpressionBannedProducts(true)
-    }
-
-    private fun createBannedProductsVisitableList(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-        }
-
 
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
@@ -1007,11 +985,6 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
-        if (searchProduct.header.errorMessage.isNotEmpty()) {
-            list.add(createBannedProductsTickerDataView(searchProduct.header.errorMessage))
-            view.trackEventImpressionBannedProducts(false)
-        }
-
         adsInjector.resetTopAdsPosition()
         productList = createProductItemVisitableList(
             productDataView,
@@ -1185,11 +1158,6 @@ class ProductListPresenter @Inject constructor(
         val product = productList[position - 1]
         val headlineAdsIndex = visitableList.indexOf(product) + 1
         visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
-    }
-
-    private fun createBannedProductsTickerDataView(errorMessage: String): BannedProductsTickerDataView {
-        val htmlErrorMessage = "$errorMessage Gunakan browser"
-        return BannedProductsTickerDataView(htmlErrorMessage)
     }
 
     private fun processInspirationWidgetPosition(

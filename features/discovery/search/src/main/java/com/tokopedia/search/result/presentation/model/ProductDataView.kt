@@ -17,7 +17,6 @@ class ProductDataView {
     var autocompleteApplink: String? = null
     var responseCode: String? = null
     var keywordProcess: String? = null
-    var errorMessage: String? = null
     var tickerModel: TickerDataView? = null
     var suggestionModel: SuggestionDataView? = null
     var totalData = 0

@@ -815,6 +815,7 @@ open class DynamicProductDetailFragment :
                 hideProgressDialog()
                 if (resultCode == Activity.RESULT_OK && doActivityResult) {
                     onSwipeRefresh()
+                    stickyLoginView?.hide()
                 }
                 updateActionButtonShadow()
 

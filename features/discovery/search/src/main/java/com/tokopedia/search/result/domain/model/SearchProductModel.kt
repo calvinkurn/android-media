@@ -77,6 +77,9 @@ data class SearchProductModel(
 
         val backendFilters: String
             get() = data.backendFilters
+
+        val errorMessage: String
+            get() = header.errorMessage
     }
 
     data class SearchProductHeader(
