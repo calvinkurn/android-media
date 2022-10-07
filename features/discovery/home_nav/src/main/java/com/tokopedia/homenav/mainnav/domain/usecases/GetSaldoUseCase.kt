@@ -5,6 +5,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.homenav.mainnav.data.pojo.saldo.SaldoPojo
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetHomeNavSaldoQuery
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -21,7 +22,7 @@ class GetSaldoUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): Result<SaldoPojo> {
         return try {
-            val gqlRequest = GraphqlRequest(query, SaldoPojo::class.java, params.parameters)
+            val gqlRequest = GraphqlRequest(GetHomeNavSaldoQuery(), SaldoPojo::class.java, params.parameters)
             val gqlResponse = graphqlUseCase.response(listOf(gqlRequest), GraphqlCacheStrategy
                     .Builder(CacheType.ALWAYS_CLOUD).build())
 
@@ -33,26 +34,6 @@ class GetSaldoUseCase @Inject constructor(
             }
         } catch (e: Exception) {
             Fail(e)
-        }
-    }
-
-    companion object {
-        private val query = getQuery()
-        private fun getQuery(): String {
-
-            return """query getHomeNavSaldo {
-                    balance {
-                        buyer_hold
-                        buyer_hold_fmt
-                        buyer_usable
-                        buyer_usable_fmt
-                        seller_hold
-                        seller_hold_fmt
-                        seller_usable
-                        seller_usable_fmt
-                        have_error
-                    }
-            } """.trimIndent()
         }
     }
 }

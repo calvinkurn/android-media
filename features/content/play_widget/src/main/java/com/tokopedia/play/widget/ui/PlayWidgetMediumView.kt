@@ -95,11 +95,15 @@ class PlayWidgetMediumView : FrameLayout, IPlayWidgetView {
     private val cardChannelListener = object : PlayWidgetMediumViewHolder.Channel.Listener {
 
         override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
+            /**
+             * check whether the widget has left banner or not
+             */
+            val finalPos = if (mModel.background.overlayImageUrl.isNotBlank()) position else position + 1
             mAnalyticListener?.onImpressChannelCard(
                 view = this@PlayWidgetMediumView,
                 item = item,
                 config = mModel.config,
-                channelPositionInList = position,
+                channelPositionInList = finalPos,
             )
 
             if(item.isUpcoming)
