@@ -46,7 +46,10 @@ class ProductViewHolder(
         showProductImage(product)
         showNotifyMeBuyer(product)
         showStockHintImage(product)
-
+        if (!product.isVariant()) {
+            showStockAlertImage(product)
+            showStockAlertActiveImage(product)
+        }
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
         showCampaignCountText(product)
@@ -178,6 +181,46 @@ class ProductViewHolder(
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
             ?.showWithCondition(product.haveNotifyMeOOS)
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+            )
+    }
+
+    private fun showStockAlertImage(product: ProductUiModel) {
+        binding?.imageStockReminder?.setColorFilter(
+            ContextCompat.getColor(
+                itemView.context,
+                com.tokopedia.unifycomponents.R.color.Unify_NN500
+            ), PorterDuff.Mode.SRC_ATOP
+        )
+        binding?.imageStockReminder
+            ?.showWithCondition(
+                product.hasStockAlert && !product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+                        && !product.haveNotifyMeOOS
+            )
+        binding?.clImage
+            ?.showWithCondition(
+                binding?.imageStockInformation?.isVisible.orFalse()
+                        || binding?.imageStockReminder?.isVisible.orFalse()
+                        || binding?.imageStockAlertActive?.isVisible.orFalse()
+                        || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
+            )
+
+    }
+
+    private fun showStockAlertActiveImage(product: ProductUiModel) {
+        binding?.imageStockAlertActive
+            ?.showWithCondition(
+                product.stockAlertActive
+                        && !binding?.imageStockInformation?.isVisible.orTrue()
+                        && !product.haveNotifyMeOOS
+
+            )
         binding?.clImage
             ?.showWithCondition(
                 binding?.imageStockInformation?.isVisible.orFalse()
