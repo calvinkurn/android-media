@@ -83,9 +83,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         notificationId: Int
     ): Bundle {
         return Bundle().apply {
-            putBoolean(BubblesConst.EXTRA_APPLINK_FROM_PUSH, true);
-            putInt(BubblesConst.EXTRA_NOTIFICATION_TYPE, notificationType);
-            putInt(BubblesConst.EXTRA_NOTIFICATION_ID, notificationId);
+            putBoolean(BubblesConst.EXTRA_APPLINK_FROM_PUSH, true)
+            putInt(BubblesConst.EXTRA_NOTIFICATION_TYPE, notificationType)
+            putInt(BubblesConst.EXTRA_NOTIFICATION_ID, notificationId)
+            putString(BubblesConst.EXTRA_IS_FROM_BUBBLE, BubblesConst.EXTRA_BUBBLE_SOURCE)
         }
     }
 
