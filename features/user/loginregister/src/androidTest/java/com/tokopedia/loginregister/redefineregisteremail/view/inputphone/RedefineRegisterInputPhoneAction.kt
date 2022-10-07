@@ -4,6 +4,7 @@ import android.text.InputType
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.clearText
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnButtonDialog
+import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnText
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.clickOnView
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.inputText
 import com.tokopedia.loginregister.redefineregisteremail.stub.common.isDisplayed
@@ -59,6 +60,10 @@ fun clickSubmit() {
     clickOnView(R.id.btn_submit)
 }
 
+fun clickLewati() {
+    clickOnText("Lewati")
+}
+
 fun isErrorTooShortDisplayed() {
     isTextDisplayed("Min. 8 angka")
 }
@@ -99,4 +104,8 @@ fun isGlobalErrorShowing() {
 
 fun clickPrimaryButtonDialog() {
     clickOnButtonDialog(R.id.dialog_btn_primary)
+}
+
+fun clickSecondaryButtonDialog() {
+    clickOnButtonDialog(R.id.dialog_btn_secondary)
 }

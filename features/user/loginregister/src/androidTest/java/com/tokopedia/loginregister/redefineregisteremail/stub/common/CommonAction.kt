@@ -39,6 +39,12 @@ fun clickOnView(resId: Int) {
         .perform(click())
 }
 
+fun clickOnText(text: String) {
+    onView(withText(text))
+        .check(matches(isDisplayed()))
+        .perform(forceClick())
+}
+
 fun isEnable(isEnabled: Boolean, resId: Int) {
     onView(withId(resId))
         .check(
