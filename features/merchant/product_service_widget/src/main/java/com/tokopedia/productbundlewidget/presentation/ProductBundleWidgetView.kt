@@ -14,6 +14,7 @@ import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
@@ -33,6 +34,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     private var tfTitle: Typography? = null
     private var pageSource: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
+    private var listener: ProductBundleWidgetListener? = null
 
     constructor(context: Context) : super(context) {
         setup(context, null)
@@ -54,6 +56,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         productItemPosition: Int
     ) {
         RouteManager.route(context, ApplinkConst.PRODUCT_INFO, selectedProduct.productId)
+        listener?.onBundleProductClicked(bundle, selectedMultipleBundle, selectedProduct)
     }
 
     override fun addMultipleBundleToCart(
@@ -62,6 +65,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     ) {
         RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
             selectedMultipleBundle.bundleId, pageSource)
+        listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
     }
 
     override fun addSingleBundleToCart(
@@ -70,6 +74,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
     ) {
         RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
             selectedBundle.bundleId, pageSource)
+        listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
     }
 
     override fun onTrackSingleVariantChange(
@@ -77,7 +82,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedSingleBundle: BundleDetailUiModel,
         bundleName: String
     ) {
-        println(bundleName)
+        listener?.onSingleBundleChipsSelected(selectedProduct, selectedSingleBundle, bundleName)
     }
 
     override fun impressionProductBundleSingle(
@@ -86,14 +91,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         bundleName: String,
         bundlePosition: Int
     ) {
-        println(bundleName)
+        listener?.impressionSingleBundle(selectedSingleBundle, selectedProduct, bundleName)
     }
 
     override fun impressionProductBundleMultiple(
         selectedMultipleBundle: BundleDetailUiModel,
         bundlePosition: Int
     ) {
-        println(selectedMultipleBundle)
+        listener?.impressionMultipleBundle(selectedMultipleBundle, bundlePosition)
     }
 
     override fun impressionProductItemBundleMultiple(
@@ -101,7 +106,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         selectedMultipleBundle: BundleDetailUiModel,
         productItemPosition: Int
     ) {
-        println(selectedProduct)
+        listener?.impressionMultipleBundleProduct(selectedProduct, selectedMultipleBundle)
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
