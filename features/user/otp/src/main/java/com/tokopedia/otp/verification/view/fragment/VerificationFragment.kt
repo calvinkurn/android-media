@@ -51,7 +51,6 @@ import com.tokopedia.otp.verification.view.viewbinding.VerificationViewBinding
 import com.tokopedia.otp.verification.viewmodel.VerificationViewModel
 import com.tokopedia.pin.PinUnify
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -201,7 +200,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
         }
 
         if (isCountdownFinished()) {
-            if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
+            if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+                viewModel.sendOtpPhoneRegisterMandatory(
+                    otpType = otpData.otpType.toString(),
+                    mode = modeListData.modeText,
+                    msisdn = otpData.msisdn,
+                    email = otpData.email,
+                    otpDigit = modeListData.otpDigit,
+                    validateToken = otpData.accessToken
+                )
+            } else if (otpData.accessToken.isNotEmpty() && otpData.userIdEnc.isNotEmpty()) {
                 viewModel.sendOtp2FA(
                         otpType = otpData.otpType.toString(),
                         mode = modeListData.modeText,
@@ -241,7 +249,16 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                 analytics.trackClickVerificationButton(otpData.otpType)
             }
         }
-        if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
+        if (otpData.otpType == OtpConstant.OtpType.PHONE_REGISTER_MANDATORY) {
+            viewModel.otpValidatePhoneRegisterMandatory(
+                code = code,
+                otpType = otpData.otpType.toString(),
+                mode = modeListData.modeText,
+                msisdn = otpData.msisdn,
+                email = otpData.email,
+                validateToken = otpData.accessToken
+            )
+        } else if ((otpData.otpType.toString() == OtpConstant.OtpType.AFTER_LOGIN_PHONE.toString() ||
                         otpData.otpType.toString() == OtpConstant.OtpType.RESET_PIN.toString()) &&
                 otpData.userIdEnc.isNotEmpty()) {
             viewModel.otpValidate2FA(
@@ -250,8 +267,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     mode = modeListData.modeText,
                     userIdEnc = otpData.userIdEnc,
                     validateToken = otpData.accessToken,
-                    userId = otpData.userId.toIntOrZero(),
-                    usePinV2 = isEnableValidateV2()
+                    userId = otpData.userId.toIntOrZero()
             )
         } else {
             viewModel.otpValidate(
@@ -264,14 +280,10 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
                     fpData = "",
                     getSL = "",
                     signature = "",
-                    timeUnix = "",
-                    usePinV2 = isEnableValidateV2()
+                    timeUnix = ""
             )
         }
     }
-
-    private fun isEnableValidateV2(): Boolean =
-        RemoteConfigInstance.getInstance().abTestPlatform.getString(VerificationViewModel.VALIDATE_PIN_V2_ROLLENCE, "").isNotEmpty()
 
     private fun initObserver() {
         viewModel.sendOtpResult.observe(viewLifecycleOwner, Observer {
