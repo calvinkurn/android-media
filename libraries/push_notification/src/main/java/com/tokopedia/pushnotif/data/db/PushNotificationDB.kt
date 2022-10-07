@@ -41,7 +41,6 @@ abstract class PushNotificationDB : RoomDatabase() {
                         `transaction_id` TEXT,
                         `avatar_url` TEXT,
                         `applink` TEXT
-                        
                     )
                 """.trimIndent())
             }
