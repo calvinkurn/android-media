@@ -261,7 +261,7 @@
     <string name="stfs_product_item_original_price_format">%1s-%2s</string>
     <string name="stfs_product_item_discount_label_percentage_format_non_range">%1s\%%</string>
     <string name="stfs_product_item_discount_label_percentage_format_range">%1s-%2s\%%</string>
-    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di Beberapa Lokasi</string>
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>
