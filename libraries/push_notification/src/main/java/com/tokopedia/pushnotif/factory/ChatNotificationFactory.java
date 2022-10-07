@@ -50,7 +50,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     public ChatNotificationFactory(Context context) {
         super(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (isEnableBubble()) {
             bubblesFactory = new BubblesFactoryImpl(context);
         }
     }
@@ -84,10 +84,8 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
             }
         }
 
-        if (GlobalConfig.isSellerApp()) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
-            }
+        if (isEnableBubble()) {
+            setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
         }
 
         return builder.build();
@@ -181,6 +179,13 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 applinkNotificationModel.getSummary(),
                 applinkNotificationModel.getSentTime()
         );
+    }
+
+    private boolean isEnableBubble() {
+        boolean isEnableBubble =
+                GlobalConfig.isSellerApp() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+        return isEnableBubble;
     }
 
 }
