@@ -55,7 +55,7 @@ class ShippingNowWidget : ConstraintLayout {
                 setWarning(shippingNowTimeOption.warning, shippingNowTimeOption.isError)
                 showRightIcon(shippingNowTimeOption.isDefaultNowShipment.not() && shippingNowTimeOption.isEnable)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
-                showCoachMark(shippingNowTimeOption.isShowCoachMark)
+//                showCoachMark(shippingNowTimeOption.isShowCoachMark)
             }
 
             binding?.shipmentTimeOptionView?.addView(timeOptionBinding.root)

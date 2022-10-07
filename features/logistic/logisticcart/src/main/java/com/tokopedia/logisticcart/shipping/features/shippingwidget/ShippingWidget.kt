@@ -140,6 +140,17 @@ class ShippingWidget : ConstraintLayout {
         }
     }
 
+    fun showScheduleDeliveryWidget() {
+        binding?.apply {
+            layoutStateHasSelectedNormalShipping.gone()
+            layoutStateFailedShipping.gone()
+            layoutStateHasErrorShipping.gone()
+            layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedSingleShipping.gone()
+            shippingNowWidget.visible()
+        }
+    }
+
     private fun showLabelSingleShippingEta(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             labelSingleShippingEta.visibility = VISIBLE
@@ -391,6 +402,9 @@ class ShippingWidget : ConstraintLayout {
         shipmentCartItemModel: ShipmentCartItemModel,
         selectedCourierItemData: CourierItemData
     ) {
+        showScheduleDeliveryWidget()
+        return
+
         showLayoutSingleShippingCourier()
 
         binding?.labelSelectedSingleShippingTitle?.apply {
