@@ -75,19 +75,19 @@ class ShippingDurationPresenter @Inject constructor(
                 selectedSpId = selectedCourier.shipperProductId
             }
             loadDuration(
-                selectedSpId,
-                selectedServiceId,
-                codHistory,
-                isCorner,
-                isLeasing,
-                shopShipmentList,
-                isTradeInDropOff,
-                shippingParam,
-                pslCode,
-                mvc,
-                cartData,
-                isOcc,
-                isDisableCourierPromo
+                selectedSpId = selectedSpId,
+                selectedServiceId = selectedServiceId,
+                codHistory = codHistory,
+                isCorner = isCorner,
+                isLeasing = isLeasing,
+                shopShipmentList = shopShipmentList,
+                isRatesTradeInApi = isTradeInDropOff,
+                shippingParam = shippingParam,
+                pslCode = pslCode,
+                mvc = mvc,
+                cartData = cartData,
+                isOcc = isOcc,
+                disableCourierPromo = isDisableCourierPromo
             )
         }
     }

@@ -208,7 +208,10 @@ class ShippingCourierBottomsheet : ShippingCourierContract.View, ShippingCourier
         val eligibleCourierList = shippingCourierUiModels.filter { courier -> !courier.productData.isUiRatesHidden}.toMutableList()
         val uiModel : MutableList<RatesViewModelType> = mutableListOf()
         uiModel.addAll(eligibleCourierList)
-        setNotifierModel(uiModel, eligibleCourierList[0], isOcc)
+        eligibleCourierList.getOrNull(0)?.let {
+            firstCourier -> setNotifierModel(uiModel, firstCourier, isOcc)
+        }
+
         if (preOrderModel?.display == true) {
             preOrderModel.let { uiModel.add(0, it) }
         }

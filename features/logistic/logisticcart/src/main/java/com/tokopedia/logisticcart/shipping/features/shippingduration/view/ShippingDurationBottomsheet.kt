@@ -202,23 +202,23 @@ class ShippingDurationBottomsheet : ShippingDurationContract.View, ShippingDurat
             val cartData = it.getString(ARGUMENT_CART_DATA, "")
 
             presenter?.loadCourierRecommendation(
-                shipmentDetailData,
-                selectedServiceId,
-                shopShipments,
-                codHistory,
-                mIsCorner,
-                isLeasing,
-                pslCode,
-                products,
-                cartString,
-                isTradeInDropOff,
-                mRecipientAddress,
-                isFulfillment,
-                preOrderTime,
-                mvc,
-                cartData,
-                isOcc,
-                isDisableCourierPromo
+                shipmentDetailData = shipmentDetailData,
+                selectedServiceId = selectedServiceId,
+                shopShipmentList = shopShipments,
+                codHistory = codHistory,
+                isCorner = mIsCorner,
+                isLeasing = isLeasing,
+                pslCode = pslCode,
+                products = products,
+                cartString = cartString,
+                isTradeInDropOff = isTradeInDropOff,
+                recipientAddressModel = mRecipientAddress,
+                isFulfillment = isFulfillment,
+                preOrderTime = preOrderTime,
+                mvc = mvc,
+                cartData = cartData,
+                isOcc = isOcc,
+                isDisableCourierPromo = isDisableCourierPromo
             )
         }
     }
