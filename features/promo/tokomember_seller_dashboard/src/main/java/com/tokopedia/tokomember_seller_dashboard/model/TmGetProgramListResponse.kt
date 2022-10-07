@@ -130,3 +130,8 @@ data class TripleDotsItem(
 	@SerializedName("type")
 	val type: String? = null
 )
+
+data class ProgramItem(
+    var programSellerListItem: ProgramSellerListItem,
+    var layoutType: LayoutType = LayoutType.SHOW_CARD
+)

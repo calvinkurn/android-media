@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType
@@ -21,6 +22,8 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.model.LayoutType
+import com.tokopedia.tokomember_seller_dashboard.model.ProgramItem
 import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CANCEL
@@ -115,7 +118,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
         observeViewModel()
         tmProgramListViewModel?.getProgramList(shopId, cardId, page = currentPage)
-        tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
 
         setToastOnProgramAction(arguments?.getInt(BUNDLE_PROGRAM_ACTION)?:0)
         btnCreateProgram.setOnClickListener {
@@ -144,7 +146,12 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 TokoLiveDataResult.STATUS.LOADING ->{
                     viewFlipperProgramList.displayedChild = 0
                 }
+                TokoLiveDataResult.STATUS.INFINITE_LOADING ->{
+                    viewFlipperProgramList.displayedChild = 1
+                    addLoader()
+                }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
+                    removeLoader()
                     tmProgramListViewModel?.refreshProgramList(LOADED)
                     tmProgramListViewModel?.programListLoadingState(LOADED)
                     hasNext = it.data?.membershipGetProgramList?.programSellerList?.size != 0
@@ -153,7 +160,11 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     }
                     else {
                         viewFlipperProgramList.displayedChild = 1
-                        tokomemberDashProgramAdapter.programSellerList.addAll(it.data?.membershipGetProgramList?.programSellerList as ArrayList<ProgramSellerListItem>)
+                        val list = arrayListOf<ProgramItem>()
+                        it.data?.membershipGetProgramList?.programSellerList?.forEach {
+                            it?.let { it1 -> ProgramItem(it1) }?.let { it2 -> list.add(it2) }
+                        }
+                        tokomemberDashProgramAdapter.programSellerList.addAll(list)
                         tokomemberDashProgramAdapter.notifyDataSetChanged()
                     }
                 }
@@ -316,6 +327,20 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 }
             }
         })
+    }
+
+    private fun addLoader(){
+        val currentCount = tokomemberDashProgramAdapter.programSellerList.size.toZeroIfNull()
+        tokomemberDashProgramAdapter.programSellerList.add(ProgramItem(ProgramSellerListItem(), LayoutType.LOADER))
+        tokomemberDashProgramAdapter.notifyItemInserted(currentCount)
+    }
+
+    private fun removeLoader() {
+        if(tokomemberDashProgramAdapter.programSellerList.any { it.layoutType == LayoutType.LOADER }) {
+            val currentCount = tokomemberDashProgramAdapter.programSellerList.size.toZeroIfNull()
+            tokomemberDashProgramAdapter.programSellerList.removeAt(currentCount-1)
+            tokomemberDashProgramAdapter.notifyItemRemoved(currentCount)
+        }
     }
 
 }

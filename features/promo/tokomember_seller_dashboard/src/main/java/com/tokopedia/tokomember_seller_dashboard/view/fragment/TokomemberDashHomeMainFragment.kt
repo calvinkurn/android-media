@@ -21,7 +21,9 @@ import com.tokopedia.media.loader.clearImage
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
+import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
@@ -36,6 +38,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     private lateinit var homeViewPager: ViewPager
     private lateinit var homeFragmentCallback: TmProgramDetailCallback
     private var programActionType = -1
+    private var tmTracker : TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -54,6 +57,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        tmTracker = TmTracker()
         return inflater.inflate(R.layout.tm_dash_home_main, container, false)
     }
 
@@ -110,6 +114,34 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
             setTabsProgramList()
         }
         routeToScreen()
+
+        homeViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+
+            }
+
+            override fun onPageSelected(position: Int) {
+                when(position){
+                    0 ->{
+                        tmTracker?.viewHomeTabsSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                    }
+                    1 ->{
+                        tmTracker?.viewProgramListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                    }
+                    2 ->{
+                        tmTracker?.viewCouponListTabSection(arguments?.getInt(BUNDLE_SHOP_ID).toString())
+                    }
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {
+            }
+
+        })
     }
 
     private fun setTabsProgramList(){

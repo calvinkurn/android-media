@@ -47,6 +47,7 @@ import com.tokopedia.tokomember_seller_dashboard.model.TmIntroBottomsheetModel
 import com.tokopedia.tokomember_seller_dashboard.model.TmSingleCouponData
 import com.tokopedia.tokomember_seller_dashboard.model.ValidationError
 import com.tokopedia.tokomember_seller_dashboard.model.mapper.TmCouponCreateMapper
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CREATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_DUPLICATE
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_EDIT
@@ -178,6 +179,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
     private var voucherId = 0
     private var errorCount = 0
     private var prefManager: TmPrefManager? = null
+    private var tmTracker: TmTracker? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -212,6 +214,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         fromDuplicate = arguments?.getBoolean(ACTION_DUPLICATE)?:false
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
         prefManager = context?.let { it1 -> TmPrefManager(it1) }
+        tmTracker = TmTracker()
 
         renderHeader()
         renderButton()
@@ -1134,6 +1137,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             }
             isShowBackButton = true
             setNavigationOnClickListener {
+                tmTracker?.clickCouponListBack(prefManager?.shopId.toString())
                 activity?.onBackPressed()
             }
         }
@@ -1189,6 +1193,7 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
             btnContinue.text = "Buat Kupon"
         }
         btnContinue.setOnClickListener {
+            tmTracker?.clickCreateCouponList(shopId = prefManager?.shopId.toString())
             continueCoupon(it)
         }
     }

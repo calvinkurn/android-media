@@ -164,6 +164,14 @@ class TmTracker {
         trackerImpl.viewCouponListTabSection(shopId)
     }
 
+    fun clickButtonCouponList(shopId: String) {
+        trackerImpl.clickButtonCouponList(shopId)
+    }
+
+    fun clickCreateCouponList(shopId: String) {
+        trackerImpl.clickCreateCouponList(shopId)
+    }
+
     fun clickCouponListBack(shopId: String) {
         trackerImpl.clickBackCouponList(shopId)
     }

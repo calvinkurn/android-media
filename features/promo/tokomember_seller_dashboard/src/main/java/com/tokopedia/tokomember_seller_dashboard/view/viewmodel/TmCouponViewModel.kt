@@ -49,7 +49,12 @@ class TmCouponViewModel @Inject constructor(
 
     fun getCouponList(voucherStatus: String, voucherType: Int?, page: Int = 1, perPage: Int = 10){
         tmCouponUsecase.cancelJobs()
-        _couponListLiveData.postValue(TokoLiveDataResult.loading())
+        if(page>1){
+            _couponListLiveData.postValue(TokoLiveDataResult.infiniteLoading())
+        }
+        else {
+            _couponListLiveData.postValue(TokoLiveDataResult.loading())
+        }
         tmCouponUsecase.getCouponList({
             _couponListLiveData.postValue(TokoLiveDataResult.success(it))
         },
