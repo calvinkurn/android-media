@@ -59,7 +59,8 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     }
 
     private fun setUpCalendar(componentsItem: ComponentsItem, dataItem: DataItem) {
-        if ((componentsItem.properties?.calendarLayout.equals(Calendar.CAROUSEL) || componentsItem.properties?.calendarLayout.equals(Calendar.GRID)) && componentsItem.properties?.calendarType.equals(Calendar.DYNAMIC)) {
+        if ((componentsItem.properties?.calendarLayout.equals(Calendar.CAROUSEL)
+                || componentsItem.properties?.calendarLayout.equals(Calendar.GRID)) && componentsItem.properties?.calendarType.equals(Calendar.DYNAMIC)) {
             setUpCalendarForImageBanner(dataItem)
         } else {
             setUpCalendarForMultipleView(dataItem)
@@ -70,12 +71,24 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         when (properties?.calendarLayout) {
             Calendar.SINGLE -> {
                 calendarCardUnify.removeAllViews()
-                calendarCardUnify.addView(LayoutInflater.from(itemView.context).inflate(R.layout.discovery_calendar_single_layout_item, calendarCardUnify, false))
+                calendarCardUnify.addView(
+                    LayoutInflater.from(itemView.context).inflate(
+                        R.layout.discovery_calendar_single_layout_item,
+                        calendarCardUnify,
+                        false
+                    )
+                )
             }
-            Calendar.GRID , Calendar.CAROUSEL-> {
+            Calendar.GRID, Calendar.CAROUSEL -> {
                 if (properties.calendarType == Calendar.DYNAMIC) {
                     calendarCardUnify.removeAllViews()
-                    calendarCardUnify.addView(LayoutInflater.from(itemView.context).inflate(R.layout.discovery_calendar_carousel_grid_layout_item, calendarCardUnify, false))
+                    calendarCardUnify.addView(
+                        LayoutInflater.from(itemView.context).inflate(
+                            R.layout.discovery_calendar_carousel_grid_layout_item,
+                            calendarCardUnify,
+                            false
+                        )
+                    )
                     setGridAndCarouselLayoutWidth(properties, dataItem)
                 } else {
                     setMultipleLayoutView(properties, dataItem)
@@ -90,17 +103,17 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     private fun setGridAndCarouselLayoutWidth(properties: Properties, dataItem: DataItem?) {
         val width = Resources.getSystem().displayMetrics.widthPixels
         val layoutParams = calendarCardUnify.layoutParams
-        when (properties.calendarLayout){
+        when (properties.calendarLayout) {
             Calendar.CAROUSEL -> {
                 layoutParams.width = (width / CAROUSEL_WIDTH_RATIO).roundToInt()
                 layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
             }
             Calendar.GRID -> {
-                layoutParams.width = ((width)/ 2)
+                layoutParams.width = ((width) / 2)
                 layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
             }
         }
-        if(dataItem?.widgetHomeBanner.isNullOrEmpty()){
+        if(dataItem?.widgetHomeBanner.isNullOrEmpty()) {
             layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT
         }
         calendarCardUnify.layoutParams = layoutParams
@@ -110,7 +123,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         calendarCardUnify.removeAllViews()
         calendarCardUnify.addView(
             LayoutInflater.from(itemView.context).inflate(
-                R.layout.discovery_calendar_multiple_layout_item, calendarCardUnify, false
+                R.layout.discovery_calendar_multiple_layout_item,
+                calendarCardUnify,
+                false
             )
         )
         setLayoutWidth(properties, dataItem)
@@ -183,7 +198,9 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
             }
             calendarCardUnify.setOnClickListener {
                 if (!cta.isNullOrEmpty()) {
-                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT) && !Utils.isFutureSale(startDate ?: "", TIMER_DATE_FORMAT)) {
+                    if (!Utils.isSaleOver(endDate ?: "", TIMER_DATE_FORMAT) && !Utils.isFutureSale(
+                            startDate ?: "",
+                            TIMER_DATE_FORMAT)) {
                         RouteManager.route(itemView.context, cta)
                         (fragment as DiscoveryFragment).getDiscoveryAnalytics()
                             .trackEventClickCalendarWidget(calendarWidgetItemViewModel.components, calendarWidgetItemViewModel.getUserId())
