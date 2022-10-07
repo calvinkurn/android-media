@@ -56,7 +56,7 @@ class PlayNewAnalytic @Inject constructor(
                 .setCustomProperty(KEY_TRACKER_ID, "13881")
                 .setBusinessUnit(VAL_BUSINESS_UNIT)
                 .setCurrentSite(VAL_CURRENT_SITE)
-                .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn)
+                .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, isLoggedIn.toString())
                 .setCustomProperty(KEY_SCREEN_NAME, "/group-chat-room/$channelId/${channelType.value}/is coachmark $isShown")
                 .setUserId(userId)
                 .build()
