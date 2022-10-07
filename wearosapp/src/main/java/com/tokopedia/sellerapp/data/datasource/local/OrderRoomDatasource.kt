@@ -15,19 +15,15 @@ class OrderRoomDatasource(
         orderDao.insertOrderProducts(orderList.mapModelToProductEntity())
     }
 
-    fun getNewOrderList() : Flow<List<OrderWithProduct>>{
-        return orderDao.getNewOrderList()
+    fun getOrderList(orderStatus: Array<String>) : Flow<List<OrderWithProduct>>{
+        return orderDao.getOrderList(orderStatus)
     }
 
-    fun getNewOrderCount() : Flow<Int>{
-        return orderDao.getNewOrderCount()
+    fun getOrderDetail(orderId: String) : Flow<OrderWithProduct>{
+        return orderDao.getOrderDetail(orderId)
     }
 
-    fun getReadyToDeliverOrderList() : Flow<List<OrderWithProduct>>{
-        return orderDao.getReadyToDeliverOrderList()
-    }
-
-    fun getReadyToDeliverOrderCount() : Flow<Int>{
-        return orderDao.getReadyToDeliverOrderCount()
+    fun getOrderCount(orderStatus: Array<String>) : Flow<Int>{
+        return orderDao.getOrderCount(orderStatus)
     }
 }

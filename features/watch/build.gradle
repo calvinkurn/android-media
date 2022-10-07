@@ -131,6 +131,8 @@ dependencies {
     wearApp project(':wearosapp')
     implementation 'com.google.android.gms:play-services-wearable:17.1.0'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.3.9"
+    implementation rootProject.ext.unifyDependencies.dialog
+    implementation "androidx.wear:wear-remote-interactions:1.0.0"
 
 }
 

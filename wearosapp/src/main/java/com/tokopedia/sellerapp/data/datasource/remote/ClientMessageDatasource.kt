@@ -1,5 +1,6 @@
 package com.tokopedia.sellerapp.data.datasource.remote
 
+import android.util.Log
 import com.google.android.gms.wearable.MessageClient
 import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.NodeClient
@@ -14,18 +15,22 @@ open class ClientMessageDatasource @Inject constructor(
     private val messageClient: MessageClient,
     private val wearCacheAction: WearCacheAction
 ): MessageClient.OnMessageReceivedListener {
-
+    var activityMessageListener: ActivityMessageListener? = null
     override fun onMessageReceived(messageEvent: MessageEvent) {
         val data = messageEvent.data.decodeToString()
+        Log.d("TokopediaWearOS", "onMessageReceived: $data")
         when(messageEvent.path) {
             MessageConstant.GET_ORDER_LIST_PATH -> wearCacheAction.saveOrderListToCache(data)
             MessageConstant.GET_NOTIFICATION_LIST_PATH -> wearCacheAction.saveNotificationListToCache(data)
+            MessageConstant.GET_SUMMARY_PATH -> wearCacheAction.saveSummaryToCache(data)
             else -> { }
         }
+        activityMessageListener?.onMessageReceived(messageEvent)
     }
 
     suspend fun sendMessagesToNodes(action: Action) {
         val nodes = nodeClient.connectedNodes.await()
+
         nodes.map { node ->
             val message = action.getPath()
             messageClient.sendMessage(node.id, message, byteArrayOf()).await()
@@ -39,4 +44,16 @@ open class ClientMessageDatasource @Inject constructor(
     fun removeMessageClientListener() {
         messageClient.removeListener(this)
     }
+
+    fun addActivityMessageListener(activityMessageListener: ActivityMessageListener) {
+        this.activityMessageListener = activityMessageListener
+    }
+
+    fun removeActivityMessageListener() {
+        this.activityMessageListener = null
+    }
+}
+
+interface ActivityMessageListener {
+    fun onMessageReceived(messageEvent: MessageEvent)
 }

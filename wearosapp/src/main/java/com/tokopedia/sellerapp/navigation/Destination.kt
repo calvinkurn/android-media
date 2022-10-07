@@ -2,23 +2,27 @@ package com.tokopedia.sellerapp.navigation
 
 import NewOrderSummaryScreen
 import SplashScreen
+import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavGraphBuilder
 import androidx.wear.compose.navigation.composable
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
-import com.tokopedia.sellerapp.presentation.screen.HomeScreen
-import com.tokopedia.sellerapp.presentation.screen.NewOrderDetailScreen
-import com.tokopedia.sellerapp.presentation.screen.NewOrderListScreen
+import com.tokopedia.sellerapp.presentation.screen.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
+import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
+import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH_PARAM
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
 
 fun NavGraphBuilder.splashComposable(
-    navigateToHomeScreen: () -> Unit
+    navigateToHomeScreen: () -> Unit,
+    navigateToAppNotInstalledScreen: () -> Unit,
+    sharedViewModel: SharedViewModel,
 ) {
     composable(
         route = ScreenConstant.SPLASH_SCREEN
     ) {
-        SplashScreen(navigateToHomeScreen)
+        SplashScreen(navigateToHomeScreen, navigateToAppNotInstalledScreen, sharedViewModel)
     }
 }
 
@@ -34,31 +38,72 @@ fun NavGraphBuilder.homeComposable(
 }
 
 fun NavGraphBuilder.newOrderListComposable(
+    screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel,
 ) {
     composable(
-        route = ScreenConstant.NEW_ORDER_LIST_SCREEN
-    ) {
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_LIST_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
         NewOrderListScreen(
+            screenNavigation = screenNavigation,
             sharedViewModel = sharedViewModel,
+            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
         )
     }
 }
 
-fun NavGraphBuilder.newOrderDetailComposable() {
+fun NavGraphBuilder.newOrderDetailComposable(
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel,
+) {
     composable(
-        route = ScreenConstant.NEW_ORDER_DETAIL_SCREEN
-    ) {
-        NewOrderDetailScreen()
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_DETAIL_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
+        NewOrderDetailScreen(
+            screenNavigation = screenNavigation,
+            sharedViewModel = sharedViewModel,
+            orderId = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+        )
     }
 }
 
 fun NavGraphBuilder.newOrderSummaryScreenComposable(
-    navigateToNewOrderList: () -> Unit
+    navigateToNewOrderList: (dataKey: String) -> Unit
 ) {
     composable(
-        route = ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_SUMMARY_SCREEN, DATAKEY_ARGS)
+    ) { backStackEntry ->
+        NewOrderSummaryScreen(
+            navigateToNewOrderList = navigateToNewOrderList,
+            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+        )
+    }
+}
+
+fun NavGraphBuilder.appNotInstalledScreenComposable(
+    sharedViewModel: SharedViewModel,
+) {
+    composable(
+        route = ScreenConstant.APP_NOT_INSTALLED_SCREEN
     ) {
-        NewOrderSummaryScreen(navigateToNewOrderList)
+        AppNotInstalledScreen(sharedViewModel)
+    }
+}
+
+fun NavGraphBuilder.connectionFailedScreenComposable(
+    sharedViewModel: SharedViewModel,
+) {
+    composable(
+        route = ScreenConstant.CONNECTION_FAILED_SCREEN
+    ) {
+        val message = sharedViewModel.currentState.value.data?.let {
+            it.getState().getMessageBasedOnState()
+        }?:""
+
+        ConnectionFailureScreen(
+            mutableStateOf(message),
+            mutableStateOf("Retry"),
+            mutableStateOf({})
+        )
     }
 }

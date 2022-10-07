@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.flowOf
 
 interface BaseRepository<T> {
 
-    fun getCachedData() : Flow<T>
+    fun getCachedData(params: Array<String> = arrayOf()) : Flow<T>
 
-    fun getCachedDataCount() : Flow<Int> = flowOf()
+    fun getCachedDataCount(params: Array<String> = arrayOf()) : Flow<Int> = flowOf()
 
     suspend fun sendMessagesToNodes(action: Action) { }
 

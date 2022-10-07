@@ -1,20 +1,17 @@
 package com.tokopedia.watch
 
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import androidx.lifecycle.lifecycleScope
-import com.google.android.gms.wearable.DataClient
-import com.google.android.gms.wearable.DataEvent
-import com.google.android.gms.wearable.DataEventBuffer
-import com.google.android.gms.wearable.DataMapItem
-import com.google.android.gms.wearable.PutDataMapRequest
-import com.google.android.gms.wearable.Wearable
-import com.google.gson.Gson
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.graphql.domain.GraphqlUseCase
-import com.tokopedia.usecase.RequestParams
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.*
+import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
@@ -28,14 +25,16 @@ import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
+import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
-import rx.Subscriber
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener {
@@ -50,12 +49,16 @@ class TokopediaWatchActivity : AppCompatActivity(),
         const val DATA_CLIENT_MESSAGE_KEY_FROM_WATCH = "devara-watch"
 
         const val TAG = "TokopediaWatchActivity"
+
+        const val REQ_PATH_GET_ORDER_LIST = "/get-order-list"
+        const val REQ_PATH_GET_SUMMARY = "/get-summary"
     }
 
     private var binding: ActivityTokopediaWatchBinding? by viewBinding()
     private val nodeClient by lazy { Wearable.getNodeClient(this) }
     private val messageClient by lazy { Wearable.getMessageClient(this) }
     private val dataClient: DataClient by lazy { Wearable.getDataClient(this) }
+    private val capabilityClient: CapabilityClient by lazy { Wearable.getCapabilityClient(this) }
 
     private val _activityLog = MutableStateFlow(mutableListOf<String>())
     private val activityLog: StateFlow<List<String>> = _activityLog
@@ -104,8 +107,97 @@ class TokopediaWatchActivity : AppCompatActivity(),
             }
         }
 
-        getOrderList()
-        getNotificationList()
+        checkIfPhoneHasApp()
+
+        showWearAppDialogIfMeetCondition()
+    }
+
+    private fun showWearAppDialogIfMeetCondition() {
+        /**
+         * Check first if there is capable device
+         */
+        lifecycleScope.launch {
+            try {
+                val capabilityInfo = capabilityClient
+                    .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                    .await()
+
+                val capableTkpdWearAppDeviceNearby = withContext(Dispatchers.Main) {
+                    // There should only ever be one phone in a node set (much less w/ the correct
+                    // capability), so I am just grabbing the first one (which should be the only one).
+                    val nodes = capabilityInfo.nodes
+                    nodes.size
+                }
+                if (capableTkpdWearAppDeviceNearby.isZero()) {
+
+                    /**
+                     * Check connected device if there is no capable device
+                     */
+                    val nodes = nodeClient.connectedNodes.await()
+                    val connectedNearbyDevice = nodes.firstOrNull { it.isNearby }
+                    if (connectedNearbyDevice != null) {
+                        /**
+                         * remoteActivityHelper only available for device sdk >= 23
+                         */
+                        val remoteActivityHelper = RemoteActivityHelper(this@TokopediaWatchActivity.applicationContext, Dispatchers.IO.asExecutor())
+
+                        if (Build.VERSION.SDK_INT >= 23) {
+                            this@TokopediaWatchActivity.run {
+                                val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                                dialog.setTitle("Sekarang ada app tokopedia untuk Wear OS lho!")
+                                dialog.setDescription("Mau coba sekarang? Click install untuk menginstall app tokopedia di ${connectedNearbyDevice.displayName}")
+                                dialog.setSecondaryCTAText("Nanti")
+                                dialog.setPrimaryCTAText("Install")
+                                dialog.setPrimaryCTAClickListener {
+                                    lifecycleScope.launch {
+                                        remoteActivityHelper.startRemoteActivity(
+                                            Intent(Intent.ACTION_VIEW)
+                                                .addCategory(Intent.CATEGORY_BROWSABLE)
+                                                .setData(
+                                                    Uri.parse("https://play.google.com/store/apps/details?id=com.tompod.wearnotes&hl=en_US&gl=US")
+                                                ),
+                                            connectedNearbyDevice.id
+                                        ).await()
+                                        dialog.dismiss()
+                                        binding?.let {
+                                            Toaster.build(
+                                                it.root,
+                                                "Please check your wearable device",
+                                                Toaster.LENGTH_SHORT,
+                                                Toaster.TYPE_NORMAL
+                                            ).show()
+                                        }
+                                    }
+
+                                }
+                                dialog.setSecondaryCTAClickListener {
+                                    dialog.dismiss()
+                                }
+                                dialog.show()
+                            }
+                        } else {
+                            this@TokopediaWatchActivity.run {
+                                val dialog = DialogUnify(this, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
+                                dialog.setTitle("Sekarang ada app tokopedia untuk Wear OS lho!")
+                                dialog.setDescription("Coba deh buka playstore dan install di device kamu ini: ${connectedNearbyDevice.displayName}")
+                                dialog.setPrimaryCTAText("Mengerti")
+                                dialog.setPrimaryCTAClickListener {
+                                    dialog.dismiss()
+                                }
+                                dialog.show()
+                            }
+                        }
+                    }
+                }
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+                Log.d("DevaraTest", "Cancelled")
+
+            } catch (throwable: Throwable) {
+                Log.d("DevaraTest", throwable.message?:"")
+
+            }
+        }
     }
 
     private fun sendDataToWatch() {
@@ -128,35 +220,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
             } catch (exception: Exception) {
                 sendLog("Failed, while send data to watch: $message")
                 Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
-
-    private fun sendMessageToWatch(key: String, message: String) {
-        lifecycleScope.launch {
-            try {
-                val nodes = nodeClient.connectedNodes.await()
-
-                // Send a message to all nodes in parallel
-                nodes.map { node ->
-                    async {
-                        messageClient.sendMessage(
-                            node.id,
-                            key,
-                            message.toByteArray()
-                        )
-                            .await()
-                    }
-                }.awaitAll()
-
-                sendLog("Send data to watch success: $message")
-                Log.d(TAG, "Send data to watch success: $message")
-            } catch (cancellationException: CancellationException) {
-                sendLog("Failed: CancellationException, while send data to watch: $message")
-                throw cancellationException
-            } catch (exception: Exception) {
-                sendLog("Failed, while send data to watch: $message")
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -233,61 +296,24 @@ class TokopediaWatchActivity : AppCompatActivity(),
         _activityLog.value = logList.toMutableList()
     }
 
-    private fun getOrderList() {
-        if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
-        }
+    private fun checkIfPhoneHasApp() {
+        lifecycleScope.launch {
+            try {
+                val capabilityInfo = capabilityClient
+                    .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                    .await()
 
-        val useCase = GetOrderListUseCase(
-            GraphqlUseCase(),
-            OrderListMapper()
-        )
-
-        useCase.execute(RequestParams(), getLoadOrderListDataSubscriber())
-    }
-
-    private fun getLoadOrderListDataSubscriber(): Subscriber<OrderListModel> {
-        return object: Subscriber<OrderListModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
-
-            override fun onNext(orderListModel: OrderListModel) {
-                sendMessageToWatch(
-                    DataLayerServiceListener.GET_ORDER_LIST_PATH,
-                    Gson().toJson(orderListModel)
-                )
-            }
-        }
-    }
-
-    private fun getNotificationList() {
-        val notifications = listOf(
-            Notification(notifId = "1", title = "test-1", content = "test-1"),
-            Notification(notifId = "2", title = "test-2", content = "test-2")
-        )
-        val notificationListModel = NotificationListModel(notifications = notifications)
-        sendMessageToWatch(
-            DataLayerServiceListener.GET_NOTIFICATION_LIST_PATH,
-            Gson().toJson(notificationListModel)
-        )
-    }
-
-    private fun getLoadNotificationListDataSubscriber(): Subscriber<OrderListModel> {
-        return object: Subscriber<OrderListModel>() {
-            override fun onCompleted() {
-
-            }
-
-            override fun onError(e: Throwable?) {
-
-            }
-
-            override fun onNext(orderListModel: OrderListModel) {
+                withContext(Dispatchers.Main) {
+                    // There should only ever be one phone in a node set (much less w/ the correct
+                    // capability), so I am just grabbing the first one (which should be the only one).
+                    val nodes = capabilityInfo.nodes
+                    val androidPhoneNodeWithApp =
+                        nodes.firstOrNull { it.isNearby }?.id ?: nodes.firstOrNull()?.id
+                    tv_companion_app.setText((androidPhoneNodeWithApp != null).toString())
+                }
+            } catch (cancellationException: CancellationException) {
+                // Request was cancelled normally
+            } catch (throwable: Throwable) {
 
             }
         }

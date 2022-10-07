@@ -28,4 +28,8 @@ object DatabaseModule {
     @Provides
     fun provideOrderDao(database: WearDatabase) = database.orderDao()
 
+    @Singleton
+    @Provides
+    fun provideSummaryDao(database: WearDatabase) = database.summaryDao()
+
 }

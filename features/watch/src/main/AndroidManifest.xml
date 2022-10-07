@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.tokopedia.watch">
-
+    package="com.tokopedia.watch"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-sdk tools:overrideLibrary="androidx.wear.remote.interactions"/>
     <application>
         <service
             android:name=".listenerservice.DataLayerServiceListener"
@@ -16,6 +17,27 @@
                     android:host="*"
                     android:pathPrefix="/app-detection"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-order-list"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-summary"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-all-data"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/get-phone-state"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/open-login-page"
+                    android:scheme="wear" />
+
             </intent-filter>
         </service>
 
