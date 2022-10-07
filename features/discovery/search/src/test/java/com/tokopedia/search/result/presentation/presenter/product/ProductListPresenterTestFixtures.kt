@@ -17,6 +17,7 @@ import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationM
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
+import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
@@ -25,6 +26,8 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterD
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -39,6 +42,7 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
+import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -94,10 +98,9 @@ internal open class ProductListPresenterTestFixtures {
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
     protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
     protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
-    protected val productListFragment = mockk<FragmentProvider>(relaxed = true)
     protected val context = mockk<Context>(relaxed = true)
     protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
-    protected val searchNavigationListener = mockk<SearchNavigationListener>(relaxed = true)
+    protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
 
     protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
@@ -115,15 +118,12 @@ internal open class ProductListPresenterTestFixtures {
             queryKeyProvider,
             productFilterIndicator,
         )
+
         inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
             userSession,
-            InspirationCarouselTrackingUnification(),
-            context,
+            inspirationListAtcView,
             searchParameterProvider,
-            queryKeyProvider,
-            searchNavigationListener,
-            productListFragment,
         )
 
         productListPresenter = ProductListPresenter(

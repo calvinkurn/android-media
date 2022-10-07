@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
@@ -10,12 +11,10 @@ import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
-import io.mockk.every
-import io.mockk.slot
-import io.mockk.verify
-import io.mockk.verifyOrder
+import io.mockk.*
 import org.junit.Test
 import rx.Subscriber
 
@@ -113,7 +112,48 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Then verify variant bottomsheet will show`() {
         verify {
+            inspirationListAtcView.openVariantBottomSheet(any(), any())
+            inspirationListAtcView.trackAddToCartVariant(any())
+        }
+    }
 
+    @Test
+    fun `User click add to cart non variant and success`() {
+        val searchProductModel: SearchProductModel = inspirationListAtc.jsonToObject()
+
+        `Given Search Product API will return SearchProductModel with Inspiration Carousel`(searchProductModel)
+        `Given Load Data`()
+        `Given Add to cart is succeed`()
+
+        `When user click add to cart non variant`()
+
+        `Then verify searchbar notification updated`()
+        `Then verify toaster has opened`()
+        `Then verify item click and add to card has been fired`()
+    }
+
+    private fun `Given Add to cart is succeed`() {
+        every { addToCartUseCase.execute(any(), any()) }.answers {
+            firstArg<(AddToCartDataModel?) -> Unit>().invoke(AddToCartDataModel())
+        }
+    }
+
+    private fun `Then verify searchbar notification updated`() {
+        verify {
+            inspirationListAtcView.updateSearchBarNotification()
+        }
+    }
+
+    private fun `Then verify toaster has opened`() {
+        verify {
+            inspirationListAtcView.openAddToCartToaster(any())
+        }
+    }
+
+    private fun `Then verify item click and add to card has been fired`() {
+        verify {
+            inspirationListAtcView.trackItemClick(any())
+            inspirationListAtcView.trackAddToCart(any())
         }
     }
 
