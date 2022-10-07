@@ -1,4 +1,4 @@
-package com.tokopedia.checkout.view.viewholder
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug
 
 import android.animation.Animator
 import android.annotation.SuppressLint
@@ -7,14 +7,15 @@ import android.view.animation.CycleInterpolator
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.checkout.R
-import com.tokopedia.checkout.view.ShipmentAdapterActionListener
+import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class UploadPrescriptionViewHolder(val view: View, private val actionListener: ShipmentAdapterActionListener): RecyclerView.ViewHolder(view) {
+class UploadPrescriptionViewHolder(
+    val view: View,
+    val uploadPrescriptionAction: (UploadPrescriptionUiModel) -> Unit
+) : RecyclerView.ViewHolder(view) {
 
     private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
     private val uploadPrescriptionText: Typography = view.findViewById(R.id.upload_prescription_text)
@@ -43,7 +44,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
             uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
         uploadPrescriptionLayout.setOnClickListener {
-            actionListener.uploadPrescriptionAction(uploadPrescriptionUiModel)
+            uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
 
         if(uploadPrescriptionUiModel.isError){
