@@ -553,15 +553,23 @@ class DetailEditorFragment @Inject constructor(
         var cropScale = 0f
         var rotateIndexNumber = -1
         var watermarkIndexNumber = -1
+        var latestBrightnessIndex = -1
+        var latestContrastIndex = -1
+
         detailState.getFilteredStateList().forEachIndexed { index, editorDetailUi ->
             if (editorDetailUi.isToolWatermark()) watermarkIndexNumber = index
+
             if (editorDetailUi.cropRotateValue.isRotate) rotateIndexNumber = index
 
             if (editorDetailUi.cropRotateValue.isCrop) cropScale =
                 editorDetailUi.cropRotateValue.scale
-            if (editorDetailUi.editorToolType == data.editorToolType) return@forEachIndexed
-            readPreviousDetailState(editorDetailUi)
+
+            if (editorDetailUi.isToolBrightness()) latestBrightnessIndex = index
+
+            if (editorDetailUi.isToolContrast()) latestContrastIndex = index
         }
+
+        implementBrightnessAndContrast(latestBrightnessIndex, latestContrastIndex)
 
         // need to provide sequence for watermark that implemented before / after rotate
         if (watermarkIndexNumber < rotateIndexNumber && !data.isToolWatermark()) {
@@ -582,21 +590,26 @@ class DetailEditorFragment @Inject constructor(
         }
 
         implementedBaseBitmap = getBitmap()
-        readPreviousDetailState(data, isIncludeWatermark = true)
+        readPreviousDetailState(data)
     }
 
-    private fun readPreviousDetailState(
-        previousState: EditorDetailUiModel,
-        isIncludeWatermark: Boolean = false
-    ) {
+    private fun readPreviousDetailState(previousState: EditorDetailUiModel) {
         previousState.apply {
             when (editorToolType) {
                 EditorToolType.BRIGHTNESS -> implementPreviousStateBrightness(brightnessValue)
                 EditorToolType.CONTRAST -> implementPreviousStateContrast(contrastValue)
-                EditorToolType.WATERMARK -> if (isIncludeWatermark) implementPreviousWatermark(
-                    previousState
-                )
+                EditorToolType.WATERMARK -> implementPreviousWatermark(previousState)
             }
+        }
+    }
+
+    private fun implementBrightnessAndContrast(brightnessIndex: Int, contrastIndex: Int) {
+        if (brightnessIndex < contrastIndex) {
+            if (!data.isToolBrightness()) implementPreviousStateBrightness(data.brightnessValue)
+            if (!data.isToolContrast()) implementPreviousStateContrast(data.contrastValue)
+        } else {
+            if (!data.isToolContrast()) implementPreviousStateContrast(data.contrastValue)
+            if (!data.isToolBrightness()) implementPreviousStateBrightness(data.brightnessValue)
         }
     }
 
