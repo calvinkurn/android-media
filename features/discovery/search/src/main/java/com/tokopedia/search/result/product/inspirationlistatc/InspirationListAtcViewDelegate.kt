@@ -70,16 +70,16 @@ class InspirationListAtcViewDelegate @Inject constructor(
         inspirationCarouselTrackingUnification.trackCarouselClickAtc(trackingData)
     }
 
-    override fun openAddToCartToaster(addToCartDataModel: AddToCartDataModel?) {
+    override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
         getFragment().view?.let {
             Toaster.build(
                 it,
-                addToCartDataModel?.data?.message?.firstOrNull() ?: "",
+                message,
                 Snackbar.LENGTH_SHORT,
                 Toaster.TYPE_NORMAL,
-                getFragment().getString(R.string.search_see_cart),
+                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
             ) {
-                openApplink(context, ApplinkConst.CART)
+                if (isSuccess) openApplink(context, ApplinkConst.CART)
             }.show()
         }
     }

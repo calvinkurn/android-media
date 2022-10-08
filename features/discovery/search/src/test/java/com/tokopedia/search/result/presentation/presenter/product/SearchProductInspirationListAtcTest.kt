@@ -146,7 +146,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Then verify toaster has opened`() {
         verify {
-            inspirationListAtcView.openAddToCartToaster(any())
+            inspirationListAtcView.openAddToCartToaster(any(), any())
         }
     }
 

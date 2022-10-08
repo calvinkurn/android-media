@@ -49,7 +49,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
         inspirationListAtcView.updateSearchBarNotification()
 
-        inspirationListAtcView.openAddToCartToaster(addToCartDataModel)
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        inspirationListAtcView.openAddToCartToaster(message, true)
 
         val product = productAddedToCart ?: InspirationCarouselDataView.Option.Product()
         val cartId = addToCartDataModel?.data?.cartId ?: ""
@@ -67,7 +68,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
-        throwable?.printStackTrace()
+        val message = throwable?.message ?: ""
+        inspirationListAtcView.openAddToCartToaster(message, false)
     }
 
     private fun executeAtcCommon(

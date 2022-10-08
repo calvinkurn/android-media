@@ -18,7 +18,6 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         val filterSortParams: String,
         val cartId: String,
         val quantity: Int,
-        val variant: String,
     ) {
         val eventLabel: String
             get() = "$keyword - ${product.inspirationCarouselTitle} - ${product.optionTitle}"
@@ -27,7 +26,7 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
             get() = product.asUnificationObjectDataLayer(filterSortParams)
 
         val productAtcDataLayer: Any
-            get() = product.asUnificationAtcObjectDataLayer(filterSortParams, cartId, quantity, variant)
+            get() = product.asUnificationAtcObjectDataLayer(filterSortParams, cartId, quantity)
     }
 
     fun trackCarouselImpression(
@@ -62,8 +61,6 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
     fun trackCarouselClickAtc(data: Data) {
         InspirationListAtcTracking.trackEventClickAddToCartInspirationCarouselUnification(
             data.eventLabel,
-            data.product.inspirationCarouselType,
-            data.product.componentId,
             arrayListOf(data.productAtcDataLayer),
         )
     }

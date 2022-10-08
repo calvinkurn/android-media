@@ -13,7 +13,7 @@ interface SearchEventTracking {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CLICK_SEARCH = "clickSearch"
-            const val ADD_TO_CART = "add_to_cart"
+            const val ADD_TO_CART = "addToCart"
         }
     }
 

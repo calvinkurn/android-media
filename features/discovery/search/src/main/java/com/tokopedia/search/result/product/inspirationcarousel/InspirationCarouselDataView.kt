@@ -224,7 +224,6 @@ class InspirationCarouselDataView(
                 filterSortParams: String,
                 cartId: String,
                 quantity: Int,
-                variant: String,
             ): Any {
                 return DataLayer.mapOf(
                     "item_name", name,
@@ -232,7 +231,6 @@ class InspirationCarouselDataView(
                     "price", price,
                     "item_brand", "none / other",
                     "item_category", "none / other",
-                    "item_variant", variant.ifEmpty { "none / other" },
                     "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
                     "position", optionPosition,
                     "dimension115", labelGroupDataList.getFormattedPositionName(),

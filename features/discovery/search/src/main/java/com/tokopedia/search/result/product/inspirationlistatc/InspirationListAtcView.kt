@@ -14,7 +14,7 @@ interface InspirationListAtcView {
 
     fun trackAddToCart(trackingData: InspirationCarouselTrackingUnification.Data)
 
-    fun openAddToCartToaster(addToCartDataModel: AddToCartDataModel?)
+    fun openAddToCartToaster(message: String, isSuccess: Boolean)
 
     fun openVariantBottomSheet(
         product: InspirationCarouselDataView.Option.Product,
