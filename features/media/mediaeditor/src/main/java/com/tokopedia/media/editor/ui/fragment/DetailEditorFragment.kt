@@ -36,6 +36,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOV
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_GRAY
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.media.editor.ui.widget.EditorDetailPreviewWidget
+import com.tokopedia.media.loader.loadImageRounded
 import com.tokopedia.media.editor.utils.cropRatioToText
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.editor.utils.removeBackgroundToText
@@ -119,7 +120,6 @@ class DetailEditorFragment @Inject constructor(
                 data
             ) {
                 data.resultUrl = viewModel.saveImageCache(
-                    requireContext(),
                     it,
                     sourcePath = data.originalUrl
                 )?.path
@@ -129,7 +129,6 @@ class DetailEditorFragment @Inject constructor(
         } else {
             getBitmap()?.let {
                 data.resultUrl = viewModel.saveImageCache(
-                    requireContext(),
                     it,
                     sourcePath = data.originalUrl
                 )?.path
@@ -350,7 +349,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun observeIntentUiModel() {
-        viewModel.intentUiModel.observe(viewLifecycleOwner) {
+        viewModel.intentDetailUiModel.observe(viewLifecycleOwner) {
             // make this ui model as global variable
             data = it
             initialRotateNumber = it.cropRotateValue.orientationChangeNumber
@@ -360,7 +359,7 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun observeIntentUiState() {
-        viewModel.intentStateList.observe(viewLifecycleOwner) {
+        viewModel.intentUiModel.observe(viewLifecycleOwner) {
             detailState = it
         }
     }
@@ -664,10 +663,21 @@ class DetailEditorFragment @Inject constructor(
     }
 
     private fun setWatermarkDrawerItem(bitmap: Bitmap) {
-        viewModel.setWatermarkFilterThumbnail(
-            bitmap,
-            watermarkComponent.getButtonRef()
+        val bitmapResult = viewModel.setWatermarkFilterThumbnail(
+            bitmap
         )
+
+        watermarkComponent.getButtonRef().apply {
+            val roundedCorner =
+                requireContext().resources.getDimension(editorR.dimen.editor_watermark_rounded)
+
+            first.loadImageRounded(bitmapResult.first, roundedCorner) {
+                centerCrop()
+            }
+            second.loadImageRounded(bitmapResult.second, roundedCorner) {
+                centerCrop()
+            }
+        }
     }
 
     private fun initButtonListener() {
@@ -701,7 +711,6 @@ class DetailEditorFragment @Inject constructor(
                     saveAndExit()
                 }
             } else {
-
                 activity?.finish()
             }
         }

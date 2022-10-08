@@ -11,7 +11,9 @@ import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_CENTER
 import com.tokopedia.media.editor.analytics.WATERMARK_TYPE_DIAGONAL
 import com.tokopedia.media.editor.data.repository.WatermarkType
 import com.tokopedia.media.editor.ui.component.RemoveBackgroundToolUiComponent
+import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
+import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.utils.file.FileUtil
 import com.tokopedia.utils.image.ImageProcessingUtil
@@ -79,6 +81,50 @@ fun getToolEditorText(editorToolType: Int): Int {
         EditorToolType.CROP -> R.string.editor_tool_crop
         else -> R.string.editor_tool_remove_background
     }
+}
+
+fun cropCenterImage(sourceBitmap: Bitmap?, autoCropRatio: Float): Pair<Bitmap, EditorCropRotateUiModel>? {
+    sourceBitmap?.let { bitmap ->
+        val bitmapWidth = bitmap.width
+        val bitmapHeight = bitmap.height
+
+        var newWidth = bitmapWidth
+        var newHeight = (bitmapWidth * autoCropRatio).toInt()
+
+        var topMargin = 0
+        var leftMargin = 0
+
+        if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
+            leftMargin = (bitmapWidth - newWidth) / 2
+            topMargin = (bitmapHeight - newHeight) / 2
+        } else if (newHeight > bitmapHeight) {
+            val scaledTarget = bitmapHeight.toFloat() / newHeight
+
+            // new value after rescale small
+            newWidth = (newWidth * scaledTarget).toInt()
+            newHeight = (newHeight * scaledTarget).toInt()
+
+            leftMargin = (bitmapWidth - newWidth) / 2
+            topMargin = (bitmapHeight - newHeight) / 2
+        }
+
+        val bitmapResult = Bitmap.createBitmap(bitmap, leftMargin, topMargin, newWidth, newHeight)
+
+        val cropDetail = EditorCropRotateUiModel().apply {
+            offsetX = leftMargin
+            offsetY = topMargin
+            imageWidth = newWidth
+            imageHeight = newHeight
+            scaleX = 1f
+            scaleY = 1f
+            isCrop = true
+            this.isAutoCrop = true
+            croppedSourceWidth = bitmap.width
+        }
+
+        return Pair(bitmapResult, cropDetail)
+    }
+    return null
 }
 
 // for analytics purpose

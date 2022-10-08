@@ -11,10 +11,17 @@ class EditorUiModel(
     val editList: MutableList<EditorDetailUiModel> = mutableListOf(),
     var backValue: Int = 0,
     var removeBackgroundStartState: Int? = null,
-    val isVideo: Boolean = isVideoFormat(originalUrl),
+    var isVideo: Boolean = false,
     var isAutoCropped: Boolean = false,
     var originalRatio: Float = 1f
 ) : Parcelable {
+
+    init {
+        try {
+            isVideo = isVideoFormat(originalUrl)
+        } catch (e: Exception) {}
+    }
+
     fun getImageUrl(): String {
         return if (editList.isNotEmpty()) {
             val index = (editList.size - 1) - backValue

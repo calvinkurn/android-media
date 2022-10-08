@@ -1,6 +1,7 @@
 package com.tokopedia.media.editor.ui.fragment
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -24,6 +25,7 @@ import com.tokopedia.media.editor.ui.widget.EditorViewPager
 import com.tokopedia.media.editor.ui.component.ToolsUiComponent
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
+import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -89,10 +91,10 @@ class EditorFragment @Inject constructor(
         }
 
         autoCropStartTime = System.nanoTime()
-        cropAll(viewModel.editStateList.values.toList(), 0)
+        iterateCrop(viewModel.editStateList.values.toList(), 0)
     }
 
-    private fun cropAll(listData: List<EditorUiModel>, currentProcess: Int) {
+    private fun iterateCrop(listData: List<EditorUiModel>, currentProcess: Int) {
         if (currentProcess >= listData.size) {
             showAutoCropToaster()
 
@@ -118,26 +120,48 @@ class EditorFragment @Inject constructor(
                 properties = {},
                 mediaTarget = MediaBitmapEmptyTarget(
                     onReady = { bitmap ->
-                        viewModel.cropImage(requireContext(), bitmap, data)
+                        imageCrop(bitmap, data.getOriginalUrl())
                         thumbnailDrawerComponent.refreshItem(
                             currentProcess,
                             viewModel.editStateList.values.toList()
                         )
-                        cropAll(listData, currentProcess + 1)
+                        iterateCrop(listData, currentProcess + 1)
                     },
                     onCleared = {},
                     onFailed = {
-                        cropAll(listData, currentProcess + 1)
+                        iterateCrop(listData, currentProcess + 1)
                     }
                 ))
         } else {
-            cropAll(listData, currentProcess + 1)
+            iterateCrop(listData, currentProcess + 1)
         }
     }
 
     override fun initObserver() {
         observeEditorParam()
         observeUpdateIndex()
+    }
+
+    private fun imageCrop(bitmap: Bitmap, originalPath: String){
+        val cropRatio = viewModel.editorParam.value?.autoCropRatio?.let {
+            it.getRatioY().toFloat() / it.getRatioX()
+        } ?: 1f
+
+        cropCenterImage(bitmap, cropRatio)?.apply {
+            viewModel.saveToCache(
+                first,
+                sourcePath = originalPath
+            )?.apply {
+                val newEditorDetailUiModel = EditorDetailUiModel(
+                    originalUrl = originalPath,
+                    editorToolType = EditorToolType.CROP,
+                    resultUrl = this.absolutePath,
+                )
+
+                newEditorDetailUiModel.cropRotateValue = second
+                viewModel.addEditState(originalPath, newEditorDetailUiModel, false)
+            }
+        }
     }
 
     private fun editorClickTracker(editorType: Int) {
@@ -312,7 +336,7 @@ class EditorFragment @Inject constructor(
     }
 
     private fun setPagerPageChangeListener(viewPager: EditorViewPager) {
-        viewPager.setOnPageChanged { position, isVideo ->
+        viewPager.setOnPageChanged { position, _ ->
             thumbnailDrawerComponent.clickIndex(position)
         }
     }

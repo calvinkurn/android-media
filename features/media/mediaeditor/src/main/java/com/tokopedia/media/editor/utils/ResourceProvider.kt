@@ -20,10 +20,6 @@ class ResourceProvider @Inject constructor(@ApplicationContext val context: Cont
         )
     }
 
-    fun getWatermarkRoundCorner(): Float? {
-        return getDimension(editorR.dimen.editor_watermark_rounded)
-    }
-
     private fun getDrawable(resId: Int): Drawable? {
         return context?.let {
             ContextCompat.getDrawable(it, resId)

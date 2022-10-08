@@ -105,8 +105,10 @@ object EditorModule {
 
     @Provides
     @ActivityScope
-    fun provideSaveImageRepository(): SaveImageRepository {
-        return SaveImageRepositoryImpl()
+    fun provideSaveImageRepository(
+        @ApplicationContext context: Context
+    ): SaveImageRepository {
+        return SaveImageRepositoryImpl(context)
     }
 
     @Provides

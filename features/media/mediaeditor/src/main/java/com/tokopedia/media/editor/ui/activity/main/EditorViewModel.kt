@@ -1,6 +1,5 @@
 package com.tokopedia.media.editor.ui.activity.main
 
-import android.content.Context
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +9,7 @@ import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
 import com.tokopedia.picker.common.EditorParam
 import com.tokopedia.picker.common.types.EditorToolType
+import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
@@ -35,7 +35,7 @@ class EditorViewModel @Inject constructor(
         }
     }
 
-    fun addEditState(urlKey: String, newValue: EditorDetailUiModel) {
+    fun addEditState(urlKey: String, newValue: EditorDetailUiModel, isUpdateUi: Boolean = true) {
         val state = getEditState(urlKey)
         if (state == null) {
             val newKeyObject = EditorUiModel(urlKey)
@@ -62,7 +62,7 @@ class EditorViewModel @Inject constructor(
             state.editList.add(newValue)
         }
 
-        updateEditedItem(urlKey)
+        if (isUpdateUi) updateEditedItem(urlKey)
     }
 
     fun getEditState(urlKey: String): EditorUiModel? {
@@ -94,66 +94,7 @@ class EditorViewModel @Inject constructor(
         return null
     }
 
-    fun cropImage(context: Context, sourceBitmap: Bitmap?, editorDetailUiModel: EditorUiModel) {
-        sourceBitmap?.let { it ->
-            val bitmapWidth = sourceBitmap.width
-            val bitmapHeight = sourceBitmap.height
-
-            val autoCropRatio = editorParam.value?.autoCropRatio?.let {
-                it.getRatioY().toFloat() / it.getRatioX()
-            } ?: 1f
-
-            var newWidth = bitmapWidth
-            var newHeight = (bitmapWidth * autoCropRatio).toInt()
-
-            var topMargin = 0
-            var leftMargin = 0
-
-            if (newHeight <= bitmapHeight && newWidth <= bitmapWidth) {
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            } else if (newHeight > bitmapHeight) {
-                val scaledTarget = bitmapHeight.toFloat() / newHeight
-
-                // new value after rescale small
-                newWidth = (newWidth * scaledTarget).toInt()
-                newHeight = (newHeight * scaledTarget).toInt()
-
-                leftMargin = (bitmapWidth - newWidth) / 2
-                topMargin = (bitmapHeight - newHeight) / 2
-            }
-
-            val bitmapResult = Bitmap.createBitmap(it, leftMargin, topMargin, newWidth, newHeight)
-            val savedFile = saveImageRepository.saveToCache(
-                context, bitmapResult, sourcePath = editorDetailUiModel.getOriginalUrl()
-            )?.absolutePath ?: ""
-
-            val newEditorDetailUiModel = EditorDetailUiModel(
-                originalUrl = editorDetailUiModel.getOriginalUrl(),
-                editorToolType = EditorToolType.CROP,
-                resultUrl = savedFile,
-            )
-            newEditorDetailUiModel.cropRotateValue.apply {
-                offsetX = leftMargin
-                offsetY = topMargin
-                imageWidth = newWidth
-                imageHeight = newHeight
-                scaleX = 1f
-                scaleY = 1f
-                isCrop = true
-                this.isAutoCrop = true
-                croppedSourceWidth = it.width
-            }
-
-            editorDetailUiModel.editList.add(newEditorDetailUiModel)
-        }
-    }
-
-    fun saveToGallery(
-        context: Context,
-        dataList: List<EditorUiModel>,
-        onFinish: (result: List<String>) -> Unit
-    ) {
+    fun saveToGallery(dataList: List<EditorUiModel>, onFinish: (result: List<String>) -> Unit) {
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
                 it.getImageUrl()
@@ -163,28 +104,32 @@ class EditorViewModel @Inject constructor(
         }
 
         saveImageRepository.saveToGallery(
-            context,
             filteredData
         ) {
             onFinish(it)
         }
     }
 
-    private fun updateEditedItem(originalUrl: String) {
-        _updatedIndexItem.value = getKeyIndex(originalUrl)
+    fun saveToCache(
+        bitmapParam: Bitmap,
+        filename: String? = null,
+        sourcePath: String
+    ): File? {
+        return saveImageRepository.saveToCache(
+            bitmapParam, filename, sourcePath
+        )
     }
 
-    private fun getKeyIndex(urlKey: String): Int? {
-        var index = -1
+    private fun updateEditedItem(originalUrl: String) {
+        var index = 0
 
         editStateList.values.forEachIndexed { indexItem, item ->
-            val isMatch = item.getOriginalUrl() == urlKey
-            if (isMatch) {
+            if (item.getOriginalUrl() == originalUrl) {
                 index = indexItem
                 return@forEachIndexed
             }
         }
 
-        return if (index == -1) null else index
+        _updatedIndexItem.value = index
     }
 }

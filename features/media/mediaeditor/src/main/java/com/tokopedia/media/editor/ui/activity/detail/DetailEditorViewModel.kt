@@ -1,13 +1,14 @@
 package com.tokopedia.media.editor.ui.activity.detail
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.ColorMatrixColorFilter
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.data.repository.*
 import com.tokopedia.media.editor.domain.GetWatermarkUseCase
 import com.tokopedia.media.editor.domain.SetRemoveBackgroundUseCase
@@ -41,11 +42,11 @@ class DetailEditorViewModel @Inject constructor(
     private var _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> get() = _isLoading
 
-    private var _intentUiModel = MutableLiveData<EditorDetailUiModel>()
-    val intentUiModel: LiveData<EditorDetailUiModel> get() = _intentUiModel
+    private var _intentDetailUiModel = MutableLiveData<EditorDetailUiModel>()
+    val intentDetailUiModel: LiveData<EditorDetailUiModel> get() = _intentDetailUiModel
 
-    private var _intentStateList = MutableLiveData<EditorUiModel>()
-    val intentStateList: LiveData<EditorUiModel> get() = _intentStateList
+    private var _intentUiModel = MutableLiveData<EditorUiModel>()
+    val intentUiModel: LiveData<EditorUiModel> get() = _intentUiModel
 
     private var _brightnessFilter = MutableLiveData<ColorMatrixColorFilter>()
     val brightnessFilter: LiveData<ColorMatrixColorFilter> get() = _brightnessFilter
@@ -67,11 +68,11 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setIntentDetailUiModel(data: EditorDetailUiModel) {
-        _intentUiModel.postValue(data)
+        _intentDetailUiModel.postValue(data)
     }
 
     fun setIntentUiModel(data: EditorUiModel) {
-        _intentStateList.postValue(data)
+        _intentUiModel.postValue(data)
     }
 
     fun setBrightness(value: Float?) {
@@ -134,27 +135,16 @@ class DetailEditorViewModel @Inject constructor(
     }
 
     fun setWatermarkFilterThumbnail(
-        implementedBaseBitmap: Bitmap,
-        buttonRef: Pair<ImageView, ImageView>
-    ) {
+        implementedBaseBitmap: Bitmap
+    ): Pair<Bitmap, Bitmap> {
         if (!watermarkFilterRepository.isAssetInitialize()) {
             initializeWatermarkAsset()
         }
 
-        watermarkFilterRepository.watermarkDrawerItem(
+        return watermarkFilterRepository.watermarkDrawerItem(
             implementedBaseBitmap,
             userSession.shopName
-        ).apply {
-            val roundedCorner =
-                resourceProvider.getWatermarkRoundCorner() ?: WATERMARK_CORNER_DEFAULT_SIZE
-
-            buttonRef.first.loadImageRounded(this.first, roundedCorner) {
-                centerCrop()
-            }
-            buttonRef.second.loadImageRounded(this.second, roundedCorner) {
-                centerCrop()
-            }
-        }
+        )
     }
 
     fun setRotate(
@@ -202,13 +192,12 @@ class DetailEditorViewModel @Inject constructor(
         }
 
     fun saveImageCache(
-        context: Context,
         bitmapParam: Bitmap,
         filename: String? = null,
         sourcePath: String
     ): File? {
         return saveImageRepository.saveToCache(
-            context, bitmapParam, filename, sourcePath
+            bitmapParam, filename, sourcePath
         )
     }
 
@@ -227,6 +216,5 @@ class DetailEditorViewModel @Inject constructor(
 
     companion object {
         private const val WATERMARK_TEXT_COLOR_DEFAULT = 0
-        private const val WATERMARK_CORNER_DEFAULT_SIZE = 0f
     }
 }

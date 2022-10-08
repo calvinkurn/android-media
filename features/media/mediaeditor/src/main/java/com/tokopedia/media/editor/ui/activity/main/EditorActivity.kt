@@ -112,7 +112,6 @@ class EditorActivity : BaseEditorActivity() {
         val listImageEditState = viewModel.editStateList.values.toList()
 
         viewModel.saveToGallery(
-            this,
             listImageEditState
         ) { imageResultList ->
             val result = EditorResult(

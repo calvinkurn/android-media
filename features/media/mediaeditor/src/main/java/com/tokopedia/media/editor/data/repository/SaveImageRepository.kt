@@ -22,7 +22,6 @@ import javax.inject.Inject
 
 interface SaveImageRepository {
     fun saveToCache(
-        context: Context,
         bitmapParam: Bitmap,
         filename: String? = null,
         sourcePath: String
@@ -30,15 +29,15 @@ interface SaveImageRepository {
 
     fun clearEditorCache()
     fun saveToGallery(
-        context: Context,
         imageList: List<String>,
         onFinish: (result: List<String>) -> Unit
     )
 }
 
-class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
+class SaveImageRepositoryImpl @Inject constructor(
+    private val context: Context
+) : SaveImageRepository {
     override fun saveToCache(
-        context: Context,
         bitmapParam: Bitmap,
         filename: String?,
         sourcePath: String
@@ -58,7 +57,6 @@ class SaveImageRepositoryImpl @Inject constructor() : SaveImageRepository {
     }
 
     override fun saveToGallery(
-        context: Context,
         imageList: List<String>,
         onFinish: (result: List<String>) -> Unit
     ) {
