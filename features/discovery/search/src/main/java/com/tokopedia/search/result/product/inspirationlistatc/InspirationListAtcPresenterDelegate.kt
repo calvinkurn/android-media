@@ -29,6 +29,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         private const val DEFAULT_USER_ID = "0"
     }
 
+    @Suppress("LateinitUsage")
     override lateinit var productAddedToCart: InspirationCarouselDataView.Option.Product
         private set
 
