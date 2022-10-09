@@ -79,7 +79,8 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                 ),
                 recipeFilterListener = RecipeFilterListener(
                     view = this,
-                    analytics = analytics
+                    analytics = analytics,
+                    pageName = pageName
                 ),
                 serverErrorListener = this,
                 serverErrorAnalytics = this,
@@ -324,8 +325,10 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
                             position = data.position.orZero(),
                             title = data.model.title
                         )
+                        analytics.clickRetryFailedUnBookmarkToaster()
                     }
                 )
+                analytics.impressFailedUnBookmarkToaster()
             } else {
                 showToaster(
                     message = message.ifEmpty { getString(R.string.tokopedianow_recipe_failed_add_bookmark) },

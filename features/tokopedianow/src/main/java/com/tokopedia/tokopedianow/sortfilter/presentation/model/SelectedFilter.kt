@@ -6,5 +6,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class SelectedFilter(
     val id: String,
-    val parentId: String = ""
+    val parentId: String = "",
+    val text: String = ""
 ): Parcelable

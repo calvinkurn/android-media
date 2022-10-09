@@ -29,9 +29,11 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 
-class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
-    SortFilterViewHolderListener,
-    ChipListener {
+class TokoNowSortFilterBottomSheet(
+    private val tracker: TokoNowSortFilterTracker?
+): BottomSheetUnify(),
+   SortFilterViewHolderListener,
+   ChipListener {
 
     companion object {
         const val LAST_BOUGHT = 1
@@ -41,8 +43,8 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
 
         private val TAG = TokoNowSortFilterBottomSheet::class.simpleName
 
-        fun newInstance(): TokoNowSortFilterBottomSheet {
-            return TokoNowSortFilterBottomSheet()
+        fun newInstance(tracker: TokoNowSortFilterTracker? = null): TokoNowSortFilterBottomSheet {
+            return TokoNowSortFilterBottomSheet(tracker)
         }
     }
 
@@ -133,7 +135,7 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         }
 
         return ArrayList(selectedChip.map {
-            SelectedFilter(it.id, it.parentId)
+            SelectedFilter(it.id, it.parentId, it.text)
         })
     }
 
@@ -174,9 +176,16 @@ class TokoNowSortFilterBottomSheet : BottomSheetUnify(),
         btnApplyFilter?.setOnClickListener {
             val intent = Intent()
             intent.putExtra(SORT_VALUE, sortValue)
-            intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, getSelectedFilters())
+            val selectedFilters = getSelectedFilters()
+            tracker?.trackApplyFilters(selectedFilters)
+            intent.putParcelableArrayListExtra(EXTRA_SELECTED_FILTER, selectedFilters)
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
     }
+
+    interface TokoNowSortFilterTracker {
+        fun trackApplyFilters(filters: List<SelectedFilter>)
+    }
+
 }
