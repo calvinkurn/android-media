@@ -10,7 +10,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.analytics.Inspira
 import javax.inject.Inject
 
 class InspirationListAtcActivityResult @Inject constructor(
-    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
+    private val inspirationListAtcPresenter: InspirationListAtcPresenter,
     private val inspirationListAtcView: InspirationListAtcView,
     searchParameterProvider: SearchParameterProvider,
 ): SearchParameterProvider by searchParameterProvider {
@@ -22,9 +22,9 @@ class InspirationListAtcActivityResult @Inject constructor(
     fun handleOnActivityResult(context: Context, requestCode: Int, data: Intent?) {
         AtcVariantHelper.onActivityResultAtcVariant(context, requestCode, data) {
             if (this.requestCode == REQUEST_CODE_CHECKOUT) {
-                val product = inspirationListAtcPresenterDelegate.productAddedToCart
+                val product = inspirationListAtcPresenter.productAddedToCart
 
-                product?.let {
+                product.let {
                     val trackingData =
                         InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
                             product,

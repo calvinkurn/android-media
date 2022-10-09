@@ -11,6 +11,7 @@ import com.tokopedia.search.di.module.TrackingQueueModule
 import com.tokopedia.search.di.module.UserSessionModule
 import com.tokopedia.search.di.module.StaggeredGridLayoutManagerModule
 import com.tokopedia.search.di.module.RecycledViewPoolModule
+import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.domain.usecase.getdynamicfilter.GetDynamicFilterGqlUseCaseModule
 import com.tokopedia.search.result.domain.usecase.getinspirationcarouselchips.GetInspirationCarouselChipsProductUseCaseModule
@@ -21,7 +22,6 @@ import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUse
 import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListenerModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
 import com.tokopedia.search.result.product.pagination.PaginationModule

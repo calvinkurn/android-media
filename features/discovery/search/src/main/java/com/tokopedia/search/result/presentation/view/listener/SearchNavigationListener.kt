@@ -10,13 +10,3 @@ interface SearchNavigationListener {
     fun updateSearchParameter(searchParameter: SearchParameter?)
     fun updateSearchBarNotification()
 }
-
-@Module
-internal class SearchNavigationListenerModule(
-    private val searchNavigationListener: SearchNavigationListener?
-) {
-
-    @SearchScope
-    @Provides
-    fun provideSearchNavigationListener(): SearchNavigationListener? = searchNavigationListener
-}

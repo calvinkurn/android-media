@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
@@ -10,8 +11,8 @@ import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
-import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
 import io.mockk.*
@@ -31,6 +32,26 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         SearchApiConst.USER_ID to "0",
     )
     private val expectedDimension90 = Dimension90Utils.getDimension90(searchParameter)
+    private val clickedProductTest = InspirationCarouselDataView.Option.Product(
+        id = "3747018003",
+        name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",
+    )
+
+    private val clickedProductWithVariantTest = InspirationCarouselDataView.Option.Product(
+        id = "2773621125",
+        name = "Edifier R1080BT Wireless Bluetooth Small Speaker Subwoofer 2.0 Wooden",
+        parentId = "123123",
+    )
+
+    private val expectedType = "same_shop"
+
+    private val expectedAtcSuccessResponse = AddToCartDataModel(
+        data = DataModel(
+            cartId = "123123",
+            quantity = 1,
+            message = arrayListOf("1 Barang berhasil di tambahkan ke keranjang")
+        )
+    )
 
     @Test
     fun `Show inspiration list atc carousel`() {
@@ -90,17 +111,15 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `When user click add to cart non variant`() {
         inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
-            InspirationCarouselDataView.Option.Product(),
-            ""
+            clickedProductTest,
+            expectedType
         )
     }
 
     private fun `When user click add to cart with variant`() {
         inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
-            InspirationCarouselDataView.Option.Product(
-                parentId = "123123"
-            ),
-            ""
+            clickedProductWithVariantTest,
+            expectedType
         )
     }
 
@@ -112,8 +131,8 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Then verify variant bottomsheet will show`() {
         verify {
-            inspirationListAtcView.openVariantBottomSheet(any(), any())
-            inspirationListAtcView.trackAddToCartVariant(any())
+            inspirationListAtcView.openVariantBottomSheet(clickedProductWithVariantTest, expectedType)
+            inspirationListAtcView.trackAddToCartVariant(clickedProductWithVariantTest)
         }
     }
 
@@ -134,7 +153,7 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Given Add to cart is succeed`() {
         every { addToCartUseCase.execute(any(), any()) }.answers {
-            firstArg<(AddToCartDataModel?) -> Unit>().invoke(AddToCartDataModel())
+            firstArg<(AddToCartDataModel?) -> Unit>().invoke(expectedAtcSuccessResponse)
         }
     }
 
@@ -146,14 +165,25 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
 
     private fun `Then verify toaster has opened`() {
         verify {
-            inspirationListAtcView.openAddToCartToaster(any(), any())
+            inspirationListAtcView.openAddToCartToaster(
+                expectedAtcSuccessResponse.data.message.first(),
+                true,
+            )
         }
     }
 
     private fun `Then verify item click and add to card has been fired`() {
+        val expectedTrackData = InspirationCarouselTrackingUnification.Data(
+            "",
+            clickedProductTest,
+            "",
+            expectedAtcSuccessResponse.data.cartId,
+            expectedAtcSuccessResponse.data.quantity,
+        )
+
         verify {
-            inspirationListAtcView.trackItemClick(any())
-            inspirationListAtcView.trackAddToCart(any())
+            inspirationListAtcView.trackItemClick(expectedTrackData)
+            inspirationListAtcView.trackAddToCart(expectedTrackData)
         }
     }
 
@@ -188,9 +218,6 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
                     visitable.shouldBeInstanceOf<InspirationListAtcDataView>(
                         "visitable list at index $index should be InspirationListAtcDataView"
                     )
-                    (visitable as InspirationListAtcDataView).assertInspirationListAtcDataView(
-                        searchProductModel.searchInspirationCarousel.data[0]
-                    )
                 }
                 else -> {
                     visitable.shouldBeInstanceOf<ProductItemDataView>(
@@ -199,34 +226,5 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
                 }
             }
         }
-    }
-
-    private fun InspirationListAtcDataView.assertInspirationListAtcDataView(
-        expectedData: SearchProductModel.InspirationCarouselData
-    ) {
-        this.type shouldBe expectedData.type
-
-        val option = this.option
-        val expectedOption = expectedData.inspirationCarouselOptions.first()
-        option.layout shouldBe expectedData.layout
-        option.position shouldBe expectedData.position
-        option.title shouldBe expectedOption.title
-        option.trackingOption shouldBe expectedData.trackingOption.toInt()
-        option.url shouldBe expectedOption.url
-        option.applink shouldBe expectedOption.applink
-        option.bannerImageUrl shouldBe expectedOption.bannerImageUrl
-        option.bannerLinkUrl shouldBe expectedOption.bannerLinkUrl
-        option.bannerApplinkUrl shouldBe expectedOption.bannerApplinkUrl
-        option.componentId shouldBe expectedOption.componentId
-        option.dimension90 shouldBe expectedDimension90
-        option.product.assert(
-            expectedOption.inspirationCarouselProducts,
-            expectedData.title,
-            expectedData.type,
-            expectedData.layout,
-            1,
-            expectedOption.title,
-            expectedDimension90,
-        )
     }
 }

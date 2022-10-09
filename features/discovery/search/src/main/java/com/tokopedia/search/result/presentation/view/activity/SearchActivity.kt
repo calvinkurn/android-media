@@ -32,7 +32,6 @@ import com.tokopedia.search.result.presentation.view.adapter.SearchSectionPagerA
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.viewmodel.SearchViewModel
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_TRACE
 import com.tokopedia.search.result.product.performancemonitoring.searchProductPerformanceMonitoring
@@ -48,7 +47,6 @@ import com.tokopedia.telemetry.ITelemetryActivity
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
-import kotlinx.android.synthetic.main.search_activity_search.*
 import java.net.URLEncoder
 import javax.inject.Inject
 import javax.inject.Named

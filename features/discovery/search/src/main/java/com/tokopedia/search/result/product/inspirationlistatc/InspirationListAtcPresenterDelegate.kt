@@ -29,7 +29,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         private const val DEFAULT_USER_ID = "0"
     }
 
-    var productAddedToCart: InspirationCarouselDataView.Option.Product? = null
+    override lateinit var productAddedToCart: InspirationCarouselDataView.Option.Product
+        private set
 
     override fun onListAtcItemAddToCart(
         product: InspirationCarouselDataView.Option.Product,
@@ -52,7 +53,7 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
         val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
         inspirationListAtcView.openAddToCartToaster(message, true)
 
-        val product = productAddedToCart ?: InspirationCarouselDataView.Option.Product()
+        val product = productAddedToCart
         val cartId = addToCartDataModel?.data?.cartId ?: ""
         val quantity = addToCartDataModel?.data?.quantity ?: 0
 

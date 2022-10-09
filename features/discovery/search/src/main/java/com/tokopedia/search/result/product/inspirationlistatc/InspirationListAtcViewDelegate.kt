@@ -114,10 +114,6 @@ class InspirationListAtcViewDelegate @Inject constructor(
     }
 
     override fun trackAdsClick(product: InspirationCarouselDataView.Option.Product) {
-        sendTrackingClickInspirationCarouselAds(product)
-    }
-
-    private fun sendTrackingClickInspirationCarouselAds(product: InspirationCarouselDataView.Option.Product) {
         topAdsUrlHitter.hitClickUrl(
             className,
             product.topAdsClickUrl,
