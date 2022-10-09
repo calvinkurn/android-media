@@ -17,7 +17,6 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics.getTracker
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_APPLY_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_FAILED_LOAD_PAGE
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_BACK_NO_SEARCH_RESULT
@@ -36,7 +35,6 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_SEARCH_BAR_NO_SEARCH_RESULT
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_CLICK_UNBOOKMARK
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_APPLY_FILTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_BOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_FAILED_BOOKMARK_TOASTER
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_FAILED_UNBOOKMARK_TOASTER
@@ -44,13 +42,7 @@ import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTIO
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_RECIPE_CARD
 import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics.ACTION.EVENT_ACTION_IMPRESS_TOASTER_UNBOOKMARK
 import com.tokopedia.tokopedianow.recipelist.base.fragment.BaseTokoNowRecipeListFragment
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_DURATION
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_PORTION
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
-import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_TAG_ID
 import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
-import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.user.session.UserSessionInterface
 
@@ -97,8 +89,6 @@ class RecipeListAnalytics (
         const val EVENT_ACTION_IMPRESS_FAILED_UNBOOKMARK_TOASTER = "impression failed unbookmark"
         const val EVENT_ACTION_CLICK_RETRY_FAILED_BOOKMARK_TOASTER = "click retry bookmark"
         const val EVENT_ACTION_CLICK_RETRY_FAILED_UNBOOKMARK_TOASTER = "click retry unbookmark"
-        const val EVENT_ACTION_IMPRESS_APPLY_FILTER = "impression apply filter"
-        const val EVENT_ACTION_CLICK_APPLY_FILTER = "click apply filter"
     }
 
     private val category: String
@@ -376,38 +366,6 @@ class RecipeListAnalytics (
                 event = EVENT_CLICK_PG,
                 action = EVENT_ACTION_CLICK_RESET_FILTER,
                 category = category
-            )
-        )
-    }
-
-    fun impressApplyFilter() {
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_VIEW_PG_IRIS,
-                action = EVENT_ACTION_IMPRESS_APPLY_FILTER,
-                category = category
-            )
-        )
-    }
-
-    fun clickApplyFilter(filters: List<SelectedFilter>) {
-        val map = mutableMapOf<String, String>()
-        map[PARAM_SORT_BY] = "null"
-        map[PARAM_INGREDIENT_ID] = "null"
-        map[PARAM_DURATION] = "null"
-        map[PARAM_PORTION] = "null"
-        map[PARAM_TAG_ID] = "null"
-
-        filters.forEach {
-            map[it.parentId] = it.text
-        }
-
-        TokoNowCommonAnalytics.hitCommonTracker(
-            TokoNowCommonAnalytics.getDataLayer(
-                event = EVENT_CLICK_PG,
-                action = EVENT_ACTION_CLICK_APPLY_FILTER,
-                category = category,
-                label = map.values.joinToString(" - ")
             )
         )
     }

@@ -17,13 +17,12 @@ import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.setMaxHeight
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder.SectionHeaderListener
-import com.tokopedia.tokopedianow.recipelist.analytics.RecipeListAnalytics
+import com.tokopedia.tokopedianow.recipelist.analytics.RecipeFilterAnalytics
 import com.tokopedia.tokopedianow.recipelist.di.component.DaggerRecipeListComponent
 import com.tokopedia.tokopedianow.recipelist.presentation.viewmodel.TokoNowRecipeFilterViewModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.EXTRA_SELECTED_FILTER
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class TokoNowRecipeFilterFragment : Fragment(), TokoNowSortFilterBottomSheet.TokoNowSortFilterTracker {
@@ -47,9 +46,6 @@ class TokoNowRecipeFilterFragment : Fragment(), TokoNowSortFilterBottomSheet.Tok
     }
 
     @Inject
-    lateinit var userSession: UserSessionInterface
-
-    @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
     private val viewModel by lazy {
@@ -58,10 +54,8 @@ class TokoNowRecipeFilterFragment : Fragment(), TokoNowSortFilterBottomSheet.Tok
     }
 
     private val analytics by lazy {
-        RecipeListAnalytics(
-            userSession = userSession,
-            pageName = arguments?.getString(EXTRA_PAGE_NAME).orEmpty(),
-            warehouseId = ""
+        RecipeFilterAnalytics(
+            pageName = arguments?.getString(EXTRA_PAGE_NAME).orEmpty()
         )
     }
 
