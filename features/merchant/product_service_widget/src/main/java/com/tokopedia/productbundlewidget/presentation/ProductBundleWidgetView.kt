@@ -14,14 +14,10 @@ import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
+import com.tokopedia.productbundlewidget.adapter.ProductBundleWidgetAdapter
+import com.tokopedia.productbundlewidget.listener.ProductBundleListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
-import com.tokopedia.productbundlewidget.model.GetBundleParam
-import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
-import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
-import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
-import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject

@@ -12,11 +12,6 @@ import com.tokopedia.product_bundle.common.data.model.response.BundleItem
 import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_service_widget.R
-import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
-import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import javax.inject.Inject
 
 class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext private val context: Context) {

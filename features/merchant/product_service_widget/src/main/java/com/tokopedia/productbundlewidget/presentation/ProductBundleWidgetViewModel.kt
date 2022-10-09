@@ -9,9 +9,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.product_bundle.common.data.model.request.*
 import com.tokopedia.product_bundle.common.usecase.GetBundleInfoUseCase
+import com.tokopedia.productbundlewidget.model.BundleUiModel
 import com.tokopedia.productbundlewidget.model.GetBundleParam
 import com.tokopedia.productbundlewidget.model.ProductBundleWidgetUiMapper
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 

@@ -76,5 +76,11 @@
     <string name="bundlewidget_action_button_text">Lihat Paket</string>
     <string name="bundlewidget_min_order_format">Isi %d</string>
     <string name="bundlewidget_saving_amount_format">Hemat <![CDATA[<b>%s</b>]]></string>
+    <string name="shop_page_product_bundle_atc_button_text">+ Keranjang</string>
+    <string name="shop_page_product_bundle_preorder_button_text">PreOrder</string>
+    <string name="shop_page_product_single_bundle_package_text">Paket:</string>
+    <string name="shop_page_product_bundle_count">1 Barang</string>
+    <string name="product_bundle_action_button_text">Lihat Paket</string>
+    <string name="product_bundle_bundle_sold">Terjual %d</string>
 
 </resources>

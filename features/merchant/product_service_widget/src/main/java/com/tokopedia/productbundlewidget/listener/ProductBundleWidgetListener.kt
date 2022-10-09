@@ -1,8 +1,8 @@
 package com.tokopedia.productbundlewidget.listener
 
-import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
+import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 interface ProductBundleWidgetListener {
 
