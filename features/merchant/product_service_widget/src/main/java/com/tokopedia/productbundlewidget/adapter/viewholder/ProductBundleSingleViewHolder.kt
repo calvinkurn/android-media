@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productbundlewidget.adapter.ProductBundleSingleAdapter
-import com.tokopedia.productbundlewidget.listener.ProductBundleListener
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
@@ -33,7 +33,7 @@ class ProductBundleSingleViewHolder(
     }
 
     private var viewBinding: ItemProductbundleSingleWidgetBinding? by viewBinding()
-    private var listener: ProductBundleListener? = null
+    private var listener: ProductBundleAdapterListener? = null
     private var typographyBundleName: Typography? = null
     private var typographyBundlePreOrder: Typography? = null
     private var typographyBundleProductName: Typography? = null
@@ -114,7 +114,7 @@ class ProductBundleSingleViewHolder(
         }
 
         buttonAtc?.setOnClickListener {
-            listener?.addSingleBundleToCart(
+            listener?.onSingleBundleActionButtonClicked(
                 bundleDetail,
                 product
             )
@@ -191,7 +191,7 @@ class ProductBundleSingleViewHolder(
         }
     }
 
-    fun setListener(listener: ProductBundleListener?) {
+    fun setListener(listener: ProductBundleAdapterListener?) {
         this.listener = listener
     }
 

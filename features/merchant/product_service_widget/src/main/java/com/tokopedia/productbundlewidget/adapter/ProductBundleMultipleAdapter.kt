@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleMultiplePackageViewHolder
-import com.tokopedia.productbundlewidget.listener.ProductBundleListener
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 class ProductBundleMultipleAdapter(
-    private val listener: ProductBundleListener?
+    private val listener: ProductBundleAdapterListener?
 ) : RecyclerView.Adapter<ProductBundleMultiplePackageViewHolder>() {
 
     private var bundleProducts: List<BundleProductUiModel> = listOf()

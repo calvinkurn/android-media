@@ -11,7 +11,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productbundlewidget.adapter.ProductBundleMultipleAdapter
-import com.tokopedia.productbundlewidget.listener.ProductBundleListener
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleShopUiModel
@@ -35,7 +35,7 @@ class ProductBundleMultipleViewHolder(
     }
 
     private var viewBinding: ItemProductbundleMultipleWidgetBinding? by viewBinding()
-    private var listener: ProductBundleListener? = null
+    private var listener: ProductBundleAdapterListener? = null
     private var typographyBundleName: Typography? = null
     private var typographyBundleProductDisplayPrice: Typography? = null
     private var typographyBundleProductOriginalPrice: Typography? = null
@@ -150,14 +150,14 @@ class ProductBundleMultipleViewHolder(
         }
 
         buttonAtc?.setOnClickListener {
-            listener?.addMultipleBundleToCart(
+            listener?.onMultipleBundleActionButtonClicked(
                 bundleDetail,
                 products
             )
         }
     }
 
-    fun setListener(listener: ProductBundleListener?) {
+    fun setListener(listener: ProductBundleAdapterListener?) {
         this.listener = listener
     }
 }

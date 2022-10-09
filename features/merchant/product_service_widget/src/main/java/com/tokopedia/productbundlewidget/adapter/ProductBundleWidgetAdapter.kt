@@ -9,7 +9,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleMultipleViewHolder
 import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleSingleViewHolder
-import com.tokopedia.productbundlewidget.listener.ProductBundleListener
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
@@ -22,7 +22,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     private var bundleListItem: List<BundleUiModel> = listOf()
-    private var listener: ProductBundleListener? = null
+    private var listener: ProductBundleAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
@@ -87,7 +87,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         notifyDataSetChanged()
     }
 
-    fun setListener(listener: ProductBundleListener) {
+    fun setListener(listener: ProductBundleAdapterListener) {
         this.listener = listener
     }
 

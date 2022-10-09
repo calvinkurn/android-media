@@ -5,7 +5,7 @@ import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleTypes
 import com.tokopedia.productbundlewidget.model.BundleUiModel
 
-interface ProductBundleListener {
+interface ProductBundleAdapterListener {
 
     fun onBundleProductClicked(
         bundleType: BundleTypes,
@@ -15,12 +15,12 @@ interface ProductBundleListener {
         productItemPosition: Int
     )
 
-    fun addMultipleBundleToCart(
+    fun onMultipleBundleActionButtonClicked(
         selectedMultipleBundle: BundleDetailUiModel,
         productDetails: List<BundleProductUiModel>
     )
 
-    fun addSingleBundleToCart(
+    fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     )

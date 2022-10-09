@@ -15,14 +15,14 @@ import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.productbundlewidget.adapter.ProductBundleWidgetAdapter
-import com.tokopedia.productbundlewidget.listener.ProductBundleListener
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
-class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
+class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     @Inject
     lateinit var viewModel: ProductBundleWidgetViewModel
@@ -55,7 +55,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         listener?.onBundleProductClicked(bundle, selectedMultipleBundle, selectedProduct)
     }
 
-    override fun addMultipleBundleToCart(
+    override fun onMultipleBundleActionButtonClicked(
         selectedMultipleBundle: BundleDetailUiModel,
         productDetails: List<BundleProductUiModel>
     ) {
@@ -64,7 +64,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleListener {
         listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
     }
 
-    override fun addSingleBundleToCart(
+    override fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     ) {
