@@ -54,8 +54,8 @@ class ProductBundleSingleViewHolder(
             typographyBundleProductName = tvBundleProductSingleName
             typographyBundleProductDisplayPrice = tvBundleDisplayPrice
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
-            typographyBundleProductSavingAmount = tvSavingAmountPriceWording
-            buttonAtc = btnBundleAtc
+            typographyBundleProductSavingAmount = bundleWidgetHeaderFooter.tvSavingAmountPriceWording
+            buttonAtc = bundleWidgetHeaderFooter.btnBundleAtc
             labelBundleDiscount = labelDiscountBundle
             imageBundleProduct = ivBundleImage
             rvBundleDetails = rvBundleSinglePackage

@@ -53,8 +53,8 @@ class ProductBundleMultipleViewHolder(
             typographyBundleProductOriginalPrice = tvBundleOriginalPrice
             typographyBundlePreOrder = bundleWidgetHeaderContainer.tvBundlePreorder
             labelBundleDiscount = labelDiscountBundle
-            typographyBundleProductSavingAmount = tvSavingAmountPriceWording
-            buttonAtc = btnBundleAtc
+            typographyBundleProductSavingAmount = bundleWidgetHeaderFooter.tvSavingAmountPriceWording
+            buttonAtc = bundleWidgetHeaderFooter.btnBundleAtc
             rvBundleProducts = rvMultipleBundleProducts
             widgetContainer = bundleWidgetContainer
         }
