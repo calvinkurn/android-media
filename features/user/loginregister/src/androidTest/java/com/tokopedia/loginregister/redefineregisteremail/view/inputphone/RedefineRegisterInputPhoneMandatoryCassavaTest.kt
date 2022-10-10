@@ -23,6 +23,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEm
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel
 import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.test.application.annotations.CassavaTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -64,75 +65,48 @@ class RedefineRegisterInputPhoneMandatoryCassavaTest {
         repositoryStub = fakeBaseComponent.repository() as RedefineRegisterRepositoryStub
     }
 
-    @Test
-    fun test_all_cases() {
-        click_button_secondary_on_confirm_dialog()
-        click_button_primary_on_confirm_dialog()
-        click_button_secondary_on_offering_login_dialog()
-        click_button_primary_on_offering_login_dialog()
-        failed_register_check()
-        user_success_register()
-        user_failed_register()
-
-        checkCassavaTest()
+    @After
+    fun finish() {
+        activityTestRule.finishActivity()
     }
 
-    private fun click_button_secondary_on_offering_login_dialog() {
-        repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_EXIST)
+    @Test
+    fun click_button_secondary_on_offering_login_dialog() {
+        repositoryStub.setResponseQueue(
+            RedefineRegisterTestState.REGISTER_CHECK_EXIST,
+            RedefineRegisterTestState.REGISTER_CHECK_EXIST
+        )
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         inputValidPhone()
         clickSubmit()
         clickSecondaryButtonDialog()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun click_button_primary_on_offering_login_dialog() {
-        repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_EXIST)
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
-
-        inputValidPhone()
         clickSubmit()
         clickPrimaryButtonDialog()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_329)
     }
 
-    private fun click_button_secondary_on_confirm_dialog() {
-        repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST)
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
-
-        inputValidPhone()
-        clickSubmit()
-        clickSecondaryButtonDialog()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun click_button_primary_on_confirm_dialog() {
-        repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST)
+    @Test
+    fun click_button_on_confirm_dialog() {
+        repositoryStub.setResponseQueue(
+            RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
+            RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST
+        )
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
         intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
 
         inputValidPhone()
         clickSubmit()
+        clickSecondaryButtonDialog()
+        clickSubmit()
         clickPrimaryButtonDialog()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_328)
     }
 
-    private fun failed_register_check() {
-        repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_FAILED)
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
-
-        inputValidPhone()
-        clickSubmit()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun user_failed_register() {
+    @Test
+    fun user_failed_register() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
             RedefineRegisterTestState.REGISTER_V2_FAILED
@@ -144,10 +118,11 @@ class RedefineRegisterInputPhoneMandatoryCassavaTest {
         clickSubmit()
         clickPrimaryButtonDialog()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_330)
     }
 
-    private fun user_success_register() {
+    @Test
+    fun user_success_register() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
@@ -160,18 +135,20 @@ class RedefineRegisterInputPhoneMandatoryCassavaTest {
         clickSubmit()
         clickPrimaryButtonDialog()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_330)
     }
 
-    private fun checkCassavaTest() {
+    private fun checkCassavaTest(queryId: String) {
         ViewMatchers.assertThat(
-            cassavaRule.validate(QUERY_ID),
+            cassavaRule.validate(queryId),
             hasAllSuccess()
         )
     }
 
     companion object {
-        private const val QUERY_ID = "308"
+        private const val TEST_CASE_ID_330 = "330"
+        private const val TEST_CASE_ID_329 = "329"
+        private const val TEST_CASE_ID_328 = "328"
     }
 
 }

@@ -24,6 +24,7 @@ import com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEm
 import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel
 import com.tokopedia.loginregister.utils.respondWithOk
 import com.tokopedia.test.application.annotations.CassavaTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,7 +54,7 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
     fun setUp() {
         val paramOptional = RedefineParamUiModel(isRequiredInputPhone = false)
         bundleOptional = Bundle()
-        bundleOptional.putParcelable("parameter", paramOptional)
+        bundleOptional.putParcelable(PARAMETER, paramOptional)
 
         val fakeBaseComponent = DaggerFakeRedefineRegisterComponent.builder()
             .fakeRedefineRegisterModule(FakeRedefineRegisterModule(applicationContext.applicationContext))
@@ -65,98 +66,25 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
         repositoryStub = fakeBaseComponent.repository() as RedefineRegisterRepositoryStub
     }
 
-    @Test
-    fun test_all_cases() {
-        init_register_v2_then_failed()
-        init_register_v2_and_failed_get_user_info()
-        init_register_then_success()
-        user_profile_validate_then_data_invalid()
-        user_profile_validate_and_data_valid_then_failed_update_data()
-        user_profile_validate_and_data_valid_then_click_primary_button_dialog()
-        user_profile_validate_and_data_valid_then_click_secondary_button_dialog()
-        success_register_then_click_lewati()
-
-        checkCassavaTest()
+    @After
+    fun finish() {
+        activityTestRule.finishActivity()
     }
 
-    private fun init_register_v2_then_failed() {
+    @Test
+    fun init_register_v2_then_failed() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_V2_FAILED)
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_327)
     }
 
-    private fun init_register_v2_and_failed_get_user_info() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_FAILED
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun init_register_then_success() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun user_profile_validate_then_data_invalid() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
-            RedefineRegisterTestState.USER_PROFILE_VALIDATE_INVALID
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
-
-        inputValidPhone()
-        clickSubmit()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun user_profile_validate_and_data_valid_then_failed_update_data() {
+    @Test
+    fun user_profile_validate_then_show_confirm_phone_dialog() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
             RedefineRegisterTestState.USER_PROFILE_VALIDATE_VALID,
-            RedefineRegisterTestState.USER_PROFILE_UPDATE_FAILED
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
-        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-
-        inputValidPhone()
-        clickSubmit()
-        clickPrimaryButtonDialog()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun user_profile_validate_and_data_valid_then_click_primary_button_dialog() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
-            RedefineRegisterTestState.USER_PROFILE_VALIDATE_VALID
-        )
-        activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
-        intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
-
-        inputValidPhone()
-        clickSubmit()
-        clickPrimaryButtonDialog()
-
-        activityTestRule.finishActivity()
-    }
-
-    private fun user_profile_validate_and_data_valid_then_click_secondary_button_dialog() {
-        repositoryStub.setResponseQueue(
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
             RedefineRegisterTestState.USER_PROFILE_VALIDATE_VALID
         )
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
@@ -165,11 +93,14 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
         inputValidPhone()
         clickSubmit()
         clickSecondaryButtonDialog()
+        clickSubmit()
+        clickPrimaryButtonDialog()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_324)
     }
 
-    private fun success_register_then_click_lewati() {
+    @Test
+    fun success_register_then_click_lewati() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -179,18 +110,22 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
 
         clickLewati()
 
-        activityTestRule.finishActivity()
+        checkCassavaTest(TEST_CASE_ID_326)
     }
 
-    private fun checkCassavaTest() {
+    private fun checkCassavaTest(queryId: String) {
         ViewMatchers.assertThat(
-            cassavaRule.validate(QUERY_ID),
+            cassavaRule.validate(queryId),
             hasAllSuccess()
         )
     }
 
     companion object {
-        private const val QUERY_ID = "322"
+        private const val PARAMETER = "parameter"
+
+        private const val TEST_CASE_ID_327 = "327"
+        private const val TEST_CASE_ID_324 = "324"
+        private const val TEST_CASE_ID_326 = "326"
     }
 
 }

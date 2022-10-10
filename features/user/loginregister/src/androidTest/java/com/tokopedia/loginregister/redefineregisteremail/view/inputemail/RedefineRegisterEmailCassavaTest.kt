@@ -18,6 +18,7 @@ import com.tokopedia.loginregister.redefineregisteremail.stub.di.DaggerFakeRedef
 import com.tokopedia.loginregister.redefineregisteremail.stub.di.FakeRedefineRegisterModule
 import com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEmailActivity
 import com.tokopedia.test.application.annotations.CassavaTest
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -53,6 +54,11 @@ class RedefineRegisterEmailCassavaTest {
         repositoryStub = fakeBaseComponent.repository() as RedefineRegisterRepositoryStub
     }
 
+    @After
+    fun finish() {
+        activityTestRule.finishActivity()
+    }
+
     @Test
     fun input_registered_phone_then_show_dialog_offering_login() {
         repositoryStub.setResponseQueue(
@@ -64,7 +70,6 @@ class RedefineRegisterEmailCassavaTest {
         inputValidValue()
         clickSubmit()
 
-        activityTestRule.finishActivity()
         checkCassavaTest()
     }
 
