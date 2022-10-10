@@ -27,7 +27,6 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaType
 import com.tokopedia.createpost.createpost.R
 import com.tokopedia.createpost.di.CreatePostModule
 import com.tokopedia.createpost.di.DaggerCreatePostComponent
-import com.tokopedia.createpost.domain.usecase.UploadMultipleImageUsecaseNew
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import com.tokopedia.createpost.view.fragment.ContentCreateCaptionFragment
 import com.tokopedia.createpost.view.fragment.CreatePostPreviewFragmentNew
@@ -66,7 +65,6 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
         super.onCreate(savedInstanceState)
-        UploadMultipleImageUsecaseNew.mContext = applicationContext as Application?
     }
 
     override fun onAttachFragment(fragment: Fragment) {

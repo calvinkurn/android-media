@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
@@ -31,7 +33,7 @@ import dagger.Provides
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module(includes = [ImageUploaderModule::class, VideoUploaderModule::class])
+@Module
 class CreatePostCommonModule(private val context: Context) {
 
     @Provides
@@ -44,24 +46,6 @@ class CreatePostCommonModule(private val context: Context) {
     @ApplicationContext
     fun provideApplicationContext(): Context {
         return context.applicationContext
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideUploadImageUseCase(
-            @ImageUploaderQualifier uploadImageRepository: UploadImageRepository,
-            @ImageUploaderQualifier generateHostRepository: GenerateHostRepository,
-            @ImageUploaderQualifier gson: Gson,
-            @ImageUploaderQualifier userSession: UserSessionInterface,
-            @ImageUploaderQualifier imageUploaderUtils: ImageUploaderUtils): UploadImageUseCase<UploadImageResponse> {
-        return UploadImageUseCase(
-                uploadImageRepository,
-                generateHostRepository,
-                gson,
-                userSession,
-                UploadImageResponse::class.java,
-                imageUploaderUtils
-        )
     }
 
     @Provides
@@ -83,17 +67,7 @@ class CreatePostCommonModule(private val context: Context) {
 
     @Provides
     @CreatePostScope
-    fun provideUploadVideoUseCase(
-            @VideoUploaderQualifier uploadVideoApi: UploadVideoApi,
-            @VideoUploaderQualifier gson: Gson,
-            generateVideoTokenUseCase: GenerateVideoTokenUseCase):
-            UploadVideoUseCase<DefaultUploadVideoResponse> {
-        return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideGraphQlRepository(@ApplicationContext context: Context): GraphqlRepository {
+    fun provideGraphQlRepository(): GraphqlRepository {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
@@ -114,4 +88,9 @@ class CreatePostCommonModule(private val context: Context) {
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
+
+//    @Provides
+//    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+//        return CoroutineDispatchersProvider
+//    }
 }

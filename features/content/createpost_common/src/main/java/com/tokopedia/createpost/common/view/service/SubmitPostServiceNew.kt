@@ -7,6 +7,8 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -21,6 +23,7 @@ import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import rx.Subscriber
@@ -43,6 +46,9 @@ class SubmitPostServiceNew : JobIntentServiceX() {
 
     private var postUpdateProgressManager: com.tokopedia.createpost.common.view.util.PostUpdateProgressManager? = null
 
+    /** TODO: bind with job */
+    /** TODO: change this with injection */
+    private val scope = CoroutineScope(CoroutineDispatchersProvider.io)
 
     companion object {
         private const val JOB_ID = 13131314
@@ -78,8 +84,8 @@ class SubmitPostServiceNew : JobIntentServiceX() {
 
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
-        submitPostUseCase.execute(
-            SubmitPostUseCaseNew.createRequestParams(
+        scope.launchCatchError(block = {
+            val result = submitPostUseCase.executeOnBackground(
                 viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
@@ -91,9 +97,53 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 },
                 if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
                 else viewModel.productIdList, viewModel.completeImageList,
-                 viewModel.mediaWidth,
-                 viewModel.mediaHeight
-            ), getSubscriber())
+                viewModel.mediaWidth,
+                viewModel.mediaHeight
+            )
+
+            if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+                postUpdateProgressManager?.onFailedPost(
+                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                        this@SubmitPostServiceNew,
+                        RuntimeException()
+                    )
+                )
+                return@launchCatchError
+            } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
+                postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+                return@launchCatchError
+            }
+
+
+            postUpdateProgressManager?.onSuccessPost()
+            sendBroadcast()
+            postContentToOtherService(result.feedContentSubmit.meta.content)
+            addFlagOnCreatePostSuccess()
+        }) {
+            postUpdateProgressManager?.onFailedPost(
+                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                    this@SubmitPostServiceNew,
+                    it,
+                )
+            )
+        }
+
+//        submitPostUseCase.execute(
+//            SubmitPostUseCaseNew.createRequestParams(
+//                viewModel.postId,
+//                viewModel.authorType,
+//                viewModel.token,
+//                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
+//                else userSession.shopId,
+//                viewModel.caption,
+//                viewModel.completeImageList.map {
+//                    getFileAbsolutePath(it.path)!! to it.type
+//                },
+//                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+//                else viewModel.productIdList, viewModel.completeImageList,
+//                 viewModel.mediaWidth,
+//                 viewModel.mediaHeight
+//            ), getSubscriber())
     }
 
     private fun getFileAbsolutePath(path: String): String? {
@@ -168,6 +218,12 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
             }
         }
+    }
+
+    private fun sendBroadcast() {
+        val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
+        intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
     }
 
     private fun postContentToOtherService(content: Content) {
