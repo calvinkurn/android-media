@@ -140,7 +140,7 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = sortFilter.title, color = textColor)
+            UnifyTypography(text = sortFilter.title, textStyle = LocalTypography.current.display2.copy(color = textColor))
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
