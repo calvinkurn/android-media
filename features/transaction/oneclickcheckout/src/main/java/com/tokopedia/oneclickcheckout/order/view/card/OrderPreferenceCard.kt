@@ -264,7 +264,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             // todo need to adjust format wording in instan
             // instan (durasi)
             // price
-            // description
             tvShippingCourier.text = root.context.getString(
                 R.string.lbl_shipping_with_name_and_price,
                 "${shipping.serviceName}",
@@ -283,9 +282,8 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             } else {
                 tvShippingCourierEta.gone()
             }
-            // todo field kurir otomatis dipilih tokopedia
-            val description = "Kurir Otomatis dipilih Tokopedia"
-            if (description.isNotEmpty()) {
+            val description = shipment.whitelabelDescription
+            if (description?.isNotEmpty() == true) {
                 tvShippingCourierNotes.text = description
                 tvShippingCourierNotes.weightType = Typography.DISPLAY_3
                 tvShippingCourierNotes.visible()
