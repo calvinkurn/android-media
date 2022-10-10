@@ -26,7 +26,8 @@ data class UnificationWidgetUiModel(
     override var emptyState: WidgetEmptyStateUiModel,
     override var impressHolder: ImpressHolder = ImpressHolder(),
     override var isNeedToBeRemoved: Boolean = false,
-    override var showLoadingState: Boolean = false
+    override var showLoadingState: Boolean = false,
+    override var useRealtime: Boolean = false,
 ) : BaseWidgetUiModel<UnificationDataUiModel> {
 
     override fun copyWidget(): BaseWidgetUiModel<UnificationDataUiModel> {

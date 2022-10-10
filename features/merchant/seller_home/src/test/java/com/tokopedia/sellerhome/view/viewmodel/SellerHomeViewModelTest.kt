@@ -88,14 +88,11 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
@@ -3228,7 +3225,7 @@ class SellerHomeViewModelTest {
                 isFromCache = false,
                 isNeedToBeRemoved = false,
                 emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                isComparePeriodeOnly = false
+                isComparePeriodOnly = false
             ),
             RecommendationWidgetUiModel(
                 id = DATA_KEY_RECOMMENDATION,

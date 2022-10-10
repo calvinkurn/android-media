@@ -385,7 +385,7 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            isComparePeriodeOnly = widget.isComparePeriodOnly
+            isComparePeriodOnly = widget.isComparePeriodOnly
         )
     }
 

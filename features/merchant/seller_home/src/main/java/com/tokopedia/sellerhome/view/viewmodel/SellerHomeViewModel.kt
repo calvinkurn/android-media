@@ -2,6 +2,7 @@ package com.tokopedia.sellerhome.view.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -53,6 +54,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeCommonSSE
+import com.tokopedia.sellerhomecommon.sse.model.SSEModel
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -62,9 +65,11 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 import javax.inject.Inject
@@ -96,6 +101,7 @@ class SellerHomeViewModel @Inject constructor(
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
+    private val sellerHomeSse: Lazy<SellerHomeCommonSSE>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
@@ -105,6 +111,7 @@ class SellerHomeViewModel @Inject constructor(
         private const val TICKER_PAGE_NAME = "seller"
     }
 
+    private var sseJob: Job? = null
     private val shopId: String by lazy { userSession.get().shopId }
     private val dynamicParameter by lazy {
         val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
@@ -195,6 +202,11 @@ class SellerHomeViewModel @Inject constructor(
         )
     }
 
+    override fun onCleared() {
+        super.onCleared()
+        stopSSE()
+    }
+
     fun getTicker() {
         launchCatchError(block = {
             val useCase = getTickerUseCase.get()
@@ -241,11 +253,16 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
+                    connectSSE(widgets)
+                }
             } else {
-                getDataFromUseCase(useCase, _widgetLayout) { result, isFromCache ->
-                    sellerHomeLayoutHelper.get().getInitialWidget(result, heightDp, isFromCache)
+                getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
+                    val initialWidgetFlow = sellerHomeLayoutHelper.get()
+                        .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
+                    connectSSE(widgets)
+                    return@getDataFromUseCase initialWidgetFlow
                 }
             }
         }, onError = {
@@ -471,16 +488,21 @@ class SellerHomeViewModel @Inject constructor(
 
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>
+        liveData: MutableLiveData<Result<T>>,
+        onResult: (widgets: T) -> Unit = {}
     ) {
         try {
             useCase.setUseCache(false)
-            liveData.value = Success(useCase.executeUseCase())
+            val result = useCase.executeUseCase()
+            liveData.value = Success(result)
+            onResult(result)
         } catch (networkException: Exception) {
             if (remoteConfig.isSellerHomeDashboardCachingEnabled()) {
                 try {
                     useCase.setUseCache(true)
-                    liveData.value = Success(useCase.executeUseCase())
+                    val result = useCase.executeUseCase()
+                    liveData.value = Success(result)
+                    onResult(result)
                 } catch (_: Exception) {
                     throw networkException
                 }
@@ -493,7 +515,7 @@ class SellerHomeViewModel @Inject constructor(
     private suspend fun <T : Any> getDataFromUseCase(
         useCase: BaseGqlUseCase<T>,
         liveData: MutableLiveData<Result<T>>,
-        getTransformerFlow: suspend (result: T, isFromCache: Boolean) -> Flow<T>
+        getTransformerFlow: suspend (widgets: T, isFromCache: Boolean) -> Flow<T>
     ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
@@ -512,5 +534,25 @@ class SellerHomeViewModel @Inject constructor(
         getTransformerFlow(useCaseResult, false).collect {
             liveData.value = Success(it)
         }
+    }
+
+    private fun connectSSE(widgets: List<BaseWidgetUiModel<*>>) {
+        sseJob?.cancel()
+        sseJob = viewModelScope.launch(dispatcher.io) {
+            val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
+            sellerHomeSse.get().connect(SELLER_HOME_PAGE_NAME, dataKeys)
+            sellerHomeSse.get().listen().collect {
+                handleSSEMessage(it)
+            }
+        }
+    }
+
+    private fun handleSSEMessage(sseModel: SSEModel) {
+        println("SSE : $sseModel")
+    }
+
+    private fun stopSSE() {
+        sseJob?.cancel()
+        sellerHomeSse.get().close()
     }
 }

@@ -145,7 +145,7 @@ class MultiLineGraphViewHolder(
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setOnMetricStateChanged(metric: MultiLineMetricUiModel) {
-        if (element?.isComparePeriodeOnly == true) {
+        if (element?.isComparePeriodOnly == true) {
             metricsAdapter.items.forEach {
                 it.isSelected = (it == metric)
             }

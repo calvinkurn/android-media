@@ -26,7 +26,8 @@ data class CardWidgetUiModel(
     override var isFromCache: Boolean,
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false,
-    override var emptyState: WidgetEmptyStateUiModel
+    override var emptyState: WidgetEmptyStateUiModel,
+    override var useRealtime: Boolean = false,
 ) : BaseWidgetUiModel<CardDataUiModel> {
 
     override fun type(typeFactory: WidgetAdapterFactory): Int {
