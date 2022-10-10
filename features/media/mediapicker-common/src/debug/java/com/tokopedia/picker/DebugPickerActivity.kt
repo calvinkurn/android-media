@@ -1,6 +1,5 @@
 package com.tokopedia.picker
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +7,14 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
-import com.tokopedia.picker.common.*
+import com.tokopedia.picker.common.EXTRA_EDITOR_PARAM
+import com.tokopedia.picker.common.EXTRA_PICKER_PARAM
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
+import com.tokopedia.picker.common.EditorParam
+import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.PickerParam
+import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.picker.common.R
 import com.tokopedia.picker.common.databinding.ActivityPickerDebugBinding
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
@@ -46,7 +52,7 @@ class DebugPickerActivity : AppCompatActivity(), DebugDrawerSelectionWidget.List
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == REQUEST_PICKER_CODE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_PICKER_CODE && resultCode == RESULT_OK) {
             val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
 
             val rawList = elements.editedImages.mapIndexed { index, imagePath ->
