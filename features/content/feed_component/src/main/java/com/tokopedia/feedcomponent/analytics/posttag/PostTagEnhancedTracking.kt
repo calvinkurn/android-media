@@ -60,7 +60,7 @@ class PostTagEnhancedTracking {
 
         fun createProductMap(product: Product) : Map<String, Any> {
             val map = java.util.HashMap<String, Any>()
-            map[KEY_ID] = product.id.toString()
+            map[KEY_ID] = product.id
             map[KEY_NAME] = product.name
             map[KEY_PRICE] = product.price
             map[KEY_BRAND] = product.brand
@@ -72,13 +72,13 @@ class PostTagEnhancedTracking {
         }
     }
 
-    class Product(id: Int, name: String, price: Int, brand: String, category: String,
+    class Product(id: String, name: String, price: String, brand: String, category: String,
                     variant: String, list: String, position: Int) {
-        var id: Int = 0
+        var id: String = ""
             internal set
         var name: String
             internal set
-        var price: Int = 0
+        var price: String = ""
             internal set
         var brand: String
             internal set

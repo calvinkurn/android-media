@@ -309,7 +309,8 @@ object AtcCommonMapper {
                                  atcMessage: String? = null,
                                  shouldRefreshPreviousPage: Boolean? = null,
                                  isFollowShop: Boolean? = null,
-                                 requestCode: Int? = null): ProductVariantResult {
+                                 requestCode: Int? = null,
+                                 cartId: String? = null): ProductVariantResult {
         val result = recentData?.copy() ?: ProductVariantResult()
 
         if (selectedProductId != null) result.selectedProductId = selectedProductId
@@ -319,6 +320,7 @@ object AtcCommonMapper {
         if (shouldRefreshPreviousPage != null) result.shouldRefreshPreviousPage = shouldRefreshPreviousPage
         if (requestCode != null) result.requestCode = requestCode
         if (isFollowShop != null) result.isFollowShop = isFollowShop
+        if (cartId != null) result.cartId = cartId
 
         return result
     }

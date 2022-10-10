@@ -4,6 +4,7 @@ object ChatbotConstant {
 
     const val TOKOPEDIA_ATTACH_INVOICE_REQ_CODE = 114
     const val REQUEST_CODE_CHAT_IMAGE = 115
+    const val REQUEST_CODE_CHAT_VIDEO = 116
     const val REQUEST_SUBMIT_FEEDBACK = 909
     const val REQUEST_SUBMIT_CSAT = 911
     const val ONE_SECOND_IN_MILLISECONDS = 1000
@@ -44,8 +45,9 @@ object ChatbotConstant {
 
     object AttachmentType {
         const val TYPE_SECURE_IMAGE_UPLOAD = "26"
-        const val TYPE_REPLY_BUBBLE = "28"
+        const val TYPE_VIDEO_UPLOAD = "30"
         const val SESSION_CHANGE = "31"
+        const val TYPE_REPLY_BUBBLE = "28"
     }
 
     object ChatbotUnification{
@@ -92,5 +94,13 @@ object ChatbotConstant {
 
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
+    const val VIDEO_URL = "chatbot-video-url"
 
+    object VideoUpload {
+        const val SOURCE_ID_FOR_VIDEO_UPLOAD = "fLapDZ"
+        const val MAX_VIDEO_COUNT = 5
+        const val MAX_IMAGE_COUNT = 3
+        const val MAX_MEDIA_ITEM_COUNT = 0
+        const val MAX_DURATION_FOR_VIDEO = 300000
+    }
 }

@@ -1,7 +1,9 @@
 package com.tokopedia.loginregister.registerinitial.tracker
 
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -75,7 +77,7 @@ class RegisterInitialTest: RegisterInitialBase() {
     private fun checkRegisterEmail() {
         Thread.sleep(1000)
 
-        onView(withId(R.id.input_email_phone))
+        onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
                 .perform(replaceText(""))
                 .perform(typeText(emailNotRegistered))
 
