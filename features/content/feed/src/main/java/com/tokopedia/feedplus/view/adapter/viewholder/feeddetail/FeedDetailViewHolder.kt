@@ -6,7 +6,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
@@ -17,6 +16,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.feedcomponent.R as feedComponentR
 import kotlin.math.roundToInt
 
 /**
@@ -104,7 +104,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", feedDetailProductModel.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
+            val soldInfoText = getString(feedComponentR.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
 
             soldInfo.text = soldInfoText
             star.showWithCondition(feedDetailProductModel.rating != 0)
@@ -121,7 +121,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
                 btnAddToCart.apply {
                     isEnabled = false
                     text =
-                        getString(com.tokopedia.feedcomponent.R.string.btn_add_to_cart_text_disabled)
+                        getString(feedComponentR.string.btn_add_to_cart_text_disabled)
                 }
             }
             btnAddToCart.setOnClickListener {
@@ -144,7 +144,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     }
 
     override fun bind(element: FeedDetailProductModel?, payloads: MutableList<Any>) {
-        if (payloads.firstOrNull() as Int == PAYLOAD_CLICK_WISHLIST) {
+        if (payloads.firstOrNull() is Int && (payloads.firstOrNull() as Int == PAYLOAD_CLICK_WISHLIST)) {
             element?.isWishlisted = true
             setWishlistIconStateColor(true)
         }
@@ -152,13 +152,13 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
 
     private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View) {
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(
+            MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color
+                feedComponentR.color.feed_dms_asgc_progress_0_color
             ),
-            ContextCompat.getColor(
+            MethodChecker.getColor(
                 itemView.context,
-                com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color
+                feedComponentR.color.feed_dms_asgc_progress_100_color
             )
         )
         itemView.run {

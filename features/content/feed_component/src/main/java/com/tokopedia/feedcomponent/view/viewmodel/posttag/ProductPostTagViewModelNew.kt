@@ -42,7 +42,6 @@ data class ProductPostTagViewModelNew(
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)
-
     }
 
     val isRilisanSpl: Boolean
@@ -57,10 +56,7 @@ data class ProductPostTagViewModelNew(
     companion object {
         private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
-        const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
-        const val PRODUCT_TYPE = "product"
-
     }
 }
