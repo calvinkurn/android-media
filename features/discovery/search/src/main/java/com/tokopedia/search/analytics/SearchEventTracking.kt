@@ -26,6 +26,7 @@ interface SearchEventTracking {
             const val SORT_BY = "sort by"
             const val TOP_NAV_SEARCH_RESULT_PAGE = "top nav - search result page"
             const val SEARCH_RESULT_PAGE = "search result page"
+            const val SRP_SEARCH = "srp_search"
         }
     }
 
