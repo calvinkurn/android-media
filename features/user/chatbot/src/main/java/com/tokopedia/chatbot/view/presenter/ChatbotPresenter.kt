@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -67,7 +66,6 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
-import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
@@ -108,7 +106,6 @@ import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
@@ -184,7 +181,6 @@ class ChatbotPresenter @Inject constructor(
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val QUERY_SOURCE_TYPE = "Apps"
-        const val SESSION_CHANGE = "31"
     }
 
     override fun clearText() {

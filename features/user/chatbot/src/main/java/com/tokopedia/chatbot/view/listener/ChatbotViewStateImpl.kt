@@ -59,7 +59,6 @@ class ChatbotViewStateImpl(
     attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
     override val toolbar: Toolbar,
     private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
-    private val onChatMenuButtonClicked: () -> Unit,
     val sendAnalytics: (impressionType: String) -> Unit
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 

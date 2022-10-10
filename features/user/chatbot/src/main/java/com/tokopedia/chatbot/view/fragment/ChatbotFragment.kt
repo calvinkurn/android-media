@@ -151,7 +151,6 @@ import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -353,8 +352,6 @@ class ChatbotFragment :
     override fun getScreenName(): String {
         return ""
     }
-
-    lateinit var textWatcher: TextWatcher
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val bundle = this.arguments
@@ -838,7 +835,7 @@ class ChatbotFragment :
             if (view != null) {
                 Toaster.make(
                     requireView(),
-                    ErrorHandler.getErrorMessage(view!!.context, it),
+                    ErrorHandler.getErrorMessage(requireView().context, it),
                     Snackbar.LENGTH_LONG,
                     Toaster.TYPE_ERROR
                 )
@@ -1647,7 +1644,7 @@ class ChatbotFragment :
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer.composeReplyData(messageUiModel, "", true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    replyBubbleContainer?.composeReplyData(messageUiModel, "", true, getUserNameForReplyBubble.getUserName(messageUiModel))
                     bottomSheetPage.dismiss()
                 }
             }
@@ -1679,9 +1676,9 @@ class ChatbotFragment :
     override fun visibilityReplyBubble(state: Boolean) {
         if (!state) {
             replyBubbleContainer?.referredMsg = null
-            replyBubbleContainer.hide()
+            replyBubbleContainer?.hide()
         } else {
-            replyBubbleContainer.show()
+            replyBubbleContainer?.show()
         }
     }
 

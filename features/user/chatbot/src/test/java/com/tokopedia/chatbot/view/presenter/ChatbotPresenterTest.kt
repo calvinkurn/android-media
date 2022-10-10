@@ -20,9 +20,9 @@ import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
@@ -53,10 +53,10 @@ import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.mediauploader.UploaderUseCase
-import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -76,7 +76,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -395,10 +394,9 @@ class ChatbotPresenterTest {
     fun `checkLinkForRedirection success resoList not empty`() {
         val response = mockk<ResoLinkResponse>(relaxed = true)
         val stickyButtonStatus = true
-        var expectedButtonStatus = true
+        val expectedButtonStatus = true
         val mockOrderData =
             mockk<List<ResoLinkResponse.GetResolutionLink.ResolutionLinkData.Order>>(relaxed = true)
-        val expectedDynamicLink = "Dynamic Link"
 
         coEvery {
             getResolutionLinkUseCase.getResoLinkResponse(any())
@@ -408,7 +406,7 @@ class ChatbotPresenterTest {
             response.getResolutionLink?.resolutionLinkData?.orderList
         } returns mockOrderData
 
-        presenter.checkLinkForRedirection("123","123", {}, {}, {})
+        presenter.checkLinkForRedirection("123", "123", {}, {}, {})
 
         assertEquals(stickyButtonStatus, expectedButtonStatus)
     }
@@ -438,7 +436,7 @@ class ChatbotPresenterTest {
             mockOrderData.firstOrNull()?.dynamicLink
         } returns expectedDynamicLink
 
-        presenter.checkLinkForRedirection("123","123", {}, {}, {})
+        presenter.checkLinkForRedirection("123", "123", {}, {}, {})
 
         assertEquals(stickyButtonStatus, expectedButtonStatus)
     }
@@ -452,7 +450,7 @@ class ChatbotPresenterTest {
             getResolutionLinkUseCase.getResoLinkResponse(any())
         } throws throwable
 
-        presenter.checkLinkForRedirection("123", "123",{}, {}, { throwable ->
+        presenter.checkLinkForRedirection("123", "123", {}, {}, { throwable ->
             result = throwable
         })
 
@@ -483,7 +481,7 @@ class ChatbotPresenterTest {
     fun `showTickerData success with null tickerdata`() {
         val response = TickerDataResponse(
             ChipGetActiveTickerV4(
-                "",null
+                "", null
             )
         )
 
@@ -493,7 +491,7 @@ class ChatbotPresenterTest {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
 
-        presenter.showTickerData("123",)
+        presenter.showTickerData("123")
 
         verify(exactly = 0) {
             view.onSuccessGetTickerData(any())
@@ -503,7 +501,7 @@ class ChatbotPresenterTest {
     @Test
     fun `showTickerData success with null ChipGetActiveTickerV4`() {
         val response = TickerDataResponse(
-           null
+            null
         )
 
         coEvery {
@@ -512,7 +510,7 @@ class ChatbotPresenterTest {
             firstArg<(TickerDataResponse) -> Unit>().invoke(response)
         }
 
-        presenter.showTickerData("123",)
+        presenter.showTickerData("123")
 
         verify(exactly = 0) {
             view.onSuccessGetTickerData(any())
@@ -527,7 +525,7 @@ class ChatbotPresenterTest {
             secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
 
-        presenter.showTickerData("123",)
+        presenter.showTickerData("123")
 
         verify {
             view.onError(any())
@@ -544,7 +542,7 @@ class ChatbotPresenterTest {
             firstArg<(SubmitCsatGqlResponse) -> Unit>().invoke(response)
         }
 
-        presenter.submitCsatRating("123",InputItem(0, "", "", "", "", "", ""))
+        presenter.submitCsatRating("123", InputItem(0, "", "", "", "", "", ""))
 
         verify {
             view.onSuccessSubmitCsatRating(any())
@@ -559,7 +557,7 @@ class ChatbotPresenterTest {
             secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
         }
 
-        presenter.submitCsatRating("123",InputItem(0, "", "", "", "", "", ""))
+        presenter.submitCsatRating("123", InputItem(0, "", "", "", "", "", ""))
 
         verify {
             view.onError(any())
@@ -909,7 +907,10 @@ class ChatbotPresenterTest {
             response.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
         } returns ratingListResponse
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123456") { chipGetChatRatingList ->
+        presenter.getChatRatingList(
+            ChipGetChatRatingListInput(),
+            "123456"
+        ) { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
@@ -926,7 +927,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(),"123") {}
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123") {}
 
         verify {
             exception.printStackTrace()
@@ -1779,7 +1780,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `sendVideoAttachment message via socket success` () {
+    fun `sendVideoAttachment message via socket success`() {
         mockkObject(RxWebSocket)
         mockkObject(SendChatbotWebsocketParam)
 
@@ -1797,7 +1798,7 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendVideoAttachment("","","")
+        presenter.sendVideoAttachment("", "", "")
 
         verify {
             RxWebSocket.send(
@@ -1812,7 +1813,7 @@ class ChatbotPresenterTest {
     @Test
     fun `startNewUploadMediaJob success when uploaderUseCase returns success`() {
         val response = mockk<UploadResult.Success>(relaxed = true)
-        var result : String? = null
+        var result: String? = null
 
         coEvery {
             uploaderUseCase.invoke(any())
@@ -1833,9 +1834,9 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure` () {
+    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure`() {
         val response = mockk<UploadResult.Error>(relaxed = true)
-        var message : String? = null
+        var message: String? = null
 
         coEvery {
             uploaderUseCase.invoke(any())
@@ -1855,7 +1856,7 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `startNewUploadMediaJob failure` () {
+    fun `startNewUploadMediaJob failure`() {
 
         coEvery {
             uploaderUseCase.invoke(any())
@@ -1872,6 +1873,8 @@ class ChatbotPresenterTest {
         verify {
             presenter.updateMediaUploadResults(any(), any())
         }
+    }
+
     private fun getAttachSingleInvoiceUiModel(hashMap: Map<String, String>): AttachInvoiceSingleUiModel {
         return AttachInvoiceSingleUiModel(
             typeString = "",
@@ -1890,15 +1893,17 @@ class ChatbotPresenterTest {
         )
     }
 
-    }
-
     @Test
     fun `checkUploadVideoEligibility success`() {
 
         val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
 
         coEvery {
-            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(captureLambda(), any(), any())
+            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
+                captureLambda(),
+                any(),
+                any()
+            )
         } coAnswers {
             firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
         }
@@ -1937,6 +1942,7 @@ class ChatbotPresenterTest {
             color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
         )
     }
+
     private fun getMapForArticleEntry(): Map<String, String> {
         return mapOf(
             ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",

@@ -16,6 +16,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListUiModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 
 /**
@@ -93,7 +94,5 @@ interface ChatbotViewState : BaseChatViewState {
     )
     fun hideDummyVideoAttachment()
 
-    fun onSendingMessage(messageId: String, userId: String, name: String, sendMessage: String,
-                         startTime: String,parentReply: ParentReply?)
     fun hideQuickReplyOnClick()
 }
