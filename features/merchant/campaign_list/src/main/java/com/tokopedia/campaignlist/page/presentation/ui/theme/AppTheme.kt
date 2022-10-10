@@ -13,17 +13,16 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.unit.dp
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.color.TokopediaColor
-import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN700
-import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN700Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN700
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN700Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.getColor
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.LocalElevations
 import com.tokopedia.campaignlist.page.presentation.ui.font.AppTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
-import com.tokopedia.campaignlist.page.presentation.ui.shape.RoundedShapes
 
 
 private val UnifyThemeLight = lightColors(

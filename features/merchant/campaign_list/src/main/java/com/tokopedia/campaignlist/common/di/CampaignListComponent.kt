@@ -3,7 +3,6 @@ package com.tokopedia.campaignlist.common.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.campaignlist.page.presentation.activity.CampaignListActivity
 import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListComposeFragment
-import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListFragment
 import dagger.Component
 
 @CampaignListScope
@@ -13,7 +12,5 @@ import dagger.Component
 interface CampaignListComponent {
 
     fun inject(campaignListActivity: CampaignListActivity)
-
-    fun inject(campaignListFragment: CampaignListFragment)
     fun inject(campaignListFragment: CampaignListComposeFragment)
 }
