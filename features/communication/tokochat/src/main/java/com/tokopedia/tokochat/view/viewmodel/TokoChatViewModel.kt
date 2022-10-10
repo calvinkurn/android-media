@@ -208,7 +208,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getTokoChatBackground() {
-        launchCatchError(context = dispatcher.io, block = {
+        launchCatchError(block = {
             getTokoChatBackgroundUseCase(Unit).collect {
                 _chatBackground.value = Success(it)
             }
@@ -218,7 +218,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun loadChatRoomTicker() {
-        launchCatchError(context = dispatcher.io, block = {
+        launchCatchError(block = {
             val result = getTokoChatRoomTickerUseCase(GetTokoChatRoomTickerUseCase.PARAM_TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {
