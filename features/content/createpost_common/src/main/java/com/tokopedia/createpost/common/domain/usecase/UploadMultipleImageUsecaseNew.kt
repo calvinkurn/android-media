@@ -59,9 +59,8 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         when(result) {
             is UploadResult.Success -> {
                 if(isVideo(medium)) {
-                   medium.videoID = result.uploadId
-                   medium.mediaURL = result.videoUrl
-                    medium.type = SubmitPostMedium.TYPE_MEDIA_VIDEO_UPLOAD_ID
+                    medium.videoID = result.uploadId
+                    medium.mediaURL = result.videoUrl
                 }
                 else {
                     medium.mediaUploadID = result.uploadId
