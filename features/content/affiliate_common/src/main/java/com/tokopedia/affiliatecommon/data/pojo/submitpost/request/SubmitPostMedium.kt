@@ -32,5 +32,6 @@ data class SubmitPostMedium(
     companion object {
         const val TYPE_IMAGE = "image"
         const val TYPE_VIDEO = "video"
+        const val TYPE_MEDIA_UPLOAD_ID = "image-uploadID"
     }
 }

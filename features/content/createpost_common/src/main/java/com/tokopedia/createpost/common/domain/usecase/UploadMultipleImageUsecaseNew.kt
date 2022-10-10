@@ -67,6 +67,8 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
                     medium.mediaURL = ""
                 }
 
+                medium.type = SubmitPostMedium.TYPE_MEDIA_UPLOAD_ID
+
                 deleteCacheFile()
             }
         }
