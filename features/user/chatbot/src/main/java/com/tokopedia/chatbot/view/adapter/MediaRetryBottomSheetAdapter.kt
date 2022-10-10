@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.databinding.RetryUploadImageBottomSheetItemBinding
 import com.tokopedia.unifyprinciples.Typography
 
 class MediaRetryBottomSheetAdapter(private val onBottomSheetItemClicked: (position: Int) -> Unit) : RecyclerView.Adapter<MediaRetryBottomSheetAdapter.MediaRetryBottomSheetViewHoder>() {

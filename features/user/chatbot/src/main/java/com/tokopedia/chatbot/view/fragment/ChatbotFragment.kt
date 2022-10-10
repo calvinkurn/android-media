@@ -96,9 +96,6 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
-import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
-import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
-import com.tokopedia.chatbot.databinding.RetryUploadImageBottomSheetLayoutBinding
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
@@ -352,8 +349,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun getScreenName(): String {
         return ""
     }
-
-    lateinit var textWatcher: TextWatcher
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -823,7 +818,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
-            replyBubbleContainer.setReplyListener(this)
+            replyBubbleContainer?.setReplyListener(this)
         }
     }
 
@@ -842,7 +837,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 updateHasNextState(chatReplies)
                 updateHasNextAfterState(chatReplies)
                 enableLoadMore()
-                replyBubbleContainer.setReplyListener(this)
+                replyBubbleContainer?.setReplyListener(this)
             }
 
         }
@@ -1753,7 +1748,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer.composeReplyData(
+                    replyBubbleContainer?.composeReplyData(
                         messageUiModel,
                         "",
                         true,
@@ -1782,10 +1777,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun visibilityReplyBubble(state: Boolean) {
         if (!state) {
-            replyBubbleContainer.referredMsg = null
-            replyBubbleContainer.hide()
+            replyBubbleContainer?.referredMsg = null
+            replyBubbleContainer?.hide()
         } else {
-            replyBubbleContainer.show()
+            replyBubbleContainer?.show()
         }
     }
 
@@ -2054,9 +2049,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
         isFloatingInvoiceCancelled = isRemoved
-        if (this::textWatcher.isInitialized)
+        if (textWatcher != null)
             replyEditText.removeTextChangedListener(textWatcher)
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _viewBinding = null
