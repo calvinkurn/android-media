@@ -399,6 +399,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
 
     private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.addOnText.isNotEmpty()) {
+            // todo priority gifting
             binding.addonInfoWidgetLayout.root.visible()
             binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
             binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
