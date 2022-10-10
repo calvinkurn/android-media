@@ -30,6 +30,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
@@ -125,6 +126,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
+        return shipmentFragment
+    }
+
+    @Provides
+    @CheckoutScope
+    fun provideUploadPrescriptionListener(): UploadPrescriptionListener {
         return shipmentFragment
     }
 

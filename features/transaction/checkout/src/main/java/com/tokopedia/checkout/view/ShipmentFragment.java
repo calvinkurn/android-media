@@ -95,6 +95,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionListener;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionViewHolder;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
 import com.tokopedia.common.payment.PaymentConstant;
@@ -208,7 +209,7 @@ import rx.schedulers.Schedulers;
 public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentContract.View,
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
-        PromoNotEligibleActionListener, SellerCashbackListener,
+        PromoNotEligibleActionListener, SellerCashbackListener, UploadPrescriptionListener,
         ExpireTimeDialogListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;

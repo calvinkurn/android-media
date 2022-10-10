@@ -14,7 +14,7 @@ import com.tokopedia.unifyprinciples.Typography
 
 class UploadPrescriptionViewHolder(
     val view: View,
-    val uploadPrescriptionAction: (UploadPrescriptionUiModel) -> Unit
+    val listener: UploadPrescriptionListener
 ) : RecyclerView.ViewHolder(view) {
 
     private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
@@ -44,7 +44,7 @@ class UploadPrescriptionViewHolder(
             uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
         uploadPrescriptionLayout.setOnClickListener {
-            uploadPrescriptionAction(uploadPrescriptionUiModel)
+            listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
 
         if(uploadPrescriptionUiModel.isError){
