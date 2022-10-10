@@ -13,9 +13,6 @@ private fun ImagePolicyResponse.generateToPDP(
             ImageGeneratorConstants.ImageGeneratorKeys.BEBAS_ONGKIR_TYPE -> {
                 imagePolicy.toRequestParam(data.bebasOngkirType)
             }
-            ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
-                imagePolicy.toRequestParam(data.productImageUrl)
-            }
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_TITLE -> {
                 imagePolicy.toRequestParam(data.productPrice.toString())
             }
