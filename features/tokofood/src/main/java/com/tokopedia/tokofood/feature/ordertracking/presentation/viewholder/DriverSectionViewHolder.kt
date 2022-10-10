@@ -78,7 +78,7 @@ class DriverSectionViewHolder(
 
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
-            val (isClickableCall, callIconColor) = getColorAndEnableIcons(root.context, isCallable)
+            val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isCallable)
 
             isClickable = isClickableCall
             setImage(IconUnify.CALL, callIconColor, callIconColor)
@@ -96,7 +96,7 @@ class DriverSectionViewHolder(
         goFoodOrderNumber: String
     ) {
         icDriverChat.run {
-            val (isClickableCall, callIconColor) = getColorAndEnableIcons(root.context, isEnableChat)
+            val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
 
             isClickable = isClickableCall
             setImage(IconUnify.CHAT, callIconColor, callIconColor)
@@ -110,7 +110,7 @@ class DriverSectionViewHolder(
     }
 
 
-    private fun getColorAndEnableIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int> {
+    private fun getIsEnableAndColorIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int> {
        return if (isEnable) {
             val nn900Color =
                 ContextCompat.getColor(
