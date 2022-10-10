@@ -20,7 +20,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_POSITION
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 
 /**
@@ -29,7 +29,6 @@ import javax.inject.Inject
  */
 
 class KolCommentNewActivity : BaseSimpleActivity() {
-    private var kolId: Int = 0
     private var fromApplink = false
     var postId: String? = ""
 
@@ -58,7 +57,7 @@ class KolCommentNewActivity : BaseSimpleActivity() {
         val bundle = Bundle()
         postId = intent.data?.lastPathSegment
         if (!postId.isNullOrEmpty()) {
-            bundle.putInt(ARGS_ID, postId.toIntOrZero())
+            bundle.putLong(ARGS_ID, postId.toLongOrZero())
         }
         if (intent.extras != null) {
             bundle.putAll(intent.extras)
@@ -75,7 +74,6 @@ class KolCommentNewActivity : BaseSimpleActivity() {
 
     private fun getDataFromIntent() {
         intent.data?.let {
-            kolId = it.lastPathSegment?.toIntOrNull() ?: 0
             it.getQueryParameter(ARGS_FROM_APPLINK)?.let { isAppLink ->
                 fromApplink = isAppLink == "true"
             }

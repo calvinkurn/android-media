@@ -121,6 +121,11 @@ class LoginTextView : LinearLayout {
         }
     }
 
+    fun setImage(image: Int) {
+        val imageUnify: ImageUnify = findViewById(R.id.provider_image)
+        imageUnify.loadImage(image)
+    }
+
     fun setColor(color: Int) {
         backgroundColorCustom = color
         shape?.setColor(color)

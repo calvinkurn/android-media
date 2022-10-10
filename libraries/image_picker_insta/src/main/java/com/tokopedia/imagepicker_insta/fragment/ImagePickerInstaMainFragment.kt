@@ -447,7 +447,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun openCamera() {
-        val isOpenFrom = (activity as? ImagePickerInstaActivity)?.isOpenFrom ?: 0
+        val isOpenFrom = (activity as? ImagePickerInstaActivity)?.isOpenFrom.orEmpty()
         CameraUtil.openCamera(
             this,
             (activity as? ImagePickerInstaActivity)?.applinkToNavigateAfterMediaCapture,
@@ -919,7 +919,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
         ) {
             val selectedFeedAccountId = data?.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
             viewModel.setSelectedFeedAccountId(selectedFeedAccountId)
-            (activity as? ImagePickerInstaActivity)?.isOpenFrom = data?.getIntExtra(BundleData.KEY_IS_OPEN_FROM,0) ?: 0
+            (activity as? ImagePickerInstaActivity)?.isOpenFrom = data?.getStringExtra(BundleData.KEY_IS_OPEN_FROM).orEmpty()
         }
     }
 

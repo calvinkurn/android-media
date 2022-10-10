@@ -36,7 +36,9 @@ object CatalogDetailMapper {
                     listOfComponents.add(CatalogProductsContainerDataModel(name = component.name, type = component.type,
                             catalogId = catalogGetDetailModular.basicInfo.id, catalogName = catalogGetDetailModular.basicInfo.name ?: "",
                             catalogUrl = catalogGetDetailModular.basicInfo.url,
-                            categoryId= catalogGetDetailModular.basicInfo.departmentID, catalogBrand = catalogGetDetailModular.basicInfo.brand
+                            categoryId= catalogGetDetailModular.basicInfo.departmentID,
+                            catalogBrand = catalogGetDetailModular.basicInfo.brand,
+                            productSortingStatus = catalogGetDetailModular.basicInfo.productSortingStatus
                         ))
                 }
 
@@ -64,6 +66,12 @@ object CatalogDetailMapper {
                                 baseCatalogTopSpecs,
                                 comparisonData))
                         }
+                    }
+                }
+
+                CatalogConstant.COMPARISON_NEW -> {
+                    component.data?.firstOrNull()?.let { comparisonDataNew ->
+                        listOfComponents.add(getNewComparisonComponent(catalogGetDetailModular, comparisonDataNew))
                     }
                 }
             }
@@ -128,10 +136,45 @@ object CatalogDetailMapper {
             keySet,baseCatalog,comparisonCatalog)
     }
 
+    private fun getNewComparisonComponent(catalogGetDetailModular: CatalogResponseData.CatalogGetDetailModular,
+                                          comparisonComponentDataNew: ComponentData) : CatalogComparisonNewDataModel {
+
+        val specsListCombined = arrayListOf<ComponentData.SpecList>()
+        specsListCombined.add(
+            ComponentData.SpecList("", arrayListOf(
+                ComponentData.SpecList.Subcard(
+                "","","",ComparisonNewModel(
+                        catalogGetDetailModular.basicInfo.id,
+                        catalogGetDetailModular.basicInfo.brand,
+                        catalogGetDetailModular.basicInfo.name,
+                        "${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.minFmt} - ${catalogGetDetailModular.basicInfo.marketPrice?.firstOrNull()?.maxFmt}",
+                        catalogGetDetailModular.basicInfo.catalogImage?.firstOrNull()?.imageURL
+                ),
+                    ComparisonNewModel(
+                        comparisonComponentDataNew.comparedData?.id ?: "",
+                        comparisonComponentDataNew.comparedData?.brand ?: "",
+                        comparisonComponentDataNew.comparedData?.name ?: "",
+                        "${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.minFmt} - ${comparisonComponentDataNew.comparedData?.marketPrice?.firstOrNull()?.maxFmt}",
+                        comparisonComponentDataNew.comparedData?.catalogImage?.firstOrNull()?.imageURL ?: "",
+                        )
+            )), false)
+        )
+
+        comparisonComponentDataNew.specList?.forEachIndexed { index, specList ->
+            if(index == 0){
+                specList.isExpanded = true
+            }
+            specsListCombined.add(specList)
+        }
+
+        comparisonComponentDataNew.specList = specsListCombined
+        return CatalogComparisonNewDataModel(CatalogConstant.COMPARISON_NEW, CatalogConstant.COMPARISON_NEW, comparisonComponentDataNew.specList)
+    }
+
     private fun mapIntoReviewDataModel(catalogName : String, catalogId : String, componentName : String,
                                        componentType : String, crudeReviewData: List<ComponentData>?)
     : List<BaseCatalogDataModel> {
-        val listOfReviewComponents = ArrayList<BaseCatalogDataModel>();
+        val listOfReviewComponents = ArrayList<BaseCatalogDataModel>()
         crudeReviewData?.firstOrNull()?.let {  componentData ->
             listOfReviewComponents.add(CatalogReviewDataModel(componentName, type = componentType,
                     data = ReviewComponentData(catalogName,catalogId,componentData.avgRating,componentData.reviews,

@@ -73,8 +73,9 @@
 
         <com.tokopedia.play_common.view.game.GiveawayWidgetView
             android:id="@+id/view_giveaway"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintWidth_percent="0.6"
             app:layout_constraintBottom_toBottomOf="@id/gl_giveaway_form_horizontal"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

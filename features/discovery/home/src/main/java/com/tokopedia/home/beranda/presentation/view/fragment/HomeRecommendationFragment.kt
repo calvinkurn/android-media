@@ -554,14 +554,10 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                         )
                     )
 
-                    if (wishlistResult.isUsingWishlistV2) {
-                        showMessageSuccessAddWishlistV2(wishlistResult)
-                        if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(
-                            productCardOptionsModel
-                        )
-                    } else {
-                        showMessageSuccessAddWishlist()
-                    }
+                    showMessageSuccessAddWishlistV2(wishlistResult)
+                    if (productCardOptionsModel.isTopAds) hitWishlistClickUrl(
+                        productCardOptionsModel
+                    )
 
                 } else {
                     TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -570,11 +566,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                             tabName
                         )
                     )
-                    if (wishlistResult.isUsingWishlistV2) {
-                        showMessageSuccessRemoveWishlistV2(wishlistResult)
-                    } else {
-                        showMessageSuccessRemoveWishlist()
-                    }
+                    showMessageSuccessRemoveWishlistV2(wishlistResult)
                 }
                 updateWishlist(
                     productCardOptionsModel.productId,
@@ -582,11 +574,7 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                     productCardOptionsModel.productPosition
                 )
             } else {
-                if (wishlistResult.isUsingWishlistV2) {
-                    showMessageFailedWishlistV2Action(wishlistResult)
-                } else {
-                    showMessageFailedWishlistAction()
-                }
+                showMessageFailedWishlistV2Action(wishlistResult)
             }
         } else {
             TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -621,47 +609,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
         }
     }
 
-    private fun showMessageSuccessAddWishlist() {
-        if (activity == null) return
-        val view = requireActivity().findViewById<View>(android.R.id.content)
-
-        val msg = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg)
-        val ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist)
-        view?.let {
-            Toaster.build(
-                it,
-                msg,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { goToWishlist() }).show()
-        }
-    }
-
-    private fun goToWishlist() {
-        if (activity == null) return
-        RouteManager.route(activity, ApplinkConst.NEW_WISHLIST)
-    }
-
-    private fun showMessageSuccessRemoveWishlist() {
-        if (activity == null) return
-        val view = requireActivity().findViewById<View>(android.R.id.content)
-
-        val msg =
-            getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg)
-        val ctaText =
-            getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist)
-        view?.let {
-            Toaster.build(
-                it,
-                msg,
-                Toaster.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                ctaText,
-                View.OnClickListener { goToWishlist() }).show()
-        }
-    }
-
     private fun showMessageSuccessRemoveWishlistV2(wishlistResult: ProductCardOptionsModel.WishlistResult) {
         if (activity == null) return
         val view = requireActivity().findViewById<View>(android.R.id.content)
@@ -671,19 +618,6 @@ open class HomeRecommendationFragment : Fragment(), HomeRecommendationListener, 
                 wishlistResult,
                 context,
                 view
-            )
-        }
-    }
-
-    private fun showMessageFailedWishlistAction() {
-        if (activity == null) return
-        val view = activity?.findViewById<View>(android.R.id.content)
-        view?.let {
-            Toaster.make(
-                it,
-                ErrorHandler.getErrorMessage(activity, null),
-                Snackbar.LENGTH_LONG,
-                Toaster.TYPE_ERROR
             )
         }
     }

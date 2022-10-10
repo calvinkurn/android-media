@@ -40,7 +40,7 @@ class BannerEventViewHolder(itemView: View, val listener: TrackingListener) : Ab
     override fun onPromoClick(p: Int) {
         el?.let {
             listener.clickBanner(it.layout.items.get(p), p)
-            RouteManager.route(context, it.layout.items.get(p).url)
+            RouteManager.route(context, it.layout.items.get(p).appUrl)
         }
     }
 

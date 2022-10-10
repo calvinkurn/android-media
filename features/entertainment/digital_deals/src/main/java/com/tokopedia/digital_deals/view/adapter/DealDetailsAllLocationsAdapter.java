@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.tokopedia.digital_deals.view.model.Outlet;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.digital_deals.view.utils.Utils;
 
 import java.util.ArrayList;
