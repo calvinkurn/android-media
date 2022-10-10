@@ -97,7 +97,6 @@ internal open class ProductListPresenterTestFixtures {
 
     protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
-    protected lateinit var inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate
 
     @Before
     open fun setUp() {
@@ -112,7 +111,7 @@ internal open class ProductListPresenterTestFixtures {
             productFilterIndicator,
         )
 
-        inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
+        val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
             addToCartUseCase,
             userSession,
             inspirationListAtcView,

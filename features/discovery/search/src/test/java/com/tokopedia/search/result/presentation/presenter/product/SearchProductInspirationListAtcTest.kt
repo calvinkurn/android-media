@@ -110,14 +110,14 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
     }
 
     private fun `When user click add to cart non variant`() {
-        inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
+        productListPresenter.onListAtcItemAddToCart(
             clickedProductTest,
             expectedType
         )
     }
 
     private fun `When user click add to cart with variant`() {
-        inspirationListAtcPresenterDelegate.onListAtcItemAddToCart(
+        productListPresenter.onListAtcItemAddToCart(
             clickedProductWithVariantTest,
             expectedType
         )
