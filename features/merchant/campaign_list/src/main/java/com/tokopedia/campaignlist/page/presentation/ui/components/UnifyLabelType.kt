@@ -1,4 +1,4 @@
-package com.tokopedia.campaignlist.page.presentation.ui
+package com.tokopedia.campaignlist.page.presentation.ui.components
 
 enum class UnifyLabelType {
     HIGHLIGHT_LIGHT_GREEN,

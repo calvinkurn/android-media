@@ -1,4 +1,4 @@
-package com.tokopedia.campaignlist.page.presentation.ui
+package com.tokopedia.campaignlist.page.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -201,7 +201,6 @@ fun UnifySearchBar(
                             textStyle = LocalTypography.current.display2.copy(color = LocalColors.current.NN600)
                         )
                     }
-
 
                     innerTextField()
                 }

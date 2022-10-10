@@ -101,15 +101,15 @@ val UnifyGN400Dark = Color(0xFF289D5F)
 val UnifyGN500 = Color(0xFF00AA5B)
 val UnifyGN500Dark = Color(0xFF2ABF70)
 
-//Background
+
 val UnifyNN0 = Color(0xFFFFFFFF)
 val UnifyNN0Dark = Color(0xFF1D2025)
 val UnifyNN100 = Color(0xFFE4EBF5)
 val UnifyNN100Dark = Color(0xFF2D323A)
 val UnifyNN600 = Color(0xFF6D7588)
 val UnifyNN600Dark = Color(0xFF808FA1)
-val UnifyN700 = Color(0xFF31353B)
-val UnifyN700Dark = Color(0xFFFFFFFF)
+val UnifyNN700 = Color(0xFF31353B)
+val UnifyNN700Dark = Color(0xFFFFFFFF)
 val UnifyNN900 = Color(0xFF2E3137)
 val UnifyNN900Dark = Color(0xFFCBD4E1)
 val UnifyNN950 = Color(0xFF212121)
@@ -125,3 +125,53 @@ val UnifyRN100 = Color(0xFFFFDBE2)
 val UnifyRN100Dark = Color(0xFF862430)
 val UnifyRN500 = Color(0xFFF94D63)
 val UnifyRN500Dark = Color(0xFFFF6577)
+
+fun getColor(darkTheme: Boolean) : TokopediaColor {
+    return if (darkTheme) {
+        UnifyColor(
+            NN0 = UnifyNN0Dark,
+            BN50 = UnifyBN50Dark,
+            BN200 = UnifyBN200Dark,
+            BN400 = UnifyBN400Dark,
+            BN800 = UnifyBN800Dark,
+            BN950 = UnifyBN950Dark,
+            NN100 = UnifyNN100Dark,
+            NN200 = UnifyNN200Dark,
+            NN300 = UnifyNN300Dark,
+            NN600 = UnifyNN600Dark,
+            NN900 = UnifyNN900Dark,
+            NN950 = UnifyNN950Dark,
+            GN50 = UnifyGN50Dark,
+            GN100 = UnifyGN100Dark,
+            GN400 = UnifyGN400Dark,
+            GN500 = UnifyGN500Dark,
+            YN100 = UnifyYN100Dark,
+            YN500 = UnifyYN500Dark,
+            RN100 = UnifyRN100Dark,
+            RN500 = UnifyRN500Dark
+        )
+    } else {
+        UnifyColor(
+            NN0 = UnifyNN0,
+            BN50 = UnifyBN50,
+            BN200 = UnifyBN200,
+            BN400 = UnifyBN400,
+            BN800 = UnifyBN800,
+            BN950 = UnifyBN950,
+            NN100 = UnifyNN100,
+            NN200 = UnifyNN200,
+            NN300 = UnifyNN300,
+            NN600 = UnifyNN600,
+            NN900 = UnifyNN900,
+            NN950 = UnifyNN950,
+            GN50 = UnifyGN50,
+            GN100 = UnifyGN100,
+            GN400 = UnifyGN400,
+            GN500 = UnifyGN500,
+            YN100 = UnifyYN100,
+            YN500 = UnifyYN500,
+            RN100 = UnifyRN100,
+            RN500 = UnifyRN500
+        )
+    }
+}
