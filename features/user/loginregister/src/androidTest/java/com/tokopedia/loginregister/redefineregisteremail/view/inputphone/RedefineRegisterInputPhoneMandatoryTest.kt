@@ -60,35 +60,35 @@ class RedefineRegisterInputPhoneMandatoryTest {
     }
 
     @Test
-    fun is_init_view_is_displayed() {
+    fun isInitViewIsDisplayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         isInitViewDisplayed()
     }
 
     @Test
-    fun field_phone_error_empty_is_displayed() {
+    fun fieldPhoneErrorEmptyIsDisplayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         isErrorFieldEmpty()
     }
 
     @Test
-    fun field_phone_error_too_short_is_displayed() {
+    fun fieldPhoneErrorTooShortIsDisplayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         isErrorFieldPhoneTooShort()
     }
 
     @Test
-    fun field_phone_error_exceed_length_is_displayed() {
+    fun fieldPhoneErrorExceedLengthIsDisplayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         isErrorFieldPhoneExceedLength()
     }
 
     @Test
-    fun input_invalid_phone_and_submit_then_error_is_displayed() {
+    fun inputInvalidPhoneAndSubmitThenErrorIsDisplayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
         isErrorFieldPhoneTooShort()
@@ -97,7 +97,7 @@ class RedefineRegisterInputPhoneMandatoryTest {
     }
 
     @Test
-    fun register_check_then_show_dialog_offer_login() {
+    fun registerCheckThenShowDialogOfferLogin() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_EXIST)
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
@@ -107,7 +107,7 @@ class RedefineRegisterInputPhoneMandatoryTest {
     }
 
     @Test
-    fun register_check_then_show_dialog_confirm_phone() {
+    fun registerCheckThenShowDialogConfirmPhone() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST)
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
@@ -117,7 +117,7 @@ class RedefineRegisterInputPhoneMandatoryTest {
     }
 
     @Test
-    fun register_check_then_show_failed_message() {
+    fun registerCheckThenShowFailedMessage() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_CHECK_FAILED)
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
 
@@ -127,7 +127,7 @@ class RedefineRegisterInputPhoneMandatoryTest {
     }
 
     @Test
-    fun register_v2_then_show_failed_view() {
+    fun registerV2ThenShowFailedView() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
             RedefineRegisterTestState.REGISTER_V2_FAILED
