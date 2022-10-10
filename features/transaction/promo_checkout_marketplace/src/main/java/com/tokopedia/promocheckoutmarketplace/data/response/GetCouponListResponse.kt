@@ -1,5 +1,6 @@
 package com.tokopedia.promocheckoutmarketplace.data.response
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -37,7 +38,9 @@ data class Data(
         @SerializedName("attempted_promo_code_error")
         val attemptedPromoCodeError: AttemptedPromoCodeError = AttemptedPromoCodeError(),
         @SerializedName("section_tabs")
-        val sectionTabs: List<SectionTab> = emptyList()
+        val sectionTabs: List<SectionTab> = emptyList(),
+        @SerializedName("bottom_sheet")
+        val bottomSheet: BottomSheet = BottomSheet()
 )
 
 data class GainRewardPointsTnc(
@@ -134,6 +137,8 @@ data class SubSection(
         val subTitle: String = "",
         @SerializedName("icon_unify")
         val iconUnify: String = "",
+        @SerializedName("icon_url")
+        val iconUrl: String = "",
         @SerializedName("is_enabled")
         val isEnabled: Boolean = false,
         @SerializedName("coupons")
@@ -176,6 +181,8 @@ data class Coupon(
         val isAttempted: Boolean = false,
         @SerializedName("clashing_infos")
         val clashingInfos: List<ClashingInfo> = emptyList(),
+        @SerializedName("bo_clashing_infos")
+        val boClashingInfos: List<BoClashingInfo> = emptyList(),
         @SerializedName("currency_details_str")
         val currencyDetailStr: String = "",
         @SerializedName("coachmark")
@@ -189,7 +196,39 @@ data class Coupon(
         @SerializedName("promo_infos")
         val promoInfos: List<PromoInfo> = emptyList(),
         @SerializedName("benefit_details")
-        val benefitDetail: List<BenefitDetail> = emptyList()
+        val benefitDetail: List<BenefitDetail> = emptyList(),
+        @SerializedName("is_bebas_ongkir")
+        val isBebasOngkir: Boolean = false,
+        @SerializedName("additional_bo_datas")
+        val additionalBoData: List<AdditionalBoData> = emptyList(),
+)
+
+data class AdditionalBoData(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("unique_id")
+        val uniqueId: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("shipping_id")
+        val shippingId: Int = 0,
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("sp_id")
+        val shipperProductId: Int = 0,
+        @SerializedName("benefit_amount")
+        val benefitAmount: Double = 0.0,
+        @SerializedName("promo_id")
+        val promoId: Long = 0,
+        @SerializedName("shipping_price")
+        val shippingPrice: Double = 0.0,
+        @SerializedName("shipping_subsidy")
+        val shippingSubsidy: Long = 0,
+        @SerializedName("benefit_class")
+        val benefitClass: String = "",
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("bo_campaign_id")
+        val boCampaignId: Long = 0,
+        @SerializedName("eta_txt")
+        val etaText: String = "",
 )
 
 data class BenefitDetail(
@@ -228,10 +267,22 @@ data class PromoInfo(
         const val ICON_CLOCK = "CLOCK"
         const val ICON_COURIER = "COURIER"
         const val ICON_TOKO_MEMBER = "TOKOMEMBER"
+        const val ICON_DOT = "DOT"
+        const val ICON_NONE = "NONE"
+        const val ICON_URL = "URL"
     }
 }
 
 data class ClashingInfo(
+        @SerializedName("code")
+        val code: String = "",
+        @SerializedName("message")
+        val message: String = "",
+        @SerializedName("icon")
+        val icon: String = ""
+)
+
+data class BoClashingInfo(
         @SerializedName("code")
         val code: String = "",
         @SerializedName("message")
@@ -264,4 +315,17 @@ data class SectionTab(
         val id: String = "",
         @SerializedName("title")
         val title: String = ""
+)
+
+data class BottomSheet(
+        @SerializedName("title")
+        val title: String = "",
+        @SerializedName("content_title")
+        val contentTitle: String = "",
+        @SerializedName("content_description")
+        val contentDescription: String = "",
+        @SerializedName("image_url")
+        val imageUrl: String = "",
+        @SerializedName("button_txt")
+        val buttonText: String = ""
 )

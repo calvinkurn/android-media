@@ -11,7 +11,7 @@ import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
-import com.tokopedia.chatbot.ChatbotConstant.RENDER_INVOICE_LIST_AND_BUTTON_ACTION
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -27,11 +27,13 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
+import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_AGENT_QUEUE
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_VIEW
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
@@ -74,6 +76,7 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
     }
@@ -172,7 +175,9 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                     attributes.status,
                     attributes.statusId,
                     attributes.title,
-                    attributes.amount)
+                    attributes.amount,
+                    attributes.color
+            )
             list.add(attachInvoice)
         }
 
@@ -287,6 +292,19 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 .withImageUrl(pojoAttribute.imageUrlSecure)
                 .withImageUrlThumbnail(pojoAttribute.thumbnail)
                 .build()
+    }
+
+    private fun convertToVideoUpload(chatItemPojoByDateByTime: Reply):
+            VideoUploadUiModel {
+        val pojoAttribute = gson.fromJson<ChatbotVideoUploadAttributes>(
+            chatItemPojoByDateByTime.attachment.attributes,
+            ChatbotVideoUploadAttributes::class.java
+        )
+
+        return VideoUploadUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withVideoUrl(pojoAttribute.videoUrl)
+            .build()
     }
 
 }
