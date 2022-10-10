@@ -154,6 +154,10 @@ class OfficialHomeAdapterTypeFactory(
         return SpecialReleaseViewHolder.LAYOUT
     }
 
+    override fun type(officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel): Int {
+        return OfficialTopAdsBannerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<Visitable<*>> {
         return when (type) {
             MerchantVoucherViewHolder.LAYOUT -> MerchantVoucherViewHolder(view, merchantVoucherComponentListener)
@@ -174,6 +178,7 @@ class OfficialHomeAdapterTypeFactory(
             FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopDCListener, homeComponentListener)
             HideViewHolder.LAYOUT -> HideViewHolder(view)
             DynamicLegoBannerViewHolder.LAYOUT -> DynamicLegoBannerViewHolder(view, legoBannerListener, homeComponentListener)
+            OfficialTopAdsBannerViewHolder.LAYOUT -> OfficialTopAdsBannerViewHolder(view)
             FeaturedBrandViewHolder.LAYOUT -> FeaturedBrandViewHolder(
                     itemView = view,
                     homeComponentListener = homeComponentListener,

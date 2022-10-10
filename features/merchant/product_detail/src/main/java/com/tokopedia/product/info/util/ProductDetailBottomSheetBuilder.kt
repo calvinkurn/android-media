@@ -5,10 +5,11 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
+import com.tokopedia.product.detail.databinding.BsProductShopNotesInfoBinding
 import com.tokopedia.product.detail.view.util.toDateId
+import com.tokopedia.product.info.data.response.ShopNotesData
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 
 /**
  * Created by Yehezkiel on 21/10/20
@@ -16,19 +17,24 @@ import com.tokopedia.unifyprinciples.Typography
 object ProductDetailBottomSheetBuilder {
     private const val PDP_TIME_PUKUL = "pukul"
     private const val SHIPPING_CHOOSE_ADDRESS_TAG = "SHIPPING_CHOOSE_ADDRESS_TAG"
+    private const val DATE_FORMATTER = "dd MMM yyyy, '$PDP_TIME_PUKUL' HH:mm"
 
-    fun getShopNotesBottomSheet(context: Context, dateValue: String, descValue: String, titleValue: String): BottomSheetUnify {
+    fun getShopNotesBottomSheet(
+        context: Context,
+        shopNotesData: ShopNotesData
+    ): BottomSheetUnify {
         val bottomSheetUnify = BottomSheetUnify()
         val view = View.inflate(context, R.layout.bs_product_shop_notes_info, null)
+        val binding = BsProductShopNotesInfoBinding.bind(view)
 
         bottomSheetUnify.apply {
-            setTitle(titleValue)
-            setChild(view)
-            val date = view.findViewById<Typography>(R.id.product_shop_notes_date)
-            val desc = view.findViewById<Typography>(R.id.product_shop_notes_desc)
+            setChild(binding.root)
+            setTitle(shopNotesData.title)
+        }
 
-            date.text = dateValue toDateId ("dd MMM yyyy, '${PDP_TIME_PUKUL}' HH:mm")
-            desc.text = HtmlLinkHelper(context, descValue.replace("(\r\n|\n)".toRegex(), "<br />")).spannedString
+        binding.apply {
+            productShopNotesDate.text = shopNotesData.updateTime toDateId DATE_FORMATTER
+            productShopNotesDesc.text = shopNotesData.content.parseAsHtmlLink(context)
         }
 
         return bottomSheetUnify

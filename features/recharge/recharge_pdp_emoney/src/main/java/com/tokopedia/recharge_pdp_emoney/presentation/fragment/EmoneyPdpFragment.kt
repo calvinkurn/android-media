@@ -265,7 +265,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         })
 
         addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
-            renderErrorMessage(MessageErrorException(it.atcErrorPage.title))
+            renderErrorMessage(MessageErrorException(it.title))
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
         }

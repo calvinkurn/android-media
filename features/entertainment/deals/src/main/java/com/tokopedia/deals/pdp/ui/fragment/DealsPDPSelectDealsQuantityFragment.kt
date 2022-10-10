@@ -148,6 +148,7 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
             updateTotalAmount(salesPrice)
             quantityEditor?.minValue = minQty
             quantityEditor?.maxValue = maxQty
+            quantityEditor?.editText?.keyListener = null
             quantityEditor?.setValueChangedListener { newValue, _, _ ->
                 setQuantity(newValue)
                 updateTotalAmount(salesPrice)
