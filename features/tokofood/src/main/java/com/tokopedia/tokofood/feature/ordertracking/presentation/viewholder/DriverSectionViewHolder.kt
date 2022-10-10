@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.viewholder
 
+import android.content.Context
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
@@ -30,7 +31,8 @@ class DriverSectionViewHolder(
             setDriverName(element.name)
             setDriverPhotoUrl(element.photoUrl)
             setLicensePlatNumber(element.licensePlateNumber)
-            setupDriverCall()
+            setupDriverCall(element.isCallable)
+            setupDriverChat(element.isEnableChat, element.goFoodOrderNumber)
             setupDriverInformationAdapter(element.driverInformationList)
         }
     }
@@ -49,7 +51,12 @@ class DriverSectionViewHolder(
                     binding.setLicensePlatNumber(newItem.licensePlateNumber)
                 }
                 if (oldItem.isCallable != newItem.isCallable) {
-                    binding.setupDriverCall()
+                    binding.setupDriverCall(newItem.isCallable)
+                }
+                if (oldItem.isEnableChat != newItem.isEnableChat ||
+                    oldItem.goFoodOrderNumber != newItem.goFoodOrderNumber
+                ) {
+                    binding.setupDriverChat(newItem.isEnableChat, newItem.goFoodOrderNumber)
                 }
             }
         }
@@ -69,18 +76,55 @@ class DriverSectionViewHolder(
         tvOrderTrackingDriverPlatNumber.text = platNumber
     }
 
-    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall() {
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
-            isClickable = true
+            val (isClickableCall, callIconColor) = getColorAndEnableIcons(root.context, isCallable)
+
+            isClickable = isClickableCall
+            setImage(IconUnify.CALL, callIconColor, callIconColor)
+
+            if (isClickableCall) {
+                setOnClickListener {
+                    listener.onClickDriverCall()
+                }
+            }
+        }
+    }
+
+    private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverChat(
+        isEnableChat: Boolean,
+        goFoodOrderNumber: String
+    ) {
+        icDriverChat.run {
+            val (isClickableCall, callIconColor) = getColorAndEnableIcons(root.context, isEnableChat)
+
+            isClickable = isClickableCall
+            setImage(IconUnify.CHAT, callIconColor, callIconColor)
+
+            if (isClickableCall) {
+                setOnClickListener {
+                    listener.onClickDriverChat(goFoodOrderNumber)
+                }
+            }
+        }
+    }
+
+
+    private fun getColorAndEnableIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int> {
+       return if (isEnable) {
             val nn900Color =
                 ContextCompat.getColor(
-                    root.context,
+                    context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
-            setImage(IconUnify.CALL, nn900Color, nn900Color)
-            setOnClickListener {
-                listener.onClickDriverCall()
-            }
+            Pair(true, nn900Color)
+        } else {
+            val nn300Color =
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                )
+            Pair(false, nn300Color)
         }
     }
 
@@ -101,5 +145,6 @@ class DriverSectionViewHolder(
 
     interface Listener {
         fun onClickDriverCall()
+        fun onClickDriverChat(goFoodOrderNumber: String)
     }
 }
