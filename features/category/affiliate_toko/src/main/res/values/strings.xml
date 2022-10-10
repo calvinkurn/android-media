@@ -134,7 +134,7 @@
     <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
     <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
     <string name="terkhir_text">update terakhir</string>
-   <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
+    <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
     <string name="affiliate_blacklisted_ticker_title">Saldo Affiliate sedang dioptimalisasi ⚙️</string>
     <string name="affiliate_withdrwal_title_terms">%s yang dikunjungi</string>
     <string name="affiliate_traffic_hari_ini_ticker">Komisi kunjungan akan masuk pada H+1 dan tidak akan muncul pada filter “Hari Ini”.</string>
@@ -150,8 +150,12 @@
     <string name="no_promoted_toko_message">Kamu bisa cari %s terbaik di Tokopedia, lalu bagikan link supaya bisa dapat komisi.</string>
     <string name="no_promoted_products_cta">Cari %s</string>
     <string name="promo_search_cta_text">Cek</string>
-    <string name="copy_paste_info_title">Mudahnya promosikan affiliate</string>
-    <string name="copy_paste_info_desc">Selain tempel link produk &amp; toko yang kamu suka, kamu juga bisa promosikan produk yang kami rekomendasikan atau bagikan link langsung dari halaman produk &amp; toko.</string>
+    <string name="copy_paste_info_title">3 Cara promosikan</string>
+    <string name="copy_paste_share_link_title">Bagikan link produk atau toko favoritmu langsung dari halamannya.</string>
+    <string name="copy_paste_share_link_desc">Lihat apakah ada info komisinya. Pilih salin link atau bagikan langsung di sosmed.</string>
+    <string name="copy_paste_recommend_title">Cari rekomendasi produk atau toko di Tokopedia Affiliate yang sesuai denganmu.</string>
+    <string name="copy_paste_recommend_desc">Klik promosikan untuk mulai bagikan link-nya</string>
+    <string name="copy_paste_action_desc">Punya link-nya? Bisa tempelkan link tersebut dan cek untuk mulai promosikan.</string>
     <string name="paste_two_step_info_title">2 Langkah tempel link</string>
     <string name="paste_info_step_one">Tempel link produk atau toko, lalu cek apakah link tersebut bisa dipromosikan.</string>
     <string name="paste_info_step_two">Jika bisa, klik tombol &#8220;Promosikan&#8221; untuk bagikan link tersebut ke sosmed kamu.</string>
