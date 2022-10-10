@@ -70,7 +70,7 @@ class CreateChannelUseCase @Inject constructor(
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
             },
-            PARAMS_STATUS to status.value.toIntOrZero()()
+            PARAMS_STATUS to status.value.toIntOrZero()
         )
     }
 

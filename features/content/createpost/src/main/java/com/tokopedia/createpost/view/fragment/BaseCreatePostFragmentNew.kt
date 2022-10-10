@@ -22,7 +22,6 @@ import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_POST_ID
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew.Companion.PARAM_TYPE
 import com.tokopedia.createpost.view.util.ConnectionLiveData
-import com.tokopedia.createpost.view.viewmodel.HeaderViewModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.feedcomponent.bottomsheets.FeedNetworkErrorBottomSheet
 import com.tokopedia.kotlin.extensions.view.hideLoading

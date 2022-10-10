@@ -59,7 +59,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
     lateinit var feedAccountAnalytic: FeedAccountTypeAnalytic
 
     var selectedContentAccount: ContentAccountUiModel = ContentAccountUiModel.Empty
-    var isOpenFrom: Int = 0
+    var isOpenFrom: String = ""
 
     protected val mFeedAccountList = mutableListOf<ContentAccountUiModel>()
 
@@ -346,7 +346,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
         mFeedAccountList.addAll(contentAccountList)
 
         val selectedFeedAccountId = intent.getStringExtra(EXTRA_SELECTED_FEED_ACCOUNT_ID) ?: ""
-        isOpenFrom = intent.extras?.getInt(BundleData.KEY_IS_OPEN_FROM, 0) ?: 0
+        isOpenFrom = intent.extras?.getString(BundleData.KEY_IS_OPEN_FROM, "") ?: ""
         selectedContentAccount = if (mFeedAccountList.isEmpty()) ContentAccountUiModel.Empty
         else mFeedAccountList.firstOrNull { it.id == selectedFeedAccountId }
             ?: mFeedAccountList.first()

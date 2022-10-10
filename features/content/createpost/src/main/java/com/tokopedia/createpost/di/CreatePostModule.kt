@@ -17,9 +17,6 @@ import com.tokopedia.createpost.analytic.FeedProductTagAnalyticImpl
 import com.tokopedia.shop.common.di.ShopCommonModule
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetProfileHeaderUseCase
-import com.tokopedia.createpost.common.DI_GET_PROFILE_HEADER_USER_CASE
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
