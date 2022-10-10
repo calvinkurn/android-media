@@ -14,7 +14,6 @@ import com.tokopedia.loginregister.redefineregisteremail.stub.data.RedefineRegis
 import com.tokopedia.loginregister.redefineregisteremail.stub.di.DaggerFakeRedefineRegisterComponent
 import com.tokopedia.loginregister.redefineregisteremail.stub.di.FakeRedefineRegisterModule
 import com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEmailActivity
-import com.tokopedia.loginregister.redefineregisteremail.view.inputphone.data.param.RedefineParamUiModel
 import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Before
 import org.junit.Rule
@@ -49,16 +48,14 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun isInitViewIsDisplayed() {
-        val bundle = Bundle()
-        bundle.putParcelable("parameter", RedefineParamUiModel())
-        activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, bundle)
+    fun is_init_view_is_displayed() {
+        activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isInitViewDisplayed()
     }
 
     @Test
-    fun fieldEmailErrorEmptyIsDisplayed() {
+    fun field_email_error_empty_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         inputThenClearFieldTextEmail()
@@ -66,14 +63,14 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun fieldEmailErrorFormatIsDisplayed() {
+    fun field_email_error_format_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldEmailInvalid()
     }
 
     @Test
-    fun fieldPasswordErrorEmptyIsDisplayed() {
+    fun field_password_error_empty_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         inputThenClearFieldPassword()
@@ -81,21 +78,21 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun fieldPasswordErrorTooShortIsDisplayed() {
+    fun field_password_error_too_short_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldPasswordTooShort()
     }
 
     @Test
-    fun fieldPasswordErrorExceedLengthIsDisplayed() {
+    fun field_password_error_exceed_length_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldPasswordExceedLength()
     }
 
     @Test
-    fun fieldNameErrorEmptyIsDisplayed() {
+    fun field_name_error_empty_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         inputThenClearFieldName()
@@ -103,28 +100,28 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun fieldNameErrorTooSortIsDisplayed() {
+    fun field_name_error_too_sort_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldNameTooShort()
     }
 
     @Test
-    fun fieldNameErrorExceedLengthIsDisplayed() {
+    fun field_name_error_exceed_length_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldNameExceedLength()
     }
 
     @Test
-    fun fieldNameErrorFormatIsDisplayed() {
+    fun field_name_error_format_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldNameInvalid()
     }
 
     @Test
-    fun inputInvalidFieldAndSubmitClickedThenAllFieldErrorIsDisplayed() {
+    fun submit_clicked_then_all_field_error_is_displayed() {
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
         isErrorFieldEmailInvalid()
@@ -134,7 +131,7 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun submitFieldThenFailedGenerateKey() {
+    fun submit_field_then_failed_generate_key() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.GENERATE_KEY_FAILED)
         activityTestRule.launchFragment(R.id.redefineRegisterEmailFragment, Bundle())
 
@@ -146,7 +143,7 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun submitFieldThenShowDialogOfferLogin() {
+    fun submit_field_then_show_dialog_offer_login() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.GENERATE_KEY_SUCCESS,
             RedefineRegisterTestState.VALIDATE_USER_DATA_REGISTERED
@@ -160,7 +157,7 @@ class RedefineRegisterEmailTest {
     }
 
     @Test
-    fun submitFieldThenShowFailedMessage() {
+    fun submit_field_then_show_failed_message() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.GENERATE_KEY_SUCCESS,
             RedefineRegisterTestState.VALIDATE_USER_DATA_FAILED
