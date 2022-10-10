@@ -25,6 +25,7 @@ import com.tokopedia.home_account.privacy_account.viewmodel.PrivacyAccountViewMo
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -50,6 +51,7 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
     @Inject
     lateinit var homeAccountAnalytics: HomeAccountAnalytics
 
+    private var remoteConfigInstance: RemoteConfigInstance = RemoteConfigInstance.getInstance()
     private var viewBinding by autoClearedNullable<FragmentPrivacyAccountBinding>()
     private val privacyAccountAdapter by lazy(LazyThreadSafetyMode.NONE) {
         PrivacyAccountAdapter(this)
@@ -74,9 +76,15 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         super.onViewCreated(view, savedInstanceState)
         initObserver()
         setViewLinkAccountLoading()
-        setViewConsentWithdrawalLoading()
         viewModel.getLinkStatus()
-        viewModel.getConsentGroupList()
+
+        if (isShowConsentWithdrawal()) {
+            viewBinding?.layoutConsentWithdrawal?.root?.show()
+            setViewConsentWithdrawalLoading()
+            viewModel.getConsentGroupList()
+        } else {
+            viewBinding?.layoutConsentWithdrawal?.root?.hide()
+        }
     }
 
     private fun initObserver() {
@@ -289,6 +297,10 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         startActivity(intent)
     }
 
+    private fun isShowConsentWithdrawal(): Boolean = remoteConfigInstance
+        .abTestPlatform
+        .getString(ROLLENCE_KEY_CONSENT_WITHDRAWAL) == ROLLENCE_KEY_CONSENT_WITHDRAWAL
+
     companion object {
 
         const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
@@ -299,6 +311,7 @@ class PrivacyAccountFragment : BaseDaggerFragment(), PrivacyAccountListener {
         private const val LANGUAGE_CODE = "id"
         private const val COUNTRY_CODE = "ID"
         private const val STATUS_LINKED = "linked"
+        private const val ROLLENCE_KEY_CONSENT_WITHDRAWAL = "cpcw_and"
 
         private val SCREEN_NAME = PrivacyAccountFragment::class.java.simpleName
 
