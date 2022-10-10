@@ -16,12 +16,12 @@ class PlayPreference @Inject constructor(
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
 
-        private const val A_DAY_IN_MILLIS: Long = 86406000L // add delay for 5-10 s
+        private const val A_DAY_IN_MILLIS: Long = 86400000L
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
 
-        private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s"
+        private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s" //with userId
         private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
         private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with userId
     }
@@ -85,7 +85,7 @@ class PlayPreference @Inject constructor(
     fun setCoachMark(isFirstChannel: Boolean = false, channelId: String, userId: String) { // first channel event\
         when (variant) {
             SWIPE_LIVE_ROOM_VARIANT -> {
-                if (getDiffDay(channelId) >= A_DAY_IN_MILLIS) {
+                if (getDiffDay(userId) >= A_DAY_IN_MILLIS) {
                     sharedPref.edit()
                         .putLong(String.format(SWIPE_ONBOARDING, userId), System.currentTimeMillis())
                         .apply()
@@ -96,8 +96,9 @@ class PlayPreference @Inject constructor(
     }
 
     fun isCoachMark(channelId: String,  userId: String): Boolean {
-        return if (variant == SWIPE_LIVE_ROOM_VARIANT)
+        return if (variant == SWIPE_LIVE_ROOM_VARIANT) {
             getDiffDay(userId) >= A_DAY_IN_MILLIS
+        }
         else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), false)
     }
 }
