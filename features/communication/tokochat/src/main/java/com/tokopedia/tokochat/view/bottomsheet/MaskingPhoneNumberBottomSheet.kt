@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokochat_common.databinding.TokochatMaskingPhoneNumberBottomsheetBinding
+import com.tokopedia.tokochat_common.util.TokoChatImageUrl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
@@ -33,12 +34,17 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupViews()
         setDriverPhoneNumber()
-        setDriverCallBtn()
     }
 
     private fun setDriverPhoneNumber() {
         this@MaskingPhoneNumberBottomSheet.driverPhoneNumber = arguments?.getString(DRIVER_PHONE_NUMBER_KEY, "").orEmpty()
+    }
+
+    private fun setupViews() {
+        binding?.tokochatIvMaskingPhoneNumber?.setImageUrl(TokoChatImageUrl.IV_MASKING_PHONE_NUMBER)
+        setDriverCallBtn()
     }
 
     private fun setDriverCallBtn() {
