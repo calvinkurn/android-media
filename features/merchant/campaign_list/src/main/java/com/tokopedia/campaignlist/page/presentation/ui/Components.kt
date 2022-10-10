@@ -269,8 +269,19 @@ fun UnifyLabel(
     labelText: CharSequence,
     unifyLabelType: UnifyLabelType
 ) {
-    val backgroundColor = colorResource(id = unifyLabelType.backgroundColorResourceId)
-    val textColor = colorResource(id = unifyLabelType.textColorResourceId)
+    val backgroundColor = when (unifyLabelType) {
+        UnifyLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN100
+        UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN100
+        UnifyLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN100
+        UnifyLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN100
+    }
+
+    val textColor = when (unifyLabelType) {
+        UnifyLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN500
+        UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN500
+        UnifyLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN600
+        UnifyLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN500
+    }
 
     Surface(
         modifier = modifier,
