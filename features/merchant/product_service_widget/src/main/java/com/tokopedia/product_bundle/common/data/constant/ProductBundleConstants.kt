@@ -23,7 +23,7 @@ object ProductBundleConstants {
     const val PREORDER_TYPE_WEEK: Int = 2
     const val PREORDER_TYPE_MONTH: Int = 3
 
-    //aaa
+    // product bundle types
     const val BUNDLE_TYPE_SINGLE: Int = 1
     const val BUNDLE_TYPE_MULTIPLE: Int = 2
 }
