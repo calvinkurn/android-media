@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.customview.chatroom
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -34,6 +35,11 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
+            replyBox?.isEnabled = false
+            replyBox?.isClickable = true
+            replyBox?.setOnClickListener {
+                Log.d("LEVI", "initViewBindings: a")
+            }
         }
     }
 
