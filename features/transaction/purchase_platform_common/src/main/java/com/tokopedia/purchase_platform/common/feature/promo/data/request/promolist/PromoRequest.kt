@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.promol
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.common.ScheduledDelivery
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -29,28 +30,30 @@ data class PromoRequest(
 
 @Parcelize
 data class Order(
-        @SerializedName("shop_id")
+    @SerializedName("shop_id")
         var shopId: Long = 0,
-        @SerializedName("unique_id")
+    @SerializedName("unique_id")
         var uniqueId: String = "",
-        @SerializedName("product_details")
+    @SerializedName("product_details")
         var product_details: List<ProductDetail> = emptyList(),
-        @SerializedName("codes")
+    @SerializedName("codes")
         var codes: MutableList<String> = mutableListOf(),
-        @SerializedName("is_checked")
+    @SerializedName("is_checked")
         var isChecked: Boolean = false,
-        @SuppressLint("Invalid Data Type")
+    @SuppressLint("Invalid Data Type")
         @SerializedName("shipping_id")
         var shippingId: Int = 0,
-        @SuppressLint("Invalid Data Type")
+    @SuppressLint("Invalid Data Type")
         @SerializedName("sp_id")
         var spId: Int = 0,
-        @SuppressLint("Invalid Data Type")
+    @SuppressLint("Invalid Data Type")
         @SerializedName("is_insurance_price")
         var isInsurancePrice: Int = 0,
-        @SerializedName("free_shipping_metadata")
+    @SerializedName("free_shipping_metadata")
         var freeShippingMetadata: String = "",
-        @Transient
+    @SerializedName("scheduled_delivery")
+        var scheduledDelivery: ScheduledDelivery = ScheduledDelivery(),
+    @Transient
         var boType: Int = 0,
 ) : Parcelable
 
