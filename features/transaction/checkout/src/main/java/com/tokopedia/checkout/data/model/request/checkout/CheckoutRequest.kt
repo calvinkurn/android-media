@@ -1,6 +1,7 @@
 package com.tokopedia.checkout.data.model.request.checkout
 
 import android.annotation.SuppressLint
+import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.checkout.data.model.request.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
 import com.tokopedia.checkout.data.model.request.checkout.cross_sell.CrossSellRequest
@@ -20,6 +21,7 @@ import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 const val FEATURE_TYPE_REGULAR_PRODUCT = 3
 const val FEATURE_TYPE_TOKONOW_PRODUCT = 12
 const val UPLOAD_PRESCRIPTION_META_DATA_KEY = "prescription_ids"
+const val SCHEDULE_DELIVERY_META_DATA_KEY = "schedule_delivery"
 data class Carts(
         @SerializedName("has_promo_stacking")
         var hasPromoStacking: Boolean = false,
@@ -366,6 +368,8 @@ object CheckoutRequestMapper {
         if(shopProductCheckoutRequest.needPrescription && prescriptionIds != null && prescriptionIds.isNotEmpty()){
             orderMetadata.add(OrderMetadata(UPLOAD_PRESCRIPTION_META_DATA_KEY, prescriptionIds.toString()))
         }
+        // TODO: add validation if schedule delivery exist or any other validation
+        orderMetadata.add(OrderMetadata(SCHEDULE_DELIVERY_META_DATA_KEY, Gson().toJson(shopProductCheckoutRequest.scheduleDelivery)))
         return orderMetadata
     }
 }
