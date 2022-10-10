@@ -2,9 +2,14 @@ package com.tokopedia.checkout.view.viewholder
 
 import android.graphics.Paint
 import android.text.TextUtils
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup.MarginLayoutParams
-import android.widget.*
+import android.widget.CompoundButton
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -14,6 +19,7 @@ import com.tokopedia.checkout.R
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.utils.WeightFormatterUtil
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -105,16 +111,60 @@ class ShipmentCartItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemV
         } else {
             mLayoutProductInfo.visibility = View.GONE
         }
+        renderEthicalDrugsProperty(cartItemModel)
+    }
+
+    private fun renderEthicalDrugsProperty(cartItemModel: CartItemModel) {
+        if (cartItemModel.ethicalDrugDataModel.needPrescription) {
+            val ethicalDrugView: View = createProductInfoTextWithIcon(cartItemModel)
+            if (mLayoutProductInfo.childCount > 0) {
+                ethicalDrugView.setPadding(
+                    4.dpToPx(ethicalDrugView.resources.displayMetrics),
+                    0,
+                    0,
+                    0
+                )
+            }
+            mLayoutProductInfo.addView(ethicalDrugView)
+            mLayoutProductInfo.visibility = View.VISIBLE
+        }
+    }
+
+    private fun createProductInfoTextWithIcon(cartItemModel: CartItemModel): LinearLayout {
+        val propertyLayoutWithIcon = LinearLayout(itemView.context)
+        propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
+        val propertiesBinding = LayoutInflater.from(itemView.context)
+            .inflate(R.layout.item_addon_checkout_identifier, null, false)
+        val propertyIcon = propertiesBinding.findViewById<ImageUnify>(R.id.checkout_iv_identifier)
+        if (propertyIcon != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.iconUrl)) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                propertyIcon,
+                cartItemModel.ethicalDrugDataModel.iconUrl
+            )
+        }
+        val propertyText =
+            propertiesBinding.findViewById<Typography>(R.id.checkout_label_identifier)
+        if (propertyText != null && !TextUtils.isEmpty(cartItemModel.ethicalDrugDataModel.text)) {
+            propertyText.text = cartItemModel.ethicalDrugDataModel.text
+        }
+        propertyLayoutWithIcon.addView(propertiesBinding)
+        return propertyLayoutWithIcon
     }
 
     private fun renderProductPrice(cartItem: CartItemModel) {
-        mTvProductPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.price.toLong(), false).removeDecimalSuffix()
+        mTvProductPrice.text =
+            CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.price.toLong(), false)
+                .removeDecimalSuffix()
         val dp4 = mTvProductPrice.resources.getDimensionPixelOffset(R.dimen.dp_4)
         if (cartItem.originalPrice > 0) {
             mTvProductPrice.setPadding(0, dp4, 0, 0)
             mTvProductOriginalPrice.setPadding(0, dp4, 0, 0)
-            mTvProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(cartItem.originalPrice.toLong(), false).removeDecimalSuffix()
-            mTvProductOriginalPrice.paintFlags = mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            mTvProductOriginalPrice.text = CurrencyFormatUtil.convertPriceValueToIdrFormat(
+                cartItem.originalPrice.toLong(),
+                false
+            ).removeDecimalSuffix()
+            mTvProductOriginalPrice.paintFlags =
+                mTvProductOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
             mTvProductOriginalPrice.visibility = View.VISIBLE
         } else {
             mTvProductPrice.setPadding(0, dp4, 0, 0)

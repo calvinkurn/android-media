@@ -748,7 +748,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutProductInfo.addView(productInfo);
             }
             layoutProductInfo.setVisibility(View.VISIBLE);
-            renderEthicalDrugsProperty(cartItemModel);
         } else {
             layoutProductInfo.setVisibility(View.GONE);
         }
@@ -756,10 +755,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderEthicalDrugsProperty(CartItemModel cartItemModel) {
-        if(cartItemModel.getEthicalDrugDataModel().getNeedPrescription()){
+        if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
             View ethicalDrugView = createProductInfoTextWithIcon(cartItemModel);
-            if(layoutProductInfo.getChildCount() > 0){
-                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0);
+            if (layoutProductInfo.getChildCount() > 0) {
+                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4), 0, 0, 0);
             }
             layoutProductInfo.addView(ethicalDrugView);
             layoutProductInfo.setVisibility(View.VISIBLE);
