@@ -316,6 +316,7 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                     total_quantity
                   }
                 }
+                has_ppp
               }
             }
         """

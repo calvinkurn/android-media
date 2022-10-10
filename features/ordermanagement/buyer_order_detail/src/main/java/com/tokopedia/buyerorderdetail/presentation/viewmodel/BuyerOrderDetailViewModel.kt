@@ -18,10 +18,10 @@ import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailGson
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
-import com.tokopedia.buyerorderdetail.domain.usecases.GetP0DataUseCase
+import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
@@ -69,7 +69,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     @Named(BuyerOrderDetailMiscConstant.DAGGER_ATC_QUERY_NAME)
     private val atcMultiQuery: Lazy<String>,
     private val userSession: Lazy<UserSessionInterface>,
-    private val getP0DataUseCase: Lazy<GetP0DataUseCase>,
+    private val getBuyerOrderDetailDataUseCase: Lazy<GetBuyerOrderDetailDataUseCase>,
     private val finishOrderUseCase: Lazy<FinishOrderUseCase>,
     private val atcUseCase: Lazy<AddToCartMultiUseCase>,
     private val resourceProvider: Lazy<ResourceProvider>,
@@ -77,7 +77,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 ) : ViewModel() {
 
     companion object {
-        private const val SAVED_GET_P0_DATA_REQUEST_STATE = "SAVED_GET_P0_DATA_REQUEST_STATE"
+        private const val SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE"
     }
 
     private val _finishOrderResult: MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>> = MutableLiveData()
@@ -92,34 +92,34 @@ class BuyerOrderDetailViewModel @Inject constructor(
     val multiAtcResult: LiveData<MultiATCState>
         get() = _multiAtcResult
 
-    private val getP0DataRequestParams: MutableSharedFlow<GetP0DataParams> = MutableSharedFlow()
+    private val getBuyerOrderDetailDataRequestParams: MutableSharedFlow<GetBuyerOrderDetailDataParams> = MutableSharedFlow()
     private val singleAtcRequestStates: MutableStateFlow<Map<String, AddToCartSingleRequestState>> = MutableStateFlow(mapOf())
-    private val getP0DataRequestState: MutableStateFlow<GetP0DataRequestState> = MutableStateFlow(GetP0DataRequestState.Idle)
-    private val actionButtonsUiState = getP0DataRequestState.mapLatest(
+    private val getBuyerOrderDetailDataRequestState: MutableStateFlow<GetBuyerOrderDetailDataRequestState> = MutableStateFlow(GetBuyerOrderDetailDataRequestState.Idle)
+    private val actionButtonsUiState = getBuyerOrderDetailDataRequestState.mapLatest(
         ::mapActionButtonsUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = ActionButtonsUiState.Loading
     )
-    private val orderStatusUiState = getP0DataRequestState.mapLatest(
+    private val orderStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(
         ::mapOrderStatusUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = OrderStatusUiState.Loading
     )
-    private val paymentInfoUiState = getP0DataRequestState.mapLatest(::mapPaymentInfoUiState)
+    private val paymentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapPaymentInfoUiState)
     private val productListUiState = combine(
-        getP0DataRequestState, singleAtcRequestStates, ::mapProductListUiState
+        getBuyerOrderDetailDataRequestState, singleAtcRequestStates, ::mapProductListUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
         initialValue = ProductListUiState.Loading
     )
-    private val shipmentInfoUiState = getP0DataRequestState.mapLatest(::mapShipmentInfoUiState)
-    private val pGRecommendationWidgetUiState = getP0DataRequestState.mapLatest(::mapPGRecommendationWidgetUiState)
-    private val orderResolutionTicketStatusUiState = getP0DataRequestState.mapLatest(::mapOrderResolutionTicketStatusUiState)
+    private val shipmentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapShipmentInfoUiState)
+    private val pGRecommendationWidgetUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapPGRecommendationWidgetUiState)
+    private val orderResolutionTicketStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapOrderResolutionTicketStatusUiState)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
@@ -133,64 +133,64 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            getP0DataRequestParams.collectLatest { params ->
-                getP0DataUseCase.get().getP0Data(params).collect { requestState ->
-                    getP0DataRequestState.value = requestState
+            getBuyerOrderDetailDataRequestParams.collectLatest { params ->
+                getBuyerOrderDetailDataUseCase.get().getBuyerOrderDetailData(params).collect { requestState ->
+                    getBuyerOrderDetailDataRequestState.value = requestState
                 }
             }
         }
     }
 
     private fun mapActionButtonsUiState(
-        getP0DataRequestState: GetP0DataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): ActionButtonsUiState {
-        return ActionButtonsUiStateMapper.mapGetP0DataRequestStateToActionButtonsUiState(getP0DataRequestState)
+        return ActionButtonsUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToActionButtonsUiState(getBuyerOrderDetailDataRequestState)
     }
 
     private fun mapOrderStatusUiState(
-        getP0DataRequestState: GetP0DataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): OrderStatusUiState {
-        return OrderStatusUiStateMapper.mapGetP0DataRequestStateToOrderStatusUiState(getP0DataRequestState)
+        return OrderStatusUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToOrderStatusUiState(getBuyerOrderDetailDataRequestState)
     }
 
     private fun mapPaymentInfoUiState(
-        getP0DataRequestState: GetP0DataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): PaymentInfoUiState {
-        return PaymentInfoUiStateMapper.mapGetP0DataRequestStateToPaymentInfoUiState(
-            getP0DataRequestState, resourceProvider.get()
+        return PaymentInfoUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToPaymentInfoUiState(
+            getBuyerOrderDetailDataRequestState, resourceProvider.get()
         )
     }
 
     private fun mapProductListUiState(
-        getP0DataRequestState: GetP0DataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        return ProductListUiStateMapper.mapGetP0DataRequestStateToProductListUiState(
-            getP0DataRequestState, singleAtcRequestStates
+        return ProductListUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToProductListUiState(
+            getBuyerOrderDetailDataRequestState, singleAtcRequestStates
         )
     }
 
     private fun mapShipmentInfoUiState(
-        getP0DataRequestState: GetP0DataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): ShipmentInfoUiState {
-        return ShipmentInfoUiStateMapper.mapGetP0DataRequestStateToShipmentInfoUiState(
-            getP0DataRequestState, resourceProvider.get()
+        return ShipmentInfoUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToShipmentInfoUiState(
+            getBuyerOrderDetailDataRequestState, resourceProvider.get()
         )
     }
 
     private fun mapPGRecommendationWidgetUiState(
-        getP0DataRequestState: GetP0DataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): PGRecommendationWidgetUiState {
-        return PGRecommendationWidgetUiStateMapper.mapGetP0DataRequestStateToPGRecommendationWidgetUiState(
-            getP0DataRequestState
+        return PGRecommendationWidgetUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToPGRecommendationWidgetUiState(
+            getBuyerOrderDetailDataRequestState
         )
     }
 
     private fun mapOrderResolutionTicketStatusUiState(
-        getP0DataRequestState: GetP0DataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): OrderResolutionTicketStatusUiState {
-        return OrderResolutionTicketStatusUiStateMapper.mapGetP0DataResultToOrderResolutionTicketStatusUiState(
-            getP0DataRequestState
+        return OrderResolutionTicketStatusUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToOrderResolutionTicketStatusUiState(
+            getBuyerOrderDetailDataRequestState
         )
     }
 
@@ -234,13 +234,15 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
-    fun getP0Data(orderId: String, paymentId: String, cart: String) {
+    fun getBuyerOrderDetailData(orderId: String, paymentId: String, cart: String) {
         viewModelScope.launch {
-            getP0DataRequestParams.emit(GetP0DataParams(
-                cart = cart,
-                orderId = orderId,
-                paymentId = paymentId
-            ))
+            getBuyerOrderDetailDataRequestParams.emit(
+                GetBuyerOrderDetailDataParams(
+                    cart = cart,
+                    orderId = orderId,
+                    paymentId = paymentId
+                )
+            )
         }
     }
 
@@ -318,24 +320,24 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun saveUiState(cacheManager: CacheManager) {
         cacheManager.put(
-            customId = SAVED_GET_P0_DATA_REQUEST_STATE,
-            objectToPut = getP0DataRequestState.value,
+            customId = SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE,
+            objectToPut = getBuyerOrderDetailDataRequestState.value,
             gson = gson.get()
         )
     }
 
     fun restoreUiState(cacheManager: CacheManager): Boolean {
         return with(cacheManager) {
-            val savedGetP0DataRequestState: GetP0DataRequestState? = get(
-                customId = SAVED_GET_P0_DATA_REQUEST_STATE,
-                type = GetP0DataRequestState::class.java,
+            val savedGetP0DataRequestState: GetBuyerOrderDetailDataRequestState? = get(
+                customId = SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE,
+                type = GetBuyerOrderDetailDataRequestState::class.java,
                 gson = gson.get()
             )
             if (
                 savedGetP0DataRequestState != null &&
-                savedGetP0DataRequestState is GetP0DataRequestState.CompleteState
+                savedGetP0DataRequestState is GetBuyerOrderDetailDataRequestState.CompleteState
             ) {
-                getP0DataRequestState.value = savedGetP0DataRequestState
+                getBuyerOrderDetailDataRequestState.value = savedGetP0DataRequestState
                 true
             } else {
                 false

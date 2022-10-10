@@ -7,9 +7,12 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.utils.RuntimeTypeAdapterFactory
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -62,11 +65,28 @@ class BuyerOrderDetailModule {
                     .registerSubtype(GetOrderResolutionRequestState.Error::class.java)
             )
             .registerTypeAdapterFactory(
+                RuntimeTypeAdapterFactory.of(GetInsuranceDetailRequestState::class.java, GetInsuranceDetailRequestState::type.name, true)
+                    .registerSubtype(GetInsuranceDetailRequestState.Requesting::class.java)
+                    .registerSubtype(GetInsuranceDetailRequestState.Success::class.java)
+                    .registerSubtype(GetInsuranceDetailRequestState.Error::class.java)
+            )
+            .registerTypeAdapterFactory(
+                RuntimeTypeAdapterFactory.of(GetBuyerOrderDetailDataRequestState::class.java, GetBuyerOrderDetailDataRequestState::type.name, true)
+                    .registerSubtype(GetBuyerOrderDetailDataRequestState.Idle::class.java)
+                    .registerSubtype(GetBuyerOrderDetailDataRequestState.Requesting::class.java)
+                    .registerSubtype(GetBuyerOrderDetailDataRequestState.Success::class.java)
+                    .registerSubtype(GetBuyerOrderDetailDataRequestState.Error::class.java)
+            )
+            .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(GetP0DataRequestState::class.java, GetP0DataRequestState::type.name, true)
-                    .registerSubtype(GetP0DataRequestState.Idle::class.java)
                     .registerSubtype(GetP0DataRequestState.Requesting::class.java)
                     .registerSubtype(GetP0DataRequestState.Success::class.java)
                     .registerSubtype(GetP0DataRequestState.Error::class.java)
+            )
+            .registerTypeAdapterFactory(
+                RuntimeTypeAdapterFactory.of(GetP1DataRequestState::class.java, GetP1DataRequestState::type.name, true)
+                    .registerSubtype(GetP1DataRequestState.Requesting::class.java)
+                    .registerSubtype(GetP1DataRequestState.Complete::class.java)
             )
             .create()
     }

@@ -1,13 +1,83 @@
 package com.tokopedia.buyerorderdetail.presentation.mapper
 
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.kotlin.extensions.orFalse
 
 object OrderResolutionTicketStatusUiStateMapper {
+
+    private fun mapOnGetBuyerOrderDetailDataStarted(
+        buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
+    ): OrderResolutionTicketStatusUiState {
+        return when (val p1DataRequestState = buyerOrderDetailDataRequestState.getP1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(p1DataRequestState)
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnP1Complete(p1DataRequestState)
+            }
+        }
+    }
+
+    private fun mapOnGetBuyerOrderDetailIdling(): OrderResolutionTicketStatusUiState {
+        return mapOnLoading()
+    }
+
+    private fun mapOnP1Requesting(
+        p1DataRequestState: GetP1DataRequestState.Requesting
+    ): OrderResolutionTicketStatusUiState {
+        return when (
+            val getOrderResolutionRequestState = p1DataRequestState.getOrderResolutionRequestState
+        ) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnLoading()
+            }
+            is GetOrderResolutionRequestState.Success -> {
+                mapOnDataReady(getOrderResolutionRequestState.result)
+            }
+            is GetOrderResolutionRequestState.Error -> {
+                mapOnHidden()
+            }
+        }
+    }
+
+    private fun mapOnP1Complete(
+        p1DataRequestState: GetP1DataRequestState.Complete
+    ): OrderResolutionTicketStatusUiState {
+        return when (
+            val getOrderResolutionRequestState = p1DataRequestState.getOrderResolutionRequestState
+        ) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnLoading()
+            }
+            is GetOrderResolutionRequestState.Success -> {
+                mapOnDataReady(getOrderResolutionRequestState.result)
+            }
+            is GetOrderResolutionRequestState.Error -> {
+                mapOnHidden()
+            }
+        }
+    }
+
+    private fun mapOnLoading(): OrderResolutionTicketStatusUiState {
+        return OrderResolutionTicketStatusUiState.Loading
+    }
+
+    private fun mapOnDataReady(
+        orderResolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+    ): OrderResolutionTicketStatusUiState {
+        return OrderResolutionTicketStatusUiState.Showing(
+            mapOrderResolutionTicketStatus(orderResolutionData)
+        )
+    }
+
+    private fun mapOnHidden(): OrderResolutionTicketStatusUiState {
+        return OrderResolutionTicketStatusUiState.Hidden
+    }
 
     private fun mapOrderResolutionTicketStatus(
         resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
@@ -25,29 +95,15 @@ object OrderResolutionTicketStatusUiStateMapper {
         )
     }
 
-    fun mapGetP0DataResultToOrderResolutionTicketStatusUiState(
-        getP0DataRequestState: GetP0DataRequestState
+    fun mapGetBuyerOrderDetailDataRequestStateToOrderResolutionTicketStatusUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderResolutionTicketStatusUiState {
-        return when (getP0DataRequestState) {
-            is GetP0DataRequestState.Success -> {
-                if (getP0DataRequestState.getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse()) {
-                    val getOrderResolutionRequestState = getP0DataRequestState.getOrderResolutionRequestState
-                    if (getOrderResolutionRequestState is GetOrderResolutionRequestState.Success) {
-                        OrderResolutionTicketStatusUiState.Showing(
-                            mapOrderResolutionTicketStatus(getOrderResolutionRequestState.result)
-                        )
-                    } else {
-                        OrderResolutionTicketStatusUiState.Hidden
-                    }
-                } else {
-                    OrderResolutionTicketStatusUiState.Hidden
-                }
-            }
-            is GetP0DataRequestState.Error -> {
-                OrderResolutionTicketStatusUiState.Hidden
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
             }
             else -> {
-                OrderResolutionTicketStatusUiState.Loading
+                mapOnGetBuyerOrderDetailIdling()
             }
         }
     }

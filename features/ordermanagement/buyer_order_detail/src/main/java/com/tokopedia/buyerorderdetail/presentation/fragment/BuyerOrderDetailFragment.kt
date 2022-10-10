@@ -365,7 +365,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
         val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
-        viewModel.getP0Data(orderId, paymentId, cart)
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
     }
 
     private fun observeBuyerOrderDetail() {

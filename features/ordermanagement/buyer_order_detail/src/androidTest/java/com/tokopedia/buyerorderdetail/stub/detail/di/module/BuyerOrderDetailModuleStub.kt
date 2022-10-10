@@ -61,7 +61,6 @@ class BuyerOrderDetailModuleStub {
             )
             .registerTypeAdapterFactory(
                 RuntimeTypeAdapterFactory.of(GetP0DataRequestState::class.java, GetP0DataRequestState::type.name, true)
-                    .registerSubtype(GetP0DataRequestState.Idle::class.java)
                     .registerSubtype(GetP0DataRequestState.Requesting::class.java)
                     .registerSubtype(GetP0DataRequestState.Success::class.java)
                     .registerSubtype(GetP0DataRequestState.Error::class.java)
