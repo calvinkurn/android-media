@@ -127,6 +127,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListene
 import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
+import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
@@ -346,7 +347,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
         smallReplyBox = view.findViewById(R.id.small_reply_box)
         smallReplyBox?.bindCommentTextBackground()
-    //     bigReplyBox = view.findViewById(R.id.big_reply_box)
+        bigReplyBox = view.findViewById(R.id.big_reply_box)
+        showBigReplyBottomSheet()
 
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
@@ -1796,6 +1798,14 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         isFloatingInvoiceCancelled = isRemoved
 
         smallReplyBox?.removeTextChangedListener()
+    }
+
+    private fun showBigReplyBottomSheet() {
+        activity?.let {
+            val bottomSheetUnify = BigReplyBoxBottomSheet.newInstance(it)
+            bottomSheetUnify.clearContentPadding = true
+            bottomSheetUnify.show(childFragmentManager, "")
+        }
     }
 }
 
