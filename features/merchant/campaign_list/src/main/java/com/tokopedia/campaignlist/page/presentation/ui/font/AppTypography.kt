@@ -31,8 +31,4 @@ data class AppTypography(
 internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
 
-val OpenSauceTypography = Typography(
-    defaultFontFamily = OpenSauce,
-    h1 = TextStyle(fontWeight = FontWeight.Bold, fontSize = 96.sp, letterSpacing = (-1.5).sp)
-    //h4, subtitle, body1, etc.
-)
+val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)

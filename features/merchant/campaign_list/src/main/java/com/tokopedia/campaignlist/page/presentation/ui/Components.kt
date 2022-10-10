@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
@@ -187,7 +188,7 @@ fun UnifySearchBar(
                     if (text.isEmpty()) {
                         UnifyTypography(
                             text = placeholderText,
-                            textStyle = LocalTypography.current.display2
+                            textStyle = LocalTypography.current.display2.copy(color = LocalColors.current.NN600)
                         )
                     }
 
@@ -219,9 +220,11 @@ fun UnifyTicker(
     text: CharSequence,
     onDismissed: () -> Unit = {}
 ) {
-    val iconColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN400)
-    val strokeColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN200)
-    val backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_BN50)
+    //Implementation are specifically to cater announcement ticker type
+    val backgroundColor = LocalColors.current.BN50
+    val strokeColor =  LocalColors.current.BN200
+    val iconColor = LocalColors.current.BN400
+    val closeIconColor =  LocalColors.current.NN900
 
     Surface(
         modifier = modifier,
@@ -234,13 +237,15 @@ fun UnifyTicker(
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             UnifyTypography(
                 text = text.toString(),
-                modifier = Modifier.width(250.dp)
+                modifier = Modifier.width(250.dp),
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
             )
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             Icon(
                 imageVector = Icons.Outlined.Close,
                 modifier = Modifier.clickable { onDismissed() },
-                contentDescription = "Close Icon"
+                contentDescription = "Close Icon",
+                tint = closeIconColor
             )
         }
     }
@@ -305,7 +310,7 @@ fun UnifyButton(
 fun UnifyTypography(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = LocalTypography.current.display3
+    textStyle: TextStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
 ) {
     Text(
         text = text,

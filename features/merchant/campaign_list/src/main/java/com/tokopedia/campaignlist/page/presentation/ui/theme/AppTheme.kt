@@ -13,6 +13,16 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.unit.dp
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.color.TokopediaColor
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN200
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN200Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN400
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN400Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN50
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN50Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN800
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN800Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN950
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN950Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyColor
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500Dark
@@ -22,6 +32,8 @@ import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN900
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN900Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN950
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN950Dark
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
@@ -63,10 +75,33 @@ fun UnifyTheme(
     }
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val unifyColor = if (darkTheme) {
-        UnifyColor(UnifyNN600, UnifyNN950Dark, UnifyGN500Dark)
+        UnifyColor(
+            NN0 = UnifyNN0Dark,
+            BN50 = UnifyBN50Dark,
+            BN200 = UnifyBN200Dark,
+            BN400= UnifyBN400Dark,
+            BN800 = UnifyBN800Dark,
+            BN950= UnifyBN950Dark,
+            NN600 = UnifyNN600Dark,
+            NN900 = UnifyNN900Dark,
+            NN950 = UnifyNN950Dark,
+            GN500 = UnifyGN500Dark
+        )
     } else {
-        UnifyColor(UnifyNN600Dark, UnifyNN950, UnifyGN500)
+        UnifyColor(
+            NN0 = UnifyNN0,
+            BN50 = UnifyBN50,
+            BN200 = UnifyBN200,
+            BN400= UnifyBN400,
+            BN800 = UnifyBN800,
+            BN950= UnifyBN950,
+            NN600 = UnifyNN600,
+            NN900 = UnifyNN900,
+            NN950 = UnifyNN950,
+            GN500 = UnifyGN500
+        )
     }
+
     CompositionLocalProvider(
         LocalElevations provides elevation,
         LocalColors provides unifyColor,
