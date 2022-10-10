@@ -22,6 +22,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
+        android:visibility="gone"
         app:timer_unify_single_text="Otomatis nonaktif dalam:"
         app:timer_unify_single_variant="informative"
         app:timer_unify_single_textWidth="full_radius"
@@ -58,11 +59,11 @@
             app:layout_constraintBottom_toBottomOf="parent"
             tools:text="Aktif" />
 
-        <com.tokopedia.unifycomponents.ImageUnify
+        <com.tokopedia.iconunify.IconUnify
             android:id="@+id/itemIconButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_right_arrow"
+            app:icon_name="CHEVRON_RIGHT"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
