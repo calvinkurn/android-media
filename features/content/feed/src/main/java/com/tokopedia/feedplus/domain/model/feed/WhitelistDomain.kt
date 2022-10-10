@@ -28,6 +28,8 @@ data class WhitelistDomain(
     val isBuyerAccountExists: Boolean
         get() = authors.find{ it.type == TYPE_USER } != null
 
+    // hasAcceptTnc is not really accepting tnc for shop account
+    // instead is used to indicate whether is allowed or not to create livestream
     val isShopAccountLiveEligible: Boolean
         get() = authors.find { it.type == TYPE_SHOP && it.livestream.hasAcceptTnc } != null
 
