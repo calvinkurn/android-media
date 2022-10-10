@@ -16,7 +16,8 @@ class PlayPreference @Inject constructor(
     companion object {
         private const val PLAY_PREFERENCE = "play_preference"
 
-        private const val A_DAY_IN_MILLIS: Long = 86400000L
+        private const val A_DAY_IN_MILLIS: Long = 86400000
+        private const val BUFFER_TIME: Long = 10000
 
         private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
@@ -76,7 +77,7 @@ class PlayPreference @Inject constructor(
         ""
     )
 
-    private fun getLastVisit(userId: String) = sharedPref.getLong(String.format(SWIPE_ONBOARDING, userId), currentTime - A_DAY_IN_MILLIS)
+    private fun getLastVisit(userId: String) = sharedPref.getLong(String.format(SWIPE_ONBOARDING, userId), 0)
 
     private fun getDiffDay(userId: String) : Long {
         return currentTime - getLastVisit(userId)
@@ -86,9 +87,9 @@ class PlayPreference @Inject constructor(
         val newUserId = if(userId.isEmpty()) "0" else userId
         when (variant) {
             SWIPE_LIVE_ROOM_VARIANT -> {
-                if (getDiffDay(newUserId) >= A_DAY_IN_MILLIS) {
+                if (getDiffDay(newUserId) >= A_DAY_IN_MILLIS || !sharedPref.contains(String.format(SWIPE_ONBOARDING, newUserId))) {
                     sharedPref.edit()
-                        .putLong(String.format(SWIPE_ONBOARDING, newUserId), System.currentTimeMillis())
+                        .putLong(String.format(SWIPE_ONBOARDING, newUserId), currentTime)
                         .apply()
                 }
             }
@@ -99,7 +100,9 @@ class PlayPreference @Inject constructor(
     fun isCoachMark(userId: String): Boolean {
         val newUserId = if(userId.isEmpty()) "0" else userId
         return if (variant == SWIPE_LIVE_ROOM_VARIANT) {
-            getDiffDay(newUserId) >= A_DAY_IN_MILLIS
+            val diff = getDiffDay(newUserId)
+            val newDiff = if (diff <= BUFFER_TIME) A_DAY_IN_MILLIS else diff
+            newDiff >= A_DAY_IN_MILLIS
         }
         else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), false)
     }
