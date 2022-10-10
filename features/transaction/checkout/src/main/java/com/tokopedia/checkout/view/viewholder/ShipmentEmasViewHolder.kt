@@ -17,11 +17,10 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet
-import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
-import java.util.*
+import java.util.Locale
 
 class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
     private val buyEmas: CheckBox = itemView.findViewById(R.id.cb_emas)
@@ -87,7 +86,7 @@ class ShipmentEmasViewHolder(itemView: View, private val shipmentAdapterActionLi
     private fun showBottomSheet(egoldAttributeModel: EgoldAttributeModel) {
         GeneralBottomSheet().apply {
             setTitle(egoldAttributeModel.titleText ?: "")
-            setDesc(Utils.getHtmlFormat(egoldAttributeModel.tooltipText) ?: "")
+            setDesc(egoldAttributeModel.tooltipText ?: "")
             setButtonText(imgEmasInfo.context.getString(com.tokopedia.purchase_platform.common.R.string.label_button_bottomsheet_close))
             setButtonOnClickListener { it.dismiss() }
         }.show(llContainer.context, shipmentAdapterActionListener.currentFragmentManager)
