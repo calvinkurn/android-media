@@ -1824,7 +1824,7 @@ class AddEditProductPreviewFragment :
                     activity?.finish()
                 }
                 urlResult.startsWith(HTTP_PREFIX) -> {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                    RouteManager.route(context, String.format(getString(R.string.format_web_page), ApplinkConst.WEBVIEW, urlResult))
                 }
                 else -> {
                     val intent = RouteManager.getIntent(context, urlResult)
