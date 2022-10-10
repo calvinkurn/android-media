@@ -9,6 +9,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleProductBinding
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
@@ -36,12 +37,16 @@ class ProductBundleMultiplePackageViewHolder(
     }
 
     fun bind(
-        bundleProductItem: BundleProductUiModel,
+        item: Pair<Int, BundleProductUiModel>,
         onViewImpression: (position: Int) -> Unit,
         onClickImpression: (position: Int) -> Unit
     ) {
+        val context = itemView.context
+        val bundleProductItem = item.second
+        val productName = context.getString(
+            R.string.bundlewidget_product_title_format, item.first, bundleProductItem.productName)
+        typographyBundleProductName?.text = HtmlLinkHelper(context, productName).spannedString
         imageBundleProduct?.loadImage(bundleProductItem.productImageUrl)
-        typographyBundleProductName?.text = bundleProductItem.productName
         itemView.addOnImpressionListener(bundleProductItem) { onViewImpression.invoke(adapterPosition) }
         itemView.setOnClickListener { onClickImpression.invoke(adapterPosition) }
     }

@@ -30,7 +30,7 @@ class ProductBundleMultipleAdapter(
 
     override fun onBindViewHolder(holder: ProductBundleMultiplePackageViewHolder, position: Int) {
         val bundleProduct = bundleProducts.getOrNull(position) ?: BundleProductUiModel()
-        holder.bind(bundleProduct, ::onViewImpression, ::onClickImpression)
+        holder.bind(Pair(bundleDetail.minOrder, bundleProduct), ::onViewImpression, ::onClickImpression)
     }
 
     private fun onClickImpression(position: Int) {

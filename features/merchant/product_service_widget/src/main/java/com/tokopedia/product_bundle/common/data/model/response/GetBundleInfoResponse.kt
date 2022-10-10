@@ -84,6 +84,9 @@ data class BundleItem(
 
         fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
                 children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+
+        fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
+            children.minByOrNull { it.minOrder }?.minOrder.orZero()
 }
 
 @Parcelize

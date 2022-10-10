@@ -81,9 +81,12 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
     ): List<BundleDetailUiModel> {
         val bundlePrice = sumOf { it.getPreviewBundlePrice() }
         val originalPrice = sumOf { it.getPreviewOriginalPrice() }
+        var productCount = minOfOrNull { it.getPreviewMinOrder() }.orZero()
+        if (productCount.isZero()) productCount = MIN_DISPLAYED_PRODUCT_COUNT
         return listOf(
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
                 this.bundleId = bundleId.toString()
+                this.minOrder = productCount
             }
         )
     }
@@ -111,5 +114,9 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
                 )
             }
         )
+    }
+
+    companion object {
+        private const val MIN_DISPLAYED_PRODUCT_COUNT = 1
     }
 }
