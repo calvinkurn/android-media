@@ -63,24 +63,24 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomCallback {
     }
 
     fun setData(headerTitle: String, shopRecomItem: List<ShopRecomUiModelItem>) = with(binding) {
-        txtWordingFollow.text = headerTitle
+        txtHeaderShopRecom.text = headerTitle
         mAdapterShopRecom.updateData(shopRecomItem)
     }
 
     fun showLoadingShopRecom() = with(binding) {
-        txtWordingFollow.hide()
+        txtHeaderShopRecom.hide()
         rvShopRecom.hide()
         shimmerShopRecom.root.show()
     }
 
     fun showContentShopRecom() = with(binding) {
-        txtWordingFollow.show()
+        txtHeaderShopRecom.show()
         rvShopRecom.show()
         shimmerShopRecom.root.hide()
     }
 
     fun showEmptyShopRecom() = with(binding) {
-        txtWordingFollow.hide()
+        txtHeaderShopRecom.hide()
         rvShopRecom.hide()
         shimmerShopRecom.root.hide()
     }
