@@ -77,7 +77,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
     private lateinit var localCacheHandler: LocalCacheHandler
 
     private var searchBarTransitionRange = 0
-
+    private var searchBarType: String = ""
     private var platformId: Int = 0
     private var enablePersonalize: Boolean = false
     private var sliceOpenApp: Boolean = false
@@ -127,9 +127,6 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (platformId != RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID)
-            hideStatusBar()
 
         binding.digitalHomepageToolbar.setNavigationOnClickListener { activity?.onBackPressed() }
 
@@ -226,31 +223,36 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             offsetAlpha = 0f
         }
 
-        val searchBarContainer =
-            binding.digitalHomepageSearchView.findViewById<LinearLayout>(R.id.search_input_view_container)
-        if (offsetAlpha >= OFFSET_ALPHA || platformId == RechargeHomepageViewModel.ALL_CATEGORY_PLATFORM_ID) {
+        if (offsetAlpha >= OFFSET_ALPHA || searchBarType == SEARCH_BAR_TYPE_SOLID) {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            binding.digitalHomepageToolbar.toOnScrolledMode()
-            context?.run {
-
-                binding.digitalHomepageOrderList.setColorFilter(
-                    ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_N200),
-                    PorterDuff.Mode.MULTIPLY
-                )
-                searchBarContainer.background =
-                    MethodChecker.getDrawable(
-                        this,
-                        R.drawable.bg_digital_homepage_search_view_background_gray
-                    )
-            }
+            setSearchBarContainerColor(SEARCH_BAR_TYPE_SOLID)
         } else {
             activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-            binding.digitalHomepageToolbar.toInitialMode()
-            binding.digitalHomepageOrderList.clearColorFilter()
-            context?.run {
+            setSearchBarContainerColor(SEARCH_BAR_TYPE_TRANSPARENT)
+        }
+    }
+
+    private fun setSearchBarContainerColor(searchBarType: String) {
+        val searchBarContainer = binding.digitalHomepageSearchView
+            .findViewById<LinearLayout>(R.id.search_input_view_container)
+
+        context?.let { ctx ->
+            if (searchBarType == SEARCH_BAR_TYPE_SOLID) {
+                binding.digitalHomepageToolbar.toOnScrolledMode()
+                binding.digitalHomepageOrderList.setColorFilter(
+                    ContextCompat.getColor(ctx, com.tokopedia.unifyprinciples.R.color.Unify_N200),
+                    PorterDuff.Mode.MULTIPLY
+                )
+                searchBarContainer.background = MethodChecker.getDrawable(
+                    ctx,
+                    R.drawable.bg_digital_homepage_search_view_background_gray
+                )
+            } else {
+                binding.digitalHomepageToolbar.toInitialMode()
+                binding.digitalHomepageOrderList.clearColorFilter()
                 searchBarContainer.background =
                     MethodChecker.getDrawable(
-                        this,
+                        ctx,
                         R.drawable.bg_digital_homepage_search_view_background
                     )
             }
@@ -551,6 +553,18 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             rechargeHomepageAnalytics.eventClickOrderList()
             RouteManager.route(activity, rechargeHomepageSectionSkeleton.searchBarAppLink)
         }
+        searchBarType = rechargeHomepageSectionSkeleton.searchBarType
+        setStatusBar()
+        setSearchBarContainerColor(searchBarType)
+    }
+
+    private fun setStatusBar(){
+        hideStatusBar()
+        if (searchBarType != SEARCH_BAR_TYPE_SOLID){
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        } else {
+            activity?.window?.decorView?.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
     }
 
     @SuppressLint("DeprecatedMethod")
@@ -571,6 +585,8 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         const val EXTRA_PLATFORM_ID = "platform_id"
         const val EXTRA_ENABLE_PERSONALIZE = "personalize"
         const val RECHARGE_HOME_PAGE_EXTRA = "RECHARGE_HOME_PAGE_EXTRA"
+        const val SEARCH_BAR_TYPE_SOLID = "solid"
+        const val SEARCH_BAR_TYPE_TRANSPARENT = "transparent"
 
         const val TOOLBAR_TRANSITION_RANGE_DP = 8
         const val SECTION_SPACING_DP = 16
