@@ -116,7 +116,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initCacheManager();
         initEmbrace();
 
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             new Cassava.Builder(this).initialize();
         }
         TrackApp.initTrackApp(this);
