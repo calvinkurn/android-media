@@ -11,6 +11,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShopShipment;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel;
 
@@ -22,7 +23,7 @@ import java.util.List;
 
 public interface ShipmentAdapterActionListener {
 
-    void onCancelVoucherLogisticClicked(String pslCode, int position);
+    void onCancelVoucherLogisticClicked(String pslCode, int position, ShipmentCartItemModel shipmentCartItemModel);
 
     void onDataEnableToCheckout();
 
@@ -36,7 +37,7 @@ public interface ShipmentAdapterActionListener {
 
     void onTotalPaymentChange(String totalPayment, boolean enable);
 
-    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString);
+    void onFinishChoosingShipment(int lastSelectedCourierOrder, String lastSelectedCourierOrdercartString, boolean forceHitValidateUse);
 
     void updateCheckoutRequest(List<DataCheckoutRequest> checkoutRequestData);
 
@@ -137,9 +138,13 @@ public interface ShipmentAdapterActionListener {
 
     void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
 
+    void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
     void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onViewFreeShippingPlusBadge();
+
+    void onInsuranceInfoTooltipClickedTrackingAnalytics();
 }

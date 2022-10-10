@@ -22,6 +22,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
@@ -599,7 +600,13 @@ class RechargeCCFragment :
     ) {
         context?.let {
             val intent = TopupBillsPersoFavoriteNumberActivity.createInstance(
-                it, clientNumber, dgCategoryIds, arrayListOf(), categoryName, loyaltyStatus
+                it,
+                clientNumber,
+                dgCategoryIds,
+                arrayListOf(),
+                categoryName,
+                loyaltyStatus,
+                FavoriteNumberPageConfig.CREDIT_CARD
             )
             val requestCode = RechargeCCConst.REQUEST_CODE_FAVORITE_NUMBER
             startActivityForResult(intent, requestCode)

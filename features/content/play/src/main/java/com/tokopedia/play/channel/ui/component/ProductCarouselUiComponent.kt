@@ -85,7 +85,7 @@ class ProductCarouselUiComponent(
 
         val tagItems = state.value.tagItems
 
-        if (tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
+        if (tagItems.resultState.isLoading && state.value.featuredProducts.isEmpty()) {
             uiView.setLoading()
         } else if (state.isChanged { it.featuredProducts }) {
             uiView.setProducts(state.value.featuredProducts)
@@ -98,13 +98,13 @@ class ProductCarouselUiComponent(
             }
         }
 
-        if (!tagItems.resultState.isLoading && tagItems.product.productSectionList.isEmpty()) {
+        if (!tagItems.resultState.isLoading && state.value.featuredProducts.isEmpty()) {
             uiView.hide()
         } else if (tagItems.product.canShow &&
             !state.value.bottomInsets.isAnyShown &&
             !tagItems.resultState.isFail &&
             state.value.status.channelStatus.statusType.isActive &&
-            tagItems.product.productSectionList.isNotEmpty() &&
+            state.value.featuredProducts.isNotEmpty() &&
             !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()

@@ -124,7 +124,7 @@ class ProductCarouselViewHolder private constructor() {
                 append(separator, separatorSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
 
                 append(' ')
-                val stockText = getString(R.string.play_product_item_stock, item.stock.stock)
+                val stockText = getString(R.string.play_product_item_stock, item.stock.stock.toString())
                 append(stockText, stockSpan, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
             }
         }

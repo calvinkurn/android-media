@@ -22,6 +22,14 @@ class ResourceProvider @Inject constructor(@ApplicationContext private val conte
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_closable_stock_ticker_description).orEmpty()
     }
 
+    fun getTickerMaxStockTitle(): String {
+        return getString(com.tokopedia.product.manage.common.R.string.product_manage_maxstock_ticker_title).orEmpty()
+    }
+
+    fun getTickerMaxStockDescription(): String {
+        return getString(com.tokopedia.product.manage.common.R.string.product_manage_maxstock_ticker_description).orEmpty()
+    }
+
     fun getTickerNotifyMeTitle(): String {
         return getString(com.tokopedia.product.manage.common.R.string.product_manage_notifyme_ticker_title).orEmpty()
     }

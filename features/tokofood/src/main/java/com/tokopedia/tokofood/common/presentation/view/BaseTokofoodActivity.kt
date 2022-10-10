@@ -152,7 +152,7 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 var hasChecked = false
                 while (i >= 0) {
                     prevFragment = supportFragmentManager.fragments.getOrNull(i)
-                    if (prevFragment?.isHidden == false) {
+                    if (prevFragment?.isHidden == false && prevFragment.isAdded) {
                         if (isFinishCurrent && !hasChecked) {
                             hasChecked = true
                         } else {
@@ -169,7 +169,19 @@ class BaseTokofoodActivity : BaseMultiFragActivity(), HasViewModel<MultipleFragm
                 ft.addToBackStack(destinationFragmentName)
             }
         }
-        ft.commit()
+        if (shouldUseCommitAllowingStateLoss()) {
+            ft.commitAllowingStateLoss()
+        } else {
+            ft.commit()
+        }
+    }
+
+    /**
+     * This method acts as toggle whenever there are issues which could be altered by Hansel.
+     * Will delete this if the crashes are fixed and no new issues occured
+     */
+    private fun shouldUseCommitAllowingStateLoss(): Boolean {
+        return true
     }
 
     /**

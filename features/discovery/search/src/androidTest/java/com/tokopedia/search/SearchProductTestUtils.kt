@@ -90,8 +90,6 @@ internal fun createInspirationCardListener(): InspirationCardListener {
 
 internal fun createInspirationCarouselListener(): InspirationCarouselListener {
     return object: InspirationCarouselListener {
-        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-            get() = null
         override fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product) {}
         override fun onInspirationCarouselSeeAllClicked(inspirationCarouselDataViewOption: InspirationCarouselDataView.Option) {}
         override fun onInspirationCarouselInfoProductClicked(product: InspirationCarouselDataView.Option.Product) {}
@@ -117,8 +115,6 @@ internal fun createBroadMatchListener(): BroadMatchListener {
         override fun onBroadMatchThreeDotsClicked(broadMatchItemDataView: BroadMatchItemDataView) {}
         override fun onBroadMatchViewAllCardClicked(broadMatchDataView: BroadMatchDataView) {}
 
-        override val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-            get() = null
         override val productCardLifecycleObserver: ProductCardLifecycleObserver?
             get() = null
     }
@@ -163,7 +159,6 @@ internal fun createRecommendationListener(): RecommendationListener {
     return object: RecommendationListener {
         override fun onProductClick(item: RecommendationItem, layoutType: String?, vararg position: Int) {}
         override fun onProductImpression(item: RecommendationItem) {}
-        override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {}
         override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {}
     }
 }

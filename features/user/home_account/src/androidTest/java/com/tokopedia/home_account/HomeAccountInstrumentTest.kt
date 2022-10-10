@@ -40,16 +40,16 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
 
 
     //4.Cassava Test ID - 798
-    // This test is disabled for a while, because it's failed on the cassava nightly build, will release the patch ASAP.
-    /*
-    @Test
-    fun click_more_account_settings() {
-        runTest {
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-            onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
-        }.validate(QueryUtils.queryMoreSettings("Member"))
-    }
-    */
+    // This tests is disabled for now, because it keep failing at firebase testlab with unknown cause.
+    // We will fix it ASAP.
+//    @Test
+//    fun click_more_account_settings() {
+//        runTest {
+//            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(
+//                Activity.RESULT_OK, null))
+//            onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
+//        }.validate(QueryUtils.queryMoreSettings("Member"))
+//    }
 
     //5.Cassava Test ID - 802
     @Test

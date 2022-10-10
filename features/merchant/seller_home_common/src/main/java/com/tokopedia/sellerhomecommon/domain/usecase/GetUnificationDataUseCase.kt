@@ -30,8 +30,8 @@ import javax.inject.Inject
 @GqlQuery("GetUnificationDataGqlQuery", GetUnificationDataUseCase.QUERY)
 class GetUnificationDataUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
-    unificationMapper: UnificationMapper,
     dispatchers: CoroutineDispatchers,
+    private val unificationMapper: UnificationMapper,
     private val getTableDataUseCase: GetTableDataUseCase,
 ) : CloudAndCacheGraphqlUseCase<GetUnificationDataResponse, List<UnificationDataUiModel>>(
     gqlRepository, unificationMapper, dispatchers, GetUnificationDataGqlQuery()
@@ -143,7 +143,10 @@ class GetUnificationDataUseCase @Inject constructor(
                                     it.isSelected = false
                                 }
                                 return@tab it
-                            }
+                            },
+                            lastUpdated = unificationMapper.getLastUpdated(
+                                model.dataKey, isFromCache
+                            )
                         )
                     }
                 }

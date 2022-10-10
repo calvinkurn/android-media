@@ -8,8 +8,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
-import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.LoadingMoreViewHolder
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -431,16 +429,20 @@ open class ShopHomeAdapter(
         recyclerView?.requestLayout()
     }
 
-    fun updateShopPageProductChangeGridSectionIcon(totalProductData: Int, gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID) {
+    fun updateShopPageProductChangeGridSectionIcon(
+        isProductListEmpty: Boolean,
+        totalProductData: Int,
+        gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    ) {
         val newList = getNewVisitableItems()
         val gridSectionModel = newList.filterIsInstance<ShopHomeProductChangeGridSectionUiModel>().firstOrNull()
         if (gridSectionModel == null) {
-            if(totalProductData != 0) {
+            if(!isProductListEmpty) {
                 newList.add(ShopHomeProductChangeGridSectionUiModel(totalProductData, gridType))
             }
         } else {
             gridSectionModel.apply {
-                if(totalProductData == 0){
+                if(isProductListEmpty){
                     newList.remove(this)
                 }else{
                     this.totalProduct = totalProductData

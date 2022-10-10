@@ -26,9 +26,9 @@
 
         <FrameLayout
             android:id="@+id/productLayout"
-            android:layout_width="@dimen/dp_96"
-            android:layout_height="@dimen/dp_96"
-            android:padding="@dimen/dp_2"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:padding="2dp"
             android:background="@drawable/bg_frame_rounded"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/productNameSection">
@@ -119,8 +119,8 @@
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/star"
-                    android:layout_width="@dimen/dp_13"
-                    android:layout_height="@dimen/dp_13"
+                    android:layout_width="13dp"
+                    android:layout_height="13dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginTop="6dp"
                     android:layout_marginBottom="6dp"
@@ -140,7 +140,7 @@
 
                 <View
                     android:id="@+id/divider"
-                    android:layout_width="@dimen/dp_1"
+                    android:layout_width="1dp"
                     android:layout_height="10dp"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="4dp"

@@ -78,7 +78,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
         dynamicChannelList.forEachIndexed { index, channel ->
-            val position = index+ 1 + startPosition
+            val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
@@ -668,7 +668,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(
                     channel,
                     verticalPosition
-                ), isCache
+                ), isCache,
+                dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design
             )
         )
     }

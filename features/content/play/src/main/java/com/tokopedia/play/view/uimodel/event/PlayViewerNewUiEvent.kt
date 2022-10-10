@@ -26,6 +26,8 @@ data class ShowErrorEvent(val error: Throwable, val errMessage: UiString? = null
 
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 
+data class LoginEvent(val afterSuccess: () -> Unit) : PlayViewerNewUiEvent()
+
 /**
  * Real Time Notification
  */
@@ -40,17 +42,17 @@ data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
 object RemindToLikeEvent : PlayViewerNewUiEvent()
 sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
 
-    abstract val count: Int
+    abstract val count: Long
     abstract val reduceOpacity: Boolean
 
     data class Single(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()
 
     data class Burst(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()
@@ -101,6 +103,7 @@ data class AllowedWhenInactiveEvent(
     }
 }
 
+
 /**
  * Interactive
  * */
@@ -108,3 +111,9 @@ data class QuizAnsweredEvent(val isTrue: Boolean) : PlayViewerNewUiEvent()
 
 object OpenKebabEvent : PlayViewerNewUiEvent()
 object OpenUserReportEvent : PlayViewerNewUiEvent()
+
+/**
+ * CampaignReminder
+ */
+data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
+data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()

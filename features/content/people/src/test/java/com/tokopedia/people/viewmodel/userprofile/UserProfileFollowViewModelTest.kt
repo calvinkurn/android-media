@@ -10,6 +10,7 @@ import com.tokopedia.people.robot.UserProfileViewModelRobot
 import com.tokopedia.people.util.*
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
+import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -63,7 +64,7 @@ class UserProfileFollowViewModelTest {
         coEvery { mockRepo.getProfile(mockOwnUsername) } returns mockOwnProfile
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
-        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUsername)) } returns mockOwnFollow
+        coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
 
         coEvery { mockRepo.followProfile(any()) } returns mockMutationSuccess
         coEvery { mockRepo.unFollowProfile(any()) } returns mockMutationSuccess
@@ -95,7 +96,6 @@ class UserProfileFollowViewModelTest {
 
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockUserSession.userId } returns ""
-        coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
             username = mockOtherUsername,
@@ -110,7 +110,7 @@ class UserProfileFollowViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen {
-                followInfo equalTo mockOtherNotFollow
+                followInfo equalTo FollowInfoUiModel.Empty
             }
         }
     }

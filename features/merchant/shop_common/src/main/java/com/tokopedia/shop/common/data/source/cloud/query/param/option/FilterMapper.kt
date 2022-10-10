@@ -37,6 +37,8 @@ class FilterMapper {
                     FilterByCondition.CashBackOnly.id -> FilterByCondition.CashBackOnly
                     FilterByCondition.WholesaleOnly.id -> FilterByCondition.WholesaleOnly
                     FilterByCondition.PreorderOnly.id -> FilterByCondition.PreorderOnly
+                    FilterByCondition.FeaturedOnly.id -> FilterByCondition.FeaturedOnly
+                    FilterByCondition.CampaignOnly.id -> FilterByCondition.CampaignOnly
                     FilterByCondition.NotifyMeOnly.id -> FilterByCondition.NotifyMeOnly
                     else -> FilterByCondition.FeaturedOnly //FilterOption.FEATURED_ONLY
                 }

@@ -7,7 +7,6 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.data.model.S
 import com.tokopedia.product.manage.common.feature.variant.adapter.model.ProductVariant
 import com.tokopedia.product.manage.common.feature.variant.data.model.CampaignType
 import com.tokopedia.product.manage.common.feature.variant.data.model.GetProductV3
-import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.product.manage.common.feature.variant.data.model.Selection
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.UpdateVariantParam
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantInputParam
@@ -15,6 +14,7 @@ import com.tokopedia.product.manage.common.feature.variant.data.model.param.Vari
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSelectionInput
 import com.tokopedia.product.manage.common.feature.variant.data.model.param.VariantSizeChartInput
 import com.tokopedia.product.manage.common.feature.variant.presentation.data.EditVariantResult
+import com.tokopedia.product.manage.common.feature.variant.presentation.data.GetVariantResult
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
 
 object ProductManageVariantMapper {

@@ -21,7 +21,7 @@ class TrackVisitChannelBroadcasterUseCase @Inject constructor(
 ): GraphqlUseCase<VisitChannelTracking.Response>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(TrackVisitChannelBroadcasterUseCaseQuery.GQL_QUERY)
+        setGraphqlQuery(TrackVisitChannelBroadcasterUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(VisitChannelTracking.Response::class.java)
     }

@@ -12,15 +12,12 @@ import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
-import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
-import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -32,8 +29,6 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
  */
 fun TestBody.createFeedViewModel(): FeedViewModel{
     val userSession by memoized<UserSessionInterface>()
-    val getInterestPickUseCase by memoized<GetInterestPickUseCase>()
-    val submitInterestPickUseCase by memoized<SubmitInterestPickUseCase>()
     val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
     val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
@@ -44,7 +39,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
-    val addWishListUseCase by memoized<AddWishListUseCase>()
     val addToWishlistV2UseCase by memoized<AddToWishlistV2UseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
@@ -53,8 +47,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     return FeedViewModel(
         CoroutineTestDispatchersProvider,
         userSession,
-        getInterestPickUseCase,
-        submitInterestPickUseCase,
         doFavoriteShopUseCase,
         followKolPostGqlUseCase,
         likeKolPostUseCase,
@@ -66,11 +58,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         getDynamicFeedNewUseCase,
         getWhitelistNewUseCase,
         sendReportUseCase,
-        addWishListUseCase,
         addToWishlistV2UseCase,
         feedBroadcastTrackerUseCase,
         feedXTrackViewerUseCase
-
     )
 }
 
@@ -81,16 +71,8 @@ fun FeatureBody.createFeedTestInstance() {
         mockk<UserSessionInterface>(relaxed = true)
     }
 
-    val getInterestPickUseCase by memoized {
-        mockk<GetInterestPickUseCase>(relaxed = true)
-    }
-
     val atcUseCase by memoized {
         mockk<AddToCartUseCase>(relaxed = true)
-    }
-
-    val submitInterestPickUseCase by memoized {
-        mockk<SubmitInterestPickUseCase>(relaxed = true)
     }
 
     val getDynamicFeedFirstPageUseCase by memoized {
@@ -129,9 +111,6 @@ fun FeatureBody.createFeedTestInstance() {
     }
     val getDynamicFeedNewUseCase by memoized {
         mockk<GetDynamicFeedNewUseCase>(relaxed = true)
-    }
-    val addWishListUseCase by memoized {
-        mockk<AddWishListUseCase>(relaxed = true)
     }
     val addWishListV2UseCase by memoized {
         mockk<AddToWishlistV2UseCase>(relaxed = true)
