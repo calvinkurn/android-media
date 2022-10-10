@@ -28,7 +28,8 @@ object FileUtils {
             .getInstrumentation()
             .context
         return InstrumentationMockHelper.getRawString(
-            context, resId
+            context,
+            resId
         )
     }
 
