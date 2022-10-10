@@ -103,6 +103,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
 
     override fun initObservers() {
         observeTokoChatBackground()
+        observeChatRoomTicker()
         observeChannelDetails()
         observerTyping()
     }
@@ -191,6 +192,19 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
         observe(viewModel.chatBackground) {
             when (it) {
                 is Success -> renderBackground(it.data)
+                is Fail -> {
+                    //no op
+                }
+            }
+        }
+    }
+
+    private fun observeChatRoomTicker() {
+        observe(viewModel.chatRoomTicker) {
+            when (it) {
+                is Success -> {
+                    //TODO will adjust by kelvin
+                }
                 is Fail -> {
                     //no op
                 }

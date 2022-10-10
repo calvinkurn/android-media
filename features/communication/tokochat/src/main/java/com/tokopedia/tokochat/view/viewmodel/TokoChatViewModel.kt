@@ -24,6 +24,8 @@ import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.MutationTokoChatMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
+import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
 import com.tokopedia.tokochat.domain.usecase.MutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -44,8 +46,9 @@ class TokoChatViewModel @Inject constructor(
     private val mutationTokoChatMessageUseCase: MutationTokoChatMessageUseCase,
     private val getTypingUseCase: GetTypingUseCase,
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
+    private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val profileUseCase: MutationProfileUseCase,
-    private val dispatcher: CoroutineDispatchers,
+    private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
     private val _channelDetail = MutableLiveData<Result<GroupBookingChannelDetails>>()
@@ -59,6 +62,10 @@ class TokoChatViewModel @Inject constructor(
     private val _chatBackground = MutableLiveData<Result<String>>()
     val chatBackground: MutableLiveData<Result<String>>
         get() = _chatBackground
+
+    private val _chatRoomTicker = MutableLiveData<Result<TokochatRoomTickerResponse>>()
+    val chatRoomTicker: LiveData<Result<TokochatRoomTickerResponse>>
+        get() = _chatRoomTicker
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
@@ -230,6 +237,15 @@ class TokoChatViewModel @Inject constructor(
             }
         }, onError = {
             _chatBackground.value = Fail(it)
+        })
+    }
+
+    fun loadChatRoomTicker(messageId: String) {
+        launchCatchError(block = {
+            val result = getTokoChatRoomTickerUseCase(messageId)
+            _chatRoomTicker.value = Success(result)
+        }, onError = {
+            _chatRoomTicker.value = Fail(it)
         })
     }
 
