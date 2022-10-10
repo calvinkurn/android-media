@@ -26,7 +26,9 @@ class RedefineRegisterEmailTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        RedefineRegisterEmailActivity::class.java, false, false
+        RedefineRegisterEmailActivity::class.java,
+        false,
+        false
     )
 
     private val applicationContext: Context
