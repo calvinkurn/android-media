@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.campaigndetail
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductCriteriaBinding
@@ -32,10 +33,14 @@ class ProductCriteriaViewHolder(private val binding: StfsItemProductCriteriaBind
     fun bind(itemModel: ProductCriteriaModel) {
         val context = binding.root.context
         binding.tfCategoryTitle.text = itemModel.categorySelectionsText
-        binding.tfProductCount.text = context.getString(
-            R.string.stfs_matched_product_count_placeholder,
-            itemModel.matchedProductCount
-        )
+        binding.tfProductCount.text = if (itemModel.matchedProductCount.isMoreThanZero()) {
+            context.getString(
+                R.string.stfs_matched_product_count_placeholder,
+                itemModel.matchedProductCount
+            )
+        } else {
+            context.getString(R.string.stfs_matched_product_empty_placeholder)
+        }
 
         with(binding.layoutContent) {
             tfOriginalPrice.value = formatRange(itemModel.originalPriceRange)

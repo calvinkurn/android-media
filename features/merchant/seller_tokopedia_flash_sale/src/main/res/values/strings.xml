@@ -124,6 +124,7 @@
     <string name="stfs_success_delete_product_message">%d produk berhasil dihapus.</string>
     <string name="stfs_global_error_message">Terjadi kesalahan.</string>
     <string name="stfs_matched_product_count_placeholder">%d produkmu sesuai</string>
+    <string name="stfs_matched_product_empty_placeholder">Belum ada produkmu yang sesuai</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
