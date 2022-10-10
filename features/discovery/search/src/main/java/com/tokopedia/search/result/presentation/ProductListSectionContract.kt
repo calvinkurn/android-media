@@ -27,8 +27,6 @@ interface ProductListSectionContract {
         fun addRecommendationList(list: List<Visitable<*>>)
         fun showNetworkError(throwable: Throwable?)
         val queryKey: String
-        fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>)
-        fun trackEventImpressionBannedProducts(isEmptySearch: Boolean)
         fun backToTop()
         fun addLoading()
         fun removeLoading()

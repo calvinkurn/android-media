@@ -78,7 +78,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     postTagItem.text,
                     postTagItem.price,
                     1,
-                    postTagItem.shop[0].shopId.toIntOrZero(),
+                    postTagItem.shop[0].shopId,
                     "")
             if (isMyShop) onGoToLink(postTagItem.applink)
             else checkAddToCart(postTagItem)
@@ -268,7 +268,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                                 tagItem.text,
                                 tagItem.price,
                                 1,
-                                tagItem.shop[0].shopId.toIntOrZero(),
+                                tagItem.shop[0].shopId,
                                 "")
                         checkAddToCart(tagItem)
                     }
