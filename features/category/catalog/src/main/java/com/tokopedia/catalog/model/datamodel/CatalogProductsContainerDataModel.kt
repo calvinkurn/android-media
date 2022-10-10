@@ -8,7 +8,8 @@ data class CatalogProductsContainerDataModel (val name : String = "", val type :
                                               val catalogName : String,
                                               val catalogUrl : String?,
                                               val categoryId : String?,
-                                              val catalogBrand : String?)
+                                              val catalogBrand : String?,
+                                              val productSortingStatus : Int?)
     : BaseCatalogDataModel {
 
     override fun name(): String = name

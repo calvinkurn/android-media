@@ -330,7 +330,7 @@ class PlayAnalytic(
 
     fun trackVideoBuffering(
             bufferCount: Int,
-            bufferDurationInSecond: Int
+            bufferDurationInSecond: Long
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(

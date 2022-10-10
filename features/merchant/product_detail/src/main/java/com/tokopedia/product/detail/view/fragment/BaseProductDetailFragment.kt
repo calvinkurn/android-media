@@ -88,7 +88,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
             productAdapter?.submitList(visitables)
-            binding?.pdpNavigation?.updateItemPosition()
         }
     }
 

@@ -3,6 +3,7 @@ package com.tokopedia.feedcomponent.view.mapper
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -165,7 +166,7 @@ object TopadsFeedXMapper {
                 isTopads = true,
                 adClickUrl = imageProduct.imageClickUrl,
                 star = productRating,
-                totalSold = countSold.toIntOrNull()?:0,
+                totalSold = countSold.toIntOrZero(),
                 discountFmt = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 priceDiscountFmt = priceFormat.replace(" ",""),
                 shopName = shopName

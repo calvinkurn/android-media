@@ -22,10 +22,6 @@ class CreateReviewRating @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewRatingBinding>(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
-
     private val ratingListener = RatingListener()
     private val transitionHandler = TransitionHandler()
     private val trackingHandler = TrackingHandler()
@@ -104,7 +100,7 @@ class CreateReviewRating @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutRating.root)
                 addTarget(binding.layoutRatingLoading.root)
                 interpolator = AccelerateInterpolator()
