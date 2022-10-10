@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 

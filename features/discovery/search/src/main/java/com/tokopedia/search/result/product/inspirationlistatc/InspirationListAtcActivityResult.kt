@@ -5,7 +5,6 @@ import android.content.Intent
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.search.result.product.SearchParameterProvider
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
 import javax.inject.Inject
 

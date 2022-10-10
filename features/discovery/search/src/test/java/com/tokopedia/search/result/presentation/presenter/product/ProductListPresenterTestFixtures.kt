@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.presenter.product
 
-import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
@@ -36,7 +35,6 @@ import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.topads.sdk.domain.model.TopAdsModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface

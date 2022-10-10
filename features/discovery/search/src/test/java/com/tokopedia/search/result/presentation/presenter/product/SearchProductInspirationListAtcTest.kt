@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
@@ -31,7 +30,6 @@ internal class SearchProductInspirationListAtcTest: ProductListPresenterTestFixt
         SearchApiConst.UNIQUE_ID to "unique_id",
         SearchApiConst.USER_ID to "0",
     )
-    private val expectedDimension90 = Dimension90Utils.getDimension90(searchParameter)
     private val clickedProductTest = InspirationCarouselDataView.Option.Product(
         id = "3747018003",
         name = "EDIFIER R12U - Active USB Powered Speakers Desktop/Laptop audio Black",

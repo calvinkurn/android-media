@@ -26,7 +26,6 @@ interface SearchEventTracking {
             const val SORT_BY = "sort by"
             const val TOP_NAV_SEARCH_RESULT_PAGE = "top nav - search result page"
             const val SEARCH_RESULT_PAGE = "search result page"
-            const val SRP_SEARCH = "srp_search"
         }
     }
 
@@ -78,7 +77,6 @@ interface SearchEventTracking {
             const val CLICK_CAROUSEL_PRODUCT = "click - carousel product"
             const val CLICK_DROPDOWN_QUICK_FILTER = "filter product dropdown - click"
             const val APPLY_DROPDOWN_QUICK_FILTER = "filter product dropdown - apply"
-            const val CLICK_ADD_TO_CART_CAROUSEL = "add to cart - carousel product"
         }
     }
 

@@ -1,7 +1,5 @@
 package com.tokopedia.search.result.product.inspirationlistatc
 
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 
 interface InspirationListAtcListener {

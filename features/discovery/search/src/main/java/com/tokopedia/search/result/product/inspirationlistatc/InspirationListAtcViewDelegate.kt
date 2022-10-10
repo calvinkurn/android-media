@@ -3,7 +3,6 @@ package com.tokopedia.search.result.product.inspirationlistatc
 import android.content.Context
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
