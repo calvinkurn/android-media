@@ -352,7 +352,10 @@ class VideoDetailFragment :
                         KolCommentNewActivity.getCallingIntent(
                             requireActivity(),
                             id.toIntOrZero(),
-                            0
+                            0,
+                            authorId,
+                            isFollowed,
+                            postType
                         ), INTENT_COMMENT
                     )
                 }
