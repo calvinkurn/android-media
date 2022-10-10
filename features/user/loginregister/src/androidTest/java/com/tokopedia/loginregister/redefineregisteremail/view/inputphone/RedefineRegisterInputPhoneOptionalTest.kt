@@ -60,7 +60,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun initRegisterV2ThenFailedViewDisplayed() {
+    fun init_register_v2_then_failed_view_displayed() {
         repositoryStub.setResponseQueue(RedefineRegisterTestState.REGISTER_V2_FAILED)
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleOptional)
 
@@ -68,7 +68,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun initRegisterV2AndFailedGetUserInfoThenFailedViewDisplayed() {
+    fun init_register_v2_and_failed_get_user_info_then_failed_view_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_FAILED
@@ -79,7 +79,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun initRegisterThenInitViewDisplayed() {
+    fun init_register_then_init_view_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -91,7 +91,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun fieldPhoneErrorEmptyIsDisplayed() {
+    fun field_phone_error_empty_is_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -102,7 +102,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun fieldPhoneErrorTooShortIsDisplayed() {
+    fun field_phone_error_too_short_is_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -113,7 +113,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun fieldPhoneErrorExceedLengthIsDisplayed() {
+    fun field_phone_error_exceed_length_is_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -124,7 +124,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun inputInvalidPhoneAndSubmitThenErrorIsDisplayed() {
+    fun input_invalid_phone_and_submit_then_error_is_displayed() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS
@@ -137,7 +137,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun userProfileValidateThenDataInvalid() {
+    fun user_profile_validate_then_data_invalid() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
@@ -152,7 +152,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun userProfileValidateAndDataValidThenShowConfirmPhoneDialog() {
+    fun user_profile_validate_and_data_valid_then_show_confirm_phone_dialog() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
@@ -166,7 +166,7 @@ class RedefineRegisterInputPhoneOptionalTest {
     }
 
     @Test
-    fun userProfileValidateAndDataValidThenFailedUpdateData() {
+    fun user_profile_validate_and_data_valid_then_failed_update_data() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_V2_SUCCESS,
             RedefineRegisterTestState.GET_USER_INFO_SUCCESS,
