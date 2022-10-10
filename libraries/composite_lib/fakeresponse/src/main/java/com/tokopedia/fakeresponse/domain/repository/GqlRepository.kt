@@ -27,7 +27,7 @@ class GqlRepository(val dao: GqlDao) : BaseRepository {
     }
 
     fun getGqlQueryResponse(gqlQuery: String, enable: Boolean): GqlRecord? {
-        return dao.getRecordFromGqlQuery("%${gqlQuery}%", enable)
+        return dao.getRecordFromGqlQuery(gqlQuery, enable)
     }
 
     fun getGqlRecord(id: Int): GqlRecord {
