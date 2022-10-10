@@ -129,6 +129,7 @@ import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
+import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -186,7 +187,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     TypingListener, ChatOptionListListener, CsatOptionListListener,
     View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
     VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener,
-    ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener {
+    ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener,
+    ReplyBoxAttachmentMenuListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
@@ -239,6 +241,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var messageCreateTime : String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
     private var isEligibleForVideoUplaod : Boolean = false
+    private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -348,7 +351,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         smallReplyBox = view.findViewById(R.id.small_reply_box)
         smallReplyBox?.bindCommentTextBackground()
         bigReplyBox = view.findViewById(R.id.big_reply_box)
-        showBigReplyBottomSheet()
+        setUpBigReplyBoxListeners()
+   //     showBigReplyBottomSheet()
 
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
@@ -372,6 +376,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun setUpFloatingInvoiceListeners() {
         floatingInvoice.sendButtonListener = this
         floatingInvoice.invoiceListener = this
+    }
+
+    private fun setUpBigReplyBoxListeners() {
+        bigReplyBox?.attachmentMenuListener = this
+        bigReplyBox?.sendButtonListener = this
     }
 
     private fun initSmoothScroller(){
@@ -579,7 +588,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 sendAnalytics = { impressionType ->
                     chatbotAnalytics.get().eventShowView(impressionType)
             }
-        )
+        ).also {
+            chatbotViewStateImpl = it
+        }
     }
 
     private fun pickVideoFromDevice(){
@@ -1806,6 +1817,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }
+    }
+
+    override fun onAttachmentMenuClicked() {
+        attachmentMenuRecyclerView?.toggle()
+        createAttachmentMenus()
     }
 }
 

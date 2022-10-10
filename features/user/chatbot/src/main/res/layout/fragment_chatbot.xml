@@ -47,14 +47,15 @@
 
             <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/small_reply_box"
                 android:visibility="gone"/>
 
             <com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
                 android:id="@+id/big_reply_box"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="wrap_content"
+                android:visibility="visible"/>
 
             <FrameLayout
                 android:id="@+id/rv_attachment_menu_container"
