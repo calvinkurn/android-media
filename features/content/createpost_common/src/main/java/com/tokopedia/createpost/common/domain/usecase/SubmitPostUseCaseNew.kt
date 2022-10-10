@@ -70,17 +70,17 @@ open class SubmitPostUseCaseNew @Inject constructor(
         setRequestParams(
             mapOf(
                 PARAM_INPUT to mapOf(
-                    PARAM_TYPE to type,
+                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                    PARAM_AD_ID to null,
+                    PARAM_TYPE to getInputType(type),
                     PARAM_TOKEN to token,
                     PARAM_AUTHOR_ID to authorId,
-                    PARAM_AUTHOR_TYPE to if (type.isNotEmpty()) type else CONTENT_SHOP,
+                    PARAM_AUTHOR_TYPE to type,
                     PARAM_CAPTION to caption,
                     PARAM_MEDIA_WIDTH to mediaWidth,
                     PARAM_MEDIA_HEIGHT to mediaHeight,
                     PARAM_MEDIA to arrangedMedia,
-                    PARAM_ID to id.orEmpty(),
-                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
-                    PARAM_ID to id.orEmpty(),
                 )
             )
         )
@@ -175,8 +175,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
 //        return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
 //    }
 
-//    private fun getInputType(type: String) =
-//        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+    private fun getInputType(type: String) =
+        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
 
 
 //    protected open fun getContentSubmitInput(requestParams: RequestParams,
@@ -205,6 +205,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val PARAM_CAPTION = "caption"
         private const val PARAM_ACTION = "action"
         private const val PARAM_ID = "ID"
+        private const val PARAM_AD_ID = "adID"
         private const val PARAM_MEDIA = "media"
         private const val ACTION_CREATE = "create"
         private const val CONTENT_SHOP = "content-shop"
