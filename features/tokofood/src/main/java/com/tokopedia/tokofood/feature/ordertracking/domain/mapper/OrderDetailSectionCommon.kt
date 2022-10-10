@@ -71,11 +71,11 @@ abstract class OrderDetailSectionCommon {
     }
 
     private fun mapToDriverInformationList(
-        karma: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails.Karma>
+        karma: List<TokoFoodOrderDetailResponse.TokofoodOrderDetail.DriverDetails.Karma>?
     ): List<DriverInformationUiModel> {
-        return karma.map {
+        return karma?.map {
             DriverInformationUiModel(iconInformationUrl = it.icon, informationName = it.message)
-        }
+        }.orEmpty()
     }
 
     private fun getOrderStatusLottieUrl(orderStatus: String): String {
