@@ -145,7 +145,7 @@ class SetStockForVariantSelectionReminderBottomSheet(
                 }
                 true
             }
-            maxValue = Int.MAX_VALUE
+            maxValue = getMaxStock()
         }
     }
 
@@ -233,7 +233,7 @@ class SetStockForVariantSelectionReminderBottomSheet(
     }
 
     private fun toggleQuantityEditorBtn(stock: Int) {
-        val enableAddBtn = stock < binding?.qeStock?.maxValue.orZero()
+        val enableAddBtn = stock < getMaxStock()
 
         binding?.qeStock?.run {
             addButton.isEnabled = enableAddBtn

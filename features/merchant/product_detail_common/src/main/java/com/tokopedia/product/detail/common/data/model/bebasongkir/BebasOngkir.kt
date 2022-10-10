@@ -23,11 +23,7 @@ data class BebasOngkirProduct(
 
         @SerializedName("productID")
         @Expose
-        val productId: String = "",
-
-        @SerializedName("boCampaignIDs")
-        @Expose
-        val boCampaignIDs: String = ""
+        val productId: String = ""
 )
 
 data class BebasOngkirImage(
@@ -43,3 +39,13 @@ data class BebasOngkirImage(
         @Expose
         val tokoCabangImageURL: String = "",
 )
+
+enum class BebasOngkirType(val value: Int) {
+    NON_BO(0),
+    BO_REGULER(1),
+    BO_EXTRA(2),
+    BO_TOKONOW(3),
+    BO_TOKONOW_20M(4),
+    BO_PLUS(5),
+    BO_PLUS_DT(6)
+}

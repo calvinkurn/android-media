@@ -1,10 +1,11 @@
 package com.tokopedia.shop.analytic
 
 import android.os.Bundle
-import android.os.Parcelable
 import com.tokopedia.atc_common.domain.model.response.AddToCartBundleModel
+import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ACTION_FIELD
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ADD
@@ -122,9 +123,13 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_LABEL
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.DIMENSION_90
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ETALASE_NAVIGATION_BANNER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.DIRECT_PURCHASE_ADD_TO_CART
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.Event.VIEW_PG_IRIS
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_QUANTITY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.CLICK_PRODUCT_ATC_RESET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventAction.IMPRESSION_PRODUCT_ATC
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.EventCategory.SHOP_PAGE_BUYER_DIRECT_PURCHASE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.FLASH_SALE
@@ -139,6 +144,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.IMPRESSION_DONATION_
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEMS_SHOP_TYPE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_LIST_PERSO_TRENDING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_CLICK
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.LABEL_SHOP_DECOR_IMPRESSION
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_DONATION_BY_SELLER
@@ -167,7 +173,10 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_MULTIPLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_CLICK_SINGLE_BUNDLE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.UNFOLLOW
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VALUE_FINISHED_BANNER
@@ -208,7 +217,6 @@ import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.util.ShopProductViewGridType
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
-import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.home.WidgetName.ADD_ONS
 import com.tokopedia.shop.home.WidgetName.BUY_AGAIN
 import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
@@ -219,8 +227,6 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ProductCardUiModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
-import com.tokopedia.track.interfaces.Analytics
-import com.tokopedia.track.builder.Tracker
 import com.tokopedia.trackingoptimizer.TrackingQueue
 
 /*
@@ -2543,7 +2549,7 @@ class ShopPageHomeTracking(
         }
     }
 
-    fun onImpressionProductAtcButton(
+    fun onImpressionProductAtcDirectPurchaseButton(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         widgetName: String,
         position: Int,
@@ -2564,7 +2570,7 @@ class ShopPageHomeTracking(
             putParcelableArrayList(
                 PROMOTIONS,
                 arrayListOf(
-                    createProductAtcButtonPromotions(
+                    createProductAtcDirectPurchaseButtonPromotions(
                         widgetName,
                         position,
                         shopHomeProductUiModel
@@ -2575,7 +2581,7 @@ class ShopPageHomeTracking(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM, eventBundle)
     }
 
-    private fun createProductAtcButtonPromotions(
+    private fun createProductAtcDirectPurchaseButtonPromotions(
         widgetName: String,
         position: Int,
         shopHomeProductUiModel: ShopHomeProductUiModel
@@ -2588,7 +2594,7 @@ class ShopPageHomeTracking(
         }
     }
 
-    fun onClickProductAtcButton(
+    fun onClickProductAtcDirectPurchaseButton(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopType: String,
@@ -2606,7 +2612,7 @@ class ShopPageHomeTracking(
             putParcelableArrayList(
                 ITEMS,
                 arrayListOf(
-                    createClickProductAtcButtonItems(
+                    createClickProductAtcDirectPurchaseButtonItems(
                         atcTrackerModel,
                         shopId,
                         shopName,
@@ -2621,7 +2627,7 @@ class ShopPageHomeTracking(
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
     }
 
-    private fun createClickProductAtcButtonItems(
+    private fun createClickProductAtcDirectPurchaseButtonItems(
         atcTrackerModel: ShopPageAtcTracker,
         shopId: String,
         shopName: String,
@@ -2635,7 +2641,7 @@ class ShopPageHomeTracking(
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())
-            putString(PRICE, atcTrackerModel.productPrice)
+            putLong(PRICE, atcTrackerModel.productPrice.digitsOnly().orZero())
             putInt(QUANTITY, atcTrackerModel.quantity)
             putString(ITEMS_SHOP_ID, shopId)
             putString(SHOP_NAME, shopName)
@@ -2687,8 +2693,105 @@ class ShopPageHomeTracking(
             CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
             PRODUCT_ID to atcTrackerModel.productId,
             SHOP_ID to shopId,
+            USER_ID to userId,
+            DIMENSION_45 to atcTrackerModel.cartId
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun impressionPersonalizationTrendingWidget(
+        shopId: String,
+        userId: String
+    ) {
+        val eventMap = mapOf(
+            EVENT to VIEW_PG_IRIS,
+            EVENT_ACTION to IMPRESSION_PERSONALIZATION_TRENDING_WIDGET,
+            EVENT_CATEGORY to SHOP_PAGE_BUYER,
+            EVENT_LABEL to "",
+            TRACKER_ID to TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET,
+            BUSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            SHOP_ID to shopId,
             USER_ID to userId
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
+    }
+
+    fun impressionProductPersonalizationTrendingWidget(
+        itemPosition: Int,
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        shopId: String,
+        userId: String
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, VIEW_ITEM_LIST)
+            putString(EVENT_ACTION, IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, "")
+            putString(TRACKER_ID, TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_PERSO_TRENDING_WIDGET)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductPersonalizationTrendingItemMap(
+                        shopHomeProductUiModel,
+                        itemPosition
+                    )
+                )
+            )
+            putString(PRODUCT_ID, shopHomeProductUiModel.id)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(VIEW_ITEM_LIST, eventBundle)
+    }
+
+    private fun createProductPersonalizationTrendingItemMap(
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        productPosition: Int
+    ): Bundle {
+        return Bundle().apply {
+            putString(DIMENSION_40, ITEM_LIST_PERSO_TRENDING_WIDGET)
+            putInt(INDEX, productPosition)
+            putString(ITEM_BRAND, "")
+            putString(ITEM_CATEGORY, "")
+            putString(ITEM_ID, shopHomeProductUiModel.id)
+            putString(ITEM_NAME, shopHomeProductUiModel.name)
+            putString(ITEM_VARIANT, "")
+            putDouble(PRICE, shopHomeProductUiModel.displayedPrice.digitsOnly().toDouble())
+        }
+    }
+
+    fun clickProductPersonalizationTrendingWidget(
+        itemPosition: Int,
+        shopHomeProductUiModel: ShopHomeProductUiModel,
+        shopId: String,
+        userId: String
+    ) {
+        val eventBundle = Bundle().apply {
+            putString(EVENT, SELECT_CONTENT)
+            putString(EVENT_ACTION, CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM)
+            putString(EVENT_CATEGORY, SHOP_PAGE_BUYER)
+            putString(EVENT_LABEL, shopHomeProductUiModel.id)
+            putString(TRACKER_ID, TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM)
+            putString(BUSINESS_UNIT, PHYSICAL_GOODS)
+            putString(CURRENT_SITE, TOKOPEDIA_MARKETPLACE)
+            putString(ITEM_LIST, ITEM_LIST_PERSO_TRENDING_WIDGET)
+            putParcelableArrayList(
+                ITEMS,
+                arrayListOf(
+                    createProductPersonalizationTrendingItemMap(
+                        shopHomeProductUiModel,
+                        itemPosition
+                    )
+                )
+            )
+            putString(PRODUCT_ID, shopHomeProductUiModel.id)
+            putString(SHOP_ID, shopId)
+            putString(USER_ID, userId)
+        }
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, eventBundle)
     }
 }

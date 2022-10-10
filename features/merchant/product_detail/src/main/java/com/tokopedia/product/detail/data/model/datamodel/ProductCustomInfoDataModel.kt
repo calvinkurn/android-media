@@ -17,6 +17,8 @@ data class ProductCustomInfoDataModel(
         var description: String = "",
         var separator: String = "",
         var applink: String = "",
+        val lightIcon: String = "",
+        val darkIcon: String = "",
 
         var labelValue: String = "",
         var labelColor: String = ""
@@ -67,5 +69,19 @@ data class ProductCustomInfoDataModel(
 
     override fun getChangePayload(newData: DynamicPdpDataModel): Bundle? {
         return null
+    }
+
+    /**
+     * get icon url from 3 field (dark, light or default)
+     * icon field is old version
+     */
+    fun getIconUrl(isDarkModel: Boolean): String {
+        val iconUrl = if (isDarkModel) {
+            darkIcon
+        } else {
+            lightIcon
+        }
+
+        return iconUrl.ifBlank { icon }
     }
 }

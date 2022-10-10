@@ -16,15 +16,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.affiliate.ALMOST_OOS
-import com.tokopedia.affiliate.AVAILABLE
 import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.EMPTY_STOCK
 import com.tokopedia.affiliate.ON_REGISTERED
 import com.tokopedia.affiliate.ON_REVIEWED
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_PROMOSIKAN
-import com.tokopedia.affiliate.PRODUCT_INACTIVE
-import com.tokopedia.affiliate.SHOP_INACTIVE
 import com.tokopedia.affiliate.SYSTEM_DOWN
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -35,6 +30,7 @@ import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.affiliate.setAnnouncementData
 import com.tokopedia.affiliate.ui.activity.AffiliateActivity
+import com.tokopedia.affiliate.ui.activity.AffiliateRegistrationActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateHowToPromoteBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliatePromotionBottomSheet
 import com.tokopedia.affiliate.ui.custom.AffiliateBaseFragment
@@ -73,12 +69,17 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
     lateinit var userSessionInterface: UserSessionInterface
 
     private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
-    private val adapter: AffiliateAdapter =
-        AffiliateAdapter(AffiliateAdapterFactory(null, null, this))
+    private  val adapter: AffiliateAdapter by lazy {
+        AffiliateAdapter(AffiliateAdapterFactory(null, null, this),
+        source = AffiliateAdapter.SOURCE_PROMOSIKAN,
+        userId = userSessionInterface.userId)
+    }
 
     private val tabFragments = arrayListOf<Fragment>()
 
     companion object {
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
+
         fun getFragmentInstance(): Fragment {
             return AffiliatePromoFragment()
         }
@@ -239,12 +240,17 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
             onGetValidateUserData(validateUserdata)
         }
         affiliatePromoViewModel.getAffiliateAnnouncement().observe(this) {
-            sendTickerImpression(it.getAffiliateAnnouncementV2?.data?.type, it.getAffiliateAnnouncementV2?.data?.id)
-            view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
-                it,
-                activity,
-                source = PAGE_ANNOUNCEMENT_PROMOSIKAN
-            )
+            if (it.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                sendTickerImpression(
+                    it.getAffiliateAnnouncementV2?.data?.type,
+                    it.getAffiliateAnnouncementV2?.data?.id
+                )
+                view?.findViewById<Ticker>(R.id.affiliate_announcement_ticker)?.setAnnouncementData(
+                    it,
+                    activity,
+                    source = PAGE_ANNOUNCEMENT_PROMOSIKAN
+                )
+            }
         }
     }
 
@@ -307,11 +313,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
 
                     }
                 }
-                if (cards.items?.isNotEmpty() == true) {
-                    cards.items?.first()?.let {
-                        sendEnhancedTracker(it)
-                    }
-                }
 
             }
         }
@@ -324,28 +325,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         }
     }
 
-    private fun sendEnhancedTracker(it: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
-        var status = ""
-        if (it.status?.messages?.isNotEmpty() == true) {
-            when (it.status?.messages?.first()?.messageType) {
-                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
-                ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
-                EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
-                PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
-                SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
-            }
-        }
-        AffiliateAnalytics.trackEventImpression(
-            AffiliateAnalytics.EventKeys.VIEW_ITEM_LIST,
-            AffiliateAnalytics.ActionKeys.IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE,
-            AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            userSessionInterface.userId,
-            it.productID,
-            1,
-            it.title,
-            "${it.productID} - ${it.commission?.amount} - $status"
-        )
-    }
 
     private fun sendSearchEvent(eventLabel: String) {
         AffiliateAnalytics.sendEvent(
@@ -494,10 +473,25 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
         affiliatePromoViewModel.getAnnouncementInformation()
     }
 
-    override fun onUserRegistered() {
+    override fun onUserNotRegistered() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onNotEligible() {
+        activity?.let {
+            AffiliateRegistrationActivity.newInstance(it)
+            it.finish()
+        }
+    }
+
+    override fun onUserValidated() {
         affiliatePromoViewModel.getAnnouncementInformation()
         affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
     }
+
 }
 
 interface AffiliatePromoInterface {

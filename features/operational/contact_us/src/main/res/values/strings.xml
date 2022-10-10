@@ -135,6 +135,14 @@
     <string name="contact_us_title_clear_cache">Bersihkan Cache</string>
     <string name="contact_us_maximum_length_error_text">Pesan telah memenuhi batas maksimal 1,000 karakter.</string>
 
+    <string name="title_success_reso">Komplainmu diajukan ke penjual.</string>
+    <string name="description_success_reso">Tenang, danamu sudah kami amankan. Jika penjual tidak merespons, danamu dikembalikan secara otomatis.</string>
+    <string name="title_btn_detail">Lihat Komplain</string>
+    <string name="title_btn_home">Balik Ke Homepage</string>
+    <string name="title_toolbar_resolution">Komplain diajukan</string>
+    <string name="screen_name_resolution">ResolutionFragment</string>
+    <string name="content_desc_success_reso">Success Create Reso</string>
+
 
     <string-array name="contactus_csat_question">
         <item>Apa yang bisa diperbaiki dari layanan kami?</item>

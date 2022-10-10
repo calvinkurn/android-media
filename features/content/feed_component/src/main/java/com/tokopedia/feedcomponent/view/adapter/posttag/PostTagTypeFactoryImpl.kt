@@ -37,9 +37,6 @@ class PostTagTypeFactoryImpl(val listener: DynamicPostViewHolder.DynamicPostList
             CtaPostTagViewHolder.LAYOUT -> {
                 CtaPostTagViewHolder(parent, listener)
             }
-            ProductPostTagViewHolderNew.LAYOUT -> {
-                ProductPostTagViewHolderNew(parent, listener)
-            }
             else -> {
                 super.createViewHolder(parent, type)
             }

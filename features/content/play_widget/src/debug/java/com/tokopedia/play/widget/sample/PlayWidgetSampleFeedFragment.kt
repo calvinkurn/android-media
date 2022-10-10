@@ -80,6 +80,9 @@ class PlayWidgetSampleFeedFragment : TkpdBaseV4Fragment(), PlayWidgetListener {
                     )
                 )
             ),
+            PlayWidgetSmallUiModel(
+                PlayWidgetUiMock.getSamplePlayWidget()
+            ),
             PlayWidgetMediumUiModel(
                 PlayWidgetUiMock.getSamplePlayWidget()
             ),

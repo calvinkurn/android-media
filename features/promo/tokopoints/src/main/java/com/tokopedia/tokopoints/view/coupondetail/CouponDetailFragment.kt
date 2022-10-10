@@ -31,6 +31,7 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -279,7 +280,7 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         val btnVerifikasi = view.findViewById<UnifyButton>(R.id.btn_verifikasi)
         val btnCancel = view.findViewById<AppCompatImageView>(R.id.cancel_verifikasi)
         btnVerifikasi.setOnClickListener {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PHONE)
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PHONE)
             startActivityForResult(intent, REQUEST_CODE_VERIFICATION_PHONE)
 
             AnalyticsTrackerUtil.sendEvent(context,

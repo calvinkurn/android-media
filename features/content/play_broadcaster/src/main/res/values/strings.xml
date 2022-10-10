@@ -105,6 +105,7 @@
     <string name="play_live_broadcast_connect_fail">Oops, gagal menyambungkan siaran.</string>
     <string name="play_broadcaster_default_error">Tunggu sebentar, biar Toped bereskan. Coba lagi atau kembali nanti.</string>
     <string name="play_live_broadcast_network_loss_desc">Segera sambungkan ke koneksi yang stabil, atau akhiri siarannya.</string>
+    <string name="play_live_broadcast_unrecoverable_error">Layanan live streaming terganggu, tutup halaman dan klik mulai kembali.</string>
     <string name="play_live_broadcast_network_loss">Yaah, koneksimu putus</string>
 
     <string name="play_summary_title">Laporan Live</string>
@@ -298,4 +299,11 @@
     <!-- leaderboard bottomsheet -->
     <string name="play_bro_finished_bottomsheet_option_right_empty">Gak ada yang pilih jawaban ini</string>
     <string name="play_bro_finished_bottomsheet_option_empty">Yaah, nggak ada yang ikutan quiz ini</string>
+
+    <!-- Pin Product -->
+    <string name="play_bro_pin">Pin</string>
+    <string name="play_bro_unpin">Lepas</string>
+    <string name="play_bro_pinned_product_info">Pin Dipasang</string>
+    <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
+    <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
 </resources>

@@ -1,8 +1,8 @@
 package com.tokopedia.tokofood.common.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
@@ -15,7 +15,7 @@ import androidx.appcompat.widget.Toolbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
@@ -26,6 +26,7 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 
 
 object TokofoodExt {
@@ -41,13 +42,10 @@ object TokofoodExt {
         return when (this) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
+            }
+            is MessageErrorException -> {
+                getGlobalErrorTypeFromErrorCode(errorCode?.toIntOrNull())
             }
             else -> GlobalError.SERVER_ERROR
         }
@@ -64,14 +62,18 @@ object TokofoodExt {
                 }
             }
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
             }
+            else -> GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun getGlobalErrorTypeFromErrorCode(errorCode: Int?): Int {
+        return when (errorCode) {
+            ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
+            ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
+            ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
+            ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
             else -> GlobalError.SERVER_ERROR
         }
     }
@@ -134,7 +136,7 @@ object TokofoodExt {
     }
 
 
-    private fun Context.scaledDrawable(bmp: Bitmap?, width: Int, height: Int): Drawable? {
+    private fun scaledDrawable(bmp: Bitmap?, resources: Resources, width: Int, height: Int): Drawable? {
         return try {
             bmp?.let {
                 val bmpScaled = Bitmap.createScaledBitmap(it, width, height, false)
@@ -148,11 +150,22 @@ object TokofoodExt {
 
     fun Toolbar?.setBackIconUnify() {
         this?.context?.let {
-            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.toBitmap()
-            val scaleDrawable: Drawable? = context.scaledDrawable(backIconUnify, ICON_BOUND_SIZE.toPx(), ICON_BOUND_SIZE.toPx())
+            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.getBitmap()
+            val scaleDrawable: Drawable? =
+                scaledDrawable(
+                    backIconUnify,
+                    resources,
+                    ICON_BOUND_SIZE.toPx(),
+                    ICON_BOUND_SIZE.toPx()
+                )
             scaleDrawable?.let { newDrawable ->
                 navigationIcon = newDrawable
             }
         }
+    }
+
+    fun getLocalTimeZone(): String {
+        val timeZone = TimeZone.getDefault()
+        return timeZone.id
     }
 }

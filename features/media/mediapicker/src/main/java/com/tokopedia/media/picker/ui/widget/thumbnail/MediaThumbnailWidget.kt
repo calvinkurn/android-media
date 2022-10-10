@@ -12,6 +12,7 @@ import com.tokopedia.media.databinding.WidgetMediaThumbnailBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.media.picker.ui.widget.layout.SquareFrameLayout
+import com.tokopedia.media.picker.utils.loadPickerImage
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.media.R as mediaResources
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_3
@@ -30,27 +31,22 @@ class MediaThumbnailWidget @JvmOverloads constructor(
             addView(it.root)
         }
 
-    fun regularThumbnail(element: MediaUiModel?) {
+    fun regularThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
         binding.txtDuration.setType(BODY_3)
-        renderView(element)
+        renderView(element, onLoaded)
     }
 
-    fun smallThumbnail(element: MediaUiModel?) {
+    fun smallThumbnail(element: MediaUiModel?, onLoaded: () -> Unit = {}) {
         binding.txtDuration.setType(SMALL)
-        renderView(element)
+        renderView(element, onLoaded)
     }
 
-    private fun renderView(element: MediaUiModel?) {
+    private fun renderView(element: MediaUiModel?, onLoaded: () -> Unit) {
         if (element == null) return
         val file = element.file?: return
 
         binding.container.show()
-
-        binding.imgPreview.loadImage(file.path) {
-            isAnimate(true)
-            setPlaceHolder(-1)
-            centerCrop()
-        }
+        binding.imgPreview.loadPickerImage(file.path, onLoaded)
 
         onVideoShow(file)
     }
@@ -68,7 +64,9 @@ class MediaThumbnailWidget @JvmOverloads constructor(
 
     fun setThumbnailSelected(isSelected: Boolean) {
         if (isSelected) {
-            val paddingSize = resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding).toInt()
+            val paddingSize =
+                resources.getDimension(mediaResources.dimen.picker_thumbnail_selected_padding)
+                    .toInt()
             val backgroundAsset = MethodChecker.getDrawable(
                 context,
                 mediaResources.drawable.picker_rect_green_selected_thumbnail

@@ -55,6 +55,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
@@ -79,6 +80,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -154,6 +156,7 @@ import com.tokopedia.shop.databinding.NewShopPageFragmentContentLayoutBinding
 import com.tokopedia.shop.databinding.NewShopPageMainBinding
 import com.tokopedia.shop.databinding.WidgetSellerMigrationBottomSheetHasPostBinding
 import com.tokopedia.shop.home.view.fragment.ShopPageHomeFragment
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.data.model.ShopPageTabModel
 import com.tokopedia.shop.pageheader.di.component.DaggerShopPageComponent
@@ -201,7 +204,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -275,6 +282,10 @@ class NewShopPageFragment :
         private const val PATH_NOTE = "note"
         private const val QUERY_SHOP_REF = "shop_ref"
         private const val QUERY_SHOP_ATTRIBUTION = "tracker_attribution"
+        private const val QUERY_AFFILIATE_UUID = "aff_unique_id"
+        private const val QUERY_AFFILIATE_CHANNEL = "channel"
+        private const val QUERY_CAMPAIGN_ID = "campaign_id"
+        private const val QUERY_VARIANT_ID = "variant_id"
         private const val START_PAGE = 1
         private const val IS_FIRST_TIME_VISIT = "isFirstTimeVisit"
         private const val SOURCE = "shop page"
@@ -298,6 +309,8 @@ class NewShopPageFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    @Inject
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
     var shopViewModel: NewShopPageViewModel? = null
     private var remoteConfig: RemoteConfig? = null
     private var cartLocalCacheHandler: LocalCacheHandler? = null
@@ -309,6 +322,9 @@ class NewShopPageFragment :
     var shopRef: String = ""
     var shopDomain: String? = null
     var shopAttribution: String? = null
+    var campaignId: String  = ""
+    var variantId: String = ""
+    private var affiliateData: ShopAffiliateData? = null
     var isFirstCreateShop: Boolean = false
     var isShowFeed: Boolean = false
     var createPostUrl: String = ""
@@ -758,6 +774,7 @@ class NewShopPageFragment :
                     it.location = result.data.location
                     it.description = result.data.shopCore.description
                     it.tagline = result.data.shopCore.tagLine
+                    it.shopStatus = result.data.statusInfo.shopStatus
                 }
             }
         })
@@ -1008,6 +1025,8 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
+                    setAffiliateData(this)
+                    getMarketingServiceQueryParamData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
             }
@@ -1038,6 +1057,28 @@ class NewShopPageFragment :
                    permissionListener = this
            )
         }
+        initAffiliateCookie()
+    }
+
+    private fun getMarketingServiceQueryParamData(data: Uri) {
+        campaignId = data.getQueryParameter(QUERY_CAMPAIGN_ID).orEmpty()
+        variantId = data.getQueryParameter(QUERY_VARIANT_ID).orEmpty()
+    }
+
+    private fun setAffiliateData(uri: Uri) {
+        affiliateData = ShopAffiliateData(
+            uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+        )
+    }
+
+    private fun initAffiliateCookie() {
+        shopViewModel?.initAffiliateCookie(
+            affiliateCookieHelper,
+            affiliateData?.affiliateUUId.orEmpty(),
+            affiliateData?.affiliateChannel.orEmpty(),
+            shopId
+        )
     }
 
     private fun inflateViewStub() {
@@ -1291,6 +1332,10 @@ class NewShopPageFragment :
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_ID, shopId)
                 .appendQueryParameter(SearchApiConst.SRP_PAGE_TITLE, shopName)
                 .appendQueryParameter(SearchApiConst.NAVSOURCE, SHOP_SEARCH_PAGE_NAV_SOURCE)
+                .appendQueryParameter(SearchApiConst.PLACEHOLDER, String.format(
+                    getString(R.string.shop_product_search_hint_2),
+                    shopPageHeaderDataModel?.shopName.orEmpty())
+                )
                 .appendQueryParameter(SearchApiConst.BASE_SRP_APPLINK, shopSrpAppLink)
                 .build()
                 .toString()
@@ -1578,7 +1623,7 @@ class NewShopPageFragment :
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
-                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName)
+                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
             }
         }
     }
@@ -1672,11 +1717,7 @@ class NewShopPageFragment :
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            viewPagerAdapter?.handleSelectedDynamicTab(tab, isActive)
-        } else {
-            viewPagerAdapter?.handleSelectedTab(tab, isActive)
-        }
+        viewPagerAdapter?.handleSelectedTab(tab, isActive)
     }
 
     private fun getTabView(index: Int): View? {
@@ -2240,6 +2281,7 @@ class NewShopPageFragment :
             type = LinkerData.SHOP_TYPE
             uri = shopPageHeaderDataModel?.shopCoreUrl
             id = shopPageHeaderDataModel?.shopId
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -2809,12 +2851,16 @@ class NewShopPageFragment :
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
+            isAffiliate = shareModel.isAffiliate
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let{
-                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        if (!shareModel.isAffiliate) {
+                            checkUsingCustomBranchLinkDomain(linkerShareData)
+                        }
                         var shareString = getString(
                                 R.string.shop_page_share_text_with_link,
                                 shopPageHeaderDataModel?.shopName,
@@ -2919,7 +2965,16 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
+            val inputShare = AffiliatePDPInput().apply {
+                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+                pageType = "shop"
+                product = Product()
+                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            }
+            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+            universalShareBottomSheet?.affiliateRequestDataReceived(true)
+        })
     }
 
     override fun onRequestPermissionsResult(
@@ -2995,5 +3050,9 @@ class NewShopPageFragment :
 
     fun updateMiniCartWidget(delay: Long = 0) {
         miniCart?.updateData(delay)
+    }
+
+    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 }

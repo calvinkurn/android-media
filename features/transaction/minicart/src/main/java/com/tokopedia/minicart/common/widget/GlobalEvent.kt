@@ -17,5 +17,7 @@ data class GlobalEvent(
         const val STATE_FAILED_UNDO_DELETE_CART_ITEM = 55
         const val STATE_SUCCESS_TO_CHECKOUT = 66
         const val STATE_FAILED_TO_CHECKOUT = 77
+        const val STATE_SUCCESS_ADD_TO_CART_BUNDLE_RECOM_ITEM = 88
+        const val STATE_FAILED_ADD_TO_CART_BUNDLE_RECOM_ITEM = 99
     }
 }

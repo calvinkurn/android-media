@@ -40,6 +40,7 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 @UiTest
 class LoginNormalCase : LoginBase() {
@@ -56,7 +57,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent()
@@ -64,7 +65,7 @@ class LoginNormalCase : LoginBase() {
             )
             inputEmailOrPhone("082242454504")
             clickSubmit()
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -150,7 +151,7 @@ class LoginNormalCase : LoginBase() {
         fakeRepo.registerCheckConfig = Config.WithResponse(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWith(
                 Instrumentation.ActivityResult(
                     Activity.RESULT_OK,
                     Intent().apply {
@@ -171,7 +172,7 @@ class LoginNormalCase : LoginBase() {
                 .perform(click())
 
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -245,11 +246,11 @@ class LoginNormalCase : LoginBase() {
     @Test
     fun whenForgotPasswordIsClicked_TheApplinkPageIsLaunched() {
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD)).respondWith(
+            intending(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)).respondWith(
                 Instrumentation.ActivityResult(Activity.RESULT_OK, Intent())
             )
             clickForgotPass()
-            intended(hasData(ApplinkConstInternalGlobal.FORGOT_PASSWORD))
+            intended(hasData(ApplinkConstInternalUserPlatform.FORGOT_PASSWORD))
         }
     }
 
@@ -266,7 +267,7 @@ class LoginNormalCase : LoginBase() {
         checkEmailExtensionShownAfterAddAt()
         onView(withId(R.id.input_email_phone))
             .perform(pressKey(KeyEvent.KEYCODE_DEL))
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo")
+        isDisplayingGivenText("yoris.prayogo")
         isEmailExtensionDismissed()
         inputEmailOrPhone("@")
         isEmailExtensionDisplayed()
@@ -284,7 +285,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@gmail.com")
+        isDisplayingGivenText("yoris.prayogo@gmail.com")
     }
 
     @Test
@@ -303,7 +304,7 @@ class LoginNormalCase : LoginBase() {
                         clickOnViewChild(R.id.textEmailExtension)
                     )
             )
-        isDisplayingGivenText(R.id.input_email_phone, "yoris.prayogo@outlook.com")
+        isDisplayingGivenText("yoris.prayogo@outlook.com")
     }
 
     @Test

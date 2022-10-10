@@ -12,15 +12,16 @@ data class ReservedEventInfoUiModel(
     val campaignIconUrl: String,
     val startTime: String,
     val endTime: String,
-    val periodStatus: PeriodStatus,
+    val periodStatus: String,
     val stock: String
 ) : Parcelable, Visitable<CampaignStockTypeFactory> {
 
     override fun type(typeFactory: CampaignStockTypeFactory): Int =
         typeFactory.type(this)
 
-    enum class PeriodStatus {
-        ONGOING, UPCOMING
+    object PeriodStatus {
+        const val ONGOING = "ongoing"
+        const val UPCOMING = "upcoming"
     }
 
 }

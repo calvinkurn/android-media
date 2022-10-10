@@ -13,6 +13,7 @@ interface SearchEventTracking {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CLICK_SEARCH = "clickSearch"
+            const val ADD_TO_CART = "addToCart"
         }
     }
 
@@ -21,7 +22,6 @@ interface SearchEventTracking {
             const val EVENT_TOP_NAV = "top nav"
             const val FILTER_PRODUCT = "filter product"
             const val SEARCH_RESULT = "search result"
-            const val GRID_MENU = "grid menu"
             const val SEARCH_TAB = "search tab"
             const val SORT_BY = "sort by"
             const val TOP_NAV_SEARCH_RESULT_PAGE = "top nav - search result page"
@@ -34,7 +34,6 @@ interface SearchEventTracking {
             const val CLICK_PRODUCT = "click - product"
             const val IMPRESSION_PRODUCT = "impression - product"
             const val QUICK_FILTER = "quick filter"
-            const val CLICK_CHANGE_GRID = "click - "
             const val CLICK_TAB = "click - tab"
             const val SORT_BY = "sort by"
             const val LONG_PRESS_PRODUCT = "click - long press product"
@@ -45,9 +44,7 @@ interface SearchEventTracking {
             const val MODULE = "module"
             const val LOGIN = "login"
             const val NON_LOGIN = "nonlogin"
-            const val IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY = "impression - banned product ticker - empty"
             const val CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty"
-            const val IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related"
             const val GENERAL_SEARCH = "general search"
             const val IMPRESSION_SHOP = "impression - shop"
             const val IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative"
@@ -129,5 +126,6 @@ interface SearchEventTracking {
         const val NONE = "none"
         const val OTHER = "other"
         const val PHYSICAL_GOODS = "physical goods"
+        const val EXTERNAL_REFERENCE = "externalReference"
     }
 }

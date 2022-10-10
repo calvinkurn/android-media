@@ -128,7 +128,6 @@ dari Feed.</string>
   
     <string name="default_request_error_unknown">Terjadi kesalahan. Ulangi beberapa saat lagi</string>
 
-    <string name="feed_post_sebagai">Post sebagai</string>
     <string name="feed_post_successful_toaster">Yay, post kamu berhasil di-upload!</string>
 
     <!--Floating Action Button-->
@@ -139,4 +138,6 @@ dari Feed.</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
 
+    <!-- User Profile Entry Point -->
+    <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
 </resources>

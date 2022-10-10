@@ -20,7 +20,7 @@ constructor() : RecyclerView.Adapter<ExploreCategoryAdapter.ViewHolder>() {
 
     lateinit var listener: ContentExploreContract.View
     companion object {
-        const val CAT_ID_AFFILIATE = 2000001
+        const val CAT_ID_AFFILIATE = 2000001L
     }
     val list: MutableList<ExploreCategoryViewModel> = arrayListOf()
 

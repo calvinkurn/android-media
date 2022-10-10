@@ -228,7 +228,28 @@ class RechargeCCClientNumberWidget @JvmOverloads constructor(@NotNull context: C
             sortFilter.add(sortFilterItem)
         }
 
+        // create extra chip for navigation
+        val sortFilterItem = SortFilterItem(
+            "",
+            type = ChipsUnify.TYPE_ALTERNATE
+        )
+        sortFilterItem.listener = {
+            mFilterChipListener?.onClickIcon(true)
+        }
+        sortFilter.add(sortFilterItem)
+
         binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.addItem(sortFilter)
+
+        // init navigation chip's icon & color
+        val chevronRight = IconUnify(
+            context, IconUnify.VIEW_LIST,
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        chevronRight.layoutParams = ViewGroup.LayoutParams(
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3),
+            getDimens(com.tokopedia.unifyprinciples.R.dimen.layout_lvl3)
+        )
+        binding.clientNumberWidgetMainLayout.clientNumberWidgetBase.clientNumberWidgetSortFilter.chipItems?.
+            last()?.refChipUnify?.addCustomView(chevronRight)
     }
 
     private fun onClickClearIcon(){

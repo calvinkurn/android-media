@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroActionBarBinding
 
 /**
@@ -36,7 +37,7 @@ class ActionBarView : ConstraintLayout  {
     }
 
     fun setShopName(label: String) {
-        binding.tvBroPreparationShopName.text = label
+        binding.tvBroPreparationShopName.text = MethodChecker.fromHtml(label)
     }
 
     fun setShopIcon(iconUrl: String) {
