@@ -21,7 +21,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * can be 0 and the value is in percentage
      */
     override val courierEventProbability: Int
-        get() = remoteConfig.getString("", "100").toIntOrZero()
+        get() = remoteConfig.getString("", "0").toIntOrZero()
 
     /**
      * Ping interval to keep the mqtt alive
@@ -47,8 +47,9 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     /**
      * Retry configuration
      */
+    //TODO: Get the value from remote config
     override val connectRetryConfig: ConnectRetryTimeConfig
-        get() = ConnectRetryTimeConfig()
+        get() = ConnectRetryTimeConfig(10, 0, 10, 30)
 
     /**
      * Timeout configuration
@@ -95,13 +96,6 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      */
     override val courierActivityCheckInterval: Int
         get() = remoteConfig.getString("", "30").toIntOrZero()
-
-    /**
-     * Configuration lifecycle of connection
-     * If set true, disconnect the connection when the app is in background
-     */
-    override val shouldDisconnectCourierOnBackground: Boolean
-        get() = remoteConfig.getBoolean("", true)
 
     /**
      * Set the strategy on how to store the token

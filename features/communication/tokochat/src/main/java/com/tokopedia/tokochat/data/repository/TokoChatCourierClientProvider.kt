@@ -12,7 +12,7 @@ import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.config.GlobalConfig
+import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.user.session.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
@@ -40,8 +40,11 @@ class TokoChatCourierClientProvider @Inject constructor(
             mqttInterceptors = getMqttInterceptors(),
 //            debuggingEnabled = BuildConfig.DEBUG,
             debuggingEnabled = true,
-            courierRemoteConfig = courierRemoteConfig
+            courierRemoteConfig = courierRemoteConfig,
+            connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
+//        TODO: do not obfuscate
+//        test.handleAppEvent(AppEvent.AppLogout)
         return CourierComponent.getOrCreate(params).courierConnection()
     }
 

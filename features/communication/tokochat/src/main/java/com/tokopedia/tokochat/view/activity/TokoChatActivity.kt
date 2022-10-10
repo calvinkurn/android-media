@@ -87,11 +87,12 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun setupTokoChatHeader() {
-        val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        super.setupTokoChatHeader()
         getHeaderUnify()?.run {
             isShowBackButton = true
-            customView(mCustomView)
+            headerCustomView?.let {
+                customView(it)
+            }
             setSupportActionBar(this)
             setBackIconUnify()
             contentInsetStartWithNavigation = Int.ZERO

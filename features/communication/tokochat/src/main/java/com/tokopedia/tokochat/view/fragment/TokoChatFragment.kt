@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
+import com.gojek.courier.lifecycle.LifecycleEvent
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
@@ -20,6 +21,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
+import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
@@ -46,6 +48,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
     @Inject
     lateinit var mapper: TokoChatConversationUiMapper
 
+    private var headerUiModel: TokoChatHeaderUiModel? = null
     private var channelId = ""
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
@@ -73,6 +76,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
 
     override fun onStart() {
         super.onStart()
+        TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Started)
         if (channelId.isNotEmpty()) {
             viewModel.registerActiveChannel(channelId)
         }
@@ -80,6 +84,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
 
     override fun onStop() {
         super.onStop()
+        TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Stopped)
         if (channelId.isNotEmpty()) {
             viewModel.deRegisterActiveChannel(channelId)
         }
@@ -197,16 +202,18 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
         observe(viewModel.channelDetail) {
             when (it) {
                 is Success -> {
-                    var uiModel: TokoChatHeaderUiModel? = null
                     it.data.members.forEach { member ->
                         if (member.ownerType == "driver") {
-                            uiModel = TokoChatHeaderUiModel(
-                                member.name, member.userMetadata?.licencePlate ?: "",
-                                member.profileUrl?: "", member.phone
+                            headerUiModel = TokoChatHeaderUiModel(
+                                member.id,
+                                member.name,
+                                member.userMetadata?.licencePlate ?: "",
+                                member.profileUrl?: "",
+                                member.phone
                             )
                         }
                     }
-                    uiModel?.let { header ->
+                    headerUiModel?.let { header ->
                         setupToolbarData(header)
                     }
                 }
@@ -247,7 +254,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
         }
     }
 
-    //TODO: Replace this with updated SDK
     private fun initializeChatProfile() {
         val userId = viewModel.getUserId()
         if (userId.isEmpty()) {
@@ -312,10 +318,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
 
     private fun observerTyping() {
         viewModel.getTypingStatus().observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                hideInterlocutorTypingStatus()
-            } else {
+            if (headerUiModel != null && it.contains(headerUiModel?.id)) {
                 showInterlocutorTypingStatus()
+            } else {
+                hideInterlocutorTypingStatus()
             }
         }
     }

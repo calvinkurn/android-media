@@ -76,15 +76,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
             app:typographyType="display_3"
-            tools:text="Terakhir online 3 menit yang lalu"
-            tools:visibility="visible" />
+            tools:text="Terakhir online 3 menit yang lalu" />
 
         <include
             android:id="@+id/tokochat_layout_typing"
             layout="@layout/item_tokochat_typing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title" />
+            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

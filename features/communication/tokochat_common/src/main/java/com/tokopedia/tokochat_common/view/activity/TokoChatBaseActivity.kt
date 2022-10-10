@@ -1,18 +1,21 @@
 package com.tokopedia.tokochat_common.view.activity
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatBaseActivityBinding
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.TYPING_DARK_MODE
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.TYPING_LIGHT_MODE
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.loadGif
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
 abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
@@ -22,8 +25,11 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     private var viewBinding: TokochatBaseActivityBinding? = null
 
+    private var headerSubtitle: Typography? = null
     private var typingLayout: View? = null
     private var typingImage: ImageUnify? = null
+
+    protected var headerCustomView: View? = null
 
     protected abstract fun setupFragmentFactory()
 
@@ -52,18 +58,21 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         setContentView(viewBinding?.root)
     }
 
-    protected fun getChatHeaderLayout() = R.layout.item_tokochat_header
+    private fun getChatHeaderLayout() = R.layout.item_tokochat_header
 
     protected open fun setupTokoChatHeader() {
-        typingLayout = findViewById(R.id.tokochat_layout_typing)
-        typingImage = findViewById(R.id.tokochat_iv_typing)
+        val mInflater = LayoutInflater.from(this)
+        headerCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        headerSubtitle = headerCustomView?.findViewById(R.id.tokochat_text_user_subtitle)
+        typingLayout = headerCustomView?.findViewById(R.id.tokochat_layout_typing)
+        typingImage = headerCustomView?.findViewById(R.id.tokochat_iv_typing)
         typingImage?.let {
             val typingUrl = if (this.isDarkMode()) {
                 TYPING_DARK_MODE
             } else {
                 TYPING_LIGHT_MODE
             }
-            it.loadImage(typingUrl)
+            loadGif(it, typingUrl)
         }
     }
 
@@ -72,10 +81,12 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     }
 
     fun showInterlocutorTyping() {
+        headerSubtitle?.gone()
         typingLayout?.show()
     }
 
     fun hideInterlocutorTyping() {
         typingLayout?.hide()
+        headerSubtitle?.show()
     }
 }

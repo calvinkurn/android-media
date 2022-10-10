@@ -4,6 +4,7 @@ import com.gojek.conversations.courier.CourierState
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.event.handler.BaseCourierEventHandler
 import com.gojek.mqtt.event.MqttEvent
+import rx.Observable
 import rx.subjects.BehaviorSubject
 import javax.inject.Inject
 
@@ -31,10 +32,11 @@ class TokoCourierStateObservable @Inject constructor(
                     is MqttEvent.MqttConnectionLostEvent -> {
                         publishSubject.onNext(CourierState.CONNECT_FAILED)
                     }
+                    else -> {}
                 }
             }
         })
     }
 
-    fun observe() = publishSubject.asObservable()
+    fun observe(): Observable<CourierState> = publishSubject.asObservable()
 }

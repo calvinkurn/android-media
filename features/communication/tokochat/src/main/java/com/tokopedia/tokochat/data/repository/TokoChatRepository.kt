@@ -10,6 +10,7 @@ import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.logging.ConversationsLogger
 import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.tokochat.R
 import retrofit2.Retrofit
 import javax.inject.Inject
 
@@ -36,7 +37,7 @@ class TokoChatRepository @Inject constructor(
     private fun getConversationsConfig(): ConversationsConfig {
         return ConversationsConfig(
             enabledChannelTypes = listOf(ChannelType.GroupBooking),
-            notificationIcon = 0,
+            notificationIcon = R.drawable.ic_launcher_tokochat,
             isSupportMetaServiceEnabled = false,
             isMessageRetryEnabled = true,
             contactsVerifyingBatchSize =
