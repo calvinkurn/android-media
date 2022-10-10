@@ -867,7 +867,7 @@ class EditKeywordsFragment : BaseDaggerFragment() {
         val list: ArrayList<KeySharedModel> = arrayListOf()
         list.addAll(adapter.getCurrentItems())
 
-        if (adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
+        if (this::adapter.isInitialized && adapter.items.isNotEmpty() && adapter.items[0] !is EditKeywordEmptyViewModel) {
             adapter.items.forEachIndexed { index, item ->
                 if (index < adapter.data.size && (item as EditKeywordItemViewModel).data.priceBid != adapter.data[index]) {
                     if (isExistsOriginal(item.data.name))
