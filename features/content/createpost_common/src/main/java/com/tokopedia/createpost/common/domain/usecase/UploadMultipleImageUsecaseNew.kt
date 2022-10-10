@@ -4,27 +4,13 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
-import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
-import com.tokopedia.usecase.RequestParams
-import com.tokopedia.usecase.UseCase
-import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
-import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
-import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
-import rx.Observable
-import rx.functions.Func1
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -47,7 +33,6 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     }
 
     private suspend fun uploadMedia(medium: SubmitPostMedium): SubmitPostMedium {
-
         val param = uploaderUseCase.createParams(
             sourceId = getUploadSourceId(medium),
             filePath = File(setTempFilePath(medium)),
@@ -117,15 +102,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     }
 
     companion object {
-        private const val PARAM_URL_LIST = "url_list"
         private const val UPLOAD_IMAGE_SOURCE_ID = "ZiLyCt"
         private const val UPLOAD_VIDEO_SOURCE_ID = "jbPRuq"
-
-        fun createRequestParams(mediumList: List<SubmitPostMedium>):
-                RequestParams {
-            val requestParams = RequestParams.create()
-            requestParams.putObject(PARAM_URL_LIST, mediumList)
-            return requestParams
-        }
     }
 }
