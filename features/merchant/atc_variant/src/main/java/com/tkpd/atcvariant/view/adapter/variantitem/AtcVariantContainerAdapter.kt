@@ -26,18 +26,12 @@ class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerVie
     }
 
     override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int) {
-        holder.bind(
-                variantContainerData[position],
-                variantContainerData[position].variantOptions.size
-        )
+        holder.bind(variantContainerData[position])
     }
 
     override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int, payloads: MutableList<Any>) {
         if (payloads.isNotEmpty()) {
-            holder.bind(variantContainerData[position],
-                    true,
-                    variantContainerData[position].variantOptions.size
-            )
+            holder.bind(variantContainerData[position],true)
         } else {
             super.onBindViewHolder(holder, position, payloads)
         }

@@ -46,17 +46,17 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         rvVariant.itemAnimator = null
     }
 
-    fun bind(data: VariantCategory, isOptionChanged: Boolean, dataSize: Int) {
+    fun bind(data: VariantCategory, isOptionChanged: Boolean) {
         if (isOptionChanged) {
             setSelectedOptionText(data)
-            setupFlexBox(dataSize)
+            setupFlexBox(data.variantOptions.size)
             variantOptionAdapter.setData(data.variantOptions)
         }
     }
 
-    fun bind(data: VariantCategory, dataSize: Int) {
+    fun bind(data: VariantCategory) {
         setSelectedOptionText(data)
-        setupFlexBox(dataSize)
+        setupFlexBox(data.variantOptions.size)
         if (data.variantGuideline.isNotEmpty() && !listener.onVariantGuideLineHide()) {
             txtVariantGuideline.show()
             txtVariantGuideline.setOnClickListener {
