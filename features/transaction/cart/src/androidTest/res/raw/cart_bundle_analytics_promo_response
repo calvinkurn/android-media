@@ -1436,6 +1436,12 @@
           ],
           "hashed_email": "c06390397ce9ce1fbf6861d62c645c8c",
           "promo": {
+            "show_choose_promo_widget": true,
+            "ticker": {
+              "enable": false,
+              "text": "Belanjaanmu bisa makin hemat dengan pilih promo di halaman selanjutnya!",
+              "icon_url": "https://images.tokopedia.net/img/cart/promo/bo_unstack_icon.png"
+            },
             "last_apply": {
               "data": {
                 "global_success": true,

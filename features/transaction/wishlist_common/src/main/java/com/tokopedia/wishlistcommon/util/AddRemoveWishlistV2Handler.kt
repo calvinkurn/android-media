@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentManager
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.unifycomponents.Toaster
@@ -145,8 +146,6 @@ object AddRemoveWishlistV2Handler {
     }
 
     private fun goToWishlistCollectionDetailAll(context: Context) {
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=0"
-        RouteManager.route(context, detailCollection)
+        RouteManager.route(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, "0")
     }
 }
