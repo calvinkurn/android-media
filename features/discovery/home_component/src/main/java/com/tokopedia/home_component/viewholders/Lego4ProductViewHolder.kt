@@ -76,7 +76,7 @@ class Lego4ProductViewHolder(itemView: View,
         initItems(element)
         if (!isCacheData) {
             itemView.addOnImpressionListener(element.channelModel) {
-                legoProductListener.onChannelImpressed(element.channelModel, adapterPosition)
+                legoProductListener.onChannelImpressed(element.channelModel, element.channelModel.verticalPosition)
             }
         }
     }
