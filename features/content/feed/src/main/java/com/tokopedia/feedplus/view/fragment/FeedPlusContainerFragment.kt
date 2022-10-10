@@ -650,7 +650,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     entryPointAnalytic.clickCreatePostEntryPoint()
                     val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
                     if (shouldShowNewContentCreationFlow) {
-                        val authors = viewModel.feedContentForm.authors
                         val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
                         intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
                             ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
@@ -658,11 +657,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                             MAX_MULTI_SELECT_ALLOWED_VALUE)
                         intent.putExtra(TITLE,
                             getString(feedComponentR.string.feed_post_sebagai))
-                        val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                        intent.putExtra(SUB_TITLE, name)
-                        intent.putExtra(TOOLBAR_ICON_URL,
-                            authors.first().thumbnail
-                        )
                         intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
                             ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
                         startActivity(intent)
