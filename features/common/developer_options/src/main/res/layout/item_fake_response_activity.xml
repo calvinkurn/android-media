@@ -15,10 +15,4 @@
         app:unifyButtonType="main"
         app:unifyButtonSize="medium" />
 
-    <CheckBox
-        android:id="@+id/cbEnableNotification"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/enable_fake_response_on_notification" />
-
 </LinearLayout>

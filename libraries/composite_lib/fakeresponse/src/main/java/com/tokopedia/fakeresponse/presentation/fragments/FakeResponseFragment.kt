@@ -139,6 +139,17 @@ class FakeResponseFragment : BaseFragment() {
                 Preference.updateSortBy(SortBy.DEFAULT)
                 pagerAdapter.fragmentList.firstOrNull()?.onResume()
             }
+            R.id.notification_on -> {
+                Preference.updateNotification(true)
+                Toast.makeText(context, "Fake Response on Notification Enable", Toast.LENGTH_LONG)
+                    .show()
+            }
+            R.id.notification_off -> {
+                Preference.updateNotification(false)
+                Toast.makeText(context, "Fake Response on Notification Disable", Toast.LENGTH_LONG)
+                    .show()
+
+            }
         }
         return true
     }

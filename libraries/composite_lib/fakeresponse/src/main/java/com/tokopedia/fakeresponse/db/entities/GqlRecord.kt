@@ -17,7 +17,8 @@ data class GqlRecord(
     val enabled: Boolean,
     val gqlOperationName: String,
     val customTag: String,
-    val isResponseSuccess: Boolean
+    val isResponseSuccess: Boolean,
+    val isDelayResponse: Boolean
 )
 
 
@@ -47,6 +48,7 @@ fun GqlRecord.toGqlRecord(): GqlRecord {
         enabled = true,
         gqlOperationName = gqlOperationName,
         customTag = customTag,
-        isResponseSuccess = true
+        isResponseSuccess = true,
+        isDelayResponse = true
     )
 }

@@ -38,6 +38,7 @@ class AddGqlActivity : BaseActivity() {
     var id: Int? = null
     var isFromChuck: Boolean = false
     var isResponseSuccess = true
+    var isDelayResponseEnable = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,7 +69,9 @@ class AddGqlActivity : BaseActivity() {
         radioGroup.setOnCheckedChangeListener { radioGroup, i ->
             isResponseSuccess = (i == R.id.rbCheckedSuccess)
         }
-
+        cbDelayResponse.setOnCheckedChangeListener { compoundButton, b ->
+            isDelayResponseEnable = b
+        }
         id = intent.extras?.get(Router.BUNDLE_ARGS_ID) as Int?
         isFromChuck = intent.extras?.get(Router.BUNDLE_ARGS_FROM_CHUCK) as Boolean? ?: false
 
@@ -95,6 +98,8 @@ class AddGqlActivity : BaseActivity() {
                     } else {
                         rbCheckedError.isChecked = true
                     }
+
+                    cbDelayResponse.isChecked = it.data.isDelayResponse
 
                     try {
                         setPrettyText(it.data.response, etResponse)
@@ -212,7 +217,8 @@ class AddGqlActivity : BaseActivity() {
                 gqlQueryName = gqlName,
                 response = response,
                 customTag = customName,
-                isResponseSuccess = isResponseSuccess
+                isResponseSuccess = isResponseSuccess,
+                isDelayResponse = isDelayResponseEnable
             )
 
         if (isExistingRecord()) {

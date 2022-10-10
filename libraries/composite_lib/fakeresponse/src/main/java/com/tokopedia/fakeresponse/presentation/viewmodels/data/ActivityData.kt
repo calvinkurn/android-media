@@ -8,7 +8,8 @@ data class AddGqlData(
     val gqlQueryName: String?,
     val customTag: String? = null,
     val response: String?,
-    val isResponseSuccess: Boolean = true
+    val isResponseSuccess: Boolean = true,
+    val isDelayResponse: Boolean = false
 )
 
 data class AddRestData(
@@ -31,8 +32,8 @@ fun AddGqlData.toGqlRecord(id: Int? = null, createdAt: Long? = null): GqlRecord 
         enabled = true,
         customTag = customTag ?: "",
         response = response!!,
-        isResponseSuccess = isResponseSuccess
-
+        isResponseSuccess = isResponseSuccess,
+        isDelayResponse = isDelayResponse
     )
     return gql
 }

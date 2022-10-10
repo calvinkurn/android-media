@@ -1,7 +1,11 @@
 package com.tokopedia.fakeresponse.data.interceptor
 
 import android.content.Context
+import android.os.SystemClock
 import android.text.TextUtils
+import com.tokopedia.fakeresponse.NotificationHelper
+import com.tokopedia.fakeresponse.Preference
+import com.tokopedia.fakeresponse.Router
 import com.tokopedia.fakeresponse.chuck.Utils
 import com.tokopedia.fakeresponse.data.parsers.bodyParser.GqlRequestBodyParser
 import com.tokopedia.fakeresponse.data.parsers.bodyParser.RestBodyParser
@@ -11,7 +15,7 @@ import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okio.Buffer
 
-class GqlTestingInterceptor(context: Context) : Interceptor {
+class GqlTestingInterceptor(val context: Context) : Interceptor {
 
     private val gqlDao = AppDatabase.getDatabase(context).gqlDao()
     private val gqlRequestParser = GqlRequestBodyParser(gqlDao)
@@ -30,6 +34,16 @@ class GqlTestingInterceptor(context: Context) : Interceptor {
                 if (!TextUtils.isEmpty(requestBody)) {
                     val fakeResponse = gqlRequestParser.parse(requestBody)
                     if (fakeResponse != null) {
+                        if (Preference.getIsEnableNotification(context)) {
+                            NotificationHelper.show(
+                                context = context,
+                                fakeResponse.gqlOperationName,
+                                Router.routeToAddGqlFromNotification(context, fakeResponse.id)
+                            )
+                        }
+                        if (fakeResponse.isDelayResponse) {
+                            SystemClock.sleep(5000)
+                        }
                         return createResponseFromFakeResponse(
                             fakeResponse = fakeResponse.response.orEmpty(),
                             isResponseSuccess = fakeResponse.isResponseSuccess,

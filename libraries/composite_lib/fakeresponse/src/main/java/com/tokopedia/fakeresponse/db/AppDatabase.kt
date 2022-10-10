@@ -18,20 +18,8 @@ abstract class AppDatabase : RoomDatabase() {
 
 
     companion object {
-        const val DB_VERSION = 1
+        const val DB_VERSION = 2
         const val DATABASE_NAME = "responseDb.db"
-
-        val MIGRATION_1_2 = object : Migration(1, 3) {
-            override fun migrate(database: SupportSQLiteDatabase) {
-                database.execSQL(
-                    "ALTER TABLE GqlRecord ADD COLUMN isResponseSuccess BOOLEAN NOT NULL DEFAULT 'true'"
-                )
-
-                database.execSQL(
-                    "ALTER TABLE RestRecord ADD COLUMN isResponseSuccess BOOLEAN NOT NULL DEFAULT 'true'"
-                )
-            }
-        }
 
         @Volatile
         private var INSTANCE: AppDatabase? = null
@@ -46,7 +34,7 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     DATABASE_NAME
-                ).fallbackToDestructiveMigrationOnDowngrade()
+                ).fallbackToDestructiveMigration()
                     .build()
                 INSTANCE = instance
                 return instance
