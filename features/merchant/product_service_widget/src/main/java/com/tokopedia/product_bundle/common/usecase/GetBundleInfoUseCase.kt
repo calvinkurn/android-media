@@ -47,6 +47,9 @@ class GetBundleInfoUseCase @Inject constructor(
                         quota
                         originalQuota
                         maxOrder
+                        bundleStats {
+                            Sold
+                        }
                         shopInformation {
                             ShopName
                             ShopType

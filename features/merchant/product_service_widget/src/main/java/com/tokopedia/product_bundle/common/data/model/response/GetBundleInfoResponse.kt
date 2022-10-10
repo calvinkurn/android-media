@@ -44,8 +44,10 @@ data class BundleInfo(
         @Expose val originalQuota: Int = 0,
         @SerializedName("maxOrder")
         @Expose val maxOrder: Int = 0,
+        @SerializedName("bundleStats")
+        @Expose val bundleStats: BundleStats = BundleStats(),
         @SerializedName("preorder")
-        @Expose val preorder: Preorder = Preorder(),
+        @Expose var preorder: Preorder = Preorder(),
         @SerializedName("bundleItem")
         @Expose val bundleItems: List<BundleItem> = listOf(),
         @SerializedName("shopInformation")
@@ -54,7 +56,7 @@ data class BundleInfo(
 
 @Parcelize
 data class BundleItem(
-    @SerializedName("productID")
+        @SerializedName("productID")
         @Expose val productID: Long = 0L,
         @SerializedName("name")
         @Expose val name: String = "",
@@ -181,4 +183,10 @@ data class ShopInformation (
     @Expose val shopBadge: String = "",
     @SerializedName("ShopID")
     @Expose val shopId: Long = 0L,
+): Parcelable
+
+@Parcelize
+data class BundleStats (
+    @SerializedName("Sold")
+    @Expose val totalSold: String = ""
 ): Parcelable

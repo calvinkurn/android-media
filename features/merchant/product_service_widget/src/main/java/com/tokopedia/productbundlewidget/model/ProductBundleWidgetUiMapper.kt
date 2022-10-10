@@ -6,9 +6,12 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.BUNDLE_TYPE_SINGLE
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.data.model.response.BundleItem
+import com.tokopedia.product_bundle.common.data.model.response.Preorder
 import com.tokopedia.product_bundle.common.data.model.response.ShopInformation
 import com.tokopedia.product_bundle.common.util.DiscountUtil
 import com.tokopedia.product_service_widget.R
@@ -30,7 +33,7 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             bundleType = bundleType,
             actionButtonText = context.getString(R.string.bundlewidget_action_button_text),
             bundleDetails = if (bundleType == BundleTypes.SINGLE_BUNDLE) bundleInfos.toSingleBundleDetails(shopInfo)
-            else bundleInfo.bundleItems.toMultipleBundleDetails(bundleInfo.bundleID, shopInfo)
+            else bundleInfo.bundleItems.toMultipleBundleDetails(bundleInfo, shopInfo)
         )
     }
 
@@ -66,27 +69,37 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             }
             val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero()
             val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero()
+            val preorder = getPreorderWording(context, it.preorder)
 
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, it.bundleItems).apply {
                 this.minOrder = minOrder
                 this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder)
                 this.bundleId = it.bundleID.toString()
+                this.preOrderInfo = preorder.orEmpty()
+                this.isPreOrder = !preorder.isNullOrBlank()
+                this.useProductSoldInfo = preorder.isNullOrBlank()
+                this.productSoldInfo = it.getProductSoldInfo()
             }
         }
     }
 
     private fun List<BundleItem>.toMultipleBundleDetails(
-        bundleId: Long,
+        bundleInfo: BundleInfo,
         shopInfo: BundleShopUiModel?
     ): List<BundleDetailUiModel> {
         val bundlePrice = sumOf { it.getPreviewBundlePrice() }
         val originalPrice = sumOf { it.getPreviewOriginalPrice() }
         var productCount = minOfOrNull { it.getPreviewMinOrder() }.orZero()
         if (productCount.isZero()) productCount = MIN_DISPLAYED_PRODUCT_COUNT
+        val preorder = getPreorderWording(context, bundleInfo.preorder)
         return listOf(
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
-                this.bundleId = bundleId.toString()
+                this.bundleId = bundleInfo.bundleID.toString()
                 this.minOrder = productCount
+                this.preOrderInfo = preorder.orEmpty()
+                this.isPreOrder = !preorder.isNullOrBlank()
+                this.useProductSoldInfo = preorder.isNullOrBlank()
+                this.productSoldInfo = bundleInfo.getProductSoldInfo()
             }
         )
     }
@@ -116,7 +129,33 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
         )
     }
 
+    private fun getPreorderWording(context: Context, preorder: Preorder): String? {
+        if (preorder.status == PREORDER_STATUS_ACTIVE) {
+            return context.getString(R.string.bundlewidget_preorder_format, preorder.processTime,
+                getTimeUnitWording(context, preorder.processTypeNum))
+        }
+        return null
+    }
+
+    private fun getTimeUnitWording(context: Context, processTypeNum: Int): String {
+        return when (processTypeNum) {
+            ProductBundleConstants.PREORDER_TYPE_DAY -> context.getString(R.string.preorder_time_unit_day)
+            ProductBundleConstants.PREORDER_TYPE_WEEK -> context.getString(R.string.preorder_time_unit_week)
+            ProductBundleConstants.PREORDER_TYPE_MONTH -> context.getString(R.string.preorder_time_unit_month)
+            else -> ""
+        }
+    }
+
+    private fun BundleInfo.getProductSoldInfo(): String {
+        val totalSold = bundleStats.totalSold.toIntSafely()
+        return if (totalSold >= PRODUCT_SOLD_INFO_MIN_THRESHOLD)
+            context.getString(R.string.product_bundle_bundle_sold, totalSold)
+        else ""
+    }
+
     companion object {
         private const val MIN_DISPLAYED_PRODUCT_COUNT = 1
+        private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
+        private const val PRODUCT_SOLD_INFO_MIN_THRESHOLD = 1
     }
 }
