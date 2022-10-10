@@ -12,17 +12,22 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.unit.dp
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
-import com.tokopedia.campaignlist.page.presentation.ui.color.PredefinedColor
+import com.tokopedia.campaignlist.page.presentation.ui.color.TokopediaColor
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyColor
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyN700
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyN700Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN950
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN950Dark
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.LocalElevations
+import com.tokopedia.campaignlist.page.presentation.ui.font.AppTypography
+import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
 import com.tokopedia.campaignlist.page.presentation.ui.shape.RoundedShapes
 
@@ -57,14 +62,15 @@ fun UnifyTheme(
         UnifyThemeLight
     }
     val elevation = if (darkTheme) DarkElevation else LightElevation
-    val customColor = if (darkTheme) {
-        PredefinedColor(NN950 = UnifyNN950Dark, UnifyGN500Dark)
+    val unifyColor = if (darkTheme) {
+        UnifyColor(UnifyNN600, UnifyNN950Dark, UnifyGN500Dark)
     } else {
-        PredefinedColor(NN950 = UnifyNN950, UnifyGN500)
+        UnifyColor(UnifyNN600Dark, UnifyNN950, UnifyGN500)
     }
     CompositionLocalProvider(
         LocalElevations provides elevation,
-        LocalColors provides customColor
+        LocalColors provides unifyColor,
+        LocalTypography provides AppTypography()
     ) {
         MaterialTheme(
             colors = colors,
@@ -81,7 +87,7 @@ object UnifyTheme {
     /**
      * Proxy to [MaterialTheme]
      */
-    val colors: Colors
+    val themeColor: Colors
         @Composable
         @ReadOnlyComposable
         get() = MaterialTheme.colors
@@ -110,7 +116,7 @@ object UnifyTheme {
         @ReadOnlyComposable
         get() = LocalElevations.current
 
-    val customColor: PredefinedColor
+    val colors: TokopediaColor
         @Composable
         @ReadOnlyComposable
         get() = LocalColors.current

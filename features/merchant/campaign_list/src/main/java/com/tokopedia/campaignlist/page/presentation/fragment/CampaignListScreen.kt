@@ -19,7 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
@@ -36,8 +36,8 @@ import com.tokopedia.campaignlist.page.presentation.ui.UnifySearchBar
 import com.tokopedia.campaignlist.page.presentation.ui.UnifySortFilter
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTicker
 import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypography
-import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypographyType
-import com.tokopedia.campaignlist.page.presentation.ui.UnifyTypographyWeight
+import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
+import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.AVAILABLE_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.ONGOING_STATUS_ID
@@ -206,9 +206,10 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(statusImage.bottom)
                     start.linkTo(statusImage.end, margin = 4.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3,
-                weight = UnifyTypographyWeight.BOLD,
-                textStyle = TextStyle(color = UnifyTheme.customColor.GN500)
+                textStyle = LocalTypography.current.display3.copy(
+                    color = UnifyTheme.colors.GN500,
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             CampaignLabel(
@@ -237,8 +238,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignImage.top)
                     start.linkTo(campaignImage.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_2,
-                weight = UnifyTypographyWeight.BOLD
+                textStyle = LocalTypography.current.display2.copy(fontWeight = FontWeight.Bold, color = LocalColors.current.NN950)
             )
 
             UnifyTypography(
@@ -247,7 +247,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3
             )
 
             UnifyTypography(
@@ -256,7 +256,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
             )
 
 
@@ -266,7 +266,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
             UnifyTypography(
@@ -276,7 +276,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(campaignStartDate.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
             UnifyTypography(
@@ -286,7 +286,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartDate.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
             )
 
             UnifyTypography(
@@ -296,7 +296,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                type = UnifyTypographyType.DISPLAY_3
+                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
             UnifyButton(

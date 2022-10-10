@@ -47,6 +47,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300
+import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 
@@ -186,8 +187,7 @@ fun UnifySearchBar(
                     if (text.isEmpty()) {
                         UnifyTypography(
                             text = placeholderText,
-                            weight = UnifyTypographyWeight.REGULAR,
-                            type = UnifyTypographyType.DISPLAY_2
+                            textStyle = LocalTypography.current.display2
                         )
                     }
 
@@ -234,9 +234,7 @@ fun UnifyTicker(
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             UnifyTypography(
                 text = text.toString(),
-                modifier = Modifier.width(250.dp),
-                weight = UnifyTypographyWeight.REGULAR,
-                type = UnifyTypographyType.DISPLAY_3
+                modifier = Modifier.width(250.dp)
             )
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             Icon(
@@ -307,20 +305,11 @@ fun UnifyButton(
 fun UnifyTypography(
     text: String,
     modifier: Modifier = Modifier,
-    type: UnifyTypographyType,
-    weight: UnifyTypographyWeight = UnifyTypographyWeight.REGULAR,
-    textStyle: TextStyle = TextStyle()
+    textStyle: TextStyle = LocalTypography.current.display3
 ) {
-    val fontSize = type.fontSize.sp
-    val letterSpacing = type.letterSpacing.sp
-    val fontWeight = if (weight == UnifyTypographyWeight.BOLD) FontWeight.Bold else FontWeight.Normal
-
     Text(
         text = text,
         modifier = modifier,
-        fontSize = fontSize,
-        letterSpacing = letterSpacing,
-        fontWeight = fontWeight,
         style = textStyle
     )
 }
@@ -418,9 +407,7 @@ fun UnifyButtonPreview() {
 fun UnifyTypographyPreview() {
     UnifyTypography(
         text = "Flash Sale",
-        Modifier,
-        type = UnifyTypographyType.DISPLAY_3,
-        weight = UnifyTypographyWeight.REGULAR
+        Modifier
     )
 }
 
@@ -430,7 +417,6 @@ fun UnifyTypographyBoldPreview() {
     UnifyTypography(
         text = "Flash Sale",
         Modifier,
-        type = UnifyTypographyType.DISPLAY_3,
-        weight = UnifyTypographyWeight.BOLD
+        textStyle = LocalTypography.current.display3.copy(fontWeight = FontWeight.Bold)
     )
 }

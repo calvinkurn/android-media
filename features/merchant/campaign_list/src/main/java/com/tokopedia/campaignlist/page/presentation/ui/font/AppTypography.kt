@@ -16,34 +16,19 @@ private val OpenSauce = FontFamily(
 )
 
 data class AppTypography(
-    val h1: TextStyle = TextStyle(
+    val display2 : TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,
-        fontSize = 24.sp
+        fontSize = 14.sp
     ),
-    val subtitle: TextStyle = TextStyle(
-        fontFamily = OpenSauce,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    val body: TextStyle = TextStyle(
-        fontFamily = OpenSauce,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    val button: TextStyle = TextStyle(
-        fontFamily = OpenSauce,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    val caption: TextStyle = TextStyle(
+    val display3 : TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,
         fontSize = 12.sp
     )
 )
-internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
+internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
 
 
 val OpenSauceTypography = Typography(
