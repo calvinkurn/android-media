@@ -707,6 +707,38 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
+    fun `when trigger startTimer(), then it will trigger broadcasterTimer start`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().startTimer()
+
+            verify { mockTimer.start() }
+        }
+    }
+
+    @Test
+    fun `when trigger stopTimer(), then it will trigger broadcasterTimer stop`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().stopTimer()
+
+            verify { mockTimer.stop() }
+        }
+    }
+
+    @Test
     fun `when user only have shop and eligible then selected account is shop`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(onlyShop = true)

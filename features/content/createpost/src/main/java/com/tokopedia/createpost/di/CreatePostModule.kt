@@ -7,10 +7,8 @@ import com.tokopedia.content.common.producttag.analytic.product.ContentProductTa
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.CreatePostScope
 import com.tokopedia.createpost.common.view.contract.CreatePostContract
-import com.tokopedia.createpost.common.domain.entity.FeedDetail
 import com.tokopedia.createpost.domain.entity.GetContentFormDomain
 import com.tokopedia.createpost.domain.usecase.GetContentFormUseCase
-import com.tokopedia.createpost.domain.usecase.GetFeedForEditUseCase
 import com.tokopedia.createpost.view.presenter.CreatePostPresenter
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.content.common.ui.analytic.FeedAccountTypeAnalytic
@@ -25,7 +23,6 @@ import com.tokopedia.createpost.common.DI_GET_PROFILE_HEADER_USER_CASE
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 
 /**
  * @author by milhamj on 9/26/18.
@@ -55,19 +52,6 @@ class CreatePostModule(private val context: Context) {
     @CreatePostScope
     fun provideGetContentFormUseCase(graphqlUseCase: GraphqlUseCase): UseCase<GetContentFormDomain> {
         return GetContentFormUseCase(context, graphqlUseCase)
-    }
-
-    @Provides
-    @CreatePostScope
-    fun provideGetFeedForEditUseCase(dynamicFeedUseCase: GetDynamicFeedUseCase): UseCase<FeedDetail?> {
-        return GetFeedForEditUseCase(dynamicFeedUseCase)
-    }
-
-    @Provides
-    @Named(DI_GET_PROFILE_HEADER_USER_CASE)
-    @CreatePostScope
-    fun provideGetProfileHeaderUseCase(): GraphqlUseCase {
-        return GetProfileHeaderUseCase(context)
     }
 
     @Provides

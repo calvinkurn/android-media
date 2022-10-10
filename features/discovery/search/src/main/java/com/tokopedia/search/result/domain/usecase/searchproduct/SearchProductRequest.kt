@@ -77,6 +77,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                keywordIntention
                 redirection {
                     redirectApplink
                 }

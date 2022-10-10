@@ -39,6 +39,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSort
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.RepurchaseSortFilterType.SORT
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
+import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_GRID_TITLE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
 import com.tokopedia.unifycomponents.ChipsUnify
 
@@ -86,7 +87,7 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addCategoryGrid(response: List<CategoryResponse>?, warehouseId: String) {
-        val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId)
+        val categoryListUiModel = HomeCategoryMapper.mapToCategoryList(response, warehouseId, CATEGORY_GRID_TITLE)
         add(TokoNowCategoryGridUiModel(
                 id = "",
                 title = "",

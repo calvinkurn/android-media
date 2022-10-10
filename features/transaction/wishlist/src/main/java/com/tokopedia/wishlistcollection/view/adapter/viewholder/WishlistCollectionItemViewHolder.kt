@@ -63,6 +63,7 @@ class WishlistCollectionItemViewHolder(
                     TOTAL_IMG_4 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -78,6 +79,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -93,6 +95,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection3.layout(0, 0, 0, 0)
                         val params3: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection3.layoutParams)
                         params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -108,6 +111,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection4.layout(0, 0, 0, 0)
                         val params4: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection4.layoutParams)
                         params4.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -127,6 +131,7 @@ class WishlistCollectionItemViewHolder(
                     TOTAL_IMG_3 -> {
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         val params1: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection1.layoutParams)
                         params1.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)
@@ -142,6 +147,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -157,6 +163,7 @@ class WishlistCollectionItemViewHolder(
                             }
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
+                        binding.imgCollection3.layout(0, 0, 0, 0)
                         val params3: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params3.rowSpec = GridLayout.spec(SPEC_0, 1, 1.0F)
@@ -174,6 +181,7 @@ class WishlistCollectionItemViewHolder(
                         binding.imgCollection4.gone()
                     }
                     TOTAL_IMG_2 -> {
+                        binding.imgCollection1.layout(0, 0, 0, 0)
                         binding.singleCollectionItem.gone()
                         binding.glCollectionItem.visible()
                         val params1: GridLayout.LayoutParams =
@@ -192,6 +200,7 @@ class WishlistCollectionItemViewHolder(
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }
 
+                        binding.imgCollection2.layout(0, 0, 0, 0)
                         val params2: GridLayout.LayoutParams =
                             GridLayout.LayoutParams(binding.imgCollection2.layoutParams)
                         params2.rowSpec = GridLayout.spec(SPEC_0, SPEC_2, 1.0F)

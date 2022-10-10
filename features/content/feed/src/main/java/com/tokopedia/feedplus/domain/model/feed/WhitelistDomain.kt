@@ -32,6 +32,9 @@ data class WhitelistDomain(
     val isShopAccountLiveEligible: Boolean
         get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
 
+    val userAccount: Author?
+        get() = authors.find { it.type == TYPE_USER }
+
     companion object {
         val Empty: WhitelistDomain
             get() = WhitelistDomain(

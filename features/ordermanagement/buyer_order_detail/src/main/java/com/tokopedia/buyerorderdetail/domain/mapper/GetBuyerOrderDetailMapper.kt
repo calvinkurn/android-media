@@ -6,16 +6,18 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailTickerTyp
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.common.utils.Utils.toCurrencyFormatted
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.CopyableKeyValueUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.kotlin.extensions.orFalse
 import javax.inject.Inject
@@ -64,7 +66,9 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
                 buyerOrderDetail.details?.nonBundles.orEmpty()
-            )
+            ),
+            hasResoStatus = buyerOrderDetail.hasResoStatus.orFalse(),
+            orderResolutionUIModel = OrderResolutionUIModel()
         )
     }
 
@@ -487,8 +491,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         }.orEmpty()
     }
 
-    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): CopyableKeyValueUiModel {
-        return CopyableKeyValueUiModel(
+    private fun mapDropShipperInfoUiModel(dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship): SimpleCopyableKeyValueUiModel {
+        return SimpleCopyableKeyValueUiModel(
             copyableText = formatDropshipperValue(dropship),
             copyLabel = mapStringRes(resourceProvider.getCopyLabelDropshipper()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageDropshipper()),
@@ -542,12 +546,28 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         )
     }
 
-    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): CopyableKeyValueUiModel {
-        return CopyableKeyValueUiModel(
+    private fun mapReceiverAddressInfoUiModel(receiver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Receiver): SimpleCopyableKeyValueUiModel {
+        return SimpleCopyableKeyValueUiModel(
             copyableText = formatReceiverAddressValue(receiver),
             copyLabel = mapStringRes(resourceProvider.getCopyLabelReceiverAddress()),
             copyMessage = mapStringRes(resourceProvider.getCopyMessageReceiverAddress()),
             label = mapStringRes(resourceProvider.getReceiverAddressLabel())
+        )
+    }
+
+    fun mapResolutionResponseToUIModel(
+        resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+    ): OrderResolutionUIModel {
+        return OrderResolutionUIModel(
+            title = resolutionData?.cardTitle.orEmpty(),
+            status = resolutionData?.resolutionStatus?.text.orEmpty(),
+            description = resolutionData?.description.orEmpty(),
+            picture = resolutionData?.profilePicture.orEmpty(),
+            showDeadline = resolutionData?.deadline?.showDeadline.orFalse(),
+            deadlineDateTime = resolutionData?.deadline?.datetime.orEmpty(),
+            backgroundColor = resolutionData?.deadline?.backgroundColor.orEmpty(),
+            redirectPath = resolutionData?.redirectPath?.android.orEmpty(),
+            resolutionStatusFontColor = resolutionData?.resolutionStatus?.fontColor.orEmpty()
         )
     }
 

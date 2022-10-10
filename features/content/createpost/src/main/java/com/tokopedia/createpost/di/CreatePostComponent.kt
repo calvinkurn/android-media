@@ -8,7 +8,6 @@ import com.tokopedia.content.common.producttag.di.module.ContentCreationProductT
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagModule
 import com.tokopedia.createpost.view.activity.CreatePostActivityNew
 import com.tokopedia.createpost.view.activity.ProductTagActivity
-import com.tokopedia.createpost.view.fragment.BaseCreatePostFragment
 import com.tokopedia.createpost.view.fragment.BaseCreatePostFragmentNew
 import dagger.Component
 
@@ -26,7 +25,6 @@ import dagger.Component
     ],
 )
 interface CreatePostComponent {
-    fun inject(fragment: BaseCreatePostFragment)
 
     fun provideAffiliateAnalytics(): AffiliateAnalytics
 

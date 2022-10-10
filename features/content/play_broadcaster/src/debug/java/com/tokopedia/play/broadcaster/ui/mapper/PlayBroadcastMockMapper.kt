@@ -161,7 +161,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return emptyList()
     }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
         return BroadcastScheduleUiModel.NoSchedule
     }
 

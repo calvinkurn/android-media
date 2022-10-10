@@ -14,9 +14,7 @@ import com.tokopedia.imagepicker_insta.util.VideoUtil
 class ImagePickerInstaActivity : PermissionActivity() {
 
     var toolbarTitle = ""
-    var toolbarSubTitle = ""
     var menuTitle = ""
-    var toolbarIconRes = 0
     var toolbarIconUrl = ""
     var maxMultiSelectAllowed = DEFAULT_MULTI_SELECT_LIMIT
     var applinkToNavigateAfterMediaCapture = ""

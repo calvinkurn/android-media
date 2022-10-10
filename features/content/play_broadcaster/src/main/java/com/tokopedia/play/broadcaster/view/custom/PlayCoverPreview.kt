@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -88,6 +89,6 @@ class PlayCoverPreview : ConstraintLayout {
     }
 
     fun setAuthorName(authorName: String) {
-        binding.tvCoverAuthorName.text = authorName
+        binding.tvCoverAuthorName.text = MethodChecker.fromHtml(authorName)
     }
 }
