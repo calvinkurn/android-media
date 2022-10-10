@@ -156,6 +156,7 @@ import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.Unava
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.Order;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ProductDetail;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest;
+import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.ScheduledDelivery;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.OrdersItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ProductDetailsItem;
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.validateuse.ValidateUsePromoRequest;
@@ -2761,6 +2762,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         }
                     }
                 }
+                ScheduledDelivery scheduledDelivery = new ScheduledDelivery();
+                scheduledDelivery.setScheduledDates(shipmentCartItemModel.getScheduleDate());
+                scheduledDelivery.setTimeslotId(shipmentCartItemModel.getTimeslotId());
                 listOrderItem.add(ordersItem);
             }
         }
