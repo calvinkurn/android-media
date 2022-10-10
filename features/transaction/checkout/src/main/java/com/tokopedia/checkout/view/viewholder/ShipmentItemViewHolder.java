@@ -239,6 +239,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography labelSelectedFreeShipping;
     private Typography labelFreeShippingCourierName;
     private Typography labelFreeShippingEtaText;
+    // Whitelabel Shipping
+    private ImageView iconChevronWhitelabel;
+    private ConstraintLayout layoutStateWhitelabelShipping;
+    private Typography labelSelectedWhitelabelShipping;
+    private Typography labelWhitelabelDescription;
+    private Typography labelWhitelabelOtdTnc;
+    private Typography labelWhitelabelEtaText;
     private ImageView imageMerchantVoucher;
     private IconUnify mIconTooltip;
     private Typography mPricePerProduct;
@@ -383,6 +390,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         labelFreeShippingCourierName = itemView.findViewById(R.id.label_free_shipping_courier_name);
         labelFreeShippingEtaText = itemView.findViewById(R.id.label_free_shipping_eta);
         imageMerchantVoucher = itemView.findViewById(R.id.img_mvc);
+        iconChevronWhitelabel = itemView.findViewById(R.id.icon_chevron_whitelabel);
+        layoutStateWhitelabelShipping = itemView.findViewById(R.id.layout_state_has_selected_whitelabel_shipping);
+        labelSelectedWhitelabelShipping = itemView.findViewById(R.id.label_selected_whitelabel_shipping);
+        labelWhitelabelDescription = itemView.findViewById(R.id.label_whitelabel_description);
+        labelWhitelabelOtdTnc = itemView.findViewById(R.id.label_whitelabel_otd_tnc);
+        labelWhitelabelEtaText = itemView.findViewById(R.id.label_whitelabel_shipping_eta);
 
         // AddOn Experience
         llGiftingAddOnOrderLevel = itemView.findViewById(R.id.ll_gifting_addon_order_level);
@@ -895,6 +908,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateNoSelectedShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
 
@@ -931,6 +945,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderNormalShippingCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
@@ -1016,6 +1031,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
         layoutStateHasSelectedFreeShipping.setOnClickListener(
                 getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -1038,26 +1054,45 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
-        layoutStateHasSelectedFreeShipping.setVisibility(View.VISIBLE);
-        layoutStateHasSelectedFreeShipping.setOnClickListener(
+        layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.VISIBLE);
+        layoutStateWhitelabelShipping.setOnClickListener(
                 getOnChangeDurationClickListener(shipmentCartItemModel, currentAddress)
         );
-
-        labelFreeShippingCourierName.setVisibility(View.GONE);
         if (selectedCourierItemData.getEstimatedTimeDelivery() != null) {
             String titleText = selectedCourierItemData.getEstimatedTimeDelivery() + " (" + Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(
                         selectedCourierItemData.getShipperPrice(), false
                 )) + ")";
             HtmlLinkHelper htmlLinkHelper = new HtmlLinkHelper(labelSelectedFreeShipping.getContext(), titleText);
-            labelSelectedFreeShipping.setText(htmlLinkHelper.getSpannedString());
-            labelSelectedFreeShipping.setWeight(Typography.BOLD);
+            labelSelectedWhitelabelShipping.setText(htmlLinkHelper.getSpannedString());
+            labelSelectedWhitelabelShipping.setWeight(Typography.BOLD);
         }
 
         if (!selectedCourierItemData.getDurationCardDescription().isEmpty()) {
-            labelFreeShippingEtaText.setVisibility(View.VISIBLE);
-            labelFreeShippingEtaText.setText(selectedCourierItemData.getDurationCardDescription());
+            labelWhitelabelEtaText.setVisibility(View.VISIBLE);
+            labelWhitelabelEtaText.setText(selectedCourierItemData.getDurationCardDescription());
         } else {
-            labelFreeShippingEtaText.setVisibility(View.GONE);
+            labelWhitelabelEtaText.setVisibility(View.GONE);
+        }
+
+        // todo add field here for `kurir dipilih langsung tokopedia`
+        String shippingDescription = "";
+        if (!shippingDescription.isEmpty()) {
+            labelWhitelabelDescription.setText(shippingDescription);
+            labelWhitelabelDescription.setVisibility(View.VISIBLE);
+        } else {
+            labelWhitelabelDescription.setVisibility(View.GONE);
+        }
+
+        // On time delivery guarantee
+        OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
+        if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
+            labelWhitelabelOtdTnc.setOnClickListener(view -> {
+                mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
+            });
+            labelWhitelabelOtdTnc.setVisibility(View.VISIBLE);
+        } else {
+            labelWhitelabelOtdTnc.setVisibility(View.GONE);
         }
     }
 
@@ -1096,6 +1131,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
 
         String discountedPrice = Utils.removeDecimalSuffix(CurrencyFormatUtil.INSTANCE.convertPriceValueToIdrFormat(selectedCourierItemData.getDiscountedRate(), false));
         if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
@@ -1133,6 +1169,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void prepareLoadCourierState(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, RatesDataConverter ratesDataConverter, boolean isTradeInDropOff) {
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateHasSelectedSingleShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
@@ -1318,6 +1355,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);
         layoutStateHasSelectedFreeShipping.setVisibility(View.GONE);
+        layoutStateWhitelabelShipping.setVisibility(View.GONE);
 
         labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title);
         labelSingleShippingEta.setVisibility(View.GONE);
