@@ -41,9 +41,8 @@
             app:layout_constraintTop_toBottomOf="@id/rv_multiple_bundle_products"
             app:typographyType="display_2"
             app:typographyWeight="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="12dp"
-            />
+            android:layout_marginTop="13dp"
+            android:layout_marginStart="12dp" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/label_discount_bundle"
@@ -54,8 +53,7 @@
             app:layout_constraintStart_toEndOf="@id/tv_bundle_display_price"
             app:layout_constraintBottom_toTopOf="@id/tv_bundle_display_price"
             app:layout_constraintTop_toBottomOf="@id/tv_bundle_display_price"
-            android:layout_marginStart="4dp"
-            />
+            android:layout_marginStart="4dp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_bundle_original_price"
@@ -67,8 +65,7 @@
             android:layout_marginStart="4dp"
             android:textColor="@color/Unify_NN600"
             app:typographyWeight="reguler"
-            app:typographyType="display_3"
-            />
+            app:typographyType="display_3" />
 
         <include
             android:id="@+id/bundle_widget_header_footer"

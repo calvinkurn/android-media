@@ -11,13 +11,13 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:id="@+id/layout_bundle_multiple_image"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:padding="0.7dp"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_button_white_border"
+        android:padding="0.7dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_bundle_product_multiple"
@@ -27,21 +27,6 @@
             app:unify_image_type="rect" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tv_bundle_product_multiple_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:gravity="center"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/shop_page_product_bundle_count"
-        app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
-        app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
-        app:layout_constraintTop_toBottomOf="@id/layout_bundle_multiple_image"
-        android:textColor="@color/Unify_NN600"
-        app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_bundle_product_multiple_name"
@@ -55,7 +40,7 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintEnd_toEndOf="@id/layout_bundle_multiple_image"
         app:layout_constraintStart_toStartOf="@id/layout_bundle_multiple_image"
-        app:layout_constraintTop_toBottomOf="@+id/tv_bundle_product_multiple_count"
+        app:layout_constraintTop_toBottomOf="@+id/layout_bundle_multiple_image"
         app:typographyType="display_3"
         tools:text="Rinso Matic Professional ..." />
 

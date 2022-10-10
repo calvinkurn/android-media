@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="8dp"
             android:background="@drawable/bg_button_white_border"
             android:padding="0.7dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -74,7 +74,7 @@
             android:id="@+id/rv_bundle_single_package"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/tv_bundle_single_package"
             app:layout_constraintTop_toBottomOf="@+id/layout_bundle_image"
@@ -91,7 +91,7 @@
             app:layout_constraintTop_toBottomOf="@id/rv_bundle_single_package"
             app:typographyType="display_2"
             app:typographyWeight="bold"
-            android:layout_marginTop="22dp"
+            android:layout_marginTop="12dp"
             android:layout_marginStart="12dp" />
 
         <com.tokopedia.unifycomponents.Label

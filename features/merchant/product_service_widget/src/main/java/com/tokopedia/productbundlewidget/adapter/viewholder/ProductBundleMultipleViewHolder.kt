@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.product_service_widget.R
+import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleWidgetBinding
 import com.tokopedia.productbundlewidget.adapter.ProductBundleMultipleAdapter
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
@@ -21,8 +23,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
-import com.tokopedia.product_service_widget.R
-import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleWidgetBinding
+
 
 class ProductBundleMultipleViewHolder(
     itemView: View,
@@ -114,6 +115,7 @@ class ProductBundleMultipleViewHolder(
             setHasFixedSize(true)
             layoutManager = GridLayoutManager(context, spanSize, GridLayoutManager.VERTICAL, false)
             adapter = ProductBundleMultipleAdapter(listener)
+            addItemDecoration(MultipleBundleItemDecoration(context))
         }
         (rvBundleProducts?.adapter as ProductBundleMultipleAdapter).updateDataSet(
             bundleDetail.products,
