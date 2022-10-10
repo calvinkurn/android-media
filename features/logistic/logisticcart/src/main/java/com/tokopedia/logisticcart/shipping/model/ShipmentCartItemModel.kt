@@ -114,6 +114,10 @@ class ShipmentCartItemModel(
 
         // Flag for tracking
         var isHasShownCourierError: Boolean = false,
+
+        // Scheduled Delivery
+        var scheduleDate: String = "",
+        var timeslotId: Long = 0L
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
@@ -167,6 +171,8 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
             newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
             newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.timeslotId = shipmentCartItemModel.timeslotId
+            newShipmentCartItemModel.scheduleDate = shipmentCartItemModel.scheduleDate
             return newShipmentCartItemModel
         }
     }
