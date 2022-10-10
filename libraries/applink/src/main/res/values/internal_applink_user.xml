@@ -12,6 +12,7 @@
     <string name="path_link_account">/link-account</string>
     <string name="path_explicit_profile">/explicit-profile</string>
     <string name="path_privacy_account">/privacy-account</string>
+    <string name="path_consent_withdrawal">/consent/withdrawal</string>
 
     <!--Profile Completion-->
     <string name="path_add_name_register">/add-name-register</string>
