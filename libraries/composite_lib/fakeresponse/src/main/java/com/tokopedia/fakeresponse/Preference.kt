@@ -33,7 +33,7 @@ object Preference {
     fun getIsEnableNotification(context: Context): Boolean {
         val sharedPreferences =
             context.getSharedPreferences(PREFERENCE_KEY, Context.MODE_PRIVATE)
-        return sharedPreferences.getBoolean(NOTIFICATION_ENABLE, false)
+        return sharedPreferences.getBoolean(NOTIFICATION_ENABLE, true)
     }
 
 }
