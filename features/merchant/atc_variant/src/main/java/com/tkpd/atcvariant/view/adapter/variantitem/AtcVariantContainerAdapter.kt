@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tkpd.atcvariant.R
-import com.tokopedia.product.detail.common.view.AtcVariantListener
-import com.tkpd.atcvariant.view.viewholder.item.ItemContainerViewHolder
+import com.tkpd.atcvariant.view.viewholder.item.ItemContainerChipGroupViewHolder
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
+import com.tokopedia.product.detail.common.view.AtcVariantListener
 
 /**
  * Created by Yehezkiel on 08/03/20
  */
-class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<ItemContainerViewHolder>() {
+class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerView.Adapter<ItemContainerChipGroupViewHolder>() {
 
     var variantContainerData: List<VariantCategory> = listOf()
 
@@ -19,19 +19,14 @@ class AtcVariantContainerAdapter(val listener: AtcVariantListener) : RecyclerVie
         variantContainerData = data
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemContainerViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemContainerChipGroupViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.item_atc_variant_container_view_holder, parent, false)
-        return ItemContainerViewHolder(view, listener)
+        return ItemContainerChipGroupViewHolder(view, listener)
     }
 
-    override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemContainerChipGroupViewHolder, position: Int) {
         holder.bind(variantContainerData[position])
-    }
-
-    override fun onBindViewHolder(holder: ItemContainerViewHolder, position: Int, payloads: MutableList<Any>) {
-        super.onBindViewHolder(holder, position, payloads)
-        holder.bind(variantContainerData[position], true)
     }
 
     override fun getItemCount(): Int = variantContainerData.size
