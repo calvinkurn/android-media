@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 /**
  * Created by yovi.putra on 07/09/22"

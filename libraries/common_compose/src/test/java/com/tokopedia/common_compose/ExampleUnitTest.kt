@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles
+package com.tokopedia.common_compose
 
 import org.junit.Test
 

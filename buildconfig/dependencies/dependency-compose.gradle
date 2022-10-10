@@ -1,7 +1,0 @@
-ext {
-
-    // Sort and categorize alphabetically by folder name
-    commonCompose = [
-            principles          : ":common_compose:compose_principles",
-    ]
-}

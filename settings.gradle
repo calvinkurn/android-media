@@ -37,4 +37,4 @@ include "wearosapp"
 
 apply from: "tools/composite_build_settings.gradle"
 include ':features:watch'
-include ':common_compose:compose_principles'
+include ':libraries:common_compose'

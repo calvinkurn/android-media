@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 import android.graphics.Typeface
 import android.text.style.ForegroundColorSpan

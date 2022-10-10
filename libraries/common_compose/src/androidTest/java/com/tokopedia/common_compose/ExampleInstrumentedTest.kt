@@ -1,10 +1,12 @@
-package com.tokopedia.compose_principles
+package com.tokopedia.common_compose
 
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.runner.AndroidJUnit4
-import org.junit.Assert.assertEquals
+import androidx.test.ext.junit.runners.AndroidJUnit4
+
 import org.junit.Test
 import org.junit.runner.RunWith
+
+import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -17,6 +19,6 @@ class ExampleInstrumentedTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
-        assertEquals("com.tokopedia.compose_principles.test", appContext.packageName)
+        assertEquals("com.tokopedia.common_compose.test", appContext.packageName)
     }
 }

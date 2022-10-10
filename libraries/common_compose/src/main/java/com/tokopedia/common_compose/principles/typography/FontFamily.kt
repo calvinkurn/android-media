@@ -1,8 +1,8 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
-import com.tokopedia.compose_principles.R
+import com.tokopedia.common_compose.R
 
 /**
  * Created by yovi.putra on 07/10/22"

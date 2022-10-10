@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -48,7 +48,7 @@ fun CTypography(
     ),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    isFontTypeOpenSauceOne: Boolean = true,
+    isFontTypeOpenSauceOne: Boolean = TextConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 
@@ -106,7 +106,7 @@ fun CTypography(
     textStyle: TextStyle = LocalTextStyle.current,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    isFontTypeOpenSauceOne: Boolean = true,
+    isFontTypeOpenSauceOne: Boolean = TextConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 

@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp

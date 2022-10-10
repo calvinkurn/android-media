@@ -1,4 +1,4 @@
-package com.tokopedia.compose_principles.typography
+package com.tokopedia.common_compose.principles.typography
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -12,6 +12,11 @@ import androidx.compose.ui.unit.sp
  * Created by yovi.putra on 07/10/22"
  * Project name: android-tokopedia-core
  **/
+
+object TextConfig {
+
+    var isFontTypeOpenSauceOne: Boolean = true
+}
 
 internal fun getFontSize(
     style: TextStyle,
