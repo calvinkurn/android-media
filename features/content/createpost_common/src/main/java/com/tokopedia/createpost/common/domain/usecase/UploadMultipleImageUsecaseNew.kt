@@ -61,13 +61,13 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
                 if(isVideo(medium)) {
                    medium.videoID = result.uploadId
                    medium.mediaURL = result.videoUrl
+                    medium.type = SubmitPostMedium.TYPE_MEDIA_VIDEO_UPLOAD_ID
                 }
                 else {
                     medium.mediaUploadID = result.uploadId
                     medium.mediaURL = ""
+                    medium.type = SubmitPostMedium.TYPE_MEDIA_IMAGE_UPLOAD_ID
                 }
-
-                medium.type = SubmitPostMedium.TYPE_MEDIA_UPLOAD_ID
 
                 deleteCacheFile()
             }
