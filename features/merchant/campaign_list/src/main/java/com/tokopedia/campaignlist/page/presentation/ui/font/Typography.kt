@@ -15,7 +15,9 @@ private val OpenSauce = FontFamily(
     Font(R.font.open_sauce_one_extra_bold, FontWeight.Bold)
 )
 
-data class AppTypography(
+val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)
+
+data class UnifyTypography(
     val display2 : TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,
@@ -28,7 +30,5 @@ data class AppTypography(
     )
 )
 
-internal val LocalTypography = staticCompositionLocalOf { AppTypography() }
+internal val LocalTypography = staticCompositionLocalOf { UnifyTypography() }
 
-
-val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)
