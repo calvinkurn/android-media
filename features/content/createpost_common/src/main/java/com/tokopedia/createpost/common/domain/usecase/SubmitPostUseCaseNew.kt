@@ -65,10 +65,12 @@ open class SubmitPostUseCaseNew @Inject constructor(
         val arrangedMedia = rearrangeMedia(newMediumList)
 
         /** Submit Post */
+        postUpdateProgressManager?.onSubmitPost()
+
         setRequestParams(
             mapOf(
-                PARAM_INPUT to mutableMapOf(
-                    PARAM_TYPE to TYPE_CONTENT,
+                PARAM_INPUT to mapOf(
+                    PARAM_TYPE to type,
                     PARAM_TOKEN to token,
                     PARAM_AUTHOR_ID to authorId,
                     PARAM_AUTHOR_TYPE to if (type.isNotEmpty()) type else CONTENT_SHOP,
@@ -77,17 +79,9 @@ open class SubmitPostUseCaseNew @Inject constructor(
                     PARAM_MEDIA_HEIGHT to mediaHeight,
                     PARAM_MEDIA to arrangedMedia,
                     PARAM_ID to id.orEmpty(),
-                ).apply {
-                    if (!id.isNullOrEmpty()) {
-                        /** Update */
-                        put(PARAM_ID, id)
-                        put(PARAM_ACTION, ACTION_UPDATE)
-                    } else {
-                        /** Insert New */
-                        put(PARAM_ACTION, ACTION_CREATE)
-                        put(PARAM_MEDIA_LIST, media)
-                    }
-                }
+                    PARAM_TYPE to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ID to id.orEmpty(),
+                )
             )
         )
 
@@ -142,15 +136,15 @@ open class SubmitPostUseCaseNew @Inject constructor(
         return rearrangedList
     }
 
-    private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
-        return Func1 {
-            val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(it)
-            it.forEach { media ->
-                rearrangedList[media.order] = media
-            }
-            rearrangedList
-        }
-    }
+//    private fun rearrangeMedia(): Func1<List<SubmitPostMedium>, List<SubmitPostMedium>> {
+//        return Func1 {
+//            val rearrangedList: MutableList<SubmitPostMedium> = ArrayList(it)
+//            it.forEach { media ->
+//                rearrangedList[media.order] = media
+//            }
+//            rearrangedList
+//        }
+//    }
 
 //    private fun submitPostToGraphql(requestParams: RequestParams): Func1<List<SubmitPostMedium>, Observable<SubmitPostData>> {
 //        return Func1 { mediumList ->
@@ -181,8 +175,8 @@ open class SubmitPostUseCaseNew @Inject constructor(
 //        return Func1 { graphqlResponse -> graphqlResponse.getData(SubmitPostData::class.java) }
 //    }
 
-    private fun getInputType(type: String) =
-        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
+//    private fun getInputType(type: String) =
+//        if (type == TYPE_CONTENT_SHOP) INPUT_TYPE_CONTENT else type
 
 
 //    protected open fun getContentSubmitInput(requestParams: RequestParams,
