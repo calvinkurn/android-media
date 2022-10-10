@@ -125,8 +125,7 @@ class RedefineRegisterInputPhoneMandatoryCassavaTest {
     fun user_success_register() {
         repositoryStub.setResponseQueue(
             RedefineRegisterTestState.REGISTER_CHECK_NOT_EXIST,
-            RedefineRegisterTestState.REGISTER_V2_SUCCESS,
-            RedefineRegisterTestState.GET_USER_INFO_SUCCESS
+            RedefineRegisterTestState.REGISTER_V2_SUCCESS
         )
         activityTestRule.launchFragment(R.id.redefineRegisterInputPhoneFragment, bundleMandatory)
         intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
