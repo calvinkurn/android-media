@@ -18,7 +18,6 @@ class LivenessDetectionModule {
         return LivenessDetectionAnalytics()
     }
 
-
     @ActivityScope
     @Provides
     fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
