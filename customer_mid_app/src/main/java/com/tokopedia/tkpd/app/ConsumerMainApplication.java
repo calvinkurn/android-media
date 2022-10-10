@@ -108,6 +108,8 @@ import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
 
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
+
 /**
  * Created by ricoharisin on 11/11/16.
  */
@@ -148,7 +150,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
 
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             new Cassava.Builder(this).initialize();
         }
         TrackApp.initTrackApp(this);
@@ -175,6 +177,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
+
+        showDevOptNotification();
     }
 
     private void initializationNewRelic() {
@@ -665,6 +669,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
     }
 
     @Override

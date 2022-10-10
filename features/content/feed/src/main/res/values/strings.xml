@@ -138,4 +138,6 @@ dari Feed.</string>
     <string name="feed_play_header_text">Lagi Live, Nih!</string>
     <string name="feed_play_header_upcoming_text">Nantikan live seru lainnya!</string>
 
+    <!-- User Profile Entry Point -->
+    <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
 </resources>
