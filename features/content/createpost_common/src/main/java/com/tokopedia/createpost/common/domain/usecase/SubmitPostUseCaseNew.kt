@@ -37,8 +37,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
     var postUpdateProgressManager: PostUpdateProgressManager? = null
 
     init {
-        setGraphqlQuery(QUERY)
-//        setGraphqlQuery(SubmitPostUseCaseNewQuery())
+        setGraphqlQuery(SubmitPostUseCaseNewQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
