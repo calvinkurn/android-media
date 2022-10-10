@@ -46,8 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
-import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400
-import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -70,8 +68,9 @@ fun UnifySortFilter(
 
 @Composable
 private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
-    val backgroundColor= colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
-    val borderColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN200)
+    //Implementation are specifically to cater SELECTED and NORMAL type chips only
+    val backgroundColor= LocalColors.current.NN0
+    val borderColor = LocalColors.current.NN200
     Surface(
         color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
@@ -93,8 +92,15 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
 
 @Composable
 private fun UnifySortFilterItem(sortFilter: SortFilter) {
-    val textColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-    val textColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+    //Implementation are specifically to cater SELECTED and NORMAL type chips only
+    val textColorSelected = LocalColors.current.GN500
+    val textColorDefault = LocalColors.current.NN600
+
+    val borderColorSelected = LocalColors.current.GN400
+    val borderColorDefault = LocalColors.current.NN300
+
+    val backgroundColorSelected = LocalColors.current.GN50
+    val backgroundColorDefault = LocalColors.current.NN0
 
     val textColor = if (sortFilter.isSelected) {
         textColorSelected
@@ -103,18 +109,21 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
     }
 
     val borderColor = if (sortFilter.isSelected) {
-        UnifyGN400
+        borderColorSelected
     } else {
-        UnifyNN300
+        borderColorDefault
     }
-
-    val backgroundColorSelected = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_GN50)
-    val backgroundColorDefault = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0)
 
     val backgroundColor = if (sortFilter.isSelected) {
         backgroundColorSelected
     } else {
         backgroundColorDefault
+    }
+
+    val chevronColor = if (sortFilter.isSelected) {
+        LocalColors.current.GN500
+    } else {
+        LocalColors.current.NN900
     }
 
     Surface(
@@ -135,7 +144,8 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
-                contentDescription = "Dropdown Icon"
+                contentDescription = "Dropdown Icon",
+                tint = chevronColor
             )
         }
     }

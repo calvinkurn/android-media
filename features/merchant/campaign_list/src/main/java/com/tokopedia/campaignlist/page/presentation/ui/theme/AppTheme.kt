@@ -24,12 +24,20 @@ import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN800Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN950
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyBN950Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyColor
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN400Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN50
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN500Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyGN50Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyN700
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyN700Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN0Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN200
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN200Dark
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300
+import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN300Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN600Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN900
@@ -82,9 +90,13 @@ fun UnifyTheme(
             BN400= UnifyBN400Dark,
             BN800 = UnifyBN800Dark,
             BN950= UnifyBN950Dark,
+            NN200 = UnifyNN200Dark,
+            NN300 = UnifyNN300Dark,
             NN600 = UnifyNN600Dark,
             NN900 = UnifyNN900Dark,
             NN950 = UnifyNN950Dark,
+            GN50 = UnifyGN50Dark,
+            GN400 = UnifyGN400Dark,
             GN500 = UnifyGN500Dark
         )
     } else {
@@ -95,9 +107,13 @@ fun UnifyTheme(
             BN400= UnifyBN400,
             BN800 = UnifyBN800,
             BN950= UnifyBN950,
+            NN300 = UnifyNN300,
+            NN200 = UnifyNN200,
             NN600 = UnifyNN600,
             NN900 = UnifyNN900,
             NN950 = UnifyNN950,
+            GN50 = UnifyGN50,
+            GN400 = UnifyGN400,
             GN500 = UnifyGN500
         )
     }
