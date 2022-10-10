@@ -36,7 +36,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.lifeCycleCommon
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
 
-
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
     implementation projectOrAar(rootProject.ext.libraries.usersession)
