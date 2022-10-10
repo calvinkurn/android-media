@@ -24,6 +24,7 @@ import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.BuyerOrderDetailUiStateMapper
+import com.tokopedia.buyerorderdetail.presentation.mapper.OrderInsuranceUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderResolutionTicketStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.OrderStatusUiStateMapper
 import com.tokopedia.buyerorderdetail.presentation.mapper.PGRecommendationWidgetUiStateMapper
@@ -36,6 +37,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.StringRes
 import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
@@ -120,11 +122,12 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val shipmentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapShipmentInfoUiState)
     private val pGRecommendationWidgetUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapPGRecommendationWidgetUiState)
     private val orderResolutionTicketStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapOrderResolutionTicketStatusUiState)
+    private val orderInsuranceUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapOrderInsuranceUiState)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
         shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState,
-        ::mapBuyerOrderDetailUiState
+        orderInsuranceUiState, ::mapBuyerOrderDetailUiState
     ).stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000L),
@@ -194,6 +197,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
+    private fun mapOrderInsuranceUiState(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+    ): OrderInsuranceUiState {
+        return OrderInsuranceUiStateMapper.mapGetBuyerOrderDetailDataRequestStateToOrderInsuranceUiState(
+            getBuyerOrderDetailDataRequestState
+        )
+    }
+
     private fun mapBuyerOrderDetailUiState(
         actionButtonsUiState: ActionButtonsUiState,
         orderStatusUiState: OrderStatusUiState,
@@ -201,7 +212,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
         productListUiState: ProductListUiState,
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState
+        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
+        orderInsuranceUiState: OrderInsuranceUiState
     ): BuyerOrderDetailUiState {
         return BuyerOrderDetailUiStateMapper.map(
             actionButtonsUiState,
@@ -211,6 +223,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
             shipmentInfoUiState,
             pgRecommendationWidgetUiState,
             orderResolutionTicketStatusUiState,
+            orderInsuranceUiState,
             buyerOrderDetailUiState.value
         )
     }

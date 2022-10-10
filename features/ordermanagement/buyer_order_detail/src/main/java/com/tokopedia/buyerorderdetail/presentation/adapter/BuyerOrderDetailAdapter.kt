@@ -9,6 +9,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.BaseVisitableUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
@@ -21,6 +22,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.ThinDashedDividerUiMode
 import com.tokopedia.buyerorderdetail.presentation.model.ThinDividerUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
+import com.tokopedia.buyerorderdetail.presentation.uistate.OrderInsuranceUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 
 @Suppress("UNCHECKED_CAST")
@@ -35,6 +37,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
             setupOrderStatusSection(context, uiState.orderStatusUiState.data)
             setupOrderResolutionSection(context, uiState.orderResolutionUiState)
             setupProductListSection(context, uiState.productListUiState.data)
+            setupOrderInsuranceSection(context, uiState.orderInsuranceUiState)
             setupShipmentInfoSection(context, uiState.shipmentInfoUiState.data)
             setupPaymentInfoSection(context, uiState.paymentInfoUiState.data)
             setUpPhysicalRecommendationSection(uiState.pgRecommendationWidgetUiState.data)
@@ -84,6 +87,18 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addProductListSection(context, productListUiModel.productList)
         addAddonsListSection(productListUiModel.addonsListUiModel)
     }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderInsuranceSection(
+        context: Context?, orderInsuranceUiState: OrderInsuranceUiState
+    ) {
+        if (orderInsuranceUiState is OrderInsuranceUiState.Showing) {
+            if (orderInsuranceUiState.data.shouldShow(context)) {
+                addThickDividerSection()
+                addOrderInsuranceSection(orderInsuranceUiState.data)
+            }
+        }
+    }
+
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupShipmentInfoSection(
         context: Context?,
@@ -198,6 +213,12 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         if (addonsListUiModel != null && addonsListUiModel.addonsItemList.isNotEmpty()) {
             add(addonsListUiModel)
         }
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addOrderInsuranceSection(
+        data: OrderInsuranceUiModel
+    ) {
+        add(data)
     }
 
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addCourierDriverInfoSection(

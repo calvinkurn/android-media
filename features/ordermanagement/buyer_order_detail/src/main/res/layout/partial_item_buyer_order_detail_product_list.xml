@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
     android:background="?android:attr/selectableItemBackground"
     android:clickable="true"
     android:focusable="true">
@@ -19,18 +20,19 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_buyer_order_detail_product_insurance_logo"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
-        android:layout_marginStart="10dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="6dp"
+        android:padding="4dp"
         app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductName"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailProductThumbnail"
-        app:layout_constraintTop_toTopOf="@id/ivBuyerOrderDetailProductThumbnail" />
+        app:layout_constraintTop_toTopOf="@id/ivBuyerOrderDetailProductThumbnail"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_buyer_order_detail_product_insurance_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@id/iv_buyer_order_detail_product_insurance_logo"
         app:layout_constraintEnd_toEndOf="parent"
@@ -52,8 +54,7 @@
         app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductPriceQuantity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailProductThumbnail"
-        app:layout_constraintTop_toBottomOf="@id/tv_buyer_order_detail_product_insurance_label"
-        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintTop_toBottomOf="@id/iv_buyer_order_detail_product_insurance_logo"
         app:typographyType="heading_6"
         tools:text="Jordan 1 Mid Royal (2020) - Original Hoops Malaysia" />
 

@@ -9,6 +9,7 @@ sealed interface BuyerOrderDetailUiState {
         val shipmentInfoUiState: ShipmentInfoUiState
         val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState
         val orderResolutionUiState: OrderResolutionTicketStatusUiState
+        val orderInsuranceUiState: OrderInsuranceUiState
     }
 
     object FullscreenLoading : BuyerOrderDetailUiState
@@ -19,7 +20,8 @@ sealed interface BuyerOrderDetailUiState {
         override val productListUiState: ProductListUiState,
         override val shipmentInfoUiState: ShipmentInfoUiState,
         override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        override val orderResolutionUiState: OrderResolutionTicketStatusUiState
+        override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
+        override val orderInsuranceUiState: OrderInsuranceUiState
     ) : HasData
 
     data class Showing(
@@ -29,7 +31,8 @@ sealed interface BuyerOrderDetailUiState {
         override val productListUiState: ProductListUiState.Showing,
         override val shipmentInfoUiState: ShipmentInfoUiState.Showing,
         override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.Showing,
-        override val orderResolutionUiState: OrderResolutionTicketStatusUiState
+        override val orderResolutionUiState: OrderResolutionTicketStatusUiState,
+        override val orderInsuranceUiState: OrderInsuranceUiState
     ) : HasData
 
     data class Error(val throwable: Throwable) : BuyerOrderDetailUiState

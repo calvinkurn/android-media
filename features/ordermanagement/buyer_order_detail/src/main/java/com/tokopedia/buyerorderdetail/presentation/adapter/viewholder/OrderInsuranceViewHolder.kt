@@ -5,14 +5,14 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailInsuranceBinding
-import com.tokopedia.buyerorderdetail.presentation.model.InsuranceUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderInsuranceViewHolder(
     itemView: View,
     private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<InsuranceUiModel>(itemView) {
+) : AbstractViewHolder<OrderInsuranceUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_insurance
@@ -20,7 +20,7 @@ class OrderInsuranceViewHolder(
 
     private val binding by viewBinding<ItemBuyerOrderDetailInsuranceBinding>()
 
-    override fun bind(element: InsuranceUiModel?) {
+    override fun bind(element: OrderInsuranceUiModel?) {
         if (element != null) {
             binding?.bindLogo(element.logoUrl)
             binding?.bindTitle(element.title)

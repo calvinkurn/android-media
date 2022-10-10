@@ -5,6 +5,8 @@ import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
@@ -86,10 +88,18 @@ object ProductListUiStateMapper {
     ): ProductListUiState {
         return when (p1DataRequestState) {
             is GetP1DataRequestState.Requesting -> {
-                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState, singleAtcRequestStates)
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    singleAtcRequestStates
+                )
             }
             is GetP1DataRequestState.Complete -> {
-                mapOnP1Complete(buyerOrderDetailRequestState, singleAtcRequestStates)
+                mapOnP1Complete(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState.getInsuranceDetailRequestState,
+                    singleAtcRequestStates
+                )
             }
         }
     }
@@ -104,16 +114,25 @@ object ProductListUiStateMapper {
                 mapOnLoading()
             }
             else -> {
-                mapOnDataReady(buyerOrderDetailRequestState.result, singleAtcRequestStates)
+                mapOnDataReady(
+                    buyerOrderDetailRequestState.result,
+                    p1DataRequestState.getInsuranceDetailRequestState,
+                    singleAtcRequestStates
+                )
             }
         }
     }
 
     private fun mapOnP1Complete(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        return mapOnDataReady(buyerOrderDetailRequestState.result, singleAtcRequestStates)
+        return mapOnDataReady(
+            buyerOrderDetailRequestState.result,
+            insuranceDetailRequestState,
+            singleAtcRequestStates
+        )
     }
 
     private fun mapOnLoading(): ProductListUiState {
@@ -122,8 +141,14 @@ object ProductListUiStateMapper {
 
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
+        insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
+        val insuranceDetailData = insuranceDetailRequestState.let {
+            if (it is GetInsuranceDetailRequestState.Success) {
+                it.result
+            } else null
+        }
         return ProductListUiState.Showing(
             mapProductListUiModel(
                 buyerOrderDetailData.details,
@@ -132,6 +157,7 @@ object ProductListUiStateMapper {
                 buyerOrderDetailData.addonInfo,
                 buyerOrderDetailData.orderId,
                 buyerOrderDetailData.orderStatus.id,
+                insuranceDetailData,
                 singleAtcRequestStates
             )
         )
@@ -150,10 +176,11 @@ object ProductListUiStateMapper {
         addonInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.AddonInfo?,
         orderId: String,
         orderStatusId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): ProductListUiModel {
         val productList = details?.let {
-            mapProductList(it, orderId, orderStatusId, singleAtcResultFlow)
+            mapProductList(it, orderId, orderStatusId, insuranceDetailData, singleAtcResultFlow)
         }.orEmpty()
         val productBundlingList = mapProductBundle(
             details?.bundles,
@@ -174,6 +201,7 @@ object ProductListUiStateMapper {
         details: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details,
         orderId: String,
         orderStatusId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): List<ProductListUiModel.ProductUiModel> {
         return details.nonBundles?.map {
@@ -183,6 +211,7 @@ object ProductListUiStateMapper {
                 it.addonSummary,
                 orderId,
                 orderStatusId,
+                insuranceDetailData,
                 singleAtcResultFlow
             )
         }.orEmpty()
@@ -255,6 +284,7 @@ object ProductListUiStateMapper {
         addonSummary: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.NonBundle.AddonSummary?,
         orderId: String,
         orderStatusId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
@@ -274,8 +304,28 @@ object ProductListUiStateMapper {
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
             isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
-            addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary)
+            addonsListUiModel = getAddonsSectionProductLevel(details, addonSummary),
+            insurance = mapInsurance(product.productId, insuranceDetailData)
         )
+    }
+
+    private fun mapInsurance(
+        productId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?
+    ): ProductListUiModel.ProductUiModel.Insurance? {
+        return insuranceDetailData?.protectionProduct?.protections?.let { protectionProducts ->
+            protectionProducts.find {
+                it?.productID == productId
+            }?.let { protectionProduct ->
+                val iconUrl = protectionProduct.protectionConfig?.icon?.label
+                val label = protectionProduct.protectionConfig?.wording?.id?.label
+                if (iconUrl.isNullOrBlank() || label.isNullOrBlank()) {
+                    null
+                } else {
+                    ProductListUiModel.ProductUiModel.Insurance(iconUrl, label)
+                }
+            }
+        }
     }
 
     private fun mapProductBundleItem(

@@ -89,7 +89,7 @@ data class GetInsuranceDetailResponse(
                         val orderDetailID: Int?,
                         @SerializedName("productID")
                         @Expose
-                        val productID: Int?,
+                        val productID: String?,
                         @SerializedName("protectionConfig")
                         @Expose
                         val protectionConfig: ProtectionConfig?,

@@ -30,7 +30,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDivide
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.InsuranceUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
@@ -181,7 +181,7 @@ open class BuyerOrderDetailTypeFactory(
         return OrderResolutionViewHolder.LAYOUT
     }
 
-    fun type(insuranceUiModel: InsuranceUiModel): Int {
+    fun type(orderInsuranceUiModel: OrderInsuranceUiModel): Int {
         return OrderInsuranceViewHolder.LAYOUT
     }
 }
