@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -33,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -43,12 +45,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import coil.annotation.ExperimentalCoilApi
+import coil.compose.rememberImagePainter
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
-import com.tokopedia.media.loader.loadImage
-import com.tokopedia.unifycomponents.ImageUnify
 
 data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
 
@@ -339,16 +340,15 @@ fun UnifyTypography(
     )
 }
 
+@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
-    AndroidView(
-        modifier = modifier,
-        factory = { context ->
-            ImageUnify(context)
-        },
-        update = {
-            it.loadImage(imageUrl)
-        }
+    val painter = rememberImagePainter(data = imageUrl)
+    Image(
+        painter = painter,
+        contentDescription = null,
+        contentScale = ContentScale.Crop,
+        modifier = modifier
     )
 }
 

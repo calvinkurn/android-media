@@ -15,6 +15,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.contentDescription
@@ -225,6 +226,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
             UnifyImage(
                 modifier = Modifier
                     .size(62.dp)
+                    .clip(RoundedCornerShape(8.dp))
                     .constrainAs(campaignImage) {
                         start.linkTo(parent.start, margin = 12.dp)
                         top.linkTo(campaignType.bottom, margin = 12.dp)
