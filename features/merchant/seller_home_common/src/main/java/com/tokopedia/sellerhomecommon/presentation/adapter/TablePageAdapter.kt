@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.sellerhomecommon.databinding.ShcItemTablePageBinding
@@ -14,6 +15,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TableItemDivider
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableColumnHtmlWithIconViewHolder
 
 /**
  * Created By @ilhamsuaib on 30/06/20
@@ -60,9 +62,10 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
 
     inner class TablePageViewHolder(
         private val binding: ShcItemTablePageBinding
-    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener {
+    ) : RecyclerView.ViewHolder(binding.root), TableColumnHtmlViewHolder.Listener,
+        TableColumnHtmlWithIconViewHolder.Listener {
 
-        private val tableAdapter = TableItemAdapter(this)
+        private val tableAdapter = TableItemAdapter(this, this)
         private var onHtmlClicked: (String, String) -> Unit = { _, _ -> }
 
         fun bind(
@@ -117,6 +120,10 @@ class TablePageAdapter : RecyclerView.Adapter<TablePageAdapter.TablePageViewHold
 
         override fun onHyperlinkClicked(url: String, text: String) {
             onHtmlClicked(url, text)
+        }
+
+        override fun onHyperlinkClicked(url: String) {
+            onHtmlClicked(url, String.EMPTY)
         }
     }
 }

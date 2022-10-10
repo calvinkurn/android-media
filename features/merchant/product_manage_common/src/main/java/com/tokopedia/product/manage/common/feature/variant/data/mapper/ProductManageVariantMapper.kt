@@ -115,7 +115,7 @@ object ProductManageVariantMapper {
                 it.status,
                 it.combination,
                 it.isPrimary,
-                it.price.toInt().orZero(),
+                it.price,
                 it.sku,
                 stock,
                 it.pictures

@@ -83,7 +83,7 @@ class TableColumnHtmlWithIconViewHolder(
                     onTouchListener = { spannable ->
                         SpannableTouchListener(spannable)
                     },
-                    onUrlClicked = { url ->
+                    onUrlClicked = { url, _ ->
                         listener.onHyperlinkClicked(url)
                         Uri.parse(url).let { uri ->
                             if (isAppLink(uri)) {

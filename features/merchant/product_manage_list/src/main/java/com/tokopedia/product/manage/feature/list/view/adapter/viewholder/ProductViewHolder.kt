@@ -49,6 +49,9 @@ class ProductViewHolder(
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)
+        } else {
+            binding?.imageStockReminder?.gone()
+            binding?.imageStockAlertActive?.gone()
         }
         showProductCheckBox(product)
         showProductTopAdsIcon(product)
@@ -210,7 +213,6 @@ class ProductViewHolder(
                         || binding?.imageStockAlertActive?.isVisible.orFalse()
                         || binding?.imageNotifyMeBuyer?.isVisible.orFalse()
             )
-
     }
 
     private fun showStockAlertActiveImage(product: ProductUiModel) {

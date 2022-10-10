@@ -24,6 +24,7 @@ class GetProductVariantUseCase @Inject constructor(
         private const val PARAM_WAREHOUSE_ID = "warehouseID"
         private const val PARAM_BUNDLE = "bundle"
         private const val PARAM_NOTIFY_ME = "notifyme"
+        private const val PARAM_STOCK_ALERT = "stockAlert"
 
         fun createRequestParams(productId: String,
                                 paramEdit: Boolean = true,
@@ -39,6 +40,7 @@ class GetProductVariantUseCase @Inject constructor(
                 putBoolean(PARAM_EVENT, true)
                 putBoolean(PARAM_BUNDLE, isBundling)
                 putBoolean(PARAM_NOTIFY_ME, true)
+                putBoolean(PARAM_STOCK_ALERT, true)
             }.parameters
 
             return RequestParams().apply {
