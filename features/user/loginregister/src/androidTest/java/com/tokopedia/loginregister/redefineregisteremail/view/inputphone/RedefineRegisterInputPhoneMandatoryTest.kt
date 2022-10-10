@@ -32,7 +32,9 @@ class RedefineRegisterInputPhoneMandatoryTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        RedefineRegisterEmailActivity::class.java, false, false
+        RedefineRegisterEmailActivity::class.java,
+        false,
+        false
     )
 
     private lateinit var bundleMandatory: Bundle
