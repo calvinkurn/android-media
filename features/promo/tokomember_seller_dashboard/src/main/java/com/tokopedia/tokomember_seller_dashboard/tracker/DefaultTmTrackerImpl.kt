@@ -2,6 +2,7 @@ package com.tokopedia.tokomember_seller_dashboard.tracker
 
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_CREATE_COUPON
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_DETAIL_PROGRAM
+import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EDIT_CARD
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EDIT_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_EXTEND_PROGRAM
 import com.tokopedia.tokomember_seller_dashboard.tracker.Tracker.Category.TM_DASHBOARD_HOME
@@ -727,6 +728,26 @@ open class DefaultTmTrackerImpl : TmTrackerImpl {
         map[Tracker.Constants.EVENT] = EVENT_VIEW_BGP_IRIS
         map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_MEMBER_LIST
         map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.VIEW_MEMBER_LIST
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickSpecificCoupon(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_HOME
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_SPECIFIC_COUPON
+        map[Tracker.Constants.EVENT_LABEL] = shopId
+        Tracker.fillCommonItems(map)
+        Tracker.getTracker().sendGeneralEvent(map)
+    }
+
+    override fun clickSimpanEditCard(shopId: String) {
+        val map = mutableMapOf<String, Any>()
+        map[Tracker.Constants.EVENT] = EVENT_CLICK_BGP_IRIS
+        map[Tracker.Constants.EVENT_CATEGORY] = TM_DASHBOARD_EDIT_CARD
+        map[Tracker.Constants.EVENT_ACTION] = Tracker.Action.CLICK_EDIT_CARD_SIMPAN
         map[Tracker.Constants.EVENT_LABEL] = shopId
         Tracker.fillCommonItems(map)
         Tracker.getTracker().sendGeneralEvent(map)

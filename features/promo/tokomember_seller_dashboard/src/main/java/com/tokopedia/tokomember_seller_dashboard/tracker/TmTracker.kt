@@ -247,4 +247,12 @@ class TmTracker {
     fun viewMemberList(shopId: String){
         trackerImpl.viewMemberList(shopId)
     }
+
+    fun clickEditCardSimpanCta(shopId: String){
+        trackerImpl.clickSimpanEditCard(shopId)
+    }
+
+    fun clickSpecificCoupon(shopId: String){
+        trackerImpl.clickSpecificCoupon(shopId)
+    }
 }

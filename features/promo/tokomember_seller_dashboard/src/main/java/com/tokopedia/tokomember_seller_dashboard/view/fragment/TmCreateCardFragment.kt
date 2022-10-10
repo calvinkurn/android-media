@@ -311,6 +311,7 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                         numberOfLevel = 2
                     )
                 )
+                tmTracker?.clickEditCardSimpanCta(shopID.toString())
             }
             else {
                 mTmCardModifyInput = TmCardModifyInput(
@@ -327,8 +328,8 @@ class TmCreateCardFragment : BaseDaggerFragment(), TokomemberCardColorAdapterLis
                         numberOfLevel = 2
                     )
                 )
+                tmTracker?.clickCardCreationButton(shopID.toString())
             }
-            tmTracker?.clickCardCreationButton(shopID.toString())
             proceedIntroLogic(mTmCardModifyInput)
         }
     }

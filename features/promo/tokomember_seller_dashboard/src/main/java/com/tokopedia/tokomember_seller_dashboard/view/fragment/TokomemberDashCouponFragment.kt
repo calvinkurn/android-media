@@ -102,7 +102,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private val tmCouponAdapter: TmCouponAdapter by lazy{
-        TmCouponAdapter(arrayListOf(), childFragmentManager, this,tmCouponDetailCallback)
+        TmCouponAdapter(arrayListOf(), childFragmentManager, this,tmCouponDetailCallback,tmTracker)
     }
 
     override fun onAttach(context: Context) {

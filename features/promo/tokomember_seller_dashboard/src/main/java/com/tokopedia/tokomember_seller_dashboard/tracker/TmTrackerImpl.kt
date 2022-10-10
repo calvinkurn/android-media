@@ -54,6 +54,7 @@ interface TmTrackerImpl {
     fun clickBackCouponList(shopId: String)
     fun clickCouponCancelPopUpPrimary(shopId: String)
     fun clickCouponCancelPopUpSecondary(shopId: String)
+    fun clickSpecificCoupon(shopId: String)
 
     fun clickProgramActiveThreeDot(shopId: String, programId: String)
 
@@ -101,5 +102,8 @@ interface TmTrackerImpl {
 
     //Member List
     fun viewMemberList(shopId: String)
+
+    //Edit Card
+    fun clickSimpanEditCard(shopId:String)
 
 }

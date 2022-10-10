@@ -38,6 +38,7 @@ object Tracker {
         const val TM_DASHBOARD_INTRO = "tokomember dashboard - introduction"
         const val TM_DASHBOARD_KUPON_DETAIL = "tokomember dashboard - detail kupon"
         const val TM_DASHBOARD_MEMBER_LIST = "tokomember dashboard - member list page"
+        const val TM_DASHBOARD_EDIT_CARD = "tokomember dashboard - ubah kartu"
     }
 
     object Action {
@@ -59,6 +60,9 @@ object Tracker {
         const val CLICK_CARD_CANCEL_SECONDARY = "popup_cancel_card_ - click batalkan kartu"
         const val CLICK_POPUP_CANCEL_PRIMARY = "popup_cancel_registration - click lanjut"
         const val CLICK_POPUP_CANCEL_SECONDARY = "popup_cancel_registration - click batalkan pengaturan"
+
+        //Edit Card
+        const val CLICK_EDIT_CARD_SIMPAN = "card_edit - click simpan"
 
         //Confusing tracker 12,13
 
@@ -127,6 +131,7 @@ object Tracker {
         const val CLICK_COUPON_ITEM_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
         const val CLICK_COUPON_ADD_QUOTA_BUTTON = "coupon_tab - click tambah kuota (kuota habis)"
         const val CLICK_ADD_QUOTA_CTA = "bottomsheet_add_coupon_quota - click simpan"
+        const val CLICK_SPECIFIC_COUPON = "coupon_tab - click specific coupon"
 
         //Coupon List + Single Coupon creation
         const val CLICK_COUPON_CANCEL_POP_UP_PRIMARY = "popup_cancel_coupon - click lanjut buat"

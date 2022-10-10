@@ -18,6 +18,7 @@ import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponDetailCallbac
 import com.tokopedia.tokomember_seller_dashboard.model.Actions
 import com.tokopedia.tokomember_seller_dashboard.model.TripleDotsItem
 import com.tokopedia.tokomember_seller_dashboard.model.VouchersItem
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_DELETED
 import com.tokopedia.tokomember_seller_dashboard.util.COUPON_ENDED
@@ -55,7 +56,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
     lateinit var btnAddQuota: UnifyButton
 
     @SuppressLint("ResourcePackage", "SetTextI18n")
-    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?) {
+    fun bind(item: VouchersItem, tmCouponActions: TmCouponActions,callback: TmCouponDetailCallback?,tmTracker:TmTracker?) {
 
         viewStatus = itemView.findViewById(R.id.view_status)
         tvCouponState = itemView.findViewById(R.id.tv_coupon_state)
@@ -355,6 +356,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
         }
 
         itemView.setOnClickListener {
+            tmTracker?.clickSpecificCoupon(item.shopId)
             callback?.openCouponDetailFragment(item.voucherId.toIntOrZero())
         }
     }
