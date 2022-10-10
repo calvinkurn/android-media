@@ -303,7 +303,7 @@ open class DynamicProductDetailFragment :
     companion object {
 
         private const val DEBOUNCE_CLICK = 750
-        private const val TOOLBAR_TRANSITION_START = 100
+        private const val TOOLBAR_TRANSITION_START = 10
         private const val TOOLBAR_TRANSITION_RANGES = 50
 
         fun newInstance(
@@ -2997,7 +2997,7 @@ open class DynamicProductDetailFragment :
 
     private fun initNavigationTab(data: ProductInfoP2UiData) {
         val items = data.navBar.items.map { item ->
-            NavigationTab.Item(item.title) {
+            NavigationTab.Item(item.title, item.componentName) {
                 adapter.getComponentPositionByName(item.componentName)
             }
         }
@@ -5333,6 +5333,10 @@ open class DynamicProductDetailFragment :
             ProductDetailNavigationTracker(0, label),
             trackingQueue
         )
+    }
+
+    override fun updateNavigationTabPosition() {
+        binding?.pdpNavigation?.updateItemPosition()
     }
 
     override fun getRemoteConfigInstance(): RemoteConfig? {
