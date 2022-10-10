@@ -45,9 +45,10 @@
                 tools:listitem="@layout/chatbot_item_quick_reply"
                 tools:visibility="visible" />
 
-            <include layout="@layout/compose_message_area"
+            <com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"
+                android:id="@+id/small_reply_box"/>
 
             <FrameLayout
                 android:id="@+id/rv_attachment_menu_container"

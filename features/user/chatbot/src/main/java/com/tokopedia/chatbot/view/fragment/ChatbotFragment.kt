@@ -5,17 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -109,7 +104,6 @@ import com.tokopedia.chatbot.util.GetUserNameForReplyBubble
 import com.tokopedia.chatbot.util.SmoothScroller
 import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.VideoUtil
-import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.ChatbotInternalRouter
 import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
@@ -132,6 +126,7 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButton
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
 import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
+import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -191,10 +186,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener,
     ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener {
 
-
-    override fun clearChatText() {
-        replyEditText.setText("")
-    }
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
@@ -211,9 +202,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     @Inject
     lateinit var chatbotAnalytics: dagger.Lazy<ChatbotAnalytics>
-
-    lateinit var replyEditText: EditText
-    lateinit var replyEditTextContainer: LinearLayout
 
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
@@ -235,9 +223,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private var isSendButtonActivated : Boolean = true
     private var isFloatingSendButton: Boolean = false
     private var isFloatingInvoiceCancelled : Boolean = false
-    private var textWatcher : TextWatcher? = null
+
     private var isConnectedToAgent : Boolean = false
     private var attachmentMenuRecyclerView : AttachmentMenuRecyclerView? = null
+    private var smallReplyBox: SmallReplyBox? = null
     private var replyBubbleContainer : ReplyBubbleAreaMessage? = null
     private var replyBubbleEnabled : Boolean = false
     private var senderNameForReply = ""
@@ -273,7 +262,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     override fun onClick(v: View?) {
-        reply_box.hide()
+        smallReplyBox?.hideReplyBox()
         val id = v?.id
         if (id == R.id.btn_inactive_1 || id == R.id.btn_inactive_2 || id == R.id.btn_inactive_3
                 || id == R.id.btn_inactive_4 || id == R.id.btn_inactive_5) {
@@ -353,10 +342,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
         val view = inflater.inflate(R.layout.fragment_chatbot, container, false)
-        replyEditText = view.findViewById(R.id.new_comment)
-        replyEditTextContainer = view.findViewById(R.id.new_comment_container)
-        replyBubbleContainer = view.findViewById(R.id.reply_bubble_container)
-        bindReplyTextBackground()
+        smallReplyBox = view.findViewById(R.id.small_reply_box)
+        smallReplyBox?.bindCommentTextBackground()
+
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
         dateIndicatorContainer = view.findViewById(R.id.dateIndicatorContainer)
@@ -445,34 +433,13 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
                 )
 
                 if (isFloatingSendButton) {
-                    textWatcher = getTextWatcherForMessage()
-                    replyEditText.addTextChangedListener(textWatcher)
+                    smallReplyBox?.addTextChangedListener()
                 }
                 floatingInvoice.show()
             }
             isArticleDataSent(true)
         }
 
-    }
-
-    private fun getTextWatcherForMessage() : TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (replyEditText.text.toString().isNotEmpty()) {
-                    enableSendButton()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-                if (replyEditText.text.toString().isEmpty()) {
-                    disableSendButton()
-                }
-            }
-        }
     }
 
     private fun isArticleDataSent(dataSentState: Boolean) {
@@ -482,7 +449,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun onSendFloatingInvoiceClicked() {
 
         floatingInvoice.hide()
-        replyEditText.removeTextChangedListener(textWatcher)
+        smallReplyBox?.removeTextChangedListener()
 
         if(!isFloatingInvoiceCancelled) {
 
@@ -500,7 +467,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         }
 
         val startTime = SendableUiModel.generateStartTime()
-        val msg = replyEditText.text.toString()
+        val msg = smallReplyBox?.getMessage() ?: ""
         val quickReplyViewModel = QuickReplyViewModel(msg, msg, msg)
 
         presenter.sendQuickReplyInvoice(
@@ -511,37 +478,12 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
             hashMap.get(EVENT).toString(),
             hashMap.get(USED_BY).toString()
         )
-        emptyReplyEditText()
+        smallReplyBox?.clearChatText()
         isFloatingSendButton = false
-    }
-
-    private fun emptyReplyEditText(){
-        replyEditText.setText("")
     }
 
     private fun setChatBackground() {
         activity?.window?.setBackgroundDrawable(context?.let { ContextCompat.getDrawable(it, R.drawable.layered_chatbot_background) })
-    }
-
-    private fun bindReplyTextBackground() {
-        val replyEditTextBg = ViewUtil.generateBackgroundWithShadow(
-                replyEditTextContainer,
-                R.color.chatbot_dms_left_message_bg,
-                R.dimen.dp_chatbot_20,
-                R.dimen.dp_chatbot_20,
-                R.dimen.dp_chatbot_20,
-                R.dimen.dp_chatbot_20,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_20,
-                R.dimen.dp_chatbot_2,
-                R.dimen.dp_chatbot_1,
-                Gravity.CENTER
-        )
-        val paddingStart = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)?.toInt() ?: 16
-        val paddingEnd = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8)?.toInt() ?: 48
-        val paddingTop = context?.resources?.getDimension(R.dimen.dp_chatbot_11)?.toInt() ?: 11
-        val paddingBottom = context?.resources?.getDimension(R.dimen.dp_chatbot_10)?.toInt() ?: 10
-        replyEditTextContainer.background = replyEditTextBg
-        replyEditTextContainer.setPadding(paddingStart, paddingTop, paddingEnd, paddingBottom)
     }
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
@@ -1157,7 +1099,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onSendButtonClicked() {
         chatbotAnalytics.get().eventClick(ACTION_REPLY_BUTTON_CLICKED)
-        val sendMessage = replyEditText.text.toString()
+        val sendMessage = smallReplyBox?.getMessage() ?: ""
         val startTime = SendableUiModel.generateStartTime()
 
         presenter.sendMessage(
@@ -1171,7 +1113,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
         replyBubbleOnBoarding.dismiss()
         visibilityReplyBubble(false)
-        clearChatText()
+        smallReplyBox?.clearChatText()
     }
 
 
@@ -1276,6 +1218,10 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         view?.let {
             Toaster.make(it, getString(stringId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
+    }
+
+    override fun clearChatText() {
+        smallReplyBox?.clearChatText()
     }
 
     /**
@@ -1837,18 +1783,16 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun disableSendButton() {
         isSendButtonActivated = false
-        sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
     }
 
     override fun enableSendButton() {
         isSendButtonActivated = true
-        sendButton.setImageResource(R.drawable.ic_chatbot_send)
     }
 
     override fun isInvoiceRemoved(isRemoved: Boolean) {
         isFloatingInvoiceCancelled = isRemoved
-        if (textWatcher != null)
-            replyEditText.removeTextChangedListener(textWatcher)
+
+        smallReplyBox?.removeTextChangedListener()
     }
 }
 
