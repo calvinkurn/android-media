@@ -600,14 +600,13 @@ object DynamicProductDetailMapper {
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
             productImageUrl = product.data.getProductImageUrl() ?: "",
-            productPrice = product.data.price.value.toInt(),
+            productPrice = product.data.price.value.toLong(),
             productRating = product.basic.stats.rating,
             productTitle = MethodChecker.fromHtml(product.getProductName).toString()
         )
     }
 
     private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
-
 
     private fun mapBebasOngkirType(type: Int): String {
         return when (type) {
@@ -616,8 +615,6 @@ object DynamicProductDetailMapper {
             else -> BoTypeImageGeneratorParam.NONE.value
         }
     }
-
-
 
     fun removeUnusedComponent(
         productInfo: DynamicProductInfoP1?,
