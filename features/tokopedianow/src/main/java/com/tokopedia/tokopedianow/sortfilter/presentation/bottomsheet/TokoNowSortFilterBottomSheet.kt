@@ -11,6 +11,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
@@ -51,6 +52,7 @@ class TokoNowSortFilterBottomSheet(
     var sortValue: Int = FREQUENTLY_BOUGHT
     var sortFilterItems: List<Visitable<*>> = listOf()
     var sectionHeaderListener: SectionHeaderListener? = null
+    var buttonText: String = ""
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSortFilterBinding>()
 
@@ -152,6 +154,7 @@ class TokoNowSortFilterBottomSheet(
         binding = BottomsheetTokopedianowSortFilterBinding.inflate(LayoutInflater.from(context))
         rvSort = binding?.rvSortFilter
         btnApplyFilter = binding?.btnApplyFilter
+        binding?.btnApplyFilter?.text = buttonText.ifBlank { getString(R.string.tokopedianow_sort_filter_bottomsheet) }
         setChild(binding?.root)
     }
 

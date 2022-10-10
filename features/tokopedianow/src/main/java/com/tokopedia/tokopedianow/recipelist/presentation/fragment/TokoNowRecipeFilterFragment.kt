@@ -110,6 +110,7 @@ class TokoNowRecipeFilterFragment : Fragment(), TokoNowSortFilterBottomSheet.Tok
         bottomSheet?.setTitle(getString(R.string.tokopedianow_filter))
         bottomSheet?.sortFilterItems = listOf(LoadingMoreModel())
         bottomSheet?.sectionHeaderListener = sectionHeaderListener()
+        bottomSheet?.buttonText = getString(R.string.tokopedianow_recipe_apply_filter_button_text)
     }
 
     private fun showBottomSheet() {
