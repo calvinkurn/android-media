@@ -317,7 +317,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         app:layout_constraintTop_toBottomOf="@id/label_selected_whitelabel_shipping"
-                        app:layout_constraintStart_toStartOf="@id/label_selected_whitelabel_shipping"
+                        app:layout_constraintStart_toStartOf="parent"
                         android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
@@ -328,27 +328,26 @@
                         android:id="@+id/label_whitelabel_description"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/label_whitelabel_shipping_eta"
-                        app:layout_constraintStart_toStartOf="@id/label_selected_whitelabel_shipping"
+                        app:layout_constraintTop_toBottomOf="@+id/label_whitelabel_shipping_eta"
+                        app:layout_constraintStart_toStartOf="parent"
                         android:textColor="@color/Unify_N700_96"
                         app:typographyType="small"
                         app:typographyWeight="reguler"
                         tools:text="Kurir otomatis dipilih Tokopedia"
-                        tools:visibility="visible" />
+                        tools:visibility="gone" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_whitelabel_otd_tnc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/dp_3"
-                        android:text="@string/label_otdg_tnc"
+                        android:text="@string/label_otdg_whitelabel"
                         android:textColor="@color/Unify_G500"
                         app:layout_constraintBaseline_toBaselineOf="@+id/label_whitelabel_description"
                         app:layout_constraintStart_toEndOf="@+id/label_whitelabel_description"
-                        app:layout_constraintTop_toTopOf="@id/label_whitelabel_description"
+                        app:layout_constraintTop_toBottomOf="@+id/label_whitelabel_shipping_eta"
                         app:typographyType="small"
                         app:typographyWeight="reguler"
-                        tools:text="S&amp;K Berlaku" />
+                        tools:text="Jaminan Tepat Waktu" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

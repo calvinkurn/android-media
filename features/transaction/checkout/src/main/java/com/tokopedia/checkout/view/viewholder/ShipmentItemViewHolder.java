@@ -1075,14 +1075,13 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelWhitelabelEtaText.setVisibility(View.GONE);
         }
 
-        // todo add field here for `kurir dipilih langsung tokopedia`
-        String shippingDescription = "";
+        String shippingDescription = selectedCourierItemData.getWhitelabelDescription();
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
-        
+
         // On time delivery guarantee
         if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
             if (!shippingDescription.isEmpty()) {
-                shippingDescription = shippingDescription + "& ";
+                shippingDescription = shippingDescription + " & ";
             }
             labelWhitelabelOtdTnc.setOnClickListener(view -> {
                 mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
