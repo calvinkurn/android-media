@@ -82,7 +82,7 @@ class PlayPreference @Inject constructor(
         return currentTime - getLastVisit(userId)
     }
 
-    fun setCoachMark(userId: String) { // first channel event
+    fun setCoachMark(userId: String, isFirstChannel: Boolean = false) {
         val newUserId = if(userId.isEmpty()) "0" else userId
         when (variant) {
             SWIPE_LIVE_ROOM_VARIANT -> {
@@ -92,7 +92,7 @@ class PlayPreference @Inject constructor(
                         .apply()
                 }
             }
-            else -> sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), true).apply()
+            else -> sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), isFirstChannel).apply()
         }
     }
 
