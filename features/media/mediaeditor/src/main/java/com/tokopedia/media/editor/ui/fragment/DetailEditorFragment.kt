@@ -860,7 +860,7 @@ class DetailEditorFragment @Inject constructor(
         private const val DEFAULT_VALUE_CONTRAST = 0f
         private const val DEFAULT_VALUE_BRIGHTNESS = 0f
 
-        private const val DELAY_EXECUTION_PREVIOUS_CROP = 300L
-        private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 300L
+        private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
+        private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
     }
 }
