@@ -1077,22 +1077,26 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         // todo add field here for `kurir dipilih langsung tokopedia`
         String shippingDescription = "";
-        if (!shippingDescription.isEmpty()) {
-            labelWhitelabelDescription.setText(shippingDescription);
-            labelWhitelabelDescription.setVisibility(View.VISIBLE);
-        } else {
-            labelWhitelabelDescription.setVisibility(View.GONE);
-        }
-
-        // On time delivery guarantee
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
+        
+        // On time delivery guarantee
         if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
+            if (!shippingDescription.isEmpty()) {
+                shippingDescription = shippingDescription + "& ";
+            }
             labelWhitelabelOtdTnc.setOnClickListener(view -> {
                 mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
             });
             labelWhitelabelOtdTnc.setVisibility(View.VISIBLE);
         } else {
             labelWhitelabelOtdTnc.setVisibility(View.GONE);
+        }
+
+        if (!shippingDescription.isEmpty()) {
+            labelWhitelabelDescription.setText(shippingDescription);
+            labelWhitelabelDescription.setVisibility(View.VISIBLE);
+        } else {
+            labelWhitelabelDescription.setVisibility(View.GONE);
         }
     }
 
