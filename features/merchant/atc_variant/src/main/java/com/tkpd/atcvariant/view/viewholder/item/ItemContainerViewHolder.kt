@@ -25,6 +25,10 @@ import java.util.Locale
  */
 class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) : RecyclerView.ViewHolder(view), AtcVariantListener by listener {
 
+    companion object {
+        private const val NUMBER_OF_VARIANT_THRESHOLD = 25
+    }
+
     private val variantOptionAdapter = AtcVariantOptionAdapter(this)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
 
@@ -75,7 +79,7 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
             alignItems = AlignItems.FLEX_START
         }
 
-        if (dataSize > 25) {
+        if (dataSize > NUMBER_OF_VARIANT_THRESHOLD) {
             flexboxManager.flexDirection = FlexDirection.COLUMN
         } else {
             flexboxManager.flexDirection = FlexDirection.ROW
