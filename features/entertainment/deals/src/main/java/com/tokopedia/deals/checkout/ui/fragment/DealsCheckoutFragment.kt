@@ -20,6 +20,7 @@ import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -43,6 +44,9 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
     private var tgBrandName: Typography? = null
     private var tgTitle: Typography? = null
     private var tgExpiredDate: Typography? = null
+    private var tgNumbersLocation: Typography? = null
+    private var tgAllLocation: Typography? = null
+    private var etEmail: TextFieldUnify? = null
 
     override fun getScreenName(): String = ""
 
@@ -80,6 +84,9 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
             tgBrandName = binding?.tgBrandName
             tgTitle = binding?.tgDealDetails
             tgExpiredDate = binding?.tgExpiryDate
+            tgNumbersLocation = binding?.tgNoLocations
+            tgAllLocation = binding?.tgAvailableLocations
+            etEmail = binding?.etEmail
         }
     }
 
@@ -90,11 +97,29 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
             tgTitle?.text = it.displayName
             tgExpiredDate?.text = String.format(
                 getString(
-                    R.string.deals_pdp_valid_through,
+                    com.tokopedia.deals.R.string.deals_pdp_valid_through,
                     DealsUtils.convertEpochToString(it.saleEndDate.toIntSafely()
                     )
                 )
             )
+
+            if (it.outlets.isNullOrEmpty()) {
+                tgAllLocation?.text = getString(
+                    com.tokopedia.deals.R.string.deals_checkout_all_indonesia
+                )
+            }
+
+            if (!it.outlets.isNullOrEmpty()) {
+                tgNumbersLocation?.text = String.format(
+                    getString(
+                        com.tokopedia.deals.R.string.deals_checkout_number_of_locations,
+                            it.outlets.size
+                    )
+                )
+            }
+
+            etEmail?.textFieldInput?.setText(userSession.email)
+            etEmail?.textFieldInput?.setKeyListener(null)
         }
     }
 

@@ -55,7 +55,7 @@
                     android:maxLines="3"
                     app:typographyType="display_1"
                     app:typographyWeight="bold"
-                    android:textColor="@color/Unify_N700_96"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintLeft_toRightOf="@+id/card_view_brand"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/card_view_brand"
@@ -66,8 +66,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
-                    app:typographyType="small"
-                    android:textColor="@color/Unify_N700_32"
+                    app:typographyType="display_3"
+                    app:typographyWeight="reguler"
+                    android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="@+id/card_view_brand"
                     app:layout_constraintLeft_toLeftOf="@+id/tg_deal_details"
                     tools:text="Bakerzin" />
@@ -96,6 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    app:typographyType="display_2"
+                    app:typographyWeight="reguler"
                     android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_clock"
                     app:layout_constraintLeft_toRightOf="@+id/iv_clock"
@@ -114,11 +117,13 @@
                     app:srcCompat="@drawable/ic_location_checkout" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_available_locations"
+                    android:id="@+id/tg_available_locations"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:text="@string/deals_checkout_available_locations"
+                    app:typographyType="display_2"
+                    app:typographyWeight="reguler"
                     android:textColor="@color/Unify_N700_68"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_map"
                     app:layout_constraintLeft_toRightOf="@+id/iv_map"
@@ -126,15 +131,16 @@
                     app:layout_constraintVertical_bias="0.5" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_no_locations"
+                    android:id="@+id/tg_no_locations"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:layout_constraintBottom_toBottomOf="@+id/iv_map"
-                    app:layout_constraintLeft_toRightOf="@+id/tv_available_locations"
+                    app:layout_constraintLeft_toRightOf="@+id/tg_available_locations"
                     app:layout_constraintTop_toTopOf="@+id/iv_map"
                     app:layout_constraintVertical_bias="0.5"
                     android:textColor="@color/Unify_G500_96"
-                    app:typographyType="small"
+                    app:typographyType="display_2"
+                    app:typographyWeight="reguler"
                     tools:text="25 Lokasi" />
 
                 <View
@@ -154,13 +160,14 @@
                     app:layout_constraintTop_toBottomOf="@+id/divider2">
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv1"
+                        android:id="@+id/tg_title_delivery"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
                         android:text="@string/deals_checkout_voucher_delivery_destination"
-                        android:textColor="@color/Unify_N700_96"
-                        app:typographyType="display_2"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyWeight="bold"
+                        app:typographyType="display_1"
                         app:layout_constraintLeft_toLeftOf="parent"
                         app:layout_constraintTop_toTopOf="parent"/>
 
@@ -173,26 +180,26 @@
                         android:layout_marginRight="16dp"
                         android:layout_marginBottom="16dp"
                         app:descriptionText="@string/deals_checkout_ticker_desc"
-                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
-                        app:layout_constraintTop_toBottomOf="@+id/tv1"
+                        app:layout_constraintLeft_toLeftOf="@+id/tg_title_delivery"
+                        app:layout_constraintTop_toBottomOf="@+id/tg_title_delivery"
                         app:closeButtonVisibility="gone"
                         app:tickerShapeType="loose"
                         app:tickerType="announcement" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv2"
+                        android:id="@+id/tg_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv1"
+                        android:layout_below="@id/tg_title_delivery"
                         android:layout_marginTop="16dp"
                         android:text="@string/deals_checkout_email"
                         android:textColor="@color/Unify_N500"
                         app:typographyType="small"
-                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
+                        app:layout_constraintLeft_toLeftOf="@+id/tg_title_delivery"
                         app:layout_constraintTop_toBottomOf="@+id/ticker_info" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
-                        android:id="@+id/tv_email"
+                        android:id="@+id/et_email"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
@@ -203,25 +210,25 @@
                         android:maxLines="1"
                         android:textColorHint="@color/Unify_N100"
                         android:textColor="@color/Unify_N700_68"
-                        app:layout_constraintLeft_toLeftOf="@+id/tv2"
+                        app:layout_constraintLeft_toLeftOf="@+id/tg_email"
                         app:layout_constraintRight_toRightOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/tv2" />
+                        app:layout_constraintTop_toBottomOf="@+id/tg_email" />
 
                     <com.tokopedia.unifyprinciples.Typography
-                        android:id="@+id/tv3"
+                        android:id="@+id/tg_phone"
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@id/tv1"
+                        android:layout_below="@id/tg_title_delivery"
                         android:layout_marginTop="16dp"
                         android:text="@string/deals_checkout_phone_number"
                         app:typographyType="small"
                         android:textColor="@color/Unify_N500"
-                        app:layout_constraintLeft_toLeftOf="@+id/tv1"
-                        app:layout_constraintTop_toBottomOf="@+id/tv_email" />
+                        app:layout_constraintLeft_toLeftOf="@+id/tg_title_delivery"
+                        app:layout_constraintTop_toBottomOf="@+id/et_email" />
 
                     <com.tokopedia.unifycomponents.TextFieldUnify
-                        android:id="@+id/tv_phone"
+                        android:id="@+id/et_phone"
                         android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -232,8 +239,8 @@
                         android:focusableInTouchMode="false"
                         android:maxLines="1"
                         android:textColorHint="@color/Unify_N100"
-                        app:layout_constraintLeft_toLeftOf="@+id/tv3"
-                        app:layout_constraintTop_toBottomOf="@+id/tv3" />
+                        app:layout_constraintLeft_toLeftOf="@+id/tg_phone"
+                        app:layout_constraintTop_toBottomOf="@+id/tg_phone" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

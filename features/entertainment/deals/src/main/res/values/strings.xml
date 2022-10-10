@@ -109,4 +109,6 @@
     <string name="deals_checkout_text_service_fees">Biaya Layanan</string>
     <string name="deals_checkout_total_amount">Total Pembayaran</string>
     <string name="deals_checkout_payment_option">Pilih Metode Pembayaran</string>
+    <string name="deals_checkout_number_of_locations">%d Lokasi</string>
+    <string name="deals_checkout_all_indonesia">Seluruh Indonesia</string>
 </resources>
