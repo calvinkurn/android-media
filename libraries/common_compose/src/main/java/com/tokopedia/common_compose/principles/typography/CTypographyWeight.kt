@@ -5,7 +5,7 @@ package com.tokopedia.common_compose.principles.typography
  * Project name: android-tokopedia-core
  **/
 
-enum class TextUnifyWeight(val value: Int) {
+enum class CTypographyWeight(val value: Int) {
     Regular(value = 1),
     Bold(value = 2)
 }

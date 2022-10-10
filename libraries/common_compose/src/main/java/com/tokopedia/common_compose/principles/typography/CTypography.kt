@@ -1,10 +1,5 @@
 package com.tokopedia.common_compose.principles.typography
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.Divider
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -14,7 +9,6 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 
 /**
  * Created by yovi.putra on 28/09/22"
@@ -25,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
  * Typography Compose Version
  * This class is Typography especially compose with Unify [Typography] behaviour
  * @param text the text value with String Type
- * @param type the FontType refer to [TextUnifyType]
- * @param weight the FontWeight refer to [TextUnifyWeight]
+ * @param type the FontType refer to [CTypographyType]
+ * @param weight the FontWeight refer to [CTypographyWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -40,15 +34,15 @@ import androidx.compose.ui.tooling.preview.Preview
 fun CTypography(
     modifier: Modifier = Modifier,
     text: String,
-    type: TextUnifyType,
-    weight: TextUnifyWeight = TextUnifyWeight.Regular,
+    type: CTypographyType,
+    weight: CTypographyWeight = CTypographyWeight.Regular,
     textStyle: TextStyle = TextStyle(
         fontFamily = fontOpenSourceOneRegular,
         color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN950)
     ),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    isFontTypeOpenSauceOne: Boolean = TextConfig.isFontTypeOpenSauceOne,
+    isFontTypeOpenSauceOne: Boolean = TypographyFontConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 
@@ -86,8 +80,8 @@ fun CTypography(
  * Typography Compose Version
  * This class is Typography especially compose with Unify [Typography] behaviour
  * @param text the text value with AnnotationString Type
- * @param type the FontType refer to [TextUnifyType]
- * @param weight the FontWeight refer to [TextUnifyWeight]
+ * @param type the FontType refer to [CTypographyType]
+ * @param weight the FontWeight refer to [CTypographyWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -101,12 +95,12 @@ fun CTypography(
 fun CTypography(
     modifier: Modifier = Modifier,
     text: AnnotatedString,
-    type: TextUnifyType,
-    weight: TextUnifyWeight = TextUnifyWeight.Regular,
+    type: CTypographyType,
+    weight: CTypographyWeight = CTypographyWeight.Regular,
     textStyle: TextStyle = LocalTextStyle.current,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    isFontTypeOpenSauceOne: Boolean = TextConfig.isFontTypeOpenSauceOne,
+    isFontTypeOpenSauceOne: Boolean = TypographyFontConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 
@@ -138,72 +132,4 @@ fun CTypography(
         overflow = overflow,
         onTextLayout = onTextLayout
     )
-}
-
-@Preview
-@Composable
-fun CTypographyRegularPreview() {
-    LazyColumn(modifier = Modifier
-        .background(colorResource(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-    ) {
-        item {
-            CTypography(
-                text = "Regular",
-                type = TextUnifyType.Heading1,
-                isFontTypeOpenSauceOne = false
-            )
-        }
-        items(TextUnifyType.values()) {
-            Column {
-                CTypography(
-                    text = it.name,
-                    type = it,
-                    isFontTypeOpenSauceOne = false
-                )
-
-                CTypography(
-                    text = it.name,
-                    type = it,
-                    isFontTypeOpenSauceOne = true
-                )
-            }
-
-            Divider()
-        }
-    }
-}
-
-@Preview
-@Composable
-fun CTypographyBoldPreview() {
-    LazyColumn(modifier = Modifier
-        .background(colorResource(com.tokopedia.unifyprinciples.R.color.Unify_Background))
-    ) {
-        item {
-            CTypography(
-                text = "Bold",
-                type = TextUnifyType.Heading1,
-                isFontTypeOpenSauceOne = false
-            )
-        }
-        items(TextUnifyType.values()) {
-            Column {
-                CTypography(
-                    text = it.name,
-                    type = it,
-                    weight = TextUnifyWeight.Bold,
-                    isFontTypeOpenSauceOne = false
-                )
-
-                CTypography(
-                    text = it.name,
-                    type = it,
-                    weight = TextUnifyWeight.Bold,
-                    isFontTypeOpenSauceOne = true
-                )
-            }
-
-            Divider()
-        }
-    }
 }

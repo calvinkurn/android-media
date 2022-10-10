@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
  * Project name: android-tokopedia-core
  **/
 
-enum class TextUnifyType(
+enum class CTypographyType(
     open val fontSize: TextUnit,
     open val openSourceSize: TextUnit,
 ) {

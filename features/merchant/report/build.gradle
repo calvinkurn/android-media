@@ -54,7 +54,6 @@ dependencies {
 
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
-    implementation rootProject.ext.commonCompose.principles
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
 
