@@ -97,6 +97,8 @@ import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.databinding.FragmentChatbotBinding
+import com.tokopedia.chatbot.databinding.ReplyBubbleBottomSheetLayoutBinding
 import com.tokopedia.chatbot.di.ChatbotModule
 import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -159,11 +161,7 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerAdapter
 import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
-import kotlinx.android.synthetic.main.compose_message_area.*
-import kotlinx.android.synthetic.main.fragment_chatbot.*
 import java.io.File
-import java.util.*
 import javax.inject.Inject
 
 /**
