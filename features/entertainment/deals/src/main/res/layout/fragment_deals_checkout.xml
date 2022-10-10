@@ -46,7 +46,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_deal_details"
+                    android:id="@+id/tg_deal_details"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
@@ -62,14 +62,14 @@
                     tools:text="5 Persons Package (Include 3 Small Pizza's, 1 pasta, 1 Garlic Bread, Drinks)" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_brand_name"
+                    android:id="@+id/tg_brand_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
                     app:typographyType="small"
                     android:textColor="@color/Unify_N700_32"
                     app:layout_constraintBottom_toBottomOf="@+id/card_view_brand"
-                    app:layout_constraintLeft_toLeftOf="@+id/tv_deal_details"
+                    app:layout_constraintLeft_toLeftOf="@+id/tg_deal_details"
                     tools:text="Bakerzin" />
 
                 <View
@@ -92,7 +92,7 @@
                     app:srcCompat="@drawable/ic_promo_valid_clock" />
 
                 <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_expiry_date"
+                    android:id="@+id/tg_expiry_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
