@@ -261,6 +261,10 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     @SuppressLint("SetTextI18n")
     private fun renderNormalShippingWithoutChooseCourierCard(shipping: OrderShipment) {
         binding.apply {
+            // todo need to adjust format wording in instan
+            // instan (durasi)
+            // price
+            // description
             tvShippingCourier.text = root.context.getString(
                 R.string.lbl_shipping_with_name_and_price,
                 "${shipping.serviceName}",
@@ -272,13 +276,21 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
             tvShippingCourier.setWeight(Typography.BOLD)
             tvShippingDuration.gone()
             btnChangeDuration.gone()
-            tvShippingCourierNotes.gone()
             tvShippingPrice.gone()
             if (shipping.serviceEta != null) {
                 tvShippingCourierEta.text = shipping.serviceEta
                 tvShippingCourierEta.visible()
             } else {
                 tvShippingCourierEta.gone()
+            }
+            // todo field kurir otomatis dipilih tokopedia
+            val description = "Kurir Otomatis dipilih Tokopedia"
+            if (description.isNotEmpty()) {
+                tvShippingCourierNotes.text = description
+                tvShippingCourierNotes.weightType = Typography.DISPLAY_3
+                tvShippingCourierNotes.visible()
+            } else {
+                tvShippingCourierNotes.gone()
             }
             setMultiViewsOnClickListener(
                 tvShippingCourier,
