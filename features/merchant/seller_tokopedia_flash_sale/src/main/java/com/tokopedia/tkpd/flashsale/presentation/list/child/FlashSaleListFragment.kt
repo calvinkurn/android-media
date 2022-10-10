@@ -74,7 +74,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         private const val PAGE_SIZE = 10
         private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val OLD_CAMPAIGN_FLASH_SALE_URL = "https://seller.tokopedia.com/manage-campaign/flash-sale/"
-
+        private const val QUOTA_USAGE_FULL = 100
 
         @JvmStatic
         fun newInstance(tabId: Int, tabName: String): FlashSaleListFragment {
@@ -90,6 +90,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private val tabId by lazy { arguments?.getInt(BUNDLE_KEY_TAB_ID).orZero() }
     private val tabName by lazy { arguments?.getString(BUNDLE_KEY_TAB_NAME).orEmpty() }
+    private val now = Date()
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
@@ -535,7 +536,8 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
             navigateToFlashSaleDetailPage(selectedFlashSaleId)
 
-            tracker.sendRegisterFlashSaleEvent(selectedFlashSaleId, tabName)
+            handleUpcomingFlashSaleTracker(selectedItem, tabName)
+
         }
     }
 
@@ -603,6 +605,12 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
             FlashSaleStatus.ON_SELECTION_PROCESS -> tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSaleId, tabName)
             FlashSaleStatus.SELECTION_FINISHED ->  tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSaleId, tabName)
             else -> {}
+        }
+    }
+
+    private fun handleUpcomingFlashSaleTracker(selectedFlashSale: UpcomingFlashSaleItem, tabName: String) {
+        if (selectedFlashSale.quotaUsagePercentage < QUOTA_USAGE_FULL && now.before(selectedFlashSale.submissionEndDate)) {
+            tracker.sendRegisterFlashSaleEvent(selectedFlashSale.id, tabName)
         }
     }
 }
