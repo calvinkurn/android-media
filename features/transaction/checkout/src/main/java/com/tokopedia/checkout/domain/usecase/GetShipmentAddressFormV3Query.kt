@@ -111,6 +111,10 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   errors_unblocking
                   shipping_id
                   sp_id
+                  scheduled_delivery {
+                    timeslot_id
+                    scheduled_dates
+                  }
                   bo_code
                   is_insurance
                   is_fulfillment_service

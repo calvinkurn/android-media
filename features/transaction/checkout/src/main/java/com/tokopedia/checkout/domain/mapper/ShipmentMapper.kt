@@ -212,6 +212,8 @@ class ShipmentMapper @Inject constructor() {
                         autoCourierSelection = it.autoCourierSelection
                         boMetadata = it.boMetadata
                         courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
+                        scheduleDate = it.scheduledDates
+                        timeslotId = it.timeslotId
                     }
             )
         }
