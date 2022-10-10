@@ -41,7 +41,7 @@ object NotificationHelper {
             .setContentText(contentText)
             .setAutoCancel(true)
             .setShowWhen(true)
-            .setSmallIcon(R.drawable.fake_ic_search)
+            .setSmallIcon(R.drawable.ic_fake_notif)
             .setPriority(NotificationCompat.PRIORITY_LOW)
         notificationManager.notify(NOTIF_ID_FAKERESPONSE_DEBUGGER, builder.build())
     }
