@@ -77,7 +77,6 @@ import com.tokopedia.unit.test.ext.verifySuccessEquals
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -1701,67 +1700,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     /**
-     * Add/Remove Wishlist
-     */
-    @Test
-    fun onSuccessAddWishlist() {
-        val productId = "123"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorAddWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (addWishListUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList(errorMessage, productId)
-        }
-
-        viewModel.addWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    @Test
-    fun onSuccessRemoveWishlist() {
-        val productId = "123"
-        every { (removeWishlistUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessRemoveWishlist(productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, productId)
-        })
-    }
-
-    @Test
-    fun onErrorRemoveWishlist() {
-        val productId = ""
-        val errorMessage = ""
-        every {
-            (removeWishlistUseCase.createObservable(any(), any(), any()))
-        }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorRemoveWishlist(errorMessage, productId)
-        }
-
-        viewModel.removeWishList(productId, null, {
-            Assert.assertEquals(it, errorMessage)
-        })
-    }
-
-    /**
      * Discussion Most Helpful
      */
     @Test
@@ -1870,7 +1808,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345", message = arrayListOf("halo")), status = "OK")
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
@@ -1880,6 +1818,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
+        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
+        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTokonowSendTracker.value)
     }
 
     @Test
@@ -2512,6 +2452,74 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals("Invalid social proof text", expectedSocialProofText, actualSocialProofText)
     }
     // endregion Review Section
+
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 0 to 1`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { addToCartUseCase.createObservable(any()) }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 1 to 2`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 2
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { updateCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed delete item`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 0
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { deleteCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed not logged in`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns false
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
+    }
 
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")

@@ -1,5 +1,6 @@
 package com.tokopedia.logisticorder.view
 
+import android.content.ActivityNotFoundException
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -219,12 +220,18 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
             driverName.text = lastDriver.name
             driverPhone.text = lastDriver.licenseNumber
             btnCall.setOnClickListener {
-                val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                    this.data = Uri.parse("tel:${lastDriver.phone}")
-                }
-                startActivity(callIntent)
+                goToCallIntent(lastDriver.phone)
             }
         }
+    }
+
+    private fun goToCallIntent(phoneNumber: String) {
+        val callIntent = Intent(Intent.ACTION_DIAL).apply {
+            this.data = Uri.parse("tel:${phoneNumber}")
+        }
+        try {
+            startActivity(callIntent)
+        } catch (e: ActivityNotFoundException) {}
     }
 
     private fun setTippingData(data: TrackingDataModel) {
@@ -264,10 +271,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
             if (driverData.phone.isNotEmpty()) {
                 btnCall.setOnClickListener {
-                    val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        this.data = Uri.parse("tel:${driverData.phone}")
-                    }
-                    startActivity(callIntent)
+                    goToCallIntent(driverData.phone)
                 }
             } else {
                 borderBtnCall.visibility = View.GONE

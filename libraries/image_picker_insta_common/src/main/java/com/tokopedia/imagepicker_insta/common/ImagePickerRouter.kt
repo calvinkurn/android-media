@@ -8,8 +8,6 @@ object ImagePickerRouter {
 
     fun prepareBundle(
         title: String? = null,
-        subtitle: String? = null,
-        toolbarIconRes: Int? = null,
         toolbarIconUrl: String? = null,
         menuTitle: String? = null,
         @IntRange(from = 1L, to = DEFAULT_MULTI_SELECT_LIMIT.toLong())
@@ -20,10 +18,6 @@ object ImagePickerRouter {
     ): Bundle {
         val bundle = Bundle()
         bundle.putString(BundleData.TITLE, title)
-        bundle.putString(BundleData.SUB_TITLE, subtitle)
-        if(toolbarIconRes!=null) {
-            bundle.putInt(BundleData.TOOLBAR_ICON_RES, toolbarIconRes)
-        }
         bundle.putString(BundleData.TOOLBAR_ICON_URL, toolbarIconUrl)
         bundle.putString(BundleData.MENU_TITLE, menuTitle)
         bundle.putInt(BundleData.MAX_MULTI_SELECT_ALLOWED, Math.min(maxMultiSelectAllowed, DEFAULT_MULTI_SELECT_LIMIT))

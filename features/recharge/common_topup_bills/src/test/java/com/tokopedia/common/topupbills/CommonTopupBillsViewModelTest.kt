@@ -9,8 +9,8 @@ import com.tokopedia.common.topupbills.data.TopupBillsSeamlessFavNumberModData
 import com.tokopedia.common.topupbills.data.catalog_plugin.RechargeCatalogPlugin
 import com.tokopedia.common.topupbills.data.express_checkout.RechargeExpressCheckout
 import com.tokopedia.common.topupbills.favoritepage.domain.usecase.RechargeFavoriteNumberUseCase
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberActionType
 import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData
-import com.tokopedia.common.topupbills.view.fragment.TopupBillsFavoriteNumberFragment
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_DEVICE_ID
 import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Companion.ENQUIRY_PARAM_DEVICE_ID_DEFAULT_VALUE
@@ -323,7 +323,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.UPDATE)
+                "", hashMapOf(), FavoriteNumberActionType.UPDATE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUpdateData.value
@@ -349,7 +349,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.UPDATE)
+                "", hashMapOf(), FavoriteNumberActionType.UPDATE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUpdateData.value
@@ -371,7 +371,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.DELETE)
+                "", hashMapOf(), FavoriteNumberActionType.DELETE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
@@ -397,7 +397,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.DELETE)
+                "", hashMapOf(), FavoriteNumberActionType.DELETE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberDeleteData.value
@@ -419,7 +419,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.UNDO_DELETE)
+                "", hashMapOf(), FavoriteNumberActionType.UNDO_DELETE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUndoDeleteData.value
@@ -445,7 +445,7 @@ class CommonTopupBillsViewModelTest {
 
         // When
         topupBillsViewModel.modifySeamlessFavoriteNumber(
-                "", hashMapOf(), TopupBillsFavoriteNumberFragment.FavoriteNumberActionType.UNDO_DELETE)
+                "", hashMapOf(), FavoriteNumberActionType.UNDO_DELETE)
 
         // Then
         val actualData = topupBillsViewModel.seamlessFavNumberUndoDeleteData.value

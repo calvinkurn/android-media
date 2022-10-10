@@ -27,7 +27,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ic_csat_check_box_bg"/>
+        app:srcCompat="@drawable/ic_csat_check_box_bg"/>
 
     <View
         android:layout_width="match_parent"
@@ -35,6 +35,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:background="@color/black_12"/>
+        android:background="@color/Unify_N700_20"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
