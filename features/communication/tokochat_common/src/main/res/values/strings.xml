@@ -11,4 +11,7 @@
     <string name="tokochat_message_closed_chat">Chat ini udah ditutup. Kamu bisa lihat riwayat chat sampai 24 jam setelah pesanan selesai.</string>
     <string name="tokochat_message_cancelled_order">Pesaanan dibatalkan. Kamu bisa lihat riwayat chat sampai 24 jam setelah dibatalkan.</string>
     <string name="tokochat_desc_empty_text_box">Oops, tulis pesan dulu ya sebelum kirim chat.</string>
+    <string name="tokochat_masking_phone_number_title">Nomor HP kamu akan disamarkan</string>
+    <string name="tokochat_masking_phone_number_desc">Demi menjaga privasi, nomor HP-mu nggak bisa dilihat oleh driver. Pulsamu akan terpakai untuk panggilan ini.</string>
+    <string name="tokochat_driver_call_button_text">Oke, Telepon</string>
 </resources>

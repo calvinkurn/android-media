@@ -17,6 +17,7 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatActivity
+import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -53,7 +54,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     override fun initViews() {
         super.initViews()
         setupBackground()
-        setupToolbarData()
+        setupToolbarData("")
         setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
         setupReceiverDummyMessages()
     }
@@ -246,7 +247,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
     }
 
-    private fun setupToolbarData() {
+    private fun setupToolbarData(driverPhoneNumber: String) {
         val uiModel = TokoChatHeaderUiModel(
             title = "Omar Maryadi",
             subTitle = "D7088FGX",
@@ -265,9 +266,17 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
             callMenu.run {
                 setImage(IconUnify.CALL)
-                setOnClickListener { }
+
+                setOnClickListener {
+                    showMaskingPhoneNumberBottomSheet(driverPhoneNumber)
+                }
             }
         }
+    }
+
+    private fun showMaskingPhoneNumberBottomSheet(driverPhoneNumber: String) {
+        val bottomSheetMaskingPhoneNumber = MaskingPhoneNumberBottomSheet.newInstance(driverPhoneNumber)
+        bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
     private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
