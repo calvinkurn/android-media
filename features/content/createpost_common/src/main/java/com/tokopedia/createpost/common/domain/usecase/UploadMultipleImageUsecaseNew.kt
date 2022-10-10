@@ -4,7 +4,6 @@ import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
-import com.tokopedia.createpost.common.TYPE_MEDIA_UPLOAD
 import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.view.util.FileUtil
@@ -59,9 +58,8 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
 
         when(result) {
             is UploadResult.Success -> {
-                medium.videoID = result.uploadId
                 medium.mediaURL = result.videoUrl
-                medium.type = TYPE_MEDIA_UPLOAD /** TODO: what is this? */
+                medium.videoID = if(isVideo(medium)) result.uploadId else ""
                 deleteCacheFile()
             }
         }
@@ -69,13 +67,17 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         return medium
     }
 
+    private fun isVideo(medium: SubmitPostMedium): Boolean {
+        return medium.type == SubmitPostMedium.TYPE_VIDEO
+    }
+
     private fun getUploadSourceId(medium: SubmitPostMedium): String {
-        return if(medium.type == SubmitPostMedium.TYPE_VIDEO) UPLOAD_VIDEO_SOURCE_ID
+        return if(isVideo(medium)) UPLOAD_VIDEO_SOURCE_ID
         else UPLOAD_IMAGE_SOURCE_ID
     }
 
     private fun getUploadWithTranscode(medium: SubmitPostMedium): Boolean {
-        return medium.type == SubmitPostMedium.TYPE_IMAGE
+        return !isVideo(medium)
     }
 
     private fun updateNotification() {
