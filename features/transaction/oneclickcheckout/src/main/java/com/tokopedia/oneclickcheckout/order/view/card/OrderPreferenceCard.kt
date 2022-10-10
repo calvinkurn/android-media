@@ -133,7 +133,7 @@ class OrderPreferenceCard(
             serviceName = shipping.serviceName,
             shipperName = shipping.shipperName ?: "",
             onChangeDurationListener = {
-                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
+                onChangeDuration(shipping)
             }
         )
     }
@@ -159,9 +159,8 @@ class OrderPreferenceCard(
         binding.shippingOccWidget.renderBboShipping(
             logisticPromoUiModel = logisticPromoUiModel,
             onChangeDurationListener = {
-                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
-            }
-        )
+                onChangeDuration(shipping)
+            })
     }
 
     @SuppressLint("SetTextI18n")
@@ -171,9 +170,16 @@ class OrderPreferenceCard(
             shippingPrice = shipping.shippingPrice ?: 0,
             serviceEta = shipping.serviceEta,
             onChangeDurationListener = {
-                showServiceBottomsheet(shipping.getRealShipperProductId().toString())
+                onChangeDuration(shipping)
             }
         )
+    }
+
+    private fun onChangeDuration(shipping: OrderShipment) {
+        if (profile.enable) {
+            val shipperProductId = shipping.getRealShipperProductId().toString()
+            listener.chooseDuration(shipperProductId.isEmpty(), shipperProductId)
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -216,17 +222,12 @@ class OrderPreferenceCard(
                 serviceEta = shipping.serviceEta,
                 errorMessage = errorMessage,
                 onShippingErrorMessageClickListener = {
-                    showServiceBottomsheet(shipping.getRealShipperProductId().toString())
+                    onChangeDuration(shipping)
                 }
             )
         }
     }
 
-    private fun showServiceBottomsheet(shipperProductId: String) {
-        if (profile.enable) {
-            listener.chooseDuration(shipperProductId.isEmpty(), shipperProductId)
-        }
-    }
 
     private fun renderErrorShipping(shipping: OrderShipment) {
         binding.apply {
@@ -766,8 +767,6 @@ class OrderPreferenceCard(
 
     companion object {
         const val VIEW_TYPE = 4
-
-        private val BBO_DESCRIPTION_MINIMUM_LIMIT = arrayOf("belum", "min")
 
         private const val ENABLE_ALPHA = 1.0f
         private const val DISABLE_ALPHA = 0.5f
