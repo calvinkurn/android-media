@@ -79,7 +79,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
                     PARAM_MEDIA_HEIGHT to mediaHeight,
                     PARAM_MEDIA to arrangedMedia,
                     PARAM_ID to id.orEmpty(),
-                    PARAM_TYPE to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                    PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
                     PARAM_ID to id.orEmpty(),
                 )
             )
