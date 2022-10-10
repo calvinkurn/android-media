@@ -1,5 +1,6 @@
 package com.tokopedia.logisticcart.schedule_slot.utils
 
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
@@ -7,32 +8,51 @@ import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
+import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 
 object ScheduleDeliveryMapper {
 
-    fun mapResponseToUiModel(additionalDeliveryData: AdditionalDeliveryData) : BottomSheetUiModel {
+    fun mapResponseToUiModel(additionalDeliveryData: AdditionalDeliveryData): BottomSheetUiModel {
         val buttonDateUiModel = generateDateUiModel(additionalDeliveryData.deliveryServices)
         return BottomSheetUiModel(
             date = ChooseDateUiModel(content = buttonDateUiModel),
-            // todo available title & unavailable title & bottomsheet info
+            availableTitle = TitleSectionUiModel(
+                title = "Jadwal Tersedia",
+                // todo add error message here
+                content = "",
+                icon = IconUnify.INFORMATION,
+                // todo
+                onClick = {}
+            ),
+            unavailableTitle = TitleSectionUiModel(
+                title = "Jadwal habis atau tidak tersedia",
+            )
         )
     }
 
     private fun generateDateUiModel(deliveryServices: List<DeliveryService>): List<ButtonDateUiModel> {
-        return deliveryServices.filter { !it.hidden }.map { response ->
-            ButtonDateUiModel(
-                title = response.titleLabel,
+        val scheduleSelectedByUser =
+            deliveryServices.find { it.deliveryProducts.any { time -> time.isSelected } }
+        val dateUiModel = mutableListOf<ButtonDateUiModel>()
+        deliveryServices.forEach { service ->
+            val isDateSelected = if (scheduleSelectedByUser == null) {
+                service.deliveryProducts.any { it.recommend }
+            } else {
+                scheduleSelectedByUser.id == service.id
+            }
+            val buttonDateUiModel = ButtonDateUiModel(
+                title = service.titleLabel,
                 // todo
-                date = "",
-                isEnabled = response.available,
-                id = response.id,
-                // todo this only support default value from BE,
-                // need selectedDate from previous user selection
-                isSelected = response.deliveryProducts.any { it.recommend },
-                availableTime = generateTimeUiModel(response.deliveryProducts.filter { it.available }),
-                unavailableTime = generateTimeUiModel(response.deliveryProducts.filter { !it.available })
+                date = service.title,
+                isEnabled = service.available,
+                id = service.id,
+                isSelected = isDateSelected,
+                availableTime = generateTimeUiModel(service.deliveryProducts.filter { it.available }),
+                unavailableTime = generateTimeUiModel(service.deliveryProducts.filter { !it.available })
             )
+            dateUiModel.add(buttonDateUiModel)
         }
+        return dateUiModel
     }
 
     private fun generateTimeUiModel(timeOptions: List<DeliveryProduct>): List<ChooseTimeUiModel> {
@@ -42,7 +62,9 @@ object ScheduleDeliveryMapper {
                 content = time.text,
                 // todo this only support default value from BE,
                 // need selectedTime from previous user selection
-                isEnabled = time.recommend
+                isEnabled = time.recommend,
+                // todo
+                isSelected = time.isSelected
             )
         }
     }
@@ -50,10 +72,10 @@ object ScheduleDeliveryMapper {
     private fun generateTimeTitle(time: DeliveryProduct): String {
         val timeTitle = time.title
         // check price
-        if (time.finalPrice == time.realPrice) {
-            return timeTitle + " <b>(${time.textFinalPrice})</b>"
+        return if (time.finalPrice == time.realPrice) {
+            timeTitle + " <b>(${time.textFinalPrice})</b>"
         } else {
-            return timeTitle + " <b>(${time.textFinalPrice}<s>${time.textRealPrice}</s>)</b>"
+            timeTitle + " <b>(${time.textFinalPrice}<s>${time.textRealPrice}</s>)</b>"
         }
     }
 }

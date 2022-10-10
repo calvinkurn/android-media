@@ -1,6 +1,5 @@
-package com.tokopedia.logisticcart.schedule_slot
+package com.tokopedia.logisticcart.schedule_slot.bottomsheet
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler

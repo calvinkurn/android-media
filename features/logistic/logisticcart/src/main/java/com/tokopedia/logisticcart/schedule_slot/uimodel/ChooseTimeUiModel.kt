@@ -8,6 +8,7 @@ data class ChooseTimeUiModel(
     override val content: String = "",
     override var isEnabled: Boolean = true,
     override var divider: DividerType = DividerType.THIN,
+    var isSelected: Boolean = false,
     val note: String = "",
 )
     : BaseScheduleSlotUiModel<String> {
