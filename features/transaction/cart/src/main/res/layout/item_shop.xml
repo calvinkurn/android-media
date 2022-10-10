@@ -181,8 +181,8 @@
         </com.google.android.flexbox.FlexboxLayout>
 
         <include
-            android:id="@+id/gifting_widget_layout"
-            layout="@layout/item_cart_gifting"
+            android:id="@+id/addon_info_widget_layout"
+            layout="@layout/item_cart_addon_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/rl_product_policies_layout"

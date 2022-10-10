@@ -26,6 +26,7 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.rxViewClickDebounce
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.SHAPE_LOOSE
@@ -65,7 +66,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderEstimatedTimeArrival(cartShopHolderData)
         renderMaximumWeight(cartShopHolderData)
         renderBoAfford(cartShopHolderData)
-        renderGiftingAddOn(cartShopHolderData)
+        renderAddOnInfo(cartShopHolderData)
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
@@ -396,17 +397,22 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         }
     }
 
-    private fun renderGiftingAddOn(cartShopHolderData: CartShopHolderData) {
+    private fun renderAddOnInfo(cartShopHolderData: CartShopHolderData) {
         if (cartShopHolderData.addOnText.isNotEmpty()) {
-            binding.giftingWidgetLayout.root.visible()
-            binding.giftingWidgetLayout.descGifting.text = cartShopHolderData.addOnText
-            ImageHandler.loadImageWithoutPlaceholder(binding.giftingWidgetLayout.ivAddonLeft, cartShopHolderData.addOnImgUrl)
-            binding.giftingWidgetLayout.root.setOnClickListener {
-                actionListener.onClickAddOnCart(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "", cartShopHolderData.addOnId)
+            binding.addonInfoWidgetLayout.root.visible()
+            binding.addonInfoWidgetLayout.descAddonInfo.text = cartShopHolderData.addOnText
+            binding.addonInfoWidgetLayout.ivAddonLeft.loadImage(cartShopHolderData.addOnImgUrl)
+            binding.addonInfoWidgetLayout.root.setOnClickListener {
+                actionListener.onClickAddOnCart(
+                    cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "",
+                    cartShopHolderData.addOnId
+                )
             }
-            actionListener.addOnImpression(cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: "")
+            actionListener.addOnImpression(
+                cartShopHolderData.productUiModelList.firstOrNull()?.productId ?: ""
+            )
         } else {
-            binding.giftingWidgetLayout.root.gone()
+            binding.addonInfoWidgetLayout.root.gone()
         }
     }
 
