@@ -1295,7 +1295,7 @@ class PlayViewModel @AssistedInject constructor(
     private var coachmarkJob: Job? = null
 
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
-        val isShown = playPreference.isCoachMark(channelId = channelId, userId = userId)
+        val isShown = playPreference.isCoachMark(userId = userId)
         playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
         if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
             coachmarkJob?.cancel()

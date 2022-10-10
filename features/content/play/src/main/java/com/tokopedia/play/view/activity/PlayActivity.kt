@@ -16,9 +16,7 @@ import com.tokopedia.floatingwindow.FloatingWindowAdapter
 import com.tokopedia.play.PLAY_KEY_CHANNEL_ID
 import com.tokopedia.play.R
 import com.tokopedia.play.cast.PlayCastNotificationAction
-import com.tokopedia.play.di.DaggerPlayComponent
 import com.tokopedia.play.di.PlayInjector
-import com.tokopedia.play.di.PlayModule
 import com.tokopedia.play.util.PlayCastHelper
 import com.tokopedia.play.util.PlayFullScreenHelper
 import com.tokopedia.play.util.PlaySensorOrientationManager
@@ -211,7 +209,7 @@ class PlayActivity : BaseActivity(),
     }
 
     override fun onSwipeNextPage() {
-        playPreference.setCoachMark(channelId = startChannelId, userId = viewModel.userId)
+        playPreference.setCoachMark(userId = viewModel.userId)
     }
 
     private fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -280,10 +278,9 @@ class PlayActivity : BaseActivity(),
     }
 
     private fun observeFirstChannelEvent() {
-        val userId = if(viewModel.userId.isEmpty()) "0" else viewModel.userId
         viewModel.observableFirstChannelEvent.observe(this, EventObserver {
             swipeContainerView.reset()
-            playPreference.setCoachMark(true, channelId = startChannelId, userId = userId)
+            playPreference.setCoachMark(userId = viewModel.userId)
         })
     }
 

@@ -82,23 +82,25 @@ class PlayPreference @Inject constructor(
         return currentTime - getLastVisit(userId)
     }
 
-    fun setCoachMark(isFirstChannel: Boolean = false, channelId: String, userId: String) { // first channel event\
+    fun setCoachMark(userId: String) { // first channel event
+        val newUserId = if(userId.isEmpty()) "0" else userId
         when (variant) {
             SWIPE_LIVE_ROOM_VARIANT -> {
-                if (getDiffDay(userId) >= A_DAY_IN_MILLIS) {
+                if (getDiffDay(newUserId) >= A_DAY_IN_MILLIS) {
                     sharedPref.edit()
-                        .putLong(String.format(SWIPE_ONBOARDING, userId), System.currentTimeMillis())
+                        .putLong(String.format(SWIPE_ONBOARDING, newUserId), System.currentTimeMillis())
                         .apply()
                 }
             }
-            else -> sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), isFirstChannel).apply()
+            else -> sharedPref.edit().putBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), true).apply()
         }
     }
 
-    fun isCoachMark(channelId: String,  userId: String): Boolean {
+    fun isCoachMark(userId: String): Boolean {
+        val newUserId = if(userId.isEmpty()) "0" else userId
         return if (variant == SWIPE_LIVE_ROOM_VARIANT) {
-            getDiffDay(userId) >= A_DAY_IN_MILLIS
+            getDiffDay(newUserId) >= A_DAY_IN_MILLIS
         }
-        else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, channelId), false)
+        else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), false)
     }
 }
