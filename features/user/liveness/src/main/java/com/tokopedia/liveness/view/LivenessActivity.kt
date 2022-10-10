@@ -43,6 +43,8 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        component.inject(this)
+
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
