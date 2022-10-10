@@ -136,8 +136,8 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun isShopAdminInSA(adminTypeUiModel: AdminTypeUiModel): Boolean {
-        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.shopID.isNotBlank()
-                && adminTypeUiModel.isShopAdmin
+        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
+            adminTypeUiModel.isShopAdmin
     }
 
     private fun redirectShopAdminInMA(adminTypeUiModel: AdminTypeUiModel) {
@@ -156,9 +156,7 @@ class ShopAdminRedirectionFragment : BaseDaggerFragment() {
     }
 
     private fun isShopAdminMA(adminTypeUiModel: AdminTypeUiModel): Boolean {
-        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN &&
-                adminTypeUiModel.shopID.isNotBlank() &&
-                adminTypeUiModel.status != AdminStatus.ACTIVE
+        return adminTypeUiModel.shopID != DEFAULT_SHOP_ID_NOT_OPEN && adminTypeUiModel.status != AdminStatus.ACTIVE
     }
 
     companion object {
