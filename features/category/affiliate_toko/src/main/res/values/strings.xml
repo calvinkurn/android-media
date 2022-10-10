@@ -27,7 +27,7 @@
     <string name="affiliate_never_bought_product">Cari produknya dulu, yuk!</string>
     <string name="affiliate_still_buy_products">Kalau udah ada produk yang mau dipromosikan, segera salin link-nya, lalu tempel di sini.</string>
     <string name="affiliate_paste_link">Tempel Link</string>
-    <string name="affiliate_paste_product_link">Punya link produk atau toko?</string>
+    <string name="affiliate_paste_product_link">Tempel link produk atau toko di Tokopedia yang kamu suka, ya.</string>
     <string name="affiliate_paste_product_link_desc">Tempel link &amp; cek buat mulai promosikan</string>
     <string name="affiliate_active">Aktif</string>
     <string name="affiliate_inactive">Tidak Aktif</string>
@@ -157,8 +157,12 @@
     <string name="copy_paste_recommend_desc">Klik promosikan untuk mulai bagikan link-nya</string>
     <string name="copy_paste_action_desc">Punya link-nya? Bisa tempelkan link tersebut dan cek untuk mulai promosikan.</string>
     <string name="paste_two_step_info_title">2 Langkah tempel link</string>
-    <string name="paste_info_step_one">Tempel link produk atau toko, lalu cek apakah link tersebut bisa dipromosikan.</string>
-    <string name="paste_info_step_two">Jika bisa, klik tombol &#8220;Promosikan&#8221; untuk bagikan link tersebut ke sosmed kamu.</string>
+    <string name="paste_info_step_one">Tempel dan cek link nya untuk pastikan link tersebut bisa dipromosikan.</string>
+    <string name="paste_info_step_two">Jika bisa, klik tombol &#8220;Promosikan&#8221; untuk bagikan link-nya ke sosmed kamu.</string>
     <string name="affiliate_date">Dibuat %s</string>
+    <string name="promo_recommended_info">Cek rekomendasi dari Tokopedia</string>
+    <string name="promo_share_link_info">Bagikan link dari halaman produk/toko</string>
+    <string name="promo_info_title">Promosinya gampang, komisinya dapet!</string>
+    <string name="promo_info_desc"><![CDATA[Punya produk & toko favoritmu? Kamu bisa promosikan link-nya dengan cara-cara mudah yang bisa dipilih!]]></string>
 
 </resources>

@@ -2,12 +2,7 @@ package com.tokopedia.affiliate.ui.bottomsheet
 
 import android.app.Dialog
 import android.content.Intent
-import android.graphics.Typeface
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.TextPaint
-import android.text.style.MetricAffectingSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +13,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.ui.activity.AffiliatePromoSearchActivity
+import com.tokopedia.affiliate.utils.setBoldSpannedText
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -68,31 +64,25 @@ class AffiliateBottomSheetPromoCopyPasteInfo : BottomSheetUnify() {
         val pasteActionDesc = getString(R.string.copy_paste_action_desc)
         val promosikanIndex = recommendedDesc.indexOf("promosikan")
 
-        contentView?.findViewById<Typography>(R.id.recommend_desc)?.text =
-            boldSpan(recommendedDesc, promosikanIndex, RECOMMENDED_DESC_SPAN_LENGTH)
+        contentView?.findViewById<Typography>(R.id.recommend_desc)
+            ?.setBoldSpannedText(
+                recommendedDesc,
+                promosikanIndex,
+                RECOMMENDED_DESC_SPAN_LENGTH,
+                Typography.DISPLAY_3
+            )
 
-        contentView?.findViewById<Typography>(R.id.copy_paste_action_text)?.text =
-            boldSpan(pasteActionDesc, ZERO, PASTE_ACTION_SPAN_LENGTH)
+        contentView?.findViewById<Typography>(R.id.copy_paste_action_text)
+            ?.setBoldSpannedText(
+                pasteActionDesc,
+                ZERO,
+                PASTE_ACTION_SPAN_LENGTH,
+                Typography.DISPLAY_3
+            )
 
         contentView?.findViewById<UnifyButton>(R.id.paste_link_button)?.setOnClickListener {
             startActivity(Intent(context, AffiliatePromoSearchActivity::class.java))
         }
-    }
-
-    private fun boldSpan(str: String, start: Int, end: Int): SpannableString {
-        val sb = SpannableString(str)
-        if (start >= 0 && end < str.length) {
-            context?.let { ctx ->
-                val boldFont = Typography.getFontType(ctx, true, Typography.PARAGRAPH_2)
-                sb.setSpan(
-                    CustomTypefaceSpan(boldFont!!),
-                    start,
-                    start + end,
-                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-                )
-            }
-        }
-        return sb
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -129,14 +119,4 @@ class AffiliateBottomSheetPromoCopyPasteInfo : BottomSheetUnify() {
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
 
-    private inner class CustomTypefaceSpan(private val typeface: Typeface?) :
-        MetricAffectingSpan() {
-        override fun updateDrawState(paint: TextPaint) {
-            paint.typeface = typeface
-        }
-
-        override fun updateMeasureState(paint: TextPaint) {
-            paint.typeface = typeface
-        }
-    }
 }

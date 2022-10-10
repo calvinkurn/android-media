@@ -58,16 +58,14 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     private lateinit var affiliateRecommendedProductViewModel: AffiliateRecommendedProductViewModel
     private val adapter: AffiliateAdapter = AffiliateAdapter(AffiliateAdapterFactory(promotionClickInterface = this))
-    private var affiliatePromoInterface : AffiliatePromoInterface? = null
     private var identifier = BOUGHT_IDENTIFIER
 
     companion object {
         private const val GRID_SPAN_COUNT: Int = 2
         const val BOUGHT_IDENTIFIER = "recent_purchase"
         const val LAST_VIEWED_IDENTIFIER = "recent_view"
-        fun getFragmentInstance(recommendationType : String , promoInterface : AffiliatePromoInterface): Fragment {
+        fun getFragmentInstance(recommendationType : String ): Fragment {
             return AffiliateRecommendedProductFragment().apply {
-                affiliatePromoInterface = promoInterface
                 identifier = recommendationType
             }
         }
@@ -103,9 +101,6 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 errorDescription.text = getString(R.string.affiliate_no_product_seen_on_tokopedia_yet_content)
             }
             errorAction.text = getString(R.string.affiliate_paste_link)
-            errorAction.setOnClickListener {
-               affiliatePromoInterface?.enterLinkButtonClicked()
-            }
 
         }
     }
@@ -178,10 +173,10 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
     }
 
     private fun setObservers() {
-        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner,{
+        affiliatePromoSharedViewModel.getValidateUserType().observe(viewLifecycleOwner) {
             onGetValidateUserType(it)
-        })
-        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(viewLifecycleOwner, { visibility ->
+        }
+        affiliateRecommendedProductViewModel.getShimmerVisibility().observe(viewLifecycleOwner) { visibility ->
             if (visibility != null) {
                 if (visibility)
                     adapter.addShimmer(true)
@@ -189,11 +184,11 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                     adapter.removeShimmer(listSize)
                 }
             }
-        })
+        }
 
-        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(viewLifecycleOwner ,{ dataList ->
+        affiliateRecommendedProductViewModel.getAffiliateDataItems().observe(viewLifecycleOwner) { dataList ->
             adapter.removeShimmer(listSize)
-            if(isSwipeRefresh){
+            if (isSwipeRefresh) {
                 swipe_refresh_layout.isRefreshing = false
                 isSwipeRefresh = !isSwipeRefresh
             }
@@ -209,18 +204,18 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
                 showEmptyState()
                 swipe_refresh_layout.hide()
             }
-        })
+        }
 
-        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(viewLifecycleOwner, { pageInfo ->
+        affiliateRecommendedProductViewModel.getAffiliateItemCount().observe(viewLifecycleOwner) { pageInfo ->
             currentPageNumber = pageInfo.currentPage ?: 0
             recommendationHasNextPage = pageInfo.hasNext ?: false
-        })
+        }
 
-        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner, {
+        affiliateRecommendedProductViewModel.getErrorMessage().observe(viewLifecycleOwner) {
             swipe_refresh_layout.hide()
             showErrorGroup()
             showEmptyState()
-        })
+        }
     }
 
     private fun onGetValidateUserType(type: String?) {
@@ -229,7 +224,7 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         }
     }
 
-    var lastItem : AffiliateStaggeredPromotionCardModel? = null
+    private var lastItem : AffiliateStaggeredPromotionCardModel? = null
     private fun setLastDataForEvent(dataList: ArrayList<Visitable<AffiliateAdapterTypeFactory>>) {
         dataList[dataList.lastIndex].let {
             if(it is AffiliateStaggeredPromotionCardModel){
@@ -291,8 +286,8 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
         position: Int,
         commison: String
     ) {
-        var item = ""
-        var eventAction = ""
+        val item: String
+        val eventAction: String
         if(identifier == BOUGHT_IDENTIFIER) {
             item = AffiliateAnalytics.ItemKeys.AFFILIATE_PROMOSIKAN_PERNAH_DIBEL
             eventAction = AffiliateAnalytics.ActionKeys.PROMISIKAN_PERNAH_DIBELI
