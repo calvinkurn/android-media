@@ -47,8 +47,6 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomCallback {
     }
 
     init {
-        if (context is LifecycleOwner) (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
-
         setupView()
     }
 
@@ -58,7 +56,8 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomCallback {
         if (itemDecorationCount == 0) addItemDecoration(ShopRecomItemDecoration(context))
     }
 
-    fun setListener(listener: ShopRecomWidgetCallback) {
+    fun setListener(lifecycleOwner: LifecycleOwner, listener: ShopRecomWidgetCallback) {
+        lifecycleOwner.lifecycle.addObserver(this)
         mListener = listener
     }
 

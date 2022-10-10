@@ -249,7 +249,7 @@ class UserProfileFragment @Inject constructor(
             textFollowingCount.setOnClickListener { goToFollowingFollowerPage(false) }
             textFollowerLabel.setOnClickListener { goToFollowingFollowerPage(true) }
             textFollowerCount.setOnClickListener { goToFollowingFollowerPage(true) }
-            shopRecommendation.setListener(this@UserProfileFragment)
+            shopRecommendation.setListener(this@UserProfileFragment, this@UserProfileFragment)
 
             textSeeMore.setOnClickListener {
                 userProfileTracker.clickSelengkapnya(userSession.userId, self = viewModel.isSelfProfile)
