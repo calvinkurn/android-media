@@ -4,6 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BaseScheduleSlotUiModel
+import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetInfoUiModel
+import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
@@ -25,20 +27,17 @@ class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)
         factory.listener.onClickTimeListener(item)
     }
 
-    fun setData(date: ChooseDateUiModel) {
+    fun setData(data: BottomSheetUiModel) {
         visitables?.clear()
-        visitables.add(date)
-        visitables.add(TitleSectionUiModel(
-            title = "Jadwal tersedia",
-            content = "Kuota gratis ongkirmu habis",
-            icon = IconUnify.INFORMATION))
-        val selectedDate = date.content.find { it.isSelected }
+        visitables.add(data.date)
+        visitables.add(data.availableTitle)
+        val selectedDate = data.date.content.find { it.isSelected }
         selectedDate?.let {
             visitables.addAll(it.availableTime.apply {
                 last().divider = DividerType.THICK
             })
             if (selectedDate.unavailableTime.isNotEmpty()) {
-                visitables.add(TitleSectionUiModel(title = "Jadwal habis atau tidak tersedia"))
+                visitables.add(data.unavailableTitle)
                 visitables.addAll(selectedDate.unavailableTime)
             }
         }

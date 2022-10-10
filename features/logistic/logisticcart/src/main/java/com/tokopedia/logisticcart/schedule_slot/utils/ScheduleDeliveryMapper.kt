@@ -4,6 +4,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
+import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetInfoUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
@@ -12,7 +14,7 @@ import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 
 object ScheduleDeliveryMapper {
 
-    fun mapResponseToUiModel(additionalDeliveryData: AdditionalDeliveryData): BottomSheetUiModel {
+    fun mapResponseToUiModel(additionalDeliveryData: AdditionalDeliveryData, listener: ScheduleSlotListener): BottomSheetUiModel {
         val buttonDateUiModel = generateDateUiModel(additionalDeliveryData.deliveryServices)
         return BottomSheetUiModel(
             date = ChooseDateUiModel(content = buttonDateUiModel),
@@ -22,11 +24,21 @@ object ScheduleDeliveryMapper {
                 content = "",
                 icon = IconUnify.INFORMATION,
                 // todo
-                onClick = {}
+                onClick = { listener.onClickInfoListener() }
             ),
             unavailableTitle = TitleSectionUiModel(
                 title = "Jadwal habis atau tidak tersedia",
-            )
+            ),
+            infoUiModel = mapNoticeToScheduleInfoUiModel(additionalDeliveryData.notice)
+        )
+    }
+
+    private fun mapNoticeToScheduleInfoUiModel(notice: Notice) : BottomSheetInfoUiModel {
+        return BottomSheetInfoUiModel(
+            title = notice.title,
+            description = notice.text,
+            // todo
+            imageUrl = ""
         )
     }
 
@@ -59,7 +71,7 @@ object ScheduleDeliveryMapper {
         return timeOptions.map { time ->
             ChooseTimeUiModel(
                 title = generateTimeTitle(time),
-                content = time.text,
+                note = time.text,
                 // todo this only support default value from BE,
                 // need selectedTime from previous user selection
                 isEnabled = time.recommend,

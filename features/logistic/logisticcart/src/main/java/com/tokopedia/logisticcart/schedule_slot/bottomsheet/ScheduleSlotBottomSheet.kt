@@ -21,6 +21,7 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
     : BottomSheetUnify(), ScheduleSlotListener {
 
     private var listener: (() -> BaseScheduleSlotUiModel<out Any>)? = null
+    private var bottomSheetInfo: ScheduleInfoBottomSheet? = null
 
     private val adapterScheduleSlot: ScheduleSlotAdapter by lazy {
         ScheduleSlotAdapter(ScheduleSlotTypeFactory(this))
@@ -41,10 +42,18 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
             findViewById<RecyclerView>(com.tokopedia.logisticcart.R.id.rv_schedule_slot).apply {
                 layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapterScheduleSlot
-                adapterScheduleSlot.setData(data.date)
+                adapterScheduleSlot.setData(data)
             }
         }
         setChild(view)
+    }
+
+    override fun onClickInfoListener() {
+        if (bottomSheetInfo == null) {
+            bottomSheetInfo = ScheduleInfoBottomSheet.show(parentFragmentManager, data.infoUiModel)
+        } else {
+            bottomSheetInfo?.show(parentFragmentManager, "")
+        }
     }
 
     override fun onClickDateListener(data: ButtonDateUiModel) {

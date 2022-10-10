@@ -17,7 +17,7 @@ class AdditionalDeliveryData(
     @SerializedName("text")
     val text: String = "",
     @SerializedName("notice")
-    val notice: Notice? = null,
+    val notice: Notice = Notice(),
     @SerializedName("ticker")
     val ticker: Ticker? = null,
     @SerializedName("category_ids")
