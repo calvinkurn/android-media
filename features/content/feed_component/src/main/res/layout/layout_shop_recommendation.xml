@@ -6,7 +6,7 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/txt_wording_follow"
+        android:id="@+id/txt_header_shop_recom"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/unify_space_16"
@@ -27,16 +27,16 @@
         android:paddingBottom="@dimen/unify_space_8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_wording_follow"
-        tools:listitem="@layout/layout_shop_recommendation" />
+        app:layout_constraintTop_toBottomOf="@id/txt_header_shop_recom"
+        tools:listitem="@layout/item_shop_recommendation" />
 
     <include
         android:id="@+id/shimmer_shop_recom"
-        layout="@layout/shimmer_shop_recom"
+        layout="@layout/shimmer_shop_recommendation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txt_wording_follow" />
+        app:layout_constraintTop_toBottomOf="@id/txt_header_shop_recom" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

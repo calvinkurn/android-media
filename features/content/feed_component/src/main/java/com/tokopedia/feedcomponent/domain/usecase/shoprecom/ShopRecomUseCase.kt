@@ -1,6 +1,6 @@
 package com.tokopedia.feedcomponent.domain.usecase.shoprecom
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.UserShopRecomModel
+import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.QUERY_NAME
 import com.tokopedia.gql_query_annotation.GqlQuery

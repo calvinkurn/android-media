@@ -1,6 +1,6 @@
 package com.tokopedia.people.analytic.tracker
 
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
 interface UserProfileTracker {
 

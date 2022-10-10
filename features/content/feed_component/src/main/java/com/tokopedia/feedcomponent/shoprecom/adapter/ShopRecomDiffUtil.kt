@@ -1,7 +1,7 @@
-package com.tokopedia.feedcomponent.view.widget.shoprecom.adapter
+package com.tokopedia.feedcomponent.shoprecom.adapter
 
 import androidx.recyclerview.widget.DiffUtil
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
 class ShopRecomDiffUtil(
     private val oldList: List<ShopRecomUiModelItem>,
