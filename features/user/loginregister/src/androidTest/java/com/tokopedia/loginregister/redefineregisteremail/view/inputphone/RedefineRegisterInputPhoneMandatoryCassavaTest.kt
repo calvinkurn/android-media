@@ -35,7 +35,9 @@ class RedefineRegisterInputPhoneMandatoryCassavaTest {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        RedefineRegisterEmailActivity::class.java, false, false
+        RedefineRegisterEmailActivity::class.java,
+        false,
+        false
     )
 
     @get:Rule
