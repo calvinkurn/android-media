@@ -6,7 +6,6 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,7 +37,6 @@ import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
@@ -617,48 +615,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         val items = arrayListOf<FloatingButtonItem>()
 
-        if(userSession.isLoggedIn && userSession.hasShop()) {
-            items.add(createCreateLiveFab())
-        }
-
-        if(viewModel.isShowPostButton) {
-            items.add(
-                FloatingButtonItem(
-                    iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
-                    title = getString(R.string.feed_fab_create_post),
-                    listener = {
-                        try {
-                            fabFeed.menuOpen = false
-                            entryPointAnalytic.clickCreatePostEntryPoint()
-                            val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
-                            if (shouldShowNewContentCreationFlow) {
-                                val authors = viewModel.feedContentForm.authors
-                                val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
-                                intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
-                                    MAX_MULTI_SELECT_ALLOWED_VALUE)
-                                intent.putExtra(TITLE,
-                                    getString(feedComponentR.string.feed_post_sebagai))
-                                val name: String = MethodChecker.fromHtml(authors.first().name).toString()
-                                intent.putExtra(SUB_TITLE, name)
-                                intent.putExtra(TOOLBAR_ICON_URL,
-                                    authors.first().thumbnail
-                                )
-                                intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
-                                    ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
-                                startActivity(intent)
-                                TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
-                            } else {
-                                openBottomSheetToFollowOldFlow()
-                            }
-                        } catch (e: Exception) {
-                            Timber.e(e)
-                        }
-                    }
-                )
-            )
-        }
+        if(viewModel.isShowPostButton) items.add(createPostFab())
+        if(viewModel.isShowLiveButton) items.add(createLiveFab())
 
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)
@@ -669,7 +627,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun createCreateLiveFab(): FloatingButtonItem {
+    private fun createLiveFab(): FloatingButtonItem {
         return FloatingButtonItem(
             iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.VIDEO),
             title = getString(R.string.feed_fab_create_live),
@@ -678,6 +636,33 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 entryPointAnalytic.clickCreateLiveEntryPoint()
 
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_BROADCASTER)
+            }
+        )
+    }
+
+    private fun createPostFab(): FloatingButtonItem {
+        return FloatingButtonItem(
+            iconDrawable = getIconUnifyDrawable(requireContext(), IconUnify.IMAGE),
+            title = getString(R.string.feed_fab_create_post),
+            listener = {
+                fabFeed.menuOpen = false
+                entryPointAnalytic.clickCreatePostEntryPoint()
+                val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
+                if (shouldShowNewContentCreationFlow) {
+                    val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+                    intent.putExtra(APPLINK_AFTER_CAMERA_CAPTURE,
+                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                    intent.putExtra(MAX_MULTI_SELECT_ALLOWED,
+                        MAX_MULTI_SELECT_ALLOWED_VALUE)
+                    intent.putExtra(TITLE,
+                        getString(feedComponentR.string.feed_post_sebagai))
+                    intent.putExtra(APPLINK_FOR_GALLERY_PROCEED,
+                        ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+                    startActivity(intent)
+                    TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
+                } else {
+                    openBottomSheetToFollowOldFlow()
+                }
             }
         )
     }

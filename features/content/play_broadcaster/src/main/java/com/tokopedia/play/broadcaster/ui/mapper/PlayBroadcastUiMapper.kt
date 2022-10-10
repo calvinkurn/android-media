@@ -573,7 +573,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.livestream.hasUsername,
-                hasAcceptTnc = it.livestream.hasAcceptTnc,
+                hasAcceptTnc = it.livestream.enable,
             )
         }
     }
