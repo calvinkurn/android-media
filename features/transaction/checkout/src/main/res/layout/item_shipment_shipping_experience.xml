@@ -310,7 +310,7 @@
                         app:typographyType="body_3"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        tools:text="Pengiriman Bebas Ongkir (2-3 Hari)" />
+                        tools:text="Instan (Rp23.000)" />
 
                     <com.tokopedia.unifyprinciples.Typography
                         android:id="@+id/label_whitelabel_shipping_eta"
@@ -321,7 +321,7 @@
                         android:textColor="@color/Unify_N700_68"
                         app:typographyType="body_3"
                         app:typographyWeight="reguler"
-                        tools:text="Estimasi tiba"
+                        tools:text="Estimasi tiba 3 jam sejak kurir terima barang"
                         tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -333,7 +333,7 @@
                         android:textColor="@color/Unify_N700_96"
                         app:typographyType="small"
                         app:typographyWeight="reguler"
-                        tools:text="SiCepat"
+                        tools:text="Kurir otomatis dipilih Tokopedia"
                         tools:visibility="visible" />
 
                     <com.tokopedia.unifyprinciples.Typography
@@ -343,9 +343,9 @@
                         android:layout_marginStart="@dimen/dp_3"
                         android:text="@string/label_otdg_tnc"
                         android:textColor="@color/Unify_G500"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/label_whitelabel_otd"
-                        app:layout_constraintStart_toEndOf="@+id/label_whitelabel_otd"
-                        app:layout_constraintTop_toTopOf="@id/label_whitelabel_otd"
+                        app:layout_constraintBaseline_toBaselineOf="@+id/label_whitelabel_description"
+                        app:layout_constraintStart_toEndOf="@+id/label_whitelabel_description"
+                        app:layout_constraintTop_toTopOf="@id/label_whitelabel_description"
                         app:typographyType="small"
                         app:typographyWeight="reguler"
                         tools:text="S&amp;K Berlaku" />
