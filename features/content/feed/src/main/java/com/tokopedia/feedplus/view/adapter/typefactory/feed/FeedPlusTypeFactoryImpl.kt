@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.view.adapter.typefactory.feed
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory

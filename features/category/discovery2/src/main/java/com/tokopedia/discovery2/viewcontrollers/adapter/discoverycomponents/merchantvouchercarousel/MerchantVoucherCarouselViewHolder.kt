@@ -44,6 +44,24 @@ class MerchantVoucherCarouselViewHolder(itemView: View, val fragment: Fragment) 
         }else{
             handleErrorState()
         }
+        handleCarouselPagination()
+    }
+
+    private fun handleCarouselPagination() {
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val visibleItemCount: Int = linearLayoutManager.childCount
+                val totalItemCount: Int = linearLayoutManager.itemCount
+                val firstVisibleItemPosition: Int =
+                    linearLayoutManager.findFirstVisibleItemPosition()
+                if (!merchantVoucherCarouselViewModel.isLoadingData() && !merchantVoucherCarouselViewModel.isLastPage()) {
+                    if ((visibleItemCount + firstVisibleItemPosition >= totalItemCount) && firstVisibleItemPosition >= 0) {
+                        merchantVoucherCarouselViewModel.fetchCarouselPaginatedCoupon()
+                    }
+                }
+            }
+        })
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {

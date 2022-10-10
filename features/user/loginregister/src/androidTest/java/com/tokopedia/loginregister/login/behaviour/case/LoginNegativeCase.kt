@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.behaviour.case
 
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -56,7 +57,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingGivenText(R.id.tv_error, errorMsg)
+            isDisplayingGivenText(errorMsg)
         }
     }
 
@@ -70,7 +71,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("12345678901234567")
             clickSubmit()
-            isDisplayingSubGivenText(R.id.tv_error, errorMsg)
+            isDisplayingSubGivenText(errorMsg)
         }
     }
 
@@ -90,7 +91,7 @@ class LoginNegativeCase: LoginBase() {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
             clickSubmit()
-            isDisplayingGivenText(R.id.textinput_helper_text, "Kata sandi harus diisi")
+            isDisplayingGivenText("Kata sandi harus diisi")
         }
     }
 
@@ -100,7 +101,7 @@ class LoginNegativeCase: LoginBase() {
         runTest {
             inputEmailOrPhone("yoris.prayogo@tokopedia.com")
             clickSubmit()
-            shouldBeDisabled(R.id.input_email_phone)
+            shouldBeDisabledWithInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
         }
     }
 

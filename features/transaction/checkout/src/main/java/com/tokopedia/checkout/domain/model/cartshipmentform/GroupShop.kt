@@ -19,6 +19,7 @@ data class GroupShop(
         var products: List<Product> = emptyList(),
         var shippingId: Int = 0,
         var spId: Int = 0,
+        var boCode: String = "",
         var dropshipperName: String = "",
         var dropshipperPhone: String = "",
         var isUseInsurance: Boolean = false,
