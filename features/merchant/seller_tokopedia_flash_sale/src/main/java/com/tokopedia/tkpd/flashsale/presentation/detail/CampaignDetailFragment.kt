@@ -218,6 +218,17 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     R.string.stfs_choosen_product_count_placeholder,
                     products.count()
                 )
+            binding?.apply {
+                if (products.count() > Int.ZERO && viewModel.isOnCheckBoxState()) {
+                    btnRegister.gone()
+                    btnDelete.visible()
+                    btnEdit.visible()
+                } else {
+                    btnRegister.visible()
+                    btnDelete.gone()
+                    btnEdit.gone()
+                }
+            }
         }
     }
 
@@ -763,7 +774,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
-        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
         val isShown = newItems[Int.ZERO].isCheckBoxShown
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
@@ -799,11 +810,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     reserveProduct()
                 }
             }
-            if (isShown) {
-                btnRegister.gone()
-                btnDelete.visible()
-                btnEdit.visible()
-            } else {
+            if (!isShown) {
                 btnRegister.visible()
                 btnDelete.gone()
                 btnEdit.gone()
@@ -1289,6 +1296,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             )
 
             btnSelectAllProduct.setOnClickListener {
+                viewModel.removeAllSelectedItems()
                 onShowOrHideItemCheckBox()
             }
         }

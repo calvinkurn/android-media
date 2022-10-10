@@ -452,6 +452,7 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun removeAllSelectedItems() {
         selectedItems.clear()
+        _selectedProducts.value = this.selectedItems
         setCheckBoxStateStatus(false)
         setDeleteStateStatus(false)
     }
