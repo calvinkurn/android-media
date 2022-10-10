@@ -3,6 +3,7 @@ package com.tokopedia.play.widget.player
 import android.content.Context
 import android.net.Uri
 import android.os.CountDownTimer
+import android.util.Log
 import com.google.android.exoplayer2.C
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
@@ -16,6 +17,11 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.tokopedia.play_common.util.PlayConnectionCommon
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
 
 
 /**
@@ -59,11 +65,30 @@ open class PlayVideoPlayer(val context: Context) {
         if (videoUrl == null || videoUrl?.isBlank() == true) return
 
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
+        read()
 
         exoPlayer.playWhenReady = true
         exoPlayer.prepare(mediaSource,true, false)
     }
 
+
+    fun read(){
+        GlobalScope.launch {
+            val url = URL(videoUrl)
+            val inputStr = BufferedReader(
+                InputStreamReader(
+                    url.openStream()
+                )
+            )
+
+            var inputLine: String?
+
+            while (inputStr.readLine().also { inputLine = it } != null)Log.d("sukses $videoUrl", inputLine.toString())
+
+
+            inputStr.close()
+        }
+    }
     fun stop() {
         autoStopTimer?.cancel()
         exoPlayer.stop()
