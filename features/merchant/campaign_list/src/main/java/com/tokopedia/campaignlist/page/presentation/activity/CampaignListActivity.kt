@@ -13,7 +13,7 @@ class CampaignListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_campaign_list)
 
         val toolbar = findViewById<HeaderUnify>(R.id.header)
-        toolbar.headerTitle = "Daftar Campaign Aktif"
+        toolbar.headerTitle = getString(R.string.active_campaign_list)
         toolbar.setNavigationOnClickListener { finish() }
 
         if (savedInstanceState == null) {
@@ -24,5 +24,7 @@ class CampaignListActivity : AppCompatActivity() {
         }
 
     }
+
+
 
 }
