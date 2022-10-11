@@ -6,9 +6,14 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.DealsComponentInstance
 import com.tokopedia.deals.checkout.di.DaggerDealsCheckoutComponent
 import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
+import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
+import com.tokopedia.deals.pdp.data.Outlet
+import com.tokopedia.deals.pdp.ui.fragment.DealsPDPAllLocationFragment
+import com.tokopedia.deals.R.anim as animDeals
+import com.tokopedia.abstraction.R.id as idAbstraction
 
-class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent> {
+class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutComponent>, DealsCheckoutCallbacks {
 
     override fun getNewFragment(): Fragment {
         return DealsCheckoutFragment.createInstance(
@@ -21,6 +26,19 @@ class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutCom
         return DaggerDealsCheckoutComponent.builder()
             .dealsComponent(DealsComponentInstance.getDealsComponent(application, this))
             .build()
+    }
+
+    override fun onShowAllLocation(outlets: List<Outlet>) {
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setCustomAnimations(
+            animDeals.deals_slide_in_up,
+            animDeals.deals_slide_in_down,
+            animDeals.deals_slide_out_down,
+            animDeals.deals_slide_out_up
+        )
+        transaction.add(idAbstraction.parent_view, DealsPDPAllLocationFragment.createInstance(outlets, false))
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
     companion object {

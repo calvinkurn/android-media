@@ -79,7 +79,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             animDeals.deals_slide_out_down,
             animDeals.deals_slide_out_up
         )
-        transaction.add(idAbstraction.parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
+        transaction.add(idAbstraction.parent_view, DealsPDPAllLocationFragment.createInstance(outlets, true))
         transaction.addToBackStack(null)
         transaction.commit()
     }

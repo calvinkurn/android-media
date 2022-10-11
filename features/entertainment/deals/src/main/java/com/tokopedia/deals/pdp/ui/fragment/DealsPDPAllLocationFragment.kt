@@ -24,6 +24,7 @@ import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.adapter.DealsDetailAllLocationAdapter
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPAllLocationViewModel
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -40,6 +41,7 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
     private val viewModel by viewModels<DealsPDPAllLocationViewModel> { viewModelFactory }
     private var binding by autoClearedNullable<FragmentDealsDetailLocationBinding>()
     private var outlets: List<Outlet>? = null
+    private var isShowSearchBar: Boolean = true
     private var toolbar: HeaderUnify? = null
     private var noContentLayout: LinearLayout? = null
     private var recycleView: RecyclerView? = null
@@ -53,6 +55,7 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         outlets = arguments?.getParcelableArrayList<Outlet>(EXTRA_OUTLETS).orEmpty()
+        isShowSearchBar = arguments?.getBoolean(EXTRA_TOGGLE, true) ?: true
         super.onCreate(savedInstanceState)
     }
 
@@ -106,18 +109,23 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     private fun setupSearchBar() {
         searchBar?.apply {
-            searchBarTextField.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(text: Editable?) {
-                    text?.let { text ->
-                        outlets?.let { outlets ->
-                            viewModel.submitSearch(text.toString(), outlets)
+            if (isShowSearchBar) {
+                show()
+                searchBarTextField.addTextChangedListener(object : TextWatcher {
+                    override fun afterTextChanged(text: Editable?) {
+                        text?.let { text ->
+                            outlets?.let { outlets ->
+                                viewModel.submitSearch(text.toString(), outlets)
+                            }
                         }
                     }
-                }
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-            })
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                })
+            } else {
+                gone()
+            }
         }
     }
 
@@ -144,7 +152,7 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
     }
 
     private fun openGoogleMaps(context: Context, latLng: String) {
-        val gmmIntentUri = Uri.parse("${URI_MAPS}$latLng")
+        val gmmIntentUri = Uri.parse("$URI_MAPS$latLng")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage(PACKAGE_MAPS)
         if (mapIntent.resolveActivity(context.packageManager) != null) {
@@ -173,13 +181,15 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val EXTRA_OUTLETS = "EXTRA_OUTLETS"
+        private const val EXTRA_TOGGLE = "EXTRA_TOGGLE"
         private const val PACKAGE_MAPS = "com.google.android.apps.maps"
         private const val URI_MAPS = "geo:0,0?q="
 
-        fun createInstance(outlets: List<Outlet>): DealsPDPAllLocationFragment {
+        fun createInstance(outlets: List<Outlet>, isShowSearchBar: Boolean): DealsPDPAllLocationFragment {
             val fragment = DealsPDPAllLocationFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_OUTLETS, ArrayList(outlets))
+            bundle.putBoolean(EXTRA_TOGGLE, isShowSearchBar)
             fragment.arguments = bundle
             return fragment
         }

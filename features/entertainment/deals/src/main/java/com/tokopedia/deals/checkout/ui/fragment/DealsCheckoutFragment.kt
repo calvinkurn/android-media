@@ -1,5 +1,6 @@
 package com.tokopedia.deals.checkout.ui.fragment
 
+import android.app.Activity
 import android.graphics.Paint
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,8 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
-import com.tokopedia.deals.R
 import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
+import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
+import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity
 import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_DETAIL
 import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_VERIFY
 import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
@@ -42,6 +44,7 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentDealsCheckoutBinding>()
     private val viewModel by viewModels<DealsCheckoutViewModel> { viewModelFactory }
+    private var dealsCheckoutCallbacks: DealsCheckoutCallbacks? = null
     private var dealsDetail: ProductDetailData? = null
     private var dealsVerify: EventVerifyResponse? = null
     private var dealsItemMap: ItemMapResponse? = null
@@ -76,6 +79,11 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
             dealsVerify = it.getParcelable(EXTRA_DEAL_VERIFY)
             dealsItemMap = dealsVerify?.metadata?.itemMap?.first()
         }
+    }
+
+    override fun onAttach(activity: Activity) {
+        super.onAttach(activity)
+        dealsCheckoutCallbacks = activity as DealsCheckoutActivity
     }
 
     override fun onCreateView(
@@ -135,9 +143,12 @@ class DealsCheckoutFragment: BaseDaggerFragment() {
                 tgNumbersLocation?.text = String.format(
                     getString(
                         com.tokopedia.deals.R.string.deals_checkout_number_of_locations,
-                            it.outlets.size
+                        it.outlets.size
                     )
                 )
+                tgNumbersLocation?.setOnClickListener { _ ->
+                    dealsCheckoutCallbacks?.onShowAllLocation(it.outlets)
+                }
             }
 
             etEmail?.textFieldInput?.setText(userSession.email)
