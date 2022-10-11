@@ -252,15 +252,18 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
             }
             type.equals(CANCEL) -> {
+                tmTracker?.clickProgramBsCancel(shopId.toString(), programId.toString())
                 val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
                 dialog?.setTitle("Yakin batalkan program?")
                 dialog?.setDescription("Pengaturan yang dibuat akan hilang kalau kamu batalkan proses pengaturan TokoMember, lho.")
                 dialog?.setPrimaryCTAText("Lanjutkan")
                 dialog?.setSecondaryCTAText("Batalkan Program")
                 dialog?.setPrimaryCTAClickListener {
+                    tmTracker?.clickProgramCancelPopUpPrimary(shopId.toString(), programId.toString())
                     dialog.dismiss()
                 }
                 dialog?.setSecondaryCTAClickListener {
+                    tmTracker?.clickProgramCancelPopUpSecondary(shopId.toString(), programId.toString())
                     tmDashCreateViewModel.getProgramInfo(programId,shopId, ACTION_CANCEL)
                     dialog.dismiss()
                 }

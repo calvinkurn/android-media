@@ -174,6 +174,9 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
                     if(callingFragment is TmDashCouponDetailFragment){
                         tmTracker.clickSimpanQuotaCouponDetail(userSession.shopId)
                     }
+                    else{
+                        tmTracker.clickAddQuotaCTA(userSession.shopId)
+                    }
                     tmCouponViewModel.updateQuota(
                         quota = quota,
                         voucherId = voucherId.toIntOrZero(),

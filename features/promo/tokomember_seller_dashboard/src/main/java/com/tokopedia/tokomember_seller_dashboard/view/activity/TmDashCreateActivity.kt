@@ -10,9 +10,11 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.CARD
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_BUAT
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_MULTIPLE_EXTEND
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.COUPON_SINGLE
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_BUAT
+import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PREVIEW_EXTEND
 import com.tokopedia.tokomember_common_widget.util.CreateScreenType.Companion.PROGRAM
 import com.tokopedia.tokomember_common_widget.util.ProgramActionType
 import com.tokopedia.tokomember_seller_dashboard.R
@@ -134,11 +136,27 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_EXTEND_PROGRAM)
                             }
                             setPrimaryCTAClickListener {
-                                tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
+                                if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EXTEND) {
+                                    tmTracker?.clickProgramExtensionPopUpPrimary(shopId, intent?.extras?.getInt(BUNDLE_PROGRAM_ID).toString())
+                                }
+                                else if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EDIT) {
+                                    tmTracker?.clickProgramEditPopUpPrimary(shopId, intent?.extras?.getInt(BUNDLE_PROGRAM_ID).toString())
+                                }
+                                else {
+                                    tmTracker?.clickProgramCreationCancelPopupPrimary(shopId)
+                                }
                                 dismiss()
                             }
                             setSecondaryCTAClickListener {
-                                tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
+                                if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EXTEND) {
+                                    tmTracker?.clickProgramExtensionPopUpSecondary(shopId, intent?.extras?.getInt(BUNDLE_PROGRAM_ID).toString())
+                                }
+                                else if(intent.extras?.getInt(BUNDLE_PROGRAM_TYPE) == ProgramActionType.EDIT) {
+                                    tmTracker?.clickProgramEditPopUpSecondary(shopId, intent?.extras?.getInt(BUNDLE_PROGRAM_ID).toString())
+                                }
+                                else {
+                                    tmTracker?.clickProgramCreationCancelPopupSecondary(shopId)
+                                }
                                 dismiss()
                                 finish()
                             }
@@ -154,13 +172,14 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
                                 setPrimaryCTAText(TM_DIALOG_CANCEL_CTA_PRIMARY_COUPON_EDIT)
                                 setSecondaryCTAText(TM_DIALOG_CANCEL_CTA_SECONDARY_COUPON)
                             }
+                            val arg = supportFragmentManager.fragments.firstOrNull()?.arguments
+                            val shopId  = arg?.getInt(BUNDLE_SHOP_ID)
                             setPrimaryCTAClickListener {
-                                val arg = supportFragmentManager.fragments.firstOrNull()?.arguments
-                                val shopId  = arg?.getInt(BUNDLE_SHOP_ID)
                                 tmTracker?.clickCouponCancelPopUpPrimary(shopId.toString())
                                 dismiss()
                             }
                             setSecondaryCTAClickListener {
+                                tmTracker?.clickCouponCancelPopUpSecondary(shopId.toString())
                                 dismiss()
                                 finish()
                             }
@@ -303,6 +322,10 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             COUPON_MULTIPLE ->{
                 bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
             }
+            COUPON_MULTIPLE_EXTEND ->{
+                bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, COUPON_MULTIPLE_EXTEND)
+                bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
+            }
             COUPON_MULTIPLE_BUAT ->{
                 bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, COUPON_MULTIPLE_BUAT)
                 bundle.let { TmMultipleCuponCreateFragment.newInstance(it) }.let { addFragment(it, "") }
@@ -312,6 +335,10 @@ class TmDashCreateActivity : AppCompatActivity(), TmOpenFragmentCallback {
             }
             PREVIEW_BUAT->{
                 bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, PREVIEW_BUAT)
+                bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }
+            }
+            PREVIEW_EXTEND->{
+                bundle.putInt(BUNDLE_CREATE_SCREEN_TYPE, PREVIEW_EXTEND)
                 bundle.let { TmDashPreviewFragment.newInstance(it) }.let { addFragment(it, "") }
             }
         }

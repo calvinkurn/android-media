@@ -458,6 +458,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                 dialog?.show()
             }
             ADD_QUOTA ->{
+                tmTracker?.clickCouponOptionBsQuota(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 TmAddQuotaBottomsheet.show(childFragmentManager, voucherId, currentQuota, couponType, this, this,maxCashback)
             }
             DUPLICATE ->{

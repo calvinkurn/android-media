@@ -99,7 +99,7 @@ object Tracker {
         const val VIEW_PROGRAM_LIST_TAB_SECTION = "program_tab - view section"
         const val CLICK_PROGRAM_LIST_BUTTON = "program_tab - click buat program"
         const val CLICK_PROGRAM_ACTIVE_THREE_DOT = "program_tab - click 3 dots (active program)"
-        const val CLICK_PROGRAM_WAITING_THREE_DOT = "program_tab - click 3 dots (active program)"
+        const val CLICK_PROGRAM_WAITING_THREE_DOT = "program_tab - click 3 dots (waiting program)"
 
         //Program Edit
         const val CLICK_PROGRAM_EDIT = "program_tab - click ubah program (waiting program)"
