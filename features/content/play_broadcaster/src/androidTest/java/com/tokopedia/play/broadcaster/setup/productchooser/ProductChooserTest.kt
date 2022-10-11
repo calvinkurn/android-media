@@ -22,7 +22,7 @@ class ProductChooserTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
     private val mockSection = List(1) {
-        ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(1) {
+        ProductTagSectionUiModel("", CampaignStatus.Ongoing, List(2) {
             ProductUiModel(it.toString(), "Product $it", "", 1, OriginalPrice("Rp1000.00", 1000.0))
         })
     }
@@ -64,7 +64,7 @@ class ProductChooserTest {
     }
 
     @Test
-    fun testCloseBottomSheet_whenHasSelectedProduct() {
+    fun testCloseBottomSheet_whenHasSelectedProduct_andThenNoChangeProduct() {
         val robot = ProductChooserRobot(listener) {
             productSetupViewModel(
                 productSectionList = mockSection,
@@ -73,7 +73,7 @@ class ProductChooserTest {
         }
 
         robot.close()
-        robot.assertExitDialog(isShown = true)
-        robot.assertBottomSheet(isOpened = true)
+        robot.assertExitDialog(isShown = false)
+        robot.assertBottomSheet(isOpened = false)
     }
 }

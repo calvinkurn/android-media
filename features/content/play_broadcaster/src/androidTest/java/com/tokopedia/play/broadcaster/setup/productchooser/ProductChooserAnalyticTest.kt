@@ -111,7 +111,8 @@ class ProductChooserAnalyticTest {
     fun testAnalytic_saveProduct() {
         val robot = createRobot()
 
-        robot.saveProducts()
+        robot.selectProduct(0)
+            .saveProducts()
 
         assertThat(
             cassavaTestRule.validate(analyticFile),
