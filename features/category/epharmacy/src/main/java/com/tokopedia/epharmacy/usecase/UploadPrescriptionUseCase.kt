@@ -64,7 +64,6 @@ class UploadPrescriptionUseCase @Inject constructor(
 
             val encodedString = Base64.encodeToString(byteArrayImage, Base64.DEFAULT)
             finalEncodedString = "${IMAGE_DATA_PREFIX}${encodedString}"
-            Log.v(EPharmacyModuleName,"String Main length : ${finalEncodedString.length} , $finalEncodedString")
             logBreadCrumb("$EPharmacyModuleName,Return Main String = ${finalEncodedString.length}}")
             finalEncodedString
         }catch (e : Exception){
@@ -88,7 +87,6 @@ class UploadPrescriptionUseCase @Inject constructor(
                 }
             }
             logBreadCrumb("$EPharmacyModuleName,Return Catch String = ${finalEncodedString.length}}")
-            Log.v(EPharmacyModuleName,"String Catch length : ${finalEncodedString.length} , $finalEncodedString")
             finalEncodedString
         }
     }
