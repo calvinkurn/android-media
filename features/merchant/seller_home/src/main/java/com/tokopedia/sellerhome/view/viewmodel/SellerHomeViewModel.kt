@@ -36,6 +36,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
@@ -46,6 +47,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
@@ -54,8 +56,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
-import com.tokopedia.sellerhomecommon.sse.SellerHomeCommonSSE
-import com.tokopedia.sellerhomecommon.sse.model.SSEModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
+import com.tokopedia.sellerhomecommon.sse.mapper.WidgetSSEMapper
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -69,6 +71,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -101,13 +104,15 @@ class SellerHomeViewModel @Inject constructor(
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
-    private val sellerHomeSse: Lazy<SellerHomeCommonSSE>,
+    private val widgetSse: Lazy<SellerHomeWidgetSSE>,
+    private val widgetSseMapper: Lazy<WidgetSSEMapper>,
     private val remoteConfig: SellerHomeRemoteConfig,
     private val dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
+        private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
     }
 
@@ -254,14 +259,14 @@ class SellerHomeViewModel @Inject constructor(
             useCase.params = params
             if (heightDp == null) {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets ->
-                    connectSSE(widgets)
+                    startSSE(widgets)
                 }
             } else {
                 getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
                     val initialWidgetFlow = sellerHomeLayoutHelper.get()
                         .getInitialWidget(widgets, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
-                    connectSSE(widgets)
+                    startSSE(widgets)
                     return@getDataFromUseCase initialWidgetFlow
                 }
             }
@@ -536,23 +541,49 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
-    private fun connectSSE(widgets: List<BaseWidgetUiModel<*>>) {
+    private fun startSSE(widgets: List<BaseWidgetUiModel<*>>) {
         sseJob?.cancel()
         sseJob = viewModelScope.launch(dispatcher.io) {
             val dataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
-            sellerHomeSse.get().connect(SELLER_HOME_PAGE_NAME, dataKeys)
-            sellerHomeSse.get().listen().collect {
-                handleSSEMessage(it)
-            }
+            widgetSse.get().connect(SELLER_HOME_SSE, dataKeys)
+            widgetSse.get().listen()
+                .map {
+                    widgetSseMapper.get().mappingWidget(it.event, it.message)
+                }
+                .flowOn(dispatcher.main)
+                .collect {
+                    handleSSEMessage(it)
+                }
         }
     }
 
-    private fun handleSSEMessage(sseModel: SSEModel) {
-        println("SSE : $sseModel")
+    private fun handleSSEMessage(model: BaseDataUiModel) {
+        when (model) {
+            is CardDataUiModel -> setLiveWidgetLiveData(_cardWidgetData, model)
+            is LineGraphDataUiModel -> setLiveWidgetLiveData(_lineGraphWidgetData, model)
+            is ProgressDataUiModel -> setLiveWidgetLiveData(_progressWidgetData, model)
+            is PostListDataUiModel -> setLiveWidgetLiveData(_postListWidgetData, model)
+            is CarouselDataUiModel -> setLiveWidgetLiveData(_carouselWidgetData, model)
+            is TableDataUiModel -> setLiveWidgetLiveData(_tableWidgetData, model)
+            is PieChartDataUiModel -> setLiveWidgetLiveData(_pieChartWidgetData, model)
+            is BarChartDataUiModel -> setLiveWidgetLiveData(_barChartWidgetData, model)
+            is MultiLineGraphDataUiModel -> setLiveWidgetLiveData(_multiLineGraphWidgetData, model)
+            is AnnouncementDataUiModel -> setLiveWidgetLiveData(_announcementWidgetData, model)
+            is RecommendationDataUiModel -> setLiveWidgetLiveData(_recommendationWidgetData, model)
+            is MilestoneDataUiModel -> setLiveWidgetLiveData(_milestoneWidgetData, model)
+            is CalendarDataUiModel -> setLiveWidgetLiveData(_calendarWidgetData, model)
+            is UnificationDataUiModel -> setLiveWidgetLiveData(_unificationWidgetData, model)
+        }
+    }
+
+    private fun <T : BaseDataUiModel> setLiveWidgetLiveData(
+        liveData: MutableLiveData<Result<List<T>>>, model: T
+    ) {
+        liveData.value = Success(listOf(model))
     }
 
     private fun stopSSE() {
         sseJob?.cancel()
-        sellerHomeSse.get().close()
+        widgetSse.get().close()
     }
 }
