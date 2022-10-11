@@ -38,8 +38,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN950"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_3"
-            app:typographyWeight="bold" />
+            app:typographyType="display_3"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_description_shipment"
@@ -52,7 +51,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tv_warning_shipment"
+            android:id="@+id/tv_label_shipment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/Unify_NN600"

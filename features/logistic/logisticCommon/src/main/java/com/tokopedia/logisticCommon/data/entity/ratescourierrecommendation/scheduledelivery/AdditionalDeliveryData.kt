@@ -6,6 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class AdditionalDeliveryData(
+    @SerializedName("recommend_additional_shipper")
+    val recommendAdditionalShipper: Boolean = false,
     @SerializedName("delivery_type")
     val deliveryType: Int = 0,
     @SerializedName("available")

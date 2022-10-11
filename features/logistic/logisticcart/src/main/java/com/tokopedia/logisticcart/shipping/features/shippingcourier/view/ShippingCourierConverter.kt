@@ -1,6 +1,9 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -17,7 +20,8 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel): CourierItemData {
+    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel,
+                                 shippingRecommendationData: ShippingRecommendationData? = null): CourierItemData {
         val courierItemData = CourierItemData()
         courierItemData.shipperId = shippingCourierUiModel.productData.shipperId
         courierItemData.serviceId = shippingCourierUiModel.serviceData.serviceId
@@ -105,6 +109,33 @@ class ShippingCourierConverter @Inject constructor() {
             courierItemData.etaText = shippingCourierUiModel.productData.estimatedTimeArrival.textEta
             courierItemData.etaErrorCode = shippingCourierUiModel.productData.estimatedTimeArrival.errorCode
         }
+
+        /*Schedule Delivery*/
+        shippingRecommendationData?.additionalDeliveryData?.takeIf { it.hidden.not() }?.apply {
+            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel()
+        }
+
         return courierItemData
+    }
+
+    private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
+        scheduleDate: String? = null,
+        timeslotId: Long? = null
+    ) : ScheduleDeliveryUiModel? {
+        var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
+
+        scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            isSelected = recommendAdditionalShipper,
+            available = available,
+            hidden = hidden,
+            title = title,
+            text = text,
+            deliveryServices = deliveryServices,
+            isNeedShowCoachMark = true
+        ).apply {
+            setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
+        }
+
+        return scheduleDeliveryUiModel
     }
 }

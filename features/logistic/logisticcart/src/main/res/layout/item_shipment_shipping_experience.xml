@@ -345,7 +345,7 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <com.tokopedia.logisticcart.shipping.features.shippingnowwidget.ShippingNowWidget
+                <com.tokopedia.logisticcart.shipping.features.shippingschedulewidget.ShippingScheduleWidget
                     android:id="@+id/shipping_now_widget"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

@@ -114,6 +114,9 @@ class ShipmentCartItemModel(
 
         // Flag for tracking
         var isHasShownCourierError: Boolean = false,
+
+        // Show schedule delivery
+        var isShowScheduleDelivery : Boolean = false
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
@@ -167,6 +170,7 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
             newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
             newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.isShowScheduleDelivery = shipmentCartItemModel.isShowScheduleDelivery
             return newShipmentCartItemModel
         }
     }

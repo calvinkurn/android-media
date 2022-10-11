@@ -126,6 +126,7 @@ import com.tokopedia.logisticcart.shipping.model.CourierItemData;
 import com.tokopedia.logisticcart.shipping.model.OntimeDelivery;
 import com.tokopedia.logisticcart.shipping.model.PreOrderModel;
 import com.tokopedia.logisticcart.shipping.model.Product;
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -3582,6 +3583,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void onViewFreeShippingPlusBadge() {
         checkoutAnalyticsCourierSelection.eventViewGotoplusTicker();
+    }
+
+    @Override
+    public void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position) {
+        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(position);
+
+        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+            shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().setScheduleDeliveryUiModel(scheduleDeliveryUiModel);
+            shipmentAdapter.notifyItemChanged(position);
+        }
     }
 
     @Override

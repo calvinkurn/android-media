@@ -6,6 +6,7 @@ import com.tokopedia.checkout.view.uimodel.CrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
@@ -147,4 +148,6 @@ public interface ShipmentAdapterActionListener {
     void onViewFreeShippingPlusBadge();
 
     void onInsuranceInfoTooltipClickedTrackingAnalytics();
+
+    void onChangeScheduleDelivery(ScheduleDeliveryUiModel scheduleDeliveryUiModel, int position);
 }

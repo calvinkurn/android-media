@@ -737,6 +737,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             } else {
                 ShipmentDetailData shipmentDetailData = new ShipmentDetailData();
                 shipmentDetailData.setSelectedCourier(newCourierItemData);
@@ -748,6 +749,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (!newCourierItemData.isAllowDropshiper()) {
                     shipmentCartItemModel.getSelectedShipmentDetailData().setUseDropshipper(null);
                 }
+                shipmentCartItemModel.setShowScheduleDelivery(newCourierItemData.getScheduleDeliveryUiModel() != null);
             }
             updateShipmentCostModel();
             checkDataForCheckout();
