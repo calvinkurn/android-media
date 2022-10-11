@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart.schedule_slot.utils
 
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
@@ -15,11 +14,17 @@ import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 object ScheduleDeliveryMapper {
 
     fun mapResponseToUiModel(
-        additionalDeliveryData: AdditionalDeliveryData,
+        deliveryServices: List<DeliveryService>,
+        selectedDateId: String,
         selectedTimeSlot: DeliveryProduct,
-        listener: ScheduleSlotListener
+        listener: ScheduleSlotListener,
+        notice: Notice
     ): BottomSheetUiModel {
-        val buttonDateUiModel = generateDateUiModel(additionalDeliveryData.deliveryServices, selectedTimeSlot)
+        val buttonDateUiModel = generateDateUiModel(
+            deliveryServices,
+            selectedTimeSlot,
+            selectedDateId
+        )
         return BottomSheetUiModel(
             date = ChooseDateUiModel(content = buttonDateUiModel),
             availableTitle = TitleSectionUiModel(
@@ -33,7 +38,7 @@ object ScheduleDeliveryMapper {
             unavailableTitle = TitleSectionUiModel(
                 title = "Jadwal habis atau tidak tersedia",
             ),
-            infoUiModel = mapNoticeToScheduleInfoUiModel(additionalDeliveryData.notice)
+            infoUiModel = mapNoticeToScheduleInfoUiModel(notice)
         )
     }
 
@@ -46,26 +51,31 @@ object ScheduleDeliveryMapper {
         )
     }
 
-    private fun generateDateUiModel(deliveryServices: List<DeliveryService>, selectedTimeSlot: DeliveryProduct): List<ButtonDateUiModel> {
+    private fun generateDateUiModel(
+        deliveryServices: List<DeliveryService>,
+        selectedTimeSlot: DeliveryProduct,
+        selectedDateId: String
+    ): List<ButtonDateUiModel> {
         val dateUiModel = mutableListOf<ButtonDateUiModel>()
         deliveryServices.forEach { service ->
-            val isDateSelected = service.deliveryProducts.any { it.id == selectedTimeSlot.id }
             val buttonDateUiModel = ButtonDateUiModel(
                 title = service.titleLabel,
                 // todo
                 date = service.title,
                 isEnabled = service.available,
                 id = service.id,
-                isSelected = isDateSelected,
+                isSelected = selectedDateId == service.id,
                 availableTime = generateTimeUiModel(
                     service.deliveryProducts.filter { it.available },
                     service.id,
-                    selectedTimeSlot
+                    selectedTimeSlot,
+                    selectedDateId == service.id
                 ),
                 unavailableTime = generateTimeUiModel(
                     service.deliveryProducts.filter { !it.available },
                     service.id,
-                    selectedTimeSlot
+                    selectedTimeSlot,
+                    selectedDateId == service.id
                 )
             )
             dateUiModel.add(buttonDateUiModel)
@@ -76,14 +86,15 @@ object ScheduleDeliveryMapper {
     private fun generateTimeUiModel(
         timeOptions: List<DeliveryProduct>,
         dayId: String,
-        selectedTimeSlot: DeliveryProduct
+        selectedTimeSlot: DeliveryProduct,
+        isDateSelected: Boolean
     ): List<ChooseTimeUiModel> {
         return timeOptions.map { time ->
             ChooseTimeUiModel(
                 title = generateTimeTitle(time),
                 note = time.text,
                 isEnabled = time.available,
-                isSelected = time.id == selectedTimeSlot.id,
+                isSelected = isDateSelected && time.id == selectedTimeSlot.id,
                 timeId = time.id,
                 dateId = dayId
             )
