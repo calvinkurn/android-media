@@ -73,7 +73,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
-                channelPositionInList + 1, /** position **/
+                channelPositionInList, /** position **/
                 config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
@@ -115,7 +115,7 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
-                channelPositionInList + 1, /** position **/
+                channelPositionInList, /** position **/
                 config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/

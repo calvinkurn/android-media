@@ -19,6 +19,7 @@ class DeveloperOptionTypeFactoryImpl(
     private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
+    override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
     override fun type(uiModel: PdpDevUiModel): Int = PdpDevViewHolder.LAYOUT
     override fun type(uiModel: AccessTokenUiModel): Int = AccessTokenViewHolder.LAYOUT
     override fun type(uiModel: SystemNonSystemAppsUiModel): Int = SystemNonSystemAppsViewHolder.LAYOUT
@@ -66,6 +67,7 @@ class DeveloperOptionTypeFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
+            DeveloperOptionsOnNotificationViewHolder.LAYOUT -> DeveloperOptionsOnNotificationViewHolder(view)
             PdpDevViewHolder.LAYOUT -> PdpDevViewHolder(view)
             AccessTokenViewHolder.LAYOUT -> AccessTokenViewHolder(view, accessTokenListener)
             SystemNonSystemAppsViewHolder.LAYOUT -> SystemNonSystemAppsViewHolder(view)

@@ -3,6 +3,7 @@ package com.tokopedia.search.benchmark
 import android.widget.FrameLayout
 import androidx.benchmark.junit4.BenchmarkRule
 import androidx.benchmark.junit4.measureRepeated
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.createInspirationCarouselListener
 import com.tokopedia.search.mock.MockSearchProductModel.getInspirationCarouselListViewModel
@@ -19,11 +20,13 @@ internal class BenchmarkInspirationCarouselComponent {
     @get:Rule
     val benchmarkViewRule = BenchmarkViewRule()
 
+    private val recycledViewPool = RecyclerView.RecycledViewPool()
+
     @Test
     fun benchmark_onBind_ViewHolder_inspiration_carousel_list() {
         val itemView = BenchmarkObject.simpleViewFromLayout(InspirationCarouselViewHolder.LAYOUT, benchmarkViewRule.getBenchmarkActivity())
         val viewHolder = InspirationCarouselViewHolder(
-                itemView, createInspirationCarouselListener())
+                itemView, createInspirationCarouselListener(), recycledViewPool)
         val data = getInspirationCarouselListViewModel()
         benchmarkRule.measureRepeated {
             InstrumentationRegistry.getInstrumentation().runOnMainSync {
@@ -37,7 +40,7 @@ internal class BenchmarkInspirationCarouselComponent {
         val viewGroup = FrameLayout(benchmarkViewRule.getBenchmarkActivity())
         val recyclerViewAdapter = BenchmarkObject.simpleAdapter(
                 InspirationCarouselViewHolder.LAYOUT) {
-            InspirationCarouselViewHolder(it, createInspirationCarouselListener())
+            InspirationCarouselViewHolder(it, createInspirationCarouselListener(), recycledViewPool)
         }
 
         benchmarkRule.measureRepeated {

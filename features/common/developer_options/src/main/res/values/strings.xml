@@ -124,4 +124,6 @@
     <string name="label_is_device_test">Device Hansel Test: %1$s</string>
     <string name="label_device_id">Device ID: %1$s</string>
 
+    <string name="enable_developer_options_on_notification">Enable Developer Options on Notification</string>
+
 </resources>
