@@ -12,7 +12,7 @@ import com.tokopedia.webview.KEY_TITLEBAR
 import com.tokopedia.webview.KEY_URL
 import com.tokopedia.webview.ext.encodeOnce
 
-class UpsellWebViewActivity: BaseSimpleWebViewActivity() {
+class UpsellWebViewActivity : BaseSimpleWebViewActivity() {
 
     override fun createFragmentInstance(): Fragment {
         return UpsellWebViewFragment.newInstance(url, needLogin, allowOverride, pullToRefresh)
@@ -25,12 +25,12 @@ class UpsellWebViewActivity: BaseSimpleWebViewActivity() {
     companion object {
 
         fun getStartIntent(
-                context: Context,
-                url: String,
-                showToolbar: Boolean = true,
-                allowOverride: Boolean = true,
-                needLogin: Boolean = false,
-                title: String = ""
+            context: Context,
+            url: String,
+            showToolbar: Boolean = true,
+            allowOverride: Boolean = true,
+            needLogin: Boolean = false,
+            title: String = ""
         ): Intent {
             return Intent(context, UpsellWebViewActivity::class.java).apply {
                 putExtra(KEY_URL, url.encodeOnce())

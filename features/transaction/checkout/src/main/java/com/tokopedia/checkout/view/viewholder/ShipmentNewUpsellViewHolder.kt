@@ -16,7 +16,10 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
-class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterActionListener: ShipmentAdapterActionListener) : RecyclerView.ViewHolder(itemView) {
+class ShipmentNewUpsellViewHolder(
+    itemView: View,
+    private val shipmentAdapterActionListener: ShipmentAdapterActionListener
+) : RecyclerView.ViewHolder(itemView) {
 
     private val container: ContainerUnify = itemView.findViewById(R.id.checkout_upsell_container)
     private val image: ImageUnify = itemView.findViewById(R.id.checkout_upsell_image)
@@ -36,18 +39,23 @@ class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterAct
             button.setOnClickListener {
                 shipmentAdapterActionListener.onClickCancelNewUpsellCard(data)
             }
-            button.layoutParams.width = 82.toPx()
+            button.layoutParams.width = BUTTON_CANCEL_WIDTH.toPx()
         } else {
             container.setContainerColor(ContainerUnify.GREY)
             val spannedString = SpannableString("${data.priceWording}/${data.duration}")
-            spannedString.setSpan(RelativeSizeSpan(0.875f), spannedString.lastIndexOf("/") + 1, spannedString.length, SpannableString.SPAN_INCLUSIVE_EXCLUSIVE)
+            spannedString.setSpan(
+                RelativeSizeSpan(WORDING_DURATION_SIZE),
+                spannedString.lastIndexOf("/") + 1,
+                spannedString.length,
+                SpannableString.SPAN_INCLUSIVE_EXCLUSIVE
+            )
             description.text = spannedString
             description.visible()
             button.buttonVariant = UnifyButton.Variant.FILLED
             button.setOnClickListener {
                 shipmentAdapterActionListener.onClickApplyNewUpsellCard(data)
             }
-            button.layoutParams.width = 104.toPx()
+            button.layoutParams.width = BUTTON_APPLY_WIDTH.toPx()
         }
 
         if (!data.hasSeenUpsell) {
@@ -59,5 +67,10 @@ class ShipmentNewUpsellViewHolder(itemView: View, private val shipmentAdapterAct
     companion object {
         @JvmField
         val ITEM_VIEW_UPSELL = R.layout.item_upsell_new
+
+        private const val BUTTON_CANCEL_WIDTH = 82
+        private const val BUTTON_APPLY_WIDTH = 104
+
+        private const val WORDING_DURATION_SIZE = 0.875f
     }
 }

@@ -13,7 +13,7 @@ import com.tokopedia.webview.KEY_NEED_LOGIN
 import com.tokopedia.webview.KEY_PULL_TO_REFRESH
 import com.tokopedia.webview.KEY_URL
 
-class UpsellWebViewFragment: BaseSessionWebViewFragment() {
+class UpsellWebViewFragment : BaseSessionWebViewFragment() {
 
     companion object {
         fun newInstance(url: String): UpsellWebViewFragment {
@@ -24,10 +24,12 @@ class UpsellWebViewFragment: BaseSessionWebViewFragment() {
             return fragment
         }
 
-        fun newInstance(url: String,
-                        needLogin: Boolean,
-                        overrideUrl: Boolean,
-                        pullToRefresh: Boolean): UpsellWebViewFragment {
+        fun newInstance(
+            url: String,
+            needLogin: Boolean,
+            overrideUrl: Boolean,
+            pullToRefresh: Boolean
+        ): UpsellWebViewFragment {
             val fragment = UpsellWebViewFragment()
             val args = Bundle()
             args.putString(KEY_URL, url)
@@ -42,10 +44,14 @@ class UpsellWebViewFragment: BaseSessionWebViewFragment() {
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         if (url.startsWith(ApplinkConst.CHECKOUT)) {
             val uri = Uri.parse(url)
-            val isPlusSelected = uri.getBooleanQueryParameter(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, isPlusSelected)
-            })
+            val isPlusSelected =
+                uri.getBooleanQueryParameter(CartConstant.CHECKOUT_IS_PLUS_SELECTED, false)
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(CartConstant.CHECKOUT_IS_PLUS_SELECTED, isPlusSelected)
+                }
+            )
             activity?.finish()
             return true
         }
