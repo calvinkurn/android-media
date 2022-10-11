@@ -17,8 +17,7 @@ data class ProductCheckingResult(
         val statusText: String = "",
         val isSubsidy: Boolean = false,
         val subsidyAmount: Long = 0,
-        val rejectionReason: String = "",
-        val soldCount: Long = 0
+        val rejectionReason: String = ""
     )
 
     data class LocationCheckingResult (

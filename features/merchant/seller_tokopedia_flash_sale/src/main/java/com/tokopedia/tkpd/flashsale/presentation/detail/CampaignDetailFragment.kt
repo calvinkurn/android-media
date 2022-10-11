@@ -26,15 +26,16 @@ import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.*
+import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
@@ -44,6 +45,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.OnSel
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.WaitingForSelectionDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -79,6 +81,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(CampaignDetailViewModel::class.java) }
+    private val checkProductBottomSheet = ProductCheckBottomSheet()
 
     //main binding
     private var binding by autoClearedNullable<StfsFragmentCampaignDetailBinding>()
@@ -171,6 +174,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         observeProductReserveResult()
         observeDeletedProductResult()
         observeCampaignRegistrationResult()
+        observeSubmittedProductVariant()
         loadCampaignDetailData()
     }
 
@@ -279,6 +283,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     showErrorToaster(result.errorMessage)
                 }
             }
+        }
+    }
+
+    private fun observeSubmittedProductVariant() {
+        viewModel.submittedProductVariant.observe(viewLifecycleOwner) {
+            checkProductBottomSheet.show(it, childFragmentManager, "")
         }
     }
 
@@ -1396,6 +1406,23 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         ).show(activity.supportFragmentManager, "")
     }
 
+    private fun onProductClicked(itemPosition: Int) {
+        val selectedProduct = productAdapter.getItems()[itemPosition]
+        val selectedProductId = selectedProduct.id() as? Long
+        val isVariantProduct = ProductCheckingResultMapper.isVariantProduct(selectedProduct)
+        val isMultiloc = ProductCheckingResultMapper.isMultiloc(selectedProduct)
+        val productName = ProductCheckingResultMapper.getProductName(selectedProduct)
+
+        checkProductBottomSheet.setProductName(productName)
+
+        if (isVariantProduct) {
+            viewModel.getSubmittedProductVariant(flashSaleId, selectedProductId.orZero())
+        } else if (isMultiloc) {
+            val productCheckingResult = ProductCheckingResultMapper.mapFromWarehouses(selectedProduct)
+            checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
+        }
+    }
+
     private fun showCriteriaCoachMark(binding: StfsCdpUpcomingMidBinding) {
         doOnDelayFinished(DELAY) {
             val coachMarkItem = ArrayList<CoachMark2Item>()
@@ -1409,12 +1436,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             coachMark?.showCoachMark(coachMarkItem)
             coachMark?.onDismissListener = { setCoachMarkAlreadyShown() }
         }
-    }
-
-    private fun onProductClicked(itemPosition: Int) {
-        val selectedProduct = productAdapter.getItems()[itemPosition]
-        val selectedProductId = selectedProduct.id()
-        //TODO: Open detail product bottom sheet
     }
 
     private fun isCoachMarkShown(): Boolean {
