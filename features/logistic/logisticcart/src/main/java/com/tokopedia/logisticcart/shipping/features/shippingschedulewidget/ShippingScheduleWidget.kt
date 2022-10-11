@@ -6,14 +6,20 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.R
+import com.tokopedia.logisticcart.schedule_slot.bottomsheet.ScheduleSlotBottomSheet
+import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.unifyprinciples.Typography
 
@@ -32,6 +38,7 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     interface ShippingScheduleWidgetListener {
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
+        fun getFragmentManager(): FragmentManager?
     }
 
     init {
@@ -116,6 +123,17 @@ class ShippingScheduleWidget : ConstraintLayout {
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
         // open schedule delivery bottom sheet
+        scheduleDeliveryUiModel?.let {
+            val bottomsheetUiModel = ScheduleDeliveryMapper.mapResponseToUiModel(
+                it.deliveryServices,
+                it.scheduleDate,
+                it.deliveryProduct ?: DeliveryProduct(),
+                it.notice
+            )
+            mListener?.getFragmentManager()?.let {
+                fragmentManager ->  ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
+            }
+        }
     }
 
     private fun removeScheduleWidgetViews() {
@@ -137,11 +155,20 @@ class ShippingScheduleWidget : ConstraintLayout {
                 setLabel(shippingNowTimeOption.label)
                 showRightIcon(shippingNowTimeOption.isNowTwoHours.not() && shippingNowTimeOption.isEnable)
                 showRightIcon(shippingNowTimeOption.onClickIconListener != null)
+                setRightIconAction(shippingNowTimeOption.onClickIconListener)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
                 showCoachMark(shippingNowTimeOption.isShowCoachMark)
             }
 
             binding?.shipmentTimeOptionView?.addView(timeOptionBinding.root)
+        }
+    }
+
+    private fun ItemShipmentNowTimeOptionBinding.setRightIconAction(onClickIconListener: (() -> Unit)?) {
+        if (onClickIconListener != null) {
+            rightIcon.setOnClickListener {
+                onClickIconListener()
+            }
         }
     }
 
