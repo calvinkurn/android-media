@@ -61,7 +61,7 @@ class CustomProductLogisticMapper @Inject constructor() {
                 it.shipperId,
                 it.shipperName,
                 it.logo,
-                mapShipperProduct(it.shipperProduct)
+                mapShipperProduct(it.shipperProduct.filter { product -> !product.uiHidden })
             )
         }
     }
