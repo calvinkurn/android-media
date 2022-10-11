@@ -97,6 +97,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     companion object {
         const val KEY_OTHER = "lainnya"
+        private const val CAMPAIGN_UPCOMING_TRACKER_SUFFIX = "pre"
+        private const val CAMPAIGN_ONGOING_TRACKER_SUFFIX = "ongoing"
 
         fun createInstance(bundle: Bundle): FeedPlusDetailFragment {
             val feedPlusDetailNavFragment = FeedPlusDetailFragment()
@@ -457,9 +459,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         val campaignTrackerValue =
             if (item.isFollowed && item.saleStatus.isNotEmpty()) {
                 if (item.isUpcoming)
-                    "pre"
+                   CAMPAIGN_UPCOMING_TRACKER_SUFFIX
                 else
-                    "ongoing"
+                    CAMPAIGN_ONGOING_TRACKER_SUFFIX
             }
             else ""
         addToWishList(
@@ -478,9 +480,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         val campaignTrackerValue =
             if (item.isFollowed && item.saleStatus.isNotEmpty()) {
                 if (item.isUpcoming)
-                    "pre"
+                    CAMPAIGN_UPCOMING_TRACKER_SUFFIX
                 else
-                    "ongoing"
+                    CAMPAIGN_ONGOING_TRACKER_SUFFIX
             }
             else ""
 
@@ -676,7 +678,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.TYPE_NORMAL,
             getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = if(saleStatus == FeedDetailProductModel.UPCOMING) "pre" else "ongoing")
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerCampaignStatusSuffix())
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
     }
@@ -697,7 +699,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.TYPE_NORMAL,
             getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = if(saleStatus == FeedDetailProductModel.UPCOMING) "pre" else "ongoing" )
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerCampaignStatusSuffix() )
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
         adapter.notifyItemChanged(rowNumber, FeedDetailViewHolder.PAYLOAD_CLICK_WISHLIST)
@@ -709,6 +711,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             requireActivity().startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
         }
     }
+
+    private fun getTrackerCampaignStatusSuffix() = if(saleStatus == FeedDetailProductModel.UPCOMING) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -789,7 +793,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 feedDetailProductModel.postType,
                 feedDetailProductModel.isFollowed,
                 if (feedDetailProductModel.saleType.isNotEmpty()) "13440" else "",
-                if (feedDetailProductModel.isUpcoming) "pre" else "ongoing"
+                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
 
             )
             activity?.startActivityForResult(
