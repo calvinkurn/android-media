@@ -1,6 +1,7 @@
 package com.tokopedia.home.beranda.presentation.viewModel
 
 import android.annotation.SuppressLint
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -601,10 +602,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getCMHomeWidgetData(isForceRefresh: Boolean = true) {
+    fun getCMHomeWidgetData(context: Context, isForceRefresh: Boolean = true) {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             launchCatchError(coroutineContext, {
                 getCMHomeWidgetDataUseCase.get().getCMHomeWidgetData(
+                    context,
                     {
                         val newCMHomeWidgetDataModel =
                             cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)

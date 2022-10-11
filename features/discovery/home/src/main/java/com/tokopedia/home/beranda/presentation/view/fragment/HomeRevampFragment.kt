@@ -936,7 +936,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         adapter?.onResumeSpecialRelease()
 
         // refresh home-to-do-widget data if needed
-        getHomeViewModel().getCMHomeWidgetData(false)
+        context?.let { getHomeViewModel().getCMHomeWidgetData(it,false) }
     }
 
     private fun refreshQuestWidget() {
@@ -2586,7 +2586,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun getCMHomeWidget() {
-        getHomeViewModel().getCMHomeWidgetData()
+        context?.let { getHomeViewModel().getCMHomeWidgetData(it) }
     }
 
     override fun getPayLaterWidgetData() {
