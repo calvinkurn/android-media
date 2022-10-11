@@ -31,7 +31,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:typographyType="display_2"
         android:textColor="@color/Unify_NN950"
-        app:typographyWeight="bold"
         tools:text="Tiba dalam 2 jam (Rp0 Rp38.000)"
         app:layout_constraintHorizontal_bias="0"/>
 
