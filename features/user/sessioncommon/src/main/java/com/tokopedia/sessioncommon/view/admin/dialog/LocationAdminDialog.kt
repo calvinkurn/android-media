@@ -1,6 +1,7 @@
 package com.tokopedia.sessioncommon.view.admin.dialog
 
 import android.content.Context
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.sessioncommon.R
@@ -15,7 +16,7 @@ class LocationAdminDialog(context: Context?, dismissListener: (() -> Unit)? = nu
 
     init {
         context?.let {
-            val gn500Color = com.tokopedia.unifyprinciples.R.color.Unify_GN500.toString()
+            val gn500Color = getColorHexString(it, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
             dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION).apply {
                 setTitle(it.getString(R.string.dialog_location_admin_title))
                 setDescription(
@@ -30,5 +31,20 @@ class LocationAdminDialog(context: Context?, dismissListener: (() -> Unit)? = nu
 
     fun show() {
         dialog?.show()
+    }
+
+    private fun getColorHexString(context: Context?, idColor: Int): String {
+        return try {
+            val colorHexInt = context?.let { ContextCompat.getColor(it, idColor) }
+            val startIndexHexString = 2
+
+            val colorToHexString = colorHexInt?.let {
+                Integer.toHexString(it).uppercase().substring(startIndexHexString)
+            }
+            return "#$colorToHexString"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
     }
 }
