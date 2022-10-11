@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverInformationAdapter
@@ -96,15 +98,20 @@ class DriverSectionViewHolder(
         goFoodOrderNumber: String
     ) {
         icDriverChat.run {
-            val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
+            if (isShowDriverChat()) {
+                show()
+                val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
 
-            isClickable = isClickableCall
-            setImage(IconUnify.CHAT, callIconColor, callIconColor)
+                isClickable = isClickableCall
+                setImage(IconUnify.CHAT, callIconColor, callIconColor)
 
-            if (isClickableCall) {
-                setOnClickListener {
-                    listener.onClickDriverChat(goFoodOrderNumber)
+                if (isClickableCall) {
+                    setOnClickListener {
+                        listener.onClickDriverChat(goFoodOrderNumber)
+                    }
                 }
+            } else {
+                hide()
             }
         }
     }
@@ -140,6 +147,17 @@ class DriverSectionViewHolder(
             }
         } else {
             rvDriverInformation.hide()
+        }
+    }
+
+
+    private fun isShowDriverChat(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT, ""
+            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+        } catch (e: Exception) {
+            true
         }
     }
 
