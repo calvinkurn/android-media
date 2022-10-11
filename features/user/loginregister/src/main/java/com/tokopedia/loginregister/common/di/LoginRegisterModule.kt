@@ -12,7 +12,6 @@ import com.tokopedia.akamai_bot_lib.interceptor.AkamaiBotInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.loginregister.common.data.LoginRegisterUrl
-import com.tokopedia.loginregister.external_register.ovo.analytics.OvoCreationAnalytics
 import com.tokopedia.network.interceptor.DebugInterceptor
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
@@ -28,7 +27,6 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import javax.inject.Named
 
 /**
  * @author by nisie on 10/15/18.
@@ -45,15 +43,6 @@ class LoginRegisterModule {
     @ActivityScope
     fun provideFingerprint(@ApplicationContext context: Context): FingerprintPreference {
         return FingerprintPreferenceManager(context)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideOvoCreationAnalytics(
-        @Named(SessionModule.SESSION_MODULE)
-        userSessionInterface: UserSessionInterface
-    ): OvoCreationAnalytics {
-        return OvoCreationAnalytics(userSessionInterface)
     }
 
     @ActivityScope
