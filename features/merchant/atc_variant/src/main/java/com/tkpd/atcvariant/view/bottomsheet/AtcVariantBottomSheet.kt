@@ -1006,7 +1006,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         /**
          * please remove this variable if [ItemContainerChipGroupViewHolder] has stable
          */
-        private const val REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP = "pdp_show_variant_with_chip_group"
+        private const val REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP = "android_pdp_show_variant_with_chip_group"
     }
 }
 
