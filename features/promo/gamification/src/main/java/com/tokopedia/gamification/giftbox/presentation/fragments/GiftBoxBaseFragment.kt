@@ -155,10 +155,7 @@ open class GiftBoxBaseFragment : Fragment() {
 
     fun showLoader() {
         viewFlipper.displayedChild = CONTAINER_LOADER
-        Handler().postDelayed({
-            loader.visibility = View.VISIBLE
-        }, 5000)
-
+        loader.visibility = View.VISIBLE
     }
 
     fun hideLoader() {
