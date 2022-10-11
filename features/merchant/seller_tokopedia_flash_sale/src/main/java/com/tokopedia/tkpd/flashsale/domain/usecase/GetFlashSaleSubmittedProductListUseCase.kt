@@ -11,7 +11,6 @@ import com.tokopedia.tkpd.flashsale.data.mapper.GetFlashSaleSubmittedProductList
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest.*
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleSubmittedProductListResponse
-import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.SubmittedProductData
 import javax.inject.Inject
 
@@ -44,6 +43,8 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                             is_parent_product
                             total_child
                             sold_count
+                            status_text
+                            total_subsidy
                             price {
                               price
                               lower_price

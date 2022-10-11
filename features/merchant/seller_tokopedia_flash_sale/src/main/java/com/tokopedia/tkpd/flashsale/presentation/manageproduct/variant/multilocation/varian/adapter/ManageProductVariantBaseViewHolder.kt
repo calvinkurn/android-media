@@ -124,6 +124,8 @@ open class ManageProductVariantBaseViewHolder(
         this.tickerPriceError.gone()
         this.textFieldPriceDiscountNominal.editText.setText(discount?.price.orZero().getNumberFormatted())
         this.textFieldPriceDiscountPercentage.editText.setText(discount?.discount.orZero().toString())
+        this.quantityEditor.minValue = criteria.minCustomStock
+        this.quantityEditor.maxValue = criteria.maxCustomStock
         this.quantityEditor.editText.setText(discount?.stock?.orZero().toString())
         this.textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         val validationResult =

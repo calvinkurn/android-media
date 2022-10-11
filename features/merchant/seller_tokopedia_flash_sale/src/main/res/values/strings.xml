@@ -112,6 +112,7 @@
     <string name="commonbs_field_limited">Dibatasi</string>
 
     <!--    CDP-->
+    <string name="fs_tkpd_detail_title">Campaign Detail</string>
     <string name="stfs_bottom_sheet_register_period_label">Periode Pendaftaran</string>
     <string name="stfs_bottom_sheet_add_product_label">Tambah Produk</string>
     <string name="stfs_bottom_sheet_selection_process_label">Proses Seleksi</string>
@@ -123,6 +124,7 @@
     <string name="stfs_delete_dialog_secondary_cta_text">Batalkan</string>
     <string name="stfs_success_delete_product_message">%d produk berhasil dihapus.</string>
     <string name="stfs_global_error_message">Terjadi kesalahan.</string>
+    <string name="stfs_matched_product_count_placeholder">%d produkmu sesuai</string>
 
     <!--    Upcoming CDP-->
     <string name="stfs_deskripsi_label">Deskripsi</string>
@@ -146,6 +148,8 @@
     <string name="product_eligible_card_title_label">Yay, produkmu sesuai kriteria!</string>
     <string name="product_eligible_card_description_label">Tunggu apa lagi? Yuk, daftar campaign sekarang!</string>
     <string name="stfs_campaign_label">Campaign</string>
+    <string name="stfs_campaign_detail_upcoming_coachmark_title">Cek kriteria campaign dulu, yuk!</string>
+    <string name="stfs_campaign_detail_upcoming_coachmark_description">Kamu bisa lihat Kriteria Produk dan Kriteria Umum untuk campaign ini di sini, ya.</string>
 
     <!--    Registered CDP-->
     <string name="stfs_remaining_quota_label">Sisa kuota!</string>
@@ -171,7 +175,7 @@
     <string name="stfs_label_edit">Ubah</string>
     <string name="stfs_register_body_title_label">Daftar Produk Flash Sale Tokopedia</string>
     <string name="stfs_selection_process_label">Proses Seleksi</string>
-    <string name="stfs_subsidy_value_placeholder">Menerima subsidi sebesar <![CDATA[<font color=#00AA5B>>%s</font>]]> dari Tokopedia</string>
+    <string name="stfs_subsidy_value_placeholder">Menerima subsidi sebesar <![CDATA[<font color=#00AA5B>%s</font>]]> dari Tokopedia</string>
 
     <!--    Ongoing-->
     <string name="stft_flash_sale_performace_card_title_label">Pantau peforma Flash Sale-mu, yuk!</string>
@@ -182,11 +186,11 @@
     <string name="stfs_product_sold_rejected_value_placeholder">Terjual: <![CDATA[<font color=#F94D63>-</font>]]></string>
     <string name="stfs_sold_label">Terjual</string>
     <string name="stfs_selling_label">Penjualan</string>
-    <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena [%s].</string>
+    <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena %s.</string>
     <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
     <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
     <string name="stfs_canceled_card_title_label">Yah, campaign ini dibatalkan</string>
-    <string name="stfst_canceled_card_description_placeholder">Campaign dibatalkan karena [%s].</string>
+    <string name="stfst_canceled_card_description_placeholder">Campaign dibatalkan karena %s.</string>
     <string name="stfs_missed_card_title_label">Yah, campaign ini sudah lewat!</string>
     <string name="stfs_missed_card_desc_label">Kamu tidak mengajukan produk untuk campaign ini.</string>
 
@@ -232,6 +236,8 @@
     <string name="bulk_apply_title">Atur Sekaligus</string>
     <string name="bulk_apply_text_stock">Stok Campaign</string>
     <string name="bulk_apply_text_stock_description">Stok wajib %1d - %2d</string>
+    <string name="stfs_success_bulk_apply_label">Info produk sudah diubah.</string>
+    <string name="stfs_oke_label">Oke</string>
 
 
     <!--    Manage product list-->
@@ -256,7 +262,7 @@
     <string name="stfs_product_item_original_price_format">%1s-%2s</string>
     <string name="stfs_product_item_discount_label_percentage_format_non_range">%1s\%%</string>
     <string name="stfs_product_item_discount_label_percentage_format_range">%1s-%2s\%%</string>
-    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di Beberapa Lokasi</string>
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>

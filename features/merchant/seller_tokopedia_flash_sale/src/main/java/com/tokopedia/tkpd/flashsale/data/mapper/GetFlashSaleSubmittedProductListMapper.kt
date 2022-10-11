@@ -35,7 +35,9 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 submittedProduct.toDiscount(),
                 submittedProduct.toDiscountedPrice(),
                 submittedProduct.toProductStockStatus(),
-                submittedProduct.toWarehouses()
+                submittedProduct.toWarehouses(),
+                submittedProduct.totalSubsidy,
+                submittedProduct.statusText
             )
         }
     }

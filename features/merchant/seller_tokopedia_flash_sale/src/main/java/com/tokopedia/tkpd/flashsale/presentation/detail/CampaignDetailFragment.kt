@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
@@ -21,8 +22,12 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.seller_tokopedia_flash_sale.R
@@ -31,12 +36,7 @@ import com.tokopedia.tkpd.flashsale.common.extension.enablePaging
 import com.tokopedia.tkpd.flashsale.common.extension.toCalendar
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.DetailBottomSheetType
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.UpcomingCampaignStatus
-import com.tokopedia.tkpd.flashsale.domain.entity.enums.isFlashSaleAvailable
-import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.ProductCheckBottomSheet
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.*
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.ChooseProductActivity
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.OngoingDelegateAdapter
@@ -58,11 +58,8 @@ import javax.inject.Inject
 class CampaignDetailFragment : BaseDaggerFragment() {
 
     companion object {
-        private const val UPCOMING_TAB = "upcoming"
-        private const val REGISTERED_TAB = "registered"
-        private const val ONGOING_TAB = "ongoing"
-        private const val FINISHED_TAB = "finished"
         private const val PAGE_SIZE = 10
+        private const val APPLINK_SEGMENTS_SIZE = 2
         private const val DELAY = 1000L
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
@@ -72,11 +69,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/finished_campaign_banner.png"
 
         @JvmStatic
-        fun newInstance(flashSaleId: Long, tabName: String): CampaignDetailFragment {
+        fun newInstance(flashSaleId: Long): CampaignDetailFragment {
             val fragment = CampaignDetailFragment()
             val bundle = Bundle()
             bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
-            bundle.putString(BundleConstant.BUNDLE_KEY_TAB_NAME, tabName)
             fragment.arguments = bundle
             return fragment
         }
@@ -111,11 +107,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private var finishedCdpMidBinding by autoClearedNullable<StfsCdpOngoingMidBinding>()
 
     private val flashSaleId by lazy {
-        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
+        if (appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size == APPLINK_SEGMENTS_SIZE) {
+            appLinkData.lastPathSegment?.toLong().orZero()
+        } else {
+            arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        }
     }
 
-    private val tabName by lazy {
-        arguments?.getString(BundleConstant.BUNDLE_KEY_TAB_NAME).orEmpty()
+    //coachmark
+    private val coachMark by lazy {
+        context?.let {
+            CoachMark2(it)
+        }
     }
 
     private val productAdapter by lazy {
@@ -183,7 +187,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     setupView(flashSale.data)
                 }
                 is Fail -> {
-                    showGlobalError()
+                    doOnDelayFinished(DELAY) {
+                        showGlobalError()
+                    }
                 }
             }
         }
@@ -232,14 +238,17 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun redirectToFlashSaleManageProductListPage(reservationId: String, campaignId: String) {
+    private fun redirectToFlashSaleManageProductListPage(
+        reservationId: String,
+        campaignId: String
+    ) {
         activity?.let {
             it.finish()
             FlashSaleManageProductListActivity.start(
                 it,
                 reservationId,
                 campaignId,
-                tabName
+                viewModel.getTabName()
             )
         }
     }
@@ -298,19 +307,19 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupView(flashSale: FlashSale) {
         setupHeader(flashSale)
-        when (tabName) {
-            UPCOMING_TAB -> setupUpcoming(flashSale)
-            REGISTERED_TAB -> {
+        when (flashSale.tabName) {
+            FlashSaleListPageTab.UPCOMING -> setupUpcoming(flashSale)
+            FlashSaleListPageTab.REGISTERED -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupRegistered(flashSale)
             }
-            ONGOING_TAB -> {
+            FlashSaleListPageTab.ONGOING -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupOngoing(flashSale)
             }
-            FINISHED_TAB -> {
+            FlashSaleListPageTab.FINISHED -> {
                 setupPaging()
                 loadSubmittedProductListData(Int.ZERO)
                 setupFinished(flashSale)
@@ -351,7 +360,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         setupUpcomingMid(flashSale, campaignStatus)
         setupUpcomingBody(flashSale)
         setupUpcomingButton()
-        setupChooseProductRedirection()
+//        setupChooseProductRedirection()
     }
 
     private fun setupUpcomingHeader(flashSale: FlashSale, campaignStatus: UpcomingCampaignStatus) {
@@ -383,6 +392,12 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
             btnSeeCriteria.setOnClickListener {
                 showBottomSheet(flashSale, DetailBottomSheetType.PRODUCT_CRITERIA)
+            }
+            btnCheckReason.setOnClickListener {
+                navigateToChooseProductPage()
+            }
+            if (!isCoachMarkShown()) {
+                showCriteriaCoachMark(this)
             }
         }
     }
@@ -521,7 +536,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setupUpcomingButton() {
         binding?.run {
+            cardProductEligible.visible()
             btnRegister.apply {
+                visible()
                 text = getString(R.string.label_register)
                 setOnClickListener {
                     registerToCampaign()
@@ -626,13 +643,13 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         binding?.btnRegister?.setOnClickListener {
             navigateToChooseProductPage()
         }
-        upcomingCdpMidBinding?.btnCheckReason?.setOnClickListener {
-            navigateToChooseProductPage()
-        }
     }
 
     private fun navigateToChooseProductPage() {
-        ChooseProductActivity.start(context ?: return, flashSaleId, tabName)
+        ChooseProductActivity.start(
+            context ?: return, flashSaleId,
+            viewModel.getTabName()
+        )
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
@@ -718,12 +735,16 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     flashSale.productMeta.acceptedProduct
                 )
             )
-            tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.rejectedProduct
+            tpgRejectedProductValue.text = if (flashSale.productMeta.rejectedProduct.isZero()) {
+                MethodChecker.fromHtml(getString(R.string.stfs_dash_label))
+            } else {
+                MethodChecker.fromHtml(
+                    getString(
+                        R.string.stfs_mid_section_product_count_placeholder,
+                        flashSale.productMeta.rejectedProduct
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -930,12 +951,16 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     flashSale.productMeta.acceptedProduct
                 )
             )
-            tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.rejectedProduct
+            tpgRejectedProductValue.text = if (flashSale.productMeta.rejectedProduct.isZero()) {
+                MethodChecker.fromHtml(getString(R.string.stfs_dash_label))
+            } else {
+                MethodChecker.fromHtml(
+                    getString(
+                        R.string.stfs_mid_section_product_count_placeholder,
+                        flashSale.productMeta.rejectedProduct
+                    )
                 )
-            )
+            }
             tpgSoldValue.text = MethodChecker.fromHtml(
                 getString(
                     R.string.stfs_mid_section_product_count_placeholder,
@@ -1075,24 +1100,39 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         finishedCdpMidBinding?.run {
             cardFlashSalePerformance.gone()
             groupCampaignStatistics.visible()
-            tpgAcceptedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.acceptedProduct
-                )
-            )
-            tpgRejectedProductValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.rejectedProduct
-                )
-            )
-            tpgSoldValue.text = MethodChecker.fromHtml(
-                getString(
-                    R.string.stfs_mid_section_product_count_placeholder,
-                    flashSale.productMeta.totalStockSold
-                )
-            )
+            tpgAcceptedProductValue.text =
+                if (flashSale.productMeta.acceptedProduct.isMoreThanZero()) {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.acceptedProduct
+                        )
+                    )
+                } else {
+                    getString(R.string.stfs_dash_label)
+                }
+            tpgRejectedProductValue.text =
+                if (flashSale.productMeta.rejectedProduct.isZero()) {
+                    getString(R.string.stfs_dash_label)
+                } else {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.rejectedProduct
+                        )
+                    )
+                }
+            tpgSoldValue.text =
+                if (flashSale.productMeta.totalStockSold.isMoreThanZero()) {
+                    MethodChecker.fromHtml(
+                        getString(
+                            R.string.stfs_mid_section_product_count_placeholder,
+                            flashSale.productMeta.totalStockSold
+                        )
+                    )
+                } else {
+                    getString(R.string.stfs_dash_label)
+                }
             tpgSellingValue.text =
                 flashSale.productMeta.totalSoldValue.getCurrencyFormatted()
         }
@@ -1384,98 +1424,26 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun createDummyProduct(): ReservedProduct.Product {
-        return ReservedProduct.Product(
-            childProducts = createDummyChildsProduct(),
-            isMultiWarehouse = false,
-            isParentProduct = true,
-            name = "Dummy Product",
-            picture = "",
-            price = ReservedProduct.Product.Price(
-                price = 5000,
-                lowerPrice = 4000,
-                upperPrice = 6000
-            ),
-            productCriteria = ReservedProduct.Product.ProductCriteria(
-                criteriaId = 0,
-                maxCustomStock = 10,
-                maxDiscount = 99,
-                maxFinalPrice = 6000,
-                minCustomStock = 10,
-                minDiscount = 1,
-                minFinalPrice = 0
-            ),
-            productId = 0,
-            sku = "SK-0918",
-            stock = 100,
-            url = "",
-            warehouses = listOf()
-        )
-    }
-
-    private fun createDummyChildsProduct(): List<ReservedProduct.Product.ChildProduct> {
-        val childsProduct: MutableList<ReservedProduct.Product.ChildProduct> = mutableListOf()
-        for (child in 1 until 6) {
-            val childProduct = ReservedProduct.Product.ChildProduct(
-                disabledReason = "i don't know",
-                isDisabled = false,
-                isMultiwarehouse = child %2 != 0,
-                isToggleOn = false,
-                name = "product child $child",
-                picture = "",
-                price = ReservedProduct.Product.Price(
-                    child*1000L,
-                    child*2000L,
-                    child*3000L
-                ),
-                productCriteria = ReservedProduct.Product.ProductCriteria(
-                    criteriaId = 0,
-                    maxCustomStock = 10,
-                    maxDiscount = 99,
-                    maxFinalPrice = 10000,
-                    minCustomStock = 10,
-                    minDiscount = 1,
-                    minFinalPrice = 100
-                ),
-                productId = child.toLong(),
-                sku = "SKU-$child",
-                stock = 80,
-                url = "",
-                warehouses = listOf(
-                    ReservedProduct.Product.Warehouse(
-                        warehouseId = 123,
-                        name = "JKT",
-                        stock = 1,
-                        price = 2000,
-                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
-                            discount = 0,
-                            price = 0,
-                            stock = 0,
-                        ),
-                        isDilayaniTokopedia = false,
-                        isToggleOn = false,
-                        isDisabled = false,
-                        disabledReason = "",
-                    ),
-                    ReservedProduct.Product.Warehouse(
-                        warehouseId = 122,
-                        name = "JKTSEL",
-                        stock = 10,
-                        price = 2000,
-                        discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
-                            discount = 0,
-                            price = 0,
-                            stock = 0,
-                        ),
-                        isDilayaniTokopedia = false,
-                        isToggleOn = false,
-                        isDisabled = false,
-                        disabledReason = "",
-                    )
+    private fun showCriteriaCoachMark(binding: StfsCdpUpcomingMidBinding) {
+        doOnDelayFinished(DELAY) {
+            val coachMarkItem = ArrayList<CoachMark2Item>()
+            coachMarkItem.add(
+                CoachMark2Item(
+                    binding.btnSeeCriteria,
+                    getString(R.string.stfs_campaign_detail_upcoming_coachmark_title),
+                    getString(R.string.stfs_campaign_detail_upcoming_coachmark_description)
                 )
             )
-            childsProduct.add(childProduct)
+            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.onDismissListener = { setCoachMarkAlreadyShown() }
         }
-        return childsProduct
+    }
+
+    private fun isCoachMarkShown(): Boolean {
+        return viewModel.isCoachMarkShown()
+    }
+
+    private fun setCoachMarkAlreadyShown() {
+        viewModel.setSharedPrefCoachMarkAlreadyShown()
     }
 }

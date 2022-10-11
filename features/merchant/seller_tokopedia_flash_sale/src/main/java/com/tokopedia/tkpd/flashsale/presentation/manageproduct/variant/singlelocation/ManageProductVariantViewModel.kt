@@ -76,6 +76,7 @@ class ManageProductVariantViewModel @Inject constructor(
                 .filter { it.isToggleOn }
                 .all { childProduct ->
                     childProduct.warehouses
+                        .filter { warehouse ->  warehouse.isToggleOn }
                         .all { warehouse ->
                             validateInput(
                                 criteria,

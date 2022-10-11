@@ -7,6 +7,7 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleListForSellerResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_CANCELLED
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleStatusConstant.FLASH_SALE_STATUS_ID_FINISHED
@@ -54,7 +55,8 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 flashSale.useMultilocation,
                 flashSale.formatDate(),
                 flashSale.toCampaignStatus(),
-                flashSale.toProductCriteria()
+                flashSale.toProductCriteria(),
+                flashSale.toTabName()
             )
         }
     }
@@ -115,9 +117,16 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 productCriteria.maxSubmission,
                 productCriteria.maxProductAppear,
                 productCriteria.dayPeriodTimeAppear,
-                productCriteria.toProductCategories()
+                productCriteria.toProductCategories(),
+                productCriteria.additionalInfo.toFLashSaleAdditionalInfo()
             )
         }
+    }
+
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.AdditionalInfo.toFLashSaleAdditionalInfo(): FlashSale.AdditionalInfo {
+        return FlashSale.AdditionalInfo(
+            matchedProduct
+        )
     }
 
     private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.ProductCriteria.toProductCategories(): List<FlashSale.ProductCategories> {
@@ -126,6 +135,22 @@ class GetFlashSaleListForSellerMapper @Inject constructor() {
                 category.categoryId,
                 category.categoryName
             )
+        }
+    }
+
+    private fun GetFlashSaleListForSellerResponse.GetFlashSaleListForSeller.Campaign.toTabName(): FlashSaleListPageTab {
+        return when (statusId.toIntOrZero()) {
+            FLASH_SALE_STATUS_ID_UPCOMING -> FlashSaleListPageTab.UPCOMING
+            FLASH_SALE_STATUS_ID_NO_REGISTERED_PRODUCT -> FlashSaleListPageTab.REGISTERED
+            FLASH_SALE_STATUS_ID_WAITING_FOR_SELECTION -> FlashSaleListPageTab.REGISTERED
+            FLASH_SALE_STATUS_ID_ON_SELECTION_PROCESS -> FlashSaleListPageTab.REGISTERED
+            FLASH_SALE_STATUS_ID_SELECTION_FINISHED -> FlashSaleListPageTab.REGISTERED
+            FLASH_SALE_STATUS_ID_ONGOING -> FlashSaleListPageTab.ONGOING
+            FLASH_SALE_STATUS_ID_FINISHED -> FlashSaleListPageTab.FINISHED
+            FLASH_SALE_STATUS_ID_CANCELLED -> FlashSaleListPageTab.FINISHED
+            FLASH_SALE_STATUS_ID_REJECTED -> FlashSaleListPageTab.FINISHED
+            FLASH_SALE_STATUS_ID_MISSED -> FlashSaleListPageTab.FINISHED
+            else -> FlashSaleListPageTab.UPCOMING
         }
     }
 }

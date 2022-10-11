@@ -103,14 +103,14 @@ class FlashSaleManageProductListItemViewHolder(
     }
 
     private fun configTotalStockData(productData: ReservedProduct.Product) {
-        val totalCampaignStock = productData.getCampaignStock()
-        val totalLocation = productData.getTotalLocation()
+        val totalCampaignStock = productData.getDiscountedProductCampaignStock()
+        val totalLocation = productData.getTotalDiscountedLocation()
         textTotalStock.shouldShowWithAction(
             !totalCampaignStock.isZero() && productData.isDiscounted()
         ) {
             val totalStockFormattedString =
                 when (totalLocation) {
-                    Int.ZERO -> {
+                    Int.ZERO, Int.ONE -> {
                         getString(
                             R.string.stfs_product_item_total_stock_non_multi_loc_format,
                             totalCampaignStock
@@ -119,8 +119,7 @@ class FlashSaleManageProductListItemViewHolder(
                     else -> {
                         getString(
                             R.string.stfs_product_item_total_stock_multi_loc_format,
-                            totalCampaignStock,
-                            totalLocation
+                            totalCampaignStock
                         )
                     }
                 }

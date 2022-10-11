@@ -94,6 +94,8 @@ open class ManageProductNonVariantBaseViewHolder(
         textFieldPriceDiscountNominal.editText.setText(discount?.price.toStringOrEmpty())
         textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
         quantityEditor.editText.setText(discount?.stock?.orZero().toString())
+        quantityEditor.minValue = criteria.minCustomStock
+        quantityEditor.maxValue = criteria.maxCustomStock
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
 
         textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()

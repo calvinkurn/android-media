@@ -19,7 +19,9 @@ data class FinishedProcessSelectionItem(
     val discount: SubmittedProduct.Discount,
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
-    val warehouses: List<SubmittedProduct.Warehouse>
+    val warehouses: List<SubmittedProduct.Warehouse>,
+    val totalSubsidy: Long,
+    val statusText: String
 ) : DelegateAdapterItem {
     override fun id() = productId
 }

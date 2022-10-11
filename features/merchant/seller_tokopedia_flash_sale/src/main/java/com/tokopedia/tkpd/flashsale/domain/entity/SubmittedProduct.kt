@@ -18,7 +18,9 @@ data class SubmittedProduct(
     val discount: Discount,
     val discountedPrice: DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
-    val warehouses: List<Warehouse>
+    val warehouses: List<Warehouse>,
+    val totalSubsidy: Long,
+    val statusText: String
 ) {
 
     data class Price(
