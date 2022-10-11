@@ -21,20 +21,33 @@ class CPLItemViewHolder(
         binding.shipmentName.text = data.shipperName
         binding.shipmentCategory.text = data.description
         if (data.isWhitelabel) {
-            binding.shipmentItemList.gone()
-            binding.imgShipmentItem.gone()
-            binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-                listener.onCheckboxItemClicked()
-                data.isActive = isChecked
-                data.shipperProduct.forEach { sp -> sp.isActive = isChecked }
-            }
+            bindWhitelabelShipment(data)
         } else {
-            binding.imgShipmentItem.let {
-                ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
-            }
-            setAdapterData(data)
-            setItemChecked(data)
+            bindNormalShipment(data)
         }
+    }
+
+    private fun bindNormalShipment(data: ShipperCPLModel) {
+        // todo use loadurl
+        binding.imgShipmentItem.let {
+            ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
+        }
+        setAdapterData(data)
+        setItemChecked(data)
+    }
+
+    private fun bindWhitelabelShipment(data: ShipperCPLModel) {
+        binding.shipmentItemList.gone()
+        binding.imgShipmentItem.gone()
+        binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
+            setWhitelabelShipment(data, isChecked)
+        }
+    }
+
+    private fun setWhitelabelShipment(data: ShipperCPLModel, checked: Boolean) {
+        data.isActive = checked
+        data.shipperProduct.forEach { sp -> sp.isActive = checked }
+        listener.onCheckboxItemClicked()
     }
 
     private fun hideUnusedLayout() {
