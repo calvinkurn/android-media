@@ -20,12 +20,10 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.ApplinkConst.DISCOVERY_SEARCH
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -35,14 +33,12 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.OldShopPageTrackingConstant.SCREEN_SHOP_PAGE
 import com.tokopedia.shop.analytic.ShopPageTrackingShopSearchProduct
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
-import com.tokopedia.shop.common.constant.ShopPageLoggerConstant
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.Tag.SHOP_PAGE_PRODUCT_SEARCH_BUYER_FLOW_TAG
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.databinding.FragmentShopSearchProductBinding
 import com.tokopedia.shop.product.view.activity.ShopProductListResultActivity
-import com.tokopedia.shop.product.view.viewmodel.ShopPageProductListViewModel
 import com.tokopedia.shop.search.data.model.UniverseSearchResponse
 import com.tokopedia.shop.search.di.component.DaggerShopSearchProductComponent
 import com.tokopedia.shop.search.di.module.ShopSearchProductModule
@@ -136,20 +132,14 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
         CustomDimensionShopPage.create(shopId, isOfficial, isGold)
     }
 
-    private lateinit var viewModel: ShopSearchProductViewModel
+    private val viewModel: ShopSearchProductViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopSearchProductViewModel::class.java)
+    }
     private val viewBinding : FragmentShopSearchProductBinding? by viewBinding()
 
-    private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isMyShop(shopId)
-        } else false
-
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else {
-            ""
-        }
+        get() = viewModel.userId
+
     private val remoteConfig by lazy {
         FirebaseRemoteConfigImpl(context)
     }
@@ -166,7 +156,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        initViewModel()
         getArgumentsData()
         customDimensionShopPage.updateCustomDimensionData(shopId, isOfficial, isGold)
     }
@@ -460,11 +449,6 @@ class ShopSearchProductFragment : BaseListFragment<ShopSearchProductDataModel, S
             searchQuery = getString(KEY_KEYWORD).orEmpty()
             shopRef = getString(KEY_SHOP_REF).orEmpty()
         }
-    }
-
-    private fun initViewModel() {
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-                .get(ShopSearchProductViewModel::class.java)
     }
 
     private fun onClickCancel() {
