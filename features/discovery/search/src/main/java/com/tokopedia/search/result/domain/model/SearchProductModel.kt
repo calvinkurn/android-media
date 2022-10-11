@@ -50,6 +50,9 @@ data class SearchProductModel(
     val isPostProcessing: Boolean
         get() = searchProduct.header.meta.isPostProcessing
 
+    val isShowButtonAtc: Boolean
+        get() = true
+
     val backendFilters: String
         get() = searchProduct.backendFilters
 
@@ -126,6 +129,9 @@ data class SearchProductModel(
 
         @SerializedName("isPostProcessing")
         val isPostProcessing: Boolean = false,
+
+        @SerializedName("showButtonAtc")
+        val showButtonAtc: Boolean = false,
     )
 
     data class SearchProductData(

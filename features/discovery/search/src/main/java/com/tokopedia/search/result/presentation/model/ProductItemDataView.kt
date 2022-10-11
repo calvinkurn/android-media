@@ -7,6 +7,7 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.addtocart.AddToCartData
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -71,6 +72,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var productListType: String = ""
     var dimension131: String = ""
     var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
+    var showButtonAtc: Boolean = false
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -101,6 +103,19 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
                 "dimension100", sourceEngine,
                 "dimension115", dimension115,
                 "dimension131", dimension131.orNone(),
+        )
+    }
+
+    fun getAddToCartData(): AddToCartData {
+        return AddToCartData(
+            productID,
+            productName,
+            minOrder,
+            price,
+            "",
+            shopID,
+            parentId = "0",
+            componentId = "",
         )
     }
 
@@ -140,6 +155,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             productListType: String,
             externalReference: String,
             keywordIntention: Int,
+            showButtonAtc: Boolean,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -179,6 +195,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.productListType = productListType
             item.dimension131 = externalReference
             item.keywordIntention = keywordIntention
+            item.showButtonAtc = showButtonAtc
             return item
         }
 

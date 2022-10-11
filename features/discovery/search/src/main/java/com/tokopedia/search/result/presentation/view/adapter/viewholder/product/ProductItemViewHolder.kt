@@ -48,6 +48,7 @@ abstract class ProductItemViewHolder(
             customVideoURL = customVideoURL,
             cardInteraction = true,
             productListType = productListType,
+            hasAddToCartButton = showButtonAtc,
         )
     }
 

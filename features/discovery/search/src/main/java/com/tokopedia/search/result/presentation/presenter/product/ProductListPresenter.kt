@@ -450,7 +450,8 @@ class ProductListPresenter @Inject constructor(
         val list = createProductItemVisitableList(
             productDataView,
             searchParameter,
-            searchProductModel.getProductListType()
+            searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         productList.addAll(list)
 
@@ -472,6 +473,7 @@ class ProductListPresenter @Inject constructor(
         productDataView: ProductDataView,
         searchParameter: Map<String, Any>,
         productListType: String,
+        showButtonAtc: Boolean,
     ): List<Visitable<*>> {
         return if (isHideProductAds(productDataView))
             productDataView.productList
@@ -484,6 +486,7 @@ class ProductListPresenter @Inject constructor(
                 productListType,
                 externalReference,
                 productDataView.keywordIntention,
+                showButtonAtc,
             )
     }
 
@@ -990,6 +993,7 @@ class ProductListPresenter @Inject constructor(
             productDataView,
             searchParameter,
             searchProductModel.getProductListType(),
+            searchProductModel.isShowButtonAtc,
         ).toMutableList()
         list.addAll(productList)
 

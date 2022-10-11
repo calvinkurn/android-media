@@ -71,6 +71,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 meta {
                     productListType
                     isPostProcessing
+                    showButtonAtc
                 }
             }
             data {

@@ -87,6 +87,8 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.addtocart.AddToCartPresenter
+import com.tokopedia.search.result.product.addtocart.AddToCartPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
@@ -217,7 +219,11 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var inspirationListAtcListenerDelegate: InspirationListAtcListenerDelegate
 
-    @Inject lateinit var inspirationListAtcActivityResult: InspirationListAtcActivityResult
+    @Inject
+    lateinit var inspirationListAtcActivityResult: InspirationListAtcActivityResult
+
+    @Inject
+    lateinit var addToCartPresenterDelegate: AddToCartPresenterDelegate
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -852,6 +858,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel) {
         showProductCardOptions(this, productCardOptionsModel)
+    }
+
+    override fun onAddToCartClick(item: ProductItemDataView?) {
+        addToCartPresenterDelegate.addToCart(item?.getAddToCartData())
     }
     //endregion
 
