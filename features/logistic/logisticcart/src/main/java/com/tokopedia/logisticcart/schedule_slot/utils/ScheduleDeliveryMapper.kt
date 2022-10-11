@@ -14,8 +14,12 @@ import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 
 object ScheduleDeliveryMapper {
 
-    fun mapResponseToUiModel(additionalDeliveryData: AdditionalDeliveryData, listener: ScheduleSlotListener): BottomSheetUiModel {
-        val buttonDateUiModel = generateDateUiModel(additionalDeliveryData.deliveryServices)
+    fun mapResponseToUiModel(
+        additionalDeliveryData: AdditionalDeliveryData,
+        selectedTimeSlot: DeliveryProduct,
+        listener: ScheduleSlotListener
+    ): BottomSheetUiModel {
+        val buttonDateUiModel = generateDateUiModel(additionalDeliveryData.deliveryServices, selectedTimeSlot)
         return BottomSheetUiModel(
             date = ChooseDateUiModel(content = buttonDateUiModel),
             availableTitle = TitleSectionUiModel(
@@ -33,7 +37,7 @@ object ScheduleDeliveryMapper {
         )
     }
 
-    private fun mapNoticeToScheduleInfoUiModel(notice: Notice) : BottomSheetInfoUiModel {
+    private fun mapNoticeToScheduleInfoUiModel(notice: Notice): BottomSheetInfoUiModel {
         return BottomSheetInfoUiModel(
             title = notice.title,
             description = notice.text,
@@ -42,16 +46,10 @@ object ScheduleDeliveryMapper {
         )
     }
 
-    private fun generateDateUiModel(deliveryServices: List<DeliveryService>): List<ButtonDateUiModel> {
-        val scheduleSelectedByUser =
-            deliveryServices.find { it.deliveryProducts.any { time -> time.isSelected } }
+    private fun generateDateUiModel(deliveryServices: List<DeliveryService>, selectedTimeSlot: DeliveryProduct): List<ButtonDateUiModel> {
         val dateUiModel = mutableListOf<ButtonDateUiModel>()
         deliveryServices.forEach { service ->
-            val isDateSelected = if (scheduleSelectedByUser == null) {
-                service.deliveryProducts.any { it.recommend }
-            } else {
-                scheduleSelectedByUser.id == service.id
-            }
+            val isDateSelected = service.deliveryProducts.any { it.id == selectedTimeSlot.id }
             val buttonDateUiModel = ButtonDateUiModel(
                 title = service.titleLabel,
                 // todo
@@ -59,21 +57,33 @@ object ScheduleDeliveryMapper {
                 isEnabled = service.available,
                 id = service.id,
                 isSelected = isDateSelected,
-                availableTime = generateTimeUiModel(service.deliveryProducts.filter { it.available }, service.id),
-                unavailableTime = generateTimeUiModel(service.deliveryProducts.filter { !it.available }, service.id)
+                availableTime = generateTimeUiModel(
+                    service.deliveryProducts.filter { it.available },
+                    service.id,
+                    selectedTimeSlot
+                ),
+                unavailableTime = generateTimeUiModel(
+                    service.deliveryProducts.filter { !it.available },
+                    service.id,
+                    selectedTimeSlot
+                )
             )
             dateUiModel.add(buttonDateUiModel)
         }
         return dateUiModel
     }
 
-    private fun generateTimeUiModel(timeOptions: List<DeliveryProduct>, dayId: String): List<ChooseTimeUiModel> {
+    private fun generateTimeUiModel(
+        timeOptions: List<DeliveryProduct>,
+        dayId: String,
+        selectedTimeSlot: DeliveryProduct
+    ): List<ChooseTimeUiModel> {
         return timeOptions.map { time ->
             ChooseTimeUiModel(
                 title = generateTimeTitle(time),
                 note = time.text,
                 isEnabled = time.available,
-                isSelected = time.isSelected,
+                isSelected = time.id == selectedTimeSlot.id,
                 timeId = time.id,
                 dateId = dayId
             )

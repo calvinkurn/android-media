@@ -32,8 +32,4 @@ class DeliveryProduct(
     val text: String = "",
     @SerializedName("promo_code")
     val promoCode: String = "",
-    // read by bottomsheet schedule
-    // to differentiate user chosen schedule
-    // and backend chosen recommendation
-    var isSelected: Boolean = false,
 ) : Parcelable
