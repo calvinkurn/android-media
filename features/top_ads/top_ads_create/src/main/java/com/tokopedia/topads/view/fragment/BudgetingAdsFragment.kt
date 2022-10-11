@@ -238,7 +238,7 @@ class BudgetingAdsFragment : BaseStepperFragment<CreateManualAdsStepperModel>() 
 
     override fun gotoNextPage() {
         try {
-            stepperModel?.finalBidPerClick = budget.textFieldInput.text.toString().replace(",", "").toIntOrZero()
+            stepperModel?.finalBidPerClick = budget.textFieldInput.text.toString().removeCommaRawString().toIntOrZero()
         } catch (e: NumberFormatException) {
             e.printStackTrace()
         }
