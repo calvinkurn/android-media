@@ -5,7 +5,7 @@ import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowChipListType
 
 data class TokoNowChipListUiModel(
     val parentId: String = "",
-    val items: List<Visitable<*>>,
+    val items: List<TokoNowChipUiModel>,
     val isMultiSelect: Boolean = true
 ) : Visitable<TokoNowChipListTypeFactory> {
 

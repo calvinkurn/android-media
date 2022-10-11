@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowNotChipUiModel
 import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterOptionResponse
 import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterSortDataResponse
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
@@ -90,25 +89,14 @@ object RecipeSortFilterMapper {
                             .filter { filter -> filter.parentId == option.key }
                             .map { filter -> filter.id }
 
-                        /**
-                         * option which is popular will be added as TokoNowChipUiModel while selected option will be added as TokoNowNotChipUiModel
-                         */
-                        if (option.isPopular) {
-                            TokoNowChipUiModel(
-                                id = option.value,
-                                parentId = option.key,
-                                text = option.name,
-                                imageUrl = option.icon,
-                                selected = selectedFilterIds.contains(option.value)
-                            )
-                        } else {
-                            TokoNowNotChipUiModel(
-                                id = option.value,
-                                parentId = option.key,
-                                text = option.name,
-                                selected = selectedFilterIds.contains(option.value)
-                            )
-                        }
+                        TokoNowChipUiModel(
+                            id = option.value,
+                            parentId = option.key,
+                            text = option.name,
+                            imageUrl = option.icon,
+                            selected = selectedFilterIds.contains(option.value),
+                            isPopular = option.isPopular
+                        )
                     },
                 isMultiSelect = multiSelectFilterTypes.contains(parentId)
             )
