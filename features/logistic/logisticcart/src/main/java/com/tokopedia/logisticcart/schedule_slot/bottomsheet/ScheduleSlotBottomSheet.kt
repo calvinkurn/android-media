@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.LayoutBottomsheetScheduleSlotBinding
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotAdapter
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
@@ -48,6 +49,7 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
                 adapterScheduleSlot.setData(data)
             }
         }
+        setTitle(getString(R.string.bottomsheet_schedule_slot_title))
         setChild(binding.root)
     }
 

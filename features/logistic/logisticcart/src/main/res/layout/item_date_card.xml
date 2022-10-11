@@ -35,14 +35,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_3"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/unify_space_4"
         android:maxLines="1"
         android:ellipsize="end"
         android:textAlignment="center"
-        tools:text="Besok"/>
+        tools:text="Jumat"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_date"
@@ -52,12 +52,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_3"
         android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
         android:maxLines="1"
         android:ellipsize="end"
         android:textAlignment="center"
-        tools:text="11 Agustus"/>
+        tools:text="11 Agu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

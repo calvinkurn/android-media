@@ -9,17 +9,10 @@ import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)
     : BaseListAdapter<Visitable<*>, ScheduleSlotTypeFactory>(factory) {
 
-    private var selectedItem: BaseScheduleSlotUiModel<out Any>? = null
-
     fun setData(data: List<BaseScheduleSlotUiModel<out Any>>) {
         visitables?.clear()
         visitables?.addAll(data)
         notifyDataSetChanged()
-    }
-
-    fun selectItem(item: BaseScheduleSlotUiModel<out Any>) {
-        selectedItem = item
-        factory.listener.onClickTimeListener(item)
     }
 
     fun setData(data: BottomSheetUiModel) {

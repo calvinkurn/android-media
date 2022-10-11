@@ -37,8 +37,8 @@
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_title"
         android:visibility="gone"
-        android:layout_width="@dimen/unify_space_24"
-        android:layout_height="@dimen/unify_space_24"
+        android:layout_width="13dp"
+        android:layout_height="13dp"
         app:layout_constraintTop_toTopOf="@id/tv_title"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintStart_toEndOf="@id/tv_title"
