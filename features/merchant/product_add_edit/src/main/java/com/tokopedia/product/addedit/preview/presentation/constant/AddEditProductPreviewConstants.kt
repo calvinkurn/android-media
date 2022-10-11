@@ -40,5 +40,6 @@ class AddEditProductPreviewConstants {
         const val ADDRESS_STREET = "addr_street"
         const val LATITUDE = "latitude"
         const val LONGITUDE = "longitude"
+        const val URL_ARTICLE_SELLER_EDU = "https://seller.tokopedia.com/edu/toko-dimoderasi/"
     }
 }

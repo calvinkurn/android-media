@@ -540,4 +540,9 @@
     <string name="error_minimum_weight">Min.%d g</string>
     <string name="error_max_weight">Maks. %s g</string>
 
+    <string name="label_ineligble_access_warning">Oops, fitur ini belum \ndapat diakses</string>
+    <string name="label_body_ineligble_access_warning">Ini karena tokomu sedang ditangguhkan</string>
+    <string name="label_back_to_list_product">Kembali ke Daftar Produk</string>
+    <string name="label_learn_about_moderation">Pelajari Tentang Penangguhan</string>
+    <string name="format_web_page">%s?url=%s</string>
 </resources>
