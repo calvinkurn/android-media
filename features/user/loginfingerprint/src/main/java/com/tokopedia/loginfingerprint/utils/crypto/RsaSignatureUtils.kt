@@ -47,6 +47,7 @@ class RsaSignatureUtils {
                     KeyGenParameterSpec.Builder(BiometricConstant.FINGERPRINT, KeyProperties.PURPOSE_SIGN)
                         .setDigests(KeyProperties.DIGEST_SHA256)
                         .setKeySize(KEY_SIZE)
+                        .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
                         .setSignaturePaddings(KeyProperties.SIGNATURE_PADDING_RSA_PKCS1)
                         .build()
 

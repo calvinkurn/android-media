@@ -12,6 +12,7 @@ class ImageGeneratorConstants {
         const val PRODUCT_PRICE = "product_price"
         const val PRODUCT_TITLE = "product_title"
         const val IS_BEBAS_ONGKIR = "is_bebas_ongkir"
+        const val BEBAS_ONGKIR_TYPE = "bebas_ongkir_type"
         const val PLATFORM = "platform"
         const val PRODUCT_RATING = "product_rating"
         const val SHOP_LOGO = "shop-logo"

@@ -34,4 +34,6 @@
 
     <color name="cart_count_color">@color/Unify_R500</color>
     <color name="search_text_view_color">@color/Unify_N700_96</color>
+
+    <color name="search_dms_same_session_recommendation_widget_gradient_start_color">#00FFFFFF</color>
 </resources>
