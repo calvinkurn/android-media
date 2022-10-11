@@ -73,7 +73,7 @@ class FlashSaleContainerViewModel @Inject constructor(
 
                 val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
                 val showTicker = !isMultiLocationTickerPreviouslyDismissed
-                val isEligibleUsingFeature = true
+                val isEligibleUsingFeature = sellerEligibility.isDeviceAllowed && sellerEligibility.isUserAllowed
 
                 _uiState.update {
                     it.copy(
