@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.typography
+package com.tokopedia.common_compose.principles.nest_text
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -21,28 +21,28 @@ import com.tokopedia.unifyprinciples.R as unifyR
 
 @Preview
 @Composable
-fun CTypographyRegularPreview() {
+internal fun NestTextRegularPreview() {
 
-    TypographyFontConfig.isFontTypeOpenSauceOne = false
+    NestTextFontConfig.isFontTypeOpenSauceOne = false
 
     LazyColumn(modifier = Modifier
         .background(colorResource(unifyR.color.Unify_Background))
     ) {
         item {
-            CTypography(
+            NestText(
                 text = "Regular",
-                type = CTypographyType.Heading1,
+                type = NestTextType.Heading1,
                 textStyle = TextStyle(color = colorResource(id = unifyR.color.Unify_G500))
             )
         }
-        items(CTypographyType.values()) {
+        items(NestTextType.values()) {
             Column {
-                CTypography(
+                NestText(
                     text = it.name,
                     type = it
                 )
 
-                CTypography(
+                NestText(
                     text = it.name,
                     type = it,
                     isFontTypeOpenSauceOne = true
@@ -56,31 +56,31 @@ fun CTypographyRegularPreview() {
 
 @Preview
 @Composable
-fun CTypographyBoldPreview() {
-    TypographyFontConfig.isFontTypeOpenSauceOne = false
+internal fun NestTextBoldPreview() {
+    NestTextFontConfig.isFontTypeOpenSauceOne = false
 
     LazyColumn(modifier = Modifier
         .background(colorResource(unifyR.color.Unify_Background))
     ) {
         item {
-            CTypography(
+            NestText(
                 text = "Bold",
-                type = CTypographyType.Heading1,
+                type = NestTextType.Heading1,
                 textStyle = TextStyle(color = colorResource(id = unifyR.color.Unify_G500))
             )
         }
-        items(CTypographyType.values()) {
+        items(NestTextType.values()) {
             Column {
-                CTypography(
+                NestText(
                     text = it.name,
                     type = it,
-                    weight = CTypographyWeight.Bold
+                    weight = NestTextWeight.Bold
                 )
 
-                CTypography(
+                NestText(
                     text = it.name,
                     type = it,
-                    weight = CTypographyWeight.Bold,
+                    weight = NestTextWeight.Bold,
                     isFontTypeOpenSauceOne = true
                 )
             }

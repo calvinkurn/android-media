@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.typography
+package com.tokopedia.common_compose.principles.nest_text
 
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.sp
@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.sp
  * Project name: android-tokopedia-core
  **/
 
-enum class CTypographyType(
+enum class NestTextType(
     open val fontSize: TextUnit,
     open val openSourceSize: TextUnit,
 ) {

@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.typography
+package com.tokopedia.common_compose.principles.nest_text
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -26,7 +26,7 @@ internal val fontRobot = FontFamily(
     Font(R.font.roboto_bold, weight = FontWeight.Bold)
 )
 
-object TypographyFontConfig {
+object NestTextFontConfig {
 
     var isFontTypeOpenSauceOne: Boolean = true
 }

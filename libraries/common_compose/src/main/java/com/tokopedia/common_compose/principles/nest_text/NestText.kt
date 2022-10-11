@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.typography
+package com.tokopedia.common_compose.principles.nest_text
 
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -16,11 +16,11 @@ import androidx.compose.ui.text.style.TextOverflow
  **/
 
 /**
- * Typography Compose Version
- * This class is Typography especially compose with Unify [Typography] behaviour
+ * NestText Compose Version
+ * This class is NestText especially compose with Unify [NestText] behaviour
  * @param text the text value with String Type
- * @param type the FontType refer to [CTypographyType]
- * @param weight the FontWeight refer to [CTypographyWeight]
+ * @param type the FontType refer to [NestTextType]
+ * @param weight the FontWeight refer to [NestTextWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -31,18 +31,18 @@ import androidx.compose.ui.text.style.TextOverflow
  * For example, to draw selection around the text.
  **/
 @Composable
-fun CTypography(
+fun NestText(
     modifier: Modifier = Modifier,
     text: String,
-    type: CTypographyType,
-    weight: CTypographyWeight = CTypographyWeight.Regular,
+    type: NestTextType,
+    weight: NestTextWeight = NestTextWeight.Regular,
     textStyle: TextStyle = TextStyle(
         fontFamily = fontOpenSourceOneRegular,
         color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN950)
     ),
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
-    isFontTypeOpenSauceOne: Boolean = TypographyFontConfig.isFontTypeOpenSauceOne,
+    isFontTypeOpenSauceOne: Boolean = NestTextFontConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 
@@ -77,11 +77,11 @@ fun CTypography(
 }
 
 /**
- * Typography Compose Version
- * This class is Typography especially compose with Unify [Typography] behaviour
+ * NestText Compose Version
+ * This class is NestText especially compose with Unify [NestText] behaviour
  * @param text the text value with AnnotationString Type
- * @param type the FontType refer to [CTypographyType]
- * @param weight the FontWeight refer to [CTypographyWeight]
+ * @param type the FontType refer to [NestTextType]
+ * @param weight the FontWeight refer to [NestTextWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -92,15 +92,15 @@ fun CTypography(
  * For example, to draw selection around the text.
  **/
 @Composable
-fun CTypography(
+fun NestText(
     modifier: Modifier = Modifier,
     text: AnnotatedString,
-    type: CTypographyType,
-    weight: CTypographyWeight = CTypographyWeight.Regular,
+    type: NestTextType,
+    weight: NestTextWeight = NestTextWeight.Regular,
     textStyle: TextStyle = LocalTextStyle.current,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,
-    isFontTypeOpenSauceOne: Boolean = TypographyFontConfig.isFontTypeOpenSauceOne,
+    isFontTypeOpenSauceOne: Boolean = NestTextFontConfig.isFontTypeOpenSauceOne,
     onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
 
