@@ -10,6 +10,7 @@ import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 
@@ -64,7 +65,7 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
 
     private fun bindValue(element: ChooseTimeUiModel) {
         title.text = element.title
-        description.text = element.content
+        description.text = HtmlLinkHelper(itemView.context, element.content).spannedString
         note.text = element.note
     }
 

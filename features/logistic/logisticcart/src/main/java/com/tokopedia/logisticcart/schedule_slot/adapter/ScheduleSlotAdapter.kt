@@ -8,7 +8,7 @@ import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 
 class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)
     : BaseListAdapter<Visitable<*>, ScheduleSlotTypeFactory>(factory) {
-    
+
     fun setData(data: List<BaseScheduleSlotUiModel<out Any>>) {
         visitables?.clear()
         visitables?.addAll(data)
