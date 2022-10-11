@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchOocBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchOOCUiModel
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.utils.view.binding.viewBinding
 
 class MerchantSearchOOCViewHolder(
@@ -17,6 +18,10 @@ class MerchantSearchOOCViewHolder(
 ) : AbstractViewHolder<MerchantSearchOOCUiModel>(itemView) {
 
     private val binding: ItemTokofoodSearchOocBinding? by viewBinding()
+
+    init {
+        setManualFontSize()
+    }
 
     override fun bind(element: MerchantSearchOOCUiModel) {
         when (element.type) {
@@ -120,6 +125,10 @@ class MerchantSearchOOCViewHolder(
         binding?.emptyStateSearchOoc?.setSecondaryCTAClickListener {
             listener?.onGoToHomepageButtonClicked()
         }
+    }
+
+    private fun setManualFontSize() {
+        binding?.emptyStateSearchOoc?.emptyStateCTAID?.buttonSize = UnifyButton.Size.MEDIUM
     }
 
     interface Listener {
