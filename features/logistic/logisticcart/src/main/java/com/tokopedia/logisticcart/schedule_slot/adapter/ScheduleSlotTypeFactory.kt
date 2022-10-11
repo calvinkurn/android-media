@@ -23,7 +23,7 @@ class ScheduleSlotTypeFactory(val listener: ScheduleSlotListener) : BaseAdapterT
         return when(type) {
             ChooseDateViewHolder.LAYOUT_RES -> ChooseDateViewHolder(parent, listener)
             ChooseTimeViewHolder.LAYOUT_RES -> ChooseTimeViewHolder(parent, listener)
-            TitleSectionViewHolder.LAYOUT_RES -> TitleSectionViewHolder(parent)
+            TitleSectionViewHolder.LAYOUT_RES -> TitleSectionViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
 
         }

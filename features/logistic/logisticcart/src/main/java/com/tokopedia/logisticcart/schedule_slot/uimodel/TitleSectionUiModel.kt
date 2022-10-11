@@ -4,10 +4,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
 import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 
-data class TitleSectionUiModel(override val title: String = "",
-                               override val content: String = "",
-                               val icon: Int = NO_ICON,
-                               val onClick: () -> Unit = {}) : BaseScheduleSlotUiModel<String> {
+data class TitleSectionUiModel(
+    override val title: String = "",
+    override val content: String = "",
+    val icon: Int = NO_ICON,
+) : BaseScheduleSlotUiModel<String> {
     override fun type(typeFactory: ScheduleSlotTypeFactory): Int {
         return typeFactory.type(this)
     }

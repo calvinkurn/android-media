@@ -17,7 +17,6 @@ object ScheduleDeliveryMapper {
         deliveryServices: List<DeliveryService>,
         selectedDateId: String,
         selectedTimeSlot: DeliveryProduct,
-        listener: ScheduleSlotListener,
         notice: Notice
     ): BottomSheetUiModel {
         val buttonDateUiModel = generateDateUiModel(
@@ -32,8 +31,6 @@ object ScheduleDeliveryMapper {
                 // todo add error message here
                 content = "",
                 icon = IconUnify.INFORMATION,
-                // todo
-                onClick = { listener.onClickInfoListener() }
             ),
             unavailableTitle = TitleSectionUiModel(
                 title = "Jadwal habis atau tidak tersedia",
@@ -91,7 +88,7 @@ object ScheduleDeliveryMapper {
     ): List<ChooseTimeUiModel> {
         return timeOptions.map { time ->
             ChooseTimeUiModel(
-                title = generateTimeTitle(time),
+                content = generateTimeTitle(time),
                 note = time.text,
                 isEnabled = time.available,
                 isSelected = isDateSelected && time.id == selectedTimeSlot.id,
@@ -105,9 +102,9 @@ object ScheduleDeliveryMapper {
         val timeTitle = time.title
         // check price
         return if (time.finalPrice == time.realPrice) {
-            timeTitle + " <b>(${time.textFinalPrice})</b>"
+            "<b>" + timeTitle + " (${time.textFinalPrice})</b>"
         } else {
-            timeTitle + " <b>(${time.textFinalPrice}<s>${time.textRealPrice}</s>)</b>"
+            "<b>" + timeTitle + " (${time.textFinalPrice}<s>${time.textRealPrice}</s>)</b>"
         }
     }
 }

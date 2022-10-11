@@ -5,9 +5,10 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
+import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.unifyprinciples.Typography
 
-class TitleSectionViewHolder(private val view: View) : AbstractViewHolder<TitleSectionUiModel>(view) {
+class TitleSectionViewHolder(private val view: View, private val listener: ScheduleSlotListener) : AbstractViewHolder<TitleSectionUiModel>(view) {
 
     val icon = view.findViewById<IconUnify>(com.tokopedia.logisticcart.R.id.icon_title)
     val title = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_title)
@@ -31,7 +32,7 @@ class TitleSectionViewHolder(private val view: View) : AbstractViewHolder<TitleS
         if (element.icon != NO_ICON) {
             icon.setImage(element.icon)
             icon.setOnClickListener {
-                element.onClick.invoke()
+                listener.onClickInfoListener()
             }
             icon.visibility = View.VISIBLE
         } else {
