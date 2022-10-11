@@ -539,7 +539,7 @@ class NewShopPageFragment :
     }
 
     private fun initViewPager() {
-        @SuppressLint("WrongConstant")
+        @SuppressLint("WrongConstant") // Suggested constant not same with actual needed value for offscreenPageLimit
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
         viewPager?.isUserInputEnabled = false
         viewPager?.adapter = viewPagerAdapter
