@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.os.Bundle
-import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.*
 import android.widget.FrameLayout
