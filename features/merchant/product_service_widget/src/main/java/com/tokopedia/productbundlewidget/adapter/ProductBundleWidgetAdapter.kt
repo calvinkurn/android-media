@@ -1,4 +1,4 @@
-package com.tokopedia.shop.common.widget.bundle.adapter
+package com.tokopedia.productbundlewidget.adapter
 
 import android.util.DisplayMetrics
 import android.util.TypedValue
@@ -7,16 +7,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
-import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
-import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleMultipleViewHolder
-import com.tokopedia.shop.common.widget.bundle.viewholder.ProductBundleSingleViewHolder
+import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleMultipleViewHolder
+import com.tokopedia.productbundlewidget.adapter.viewholder.ProductBundleSingleViewHolder
+import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
+import com.tokopedia.productbundlewidget.model.BundleTypes
+import com.tokopedia.productbundlewidget.model.BundleUiModel
 
 class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
+    companion object {
+        const val PRODUCT_BUNDLE_SINGLE = "single_bundling"
+        const val SINGLE_SIZE_WIDGET = 1
+        const val BUNDLE_WIDGET_DEFAULT_WIDTH = 300f
+    }
+
     private var bundleListItem: List<BundleUiModel> = listOf()
-    private var listener: ProductBundleListener? = null
+    private var listener: ProductBundleAdapterListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val displayMetrics = parent.resources.displayMetrics
@@ -66,12 +72,12 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
     }
 
     private fun createContainerWidgetParams(displayMetrics: DisplayMetrics) =
-        if (bundleListItem.size == ShopHomeProductBundleWidgetAdapter.SINGLE_SIZE_WIDGET) {
+        if (bundleListItem.size == SINGLE_SIZE_WIDGET) {
             ConstraintLayout.LayoutParams.MATCH_PARENT
         } else {
             TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
-                ShopHomeProductBundleWidgetAdapter.BUNDLE_WIDGET_DEFAULT_WIDTH,
+                BUNDLE_WIDGET_DEFAULT_WIDTH,
                 displayMetrics
             ).toInt()
         }
@@ -81,7 +87,7 @@ class ProductBundleWidgetAdapter: RecyclerView.Adapter<RecyclerView.ViewHolder>(
         notifyDataSetChanged()
     }
 
-    fun setListener(listener: ProductBundleListener) {
+    fun setListener(listener: ProductBundleAdapterListener) {
         this.listener = listener
     }
 
