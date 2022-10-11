@@ -9,7 +9,9 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -47,7 +49,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
         }
 
         if(uploadPrescriptionUiModel.isError){
-            containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red)
+            containerUploadPrescription.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.pp_bg_rounded_red)
             containerUploadPrescription.animate()
                 .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
@@ -63,7 +65,7 @@ class UploadPrescriptionViewHolder(val view: View, private val actionListener: S
                 })
                 .start()
         }else {
-            containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerUploadPrescription.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.pp_bg_rounded_grey)
         }
     }
 }

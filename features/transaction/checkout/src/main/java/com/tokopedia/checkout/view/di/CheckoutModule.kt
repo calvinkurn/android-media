@@ -8,9 +8,14 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics
 import com.tokopedia.checkout.analytics.EPharmacyAnalytics
 import com.tokopedia.checkout.domain.mapper.CheckoutMapper
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase.Companion.CHANGE_SHIPPING_ADDRESS_MUTATION
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase.Companion.CHECKOUT_MUTATION
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase.Companion.SAVE_SHIPMENT_STATE_MUTATION
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
 import com.tokopedia.checkout.view.ShipmentContract
@@ -30,6 +35,7 @@ import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourier
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.PrescriptionViewHolder
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.feature.sellercashback.SellerCashbackListener
@@ -125,6 +131,12 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
     @Provides
     @CheckoutScope
     fun provideSellerCashbackListener(): SellerCashbackListener {
+        return shipmentFragment
+    }
+
+    @Provides
+    @CheckoutScope
+    fun providePrescriptionListener(): PrescriptionViewHolder.Listener {
         return shipmentFragment
     }
 

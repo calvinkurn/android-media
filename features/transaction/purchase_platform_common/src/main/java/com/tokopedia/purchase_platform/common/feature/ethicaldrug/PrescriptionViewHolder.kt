@@ -1,15 +1,18 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug
 
-import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.purchase_platform.common.databinding.ItemPrescriptionWidgetBinding
 
-class PrescriptionViewHolder(private val binding: ItemPrescriptionWidgetBinding) :
+class PrescriptionViewHolder(
+    private val binding: ItemPrescriptionWidgetBinding,
+    private val listener: Listener
+) :
     RecyclerView.ViewHolder(binding.root) {
 
     companion object {
@@ -27,7 +30,7 @@ class PrescriptionViewHolder(private val binding: ItemPrescriptionWidgetBinding)
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         binding.apply {
             uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
-//            uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
+            prescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
             if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
                 uploadDescriptionText.hide()
             } else {
@@ -35,28 +38,23 @@ class PrescriptionViewHolder(private val binding: ItemPrescriptionWidgetBinding)
                 uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
             }
             uploadPrescriptionLayout.setOnClickListener {
-//                actionListener.uploadPrescriptionAction(uploadPrescriptionUiModel)
+                listener.onClickPrescriptionWidget(uploadPrescriptionUiModel)
             }
 
             if (uploadPrescriptionUiModel.isError) {
-//                containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red)
+                containerUploadPrescription.setBackgroundResource(R.drawable.pp_bg_rounded_red)
                 containerUploadPrescription.animate()
                     .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
                     .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
                     .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
-                    .setListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(animator: Animator) {}
-                        override fun onAnimationEnd(animator: Animator) {
-
-                        }
-
-                        override fun onAnimationCancel(animator: Animator) {}
-                        override fun onAnimationRepeat(animator: Animator) {}
-                    })
                     .start()
             } else {
-//                containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+                containerUploadPrescription.setBackgroundResource(R.drawable.pp_bg_rounded_grey)
             }
         }
+    }
+
+    interface Listener {
+        fun onClickPrescriptionWidget(uploadPrescriptionUiModel: UploadPrescriptionUiModel)
     }
 }

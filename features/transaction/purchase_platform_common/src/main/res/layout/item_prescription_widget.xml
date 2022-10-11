@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:background="@color/Unify_Background">
 
-    <com.tokopedia.unifycomponents.CardUnify2
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/container_upload_prescription"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,75 +15,69 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        app:card_type="border">
+        android:background="@drawable/pp_bg_rounded_grey">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/prescription_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/pp_epharmacy_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <com.tokopedia.unifycomponents.ImageUnify
-                android:id="@+id/upload_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="@string/pp_epharmacy_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="@id/prescription_icon"
+            app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
+            app:layout_constraintStart_toEndOf="@id/prescription_icon"
+            app:layout_constraintTop_toTopOf="@id/prescription_icon">
 
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="@id/upload_icon"
-                app:layout_constraintEnd_toStartOf="@id/iv_prescription_right"
-                app:layout_constraintStart_toEndOf="@id/upload_icon"
-                app:layout_constraintTop_toTopOf="@id/upload_icon">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/upload_prescription_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="@color/Unify_N700_96"
-                    app:typographyType="heading_5"
-                    app:typographyWeight="bold"
-                    tools:text="Upload Foto Resep" />
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/upload_description_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:textColor="@color/Unify_NN950"
-                    android:visibility="gone"
-                    app:typographyType="small"
-                    app:typographyWeight="reguler"
-                    tools:text="2 foto resep di-upload" />
-
-            </LinearLayout>
-
-            <com.tokopedia.iconunify.IconUnify
-                android:id="@+id/iv_prescription_right"
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_prescription_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                app:icon_name="CHEVRON_RIGHT"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textColor="@color/Unify_N700_96"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold"
+                tools:text="Upload Foto Resep" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/upload_description_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="@color/Unify_NN950"
+                android:visibility="gone"
+                app:typographyType="small"
+                app:typographyWeight="reguler"
+                tools:text="2 foto resep di-upload" />
 
-    </com.tokopedia.unifycomponents.CardUnify2>
+        </LinearLayout>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iv_prescription_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:icon_name="CHEVRON_RIGHT"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>

@@ -38,7 +38,6 @@ import com.tokopedia.checkout.view.viewholder.ShipmentTickerAnnouncementViewHold
 import com.tokopedia.checkout.view.viewholder.ShipmentTickerErrorViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShipmentUpsellViewHolder;
 import com.tokopedia.checkout.view.viewholder.ShippingCompletionTickerViewHolder;
-import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
 import com.tokopedia.logisticcart.shipping.model.CartItemModel;
 import com.tokopedia.logisticcart.shipping.model.CourierItemData;
@@ -46,6 +45,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel;
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData;
 import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel;
 import com.tokopedia.promocheckout.common.view.uimodel.SummariesUiModel;
+import com.tokopedia.purchase_platform.common.databinding.ItemPrescriptionWidgetBinding;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.PrescriptionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
@@ -83,6 +84,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     private ShipmentAdapterActionListener shipmentAdapterActionListener;
     private final SellerCashbackListener sellerCashbackListener;
+    private final PrescriptionViewHolder.Listener prescriptionListener;
     private List<Object> shipmentDataList;
 
     private TickerAnnouncementHolderData tickerAnnouncementHolderData;
@@ -112,11 +114,13 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public ShipmentAdapter(ShipmentAdapterActionListener shipmentAdapterActionListener,
                            ShipmentDataRequestConverter shipmentDataRequestConverter,
                            RatesDataConverter ratesDataConverter,
-                           SellerCashbackListener sellerCashbackListener) {
+                           SellerCashbackListener sellerCashbackListener,
+                           PrescriptionViewHolder.Listener prescriptionListener) {
         this.shipmentAdapterActionListener = shipmentAdapterActionListener;
         this.shipmentDataRequestConverter = shipmentDataRequestConverter;
         this.ratesDataConverter = ratesDataConverter;
         this.sellerCashbackListener = sellerCashbackListener;
+        this.prescriptionListener = prescriptionListener;
         this.shipmentDataList = new ArrayList<>();
     }
 
@@ -155,7 +159,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         } else if (item instanceof ShipmentTickerErrorModel) {
             return ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR();
         } else if (item instanceof UploadPrescriptionUiModel) {
-            return UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD();
+            return PrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD();
         } else if (item instanceof ShipmentUpsellModel) {
             return ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL;
         }
@@ -197,8 +201,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             return new ShippingCompletionTickerViewHolder(view, shipmentAdapterActionListener);
         } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {
             return new ShipmentTickerErrorViewHolder(view, shipmentAdapterActionListener);
-        } else if (viewType == UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
-            return new UploadPrescriptionViewHolder(view, shipmentAdapterActionListener);
+        } else if (viewType == PrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
+            return new PrescriptionViewHolder(ItemPrescriptionWidgetBinding.bind(view));
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             return new ShipmentUpsellViewHolder(view, shipmentAdapterActionListener);
         }
@@ -236,8 +240,8 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             ((ShippingCompletionTickerViewHolder) holder).bindViewHolder((ShippingCompletionTickerModel) data);
         } else if (viewType == ShipmentTickerErrorViewHolder.Companion.getITEM_VIEW_SHIPMENT_TICKER_ERROR()) {
             ((ShipmentTickerErrorViewHolder) holder).bind((ShipmentTickerErrorModel) data);
-        } else if (viewType == UploadPrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
-            ((UploadPrescriptionViewHolder) holder).bindViewHolder((UploadPrescriptionUiModel) data);
+        } else if (viewType == PrescriptionViewHolder.Companion.getITEM_VIEW_UPLOAD()) {
+            ((PrescriptionViewHolder) holder).bindViewHolder((UploadPrescriptionUiModel) data);
         } else if (viewType == ShipmentUpsellViewHolder.ITEM_VIEW_UPSELL) {
             ((ShipmentUpsellViewHolder) holder).bind((ShipmentUpsellModel) data);
         }
