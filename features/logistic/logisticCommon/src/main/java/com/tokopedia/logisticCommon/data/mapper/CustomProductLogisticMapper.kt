@@ -75,10 +75,10 @@ class CustomProductLogisticMapper @Inject constructor() {
         val shipperCPLModel = mutableListOf<ShipperCPLModel>()
         whitelabelShipper.forEach {
             val model = ShipperCPLModel(
-                // todo map description
                 shipperId = 0,
                 shipperName = it.title,
                 isWhitelabel = true,
+                description = it.description,
                 shipperProduct = it.shipperProductIds.map { id ->
                     ShipperProductCPLModel(
                         shipperProductId = id,
@@ -92,14 +92,21 @@ class CustomProductLogisticMapper @Inject constructor() {
     }
 
     fun mapShipperData(response: List<Shipper>): List<ShipperCPLModel> {
-        return response.map {
-            ShipperCPLModel(
+        val allShipperData = mutableListOf<ShipperCPLModel>()
+        response.forEach {
+            val shipperProductData = it.shipperProduct.filter { product -> product.uiHidden }
+            val description =
+                shipperProductData.joinToString(" | ") { shipperProduct -> shipperProduct.shipperProductName }
+            val shipperCplModel = ShipperCPLModel(
                 it.shipperId,
                 it.shipperName,
                 it.logo,
-                mapShipperProduct(it.shipperProduct.filter { product -> !product.uiHidden })
+                description,
+                mapShipperProduct(shipperProductData)
             )
+            allShipperData.add(shipperCplModel)
         }
+        return allShipperData
     }
 
     fun mapShipperProduct(response: List<ShipperProduct>): List<ShipperProductCPLModel> {

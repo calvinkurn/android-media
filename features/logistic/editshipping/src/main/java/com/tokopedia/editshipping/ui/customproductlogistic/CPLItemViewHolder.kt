@@ -9,25 +9,32 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
 
-class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, private val listener: CPLItemAdapter.CPLItemAdapterListener): RecyclerView.ViewHolder(binding.root) {
+class CPLItemViewHolder(
+    private val binding: ItemShippingEditorCardBinding,
+    private val listener: CPLItemAdapter.CPLItemAdapterListener
+) : RecyclerView.ViewHolder(binding.root) {
 
     private val cplShipperItemAdapter = CPLShipperItemAdapter()
 
     fun bindData(data: ShipperCPLModel) {
-        val shipperProductData = data.shipperProduct
-
         hideUnusedLayout()
-
         binding.shipmentName.text = data.shipperName
-        binding.imgShipmentItem.let {
-            ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
+        binding.shipmentCategory.text = data.description
+        if (data.isWhitelabel) {
+            binding.shipmentItemList.gone()
+            binding.imgShipmentItem.gone()
+            binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
+                listener.onCheckboxItemClicked()
+                data.isActive = isChecked
+                data.shipperProduct.forEach { sp -> sp.isActive = isChecked }
+            }
+        } else {
+            binding.imgShipmentItem.let {
+                ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
+            }
+            setAdapterData(data)
+            setItemChecked(data)
         }
-
-        binding.shipmentCategory.text =
-            shipperProductData.joinToString(" | ") { it.shipperProductName }
-
-        setAdapterData(data)
-        setItemChecked(data)
     }
 
     private fun hideUnusedLayout() {
@@ -44,7 +51,8 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
         }
 
         cplShipperItemAdapter.addData(data.shipperProduct)
-        cplShipperItemAdapter.setupListener(object : CPLShipperItemAdapter.CPLShipperItemAdapterListener {
+        cplShipperItemAdapter.setupListener(object :
+            CPLShipperItemAdapter.CPLShipperItemAdapterListener {
             override fun uncheckCplItem() {
                 binding.cbShipmentItem.isChecked = false
             }
@@ -78,6 +86,9 @@ class CPLItemViewHolder(private val binding: ItemShippingEditorCardBinding, priv
     }
 
     companion object {
-        fun getViewHolder(binding: ItemShippingEditorCardBinding, listener: CPLItemAdapter.CPLItemAdapterListener) = CPLItemViewHolder(binding, listener)
+        fun getViewHolder(
+            binding: ItemShippingEditorCardBinding,
+            listener: CPLItemAdapter.CPLItemAdapterListener
+        ) = CPLItemViewHolder(binding, listener)
     }
 }

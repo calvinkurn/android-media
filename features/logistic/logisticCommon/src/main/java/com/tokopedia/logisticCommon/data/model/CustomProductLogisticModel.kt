@@ -21,6 +21,7 @@ data class ShipperCPLModel(
     var shipperId: Long = 0,
     var shipperName: String = "",
     var logo: String = "",
+    var description: String = "",
     var shipperProduct: List<ShipperProductCPLModel> = listOf(),
     var isActive: Boolean = false,
     var isWhitelabel: Boolean = false,
