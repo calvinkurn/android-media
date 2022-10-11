@@ -21,8 +21,8 @@ import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUs
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleReservedProductListUseCase
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.ONE_SECOND_DELAY
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.ValueConstant.SHARED_PREF_MANAGE_PRODUCT_LIST_COACH_MARK
+import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
-import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.adapter.item.FlashSaleManageProductListItem
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEffect
@@ -248,7 +248,7 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
                 FlashSaleManageProductListUiEffect.AddIconCampaignDetailBottomSheet(
                     CampaignDetailBottomSheetModel(
                         timelineSteps = getTimelineData(data),
-                        productCriterias = getCriteriaData(data),
+                        productCriterias = ProductCriteriaHelper.getCriteriaData(data),
                         showTimeline = true,
                         showCriteria = true,
                         showProductCriteria = true
@@ -317,46 +317,6 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
         timelineData.add(finishTimelineData)
         for (i in 0 until timelineData.indexOfLast { it.isActive }) timelineData[i].isEnded = true
         return timelineData
-    }
-
-
-    private fun getCriteriaData(flashSale: FlashSale): MutableList<ProductCriteriaModel> {
-        val productCriteriaData: MutableList<ProductCriteriaModel> = mutableListOf()
-        flashSale.productCriteria.forEach { productCriteria ->
-            productCriteria.categories.forEach { category ->
-                productCriteriaData.add(
-                    ProductCriteriaModel(
-                        category.categoryName,
-                        "",
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minPrice.toLong(),
-                            productCriteria.maxPrice.toLong()
-                        ),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minFinalPrice.toLong(),
-                            productCriteria.maxFinalPrice.toLong()
-                        ),
-                        productCriteria.minDiscount.toDouble(),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minCustomStock.toLong(),
-                            productCriteria.maxCustomStock.toLong()
-                        ),
-                        productCriteria.minRating.toDouble(),
-                        productCriteria.minProductScore.toLong(),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minQuantitySold.toLong(),
-                            productCriteria.maxQuantitySold.toLong()
-                        ),
-                        productCriteria.minQuantitySold.toLong(),
-                        productCriteria.maxSubmission.toLong(),
-                        productCriteria.maxProductAppear.toLong(),
-                        productCriteria.dayPeriodTimeAppear.toLong()
-                    )
-                )
-            }
-        }
-
-        return productCriteriaData
     }
 
     private fun getReservedProductList(reservationId: String, page: Int) {

@@ -61,7 +61,7 @@ class ProductCriteriaViewHolder(private val binding: StfsItemProductCriteriaBind
                 itemModel.maxShownDays
             )
             tfOtherCriteria.value = itemModel.otherCriteria.joinToString(", ")
-            tfCategoryList.value = itemModel.categories.joinToString(", ")
+            tfCategoryList.value = itemModel.allStringCategory
             tfCategoryList.isVisible = itemModel.showFullCategories
         }
 

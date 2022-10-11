@@ -10,6 +10,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.tkpd.flashsale.presentation.detail.helper.ProductCriteriaHelper
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
 import com.tokopedia.tkpd.flashsale.domain.entity.*
@@ -25,7 +26,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
-import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -159,7 +159,8 @@ class CampaignDetailViewModel @Inject constructor(
                     )
                 )
                 _submittedProductVariant.postValue(
-                    ProductCheckingResultMapper.map(result.productList))
+                    ProductCheckingResultMapper.map(result.productList)
+                )
             },
             onError = { error ->
                 _error.postValue(error)
@@ -276,46 +277,6 @@ class CampaignDetailViewModel @Inject constructor(
         return timelineData
     }
 
-    private fun getCriteriaData(flashSale: FlashSale): MutableList<ProductCriteriaModel> {
-        val productCriteriaData: MutableList<ProductCriteriaModel> = mutableListOf()
-        flashSale.productCriteria.forEach { productCriteria ->
-            productCriteria.categories.forEach { category ->
-                productCriteriaData.add(
-                    ProductCriteriaModel(
-                        category.categoryName,
-                        "",
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minPrice.toLong(),
-                            productCriteria.maxPrice.toLong()
-                        ),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minFinalPrice.toLong(),
-                            productCriteria.maxFinalPrice.toLong()
-                        ),
-                        productCriteria.minDiscount.toDouble(),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minCustomStock.toLong(),
-                            productCriteria.maxCustomStock.toLong()
-                        ),
-                        productCriteria.minRating.toDouble(),
-                        productCriteria.minProductScore.toLong(),
-                        ProductCriteriaModel.ValueRange(
-                            productCriteria.minQuantitySold.toLong(),
-                            productCriteria.maxQuantitySold.toLong()
-                        ),
-                        productCriteria.minQuantitySold.toLong(),
-                        productCriteria.maxSubmission.toLong(),
-                        productCriteria.maxProductAppear.toLong(),
-                        productCriteria.dayPeriodTimeAppear.toLong(),
-                        matchedProductCount = productCriteria.additionalInfo.matchedProduct
-                    )
-                )
-            }
-        }
-
-        return productCriteriaData
-    }
-
     fun getBottomSheetData(
         type: DetailBottomSheetType,
         flashSale: FlashSale
@@ -329,7 +290,7 @@ class CampaignDetailViewModel @Inject constructor(
             }
             DetailBottomSheetType.PRODUCT_CRITERIA -> {
                 CampaignDetailBottomSheetModel(
-                    productCriterias = getCriteriaData(flashSale),
+                    productCriterias = ProductCriteriaHelper.getCriteriaData(flashSale),
                     showCriteria = true,
                     showProductCriteria = true
                 )
@@ -337,7 +298,7 @@ class CampaignDetailViewModel @Inject constructor(
             else -> {
                 CampaignDetailBottomSheetModel(
                     timelineSteps = getTimelineData(flashSale),
-                    productCriterias = getCriteriaData(flashSale),
+                    productCriterias = ProductCriteriaHelper.getCriteriaData(flashSale),
                     showTimeline = true,
                     showCriteria = true,
                     showProductCriteria = true
@@ -518,11 +479,15 @@ class CampaignDetailViewModel @Inject constructor(
     }
 
     fun isCoachMarkShown(): Boolean {
-        return sharedPreferences.getBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, false)
+        return sharedPreferences.getBoolean(
+            ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK,
+            false
+        )
     }
 
     fun setSharedPrefCoachMarkAlreadyShown() {
-        sharedPreferences.edit().putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
+        sharedPreferences.edit()
+            .putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
             .apply()
     }
 }
