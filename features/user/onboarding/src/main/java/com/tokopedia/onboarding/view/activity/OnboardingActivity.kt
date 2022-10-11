@@ -198,6 +198,6 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
 
     override fun onStop() {
         super.onStop()
-        NotificationSettingsUtils(applicationContext).checkNotificationPermission()
+        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
     }
 }
