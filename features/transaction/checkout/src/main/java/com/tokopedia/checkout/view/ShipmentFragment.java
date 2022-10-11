@@ -97,6 +97,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.checkout.view.viewholder.UploadPrescriptionViewHolder;
 import com.tokopedia.checkout.webview.CheckoutWebViewActivity;
+import com.tokopedia.coachmark.CoachMark2;
+import com.tokopedia.coachmark.CoachMark2Item;
 import com.tokopedia.common.payment.PaymentConstant;
 import com.tokopedia.common.payment.model.PaymentPassData;
 import com.tokopedia.dialog.DialogUnify;
@@ -199,6 +201,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
+import timber.log.Timber;
 
 /**
  * @author Irfan Khoirul on 23/04/18.
@@ -283,6 +286,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     private int shipmentLoadingIndex = -1;
 
     private Subscription delayScrollToFirstShopSubscription;
+    private Subscription delayScrollToCoachmarkEpharmacySubscription;
 
     private Subscription toasterThrottleSubscription;
     private Emitter<String> toasterEmitter;
@@ -363,6 +367,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         super.onDestroyView();
         if (delayScrollToFirstShopSubscription != null) {
             delayScrollToFirstShopSubscription.unsubscribe();
+        }
+        if (delayScrollToCoachmarkEpharmacySubscription != null) {
+            delayScrollToCoachmarkEpharmacySubscription.unsubscribe();
         }
         if (toasterThrottleSubscription != null) {
             toasterThrottleSubscription.unsubscribe();
@@ -563,9 +570,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         }
         cartIdsStringBuilder.replace(cartIdsStringBuilder.lastIndexOf(","), cartIdsStringBuilder.lastIndexOf(",") + 1, "");
 
+        boolean shouldTriggerEpharmacyCoachmark = false;
         if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() != null
                 && uploadPrescriptionUiModel.getShowImageUpload()) {
             shipmentAdapter.addUploadPrescriptionUiDataModel(uploadPrescriptionUiModel);
+            shouldTriggerEpharmacyCoachmark = true;
         }
 
         if (shipmentDonationModel != null) {
@@ -633,7 +642,41 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
+        } else if (shouldTriggerEpharmacyCoachmark) {
+            triggerEpharmacyCoachmark();
         }
+    }
+
+    private void triggerEpharmacyCoachmark() {
+        delayScrollToCoachmarkEpharmacySubscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Long>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.d(e);
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        if (!isUnsubscribed()) {
+                            RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(shipmentAdapter.getUploadPrescriptionPosition());
+                            if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                                CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, "Pesanan obat kerasmu butuh resep", "Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~", CoachMark2.POSITION_TOP);
+                                ArrayList<CoachMark2Item> list = new ArrayList<>();
+                                list.add(item);
+                                CoachMark2 coachMark = new CoachMark2(requireContext());
+                                rvShipment.scrollToPosition(shipmentAdapter.getUploadPrescriptionPosition());
+                                coachMark.showCoachMark(list, null, 0);
+                            }
+                        }
+                    }
+                });
     }
 
     private ArrayList<Long> getCrossSellChildCategoryId(List<ShipmentCartItemModel> shipmentCartItemModelList) {
