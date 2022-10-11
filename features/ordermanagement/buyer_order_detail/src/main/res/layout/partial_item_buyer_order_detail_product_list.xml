@@ -20,14 +20,15 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_buyer_order_detail_product_insurance_logo"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginStart="6dp"
         android:padding="4dp"
         app:layout_constraintBottom_toTopOf="@id/tvBuyerOrderDetailProductName"
         app:layout_constraintStart_toEndOf="@id/ivBuyerOrderDetailProductThumbnail"
         app:layout_constraintTop_toTopOf="@id/ivBuyerOrderDetailProductThumbnail"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintVertical_chainStyle="packed"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_buyer_order_detail_product_insurance_label"

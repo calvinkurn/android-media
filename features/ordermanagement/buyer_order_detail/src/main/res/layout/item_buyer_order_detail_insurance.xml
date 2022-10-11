@@ -13,7 +13,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_buyer_order_detail_insurance_title"
