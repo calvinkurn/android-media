@@ -2,25 +2,24 @@ package com.tokopedia.chatbot.view.customview.chatroom
 
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
-import com.tokopedia.unifycomponents.TextFieldUnify2
+import com.tokopedia.unifycomponents.CardUnify2
 
 class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
 
-    private var replyBox: TextFieldUnify2? = null
+    private var replyBox: CardUnify2? = null
     private var addAttachmentMenu: ImageView? = null
     private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
 
     var sendButtonListener : ChatbotSendButtonListener? = null
-    var attachmentMenuListener : ReplyBoxAttachmentMenuListener? = null
+    var replyBoxAttachmentMenuListener : ReplyBoxAttachmentMenuListener? = null
 
     init {
         initViewBindings()
@@ -31,21 +30,19 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     private fun initViewBindings() {
         val view = View.inflate(context, LAYOUT, this)
         with(view) {
-            replyBox = findViewById(R.id.chat_text)
+            replyBox = findViewById(R.id.reply_box)
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
-            replyBox?.isEnabled = false
-            replyBox?.isClickable = true
             replyBox?.setOnClickListener {
-                Log.d("LEVI", "initViewBindings: a")
+                replyBoxAttachmentMenuListener?.goToBigReplyBoxBottomSheet()
             }
         }
     }
 
     private fun bindClickListeners() {
         addAttachmentMenu?.setOnClickListener {
-            attachmentMenuListener?.onAttachmentMenuClicked()
+            replyBoxAttachmentMenuListener?.onAttachmentMenuClicked()
         }
     }
 

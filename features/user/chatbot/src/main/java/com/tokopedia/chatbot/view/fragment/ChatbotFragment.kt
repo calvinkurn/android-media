@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -352,7 +353,6 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         smallReplyBox?.bindCommentTextBackground()
         bigReplyBox = view.findViewById(R.id.big_reply_box)
         setUpBigReplyBoxListeners()
-   //     showBigReplyBottomSheet()
 
         ticker = view.findViewById(R.id.chatbot_ticker)
         dateIndicator = view.findViewById(R.id.dateIndicator)
@@ -379,10 +379,9 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun setUpBigReplyBoxListeners() {
-        bigReplyBox?.attachmentMenuListener = this
+        bigReplyBox?.replyBoxAttachmentMenuListener = this
         bigReplyBox?.sendButtonListener = this
     }
-
     private fun initSmoothScroller(){
         smoothScroll = SmoothScroller(context)
     }
@@ -1811,17 +1810,22 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
         smallReplyBox?.removeTextChangedListener()
     }
 
-    private fun showBigReplyBottomSheet() {
+    override fun onAttachmentMenuClicked() {
+        attachmentMenuRecyclerView?.toggle()
+        createAttachmentMenus()
+    }
+
+    override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet.newInstance(it)
+            BigReplyBoxBottomSheet.replyBoxAttachmentMenuListener = this
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }
     }
 
-    override fun onAttachmentMenuClicked() {
-        attachmentMenuRecyclerView?.toggle()
-        createAttachmentMenus()
+    override fun getMessageContentFromBottomSheet(msg: String) {
+
     }
 }
 

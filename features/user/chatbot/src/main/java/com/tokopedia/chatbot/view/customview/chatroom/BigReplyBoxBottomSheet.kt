@@ -3,13 +3,13 @@ package com.tokopedia.chatbot.view.customview.chatroom
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify2
@@ -36,7 +36,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 this.context = context
             }
         }
-
+        var replyBoxAttachmentMenuListener : ReplyBoxAttachmentMenuListener? = null
         val LAYOUT = R.layout.bottom_sheet_big_reply_box
         const val MINIMUM_NUMBER_OF_WORDS = 2
     }
@@ -65,7 +65,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun bindClickListeners() {
         sendButton?.setOnClickListener {
-
+            replyBoxAttachmentMenuListener?.getMessageContentFromBottomSheet(messageText?.editText?.text?.toString() ?: "")
+            dismissAllowingStateLoss()
         }
     }
 
