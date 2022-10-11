@@ -1,6 +1,5 @@
 package com.tokopedia.shop.flashsale.presentation.detail
 
-
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
