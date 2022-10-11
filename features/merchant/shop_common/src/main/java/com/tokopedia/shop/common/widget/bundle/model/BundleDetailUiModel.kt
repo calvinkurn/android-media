@@ -20,4 +20,5 @@ data class BundleDetailUiModel(
     var applink: String = "",
     var selectedBundleId: String = "0",
     var selectedBundleApplink: String = "",
+    var bundleType: String = "",
 )

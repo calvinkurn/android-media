@@ -10,6 +10,7 @@ import com.tokopedia.discovery2.databinding.DiscoProductBundlingLayoutBinding
 import com.tokopedia.discovery2.di.getSubComponent
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
+import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleWidgetAdapter
@@ -46,19 +47,19 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mProductBundlingViewModel?.getBundledProductDataList()?.observe(it, { bundledProductList ->
+            mProductBundlingViewModel?.getBundledProductDataList()?.observe(it) { bundledProductList ->
                 mProductBundleRecycleAdapter.updateDataSet(bundledProductList)
-            })
-            mProductBundlingViewModel?.getEmptyBundleData()?.observe(it, { isBundledDataEmpty ->
+            }
+            mProductBundlingViewModel?.getEmptyBundleData()?.observe(it) { isBundledDataEmpty ->
                 if (isBundledDataEmpty) {
                     binding.productRv.hide()
                 } else {
                     binding.productRv.show()
                 }
-            })
-            mProductBundlingViewModel?.showErrorState()?.observe(it, { shouldShowErrorState ->
+            }
+            mProductBundlingViewModel?.showErrorState()?.observe(it) { shouldShowErrorState ->
                 if (shouldShowErrorState) handleErrorState()
-            })
+            }
         }
     }
 
@@ -110,6 +111,10 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
                     RouteManager.route(context,context.getString(R.string.product_bundling_atc_applink, productDetails.firstOrNull()?.productId, selectedMultipleBundle.bundleId))
                 }
             }
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventProductBundlingAtcClick(it,selectedMultipleBundle)
+            }
         }
 
         override fun addSingleBundleToCart(selectedBundle: BundleDetailUiModel, bundleProducts: BundleProductUiModel) {
@@ -122,18 +127,32 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
                     }
                 }
             }
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventProductBundlingAtcClick(it,selectedBundle)
+            }
         }
 
         override fun onTrackSingleVariantChange(selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel, bundleName: String) {
-
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventClickProductBundlingChipSelection(it,selectedProduct,selectedSingleBundle)
+            }
         }
 
         override fun impressionProductBundleSingle(selectedSingleBundle: BundleDetailUiModel, selectedProduct: BundleProductUiModel, bundleName: String, bundlePosition: Int) {
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventProductBundlingViewImpression(it,selectedSingleBundle,bundlePosition)
+            }
 
         }
 
         override fun impressionProductBundleMultiple(selectedMultipleBundle: BundleDetailUiModel, bundlePosition: Int) {
-
+            mProductBundlingViewModel?.components?.let {
+                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                    .trackEventProductBundlingViewImpression(it,selectedMultipleBundle,bundlePosition)
+            }
         }
 
         override fun impressionProductItemBundleMultiple(selectedProduct: BundleProductUiModel, selectedMultipleBundle: BundleDetailUiModel, productItemPosition: Int) {
