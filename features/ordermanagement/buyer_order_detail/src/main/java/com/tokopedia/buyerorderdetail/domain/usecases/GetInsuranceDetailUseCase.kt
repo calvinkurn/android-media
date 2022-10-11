@@ -8,7 +8,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -22,7 +21,6 @@ class GetInsuranceDetailUseCase @Inject constructor(
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
         emit(GetInsuranceDetailRequestState.Requesting)
-        delay(2000L)
         emit(GetInsuranceDetailRequestState.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
         emit(GetInsuranceDetailRequestState.Error(it))
@@ -44,27 +42,14 @@ class GetInsuranceDetailUseCase @Inject constructor(
         private const val PARAM_INPUT = "input"
 
         private const val QUERY = """
-            query ppGetInsuranceDetail(${'$'}$PARAM_INPUT: BomDetailV2Request!) {
+            query ppGetInsuranceDetail(${'$'}$PARAM_INPUT: PPInsuranceDetailRequest!) {
                 ppGetInsuranceDetail(input: ${'$'}$PARAM_INPUT) {
-                    header {
-                      process_time
-                      messages
-                      reason
-                      error_code
-                    }
                     data {
-                      invoice
-                      insuranceOrderID
-                      insuranceOrderStatus
                       protectionProduct {
                         protections {
-                          orderDetailID
                           bundleID
                           isBundle
                           productID
-                          protectionID
-                          protectionStatus
-                          protectionType
                           protectionConfig {
                             icon {
                               label

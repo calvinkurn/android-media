@@ -17,21 +17,9 @@ data class GetInsuranceDetailResponse(
         data class PpGetInsuranceDetail(
             @SerializedName("data")
             @Expose
-            val `data`: Data?,
-            @SerializedName("header")
-            @Expose
-            val header: Header?
+            val `data`: Data?
         ) {
             data class Data(
-                @SerializedName("insuranceOrderID")
-                @Expose
-                val insuranceOrderID: Int?,
-                @SerializedName("insuranceOrderStatus")
-                @Expose
-                val insuranceOrderStatus: String?,
-                @SerializedName("invoice")
-                @Expose
-                val invoice: String?,
                 @SerializedName("orderConfig")
                 @Expose
                 val orderConfig: OrderConfig?,
@@ -84,24 +72,12 @@ data class GetInsuranceDetailResponse(
                         @SerializedName("isBundle")
                         @Expose
                         val isBundle: Boolean?,
-                        @SerializedName("orderDetailID")
-                        @Expose
-                        val orderDetailID: Int?,
                         @SerializedName("productID")
                         @Expose
                         val productID: String?,
                         @SerializedName("protectionConfig")
                         @Expose
-                        val protectionConfig: ProtectionConfig?,
-                        @SerializedName("protectionID")
-                        @Expose
-                        val protectionID: Int?,
-                        @SerializedName("protectionStatus")
-                        @Expose
-                        val protectionStatus: String?,
-                        @SerializedName("protectionType")
-                        @Expose
-                        val protectionType: String?
+                        val protectionConfig: ProtectionConfig?
                     ) {
                         data class ProtectionConfig(
                             @SerializedName("icon")
@@ -132,21 +108,6 @@ data class GetInsuranceDetailResponse(
                     }
                 }
             }
-
-            data class Header(
-                @SerializedName("error_code")
-                @Expose
-                val errorCode: String?,
-                @SerializedName("messages")
-                @Expose
-                val messages: List<Any?>?,
-                @SerializedName("process_time")
-                @Expose
-                val processTime: Double?,
-                @SerializedName("reason")
-                @Expose
-                val reason: String?
-            )
         }
     }
 }
