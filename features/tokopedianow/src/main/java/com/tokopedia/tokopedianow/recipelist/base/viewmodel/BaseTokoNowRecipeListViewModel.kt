@@ -162,12 +162,6 @@ open class BaseTokoNowRecipeListViewModel(
                     )
                 )
             )
-
-            visitableItems.updateRecipeBookmark(
-                recipeId = recipeId,
-                isBookmarked = false
-            )
-            updateVisitableItems()
         }
     }
 
@@ -203,12 +197,6 @@ open class BaseTokoNowRecipeListViewModel(
                         isSuccess = false
                 )
             ))
-
-            visitableItems.updateRecipeBookmark(
-                recipeId = recipeId,
-                isBookmarked = true
-            )
-            updateVisitableItems()
         }
     }
 
