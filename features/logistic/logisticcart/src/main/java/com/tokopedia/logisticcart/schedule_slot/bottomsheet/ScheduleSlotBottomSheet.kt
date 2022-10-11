@@ -8,19 +8,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.logisticcart.databinding.LayoutBottomsheetScheduleSlotBinding
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotAdapter
 import com.tokopedia.logisticcart.schedule_slot.adapter.ScheduleSlotTypeFactory
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BaseScheduleSlotUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ButtonDateUiModel
+import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
     : BottomSheetUnify(), ScheduleSlotListener {
 
-    private var listener: (() -> BaseScheduleSlotUiModel<out Any>)? = null
+    interface ScheduleSlotBottomSheetListener {
+        fun onChooseTimeListener(timeId: Long, dateId: String)
+    }
+    private var listener: ScheduleSlotBottomSheetListener? = null
     private var bottomSheetInfo: ScheduleInfoBottomSheet? = null
 
     private val adapterScheduleSlot: ScheduleSlotAdapter by lazy {
@@ -32,20 +35,20 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun setListener(onClick: () -> BaseScheduleSlotUiModel<out Any>) {
-        listener = onClick
+    fun setListener(listener: ScheduleSlotBottomSheetListener) {
+        this.listener = listener
     }
 
     private fun initView() {
         clearContentPadding = true
-        val view = View.inflate(context, com.tokopedia.logisticcart.R.layout.layout_bottomsheet_schedule_slot, null).apply {
-            findViewById<RecyclerView>(com.tokopedia.logisticcart.R.id.rv_schedule_slot).apply {
+        val binding = LayoutBottomsheetScheduleSlotBinding.inflate(layoutInflater).apply {
+            rvScheduleSlot.apply {
                 layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
                 this.adapter = adapterScheduleSlot
                 adapterScheduleSlot.setData(data)
             }
         }
-        setChild(view)
+        setChild(binding.root)
     }
 
     override fun onClickInfoListener() {
@@ -57,12 +60,16 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
     }
 
     override fun onClickDateListener(data: ButtonDateUiModel) {
+        this.data.date.content.forEach {
+            it.isSelected = it.id == data.id
+        }
+        adapterScheduleSlot.setData(this.data)
     }
 
-    override fun onClickTimeListener(data: BaseScheduleSlotUiModel<out Any>) {
+    override fun onClickTimeListener(data: ChooseTimeUiModel) {
         Handler().postDelayed({
             dismiss()
-            listener?.invoke()
+            listener?.onChooseTimeListener(data.timeId, data.dateId)
         }, 1000)
     }
 

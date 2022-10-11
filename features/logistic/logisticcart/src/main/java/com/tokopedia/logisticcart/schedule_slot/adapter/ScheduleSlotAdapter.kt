@@ -2,13 +2,8 @@ package com.tokopedia.logisticcart.schedule_slot.adapter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BaseScheduleSlotUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetInfoUiModel
 import com.tokopedia.logisticcart.schedule_slot.uimodel.BottomSheetUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
-import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 
 class ScheduleSlotAdapter(private val factory: ScheduleSlotTypeFactory)

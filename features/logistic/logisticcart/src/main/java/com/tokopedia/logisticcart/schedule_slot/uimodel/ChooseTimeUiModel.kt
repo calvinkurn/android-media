@@ -10,6 +10,8 @@ data class ChooseTimeUiModel(
     override var divider: DividerType = DividerType.THIN,
     var isSelected: Boolean = false,
     val note: String = "",
+    val timeId: Long = 0L,
+    val dateId: String = ""
 )
     : BaseScheduleSlotUiModel<String> {
     override fun type(typeFactory: ScheduleSlotTypeFactory): Int {

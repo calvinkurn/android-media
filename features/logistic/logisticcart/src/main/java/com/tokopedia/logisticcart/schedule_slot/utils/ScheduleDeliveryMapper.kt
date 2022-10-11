@@ -59,24 +59,23 @@ object ScheduleDeliveryMapper {
                 isEnabled = service.available,
                 id = service.id,
                 isSelected = isDateSelected,
-                availableTime = generateTimeUiModel(service.deliveryProducts.filter { it.available }),
-                unavailableTime = generateTimeUiModel(service.deliveryProducts.filter { !it.available })
+                availableTime = generateTimeUiModel(service.deliveryProducts.filter { it.available }, service.id),
+                unavailableTime = generateTimeUiModel(service.deliveryProducts.filter { !it.available }, service.id)
             )
             dateUiModel.add(buttonDateUiModel)
         }
         return dateUiModel
     }
 
-    private fun generateTimeUiModel(timeOptions: List<DeliveryProduct>): List<ChooseTimeUiModel> {
+    private fun generateTimeUiModel(timeOptions: List<DeliveryProduct>, dayId: String): List<ChooseTimeUiModel> {
         return timeOptions.map { time ->
             ChooseTimeUiModel(
                 title = generateTimeTitle(time),
                 note = time.text,
-                // todo this only support default value from BE,
-                // need selectedTime from previous user selection
-                isEnabled = time.recommend,
-                // todo
-                isSelected = time.isSelected
+                isEnabled = time.available,
+                isSelected = time.isSelected,
+                timeId = time.id,
+                dateId = dayId
             )
         }
     }

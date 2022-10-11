@@ -5,7 +5,7 @@ data class ButtonDateUiModel (
     val date: String = "",
     val isEnabled: Boolean = true,
     val id: String = "",
-    val isSelected: Boolean = false,
+    var isSelected: Boolean = false,
     val availableTime: List<ChooseTimeUiModel>,
     val unavailableTime: List<ChooseTimeUiModel>
 )
