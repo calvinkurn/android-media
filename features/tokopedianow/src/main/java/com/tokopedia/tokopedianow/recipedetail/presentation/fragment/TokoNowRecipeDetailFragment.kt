@@ -280,6 +280,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         binding?.rvRecipeDetail?.apply {
             adapter = this@TokoNowRecipeDetailFragment.adapter
             layoutManager = LinearLayoutManager(context)
+            itemAnimator = null
         }
     }
 
