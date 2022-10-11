@@ -13,6 +13,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
@@ -272,7 +273,7 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
 }
 
 fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
-    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition)
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
 }
 
@@ -456,13 +457,13 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
     }
 }
 
-private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int) {
+private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
     if (seeAllButton.visibility == View.VISIBLE) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
         } catch (e: PerformException) {
             e.printStackTrace()
         }
@@ -542,13 +543,17 @@ private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     }
 }
 
-private fun clickOnViewChild(viewId: Int) = object: ViewAction {
+private fun clickOnViewChild(viewId: Int, scrollVerticalBy: Int = 0) = object: ViewAction {
     override fun getDescription(): String  = ""
 
     override fun getConstraints() = null
 
-    override fun perform(uiController: UiController, view: View)
-            = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    override fun perform(uiController: UiController, view: View) {
+        if(scrollVerticalBy != 0) {
+            view.scrollBy(0, scrollVerticalBy)
+        }
+        ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    }
 }
 
 private fun selectTabAtPosition(tabIndex: Int): ViewAction {
