@@ -16,6 +16,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.AtcVariantHelper.ATC_VARIANT_CACHE_ID
 import com.tokopedia.product.detail.common.AtcVariantHelper.PDP_PARCEL_KEY_RESULT
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantBottomSheetParams
+import com.tokopedia.product.detail.common.showImmediately
 import timber.log.Timber
 
 /**
@@ -70,6 +71,8 @@ class AtcVariantActivity : BaseSimpleActivity() {
                     .getBooleanExtra(AtcVariantHelper.KEY_SAVE_AFTER_CLOSE, true)
             paramsData.extParams = intent
                     .getStringExtra(AtcVariantHelper.KEY_EXT_PARAMS) ?: ""
+            paramsData.showQtyEditor = intent
+                    .getBooleanExtra(AtcVariantHelper.KEY_SHOW_QTY_EDITOR, false)
         }
 
         super.onCreate(savedInstanceState)
@@ -83,11 +86,14 @@ class AtcVariantActivity : BaseSimpleActivity() {
         observeData()
 
         sharedViewModel.setAtcBottomSheetParams(paramsData)
-        AtcVariantBottomSheet().show(supportFragmentManager, KEY_BS_VARIANT)
+
+        showImmediately(supportFragmentManager, KEY_BS_VARIANT) {
+            AtcVariantBottomSheet()
+        }
     }
 
     private fun observeData() {
-        sharedViewModel.activityResult.observe(this, {
+        sharedViewModel.activityResult.observe(this) {
             val cacheManager = SaveInstanceCacheManager(this, true)
             val resultIntent = Intent().apply {
                 putExtra(ATC_VARIANT_CACHE_ID, cacheManager.id)
@@ -95,7 +101,7 @@ class AtcVariantActivity : BaseSimpleActivity() {
             cacheManager.put(PDP_PARCEL_KEY_RESULT, it)
             setResult(Activity.RESULT_OK, resultIntent)
             finish()
-        })
+        }
     }
 
     private fun adjustOrientation() {

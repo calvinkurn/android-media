@@ -20,7 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"/>
 
-    <include layout="@layout/layout_telco_shimmering_product_telco"
+    <include
+        layout="@layout/layout_telco_shimmering_product_telco"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/telco_banner_space"
@@ -42,6 +43,7 @@
             app:elevation="@dimen/spacing_lvl2">
 
             <View
+                android:id="@+id/telco_appbar_spacer"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/telco_banner_space"
                 app:layout_scrollFlags="scroll"/>

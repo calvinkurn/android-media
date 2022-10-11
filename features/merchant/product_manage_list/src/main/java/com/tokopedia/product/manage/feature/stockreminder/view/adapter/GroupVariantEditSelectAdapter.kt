@@ -6,6 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.product.manage.databinding.ItemVariantEditStockReminderSelectBinding
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_ACTIVE
+import com.tokopedia.product.manage.feature.stockreminder.constant.StockReminderConst.REMINDER_INACTIVE
 import com.tokopedia.product.manage.feature.stockreminder.view.data.GroupVariantProductStockReminderUiModel
 import com.tokopedia.product.manage.feature.stockreminder.view.data.ProductStockReminderUiModel
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -66,9 +68,9 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
                 dataList.forEachIndexed { position, listItemUnify ->
                     listItemUnify.listRightCheckbox?.setOnCheckedChangeListener { compoundButton, isCheck ->
                         if (isCheck) {
-                            checkProductSelection(groupVariant.variants[position],2)
+                            checkProductSelection(groupVariant.variants[position],REMINDER_ACTIVE)
                         } else {
-                            checkProductSelection(groupVariant.variants[position],1)
+                            checkProductSelection(groupVariant.variants[position],REMINDER_INACTIVE)
                         }
                         onSelectionListener.onSelection(productSelection)
                     }
@@ -84,7 +86,7 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
         ) {
             val isFound = productSelection.firstOrNull() { it.id == product.id }
             if (isFound != null) {
-                if (status == 1) {
+                if (status == REMINDER_INACTIVE) {
                     val index = productSelection.indexOf(isFound)
                     productSelection.removeAt(index)
                 } else {
@@ -102,7 +104,8 @@ class GroupVariantEditSelectAdapter(val onSelectionListener: OnSelectionListener
                         stockAlertStatus = product.stockAlertStatus,
                         stock = product.stock,
                         variantFirst = product.variantFirst,
-                        variantSecond = product.variantSecond
+                        variantSecond = product.variantSecond,
+                        maxStock = product.maxStock
                     )
                 )
             }

@@ -310,7 +310,14 @@ class ShopDiscountManageFragment : BaseDaggerFragment(),
         val listError = submittedProductData.listSubmittedProductData.filter {
             !it.success
         }.map {
-            "- ${it.name}, ${it.message}"
+            val errorMessage = if (it.message.isNotEmpty()) {
+                it.message
+            } else {
+                it.listSubmittedWarehouse.firstOrNull { listSubmittedWarehouse ->
+                    listSubmittedWarehouse.message.isNotEmpty()
+                }?.message.orEmpty()
+            }
+            "- ${it.name}, $errorMessage"
         }.take(MAX_SUBMITTED_PRODUCT_ERROR_MESSAGES)
         val errorMessage = "$reason\n${listError.joinToString("\n")}"
         view.showErrorLongDuration(errorMessage)

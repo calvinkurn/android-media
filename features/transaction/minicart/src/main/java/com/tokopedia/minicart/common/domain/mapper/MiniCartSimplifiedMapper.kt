@@ -1,12 +1,13 @@
 package com.tokopedia.minicart.common.domain.mapper
 
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.minicart.common.data.response.minicartlist.BeliButtonConfig
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
-import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
-import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.*
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryHeaderUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryProductUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummarySeparatorUiModel
+import com.tokopedia.minicart.common.widget.shoppingsummary.uimodel.ShoppingSummaryTotalTransactionUiModel
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import javax.inject.Inject
 import kotlin.math.min
@@ -18,6 +19,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             miniCartItems = mapMiniCartListData(miniCartData)
             isShowMiniCartWidget = miniCartItems.isNotEmpty()
             miniCartWidgetData = mapMiniCartWidgetData(miniCartData)
+            shoppingSummaryBottomSheetData = mapShoppingSummaryData(miniCartData)
         }
     }
 
@@ -38,6 +40,9 @@ class MiniCartSimplifiedMapper @Inject constructor() {
             unavailableItemsCount = miniCartData.data.totalProductError
             isOCCFlow = miniCartData.data.beliButtonConfig.buttonType == BeliButtonConfig.BUTTON_TYPE_OCC
             buttonBuyWording = miniCartData.data.beliButtonConfig.buttonWording
+            headlineWording = miniCartData.data.bottomBar.text
+            totalProductPriceWording = miniCartData.data.bottomBar.totalPriceFmt
+            isShopActive = miniCartData.data.bottomBar.isShopActive
         }
     }
 
@@ -75,10 +80,7 @@ class MiniCartSimplifiedMapper @Inject constructor() {
                         shopName = availableGroup.shop.shopName
                         shopType = availableGroup.shop.shopTypeInfo.titleFmt
                         categoryId = product.categoryId
-                        freeShippingType =
-                            if (availableGroup.shipmentInformation.freeShippingExtra.eligible) "bebas ongkir extra"
-                            else if (availableGroup.shipmentInformation.freeShipping.eligible) "bebas ongkir"
-                            else ""
+                        freeShippingType = product.freeShippingGeneral.boName
                         category = product.category
                         productName = product.productName
                         productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
@@ -202,4 +204,25 @@ class MiniCartSimplifiedMapper @Inject constructor() {
         return miniCartSimplifiedDataList
     }
 
+    private fun mapShoppingSummaryData(miniCartData: MiniCartData): ShoppingSummaryBottomSheetData {
+        val shoppingSummaryItems = mutableListOf<Visitable<*>>()
+        miniCartData.data.simplifiedShoppingSummary.sections.forEachIndexed { idx, section ->
+            if (section.title.isNotBlank() && section.details.isNotEmpty()) {
+                shoppingSummaryItems.add(ShoppingSummaryHeaderUiModel(section.iconUrl, section.title, section.description))
+                section.details.forEach { sectionDetailItem ->
+                    shoppingSummaryItems.add(ShoppingSummaryProductUiModel(sectionDetailItem.name, sectionDetailItem.value))
+                }
+                shoppingSummaryItems.add(ShoppingSummarySeparatorUiModel())
+            }
+            else if (section.title.isBlank() && idx == miniCartData.data.simplifiedShoppingSummary.sections.lastIndex) {
+                section.details.forEach { sectionDetailItem ->
+                    shoppingSummaryItems.add(ShoppingSummaryTotalTransactionUiModel(sectionDetailItem.name, sectionDetailItem.value))
+                }
+            }
+        }
+        return ShoppingSummaryBottomSheetData(
+            title = miniCartData.data.simplifiedShoppingSummary.text,
+            items = shoppingSummaryItems
+        )
+    }
 }

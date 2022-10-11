@@ -33,7 +33,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            android:textSize="14dp"
+            android:textSize="14sp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toStartOf="@id/ivEdit"/>
@@ -57,7 +57,7 @@
             android:text="@string/product_stock_reminder_set_at_once_desc"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:textSize="12dp"
+            android:textSize="12sp"
             app:typographyType="body_3"
             app:layout_constraintTop_toBottomOf="@id/tvLabelEditAll"
             app:layout_constraintStart_toStartOf="parent"

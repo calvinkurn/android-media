@@ -4,12 +4,16 @@ import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_CHAT_BALLOON_ACTION
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SELECTION
+import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
+import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
@@ -23,11 +27,13 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
+import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_AGENT_QUEUE
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_VIEW
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_STICKY_BUTTON
 import com.tokopedia.chatbot.domain.pojo.chatactionballoon.ChatActionBalloonSelectionAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.chatdivider.ChatDividerResponse
@@ -69,8 +75,21 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_STICKY_BUTTON-> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_VIEW-> convertToMessageViewModel(chatItemPojoByDateByTime)
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
+            TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
+            TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {
+        val invoiceAttributes = pojo.attachment.attributes
+        val invoiceSentPojo = gson.fromJson(invoiceAttributes, InvoiceSentPojo::class.java)
+        val needSync = attachmentIds.contains(pojo.attachment.id)
+        return AttachInvoiceSentUiModel.Builder()
+            .withResponseFromGQL(pojo)
+            .withNeedSync(needSync)
+            .withInvoiceAttributesResponse(invoiceSentPojo.invoiceLink)
+            .build()
     }
 
     /////////////////// QUICK REPLIES
@@ -118,7 +137,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.attachment?.type.toString(),
                 pojo.replyTime,
                 pojo.msg,
-                convertToChatActionBubbleViewModelList(pojoAttribute)
+                convertToChatActionBubbleViewModelList(pojoAttribute),
+                status = pojo.status
         )
     }
 
@@ -155,7 +175,9 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                     attributes.status,
                     attributes.statusId,
                     attributes.title,
-                    attributes.amount)
+                    attributes.amount,
+                    attributes.color
+            )
             list.add(attachInvoice)
         }
 
@@ -169,7 +191,8 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 pojo.replyTime,
                 list,
                 pojo.msg,
-                pojo.source
+                pojo.source,
+                pojo.status
         )
     }
 
@@ -269,6 +292,19 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
                 .withImageUrl(pojoAttribute.imageUrlSecure)
                 .withImageUrlThumbnail(pojoAttribute.thumbnail)
                 .build()
+    }
+
+    private fun convertToVideoUpload(chatItemPojoByDateByTime: Reply):
+            VideoUploadUiModel {
+        val pojoAttribute = gson.fromJson<ChatbotVideoUploadAttributes>(
+            chatItemPojoByDateByTime.attachment.attributes,
+            ChatbotVideoUploadAttributes::class.java
+        )
+
+        return VideoUploadUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withVideoUrl(pojoAttribute.videoUrl)
+            .build()
     }
 
 }

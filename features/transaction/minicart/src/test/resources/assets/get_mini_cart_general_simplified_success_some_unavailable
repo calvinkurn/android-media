@@ -1,0 +1,201 @@
+{
+  "status": "OK",
+  "mini_cart_v3": {
+    "error_message": [],
+    "status": "OK",
+    "data": {
+      "errors": [],
+      "beli_button_config": {
+        "button_type": 1,
+        "button_wording": "Beli"
+      },
+      "bottom_bar": {
+        "text": "Ringkasan Belanja",
+        "is_shop_active": true,
+        "total_price_fmt": "Rp5.000"
+      },
+      "total_product_count": 1,
+      "total_product_error": 1,
+      "total_product_price": 5000,
+      "simplified_shopping_summary": {
+        "text": "Ringkasan Belanja",
+        "sections": [
+          {
+            "title": "KilatanCahayas",
+            "description": "Kota Tangerang Selatan",
+            "icon_url": "https://images.tokopedia.net/img/official_store/badge_os.png",
+            "details": [
+              {
+                "name": "1 x Test Kupon3",
+                "value": "Rp5.000"
+              }
+            ]
+          },
+          {
+            "title": "Barang bertanda Dilayani Tokopedia",
+            "description": "",
+            "icon_url": "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/DilayaniTokopedia_Icon.png",
+            "details": []
+          },
+          {
+            "title": "Barang PreOrder",
+            "description": "",
+            "icon_url": "",
+            "details": []
+          },
+          {
+            "title": "",
+            "description": "",
+            "icon_url": "",
+            "details": [
+              {
+                "name": "Total Harga (1 Barang)",
+                "value": "<b>Rp5.000</b>"
+              }
+            ]
+          }
+        ]
+      },
+      "available_section": {
+        "available_group": [
+          {
+            "cart_string": "6552061-0-342370",
+            "shop": {
+              "shop_id": 6552061,
+              "shop_name": "KilatanCahayas",
+              "shop_type_info": {
+                "title_fmt": "official_store"
+              }
+            },
+            "shipment_information": {
+              "free_shipping": {
+                "eligible": false
+              },
+              "free_shipping_extra": {
+                "eligible": false
+              }
+            },
+            "cart_details": [
+              {
+                "bundle_detail": {
+                  "bundle_id": 0,
+                  "bundle_name": "",
+                  "bundle_type": "",
+                  "bundle_status": "",
+                  "bundle_description": "",
+                  "bundle_price": 0,
+                  "bundle_price_fmt": "",
+                  "bundle_original_price": 0,
+                  "bundle_original_price_fmt": "",
+                  "bundle_min_order": 0,
+                  "bundle_max_order": 0,
+                  "bundle_quota": 0,
+                  "edit_app_link": "",
+                  "bundle_qty": 0,
+                  "bundle_group_id": "",
+                  "slash_price_label": "",
+                  "bundle_grayscale_icon_url": ""
+                },
+                "products": [
+                  {
+                    "cart_id": 2166393762,
+                    "parent_id": 0,
+                    "product_id": 2150389776,
+                    "product_quantity": 1,
+                    "product_notes": "",
+                    "campaign_id": 0,
+                    "product_tracker_data": {
+                      "attribution": ""
+                    },
+                    "product_weight": 1,
+                    "slash_price_label": "",
+                    "warehouse_id": 342370,
+                    "category_id": 1517,
+                    "category": "Film &  Musik / Musik / CD & DVD Musik",
+                    "product_name": "Test Kupon3",
+                    "variant_description_detail": {
+                      "variant_name": []
+                    },
+                    "product_price": 5000,
+                    "product_invenage_value": 99,
+                    "product_switch_invenage": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "unavailable_section": [
+        {
+          "unavailable_group": [
+            {
+              "shop": {
+                "shop_id": 6552061,
+                "shop_name": "KilatanCahayas",
+                "shop_type_info": {
+                  "title_fmt": "official_store"
+                }
+              },
+              "shipment_information": {
+                "free_shipping": {
+                  "eligible": false
+                },
+                "free_shipping_extra": {
+                  "eligible": false
+                }
+              },
+              "cart_details": [
+                {
+                  "cart_id": "0",
+                  "bundle_detail": {
+                    "bundle_id": 0,
+                    "bundle_name": "",
+                    "bundle_type": "",
+                    "bundle_status": "",
+                    "bundle_description": "",
+                    "bundle_price": 0,
+                    "bundle_price_fmt": "",
+                    "bundle_original_price": 0,
+                    "bundle_original_price_fmt": "",
+                    "bundle_min_order": 0,
+                    "bundle_max_order": 0,
+                    "bundle_quota": 0,
+                    "edit_app_link": "",
+                    "bundle_qty": 0,
+                    "bundle_group_id": "",
+                    "slash_price_label": "",
+                    "bundle_grayscale_icon_url": ""
+                  },
+                  "products": [
+                    {
+                      "cart_id": 2166390660,
+                      "parent_id": 0,
+                      "product_id": 2148348250,
+                      "product_quantity": 1,
+                      "product_notes": "",
+                      "campaign_id": 0,
+                      "product_tracker_data": {
+                        "attribution": ""
+                      },
+                      "product_weight": 1,
+                      "slash_price_label": "",
+                      "warehouse_id": 342370,
+                      "category_id": 658,
+                      "category": "Elektronik / TV / Plasma TV",
+                      "product_name": "KmeraGes",
+                      "variant_description_detail": {
+                        "variant_name": []
+                      },
+                      "product_price": 1000000
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

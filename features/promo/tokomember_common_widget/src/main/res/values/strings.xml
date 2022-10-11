@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tm_cmn_datestart_label">Sejak</string>
+    <string name="tm_cmn_datestart_value">DD MM YY</string>
+    <string name="tm_cmn_dateend_label">Berlaku Hingga</string>
+    <string name="tm_cmn_dateend_value">DD MM YY</string>
+    <string name="tm_cmn_ubah_program">Ubah Program</string>
+    <string name="tm_cmn_jumlah_transaksi">Jumlah transaksi</string>
+    <string name="tm_cmn_pertambahan_member">Pertambahan Member</string>
+</resources>

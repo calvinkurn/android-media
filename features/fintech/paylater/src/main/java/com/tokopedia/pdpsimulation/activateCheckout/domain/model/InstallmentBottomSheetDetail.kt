@@ -6,8 +6,8 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class InstallmentBottomSheetDetail(
-    var gatwayToChipMap :Map<Int, CheckoutData>,
-    var gatewayIdSelected:Int,
+    var gatwayToChipMap :Map<String, CheckoutData>,
+    var gatewayIdSelected:String,
     var selectedProductPrice: String = "",
     var selectedTenure :Int  ,
     var  installmentDetail :InstallmentDetails

@@ -8,12 +8,12 @@ import com.tokopedia.atc_common.domain.usecase.UpdateCartCounterUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.product.detail.common.usecase.ToggleFavoriteUseCase
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
-import com.tokopedia.product.detail.usecase.CreateAffiliateCookieUseCase
 import com.tokopedia.product.detail.usecase.DiscussionMostHelpfulUseCase
 import com.tokopedia.product.detail.usecase.GetP2DataAndMiniCartUseCase
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
@@ -31,8 +31,6 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.MockKAnnotations
@@ -66,13 +64,7 @@ abstract class BasePdpViewModelTest {
     lateinit var toggleFavoriteUseCase: ToggleFavoriteUseCase
 
     @RelaxedMockK
-    lateinit var removeWishlistUseCase: RemoveWishListUseCase
-
-    @RelaxedMockK
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
-
-    @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
 
     @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
@@ -132,7 +124,7 @@ abstract class BasePdpViewModelTest {
     lateinit var getRecommendationUseCase: GetRecommendationUseCase
 
     @RelaxedMockK
-    lateinit var createAffiliateCookieUseCase: CreateAffiliateCookieUseCase
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     lateinit var spykViewModel: DynamicProductDetailViewModel
 
@@ -159,15 +151,13 @@ abstract class BasePdpViewModelTest {
         createViewModel()
     }
 
-    private fun createViewModel(): DynamicProductDetailViewModel {
+    fun createViewModel(): DynamicProductDetailViewModel {
         return DynamicProductDetailViewModel(CoroutineTestDispatchersProvider,
                 { getPdpLayoutUseCase },
                 { getProductInfoP2LoginUseCase },
                 { getProductInfoP2OtherUseCase },
                 { getP2DataAndMiniCartUseCase },
                 { toggleFavoriteUseCase },
-                { removeWishlistUseCase },
-                { addWishListUseCase },
                 { deleteWishlistV2UseCase },
                 { addToWishlistV2UseCase },
                 { getProductRecommendationUseCase },
@@ -186,8 +176,8 @@ abstract class BasePdpViewModelTest {
                 { getTopadsIsAdsUseCase },
                 playWidgetTools,
                 remoteConfigInstance,
-                {createAffiliateCookieUseCase},
-                userSessionInterface
+                userSessionInterface,
+                { affiliateCookieHelper }
         )
     }
 }

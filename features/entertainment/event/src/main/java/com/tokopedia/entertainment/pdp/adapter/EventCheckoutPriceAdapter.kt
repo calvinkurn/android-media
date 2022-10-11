@@ -11,7 +11,7 @@ import kotlinx.android.synthetic.main.item_event_checkout_price.view.*
 
 class EventCheckoutPriceAdapter : RecyclerView.Adapter<EventCheckoutPriceAdapter.EventCheckoutPriceViewHolder>() {
 
-    private val zeroPrice = 0
+    private val zeroPrice = 0L
     private var listItemMap = emptyList<ItemMapResponse>()
 
     inner class EventCheckoutPriceViewHolder(view: View) : RecyclerView.ViewHolder(view) {

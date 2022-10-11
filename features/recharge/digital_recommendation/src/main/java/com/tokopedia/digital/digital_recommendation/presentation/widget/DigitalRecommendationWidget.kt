@@ -14,7 +14,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseAdapter
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.digital_recommendation.databinding.LayoutDigitalRecommendationBinding
-import com.tokopedia.digital.digital_recommendation.presentation.model.*
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationItemUnifyModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationModel
+import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationPage
 import com.tokopedia.digital.digital_recommendation.presentation.viewmodel.DigitalRecommendationViewModel
 import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationAnalytics
 import com.tokopedia.kotlin.extensions.view.hide
@@ -52,15 +55,11 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
 
     private val unifyListener = object : DigitalUnifyCardViewHolder.DigitalUnifyCardListener{
         override fun onItemClicked(item: DigitalUnifyModel, index: Int) {
-            if (!trackers.isNullOrEmpty()){
-                trackers?.get(index)?.let { onItemClicked(it, index) }
-            }
+            trackers.getElementByIndex(index){ onItemClicked(it, index) }
         }
 
         override fun onItemImpression(item: DigitalUnifyModel, index: Int) {
-            if (!trackers.isNullOrEmpty()){
-                trackers?.get(index)?.let { onItemBinding(it, index) }
-            }
+            trackers.getElementByIndex(index){ onItemBinding(it, index) }
         }
     }
 
@@ -235,6 +234,15 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         digitalRecommendationViewModel.digitalRecommendationItems.observe(lifecycleOwner, observer)
     }
 
+    private inline fun List<DigitalRecommendationItemUnifyModel>?.getElementByIndex(
+        index: Int,
+        block: (DigitalRecommendationItemUnifyModel) -> Unit
+    ){
+        if (this != null && index >= 0 && index <= size - MAX_INDEX_SUBTRACTOR){
+            block(this[index])
+        }
+    }
+
     interface Listener {
         fun onFetchFailed(throwable: Throwable)
         fun onEmptyResult()
@@ -244,6 +252,7 @@ class DigitalRecommendationWidget @JvmOverloads constructor(context: Context, at
         private const val SAVED_ADDITIONAL_TRACK_DATA = "SAVED_ADDITIONAL_TRACK_DATA"
         private const val SAVED_PAGE = "SAVED_PAGE"
         private const val SUPER_STATE = "superState"
+        private const val MAX_INDEX_SUBTRACTOR = 1
     }
 
 }

@@ -34,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -42,6 +43,7 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on April 25, 2022
  */
 class MyShopProductFragment @Inject constructor(
+    private val userSession: UserSessionInterface,
     private val analytic: ProductTagAnalytic,
     private val impressionCoordinator: ProductImpressionCoordinator,
 ) : BaseProductTagChildFragment() {
@@ -156,6 +158,10 @@ class MyShopProductFragment @Inject constructor(
             errorAction.gone()
             errorSecondaryAction.gone()
         }
+
+        binding.sbShopProduct.searchBarPlaceholder = requireContext().getString(
+            R.string.cc_product_tag_search_hint_template, userSession.shopName
+        )
 
         binding.sbShopProduct.searchBarTextField.setOnTouchListener { _, motionEvent ->
             if(motionEvent.action == MotionEvent.ACTION_UP) {

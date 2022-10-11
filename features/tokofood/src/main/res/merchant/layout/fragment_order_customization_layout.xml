@@ -13,42 +13,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.tokopedia.header.HeaderUnify
+            android:id="@+id/toolbarOrderCustomization"
             android:layout_width="match_parent"
-            android:layout_height="?android:attr/actionBarSize">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tpg_product_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_1"
-                    app:typographyWeight="bold"
-                    tools:text="Gimpo Sweet and Sour Chicken + Busan Odeng"/>
-
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/text_header_order_custom"
-                    android:textColor="@color/Unify_NN600"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tpg_product_name"
-                    app:typographyType="body_3"
-                    app:typographyWeight="reguler"
-                    tools:Text="Custom pesanan" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-        </androidx.appcompat.widget.Toolbar>
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:unify_header_is_show_back_button="true"
+            app:unify_header_is_show_shadow="true" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -75,11 +47,11 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginBottom="12dp"
-        android:text="Jumlah Pesanan:"
+        android:text="@string/text_order_customization_total_order"
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@id/du_total_price"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_3"
+        app:typographyType="display_3"
         app:typographyWeight="reguler" />
 
     <com.tokopedia.unifycomponents.QuantityEditorUnify
@@ -108,10 +80,10 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_2"
-        android:text="Total Harga"
+        android:text="@string/text_order_customization_total_price"
         app:layout_constraintBottom_toTopOf="@id/subtotalProductPriceLabel"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:typographyType="body_3" />
+        app:typographyType="display_3" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/subtotalProductPriceLabel"
@@ -121,7 +93,7 @@
         android:layout_marginBottom="@dimen/unify_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.UnifyButton
@@ -130,7 +102,7 @@
         android:layout_height="40dp"
         android:layout_marginVertical="@dimen/unify_space_16"
         android:layout_marginEnd="@dimen/unify_space_16"
-        android:text="Pesan"
+        android:text="@string/action_order"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 

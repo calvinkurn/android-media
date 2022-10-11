@@ -59,10 +59,6 @@ object SharingUtil {
 
     private const val FILE_NAME_FORMAT = "mvc_%s"
 
-    private const val VOUCHER_DIR = "topsellervoucher"
-
-    private const val MAXIMUM_FILES_IN_FOLDER = 10
-
     private const val AUTHORITY = "com.tokopedia.sellerapp.provider"
 
     fun copyTextToClipboard(context: Context, label: String, text: String) {
@@ -102,7 +98,7 @@ object SharingUtil {
                             Socmed.INSTAGRAM -> {
                                 shareInstagramFeed(context, contentUri)
                             }
-                            Socmed.TWITTER, Socmed.LINE -> {
+                            Socmed.TWITTER, Socmed.LINE, Socmed.WHATSAPP -> {
                                 goToSocialMedia(socmed.packageString, context, contentUri, messageString)
                             }
                             else -> {
@@ -120,22 +116,19 @@ object SharingUtil {
                                 context: Context,
                                 pathFile: Uri,
                                 messageString: String? = null) {
-        val intent = context.packageManager.getLaunchIntentForPackage(packageString)
-        intent?.run {
+        try {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 setPackage(packageString)
-                try {
-                    putExtra(Intent.EXTRA_STREAM, pathFile)
-                    messageString?.run {
-                        putExtra(Intent.EXTRA_TEXT, this)
-                    }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
+                putExtra(Intent.EXTRA_STREAM, pathFile)
+                messageString?.run {
+                    putExtra(Intent.EXTRA_TEXT, this)
                 }
                 type = SHARE_TYPE_IMAGE
             }
             context.startActivity(shareIntent)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
@@ -144,49 +137,37 @@ object SharingUtil {
                                 context: Context,
                                 pathFile: Uri,
                                 messageString: String? = null) {
-        val intent = context.packageManager.getLaunchIntentForPackage(packageString)
-        if (intent != null) {
+        try {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = SHARE_TYPE_IMAGE
                 setClassName(packageString, classString)
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                try {
-                    putExtra(Intent.EXTRA_STREAM, pathFile)
-                    messageString?.run {
-                        putExtra(Intent.EXTRA_TEXT, this)
-                    }
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
+                putExtra(Intent.EXTRA_STREAM, pathFile)
+                messageString?.run {
+                    putExtra(Intent.EXTRA_TEXT, this)
                 }
             }
             context.startActivity(shareIntent)
-        } else {
-            // This block is reserved to handle unavailability of the socmed app.
-            // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 
     private fun shareInstagramFeed(context: Context,
                                    fileUri: Uri) {
 
-        val intent = context.packageManager.getLaunchIntentForPackage(SocmedPackage.INSTAGRAM)
-        if (intent != null) {
+        try {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = SHARE_TYPE_IMAGE
                 flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                 setPackage(SocmedPackage.INSTAGRAM)
-                try {
-                    putExtra(Intent.EXTRA_STREAM, fileUri)
-                } catch (ex: Exception) {
-                    ex.printStackTrace()
-                }
+                putExtra(Intent.EXTRA_STREAM, fileUri)
             }
             context.startActivity(shareIntent)
-        } else {
-            // This block is reserved to handle unavailability of the socmed app.
-            // Generally, this block should send intent to go to desired socmed app Play Store Url, but it isn't needed for now
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 

@@ -49,6 +49,13 @@ class DenomGridViewHolder (
                 } else hide()
             }
 
+            labelDenomGridActivePeriod.run {
+                if (!denomGrid.activePeriod.isNullOrEmpty()) {
+                    show()
+                    text = denomGrid.activePeriod
+                } else hide()
+            }
+
             tgDenomGridPeriode.run {
                 if (!denomGrid.expiredDate.isNullOrEmpty()){
                     show()
@@ -62,21 +69,6 @@ class DenomGridViewHolder (
                     show()
                     setStatusOutOfStockColor(denomGrid.status, context)
                     text = denomGrid.price
-
-                    if (labelDenomGridSpecial.isVisible) {
-                        setMargin(
-                            getDimens(unifyDimens.unify_space_0),
-                            getDimens(com.tokopedia.recharge_component.R.dimen.widget_denom_grid_margin_price),
-                            getDimens(unifyDimens.unify_space_0),
-                            getDimens(unifyDimens.unify_space_0))
-                    } else {
-                        setMargin(
-                            getDimens(unifyDimens.unify_space_0),
-                            getDimens(unifyDimens.spacing_lvl2),
-                            getDimens(unifyDimens.unify_space_0),
-                            getDimens(unifyDimens.unify_space_0))
-                    }
-
                 } else hide()
             }
 

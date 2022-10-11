@@ -3,8 +3,12 @@ package com.tokopedia.shop.pageheader.data.model
 import androidx.fragment.app.Fragment
 
 data class ShopPageTabModel(
-        val tabTitle: String,
-        var tabIconInactive: Int,
-        val tabIconActive: Int,
-        val tabFragment: Fragment
+        val tabTitle: String = "",
+        var tabIconInactive: Int = 0,
+        val tabIconActive: Int = 0,
+        val tabFragment: Fragment = Fragment(),
+        val iconUrl: String = "",
+        val iconActiveUrl: String = "",
+        val isFocus: Boolean = false,
+        val isDefault: Boolean = false
 )

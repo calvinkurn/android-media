@@ -12,7 +12,7 @@ object SaldoDetailsConstants {
     @JvmField
     val SALDOLOCK_PAYNOW_URL = WEB_DOMAIN_URL + "fm/modal-toko/dashboard/pembayaran"
     const val SALDO_HOLD_HELP_URL = "https://www.tokopedia.com/help/article/t-0057-saldo-tidak-dapat-digunakan?refid=st-1235"
-    const val SALDO_HOLD_HELP_URL_TWO =  "https://www.tokopedia.com/help/article/t-0057-saldo-direview?refid=st-1235"
+    const val SALDO_HOLD_HELP_URL_TWO =  "https://www.tokopedia.com/help/article/dana-sedang-direview"
 
 
     @JvmField

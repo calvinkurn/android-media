@@ -31,7 +31,6 @@ import com.tokopedia.profilecompletion.common.analytics.TrackingPinConstant
 import com.tokopedia.profilecompletion.common.analytics.TrackingPinUtil
 import com.tokopedia.profilecompletion.common.model.CheckPinV2Data
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.sessioncommon.ErrorHandlerSession
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -78,11 +77,6 @@ open class AddPinFragment : BaseDaggerFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_add_pin, container, false)
-    }
-
-    private fun isCreatePinV2(): Boolean {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(CREATE_PIN_ROLLENCE, "")
-            .isNotEmpty()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,11 +130,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun checkPinMediator(pin: String) {
-        if (isCreatePinV2()) {
-            addChangePinViewModel.checkPinV2(pin)
-        } else {
-            addChangePinViewModel.checkPin(pin)
-        }
+        addChangePinViewModel.checkPinV2(pin)
     }
 
     override fun onStart() {
@@ -210,7 +200,7 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun goToVerificationActivity() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         val bundle = Bundle()
         bundle.putString(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         bundle.putString(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
@@ -389,18 +379,13 @@ open class AddPinFragment : BaseDaggerFragment() {
     }
 
     private fun addPinMediator(validateToken: String) {
-        if (isCreatePinV2()) {
-            addChangePinViewModel.addPinV2(validateToken)
-        } else {
-            addChangePinViewModel.addPin(validateToken)
-        }
+        addChangePinViewModel.addPinV2(validateToken)
     }
 
     companion object {
 
         const val REQUEST_CODE_COTP_PHONE_VERIFICATION = 101
         const val OTP_TYPE_PHONE_VERIFICATION = 124
-        const val CREATE_PIN_ROLLENCE = "pdh_crt_and"
 
         const val PIN_LENGTH = 6
         fun createInstance(bundle: Bundle): AddPinFragment {

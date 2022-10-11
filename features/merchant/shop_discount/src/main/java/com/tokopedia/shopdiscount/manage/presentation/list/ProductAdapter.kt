@@ -69,9 +69,12 @@ class ProductAdapter(
     }
 
     fun updateAll(items: List<Product>) {
-        this.products.clear()
-        this.products.addAll(items)
-        notifyItemRangeChanged(FIRST_ITEM, items.size)
+        try {
+            this.products = items.toMutableList()
+            notifyItemRangeChanged(FIRST_ITEM, items.size)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -12,7 +12,6 @@ class WidgetUpgradePmProUiModel(
     val shopInfo: PMShopInfoUiModel,
     val registrationTerms: List<PmActiveTermUiModel> = emptyList(),
     val generalBenefits: List<PMProBenefitUiModel> = emptyList(),
-    val isPmActive: String = "",
     val shopGrade: String = "",
     val nextMonthlyRefreshDate: String = "",
     var impressHolder: ImpressHolder = ImpressHolder()

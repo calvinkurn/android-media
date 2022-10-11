@@ -36,12 +36,21 @@
         android:background="@color/Unify_N0"
         android:visibility="gone" />
 
+    <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+        android:id="@+id/choose_address_widget"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_32"
+        android:paddingTop="@dimen/unify_space_4"
+        android:paddingStart="@dimen/dp_19"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/search_product_quick_sort_filter" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constrainedHeight="true"
+        android:layout_marginTop="@dimen/unify_space_24"
         android:paddingBottom="@dimen/unify_space_96"
         tools:listitem="@layout/item_catalog_preffered_product"
         app:layout_constraintTop_toBottomOf="@+id/layout_no_data"/>

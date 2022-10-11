@@ -1,6 +1,7 @@
 package com.tokopedia.loginregister.di.modules
 
 import android.content.Context
+import com.tokopedia.loginregister.login.const.LoginConstants
 import com.tokopedia.loginregister.login.di.LoginModule
 import com.tokopedia.loginregister.login.view.fragment.LoginEmailPhoneFragment
 import com.tokopedia.remoteconfig.RemoteConfig
@@ -17,6 +18,8 @@ object FakeLoginModule: LoginModule() {
         return mockk {
             every { fetchByType(any()) } just Runs
             every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_INACTIVE_PHONE_NUMBER, any()) } returns "true"
+            every { getString(LoginEmailPhoneFragment.ROLLENCE_KEY_GOTO_SEAMLESS, any()) } returns "true"
+            every { getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, any()) } returns "true"
         }
     }
 

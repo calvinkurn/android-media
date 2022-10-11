@@ -18,10 +18,6 @@ class HotelBookingActivity : HotelBaseActivity(), HasComponent<HotelBookingCompo
 
     var cartId: String = ""
 
-    override fun getParentViewResourceID(): Int = com.tokopedia.abstraction.R.id.parent_view
-
-    override fun getLayoutRes() = com.tokopedia.abstraction.R.layout.activity_base_simple
-
     override fun getComponent(): HotelBookingComponent =
         DaggerHotelBookingComponent.builder()
                 .hotelComponent(HotelComponentInstance.getHotelComponent(application))

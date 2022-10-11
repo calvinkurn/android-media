@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -16,6 +15,7 @@ import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.play_common.ui.leaderboard.adapter.PlayInteractiveWinnerAdapter
 import com.tokopedia.play_common.ui.leaderboard.itemdecoration.PlayLeaderboardWinnerItemDecoration
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.play_common.view.quiz.QuizChoiceViewHolder
 import com.tokopedia.play_common.view.quiz.QuizListAdapter
 import com.tokopedia.play_common.view.quiz.QuizOptionItemDecoration
@@ -77,8 +77,8 @@ class PlayInteractiveLeaderboardViewHolder(itemView: View, private val listener:
         if (leaderboard.endsIn == 0) hideTimer() else showTimer(leaderboard.endsIn.toLong())
 
         tvOtherParticipant.text = leaderboard.otherParticipantText
-        if (leaderboard.otherParticipantText.isNotBlank()) tvOtherParticipant.show() else tvOtherParticipant.hide()
-        itemView.addOnImpressionListener(leaderboard.impressHolder){
+        if (leaderboard.otherParticipantText.isNotBlank() && leaderboard.winners.isNotEmpty()) tvOtherParticipant.show() else tvOtherParticipant.hide()
+        itemView.addImpressionListener(leaderboard.impressHolder){
             listener.onLeaderBoardImpressed(leaderboard)
         }
     }

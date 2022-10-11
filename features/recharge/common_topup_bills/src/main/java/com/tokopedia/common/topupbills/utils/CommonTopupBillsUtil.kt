@@ -14,13 +14,13 @@ class CommonTopupBillsUtil {
         const val NORMALIZED_NUMBER_PREFIX = "0"
         const val NUMBER_REGEX = "[^0-9]+"
 
-        fun isSeamlessFavoriteNumber(context: Context): Boolean {
+        fun isFavoriteNumberRevamp(context: Context): Boolean {
             val remoteConfig = FirebaseRemoteConfigImpl(context)
             return remoteConfig.getBoolean(REMOTE_CONFIG_MAINAPP_DIGITAL_FAVORITE_NUMBER, true)
         }
 
         fun getApplinkFavoriteNumber(context: Context): String {
-            return if (isSeamlessFavoriteNumber(context))
+            return if (isFavoriteNumberRevamp(context))
                 ApplinkConsInternalDigital.FAVORITE_NUMBER else ApplinkConsInternalDigital.SEARCH_NUMBER
         }
 
@@ -45,6 +45,17 @@ class CommonTopupBillsUtil {
             phoneNumber = phoneNumber.replace(".", "")
 
             return phoneNumber.replace(NUMBER_REGEX.toRegex(), "")
+        }
+
+        fun buildRedirectAppLinkToCheckout(
+            productId: String,
+            clientNumber: String,
+            categoryId: String
+        ): String{
+            return """
+                tokopedia://digital/cart?product_id=$productId&client_number=$clientNumber
+                &category_id=$categoryId&operator_id=&idem_potency_key=&instant_checkout=&slug=
+            """.filterNot { it.isWhitespace() }
         }
     }
 }

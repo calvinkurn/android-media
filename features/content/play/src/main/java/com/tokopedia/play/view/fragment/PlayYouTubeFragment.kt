@@ -16,6 +16,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.VideoAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.PlayViewerVideoState
 import com.tokopedia.play.util.withCache
@@ -39,7 +40,8 @@ import javax.inject.Inject
  * Created by jegul on 28/04/20
  */
 class PlayYouTubeFragment @Inject constructor(
-        private val analytic: PlayAnalytic
+        private val analytic: PlayAnalytic,
+        private val playLog: PlayLog
 ): TkpdBaseV4Fragment(), PlayFragmentContract, YouTubeViewComponent.Listener, YouTubeViewComponent.DataSource {
 
     private lateinit var containerYouTube: RoundedConstraintLayout
@@ -58,7 +60,7 @@ class PlayYouTubeFragment @Inject constructor(
         get() = requireActivity() as PlayOrientationListener
 
     private val orientation: ScreenOrientation
-        get() = ScreenOrientation.getByInt(resources.configuration.orientation)
+        get() = ScreenOrientation.getByInt(requireContext().resources.configuration.orientation)
 
     private val isYouTube: Boolean
         get() = playViewModel.videoPlayer.isYouTube
@@ -142,7 +144,7 @@ class PlayYouTubeFragment @Inject constructor(
      * Private methods
      */
     private fun initAnalytic() {
-        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic)
+        videoAnalyticHelper = VideoAnalyticHelper(requireContext(), analytic, playLog)
     }
 
     private fun initView(view: View) {
@@ -180,6 +182,8 @@ class PlayYouTubeFragment @Inject constructor(
     private fun observeVideoMeta() {
         playViewModel.observableVideoMeta.observe(viewLifecycleOwner) {
             youtubeViewOnStateChanged(videoPlayer = it.videoPlayer)
+
+            videoAnalyticHelper.setVideoData(playViewModel.channelId, it.videoPlayer)
         }
     }
 

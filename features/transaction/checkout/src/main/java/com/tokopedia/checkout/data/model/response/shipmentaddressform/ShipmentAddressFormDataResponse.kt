@@ -60,5 +60,11 @@ data class ShipmentAddressFormDataResponse(
         @SerializedName("error_ticker")
         val errorTicker: String = "",
         @SerializedName("cross_sell")
-        val crossSell: List<CrossSellResponse> = emptyList()
+        val crossSell: List<CrossSellResponse> = emptyList(),
+        @SerializedName("image_upload")
+        val imageUpload: ImageUpload = ImageUpload(),
+        @SerializedName("upsell")
+        val upsell: Upsell = Upsell(),
+        @SerializedName("cart_data")
+        val cartData: String = "",
 )

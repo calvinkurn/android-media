@@ -1,5 +1,6 @@
 package com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.viewholder
 
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.explorepromo.ExplorePromo
 import com.tokopedia.tokofood.R
@@ -37,6 +38,14 @@ class TokoFoodPurchasePromoViewHolder(
                     }
                 }
             }
+            setExplorePromoDescColorProgramatically()
+        }
+    }
+
+    private fun setExplorePromoDescColorProgramatically() {
+        itemView.context?.let {
+            val textColor = ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            viewBinding.usePromoAppliedButton.description.setTextColor(textColor)
         }
     }
 

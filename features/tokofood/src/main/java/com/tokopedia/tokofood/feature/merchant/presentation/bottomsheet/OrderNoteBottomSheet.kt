@@ -11,10 +11,11 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.BottomsheetOrderNoteLayoutBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListener) : BottomSheetUnify() {
+class OrderNoteBottomSheet : BottomSheetUnify() {
 
     private var selectedProductId: String = ""
     private var orderNote: String = ""
+    private var clickListener: OnSaveNoteButtonClickListener? = null
 
     interface OnSaveNoteButtonClickListener {
         fun onSaveNoteButtonClicked(productId: String, orderNote: String)
@@ -22,11 +23,12 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
 
     companion object {
 
+        private const val TAG = "OrderNoteBottomSheet"
         const val MIN_LINES = 3
 
         @JvmStatic
-        fun createInstance(clickListener: OnSaveNoteButtonClickListener): OrderNoteBottomSheet {
-            return OrderNoteBottomSheet(clickListener)
+        fun createInstance(): OrderNoteBottomSheet {
+            return OrderNoteBottomSheet()
         }
     }
 
@@ -69,7 +71,7 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
             this.saveNotesButton.isEnabled = binding.notesInput.editText.text.isNotBlank()
             this.saveNotesButton.setOnClickListener {
                 val orderNote = binding.notesInput.editText.text.toString()
-                clickListener.onSaveNoteButtonClicked(selectedProductId, orderNote)
+                clickListener?.onSaveNoteButtonClicked(selectedProductId, orderNote)
             }
         }
     }
@@ -82,7 +84,13 @@ class OrderNoteBottomSheet(private val clickListener: OnSaveNoteButtonClickListe
         this.orderNote = orderNote
     }
 
+    fun setClickListener(clickListener: OnSaveNoteButtonClickListener) {
+        this.clickListener = clickListener
+    }
+
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, this::class.java.simpleName)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
     }
 }

@@ -5,8 +5,11 @@ import android.content.res.Resources
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
+import com.tokopedia.encryption.security.AeadEncryptor
+import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.iris.util.IrisSession
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.goto_seamless.GotoSeamlessPreference
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -55,6 +58,14 @@ open class LoginModule {
     @Provides
     open fun provideFirebaseRemoteConfig(@ApplicationContext context: Context): RemoteConfig {
         return FirebaseRemoteConfigImpl(context)
+    }
+
+    @Provides
+    fun provideAeadEncryptor(@ApplicationContext context: Context): AeadEncryptor = AeadEncryptorImpl(context)
+
+    @Provides
+    fun provideGotoSeamlessPreference(@ApplicationContext context: Context, aeadEncryptor: AeadEncryptor): GotoSeamlessPreference {
+        return GotoSeamlessPreference(context, aeadEncryptor)
     }
 
     @ActivityScope

@@ -3,6 +3,7 @@ package com.tokopedia.search.result.presentation.model
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.search.utils.orNone
 
 data class BroadMatchItemDataView(
     val id: String = "",
@@ -28,6 +29,9 @@ data class BroadMatchItemDataView(
     val carouselProductType: CarouselProductType,
     val dimension90: String = "",
     val componentId: String = "",
+    val originalPrice: String = "",
+    val discountPercentage: Int = 0,
+    val externalReference: String = "",
 ): ImpressHolder() {
 
     private fun asObjectDataLayer(): MutableMap<String, Any> {
@@ -42,6 +46,7 @@ data class BroadMatchItemDataView(
             "position", position,
             "dimension90", dimension90,
             "dimension115", labelGroupDataList.getFormattedPositionName(),
+            "dimension131", externalReference.orNone()
         )
     }
 

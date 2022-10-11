@@ -115,7 +115,8 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
             visitableList[index + 1].assertOrganicProduct(
                 product,
                 index + 1,
-                searchProductPageTitle
+                searchProductPageTitle,
+                localSearchRecommendationModel.getProductListType()
             )
         }
     }
@@ -209,6 +210,7 @@ internal class SearchProductEmptyLocalSearchRecommendationTest : ProductListPres
                 product,
                 index + 9,
                 searchProductPageTitle,
+                localSearchRecommendationModel.getProductListType()
             )
         }
     }

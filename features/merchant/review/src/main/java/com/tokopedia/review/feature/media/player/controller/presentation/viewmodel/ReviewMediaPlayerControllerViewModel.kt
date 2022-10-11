@@ -36,13 +36,14 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
     private val _orientationUiState = MutableStateFlow(OrientationUiState())
     private val _overlayVisibility = MutableStateFlow(true)
     private val _muted = MutableStateFlow(true)
+    private val _videoDurationMillis = MutableStateFlow(0L)
 
     private val shouldShowVideoPlayerController = _currentMediaItem.mapLatest { currentMediaItem ->
         currentMediaItem is VideoMediaItemUiModel
     }.stateIn(
         scope = this,
         started = SharingStarted.WhileSubscribed(STATE_FLOW_STOP_TIMEOUT_MILLIS),
-        initialValue = false
+        initialValue = true
     )
     private val totalMedia = _getDetailedReviewMediaResult.mapLatest {
         it?.detail?.mediaCount.orZero().toInt()
@@ -77,9 +78,10 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
         _orientationUiState,
         _overlayVisibility,
         _currentMediaItem,
+        _videoDurationMillis,
         totalMedia
     ) { shouldShowVideoPlayerController, shouldShowMediaCounter, shouldShowMediaCounterLoader,
-        muted, orientationUiState, overlayVisibility, currentMediaItem, totalMedia ->
+        muted, orientationUiState, overlayVisibility, currentMediaItem, durationMillis, totalMedia ->
         ReviewMediaPlayerControllerUiState(
             shouldShowVideoPlayerController = shouldShowVideoPlayerController,
             shouldShowMediaCounter = shouldShowMediaCounter,
@@ -88,7 +90,8 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
             orientationUiState = orientationUiState,
             overlayVisibility = overlayVisibility,
             currentGalleryPosition = currentMediaItem?.mediaNumber.orZero(),
-            totalMedia = totalMedia
+            totalMedia = totalMedia,
+            videoDurationMillis = durationMillis
         )
     }.stateIn(
         scope = this,
@@ -101,7 +104,8 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
             _orientationUiState.value,
             _overlayVisibility.value,
             _currentMediaItem.value?.mediaNumber.orZero(),
-            totalMedia.value
+            totalMedia.value,
+            _videoDurationMillis.value
         )
     )
 
@@ -135,5 +139,9 @@ class ReviewMediaPlayerControllerViewModel @Inject constructor(
 
     fun updateOverlayVisibility(visible: Boolean) {
         _overlayVisibility.value = visible
+    }
+
+    fun updateVideoDurationMillis(durationMillis: Long) {
+        _videoDurationMillis.value = durationMillis
     }
 }

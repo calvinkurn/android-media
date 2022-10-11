@@ -10,6 +10,7 @@ import com.tokopedia.topads.auto.di.AutoAdsScope
 import com.tokopedia.topads.auto.view.factory.DailyBudgetViewModelFactory
 import com.tokopedia.topads.common.domain.interactor.BidInfoUseCase
 import com.tokopedia.topads.common.domain.usecase.TopAdsGetDepositUseCase
+import com.tokopedia.topads.common.domain.usecase.TopAdsQueryPostAutoadsUseCase
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -39,11 +40,16 @@ class AutoAdsModule {
 
     @AutoAdsScope
     @Provides
-    fun provideDailyBudgetViewModelFactory(@ApplicationContext context: Context,
-                                           dispatcher: CoroutineDispatchers,
-                                           repository: GraphqlRepository,
-                                           query: Map<String, String>,
-                                           topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
-                                           bidInfoUseCase: BidInfoUseCase):
-            DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(context, dispatcher, repository, query, topAdsGetShopDepositUseCase, bidInfoUseCase)
+    fun provideDailyBudgetViewModelFactory(
+        @ApplicationContext context: Context,
+        dispatcher: CoroutineDispatchers,
+        repository: GraphqlRepository,
+        query: Map<String, String>,
+        topAdsGetShopDepositUseCase: TopAdsGetDepositUseCase,
+        bidInfoUseCase: BidInfoUseCase,
+        queryPostAutoadsUseCase: TopAdsQueryPostAutoadsUseCase,
+    ): DailyBudgetViewModelFactory = DailyBudgetViewModelFactory(
+        context, dispatcher, repository, query, topAdsGetShopDepositUseCase,
+        bidInfoUseCase, queryPostAutoadsUseCase
+    )
 }

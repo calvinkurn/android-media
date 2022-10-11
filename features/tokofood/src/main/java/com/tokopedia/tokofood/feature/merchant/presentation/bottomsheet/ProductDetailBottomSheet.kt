@@ -13,7 +13,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListIte
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickListener) : BottomSheetUnify() {
+class ProductDetailBottomSheet : BottomSheetUnify() {
 
     interface OnProductDetailClickListener {
         fun onAtcButtonClicked(productListItem: ProductListItem, cardPositions: Pair<Int, Int>)
@@ -26,8 +26,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
         private const val BUNDLE_KEY_PRODUCT_UI_MODEL = "PRODUCT_UI_MODEL"
 
         @JvmStatic
-        fun createInstance(productUiModel: ProductUiModel, clickListener: OnProductDetailClickListener): ProductDetailBottomSheet {
-            return ProductDetailBottomSheet(clickListener).apply {
+        fun createInstance(productUiModel: ProductUiModel): ProductDetailBottomSheet {
+            return ProductDetailBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_PRODUCT_UI_MODEL, productUiModel)
                 }
@@ -36,6 +36,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
     }
 
     private var binding: BottomsheetProductDetailLayoutBinding? = null
+
+    private var clickListener: OnProductDetailClickListener? = null
 
     private var listener: Listener? = null
 
@@ -76,7 +78,8 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 val isCustomizable = productUiModel.isCustomizable
                 // !isAtc + isCustomizable = onNavigateToOrderCustomizationPage
                 if (!isAtc && isCustomizable) {
-                    clickListener.onNavigateToOrderCustomizationPage(
+                    dismiss()
+                    clickListener?.onNavigateToOrderCustomizationPage(
                             cartId = "",
                             productUiModel = productUiModel,
                             cardPositions = this
@@ -84,7 +87,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 }
                 // isAtc + !isCustomizable = onIncreaseQtyButtonClicked
                 else if (isAtc && !isCustomizable) {
-                    clickListener.onIncreaseQtyButtonClicked(
+                    clickListener?.onIncreaseQtyButtonClicked(
                             productId = productUiModel.id,
                             quantity = productUiModel.orderQty + 1,
                             cardPositions = this
@@ -94,7 +97,7 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
                 // isAtc + isCustomizable = onAtcButtonClicked
                 else {
                     productListItem?.let { productListItem ->
-                        clickListener.onAtcButtonClicked(
+                        clickListener?.onAtcButtonClicked(
                                 productListItem = productListItem,
                                 cardPositions = this
                         )
@@ -143,7 +146,13 @@ class ProductDetailBottomSheet(private val clickListener: OnProductDetailClickLi
     }
 
     fun show(fragmentManager: FragmentManager) {
-        showNow(fragmentManager, TAG)
+        if (!isVisible) {
+            show(fragmentManager, TAG)
+        }
+    }
+
+    fun setClickListener(clickListener: OnProductDetailClickListener) {
+        this.clickListener = clickListener
     }
 
     fun setListener(listener: Listener) {

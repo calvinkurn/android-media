@@ -21,9 +21,9 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.GrantPermissionRule
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity
-import com.tokopedia.common.topupbills.favorite.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
-import com.tokopedia.common.topupbills.favorite.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
+import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
+import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.presentation.activity.DigitalPDPPulsaActivity
 import com.tokopedia.digital_product_detail.pulsa.utils.DigitalPDPPulsaMockConfig

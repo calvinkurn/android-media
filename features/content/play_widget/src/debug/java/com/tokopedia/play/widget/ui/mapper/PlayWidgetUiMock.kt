@@ -12,6 +12,10 @@ import kotlin.random.Random
 object PlayWidgetUiMock {
 
     private val cardItemTypeRandom = Random(2)
+    private const val MOCK_DATA_SIZE = 5
+    private const val MAX_DATA_INDEX = 6
+    private const val MIN_DATA_INDEX = 0
+    private const val BANNER_POSITION_INDEX = 3
 
     fun getSamplePlayWidget(
         title: String = "Video Menarik Untukmu!",
@@ -28,11 +32,11 @@ object PlayWidgetUiMock {
     )
 
     private fun getSampleItemData(): List<PlayWidgetItemUiModel> {
-        val size = 5
+        val size = MOCK_DATA_SIZE
         return List(size) {
-            if (it == size-3) getSampleBannerModel()
+            if (it == size - BANNER_POSITION_INDEX) getSampleBannerModel()
             else {
-                val channelType = when (cardItemTypeRandom.nextInt(0, 6)) {
+                val channelType = when (cardItemTypeRandom.nextInt(MIN_DATA_INDEX, MAX_DATA_INDEX)) {
                     0 -> PlayWidgetChannelType.Upcoming
                     1 -> PlayWidgetChannelType.Vod
 //                    2 -> PlayWidgetChannelType.FailedTranscoding
@@ -67,7 +71,7 @@ object PlayWidgetUiMock {
             isShow = true
         ),
         performanceSummaryLink = "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Fplay%2Fshop%2Fituajakak%2Fstatistic%2F10734",
-        hasGiveaway = true,
+        hasGame = true,
         poolType = "",
         recommendationType = "",
         channelTypeTransition = PlayWidgetChannelTypeTransition(null, channelType),

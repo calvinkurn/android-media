@@ -14,6 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.design.text.style.WebViewURLSpan
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.inflateLayout
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.report.R
 import com.tokopedia.report.data.constant.GeneralConstant
@@ -48,7 +49,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
             title = ""
             filteredReasons.addAll(reasons)
         } else {
-            val reason = reasons.firstOrNull { it.categoryId == id }
+            val reason = reasons.firstOrNull { it.categoryId.toIntOrZero() == id}
             title = reason?.value ?: ""
             filteredReasons.addAll(reason?.children ?: listOf())
         }
@@ -146,7 +147,7 @@ class ReportReasonAdapter(private val listener: OnReasonClick,
                     if (filteredId.isEmpty()){
                         baseParent = reason
                     }
-                    filteredId.add(reason.categoryId)
+                    filteredId.add(reason.categoryId.toIntOrZero())
                     updateFilteredReasons()
                     notifyDataSetChanged()
                     listener.scrollToTop()

@@ -48,6 +48,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     private var shopId: Long = 0
     private var productId: Long = 0
     private var isCPLActivated: Boolean = false
+    private var shipperServicesIds: List<Long>? = null
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -65,7 +66,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             shopId = it.getLong(EXTRA_SHOP_ID)
             productId = it.getLong(EXTRA_PRODUCT_ID)
             isCPLActivated = it.getBoolean(EXTRA_CPL_ACTIVATED)
+            shipperServicesIds = it.getExtraShipperServices()
         }
+    }
+
+    private fun Bundle.getExtraShipperServices(): List<Long>? {
+        return getIntegerArrayList(EXTRA_SHIPPER_SERVICES)?.takeIf { it.isNotEmpty() }?.map { it.toLong() }
     }
 
     override fun onCreateView(
@@ -86,7 +92,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(shopId, productId.toString())
+        viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -264,7 +270,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
             context?.let {
-                viewModel.getCPLList(shopId, productId.toString())
+                viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
             }
         }
         binding.globalError.visible()
@@ -286,6 +292,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
                     putBoolean(EXTRA_CPL_ACTIVATED, extra.getBoolean(EXTRA_CPL_ACTIVATED))
+                    putIntegerArrayList(EXTRA_SHIPPER_SERVICES, extra.getIntegerArrayList(EXTRA_SHIPPER_SERVICES))
                 }
             }
         }

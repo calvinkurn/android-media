@@ -113,7 +113,7 @@ class QuizFormView : ConstraintLayout {
         }
 
         timePickerBinding.puTimer.onValueChanged = { _, index ->
-            val selectedDuration = quizConfig.availableStartTimeInMs[index]
+            val selectedDuration = quizConfig.availableStartTimeInMs.getOrNull(index) ?: DEFAULT_DURATION
             eventBus.emit(Event.SelectDuration(selectedDuration))
         }
 
@@ -279,7 +279,9 @@ class QuizFormView : ConstraintLayout {
 
     private fun bindOptionData(optionView: QuizOptionView, option: QuizFormDataUiModel.Option): QuizOptionView {
         return optionView.apply {
-            isEditable = option.isEditable
+            /** Open editable to rebind data */
+            isEditable = true
+
             order = option.order
             text = option.text
             textChoice = option.getTextChoice()
@@ -292,6 +294,8 @@ class QuizFormView : ConstraintLayout {
             setFocus(option.isFocus)
 
             showCoachmark(option.isShowCoachmark)
+
+            isEditable = option.isEditable
         }
     }
 
@@ -315,5 +319,6 @@ class QuizFormView : ConstraintLayout {
         private const val SHOW_KEYBOARD_DELAY = 500L
         private const val CONTINUE_DISABLED_ALPHA = 0.5f
         private const val CONTINUE_ENABLED_ALPHA = 1f
+        private const val DEFAULT_DURATION = 180000L
     }
 }

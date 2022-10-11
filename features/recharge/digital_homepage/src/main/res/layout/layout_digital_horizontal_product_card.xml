@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:elevation="0dp"
+    app:cardCornerRadius="8dp"
+    app:card_background_color="@color/Unify_Background">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Unify_Background">
+
+        <View
+            android:id="@+id/bg_horizontal_card_product_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/Unify_Static_White"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="W,1:1"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tg_horizontal_card_product_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/horizontal_card_product_image_content_description"
+            app:layout_constraintBottom_toBottomOf="@id/bg_horizontal_card_product_image"
+            app:layout_constraintLeft_toLeftOf="@id/bg_horizontal_card_product_image"
+            app:layout_constraintTop_toTopOf="@id/bg_horizontal_card_product_image" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_horizontal_card_product_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:textColor="@color/Unify_N700_68"
+            app:layout_constraintLeft_toRightOf="@id/bg_horizontal_card_product_image"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="small"
+            app:typographyWeight="bold"
+            tools:text="Pulsa" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_horizontal_card_product_detail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_4"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:textColor="@color/Unify_N700_96"
+            app:layout_constraintLeft_toRightOf="@id/bg_horizontal_card_product_image"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tg_horizontal_card_product_category"
+            app:typographyType="display_3"
+            tools:text="08198392302\nTelkomsel - 25 ribu" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_horizontal_card_product_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/bg_horizontal_card_product_image"
+            app:layout_constraintTop_toBottomOf="@id/tg_horizontal_card_product_detail"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Rp11.500" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_horizontal_card_product_slash_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_4"
+            android:textColor="@color/Unify_N700_44"
+            app:layout_constraintBottom_toBottomOf="@id/tg_horizontal_card_product_price"
+            app:layout_constraintLeft_toRightOf="@id/tg_horizontal_card_product_price"
+            app:layout_constraintTop_toTopOf="@id/tg_horizontal_card_product_price"
+            app:typographyType="small"
+            tools:text="Rp11.500" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify2>

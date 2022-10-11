@@ -36,5 +36,7 @@ annotation class TokoNowLayoutType {
         const val MAIN_QUEST = "tokonow_main_quest"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
         const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
+        const val MEDIUM_PLAY_WIDGET = "play_carousel"
+        const val SMALL_PLAY_WIDGET = "play_carousel_small"
     }
 }

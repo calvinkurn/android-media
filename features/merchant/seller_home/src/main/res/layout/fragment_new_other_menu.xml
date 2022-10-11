@@ -6,94 +6,103 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/sv_sah_new_other"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/sv_sah_new_other"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <androidx.constraintlayout.motion.widget.MotionLayout
-                android:id="@+id/motion_layout_sah_new_other"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
+                android:layout_height="wrap_content">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_sah_new_other_curved_header"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/sah_new_other_header_background_height"
-                    android:scaleType="fitXY"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
-
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:id="@+id/layout_sah_new_other_info"
+                <androidx.constraintlayout.motion.widget.MotionLayout
+                    android:id="@+id/motion_layout_sah_new_other"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/spacing_lvl6"
-                    android:orientation="vertical"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layoutDescription="@xml/fragment_new_other_menu_content_scene">
 
-                    <include
-                        layout="@layout/view_partial_sah_new_other_header_info"
-                        android:id="@+id/view_sah_new_other_header_info"
-                        android:layout_height="wrap_content"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_sah_new_other_curved_header"
                         android:layout_width="match_parent"
-                        android:layout_marginVertical="@dimen/spacing_lvl3"/>
+                        android:layout_height="154dp"
+                        android:scaleType="fitXY"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:srcCompat="@drawable/bg_sah_new_other_curved_header_pm"/>
 
-                    <include
-                        layout="@layout/view_partial_sah_new_other_balance_info"
-                        android:id="@+id/view_sah_new_other_balance_info"
-                        android:layout_height="wrap_content"
-                        android:layout_width="match_parent"
-                        android:layout_marginVertical="@dimen/spacing_lvl3"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_sah_new_other_secondary_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/sah_new_other_shop_secondary_info_height"
-                        android:orientation="horizontal"
-                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                        tools:listitem="@layout/item_sah_new_other_shop_operational_hour"
-                        tools:itemCount="5"/>
-
-                    <com.tokopedia.unifycomponents.DividerUnify
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/rv_sah_new_other_menu"
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:id="@+id/layout_sah_new_other_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:layout_constraintTop_toBottomOf="@id/view_sah_new_other_balance_info"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        tools:listitem="@layout/setting_menu_list"
-                        tools:itemCount="6"/>
+                        android:layout_marginTop="32dp"
+                        android:orientation="vertical"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/setting_white_space_height"/>
+                        <include
+                            layout="@layout/view_partial_sah_new_other_header_info"
+                            android:id="@+id/view_sah_new_other_header_info"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginVertical="8dp"/>
 
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        <include
+                            layout="@layout/view_partial_sah_new_other_balance_info"
+                            android:id="@+id/view_sah_new_other_balance_info"
+                            android:layout_height="wrap_content"
+                            android:layout_width="match_parent"
+                            android:layout_marginVertical="8dp"/>
 
-            </androidx.constraintlayout.motion.widget.MotionLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_sah_new_other_secondary_info"
+                            android:layout_width="match_parent"
+                            android:layout_height="72dp"
+                            android:orientation="horizontal"
+                            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                            tools:listitem="@layout/item_sah_new_other_shop_operational_hour"
+                            tools:itemCount="5"/>
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/iv_sah_new_other_share"
-                android:layout_width="@dimen/layout_lvl4"
-                android:layout_height="@dimen/layout_lvl4"
-                android:layout_marginTop="@dimen/layout_lvl5"
-                app:srcCompat="@drawable/ic_sah_new_other_share"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+                        <com.tokopedia.unifycomponents.DividerUnify
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"/>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rv_sah_new_other_menu"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintTop_toBottomOf="@id/view_sah_new_other_balance_info"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:listitem="@layout/setting_menu_list"
+                            tools:itemCount="6"/>
 
-    </androidx.core.widget.NestedScrollView>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="10dp"/>
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+                </androidx.constraintlayout.motion.widget.MotionLayout>
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sah_new_other_share"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="40dp"
+                    app:srcCompat="@drawable/ic_sah_new_other_share"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         layout="@layout/view_partial_sah_new_other_header"

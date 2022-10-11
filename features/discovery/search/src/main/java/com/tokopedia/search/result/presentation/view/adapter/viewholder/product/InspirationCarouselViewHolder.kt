@@ -22,7 +22,7 @@ import com.tokopedia.productcard.utils.getMaxHeightForGridView
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselChipsAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapter
 import com.tokopedia.search.result.presentation.view.adapter.InspirationCarouselOptionAdapterTypeFactory
@@ -41,7 +41,8 @@ import kotlinx.coroutines.launch
 
 class InspirationCarouselViewHolder(
         itemView: View,
-        private val inspirationCarouselListener: InspirationCarouselListener
+        private val inspirationCarouselListener: InspirationCarouselListener,
+        private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : AbstractViewHolder<InspirationCarouselDataView>(itemView), CoroutineScope {
 
     companion object {
@@ -142,7 +143,7 @@ class InspirationCarouselViewHolder(
 
             it.inspirationCarouselChipsContent.bindCarouselProductCardViewGrid(
                 productCardModelList = chipsProductCardModels,
-                recyclerViewPool = inspirationCarouselListener.carouselRecycledViewPool,
+                recyclerViewPool = recycledViewPool,
                 showSeeMoreCard = activeOption.applink.isNotEmpty(),
                 carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {
                     override fun onItemClick(productCardModel: ProductCardModel, carouselProductCardPosition: Int) {

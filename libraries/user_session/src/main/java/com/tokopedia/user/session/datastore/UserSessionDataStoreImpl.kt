@@ -528,26 +528,22 @@ class UserSessionDataStoreImpl(private val store: DataStore<UserSessionProto>) :
 
     fun md5(s: String): String {
         return try {
-            val digest = MessageDigest.getInstance("MD5")
+            val digest = MessageDigest.getInstance(MD5_ALGORITHM)
             digest.update(s.toByteArray())
             val messageDigest = digest.digest()
             val hexString = StringBuilder()
             for (b in messageDigest) {
-                hexString.append(String.format(HEX_FORMAT, b and (0xff).toByte()))
+                hexString.append(String.format(HEX_FORMAT, b and (HEX_BINARY).toByte()))
             }
             hexString.toString()
         } catch (e: Exception) {
-            e.printStackTrace()
             ""
         }
     }
 
     companion object {
-        const val USER_PREFERENCES_NAME = "user_session"
-        const val SORT_ORDER_KEY = "sort_order"
-
+        const val HEX_BINARY = 0xff
         const val HEX_FORMAT = "%02x"
-        const val USER_SESSION_AB_TEST_KEY = "android_data_store_v2"
-        val SHARED_PREFERENCE_AB_TEST_PLATFORM = "tkpd-ab-test-platform"
+        const val MD5_ALGORITHM = "MD5"
     }
 }

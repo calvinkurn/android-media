@@ -62,6 +62,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -88,6 +89,7 @@ class ProductManageViewModel @Inject constructor(
     private val getAdminInfoShopLocationUseCase: GetAdminInfoShopLocationUseCase,
     private val getUploadStatusUseCase: GetUploadStatusUseCase,
     private val clearUploadStatusUseCase: ClearUploadStatusUseCase,
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
     private val tickerStaticDataProvider: TickerStaticDataProvider,
     private val dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
@@ -303,20 +305,32 @@ class ProductManageViewModel @Inject constructor(
         getProductListJob?.cancel()
 
         launchCatchError(block = {
-            val productListResponse = withContext(dispatchers.io) {
+            val productResponse = withContext(dispatchers.io) {
                 if (withDelay) {
                     delay(REQUEST_DELAY)
                 }
-                val warehouseId = getWarehouseId(shopId)
-                val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
-                val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
-                val getProductList = getProductListUseCase.execute(requestParams)
-                getProductList.productList
+                val getProductList = async {
+                    val warehouseId = getWarehouseId(shopId)
+                    val extraInfo = listOf(ExtraInfo.TOPADS, ExtraInfo.RBAC)
+                    val requestParams = GQLGetProductListUseCase.createRequestParams(shopId, warehouseId, filterOptions, sortOption, extraInfo)
+                    getProductListUseCase.execute(requestParams)
+                }
+                val maxStockDeffered = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
+                getProductList.await().productList to maxStockDeffered.await()
             }
             _refreshList.value = isRefresh
 
+            val (productListResponse, maxStockResponse) = productResponse
+            val maxStock = maxStockResponse?.getMaxStockFromResponse()
+
             totalProductCount = productListResponse?.meta?.totalHits.orZero()
-            showProductList(productListResponse?.data)
+            showProductList(productListResponse?.data, maxStock)
             showTicker()
             hideProgressDialog()
         }, onError = {
@@ -332,12 +346,24 @@ class ProductManageViewModel @Inject constructor(
         showLoadingDialog()
         launchCatchError(block = {
             val result = withContext(dispatchers.io) {
-                val warehouseId = getWarehouseId(userSessionInterface.shopId)
+                val shopId = userSessionInterface.shopId
+                val warehouseId = getWarehouseId(shopId)
                 val requestParams = GetProductVariantUseCase.createRequestParams(productId, false, warehouseId)
-                val response = getProductVariantUseCase.execute(requestParams)
+                val responseDeferred = async {
+                    getProductVariantUseCase.execute(requestParams)
+                }
+                val maxStockDeferred = async {
+                    try {
+                        getMaxStockThresholdUseCase.execute(shopId)
+                    } catch (ex: Exception) {
+                        null
+                    }
+                }
 
-                val variant = response.getProductV3
-                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess())
+                val (variant, maxStock) =
+                    responseDeferred.await().getProductV3 to maxStockDeferred.await()?.getMaxStockFromResponse()
+
+                ProductManageVariantMapper.mapToVariantsResult(variant, getAccess(), maxStock)
             }
 
             if (result.variants.isNotEmpty()) {
@@ -742,9 +768,9 @@ class ProductManageViewModel @Inject constructor(
         }
     }
 
-    private fun showProductList(products: List<Product>?) {
+    private fun showProductList(products: List<Product>?, maxStock: Int?) {
         val isMultiSelectActive = _toggleMultiSelect.value == true
-        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive)
+        val productList = mapToUiModels(products, getAccess(), isMultiSelectActive, maxStock)
         _productListResult.value = Success(productList)
     }
 

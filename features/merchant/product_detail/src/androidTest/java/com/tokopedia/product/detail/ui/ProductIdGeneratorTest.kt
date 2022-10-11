@@ -8,6 +8,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.IdlingRegistry
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import com.tokopedia.product.detail.BuildConfig
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.ui.base.BaseProductDetailUiTest
 import com.tokopedia.product.detail.ui.base.ProductDetailActivityMock
@@ -82,32 +83,38 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
             }
     ) + printConditions
 
-    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition, customIdPrefix = "P")
-    private val vhViewPrinter = ViewHierarchyPrinter(printConditions, customIdPrefix = "P")
+    private val parentViewPrinter = ViewHierarchyPrinter(parentPrintCondition,
+            customIdPrefix = "P",
+            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
+    private val vhViewPrinter = ViewHierarchyPrinter(printConditions,
+            customIdPrefix = "P",
+            packageName = BuildConfig.LIBRARY_PACKAGE_NAME)
 
     @Test
     fun captureParentFragmentId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val parentProductView = activity?.getPdpFragment()?.view
         val result = parentViewPrinter.printAsCSV(parentProductView!!)
         FileWriter().writeGeneratedViewIds(
-                "product_detail_fragment_resid",
+                "product_detail_fragment_resid.csv",
                 result
         )
     }
 
     @Test
     fun captureVhId() {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.product.detail.R.id.rv_pdp))
+        Espresso.onView(ViewMatchers.withId(R.id.rv_pdp))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         val rvSize = activityCommonRule.activity.getPdpFragment().productAdapter?.currentList?.size
                 ?: 0
 
-        repeat(rvSize) {
-            findViewHolderAndDo(com.tokopedia.product.detail.R.id.rv_pdp, it) { viewResult ->
+        Thread.sleep(2000)
+
+        repeat(rvSize - 1) {
+            findViewHolderAndDo(R.id.rv_pdp, it) { viewResult ->
                 viewResult?.let { view ->
                     printCsvAndSave(view, "product_detail_vh_$it", vhViewPrinter)
                 }
@@ -120,8 +127,7 @@ class ProductIdGeneratorTest : BaseProductDetailUiTest() {
                                 viewHierarchyPrinter: ViewHierarchyPrinter) {
         view?.let {
             val result = viewHierarchyPrinter.printAsCSV(view)
-            FileWriter().write(
-                    "test",
+            FileWriter().writeGeneratedViewIds(
                     "$fileName.csv",
                     result
             )

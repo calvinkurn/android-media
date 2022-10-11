@@ -27,6 +27,7 @@ import com.tokopedia.applink.ApplinkConst.AttachProduct
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.attachproduct.R
 import com.tokopedia.attachproduct.analytics.AttachProductAnalytics
+import com.tokopedia.attachproduct.analytics.AttachProductAnalytics.trackSendButtonClicked
 import com.tokopedia.attachproduct.databinding.FragmentAttachProductBinding
 import com.tokopedia.attachproduct.di.AttachProductModule
 import com.tokopedia.attachproduct.di.DaggerAttachProductComponent
@@ -40,7 +41,7 @@ import com.tokopedia.attachproduct.view.viewmodel.AttachProductViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.utils.view.binding.viewBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
 
@@ -51,7 +52,7 @@ class AttachProductFragment :
     BaseListFragment<AttachProductItemUiModel, AttachProductListAdapterTypeFactory>(),
     CheckableInteractionListenerWithPreCheckedAction, AttachProductContract.View {
 
-    private val binding: FragmentAttachProductBinding? by viewBinding()
+    private var binding: FragmentAttachProductBinding? by autoClearedNullable()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,13 +62,14 @@ class AttachProductFragment :
     }
 
     private var activityContract: AttachProductContract.Activity? = null
-    protected val adapter by lazy { AttachProductListAdapter(adapterTypeFactory) }
+    private val adapter by lazy { AttachProductListAdapter(adapterTypeFactory) }
     private var isSeller = false
     private var source = ""
     private var shopId = ""
     private var warehouseId = "0"
     private var maxChecked = AttachProductActivity.MAX_CHECKED_DEFAULT
     private var hiddenProducts: ArrayList<String>? = ArrayList()
+    private var timer: Timer = Timer()
 
     fun setActivityContract(activityContract: AttachProductContract.Activity?) {
         this.activityContract = activityContract
@@ -80,8 +82,8 @@ class AttachProductFragment :
     override fun initInjector() {
         DaggerAttachProductComponent.builder()
             .attachProductModule(AttachProductModule(requireContext())).baseAppComponent(
-            (requireActivity().application as BaseMainApplication).baseAppComponent
-        ).build().inject(this)
+                (requireActivity().application as BaseMainApplication).baseAppComponent
+            ).build().inject(this)
     }
 
     override fun getRecyclerViewResourceId(): Int {
@@ -133,12 +135,10 @@ class AttachProductFragment :
 
     private fun initSearchBar() {
         binding?.searchInputView?.searchBarTextField?.addTextChangedListener(object : TextWatcher {
-            var timer: Timer? = null
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
             override fun afterTextChanged(s: Editable) {
-                timer = Timer()
-                timer?.schedule(object : TimerTask() {
+                timer.schedule(object : TimerTask() {
                     override fun run() {
                         binding?.searchInputView?.context?.mainLooper?.let {
                             val mainHandler = Handler(it)
@@ -152,7 +152,8 @@ class AttachProductFragment :
         binding?.searchInputView?.searchBarTextField?.setOnEditorActionListener { v: TextView?, actionId: Int, event: KeyEvent? ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 binding?.searchInputView?.clearFocus()
-                val `in` = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                val `in` =
+                    requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 `in`.hideSoftInputFromWindow(binding?.searchInputView?.windowToken, 0)
 
                 onSearchSubmitted()
@@ -176,7 +177,12 @@ class AttachProductFragment :
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_attach_product, container, false)
+        binding = FragmentAttachProductBinding.inflate(
+            LayoutInflater.from(context),
+            container,
+            false
+        )
+        return binding?.root
     }
 
     override fun onStart() {
@@ -204,7 +210,7 @@ class AttachProductFragment :
     }
 
     private fun initObserver() {
-        viewModel.products.observe(viewLifecycleOwner, { result ->
+        viewModel.products.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     hideAllLoadingIndicator()
@@ -215,19 +221,16 @@ class AttachProductFragment :
                         listData.removeAt(result.data.size - 1)
                     }
                     addProductToList(listData, hasNext)
-                    if (result.data.isNotEmpty()) {
-                        setShopName(listData.first().shopName)
-                    }
                 }
                 is Fail -> {
                     showErrorMessage(result.throwable)
                 }
             }
-        })
+        }
 
-        viewModel.checkedList.observe(viewLifecycleOwner, { result ->
+        viewModel.checkedList.observe(viewLifecycleOwner) { result ->
             updateButtonBasedOnChecked(result.size)
-        })
+        }
     }
 
     override fun onItemClicked(attachProductItemUiModel: AttachProductItemUiModel) {}
@@ -338,6 +341,7 @@ class AttachProductFragment :
         } ?: listOf()
         val resultProduct = arrayListOf<ResultProduct>()
         resultProduct.addAll(products)
+        trackSendButtonClicked(resultProduct)
         activityContract?.finishActivityWithResult(resultProduct)
     }
 
@@ -405,8 +409,9 @@ class AttachProductFragment :
         }
     }
 
-    override fun setShopName(shopName: String) {
-        activityContract?.setShopName(shopName)
+    override fun onDestroyView() {
+        super.onDestroyView()
+        timer.cancel()
     }
 
     companion object {

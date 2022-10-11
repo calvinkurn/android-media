@@ -40,14 +40,13 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
             }
             setOnClickListener {
                 sendClickEvent(element?.promotionItem)
-                promotionClickInterface?.onPromotionClick( element?.promotionItem?.productID ?: "",
-                        "",
+                promotionClickInterface?.onPromotionClick( element?.promotionItem?.itemId ?: "",
                         element?.promotionItem?.title ?: "",
                         element?.promotionItem?.image?.androidURL ?:"",
                         element?.promotionItem?.cardUrl ?: "",
-                        "",
                          adapterPosition,commission,
-                         getStatus(element?.promotionItem)
+                         getStatus(element?.promotionItem),
+                        element?.promotionItem?.type
                 )
             }
             if(element?.promotionItem?.status?.isLinkGenerationAllowed == false){
@@ -73,7 +72,7 @@ class AffiliatePromotionCardItemVH(itemView: View, private val promotionClickInt
     private fun getStatus(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item?) :String{
         var status = ""
         if(item?.status?.messages?.isNotEmpty() == true) {
-            when (item?.status?.messages?.first()?.messageType) {
+            when (item.status?.messages?.first()?.messageType) {
                 AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
                 ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
                 EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK

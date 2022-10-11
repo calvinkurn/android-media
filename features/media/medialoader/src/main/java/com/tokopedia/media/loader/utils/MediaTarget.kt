@@ -30,7 +30,8 @@ class MediaTarget<T : View>(
 
 class MediaBitmapEmptyTarget<T>(
     private val onCleared: (placeholder: Drawable?) -> Unit = {},
-    private val onReady: (resource: Bitmap) -> Unit = {}
+    private val onReady: (resource: Bitmap) -> Unit = {},
+    private val onFailed: (errorDrawable: Drawable?) -> Unit = {}
 ) : CustomTarget<T>() {
 
     override fun onLoadCleared(placeholder: Drawable?) {
@@ -41,5 +42,9 @@ class MediaBitmapEmptyTarget<T>(
         if (resource is Bitmap) {
             onReady(resource)
         }
+    }
+
+    override fun onLoadFailed(errorDrawable: Drawable?) {
+        onFailed(errorDrawable)
     }
 }

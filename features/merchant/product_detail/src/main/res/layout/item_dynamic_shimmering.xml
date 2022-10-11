@@ -3,157 +3,310 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/Unify_Background"
-    android:padding="5dp"
     android:orientation="vertical">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_img_main"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_350"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect"
+        android:layout_height="0dp"
+        app:layout_constraintDimensionRatio="H, 1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_ulasan"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toStartOf="@+id/loader_discussion"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_divider" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_start"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="16dp" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_discussion"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toStartOf="@+id/loader_shipping"
-        app:layout_constraintStart_toEndOf="@+id/loader_ulasan"
-        app:layout_constraintTop_toBottomOf="@+id/loader_divider" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_end"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_shipping"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_64"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/loader_discussion"
-        app:layout_constraintTop_toBottomOf="@+id/loader_divider" />
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_75"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_50"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title"
-        android:layout_width="@dimen/dp_350"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_img_main" />
+        android:layout_width="118dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_img_main"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title_2"
-        android:layout_width="@dimen/dp_160"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_title" />
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_title"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_title_3"
-        android:layout_width="@dimen/dp_75"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_title_2" />
+        android:layout_width="194dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_title_2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_ulasan_txt"
+        android:layout_width="77dp"
+        android:layout_height="16dp"
+        app:layout_constraintBottom_toBottomOf="@+id/loader_discussion_txt"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toTopOf="@+id/loader_discussion_txt"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_discussion_txt"
+        android:layout_width="77dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toEndOf="@+id/loader_ulasan_txt"
+        app:layout_constraintTop_toBottomOf="@+id/loader_title_3"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shipping_txt"
+        android:layout_width="99dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="12dp"
+        app:layout_constraintBottom_toBottomOf="@+id/loader_discussion_txt"
+        app:layout_constraintStart_toEndOf="@+id/loader_discussion_txt"
+        app:layout_constraintTop_toTopOf="@+id/loader_discussion_txt"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_divider"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_title_3" />
-
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_ulasan_txt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toStartOf="@+id/loader_discussion_txt"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_ulasan" />
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_discussion_txt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toStartOf="@+id/loader_shipping_txt"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/loader_ulasan_txt"
-        app:layout_constraintTop_toBottomOf="@+id/loader_discussion" />
-
-
-    <com.tokopedia.unifycomponents.LoaderUnify
-        android:id="@+id/loader_shipping_txt"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/loader_discussion_txt"
-        app:layout_constraintTop_toBottomOf="@+id/loader_ulasan" />
-
+        app:layout_constraintTop_toBottomOf="@+id/loader_shipping_txt"
+        app:loader_type="line" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_social_proof"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_64"
+        android:layout_width="130dp"
+        android:layout_height="20dp"
         android:layout_marginTop="16dp"
-        app:loader_corner_radius="10dp"
-        app:loader_type="rect"
-        app:layout_constraintTop_toBottomOf="@+id/loader_ulasan_txt" />
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_divider"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_other"
-        android:layout_width="@dimen/dp_350"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        app:loader_corner_radius="3dp"
-        app:loader_type="rect"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loader_social_proof" />
+        android:layout_width="89dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_social_proof"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_info_detail"
+        android:layout_width="57dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/loader_other"
+        app:layout_constraintTop_toTopOf="@+id/loader_other"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_name_2"
+        android:layout_width="89dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_other"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_info_detail_2"
+        android:layout_width="57dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/loader_name_2"
+        app:layout_constraintTop_toTopOf="@+id/loader_name_2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_name_3"
+        android:layout_width="89dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_name_2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_info_detail_3"
+        android:layout_width="57dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="4dp"
+        app:layout_constraintStart_toEndOf="@+id/loader_name_3"
+        app:layout_constraintTop_toTopOf="@+id/loader_name_3"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_line_2"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_name_3"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_line_1"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_75"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_line_2"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_read_more"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_50"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_line_1"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_divider_2"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_read_more"
+        app:loader_type="line" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shop_logo"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_divider_2"
+        app:loader_type="circle" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shop_name"
+        android:layout_width="180dp"
+        android:layout_height="20dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/loader_shop_logo"
+        app:layout_constraintTop_toTopOf="@+id/loader_shop_logo"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shop_status"
+        android:layout_width="84dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@+id/loader_shop_name"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_name"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_shop_address"
+        android:layout_width="122dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintStart_toStartOf="@+id/loader_shop_name"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_status"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_credibility"
+        android:layout_width="122dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_shop_address"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_credibility_2"
+        android:layout_width="122dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="@+id/guideline_start"
+        app:layout_constraintTop_toBottomOf="@+id/loader_credibility"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_follow"
+        android:layout_width="95dp"
+        android:layout_height="32dp"
+        app:layout_constraintBottom_toBottomOf="@+id/loader_credibility_2"
+        app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+        app:layout_constraintTop_toTopOf="@+id/loader_credibility"
+        app:loader_corner_radius="8dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_divider_3"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loader_credibility_2"
+        app:loader_type="line" />
 </androidx.constraintlayout.widget.ConstraintLayout>

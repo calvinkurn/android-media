@@ -1211,7 +1211,7 @@ class AddEditProductVariantFragment :
         } else {
             if (autoSelectIndex.isLessThanZero() && oldVariantDetail != null) {
                 viewModel.isSingleVariantTypeIsSelected = true
-                deselectVariantType(layoutPosition, editedIndex, oldVariantDetail)
+                deselectVariantType(layoutPosition, editedIndex, variantDetail)
                 variantTypeAdapter?.deselectItem(editedIndex)
             } else {
                 deleteVariantType(editedIndex, variantDetail)

@@ -47,6 +47,7 @@ import com.tokopedia.tkpd.deeplink.listener.DeepLinkView;
 import com.tokopedia.tkpd.deeplink.utils.URLParser;
 import com.tokopedia.tkpd.utils.ProductNotFoundException;
 import com.tokopedia.tkpd.utils.ShopNotFoundException;
+import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.track.TrackApp;
 import com.tokopedia.url.Env;
 import com.tokopedia.url.TokopediaUrl;
@@ -59,6 +60,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -87,6 +89,13 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     private static final String PARAM_BOOL_FALSE = "false";
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_TOTAL_SEGMENT = 3;
     private static final int SHOP_MVC_LOCKED_TO_PRODUCT_VOUCHER_SEGMENT = 1;
+    private static final String REDIRECTION_LINK_PARAM = "r";
+    private static final String USER_ID_PARAM = "uid";
+    private static final String ENV_PARAM = "t";
+    private static final String ENV_VALUE = "android";
+    private static final String TOP_ADS_REDIRECTION = "TOP_ADS_REDIRECTION";
+
+    private final int ONE = 1;
 
     private final Activity context;
     private final DeepLinkView viewListener;
@@ -280,6 +289,10 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                     openNowRecipe(uriData);
                     screenName = "";
                     break;
+                case DeepLinkChecker.TOP_ADS_CLICK_LINK:
+                     doTopAdsOperation(uriData);
+                     screenName = "";
+                     break;
                 case DeepLinkChecker.DEALS:
                 case DeepLinkChecker.OTHER:
                 default:
@@ -292,6 +305,41 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 context.finish();
             }
         }
+    }
+
+    private void doTopAdsOperation(Uri uriData) {
+        Uri newUri = replaceUriParameter(uriData, userSession);
+        String redirectionUrl = uriData.getQueryParameter(REDIRECTION_LINK_PARAM);
+        new TopAdsUrlHitter(context).hitClickUrlAndStoreHeader(this.getClass().getCanonicalName(),
+                newUri.toString(), "", "", "", userSession.isLoggedIn());
+        if (redirectionUrl != null && !redirectionUrl.isEmpty()) {
+            RouteManager.route(context, redirectionUrl);
+        } else {
+            logRequest(uriData);
+            RouteManager.route(context, ApplinkConst.HOME);
+        }
+    }
+
+    private void logRequest(Uri uriData) {
+        Map<String, String> map = new HashMap<>();
+        map.put("type", "request");
+        map.put("uri", uriData.toString());
+        ServerLogger.log(Priority.P2, TOP_ADS_REDIRECTION, map);
+    }
+
+    private static Uri replaceUriParameter(Uri uri, UserSessionInterface userSession) {
+        final Set<String> params = uri.getQueryParameterNames();
+        final Uri.Builder newUri = uri.buildUpon().clearQuery();
+        for (String param : params) {
+            if (param.equals(USER_ID_PARAM)) {
+                newUri.appendQueryParameter(param, userSession.getUserId());
+            } else if (param.equals(ENV_PARAM)) {
+                newUri.appendQueryParameter(param, ENV_VALUE);
+            } else {
+                newUri.appendQueryParameter(param, uri.getQueryParameter(param));
+            }
+        }
+        return newUri.build();
     }
 
     private void openSaldoDeposit() {
@@ -418,7 +466,19 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
     }
 
     private void openFlight(Uri uri, Bundle bundle) {
-        RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        List<String> linkSegment = uri.getPathSegments();
+        if (linkSegment.size() > ONE) {
+            if (linkSegment.get(ONE).equals("invoice")) {
+                // eg : https://www.tokopedia.com/flight/invoice?id=xxxx
+                String applink = ApplinkConstInternalTravel.FLIGHT_ORDER_DETAIL.replace("{orderId}", uri.getQueryParameter("id"));
+                RouteManager.route(context, applink + "?" + "open_invoice=1");
+            } else {
+                RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+            }
+        }else {
+            RouteManager.route(context, bundle, getApplinkWithUriQueryParams(uri, ApplinkConstInternalTravel.DASHBOARD_FLIGHT));
+        }
+        context.finish();
     }
 
     private void openProfile(List<String> linkSegment, Bundle bundle) {
@@ -852,15 +912,8 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
         Bundle bundle = RouteManager.getBundleFromAppLinkQueryParams(uriData.toString());
         bundle.putBoolean(IS_DEEP_LINK_SEARCH, true);
 
-        Intent intent;
         if (TextUtils.isEmpty(departmentId)) {
-            intent = RouteManager.getIntent(context, constructSearchApplink(uriData));
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtras(bundle);
-            intent.putExtras(defaultBundle);
-            context.startActivity(intent);
+            RouteManager.route(context, constructSearchApplink(uriData));
         } else {
             String deeplink = UriUtil.buildUri(ApplinkConstInternalCategory.INTERNAL_CATEGORY_DETAIL, departmentId);
             RouteManager.route(context, deeplink);
@@ -874,7 +927,7 @@ public class DeepLinkPresenterImpl implements DeepLinkPresenter {
                 ApplinkConstInternalDiscovery.AUTOCOMPLETE :
                 ApplinkConstInternalDiscovery.SEARCH_RESULT;
 
-        return applink + "?" + uriData.getQuery();
+        return applink + "?" + uriData.getEncodedQuery();
     }
 
     private boolean isHotAlias(Uri uri) {

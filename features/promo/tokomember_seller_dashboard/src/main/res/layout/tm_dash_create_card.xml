@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/containerViewFlipper"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    tools:ignore="MissingDefaultResource">
+
+    <include layout="@layout/tm_dash_card_create_shimmer"/>
+
+    <FrameLayout
+        android:fitsSystemWindows="true"
+        android:id="@+id/containerParent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:background="@color/Unify_Background"
+        tools:ignore="MissingDefaultResource">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true"
+            android:fitsSystemWindows="true"
+            android:background="@color/Unify_Background"
+            tools:ignore="MissingDefaultResource">
+
+            <com.tokopedia.unifycomponents.ProgressBarUnify
+                android:id="@+id/progressCard"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/unify_space_4"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <View
+                android:id="@+id/viewBg"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_248"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressCard" />
+
+            <com.tokopedia.carousel.CarouselUnify
+                android:id="@+id/carouselCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/progressCard" />
+
+            <com.tokopedia.unifycomponents.TipsUnify
+                android:id="@+id/tipTokomember"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/tm_dash_dp_80"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:layout_marginEnd="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewBg"
+                app:unify_tips_description="Member tokomu bisa punya level Premium (Level 1) dan VIP (Level 2)."
+                app:unify_tips_title="Level di TokoMember" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTitleColor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/tm_card_color_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tipTokomember"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvColor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvTitleColor"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleColor" />
+
+            <View
+                android:id="@+id/viewDivider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/unify_space_8"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:background="@color/Unify_NN50"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/rvColor" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tvTitleCardBg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_16"
+                android:layout_marginTop="@dimen/unify_space_16"
+                android:text="@string/tm_card_bg_title"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/viewDivider"
+                app:typographyType="heading_5"
+                app:typographyWeight="bold" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvCardBg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/unify_space_12"
+                android:layout_marginTop="@dimen/unify_space_16"
+                app:layout_constraintStart_toStartOf="@+id/tvTitleColor"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleCardBg" />
+
+            <com.tokopedia.unifycomponents.UnifyButton
+                android:id="@+id/btnContinueCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/unify_space_16"
+                android:text="@string/tm_card_btn_text"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:unifyButtonSize="large"
+                app:unifyButtonType="main"
+                app:unifyButtonVariant="filled" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
+
+    <com.tokopedia.globalerror.GlobalError
+        android:id="@+id/globalError"
+        android:layout_gravity="center"
+        app:globalerrors_type="SERVER_ERROR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+</ViewFlipper>

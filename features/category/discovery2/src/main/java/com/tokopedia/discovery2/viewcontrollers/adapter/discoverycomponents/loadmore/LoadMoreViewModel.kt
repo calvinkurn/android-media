@@ -1,6 +1,7 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.loadmore
 
 import android.app.Application
+import android.content.Context
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.data.ComponentsItem
 import com.tokopedia.discovery2.datamapper.getComponent
@@ -10,6 +11,7 @@ import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsU
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,6 +31,7 @@ class LoadMoreViewModel(val application: Application, private val components: Co
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+    private var isDarkMode: Boolean = false
 
     fun getViewOrientation() = components.loadForHorizontal
 
@@ -40,7 +43,7 @@ class LoadMoreViewModel(val application: Application, private val components: Co
                     ComponentNames.MerchantVoucherList.componentName ->
                         merchantVoucherUseCase.getPaginatedData(components.id,components.pageEndPoint)
                     ComponentNames.BannerInfinite.componentName ->
-                        bannerInfiniteUseCase.getBannerUseCase(components.id,components.pageEndPoint )
+                        bannerInfiniteUseCase.getBannerUseCase(components.id,components.pageEndPoint, isDarkMode = isDarkMode )
                     ComponentNames.ShopCardInfinite.componentName ->
                         shopCardInfiniteUseCase.getShopCardUseCase(components.id,components.pageEndPoint )
                     else -> productCardUseCase.getProductCardsUseCase(components.id, components.pageEndPoint)
@@ -53,5 +56,12 @@ class LoadMoreViewModel(val application: Application, private val components: Co
             )?.verticalProductFailState = true
             syncData.value = true
         })
+    }
+
+
+    fun checkForDarkMode(context: Context?){
+        if(context != null) {
+            isDarkMode = context.isDarkMode()
+        }
     }
 }

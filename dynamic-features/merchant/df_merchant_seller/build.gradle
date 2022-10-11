@@ -59,4 +59,5 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.editshipping)
     implementation projectOrAar(rootProject.ext.features.shopScore)
     implementation projectOrAar(rootProject.ext.features.sellerMenu)
+    implementation projectOrAar(rootProject.ext.features.shopAdmin)
 }

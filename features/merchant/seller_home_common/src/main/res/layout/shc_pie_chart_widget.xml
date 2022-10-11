@@ -141,10 +141,9 @@
                 tools:text="Selengkapnya"
                 tools:visibility="visible" />
 
-            <include
+            <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetErrorStateView
                 android:id="@+id/shcPieChartErrorState"
-                layout="@layout/shc_partial_common_widget_state_error"
-                android:layout_width="@dimen/layout_lvl0"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

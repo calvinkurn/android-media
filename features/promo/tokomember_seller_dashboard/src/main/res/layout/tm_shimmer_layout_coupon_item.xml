@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/tm_dash_dp_16"
+    android:layout_marginEnd="@dimen/tm_dash_dp_16"
+    android:layout_marginTop="@dimen/tm_dash_dp_20">
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tv_coupon_state"
+        android:layout_width="@dimen/tm_dash_dp_60"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginStart="@dimen/tm_dash_dp_8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:loader_corner_radius="@dimen/tm_dash_dp_4"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_date"
+        android:layout_width="@dimen/tm_dash_dp_120"
+        android:layout_height="@dimen/tm_dash_dp_12"
+        android:layout_marginEnd="@dimen/tm_dash_dp_12"
+        android:textColor="#31353B"
+        app:layout_constraintBottom_toBottomOf="@id/tv_coupon_state"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_coupon_state"
+        app:typographyType="small"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_coupon"
+        android:layout_width="@dimen/tm_dash_dp_40"
+        android:layout_height="@dimen/tm_dash_dp_40"
+        android:layout_marginTop="@dimen/tm_dash_dp_12"
+        android:src="@drawable/tm_ic_member_grey"
+        app:layout_constraintStart_toStartOf="@id/tv_coupon_state"
+        app:layout_constraintTop_toBottomOf="@id/tv_coupon_state"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_title"
+        android:layout_width="@dimen/tm_dash_dp_210"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/tm_dash_dp_8"
+        android:layout_marginEnd="@dimen/dp_12"
+        android:textColor="#212121"
+        app:layout_constraintStart_toEndOf="@id/loader_coupon"
+        app:layout_constraintTop_toTopOf="@id/loader_coupon"
+        app:typographyType="heading_5"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loader_membership"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tm_dash_dp_12"
+        android:padding="@dimen/tm_dash_dp_4"
+        app:layout_constraintBottom_toBottomOf="@id/loader_coupon"
+        app:layout_constraintStart_toStartOf="@id/loader_title"
+        app:layout_constraintTop_toBottomOf="@id/loader_title"
+        app:typographyType="heading_6"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
+        app:loader_type="rect"/>
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/tv_quota_static"
+        android:layout_width="@dimen/tm_dash_dp_120"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tm_dash_dp_16"
+        android:layout_marginEnd="@dimen/tm_dash_dp_12"
+        android:layout_marginBottom="@dimen/tm_dash_dp_16"
+        android:textColor="#6D7588"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@id/loader_membership"
+        app:layout_constraintTop_toBottomOf="@id/loader_coupon"
+        app:typographyType="small"
+        app:loader_corner_radius="@dimen/tm_dash_dp_8"
+        app:loader_type="rect"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

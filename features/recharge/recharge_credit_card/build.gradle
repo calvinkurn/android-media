@@ -36,11 +36,17 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
     implementation projectOrAar(rootProject.ext.features.commonDigital)
+    implementation projectOrAar(rootProject.ext.features.commonTopupBills)
     implementation projectOrAar(rootProject.ext.features.medialoader)
+    implementation projectOrAar(rootProject.ext.features.rechargeComponent)
 
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
@@ -55,6 +61,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.dialog
     implementation rootProject.ext.unifyDependencies.header
     implementation rootProject.ext.unifyDependencies.icons
+    implementation rootProject.ext.unifyDependencies.sortFilter
 
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
     implementation projectOrAar(rootProject.ext.libraries.network)
@@ -80,6 +87,7 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
     }
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib

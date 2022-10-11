@@ -11,42 +11,52 @@ data class AffiliateSearchData(
         var `data`: Data?
     ) {
         data class Data(
-                @SerializedName("cards")
+            @SerializedName("cards")
             var cards: List<Card?>?,
-                @SerializedName("error")
+            @SerializedName("error")
             var error: Error?,
-                @SerializedName("status")
+            @SerializedName("status")
             var status: Int?
         ) {
             data class Card(
-                    @SerializedName("hasMore")
+                @SerializedName("hasMore")
                 var hasMore: Boolean?,
-                    @SerializedName("id")
+                @SerializedName("id")
                 var id: String?,
-                    @SerializedName("items")
+                @SerializedName("items")
                 var items: List<Item?>?,
-                    @SerializedName("title")
-                var title: String?
+                @SerializedName("title")
+                var title: String?,
+                @SerializedName("pageType")
+                var pageType: String?,
+                @SerializedName("itemID")
+                var itemID: Long?
             ) {
                 data class Item(
-                        @SerializedName("productID")
+                    @SerializedName("productID")
                     var productID: String,
-                        @SerializedName("additionalInformation")
+                    @SerializedName("additionalInformation")
                     var additionalInformation: List<AdditionalInformation?>?,
-                        @SerializedName("cardUrl")
+                    @SerializedName("cardUrl")
                     var cardUrl: String?,
-                        @SerializedName("commission")
+                    @SerializedName("commission")
                     var commission: Commission?,
-                        @SerializedName("footer")
+                    @SerializedName("footer")
                     var footer: List<Footer?>?,
-                        @SerializedName("image")
+                    @SerializedName("image")
                     var image: Image?,
-                        @SerializedName("rating")
+                    @SerializedName("rating")
                     var rating: Int?,
-                        @SerializedName("status")
+                    @SerializedName("status")
                     var status: Status?,
-                        @SerializedName("title")
-                    var title: String?
+                    @SerializedName("title")
+                    var title: String?,
+                    @SerializedName("titleEmblem")
+                    var titleEmblem: String?,
+
+                    //custom Attribute
+                    var type: String?,
+                    var itemId: String
                 ) {
                     data class AdditionalInformation(
                         @SerializedName("color")
@@ -93,45 +103,45 @@ data class AffiliateSearchData(
                         var isLinkGenerationAllowed: Boolean?,
                         @SerializedName("messages")
                         var messages: List<Messages?>?
-                    ){
+                    ) {
                         data class Messages(
-                                @SerializedName("title")
-                                var title: String?,
-                                @SerializedName("description")
-                                var description: String?,
-                                @SerializedName("messageType")
-                                var messageType: Int?,
+                            @SerializedName("title")
+                            var title: String?,
+                            @SerializedName("description")
+                            var description: String?,
+                            @SerializedName("messageType")
+                            var messageType: Int?,
                         )
                     }
                 }
             }
 
             data class Error(
-                    @SerializedName("errorCta")
+                @SerializedName("errorCta")
                 var errorCta: List<ErrorCta?>?,
-                    @SerializedName("errorImage")
+                @SerializedName("errorImage")
                 var errorImage: ErrorImage?,
-                    @SerializedName("errorStatus")
+                @SerializedName("errorStatus")
                 var errorStatus: Int?,
-                    @SerializedName("errorType")
+                @SerializedName("errorType")
                 var errorType: Int?,
-                    @SerializedName("message")
+                @SerializedName("message")
                 var message: String?,
-                    @SerializedName("title")
+                @SerializedName("title")
                 var title: String?
             ) {
-                data class ErrorCta (
-                        @SerializedName("ctaText") val ctaText : String?,
-                        @SerializedName("ctaType") val ctaType : Int?,
-                        @SerializedName("ctaAction") val ctaAction : Int?,
-                        @SerializedName("ctaLink") val ctaLink : CtaLink?,
-                ){
+                data class ErrorCta(
+                    @SerializedName("ctaText") val ctaText: String?,
+                    @SerializedName("ctaType") val ctaType: Int?,
+                    @SerializedName("ctaAction") val ctaAction: Int?,
+                    @SerializedName("ctaLink") val ctaLink: CtaLink?,
+                ) {
 
-                    data class CtaLink (
-                            @SerializedName("DesktopURL") val desktopUrl : String?,
-                            @SerializedName("MobileURL") val mobileUrl : String?,
-                            @SerializedName("IosURL") val iosUrl : String?,
-                            @SerializedName("AndroidURL") val androidUrl : String?
+                    data class CtaLink(
+                        @SerializedName("DesktopURL") val desktopUrl: String?,
+                        @SerializedName("MobileURL") val mobileUrl: String?,
+                        @SerializedName("IosURL") val iosUrl: String?,
+                        @SerializedName("AndroidURL") val androidUrl: String?
                     )
                 }
 

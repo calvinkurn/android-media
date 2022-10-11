@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.navbar.NavBar
 import com.tokopedia.product.detail.data.model.review.MostHelpfulReviewData
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.shop.ProductShopBadge
+import com.tokopedia.product.detail.data.model.shopFinishRate.ShopFinishRate
 import com.tokopedia.product.detail.data.model.shopfeature.ShopFeatureP2
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -142,9 +143,11 @@ data class ProductInfoP2Data(
 
         @SerializedName("navBar")
         @Expose
-        var navBar: NavBar = NavBar()
+        var navBar: NavBar = NavBar(),
 
-
+        @SerializedName("shopFinishRate")
+        @Expose
+        var shopFinishRate: ShopFinishRate = ShopFinishRate()
 ) {
     data class Response(
             @SerializedName("pdpGetData")

@@ -1,5 +1,6 @@
 package com.tokopedia.shop.home.data.model
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 
@@ -44,6 +45,8 @@ data class ShopLayoutWidget(
         data class Header(
                 @SerializedName("title")
                 val title: String = "",
+                @SerializedName("subtitle")
+                val subtitle: String = "",
                 @SerializedName("ctaText")
                 val ctaText: String = "",
                 @SerializedName("ctaLink")
@@ -146,7 +149,16 @@ data class ShopLayoutWidget(
                 @SerializedName("categoryBreadcrumbs")
                 val categoryBreadcrumbs: String = "",
                 @SerializedName("minimumOrder")
-                val minimumOrder: Int? = 1
+                val minimumOrder: Int = 0,
+                @SerializedName("maximumOrder")
+                val maximumOrder: Int = 0,
+                @SerializedName("stock")
+                val stock: Int = 0,
+                @SuppressLint("Invalid Data Type")
+                @SerializedName("childIDs")
+                val listChildId: List<String> = listOf(),
+                @SerializedName("parentID")
+                val parentId: String = ""
 
         ) {
             data class ProductBundleDetailsItem(
@@ -221,7 +233,7 @@ data class ShopLayoutWidget(
                     @SerializedName("countSold")
                     val countSold: Int = -1,
                     @SerializedName("stock")
-                    val stock: Int = -1,
+                    val stock: Int = 0,
                     @SerializedName("status")
                     val status: String = "",
                     @SerializedName("discountedPrice")
@@ -237,7 +249,16 @@ data class ShopLayoutWidget(
                     @SerializedName("stockSoldPercentage")
                     val stockSoldPercentage: Float = 0f,
                     @SerializedName("labelGroups")
-                    val labelGroups: List<LabelGroup> = listOf()
+                    val labelGroups: List<LabelGroup> = listOf(),
+                    @SerializedName("minimumOrder")
+                    val minimumOrder: Int = 0,
+                    @SerializedName("maximumOrder")
+                    val maximumOrder: Int = 0,
+                    @SuppressLint("Invalid Data Type")
+                    @SerializedName("childIDs")
+                    val listChildId: List<String> = listOf(),
+                    @SerializedName("parentID")
+                    val parentId: String = ""
             ){
                 data class StockWording(
                         @SerializedName("title")

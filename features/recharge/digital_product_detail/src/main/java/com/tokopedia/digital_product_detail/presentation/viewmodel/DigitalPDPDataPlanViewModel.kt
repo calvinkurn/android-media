@@ -15,6 +15,7 @@ import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIden
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.digital_product_detail.data.model.data.DigitalAtcResult
+import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.CHECKOUT_NO_PROMO
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_CLIENT_NUMBER_TRANSITION
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.DELAY_MULTI_TAB
@@ -22,15 +23,17 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.D
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.VALIDATOR_DELAY_TIME
 import com.tokopedia.digital_product_detail.data.model.data.SelectedProduct
 import com.tokopedia.digital_product_detail.data.model.data.TelcoFilterTagComponent
-import com.tokopedia.digital_product_detail.domain.model.AutoCompleteModel
-import com.tokopedia.digital_product_detail.domain.model.FavoriteChipModel
-import com.tokopedia.digital_product_detail.domain.model.PrefillModel
-import com.tokopedia.digital_product_detail.domain.util.FavoriteNumberType
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
-import com.tokopedia.digital_product_detail.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common_digital.atc.data.response.ErrorAtc
+import com.tokopedia.common_digital.common.DigitalAtcErrorException
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationWidgetModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
@@ -95,6 +98,10 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     private val _addToCartResult = MutableLiveData<RechargeNetworkResult<DigitalAtcResult>>()
     val addToCartResult: LiveData<RechargeNetworkResult<DigitalAtcResult>>
         get() = _addToCartResult
+
+    private val _errorAtc = MutableLiveData<ErrorAtc>()
+    val errorAtc: LiveData<ErrorAtc>
+        get() = _errorAtc
 
     private val _clientNumberValidatorMsg = MutableLiveData<String>()
     val clientNumberValidatorMsg: LiveData<String>
@@ -200,19 +207,27 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String
+        userId: String,
+        isUseGql: Boolean
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
-                userId
+                userId,
+                isUseGql
             )
-            _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            if (categoryIdAtc.errorAtc == null){
+                _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
+            }else{
+                _errorAtc.value = categoryIdAtc.errorAtc
+            }
         }) {
             if (it is ResponseErrorException && !it.message.isNullOrEmpty()) {
                 _addToCartResult.value = RechargeNetworkResult.Fail(MessageErrorException(it.message))
+            } else if (it is DigitalAtcErrorException ){
+               _errorAtc.value = it.getError()
             } else {
                 _addToCartResult.value = RechargeNetworkResult.Fail(it)
             }
@@ -226,7 +241,13 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun getRecommendations(clientNumbers: List<String>, dgCategoryIds: List<Int>) {
         recommendationJob = viewModelScope.launchCatchError(dispatchers.main, block = {
             delay(DELAY_MULTI_TAB)
-            val recommendations = repo.getRecommendations(clientNumbers, dgCategoryIds, emptyList(), true)
+            val recommendations = repo.getRecommendations(
+                clientNumbers,
+                dgCategoryIds,
+                emptyList(),
+                DigitalPDPConstant.RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT,
+                true,
+            )
             _recommendationData.value = RechargeNetworkResult.Success(recommendations)
         }) {
             _recommendationData.value = RechargeNetworkResult.Fail(it)

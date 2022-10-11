@@ -301,7 +301,7 @@ class ReviewGalleryFragment :
         reviewHeader?.apply {
             setRatingData(rating)
             setListener(this@ReviewGalleryFragment)
-            setSeeAll(this@ReviewGalleryFragment)
+            setSeeAll(true, this@ReviewGalleryFragment)
             show()
         }
     }

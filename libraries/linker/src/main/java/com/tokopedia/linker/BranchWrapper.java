@@ -267,7 +267,7 @@ public class BranchWrapper implements WrapperInterface {
     public void setDataFromInstallReferrerParams(String installReferrerParams) {
         if (!TextUtils.isEmpty(installReferrerParams) && installReferrerParams.contains(IDENTIFIER_OPPO_INSTALL_REFERRER)) {
             Branch.getInstance().setPreinstallCampaign("oppopreinstallol-dp_int-tp-10001511-0000-alon-alon");
-            Branch.getInstance().setPreinstallPartner("a_oppopai");
+            Branch.getInstance().setPreinstallPartner("a_custom_884988300975328897");
         }
     }
 

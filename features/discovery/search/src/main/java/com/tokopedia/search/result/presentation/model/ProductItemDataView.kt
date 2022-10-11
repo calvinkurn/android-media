@@ -7,7 +7,10 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
+import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
+import com.tokopedia.search.utils.orNone
 import com.tokopedia.topads.sdk.domain.model.Badge
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.LabelGroup
@@ -65,12 +68,18 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var topadsTag: Int = 0
     var applink: String = ""
     var customVideoURL: String = ""
+    var productListType: String = ""
+    var dimension131: String = ""
+    var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
     }
 
-    fun getProductAsObjectDataLayer(filterSortParams: String, componentId: String): Any {
+    fun getProductAsObjectDataLayer(
+        filterSortParams: String,
+        componentId: String,
+    ): Any {
         return DataLayer.mapOf(
                 "name", productName,
                 "id", productID,
@@ -91,6 +100,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
                 "dimension99", System.currentTimeMillis(),
                 "dimension100", sourceEngine,
                 "dimension115", dimension115,
+                "dimension131", dimension131.orNone(),
         )
     }
 
@@ -119,11 +129,17 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     val dimension115: String
         get() = labelGroupList.getFormattedPositionName()
 
+    val isKeywordIntentionLow : Boolean
+        get() = keywordIntention == KEYWORD_INTENT_LOW
+
     companion object {
         fun create(
             topAds: TopAdsProductData,
             position: Int,
             dimension90: String,
+            productListType: String,
+            externalReference: String,
+            keywordIntention: Int,
         ): ProductItemDataView {
             val item = ProductItemDataView()
             item.productID = topAds.product.id
@@ -160,6 +176,9 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.dimension90 = dimension90
             item.applink = topAds.applinks
             item.customVideoURL = topAds.product.customVideoUrl
+            item.productListType = productListType
+            item.dimension131 = externalReference
+            item.keywordIntention = keywordIntention
             return item
         }
 

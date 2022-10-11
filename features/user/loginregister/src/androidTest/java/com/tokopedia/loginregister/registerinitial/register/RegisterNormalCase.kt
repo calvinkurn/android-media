@@ -67,10 +67,10 @@ class RegisterNormalCase: RegisterInitialBase() {
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
             inputEmailOrPhone("yoris.prayogo+3@tokopedia.com")
             clickSubmit()
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 
@@ -129,7 +129,7 @@ class RegisterNormalCase: RegisterInitialBase() {
         registerCheckUseCase.response = RegisterCheckPojo(data)
 
         runTest {
-            intending(hasData(ApplinkConstInternalGlobal.COTP)).respondWithOk()
+            intending(hasData(ApplinkConstInternalUserPlatform.COTP)).respondWithOk()
             inputEmailOrPhone("082242454511")
             clickSubmit()
             isDialogDisplayed("Nomor Ponsel Sudah Terdaftar")
@@ -139,7 +139,7 @@ class RegisterNormalCase: RegisterInitialBase() {
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                 .perform(ViewActions.click())
 
-            intended(hasData(ApplinkConstInternalGlobal.COTP))
+            intended(hasData(ApplinkConstInternalUserPlatform.COTP))
         }
     }
 

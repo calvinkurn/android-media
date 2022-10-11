@@ -105,7 +105,7 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
 
         handleType(model.channelType)
         handleTotalView(model.channelType, model.totalView)
-        handleGiveaway(model.hasGiveaway)
+        handleGame(model.hasGame)
 
         tvTitle.text = model.title
         tvUpcoming.text = model.startTime
@@ -170,8 +170,8 @@ class PlayWidgetCardChannelSmallView : ConstraintLayout, PlayVideoPlayerReceiver
         else llTotalView.gone()
     }
 
-    private fun handleGiveaway(hasGiveaway: Boolean) {
-        if(hasGiveaway) ivGiveaway.visible()
+    private fun handleGame(hasGame: Boolean) {
+        if(hasGame) ivGiveaway.visible()
         else ivGiveaway.gone()
     }
 

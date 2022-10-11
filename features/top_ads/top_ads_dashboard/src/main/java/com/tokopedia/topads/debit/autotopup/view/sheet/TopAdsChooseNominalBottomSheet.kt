@@ -23,6 +23,7 @@ import com.tokopedia.topads.dashboard.di.DaggerTopAdsDashboardComponent
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
 import com.tokopedia.topads.debit.autotopup.view.viewmodel.TopAdsAutoTopUpViewModel
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -44,6 +45,8 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     private var listGroup: ListUnify? = null
     private var bonusTxt: Typography? = null
     private var saveButton: UnifyButton? = null
+
+    private val listUnify = ArrayList<ListItemUnify>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,6 +111,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
         bottomSheetBehaviorKnob(view, true)
         saveButton?.setOnClickListener {
+            sendAnalyticsOnSaveButtonClicked()
             dismiss()
             if (isTopUp && creditData?.credit?.isNotEmpty() == true)
                 onSaved?.invoke(topUpChoice)
@@ -117,7 +121,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         if (isTopUp) {
             saveButton?.buttonType = UnifyButton.Type.TRANSACTION
             saveButton?.buttonVariant = UnifyButton.Variant.FILLED
-            saveButton?.text = resources.getString(R.string.label_add_credit)
+            saveButton?.text = context?.resources?.getString(R.string.label_add_credit)
         } else {
             bonusTxt?.visibility = View.VISIBLE
         }
@@ -129,7 +133,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     }
 
     private fun setAutoTopUpList() {
-        val listUnify = ArrayList<ListItemUnify>()
+        listUnify.clear()
         autoTopUpData?.availableNominals?.forEachIndexed { index, it ->
             if (defPosition == it.id)
                 defPosition = index
@@ -194,7 +198,7 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
     }
 
     private fun setList() {
-        val listUnify = ArrayList<ListItemUnify>()
+        listUnify.clear()
         creditData?.credit?.forEach {
             val list = ListItemUnify(it.productPrice, "")
             list.isBold = true
@@ -221,9 +225,20 @@ class TopAdsChooseNominalBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun sendAnalyticsOnSaveButtonClicked() {
+        if(isTopUp) {
+            val topUpAmount = listUnify.getOrNull(topUpChoice)?.listTitleText ?: ""
+            TopadsTopupTracker.clickTambahKreditTopup(topUpAmount)
+        } else {
+            val topUpAmount = listUnify.getOrNull(defPosition)?.listTitleText ?: ""
+            TopadsTopupTracker.clickSimpan(topUpAmount)
+        }
+    }
+
     private fun showAutoAdsOption() {
         suggestAutoTopUp?.visibility = View.VISIBLE
         onBoarding?.setOnClickListener {
+            TopadsTopupTracker.clickCobaSekarang()
             startActivity(Intent(context, TopAdsEditAutoTopUpActivity::class.java))
         }
     }

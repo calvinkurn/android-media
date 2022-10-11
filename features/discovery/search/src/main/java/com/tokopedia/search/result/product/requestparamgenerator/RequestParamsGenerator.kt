@@ -3,8 +3,10 @@ package com.tokopedia.search.result.product.requestparamgenerator
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.network.authentication.AuthHelper
-import com.tokopedia.search.result.presentation.model.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.utils.getValueString
+import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
@@ -14,6 +16,7 @@ import javax.inject.Inject
 
 class RequestParamsGenerator @Inject constructor(
     private val userSession: UserSessionInterface,
+    private val pagination: Pagination,
 ) {
     companion object {
         private const val DEFAULT_USER_ID = "0"
@@ -22,15 +25,16 @@ class RequestParamsGenerator @Inject constructor(
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
 
+    private val startFrom: Int
+        get() = pagination.startFrom
+
     fun createGetInspirationCarouselChipProductsRequestParams(
         clickedInspirationCarouselOption: InspirationCarouselDataView.Option,
         searchParameter: Map<String, Any>,
-        startFrom: Int,
         chooseAddressParams: Map<String, String>?,
     ): RequestParams {
         val requestParams = createInitializeSearchParam(
             searchParameter,
-            startFrom,
             chooseAddressParams,
         )
 
@@ -57,12 +61,10 @@ class RequestParamsGenerator @Inject constructor(
 
     fun createGetProductCountRequestParams(
         mapParameter: Map<String, String>,
-        startFrom: Int,
         chooseAddressParams: Map<String, String>?,
     ): RequestParams {
         val requestParams = createInitializeSearchParam(
             mapParameter,
-            startFrom,
             chooseAddressParams,
         )
 
@@ -104,7 +106,6 @@ class RequestParamsGenerator @Inject constructor(
         navSource : String,
         pageTitle : String,
         pageId : String,
-        startFrom: String
     ): RequestParams =
         RequestParams.create().apply {
             putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
@@ -112,13 +113,12 @@ class RequestParamsGenerator @Inject constructor(
             putString(SearchApiConst.NAVSOURCE, navSource)
             putString(SearchApiConst.SRP_PAGE_TITLE, pageTitle)
             putString(SearchApiConst.SRP_PAGE_ID, pageId)
-            putString(SearchApiConst.START, startFrom)
+            putString(SearchApiConst.START, startFrom.toString())
             putString(SearchApiConst.ROWS, getSearchRows())
         }
 
     fun createInitializeSearchParam(
         searchParameter: Map<String, Any>,
-        startFrom: Int,
         chooseAddressParams: Map<String, String>?,
     ): RequestParams {
         val requestParams = RequestParams.create()
@@ -126,10 +126,20 @@ class RequestParamsGenerator @Inject constructor(
         putRequestParamsOtherParameters(
             requestParams,
             searchParameter,
-            startFrom,
         )
         putRequestParamsChooseAddress(requestParams, chooseAddressParams)
         requestParams.putAll(searchParameter)
+
+        return requestParams
+    }
+
+    fun createSameSessionRecommendationParam(
+        item: ProductItemDataView,
+    ) : RequestParams {
+        val requestParams = RequestParams.create().apply {
+            putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
+            putString(SearchApiConst.PRODUCT_ID, item.productID)
+        }
 
         return requestParams
     }
@@ -146,21 +156,15 @@ class RequestParamsGenerator @Inject constructor(
     private fun putRequestParamsOtherParameters(
         requestParams: RequestParams,
         searchParameter: Map<String, Any>,
-        startFrom: Int,
     ) {
-        putRequestParamsSearchParameters(
-            requestParams,
-            searchParameter,
-            startFrom,
-        )
-        putRequestParamsTopAdsParameters(requestParams, startFrom)
+        putRequestParamsSearchParameters(requestParams, searchParameter)
+        putRequestParamsTopAdsParameters(requestParams)
         putRequestParamsDepartmentIdIfNotEmpty(requestParams, searchParameter)
     }
 
     private fun putRequestParamsSearchParameters(
         requestParams: RequestParams,
         searchParameter: Map<String, Any>,
-        startFrom: Int,
     ) {
         requestParams.putString(SearchApiConst.SOURCE, SearchApiConst.DEFAULT_VALUE_SOURCE_SEARCH)
         requestParams.putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
@@ -197,7 +201,6 @@ class RequestParamsGenerator @Inject constructor(
 
     private fun putRequestParamsTopAdsParameters(
         requestParams: RequestParams,
-        startFrom: Int,
     ) {
         requestParams.putInt(TopAdsParams.KEY_ITEM, 2)
         requestParams.putString(TopAdsParams.KEY_EP, TopAdsParams.DEFAULT_KEY_EP)

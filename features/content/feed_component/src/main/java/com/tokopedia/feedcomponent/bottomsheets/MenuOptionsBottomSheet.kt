@@ -19,6 +19,7 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     private var isReportable: Boolean = false
     private var canBeDeleted: Boolean = false
     private var canBeUnFollow: Boolean = false
+    private var isEditable: Boolean = true
     var onReport: (() -> Unit)? = null
     var onFollow: (() -> Unit)? = null
     var onDelete: (() -> Unit)? = null
@@ -32,12 +33,14 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
         fun newInstance(
             isReportable: Boolean = true,
             canUnfollow: Boolean = false,
-            isDeletable: Boolean = true
+            isDeletable: Boolean = true,
+            isEditable: Boolean = true
         ): MenuOptionsBottomSheet {
             return MenuOptionsBottomSheet().apply {
                 this.canBeUnFollow = canUnfollow
                 this.isReportable = isReportable
                 this.canBeDeleted = isDeletable
+                this.isEditable = isEditable
             }
         }
     }
@@ -55,11 +58,10 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val shouldShowNewContentCreationFlow = enableContentCreationNewFlow()
         report.showWithCondition(!canBeDeleted && isReportable)
         follow.showWithCondition(!canBeDeleted && canBeUnFollow)
         delete.showWithCondition(canBeDeleted)
-        edit.showWithCondition(canBeDeleted && shouldShowNewContentCreationFlow && !isCommentPage)
+        edit.showWithCondition(canBeDeleted && !isCommentPage  && isEditable)
 
 
         if (canBeDeleted && report.isVisible && follow.isVisible) {
@@ -118,10 +120,5 @@ class MenuOptionsBottomSheet : BottomSheetUnify() {
     }
     fun setIsCommentPage(isCommentPage: Boolean){
         this.isCommentPage = isCommentPage
-    }
-
-    private fun enableContentCreationNewFlow(): Boolean {
-        val config: RemoteConfig = FirebaseRemoteConfigImpl(context)
-        return config.getBoolean(RemoteConfigKey.ENABLE_NEW_CONTENT_CREATION_FLOW, true)
     }
 }

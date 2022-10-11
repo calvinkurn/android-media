@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="imagepickerinsta_dms_camera_overlay">#80000000</color>
+    <color name="imagepickerinsta_dms_camera_timer_progress">#7FFF4A</color>
+    <color name="imagepickerinsta_dms_camera_btn_bg">#f5751d</color>
+    <color name="imagepickerinsta_dms_duration_bg">#B22E3137</color>
+
+</resources>

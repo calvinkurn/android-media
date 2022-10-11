@@ -13,8 +13,8 @@ data class FeaturedBrandDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is ChannelModel) {
-            channelModel == b
+        return if (b is FeaturedBrandDataModel) {
+            channelModel == b.channelModel
         } else false
     }
 

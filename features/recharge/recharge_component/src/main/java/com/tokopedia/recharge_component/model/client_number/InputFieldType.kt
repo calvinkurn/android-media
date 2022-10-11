@@ -10,5 +10,6 @@ enum class InputFieldType(
 ) {
     Telco(InputType.TYPE_CLASS_TEXT, IconUnify.CONTACT, true),
     Listrik(InputType.TYPE_CLASS_TEXT, IconUnify.QR_CODE, false),
-    Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false)
+    Emoney(InputType.TYPE_CLASS_NUMBER, IconUnify.CAMERA, false),
+    CreditCard(InputType.TYPE_CLASS_PHONE, 0, false),
 }

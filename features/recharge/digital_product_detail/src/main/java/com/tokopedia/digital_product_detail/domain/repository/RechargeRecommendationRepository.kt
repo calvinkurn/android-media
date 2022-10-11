@@ -7,6 +7,7 @@ interface RechargeRecommendationRepository {
         clientNumbers: List<String>,
         dgCategoryIds: List<Int>,
         dgOperatorIds: List<Int> = emptyList(),
-        isBigRecommendation: Boolean = false
+        channelName: String,
+        isBigRecommendation: Boolean = false,
     ): RecommendationWidgetModel
 }

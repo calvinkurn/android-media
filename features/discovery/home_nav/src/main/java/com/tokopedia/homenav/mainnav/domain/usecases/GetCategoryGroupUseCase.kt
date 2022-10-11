@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.mapper.BuListMapper
 import com.tokopedia.homenav.mainnav.domain.model.DynamicHomeIconEntity
+import com.tokopedia.homenav.mainnav.domain.usecases.query.BusinessUnitListQuery
 import com.tokopedia.usecase.coroutines.UseCase
 
 /**
@@ -20,27 +21,7 @@ class GetCategoryGroupUseCase (
     private var params : Map<String, Any> = mapOf()
 
     init {
-        val query = """
-            query businessUnitList(${'$'}page:String){
-              dynamicHomeIcon{
-                categoryGroup(page:${'$'}page){
-                  id
-                  title
-                  imageUrl
-                  applink
-                  url
-                  categoryRows{
-                    id
-                    name
-                    imageUrl
-                    applinks
-                    url
-                  }
-                }
-              }
-            }
-        """.trimIndent()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(BusinessUnitListQuery())
         graphqlUseCase.setTypeClass(DynamicHomeIconEntity::class.java)
     }
 

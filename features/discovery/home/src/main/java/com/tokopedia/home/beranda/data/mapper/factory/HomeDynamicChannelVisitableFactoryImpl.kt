@@ -78,7 +78,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
             dynamicChannelList = homeChannelData?.dynamicHomeChannel?.channels as MutableList<DynamicHomeChannel.Channels>
         }
         dynamicChannelList.forEachIndexed { index, channel ->
-            val position = index+ 1 + startPosition
+            val position = index + startPosition
             setDynamicChannelPromoName(position, channel)
             when (channel.layout) {
                 DynamicHomeChannel.Channels.LAYOUT_HOME_WIDGET -> createBusinessUnitWidget(channel = channel, position = position)
@@ -209,6 +209,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_VPS_WIDGET -> {
                     createVpsWidget(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
+                    createMissionWidgetChannel(channel, position)
                 }
             }
         }
@@ -635,6 +638,21 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun createMissionWidgetChannel(
+        channel: DynamicHomeChannel.Channels,
+        verticalPosition: Int
+    ) {
+        if (!isCache) visitableList.add(
+            MissionWidgetListDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                    channel,
+                    verticalPosition
+                ),
+                status = MissionWidgetListDataModel.STATUS_LOADING
+            )
+        )
+    }
+
     private fun createPopularKeywordChannel(channel: DynamicHomeChannel.Channels) {
         if (!isCache) visitableList.add(
             PopularKeywordListDataModel(
@@ -650,7 +668,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 DynamicChannelComponentMapper.mapHomeChannelToComponent(
                     channel,
                     verticalPosition
-                ), isCache
+                ), isCache,
+                dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design
             )
         )
     }

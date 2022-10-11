@@ -27,6 +27,7 @@ object DigitalPDPConstant {
     const val REQUEST_CODE_DIGITAL_SAVED_NUMBER = 77
     const val REQUEST_CODE_LOGIN = 1010
     const val REQUEST_CODE_LOGIN_ALT = 1011
+    const val REQUEST_CODE_VERIFY_PHONE_NUMBER = 1012
     const val RESULT_CODE_QR_SCAN = 101
 
     const val DELAY_PREFIX_TIME = 200L
@@ -36,4 +37,7 @@ object DigitalPDPConstant {
 
     const val CHECKOUT_NO_PROMO = "0"
     const val LOADER_DIALOG_TEXT = ""
+
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_PULSA = "pulsa_pdp_last_transaction"
+    const val RECOMMENDATION_GQL_CHANNEL_NAME_DEFAULT = "recharge_pdp_last_trx_client_number"
 }

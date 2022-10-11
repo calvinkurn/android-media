@@ -1,4 +1,5 @@
 package com.tokopedia.home.component
+
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
@@ -16,8 +17,6 @@ import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.BalanceWidgetView
-import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.balancewidget.BalanceAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.*
 import com.tokopedia.home_component.model.ReminderEnum
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselEmptyCardViewHolder
@@ -58,6 +57,9 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_SPECIAL_RELEASE = "tracker/home/spe
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home/cue_widget_category.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -67,7 +69,6 @@ private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
  */
 
 fun disableCoachMark(context: Context){
-    disableHomeAnimation()
     disableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, true)
@@ -76,10 +77,11 @@ fun disableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, true)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_TOKONOW_COACHMARK, true)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, true)
+    setHomeTokonowCoachmarkSharedPrefValue(context, true)
 }
 
 fun enableCoachMark(context: Context){
-    disableHomeAnimation()
     enableChooseAddressCoachmark(context)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_HOME_COACHMARK_INBOX, false)
@@ -89,12 +91,8 @@ fun enableCoachMark(context: Context){
     setCoachmarkSharedPrefValue(context, PREF_KEY_WALLETAPP2_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_WALLETAPP_COACHMARK_BALANCE, false)
     setCoachmarkSharedPrefValue(context, PREF_KEY_NEW_TOKOPOINT_COACHMARK_BALANCE, false)
+    setCoachmarkSharedPrefValue(context, PREF_KEY_SUBSCRIPTION_COACHMARK_BALANCE, false)
     setHomeTokonowCoachmarkSharedPrefValue(context, false)
-}
-
-fun disableHomeAnimation() {
-    BalanceWidgetView.disableAnimation = true
-    BalanceAdapter.disableAnimation = true
 }
 
 fun setCoachmarkSharedPrefValue(context: Context, key: String, value: Boolean) {
@@ -266,6 +264,10 @@ fun actionOnCueWidgetCategory(viewHolder: RecyclerView.ViewHolder, itemPosition:
 
 fun actionOnVpsWidget(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_vps_rv, 0)
+}
+
+fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
 }
 
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
@@ -510,41 +512,12 @@ private fun clickReminderWidgetRecharge(i:Int){
     }
 }
 
+fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
+}
+
 //==================================== end of item action ======================================
 
-
-//==================================== cassava validator =======================================
-
-//
-//fun getAssertBUWiddet(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BU_WIDGET),
-//            hasAllSuccess())
-////    -> impression tab intermitten missing
-//}
-//
-//fun getAssertHPB(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_HOMEPAGE_BANNER),
-//            hasAllSuccess())
-////    -> impression missing
-//}
-//
-//fun getAssertListCarousel(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LIST_CAROUSEL),
-//            hasAllSuccess())
-////    -> cant mock occ response
-//}
-//
-//fun getAssertRecommendationIcon(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_ICON),
-//            hasAllSuccess())
-////    -> missing click
-//}
-//
-//fun getAssertRecommendationFeedTab(context: Context) {
-//    assertThat(getAnalyticsWithQuery(gtmLogDBSource, context, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_RECOMMENDATION_FEED_TAB),
-//            hasAllSuccess())
-//}
-//==================================== end of cassava validator ================================
 
 private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     return object : BaseMatcher<T>() {

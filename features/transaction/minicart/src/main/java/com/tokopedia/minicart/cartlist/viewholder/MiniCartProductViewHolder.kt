@@ -39,6 +39,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBinding,
@@ -145,6 +146,7 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
             } else {
                 itemView.resources.getDimensionPixelOffset(R.dimen.dp_4)
             }
+            val margin16dp = itemView.resources.getDimensionPixelOffset(R.dimen.dp_16)
 
             if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
                 if (element.productSlashPriceLabel.isNotBlank()) {
@@ -166,9 +168,32 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 textProductPrice.setPadding(paddingLeft, 0, 0, 0)
                 textSlashPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 textSlashPrice.show()
+                val constraintSet = ConstraintSet()
+                constraintSet.clone(containerProduct)
+                constraintSet.connect(
+                    R.id.label_slash_price_percentage,
+                    ConstraintSet.START,
+                    R.id.image_product,
+                    ConstraintSet.END,
+                    margin16dp
+                )
+                constraintSet.connect(
+                    R.id.text_slash_price,
+                    ConstraintSet.START,
+                    R.id.label_slash_price_percentage,
+                    ConstraintSet.END
+                )
+                constraintSet.connect(
+                    R.id.text_product_price,
+                    ConstraintSet.START,
+                    R.id.text_slash_price,
+                    ConstraintSet.END
+                )
+                constraintSet.applyTo(containerProduct)
             } else {
                 textSlashPrice.gone()
                 labelSlashPricePercentage.gone()
+                textProductPrice.setPadding(0, 0, 0, 0)
                 val constraintSet = ConstraintSet()
                 constraintSet.clone(containerProduct)
                 constraintSet.connect(
@@ -477,9 +502,9 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                             // Use longer delay for reset qty, to support automation
                             delay(QUANTITY_RESET_DELAY)
                         }
-                        if (element.getQuantity() != newValue) {
+                        if (isActive && element.getQuantity() != newValue) {
                             validateQty(newValue, element)
-                            if (newValue != 0) {
+                            if (isActive && newValue != 0) {
                                 element.setQuantity(newValue)
                                 listener.onQuantityChanged(element, newValue)
                             }
@@ -526,11 +551,15 @@ class MiniCartProductViewHolder(private val viewBinding: ItemMiniCartProductBind
                 qtyEditorProduct.addButton.isEnabled = false
                 qtyEditorProduct.subtractButton.isEnabled = false
             } else if (newValue >= maxOrder) {
-                qtyEditorProduct.setValue(maxOrder)
+                if (newValue > maxOrder) {
+                    qtyEditorProduct.setValue(maxOrder)
+                }
                 qtyEditorProduct.addButton.isEnabled = false
                 qtyEditorProduct.subtractButton.isEnabled = true
             } else if (newValue <= minOrder) {
-                qtyEditorProduct.setValue(minOrder)
+                if (newValue < minOrder) {
+                    qtyEditorProduct.setValue(minOrder)
+                }
                 qtyEditorProduct.addButton.isEnabled = true
                 qtyEditorProduct.subtractButton.isEnabled = false
             } else {

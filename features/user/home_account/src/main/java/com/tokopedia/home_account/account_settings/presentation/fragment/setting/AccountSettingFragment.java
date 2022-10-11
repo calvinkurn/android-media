@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic;
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform;
 import com.tokopedia.dialog.DialogUnify;
+import com.tokopedia.home_account.AccountConstants;
 import com.tokopedia.home_account.R;
 import com.tokopedia.home_account.account_settings.AccountHomeUrl;
 import com.tokopedia.home_account.account_settings.analytics.AccountAnalytics;
@@ -37,6 +38,8 @@ import com.tokopedia.home_account.account_settings.di.component.DaggerAccountSet
 import com.tokopedia.home_account.account_settings.presentation.AccountSetting;
 import com.tokopedia.network.utils.ErrorHandler;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
+import com.tokopedia.remoteconfig.RemoteConfigInstance;
+import com.tokopedia.remoteconfig.abtest.AbTestPlatform;
 import com.tokopedia.unifycomponents.LoaderUnify;
 import com.tokopedia.unifycomponents.Toaster;
 import com.tokopedia.user.session.UserSession;
@@ -51,8 +54,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     private static final String TAG = AccountSettingFragment.class.getSimpleName();
 
     private static final String REMOTE_CONFIG_SETTING_OTP_PUSH_NOTIF = "android_user_setting_otp_push_notif";
-    private static final String REMOTE_CONFIG_SETTING_BIOMETRIC = "android_user_fingerprint_login_new";
-
 
     private UserSessionInterface userSession;
     private AccountAnalytics accountAnalytics;
@@ -74,6 +75,8 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
 
     private LinearLayout accountSection;
 
+    private AbTestPlatform abtestPlatform;
+
     FirebaseRemoteConfigImpl firebaseRemoteConfig;
 
     @Inject
@@ -91,6 +94,12 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
         userSession = new UserSession(getActivity());
         accountAnalytics = new AccountAnalytics(getActivity());
         firebaseRemoteConfig = new FirebaseRemoteConfigImpl(context);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        abtestPlatform = RemoteConfigInstance.getInstance().getABTestPlatform();
     }
 
     @Nullable
@@ -222,7 +231,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
             case SettingConstant.SETTING_ACCOUNT_PASS_ID:
                 accountAnalytics.eventClickAccountSetting(PASSWORD);
                 accountAnalytics.eventClickAccountPassword();
-                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalGlobal.HAS_PASSWORD);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalUserPlatform.HAS_PASSWORD);
                 startActivity(intent);
                 break;
             case SettingConstant.SETTING_PIN:
@@ -238,7 +247,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
                 break;
             case SettingConstant.SETTING_ACCOUNT_ADDRESS_ID:
                 accountAnalytics.eventClickAccountSetting(ADDRESS_LIST);
-                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS);
+                intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalLogistic.MANAGE_ADDRESS_FROM_ACCOUNT);
                 startActivity(intent);
                 break;
             case SettingConstant.SETTING_ACCOUNT_KYC_ID:
@@ -316,7 +325,7 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private boolean showFingerprintMenu() {
-        return firebaseRemoteConfig.getBoolean(REMOTE_CONFIG_SETTING_BIOMETRIC, true);
+        return !abtestPlatform.getString(AccountConstants.RollenceKey.BIOMETRIC_ENTRY_POINT, "").isEmpty();
     }
 
     private void onPinMenuClicked(){
@@ -362,6 +371,6 @@ public class AccountSettingFragment extends BaseDaggerFragment implements Accoun
     }
 
     private void onPushNotifClicked() {
-        RouteManager.route(getContext(), ApplinkConstInternalGlobal.OTP_PUSH_NOTIF_SETTING);
+        RouteManager.route(getContext(), ApplinkConstInternalUserPlatform.OTP_PUSH_NOTIF_SETTING);
     }
 }

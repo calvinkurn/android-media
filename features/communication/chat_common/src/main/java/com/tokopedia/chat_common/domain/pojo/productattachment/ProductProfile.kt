@@ -29,7 +29,7 @@ data class ProductProfile (
     val categoryId: String = "0",
 
     @SerializedName("variant")
-    val variant: List<AttachmentVariant> = listOf(),
+    val variant: List<AttachmentVariant>? = listOf(),
 
     @SerializedName("drop_percentage")
     var dropPercentage: String = "",

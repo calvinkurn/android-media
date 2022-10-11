@@ -40,6 +40,7 @@ class RedeemVoucherAdapter( private val items:List<RedeemVoucherModel>): Recycle
             with(binding){
                 tvVoucherCode.text = data.voucherCode
                 tvPoweredBy.text = data.poweredBy
+                tvLabelPoweredBy.showWithCondition(!data.poweredBy.isNullOrEmpty())
                 ivQrCode.loadImage(data.qrCodeUrl)
                 tvIsRedeem.showWithCondition(data.statusLabel.isNotEmpty())
                 tvCopyCode.showWithCondition(data.statusLabel.isEmpty())

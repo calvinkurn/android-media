@@ -10,18 +10,22 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.DOUBLE_ZERO
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.GET_COMMISSION_ENGINE_REGULAR_MERCHANT
+import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.SERVICE_FEE_LIMIT
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants.TEMP_IMAGE_EXTENSION
+import com.tokopedia.product.addedit.common.constant.ProductStatus
 import com.tokopedia.product.addedit.common.util.AddEditProductErrorHandler
 import com.tokopedia.product.addedit.common.util.ResourceProvider
-import com.tokopedia.product.addedit.detail.domain.model.PriceSuggestionSuggestedPriceGet
+import com.tokopedia.product.addedit.detail.domain.model.*
 import com.tokopedia.product.addedit.detail.domain.usecase.*
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.DEBOUNCE_DELAY_MILLIS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_DAYS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PREORDER_WEEKS
-import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_PRODUCT_STOCK_LIMIT
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_SPECIFICATION_COUNTER
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MAX_WHOLESALE_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_MIN_ORDER_QUANTITY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PREORDER_DURATION
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.MIN_PRODUCT_PRICE_LIMIT
@@ -29,6 +33,8 @@ import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProduct
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_DAY
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.UNIT_WEEK
 import com.tokopedia.product.addedit.detail.presentation.model.DetailInputModel
+import com.tokopedia.product.addedit.detail.presentation.model.PriceSuggestion
+import com.tokopedia.product.addedit.detail.presentation.model.SimilarProduct
 import com.tokopedia.product.addedit.detail.presentation.model.TitleValidationModel
 import com.tokopedia.product.addedit.preview.domain.usecase.ValidateProductNameUseCase
 import com.tokopedia.product.addedit.preview.presentation.model.ProductInputModel
@@ -36,7 +42,9 @@ import com.tokopedia.product.addedit.specification.domain.model.AnnotationCatego
 import com.tokopedia.product.addedit.specification.domain.usecase.AnnotationCategoryUseCase
 import com.tokopedia.product.addedit.specification.presentation.constant.AddEditProductSpecificationConstants.SIGNAL_STATUS_VARIANT
 import com.tokopedia.product.addedit.specification.presentation.model.SpecificationInputModel
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
+import com.tokopedia.shop.common.domain.interactor.GetMaxStockThresholdUseCase
 import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtalaseUseCase
 import com.tokopedia.unifycomponents.list.ListItemUnify
@@ -64,9 +72,12 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val validateProductNameUseCase: ValidateProductNameUseCase,
     private val getShopEtalaseUseCase: GetShopEtalaseUseCase,
     private val annotationCategoryUseCase: AnnotationCategoryUseCase,
-    private val priceSuggestionSuggestedPriceGetUseCase: PriceSuggestionSuggestedPriceGetUseCase,
-    private val priceSuggestionSuggestedPriceGetByKeywordUseCase: PriceSuggestionSuggestedPriceGetByKeywordUseCase,
+    private val getAddProductPriceSuggestionUseCase: GetAddProductPriceSuggestionUseCase,
+    private val getEditProductPriceSuggestionUseCase: PriceSuggestionSuggestedPriceGetUseCase,
     private val getProductTitleValidationUseCase: GetProductTitleValidationUseCase,
+    private val getMaxStockThresholdUseCase: GetMaxStockThresholdUseCase,
+    private val getShopInfoUseCase: GetShopInfoUseCase,
+    private val getDefaultCommissionRulesUseCase: GetDefaultCommissionRulesUseCase,
     private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
@@ -79,6 +90,11 @@ class AddEditProductDetailViewModel @Inject constructor(
 
     var isAddingWholeSale = false
     var isAddingValidationWholeSale = false
+    var isSavingPriceAdjustment = false
+    var isPriceSuggestionRangeEmpty = false
+    var isFreeOfServiceFee = false
+
+    var shopTier = 0
 
     private var isMultiLocationShop = false
 
@@ -145,6 +161,20 @@ class AddEditProductDetailViewModel @Inject constructor(
     val shopShowCases: LiveData<Result<List<ShopEtalaseModel>>>
         get() = mShopShowCases
 
+    private val mShopInfo = MutableLiveData<GetShopInfoResponse>()
+    val shopInfo: LiveData<GetShopInfoResponse>
+        get() = mShopInfo
+    private val mShopInfoError = MutableLiveData<Throwable>()
+    val shopInfoError: LiveData<Throwable>
+        get() = mShopInfoError
+
+    private val mCommissionInfo = MutableLiveData<GetDefaultCommissionRulesResponse>()
+    val commissionInfo: LiveData<GetDefaultCommissionRulesResponse>
+        get() = mCommissionInfo
+    private val mCommissionInfoError = MutableLiveData<Throwable>()
+    val commissionInfoError: LiveData<Throwable>
+        get() = mCommissionInfoError
+
     private val mAnnotationCategoryData = MutableLiveData<Result<List<AnnotationCategoryData>>>()
     val annotationCategoryData: LiveData<Result<List<AnnotationCategoryData>>>
         get() = mAnnotationCategoryData
@@ -164,6 +194,17 @@ class AddEditProductDetailViewModel @Inject constructor(
     private val mProductPriceRecommendationError = MutableLiveData<Throwable>()
     val productPriceRecommendationError: LiveData<Throwable>
         get() = mProductPriceRecommendationError
+
+    private val mAddProductPriceSuggestion = MutableLiveData<PriceSuggestionByKeyword>()
+    val addProductPriceSuggestion: LiveData<PriceSuggestionByKeyword>
+        get() = mAddProductPriceSuggestion
+    private val mAddProductPriceSuggestionError = MutableLiveData<Throwable>()
+    val addProductPriceSuggestionError: LiveData<Throwable>
+        get() = mAddProductPriceSuggestionError
+
+    private val mMaxStockThreshold = MutableLiveData<String>()
+    val maxStockThreshold: LiveData<String>
+        get() = mMaxStockThreshold
 
     private val mIsInputValid = MediatorLiveData<Boolean>().apply {
         addSource(mIsProductPhotoError) {
@@ -265,6 +306,14 @@ class AddEditProductDetailViewModel @Inject constructor(
         mProductNameInputLiveData.value = string
     }
 
+    fun getMaxStockThreshold(shopId: String) {
+        launchCatchError(block = {
+            mMaxStockThreshold.value = getMaxStockThresholdUseCase.execute(shopId).getIMSMeta.data.maxStockThreshold
+        }, onError = {
+            mMaxStockThreshold.value = null
+        })
+    }
+
     fun validateProductNameInput(productNameInput: String) {
         if (productNameInput.isEmpty()) {
             // show product error when product name is empty
@@ -334,6 +383,8 @@ class AddEditProductDetailViewModel @Inject constructor(
         val wholeSaleQuantity = wholeSaleQuantityInput.toBigIntegerOrNull().orZero()
         if (wholeSaleQuantity == 0.toBigInteger()) {
             provider.getZeroWholeSaleQuantityErrorMessage()?.let { return it }
+        } else if (wholeSaleQuantity >= MAX_WHOLESALE_QUANTITY.toBigInteger()) {
+            return provider.getWholeSaleMaxErrorMessage(MAX_WHOLESALE_QUANTITY)
         }
         if (minOrderInput.isNotBlank()) {
             if (wholeSaleQuantity < minOrderInput.toBigIntegerOrNull().orZero()) {
@@ -378,22 +429,30 @@ class AddEditProductDetailViewModel @Inject constructor(
             mIsProductStockInputError.value = false
             return
         }
+
         if (productStockInput.isEmpty()) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
+
         val productStock = productStockInput.toBigIntegerOrNull().orZero()
-        if (productStock < minimumStockCount.toBigInteger()) {
+        val maxStock = mMaxStockThreshold.value
+        val isMaxStockNotNull = maxStock != null
+        val isCurrentStockLessThanMinStock = productStock < minimumStockCount.toBigInteger()
+        val isCurrentStockMoreThanMaxStock = productStock > maxStock?.toBigIntegerOrNull().orZero()
+
+        if (isCurrentStockLessThanMinStock) {
             val errorMessage = provider.getEmptyProductStockErrorMessage()
             errorMessage.let { productStockMessage = it }
             mIsProductStockInputError.value = true
             return
         }
-        if (productStock > MAX_PRODUCT_STOCK_LIMIT.toBigInteger()) {
-            val errorMessage = provider.getMaxLimitProductStockErrorMessage()
-            errorMessage?.let { productStockMessage = it }
+
+        if (isMaxStockNotNull && isCurrentStockMoreThanMaxStock) {
+            val errorMessage = provider.getMaxLimitProductStockErrorMessage(maxStock)
+            productStockMessage = errorMessage
             mIsProductStockInputError.value = true
             return
         }
@@ -582,6 +641,30 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
+    fun getShopInfo(shopId: Int) {
+        launchCatchError(block = {
+            mShopInfo.value = withContext(dispatchers.io) {
+                getShopInfoUseCase.setParam(shopId)
+                val response = getShopInfoUseCase.executeOnBackground()
+                response
+            }
+        }, onError = {
+            mShopInfoError.value = it
+        })
+    }
+
+    fun getCommissionInfo(categoryId: Int) {
+        launchCatchError(block = {
+            mCommissionInfo.value = withContext(dispatchers.io) {
+                getDefaultCommissionRulesUseCase.setParam(categoryId)
+                val response = getDefaultCommissionRulesUseCase.executeOnBackground()
+                response
+            }
+        }, onError = {
+            mCommissionInfoError.value = it
+        })
+    }
+
     /**
      * Modify stock related values if admin/owner has multi location shops
      */
@@ -701,8 +784,8 @@ class AddEditProductDetailViewModel @Inject constructor(
     fun getProductPriceRecommendation() {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                priceSuggestionSuggestedPriceGetUseCase.setParamsProductId(productInputModel.productId)
-                priceSuggestionSuggestedPriceGetUseCase.executeOnBackground()
+                getEditProductPriceSuggestionUseCase.setParamsProductId(productInputModel.productId)
+                getEditProductPriceSuggestionUseCase.executeOnBackground()
             }
             mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
         }, onError = {
@@ -710,15 +793,15 @@ class AddEditProductDetailViewModel @Inject constructor(
         })
     }
 
-    fun getProductPriceRecommendationByKeyword(keyword: String) {
+    fun getAddProductPriceSuggestion(keyword: String, categoryL3: String) {
         launchCatchError(block = {
             val response = withContext(dispatchers.io) {
-                priceSuggestionSuggestedPriceGetByKeywordUseCase.setParamsKeyword(keyword)
-                priceSuggestionSuggestedPriceGetByKeywordUseCase.executeOnBackground()
+                getAddProductPriceSuggestionUseCase.setPriceSuggestionParams(keyword, categoryL3)
+                getAddProductPriceSuggestionUseCase.executeOnBackground()
             }
-            mProductPriceRecommendation.value = response.priceSuggestionSuggestedPriceGet
+            mAddProductPriceSuggestion.value = response.priceSuggestionByKeyword
         }, onError = {
-            mProductPriceRecommendationError.value = it
+            mAddProductPriceSuggestionError.value = it
         })
     }
 
@@ -728,6 +811,83 @@ class AddEditProductDetailViewModel @Inject constructor(
             result = result.replace(it, "")
         }
         return result.trim().replace("\\s+".toRegex(), " ")
+    }
+
+    fun mapAddPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionByKeyword): PriceSuggestion {
+        return PriceSuggestion(
+                suggestedPrice = priceSuggestion.summary?.suggestedPrice,
+                suggestedPriceMin = priceSuggestion.summary?.suggestedPriceMin,
+                suggestedPriceMax = priceSuggestion.summary?.suggestedPriceMax,
+                similarProducts = priceSuggestion.suggestions?.map {
+                    SimilarProduct(
+                            productId = it.productId,
+                            displayPrice = it.displayPrice,
+                            imageURL = it.imageURL,
+                            title = it.title,
+                            totalSold = it.totalSold,
+                            rating = it.rating
+                    )
+                } ?: listOf()
+        )
+    }
+
+    fun mapEditPriceSuggestionToPriceSuggestionUiModel(priceSuggestion: PriceSuggestionSuggestedPriceGet): PriceSuggestion {
+        return PriceSuggestion(
+                suggestedPrice = priceSuggestion.suggestedPrice,
+                suggestedPriceMin = priceSuggestion.suggestedPriceMin,
+                suggestedPriceMax = priceSuggestion.suggestedPriceMax,
+                similarProducts = priceSuggestion.productRecommendation.map {
+                    SimilarProduct(
+                            productId = it.productID,
+                            displayPrice = it.price,
+                            imageURL = it.imageURL,
+                            title = it.title,
+                            totalSold = it.sold,
+                            rating = it.rating
+                    )
+                }
+        )
+    }
+
+    fun getProductPriceSuggestionRange(isEditing: Boolean): Pair<Double, Double> {
+        return if (isEditing) {
+            val minPrice = productPriceRecommendation.value?.suggestedPriceMin.orZero()
+            val maxPrice = productPriceRecommendation.value?.suggestedPriceMax.orZero()
+            minPrice to maxPrice
+        } else {
+            val summary = addProductPriceSuggestion.value?.summary
+            val minPrice = summary?.suggestedPriceMin.orZero()
+            val maxPrice = summary?.suggestedPriceMax.orZero()
+            minPrice to maxPrice
+        }
+    }
+
+    fun isProductPriceCompetitive(priceInput: Double, priceSuggestionRange: Pair<Double, Double>, isError: Boolean = false): Boolean {
+        if (isError) return false
+        val minPrice = priceSuggestionRange.first
+        val maxPrice = priceSuggestionRange.second
+        return priceInput <= minPrice ||  priceInput in minPrice..maxPrice
+    }
+
+    fun isPriceSuggestionLayoutVisible(isRangeEmpty: Boolean, productStatus: Int, isNew: Boolean, hasVariant: Boolean): Boolean {
+        val isActive = productStatus == ProductStatus.STATUS_ACTIVE
+        return !isRangeEmpty && isActive && isNew && !hasVariant
+    }
+
+    fun isPriceSuggestionRangeIsEmpty(minLimit: Double, maxLimit: Double): Boolean {
+        return minLimit == DOUBLE_ZERO && maxLimit == DOUBLE_ZERO
+    }
+
+    fun isFreeOfServiceFee(totalTxSuccess: Int, shopTier: Int): Boolean {
+        // shopTier => from shop service; do not use commission info shop type in this function
+        return shopTier == ShopStatusLevelDef.LEVEL_REGULAR && totalTxSuccess <= SERVICE_FEE_LIMIT
+    }
+
+    fun getCommissionRate(commissionRules: List<CommissionRule>, shopTier: Int): Double {
+        // shop service regular merchant id is 0; while in commission engine regular merchant id is 999
+        // therefore we need to convert it first before getting the commission rate from commission engine service
+        val shopType = if (shopTier == ShopStatusLevelDef.LEVEL_REGULAR) GET_COMMISSION_ENGINE_REGULAR_MERCHANT else shopTier
+        return commissionRules.firstOrNull { it.shopType == shopType }?.commissionRate.orZero()
     }
 
     /**

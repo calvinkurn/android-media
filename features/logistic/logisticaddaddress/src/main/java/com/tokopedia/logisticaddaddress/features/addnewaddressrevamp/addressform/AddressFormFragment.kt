@@ -19,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -141,6 +142,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
             }
+            viewModel.source = it.getString(PARAM_SOURCE, "")
         }
         permissionCheckerHelper = PermissionCheckerHelper()
     }
@@ -1178,6 +1180,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding?.run {
             saveDataModel?.receiverName = formAccount.etNamaPenerima.textFieldInput.text.toString()
             saveDataModel?.phone = formAccount.etNomorHp.textFieldInput.text.toString()
+            saveDataModel?.isTokonowRequest = viewModel.isTokonow
             if (isPositiveFlow) {
                 if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"
@@ -1276,15 +1279,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_IS_EDIT, false)
+                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                 }
             }
         }
 
-        fun newInstance(addressId: String?): AddressFormFragment {
+        fun newInstance(addressId: String?, extra: Bundle?): AddressFormFragment {
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_ADDRESS_ID, addressId)
                     putBoolean(EXTRA_IS_EDIT, true)
+
+                    if (extra != null) {
+                        putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
+                    }
                 }
             }
         }

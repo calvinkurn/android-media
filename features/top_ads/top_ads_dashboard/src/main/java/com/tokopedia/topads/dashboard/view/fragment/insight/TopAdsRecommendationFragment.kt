@@ -278,7 +278,7 @@ class TopAdsRecommendationFragment : BaseDaggerFragment() {
                         userSession.userId)
                 }
                 viewPager?.currentItem = position
-                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.get(position)
+                if (position == 0 && topAdsInsightTabAdapter?.getTab()?.getOrNull(position)
                         ?.contains(PRODUK) == true && countProduct != 0
                 ) {
                     (activity as TopAdsDashboardActivity?)?.hideButton(false)

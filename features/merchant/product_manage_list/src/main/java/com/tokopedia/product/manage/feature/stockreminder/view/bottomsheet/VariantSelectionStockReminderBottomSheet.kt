@@ -50,6 +50,19 @@ class VariantSelectionStockReminderBottomSheet(
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.run {
+            parentFragment?.childFragmentManager?.beginTransaction()
+                ?.remove(this@VariantSelectionStockReminderBottomSheet)?.commit()
+        }
+    }
+
+    override fun onSelection(productSelection: List<ProductStockReminderUiModel>) {
+        this.productSelection = productSelection
+        binding?.buttonNext?.isEnabled = productSelection.isNotEmpty()
+    }
+
     fun setupView() {
         val title =
             context?.getString(R.string.product_stock_reminder_title_choose_variant).orEmpty()
@@ -79,19 +92,4 @@ class VariantSelectionStockReminderBottomSheet(
     fun setOnNextListener(setOnNextListener: (productSelection: List<ProductStockReminderUiModel>) -> Unit) {
         this.setOnNextListener = setOnNextListener
     }
-
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
-        super.onViewStateRestored(savedInstanceState)
-        savedInstanceState?.run {
-            parentFragment?.childFragmentManager?.beginTransaction()
-                ?.remove(this@VariantSelectionStockReminderBottomSheet)?.commit()
-        }
-    }
-
-    override fun onSelection(productSelection: List<ProductStockReminderUiModel>) {
-        this.productSelection = productSelection
-        binding?.buttonNext?.isEnabled = productSelection.isNotEmpty()
-    }
-
-
 }

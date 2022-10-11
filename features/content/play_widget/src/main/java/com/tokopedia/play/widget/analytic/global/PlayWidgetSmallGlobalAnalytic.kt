@@ -78,7 +78,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                "is giveaway ${item.hasGame}", /** isGiveaway **/
                 PlayWidgetType.Small.typeString, /** widgetSize **/
             ),
             promotions = listOf(
@@ -120,7 +120,7 @@ class PlayWidgetSmallGlobalAnalytic @AssistedInject constructor(
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                "is giveaway ${item.hasGame}", /** isGiveaway **/
                 PlayWidgetType.Small.typeString, /** widgetSize **/
             ),
             promotions = listOf(

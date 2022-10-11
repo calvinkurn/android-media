@@ -73,14 +73,14 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
-                channelPositionInList + 1, /** position **/
+                channelPositionInList, /** position **/
                 config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                "is giveaway ${item.hasGame}", /** isGiveaway **/
                 PlayWidgetType.Medium.typeString, /** widgetSize **/
             ),
             promotions = listOf(
@@ -115,14 +115,14 @@ class PlayWidgetMediumGlobalAnalytic @AssistedInject constructor(
                 item.channelType.toTrackingType(), /** videoType **/
                 item.partner.id, /** partnerID **/
                 item.channelId, /** channelID **/
-                channelPositionInList + 1, /** position **/
+                channelPositionInList, /** position **/
                 config.businessWidgetPosition, /** businessPosition **/
                 "is autoplay ${config.autoPlay}", /** isAutoPlay **/
                 config.maxAutoPlayCellularDuration, /** duration **/
                 item.promoType.toTrackingString(), /** promoType **/
                 item.recommendationType, /** recommendationType **/
                 "is rilisanspesial ${item.promoType.isRilisanSpesial}", /** isRilisanSpesial **/
-                "is giveaway ${item.hasGiveaway}", /** isGiveaway **/
+                "is giveaway ${item.hasGame}", /** isGiveaway **/
                 PlayWidgetType.Medium.typeString, /** widgetSize **/
             ),
             promotions = listOf(

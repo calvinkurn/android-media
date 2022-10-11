@@ -64,7 +64,7 @@ class GQLGetShopInfoUseCase(private var gqlQuery: String,
         const val FIELD_TOP_CONTENT = "topContent"
         const val FIELD_HOME_TYPE = "shopHomeType"
         const val FIELD_BRANCH_LINK = "branch-link"
-
+        const val FIELD_GOLD_OS = "goldOS"
 
         private val DEFAULT_SHOP_FIELDS = listOf("core", "favorite", "assets", "shipment",
                 "last_active", "location", "terms", "allow_manage",

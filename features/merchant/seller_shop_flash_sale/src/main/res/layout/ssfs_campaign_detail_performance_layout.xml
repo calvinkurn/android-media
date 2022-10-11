@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/unify_space_8"
+    app:cardElevation="@dimen/unify_space_4">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_campaign_detail_performance_illustration" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_product_quantity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:text="Total Terjual"
+            app:layout_constraintEnd_toStartOf="@+id/tg_performance_total_income_label"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_product_quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tg_performance_total_income"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/tg_performance_total_product_quantity_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_performance_total_product_quantity_label"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="250" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_income_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/unify_space_12"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="Total Penjualan"
+            app:layout_constraintEnd_toStartOf="@+id/tg_performance_total_product_sold_label"
+            app:layout_constraintStart_toEndOf="@+id/tg_performance_total_product_quantity_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3" />
+
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_income"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/tg_performance_total_product_sold"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/tg_performance_total_income_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_performance_total_income_label"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="Rp19.000.000" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_product_sold_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:text="Produk Terjual"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tg_performance_total_income_label"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_3" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tg_performance_total_product_sold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/unify_space_8"
+            android:layout_marginEnd="@dimen/unify_space_12"
+            android:layout_marginBottom="@dimen/unify_space_12"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintHorizontal_chainStyle="spread_inside"
+            app:layout_constraintStart_toStartOf="@+id/tg_performance_total_product_sold_label"
+            app:layout_constraintTop_toBottomOf="@+id/tg_performance_total_product_sold_label"
+            app:typographyType="display_3"
+            app:typographyWeight="bold"
+            tools:text="250" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

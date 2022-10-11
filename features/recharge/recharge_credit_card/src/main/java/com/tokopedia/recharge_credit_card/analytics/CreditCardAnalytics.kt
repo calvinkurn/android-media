@@ -19,7 +19,7 @@ class CreditCardAnalytics(val iris: Iris) {
 
     fun impressionInitialPage(userId: String) {
         val map = TrackAppUtils.gtmData(
-                VIEW_DIGITAL_IRIS,
+                EVENT_VIEW_DIGITAL_IRIS,
                 CATEGORY_HOMEPAGE,
                 ACTION_IMPRESSION_INITIAL,
                 getCategoryName()
@@ -33,7 +33,7 @@ class CreditCardAnalytics(val iris: Iris) {
     fun impressionBankList(categoryId: String, operatorId: String, userId: String) {
         if (iris != null) {
             val map = TrackAppUtils.gtmData(
-                    EVENT_CC_IRIS,
+                    EVENT_VIEW_DIGITAL_CC_IRIS,
                     CATEGORY_CC,
                     ACTION_IMPRESSION_BANKLIST,
                     "$categoryId - $operatorId")
@@ -44,7 +44,7 @@ class CreditCardAnalytics(val iris: Iris) {
 
     fun clickToConfirmationPage(categoryId: String, operatorId: String, userId: String) {
         val map = TrackAppUtils.gtmData(
-                EVENT_CC,
+                EVENT_CLICK_DIGITAL_CC,
                 CATEGORY_CC,
                 ACTION_TO_SHOW_CONFIRMATION,
                 "$categoryId - $operatorId")
@@ -54,7 +54,7 @@ class CreditCardAnalytics(val iris: Iris) {
 
     fun clickBackOnConfirmationPage(categoryId: String, operatorId: String, userId: String) {
         val map = TrackAppUtils.gtmData(
-                EVENT_CC,
+                EVENT_CLICK_DIGITAL_CC,
                 CATEGORY_CC,
                 ACTION_CLICK_BACK_CONFIRMATION,
                 "$categoryId - $operatorId")
@@ -64,7 +64,7 @@ class CreditCardAnalytics(val iris: Iris) {
 
     fun clickToContinueCheckout(categoryId: String, operatorId: String, userId: String) {
         val map = TrackAppUtils.gtmData(
-                EVENT_CC,
+                EVENT_CLICK_DIGITAL_CC,
                 CATEGORY_CC,
                 ACTION_CLICK_CHECKOUT,
                 "$categoryId - $operatorId")
@@ -91,6 +91,108 @@ class CreditCardAnalytics(val iris: Iris) {
                         DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE
                 )
         )
+    }
+
+    fun impressionFavoriteNumberChips(categoryName: String, loyaltyStatus: String, userId: String) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_VIEW_FAVORITE_NUMBER_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_VIEW_DIGITAL_IRIS,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickFavoriteNumberChips(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_CLICK_FAVORITE_NUMBER_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_CLICK_DIGITAL,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun impressionFavoriteContactChips(
+        categoryName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_VIEW_FAVORITE_CONTACT_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_VIEW_DIGITAL_IRIS,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickFavoriteContactChips(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_CLICK_FAVORITE_CONTACT_CHIP,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_CLICK_DIGITAL,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickFavoriteNumberAutoComplete(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_CLICK_AUTOCOMPLETE_FAVORITE_NUMBER,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_CLICK_DIGITAL,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
+    }
+
+    fun clickFavoriteContactAutoComplete(
+        categoryName: String,
+        operatorName: String,
+        loyaltyStatus: String,
+        userId: String
+    ) {
+        val data = DataLayer.mapOf(
+            TrackAppUtils.EVENT_ACTION, ACTION_CLICK_AUTOCOMPLETE_FAVORITE_CONTACT,
+            TrackAppUtils.EVENT_LABEL,  "${categoryName}_${operatorName}_${loyaltyStatus}",
+            TrackAppUtils.EVENT_CATEGORY, DigitalTrackingConst.Category.DIGITAL_HOMEPAGE,
+            TrackAppUtils.EVENT, EVENT_CLICK_DIGITAL,
+            DigitalTrackingConst.Label.CURRENTSITE, DigitalTrackingConst.Value.RECHARGE_SITE,
+            DigitalTrackingConst.Label.BUSINESS_UNIT, DigitalTrackingConst.Value.RECHARGE_BU,
+            DigitalTrackingConst.Label.USER_ID, userId,
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     private fun constructProductEnhanceEcommerce(prefixName: String, prefixId: String,
@@ -121,15 +223,22 @@ class CreditCardAnalytics(val iris: Iris) {
         const val CATEGORY_CC = "digital - cc page"
         const val CATEGORY_HOMEPAGE = "digital - homepage"
 
-        const val EVENT_CC = "clickDigitalCC"
-        const val EVENT_CC_IRIS = "viewDigitalCCIris"
-        const val VIEW_DIGITAL_IRIS = "viewDigitalIris"
+        const val EVENT_CLICK_DIGITAL_CC = "clickDigitalCC"
+        const val EVENT_CLICK_DIGITAL = "clickDigital"
+        const val EVENT_VIEW_DIGITAL_CC_IRIS = "viewDigitalCCIris"
+        const val EVENT_VIEW_DIGITAL_IRIS = "viewDigitalIris"
 
         const val ACTION_IMPRESSION_INITIAL = "view pdp page"
         const val ACTION_IMPRESSION_BANKLIST = "impression of bank list"
         const val ACTION_CLICK_CHECKOUT = "checkout page"
         const val ACTION_CLICK_BACK_CONFIRMATION = "click confirmation to pdp"
         const val ACTION_TO_SHOW_CONFIRMATION = "click confirmation to checkout"
+        const val ACTION_VIEW_FAVORITE_NUMBER_CHIP = "view favorite number chip"
+        const val ACTION_VIEW_FAVORITE_CONTACT_CHIP = "view favorite contact chip"
+        const val ACTION_CLICK_FAVORITE_NUMBER_CHIP = "click favorite number chip"
+        const val ACTION_CLICK_FAVORITE_CONTACT_CHIP = "click favorite contact chip"
+        const val ACTION_CLICK_AUTOCOMPLETE_FAVORITE_NUMBER = "click autocomplete fav number"
+        const val ACTION_CLICK_AUTOCOMPLETE_FAVORITE_CONTACT = "click autocomplete fav contact"
 
         const val BUSINESS_UNIT_RECHARGE = "recharge"
         const val CURRENT_SITE_RECHARGE = "tokopediadigitalRecharge"

@@ -237,7 +237,18 @@ object ShopDiscountManageDiscountMapper {
             ShopDiscountSlashPriceProductSubmissionUiModel.SubmittedProductData(
                 name = it.name,
                 success = it.success,
-                message = it.message
+                message = it.message,
+                listSubmittedWarehouse = mapToListSubmittedWarehouse(it.warehouses)
+            )
+        }
+    }
+
+    private fun mapToListSubmittedWarehouse(listWarehouse: ArrayList<DoSlashPriceProductSubmissionResponse.DoSlashPriceProductSubmission.Data.Warehouses>): List<ShopDiscountSlashPriceProductSubmissionUiModel.SubmittedProductData.WarehouseData> {
+        return listWarehouse.map {
+            ShopDiscountSlashPriceProductSubmissionUiModel.SubmittedProductData.WarehouseData(
+                warehouseId = it.value.warehouseId,
+                success = it.value.success,
+                message = it.value.message
             )
         }
     }

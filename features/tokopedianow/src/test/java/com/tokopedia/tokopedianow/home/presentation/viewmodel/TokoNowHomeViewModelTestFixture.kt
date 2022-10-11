@@ -18,6 +18,9 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.ui.PlayWidgetState
+import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryListResponse
@@ -94,6 +97,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var getHomeReferralUseCase: GetHomeReferralUseCase
     @RelaxedMockK
+    lateinit var playWidgetTools: PlayWidgetTools
+    @RelaxedMockK
     lateinit var userSession: UserSessionInterface
 
     @get:Rule
@@ -123,6 +128,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getQuestWidgetListUseCase,
                 setUserPreferenceUseCase,
                 getHomeReferralUseCase,
+                playWidgetTools,
                 userSession,
                 CoroutineTestDispatchersProvider
         )
@@ -274,6 +280,16 @@ abstract class TokoNowHomeViewModelTestFixture {
         localCacheModel: LocalCacheModel = LocalCacheModel()
     ) {
         coEvery { getHomeLayoutDataUseCase.execute(any(), any(), localCacheModel) } returns layoutResponse
+    }
+
+    protected fun onGetPlayWidget_thenReturn(playWidgetState: PlayWidgetState) {
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns PlayWidget()
+        coEvery { playWidgetTools.mapWidgetToModel(any(), any(), any()) } returns playWidgetState
+    }
+
+    protected fun onGetPlayWidget_thenReturn(error: Throwable) {
+        coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } throws error
+        coEvery { playWidgetTools.mapWidgetToModel(any(), any(), any()) } throws error
     }
 
     protected fun onGetHomeLayoutData_thenReturn(

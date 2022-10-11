@@ -40,13 +40,13 @@ data class User(
 
         @SerializedName("userId")
         @Expose
-        val userId: Int = 0
+        val userId: String = ""
 )
 
 data class ImageAttachment(
         @SerializedName("attachmentId")
         @Expose
-        val attachmentId: Int = 0,
+        val attachmentId: String = "",
 
         @SerializedName("imageThumbnailUrl")
         @Expose

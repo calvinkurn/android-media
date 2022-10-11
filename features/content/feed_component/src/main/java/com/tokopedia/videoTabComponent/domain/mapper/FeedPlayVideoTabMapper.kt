@@ -168,7 +168,7 @@ object FeedPlayVideoTabMapper {
                         item.video.cover_url, item.video.stream_source
                     ),
                     channelType = channelType,
-                    hasGiveaway = mapHasGiveaway(item.configurations.promoLabels),
+                    hasGame = mapHasGame(item.configurations.promoLabels),
                     share = PlayWidgetShareUiModel(item.share.text, item.share.is_show_button),
                     performanceSummaryLink = performanceSummaryLink,
                     poolType = poolType,
@@ -184,7 +184,7 @@ object FeedPlayVideoTabMapper {
 
         return list
     }
-    private fun mapHasGiveaway(promoLabels: List<Configurations.PromoLabel>): Boolean {
+    private fun mapHasGame(promoLabels: List<Configurations.PromoLabel>): Boolean {
         return promoLabels.firstOrNull { it.type == GIVEAWAY } != null
     }
 

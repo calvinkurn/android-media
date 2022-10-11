@@ -52,7 +52,8 @@ object HomeScreenshotTestHelper {
                 ScreenshotModel(name = "HomePayLaterWidget"),
                 ScreenshotModel(name = "CueWidgetCategory2x2"),
                 ScreenshotModel(name = "CueWidgetCategory3x2"),
-                ScreenshotModel(name = "VpsWidget")
+                ScreenshotModel(name = "VpsWidget"),
+                ScreenshotModel(name = "MissionWidget")
         )
     }
 

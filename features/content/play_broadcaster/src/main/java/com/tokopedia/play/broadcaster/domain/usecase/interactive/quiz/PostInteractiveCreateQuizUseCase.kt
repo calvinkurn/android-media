@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.play.broadcaster.domain.model.interactive.PostInteractiveCreateSessionResponse
+import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.PostInteractiveCreateQuizResponse
 import com.tokopedia.play_common.domain.usecase.RetryableGraphqlUseCase
 import javax.inject.Inject
 
@@ -14,12 +15,12 @@ import javax.inject.Inject
 @GqlQuery(PostInteractiveCreateQuizUseCase.QUERY_NAME, PostInteractiveCreateQuizUseCase.QUERY)
 class PostInteractiveCreateQuizUseCase @Inject constructor(
     gqlRepository: GraphqlRepository
-) : RetryableGraphqlUseCase<PostInteractiveCreateSessionResponse>(gqlRepository, HIGH_RETRY_COUNT) {
+) : RetryableGraphqlUseCase<PostInteractiveCreateQuizResponse>(gqlRepository, HIGH_RETRY_COUNT) {
 
     init {
         setGraphqlQuery(PostInteractiveCreateQuizUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(PostInteractiveCreateSessionResponse::class.java)
+        setTypeClass(PostInteractiveCreateQuizResponse::class.java)
     }
 
     suspend fun execute(
@@ -28,7 +29,7 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         prize: String,
         runningTime: Long,
         choices: List<Choice>
-    ): PostInteractiveCreateSessionResponse {
+    ): PostInteractiveCreateQuizResponse {
         setRequestParams(
             createParams(
                 channelId = channelId,
@@ -52,6 +53,9 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         private const val PARAM_PRIZE = "prize"
         private const val PARAM_RUNNING_TIME = "runningTime"
         private const val PARAM_CHOICES = "choices"
+        private const val PARAM_TEXT = "text"
+        private const val PARAM_CORRECT = "correct"
+
         const val QUERY_NAME = "PostInteractiveCreateQuizUseCaseQuery"
         const val QUERY = """
             mutation PostInteractiveCreateQuizUseCase(
@@ -66,7 +70,7 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
                 question: ${"$$PARAM_QUESTION"},
                 prize: ${"$$PARAM_PRIZE"},
                 runningTime: ${"$$PARAM_RUNNING_TIME"},
-                choices: ${"$$PARAM_CHOICES"},
+                choices: ${"$$PARAM_CHOICES"}
               }){
                 meta {
                   status
@@ -87,7 +91,12 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
             PARAM_QUESTION to question,
             PARAM_PRIZE to prize,
             PARAM_RUNNING_TIME to runningTime,
-            PARAM_CHOICES to choices,
+            PARAM_CHOICES to choices.map {
+                 mapOf(
+                     PARAM_TEXT to it.text,
+                     PARAM_CORRECT to it.correct,
+                 )
+            },
         )
     }
 }

@@ -63,6 +63,7 @@ object SuggestionRequestUtils {
                   url
                   title
                 }
+                suggestion_id
               }
             }
             top_shops{
@@ -100,6 +101,7 @@ object SuggestionRequestUtils {
                             image_url
                         }
                         shop {
+                            id
                             location
                         }
                     }

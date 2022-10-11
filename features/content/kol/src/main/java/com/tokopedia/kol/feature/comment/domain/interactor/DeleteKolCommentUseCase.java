@@ -29,9 +29,9 @@ public class DeleteKolCommentUseCase extends UseCase<Boolean> {
     }
 
 
-    public static RequestParams getParam(int commentId) {
+    public static RequestParams getParam(long commentId) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_ID, commentId);
+        params.putLong(PARAM_ID, commentId);
         return params;
     }
 }

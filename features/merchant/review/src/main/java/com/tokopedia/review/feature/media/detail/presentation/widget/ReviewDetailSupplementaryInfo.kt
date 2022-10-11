@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -32,7 +33,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
 ) : BaseReviewDetailCustomView<WidgetReviewDetailSupplementaryInfoBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val REVIEW_DETAIL_MAX_LINES_COLLAPSED = 3
+        private const val REVIEW_DETAIL_MAX_LINES_COLLAPSED = 2
     }
 
     override val binding = WidgetReviewDetailSupplementaryInfoBinding.inflate(
@@ -75,26 +76,8 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
         animateShow()
     }
 
-    private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupProductVariant(
-        variant: String,
-        source: Source
-    ) {
-        val colorRes = when(source) {
-            Source.REVIEW_DETAIL_FRAGMENT -> com.tokopedia.unifyprinciples.R.color.Unify_Static_White
-            Source.EXPANDED_REVIEW_DETAIL_BOTTOM_SHEET -> com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-        }
-        tvReviewDetailProductVariant.run {
-            text = buildString {
-                append("Varian: ")
-                append(variant)
-            }
-            setTextColor(ContextCompat.getColor(context, colorRes))
-            showWithCondition(variant.isNotBlank())
-        }
-    }
-
     private fun PartialWidgetReviewDetailSupplementaryInfoBinding.setupReviewText(
-        review: CharSequence,
+        review: String,
         source: Source
     ) {
         val colorRes = when(source) {
@@ -111,7 +94,7 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
                 viewTreeObserver.addOnGlobalLayoutListener(reviewOnGlobalLayoutListener)
             }
             this.maxLines = maxLines
-            text = review
+            text = MethodChecker.fromHtml(review)
             setTextColor(ContextCompat.getColor(context, colorRes))
             showWithCondition(review.isNotBlank())
         }
@@ -134,7 +117,6 @@ class ReviewDetailSupplementaryInfo @JvmOverloads constructor(
 
     private fun setData(data: ReviewDetailSupplementaryInfoUiModel, source: Source) {
         with(binding.layoutReviewDetailSupplementaryInfo) {
-            setupProductVariant(data.variant, source)
             setupReviewText(data.review, source)
             setupComplaint(data.complaint, source)
         }

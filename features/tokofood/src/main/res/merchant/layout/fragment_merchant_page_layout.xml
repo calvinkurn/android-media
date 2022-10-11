@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/Unify_Background"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -70,7 +71,8 @@
                     android:maxLines="1"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/ticker_merchant_page"
-                    app:typographyType="heading_4" />
+                    app:typographyType="display_1"
+                    app:typographyWeight="bold"/>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tpg_merchant_close_warning"
@@ -119,7 +121,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
+                android:id="@+id/toolbarMerchantPage"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 app:layout_collapseMode="pin" />
@@ -151,7 +153,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="body_2" />
+                    app:typographyType="display_2" />
 
                 <com.tokopedia.iconunify.IconUnify
                     android:id="@+id/iconCategoryPlaceHolder"
@@ -174,15 +176,17 @@
         android:id="@+id/product_list_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="?attr/actionBarSize"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_product_list"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:paddingHorizontal="@dimen/unify_space_16"
+            android:paddingBottom="?attr/actionBarSize"
+            android:clipToPadding="false"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

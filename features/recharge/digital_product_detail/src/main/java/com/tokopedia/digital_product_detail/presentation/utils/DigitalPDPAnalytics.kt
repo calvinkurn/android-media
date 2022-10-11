@@ -40,6 +40,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
@@ -225,7 +226,7 @@ class DigitalPDPAnalytics {
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, IMPRESSION_LAST_TRANSACTION_ICON)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${recomData.itemType}")
             putParcelableArrayList(
                 ITEMS,
                 mapperRecommendationToItemList(recomData, operatorName, position)
@@ -247,7 +248,7 @@ class DigitalPDPAnalytics {
     ) {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, CLICK_LAST_TRANSACTION_ICON)
-            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${position}")
+            putString(TrackAppUtils.EVENT_LABEL, "${categoryName}_${loyaltyStatus}_${position}_${recomData.itemType}")
             putString(ITEM_LIST, productListName)
             putParcelableArrayList(
                 ITEMS,
@@ -670,7 +671,7 @@ class DigitalPDPAnalytics {
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
-                        DigitalPDPCategoryUtil.getCategoryName(recomData.categoryId.toInt())
+                        DigitalPDPCategoryUtil.getCategoryName(recomData.categoryId.toIntSafely())
                     )
                     putString(ITEM_ID, recomData.id)
                     putString(ITEM_NAME, recomData.title)

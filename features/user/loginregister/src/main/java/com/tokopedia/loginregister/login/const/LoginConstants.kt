@@ -18,6 +18,7 @@ object LoginConstants {
         const val REQUEST_ADD_PIN_AFTER_REGISTER_PHONE = 122
         const val REQUEST_CHOOSE_ACCOUNT_FINGERPRINT = 123
         const val REQUEST_VERIFY_BIOMETRIC = 124
+        const val REQUEST_GOTO_SEAMLESS = 125
     }
 
     object RemoteConfigKey {
@@ -56,6 +57,11 @@ object LoginConstants {
 
     object DiscoverLoginId {
         const val GPLUS = "gplus"
+        const val EMAIL = "local-email"
+    }
+
+    object RollenceKey {
+        const val LOGIN_PAGE_BIOMETRIC = "and_biom_entry_point"
     }
 
     object AutoLogin {
@@ -64,5 +70,10 @@ object LoginConstants {
         const val IS_AUTO_LOGIN = "auto_login"
         const val IS_AUTO_FILL = "auto_fill"
         const val AUTO_FILL_EMAIL = "email"
+    }
+
+    object TopAdsClickUrlTrackerConstant{
+        const val RESPONSE_HEADER_KEY = "Tkp-Enc-Sessionid"
+        const val TOP_ADS_SHARED_PREF_KEY = "TopAdsSharedPreference"
     }
 }

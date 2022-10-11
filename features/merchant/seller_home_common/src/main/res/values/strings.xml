@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="shc_load_failed">Gagal memuat</string>
+    <string name="shc_load_failed">Muat ulang</string>
     <string name="shc_failed_to_load">Gagal dimuat</string>
     <string name="shc_failed_to_load_information">Oops, informasi gagal ditampilkan</string>
     <string name="shc_failed_to_retry">Muat Ulang</string>
@@ -11,6 +11,7 @@
     <string name="shc_current_period">Periode ini</string>
     <string name="shc_last_period">Periode sebelumnya</string>
     <string name="shc_select_category">Pilih Kategori</string>
+    <string name="shc_select_analysis">Pilih analisis</string>
     <string name="shc_select_statistic_data">Pilih data statistik</string>
     <string name="shc_apply_btn">Terapkan</string>
     <string name="shc_data_empty_state_title">Belum ada data hari ini</string>
@@ -40,9 +41,11 @@
     <string name="shc_start_from">Mulai dari</string>
     <string name="shc_until">Sampai dengan</string>
     <string name="shc_date">Tanggal</string>
-    <string name="shc_per_day">Per Hari</string>
-    <string name="shc_per_week">Per Minggu</string>
-    <string name="shc_per_month">Per Bulan</string>
+    <string name="shc_per_day">Pilih hari</string>
+    <string name="shc_per_date">Pilih tanggal</string>
+    <string name="shc_per_week">Pilih minggu</string>
+    <string name="shc_per_month">Pilih bulan</string>
+    <string name="shc_per_month_outer">Per bulan</string>
     <string name="shc_custom_lbl">Custom</string>
     <string name="shc_month">Bulan</string>
     <string name="shc_change_date_range">Ubah Rentang Waktu</string>
@@ -52,4 +55,26 @@
     <string name="shc_last_updated_yesterday">Update terakhir kemarin"</string>
     <string name="shc_last_updated_more_then_yesterday">Update terakhir %1$s</string>
     <string name="shc_last_updated">Update terakhir: %1$s</string>
+    <string name="shc_new">Baru</string>
+    <string name="shc_no_access">Tidak ada akses</string>
+    <string name="shc_no_access_state_message">Oops, kamu tidak punya izin untuk melihat konten ini</string>
+    <string name="shc_feedback_have_seen_before">Sudah melihat ini sebelumnya</string>
+    <string name="shc_feedback_not_interesting">Tidak menarik</string>
+    <string name="shc_feedback_not_relevant">Tidak relevan</string>
+    <string name="shc_feedback_other">Lainnya, sebutkan:</string>
+    <string name="shc_feedback_other_input_placeholder">Contoh: sudah paham infonya</string>
+    <string name="shc_feedback_bottom_sheet_title">Info tidak dibutuhkan lagi</string>
+    <string name="shc_feedback_content_bottom_sheet_title">Saya ingin menghapus info ini karena:</string>
+    <string name="shc_post_more_option_1">Pilih rekomendasi yang ingin dihapus</string>
+    <string name="shc_still_need_this_info">Masih butuh info ini?</string>
+    <string name="shc_yes">Ya</string>
+    <string name="shc_no">Tidak</string>
+    <string name="shc_info_deleted">Info terhapus</string>
+    <string name="shc_thanks_for_the_suggestion">Terima kasih atas masukanmu, ya!</string>
+    <string name="shc_cancel">Batal</string>
+    <string name="shc_post_more_title">Atur Bacaan</string>
+    <string name="shc_delate">Hapus</string>
+    <string name="shc_thanks_for_your_insight">Terima kasih atas masukanmu, ya!</string>
+    <string name="shc_cancel_timer">Batalkan (%1$d detik)</string>
+    <string name="shc_n_info_deleted">%1$d info terhapus</string>
 </resources>

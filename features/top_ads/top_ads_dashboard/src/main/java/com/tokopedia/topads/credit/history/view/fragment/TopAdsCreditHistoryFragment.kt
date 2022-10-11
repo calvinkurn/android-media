@@ -8,11 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
-import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.credit.history.data.model.CreditHistory
 import com.tokopedia.topads.credit.history.data.model.TopAdsCreditHistory
 import com.tokopedia.topads.credit.history.view.activity.PARAM_DATE_PICKER_INDEX
@@ -24,6 +26,7 @@ import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTI
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_1
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CONST_2
+import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.CUSTOM_DATE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_DEFAULT_INDEX
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.DATE_PICKER_SHEET
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.REQUEST_CODE_ADD_CREDIT
@@ -31,10 +34,13 @@ import com.tokopedia.topads.dashboard.data.utils.Utils
 import com.tokopedia.topads.dashboard.di.TopAdsDashboardComponent
 import com.tokopedia.topads.dashboard.view.sheet.CustomDatePicker
 import com.tokopedia.topads.dashboard.view.sheet.DatePickerSheet
+import com.tokopedia.topads.dashboard.view.sheet.RewardPendingInfoBottomSheet
 import com.tokopedia.topads.debit.autotopup.data.model.AutoTopUpStatus
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsAddCreditActivity
 import com.tokopedia.topads.debit.autotopup.view.activity.TopAdsEditAutoTopUpActivity
+import com.tokopedia.topads.tracker.topup.TopadsTopupTracker
 import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
@@ -47,8 +53,7 @@ class TopAdsCreditHistoryFragment :
     BaseListFragment<CreditHistory, TopAdsCreditHistoryTypeFactory>(),
     CustomDatePicker.ActionListener {
 
-    private var hariIni: ConstraintLayout? = null
-    private var currentDate: Typography? = null
+    private var hariIni: ChipsUnify? = null
     private var cardAutoTopupStatus: CardUnify? = null
     private var autoTopupStatus: Typography? = null
     private var creditAmount: Typography? = null
@@ -57,6 +62,7 @@ class TopAdsCreditHistoryFragment :
     private var topadsCreditUsed: Typography? = null
     private var dateImage: ImageUnify? = null
     private var nextImage: ImageUnify? = null
+    private var txtRewardPendingValue: Typography? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -118,15 +124,32 @@ class TopAdsCreditHistoryFragment :
         viewModel.creditAmount.observe(viewLifecycleOwner, {
             creditAmount?.text = it
         })
+
+        viewModel.expiryDateHiddenTrial.observe(viewLifecycleOwner) {
+            val rewardValue = it.toIntOrZero()
+            view?.findViewById<ConstraintLayout>(R.id.layoutRewardPending)?.visibility =
+                if (rewardValue != 0) {
+                    txtRewardPendingValue?.text = rewardValue.toString()
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
+
+
+        }
     }
 
     private fun onSuccessGetAutoTopUpStatus(data: AutoTopUpStatus) {
         cardAutoTopupStatus?.visibility = View.VISIBLE
         autoTopupStatus?.text = data.statusDesc
-        if (data.status == ACTIVE_STATUS) {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_select_color_checked))
-        } else {
-            autoTopupStatus?.setTextColor(resources.getColor(com.tokopedia.topads.common.R.color.topads_common_text_disabled))
+        context?.let {
+            autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
+                if (data.status == ACTIVE_STATUS) {
+                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked
+                } else {
+                    com.tokopedia.topads.common.R.color.topads_common_text_disabled
+                }
+            ))
         }
     }
 
@@ -143,37 +166,71 @@ class TopAdsCreditHistoryFragment :
     ): View? {
         val view = inflater.inflate(R.layout.fragment_topads_credit_history, container, false)
         hariIni = view.findViewById(R.id.hari_ini)
-        currentDate = view.findViewById(R.id.current_date)
         cardAutoTopupStatus = view.findViewById(R.id.card_auto_topup_status)
         autoTopupStatus = view.findViewById(R.id.auto_topup_status)
         creditAmount = view.findViewById(R.id.creditAmount)
         addCredit = view.findViewById(R.id.addCredit)
-        topadsCreditAddition = view.findViewById(R.id.topads_credit_addition)
-        topadsCreditUsed = view.findViewById(R.id.topads_credit_used)
         dateImage = view.findViewById(R.id.date_image)
         nextImage = view.findViewById(R.id.next_image)
+        txtRewardPendingValue = view.findViewById(R.id.txtRewardPendingValue)
+        view.findViewById<ConstraintLayout>(R.id.totalKredit).apply {
+            topadsCreditAddition = this.findViewById(R.id.txtSubTitle)
+            findViewById<Typography>(R.id.txtTitle).text =
+                context?.resources?.getString(R.string.topads_dash_total_credit)
+            findViewById<ImageUnify>(R.id.ivIconInfo).hide()
+        }
+        view.findViewById<ConstraintLayout>(R.id.totalTerpakai).apply {
+            topadsCreditUsed = this.findViewById(R.id.txtSubTitle)
+            findViewById<Typography>(R.id.txtTitle).text =
+                context?.resources?.getString(R.string.topads_dash_total_used)
+        }
         return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        initView()
+        initListeners()
         initialDateSetup()
-        cardAutoTopupStatus?.setOnClickListener { gotoAutoTopUp() }
+        loadData()
+    }
+
+    private fun loadData() {
+        viewModel.getShopDeposit()
+        viewModel.getAutoTopUpStatus()
+        viewModel.loadPendingReward()
+    }
+
+    private fun initView() {
         dateImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_calendar))
         nextImage?.setImageDrawable(context?.getResDrawable(com.tokopedia.topads.common.R.drawable.topads_ic_arrow))
-        hariIni?.setOnClickListener {
-            showBottomSheet()
+        hariIni?.apply {
+            chip_right_icon.setImageDrawable(ContextCompat.getDrawable(context,
+                com.tokopedia.iconunify.R.drawable.iconunify_chevron_down))
+            //called the listener just to show the right icon of chip
+            setChevronClickListener {}
         }
-        viewModel.getShopDeposit()
+    }
 
-        viewModel.getAutoTopUpStatus()
+    private fun initListeners() {
+        cardAutoTopupStatus?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditOtomatis()
+            gotoAutoTopUp()
+        }
         addCredit?.setOnClickListener {
+            TopadsTopupTracker.clickTambahKreditHistoryPage()
             startActivityForResult(
                 Intent(context, TopAdsAddCreditActivity::class.java),
                 REQUEST_CODE_ADD_CREDIT
             )
         }
-
+        hariIni?.setOnClickListener {
+            showBottomSheet()
+        }
+        view?.findViewById<ImageUnify>(R.id.iconPendingRewardInfo)?.setOnClickListener {
+            RewardPendingInfoBottomSheet().show(childFragmentManager, "")
+        }
     }
 
     private fun showBottomSheet() {
@@ -193,9 +250,11 @@ class TopAdsCreditHistoryFragment :
                 loadData(0)
             }
             datePickerSheet?.customDatepicker = {
+                datePickerIndex = CUSTOM_DATE
                 startCustomDatePicker()
             }
         }
+        TopadsTopupTracker.clickDateRange()
     }
 
     private fun startCustomDatePicker() {
@@ -217,17 +276,12 @@ class TopAdsCreditHistoryFragment :
     }
 
     private fun setDateRangeText(position: Int) {
-        when (position) {
-            CONST_1 -> currentDate?.text =
-                context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
-            CONST_0 -> currentDate?.text = context?.getString(R.string.topads_dash_hari_ini)
-            CONST_2 -> currentDate?.text =
-                context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
-            else -> {
-                val text =
-                    Utils.outputFormat.format(startDate) + " - " + Utils.outputFormat.format(endDate)
-                currentDate?.text = text
-            }
+        hariIni?.chip_text?.text = when (position) {
+            CONST_1 -> context?.getString(com.tokopedia.datepicker.range.R.string.yesterday)
+            CONST_0 -> context?.getString(R.string.topads_dash_hari_ini)
+            CONST_2 -> context?.getString(com.tokopedia.datepicker.range.R.string.seven_days_ago)
+            else -> Utils.outputFormat.format(startDate ?: Utils.getStartDate()) + " - " +
+                    Utils.outputFormat.format(endDate ?: Utils.getEndDate())
         }
     }
 
@@ -257,7 +311,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun onSwipeRefresh() {
         super.onSwipeRefresh()
-        viewModel.getAutoTopUpStatus()
+        loadData()
     }
 
     override fun getEmptyDataViewModel() =
@@ -281,10 +335,7 @@ class TopAdsCreditHistoryFragment :
 
     override fun loadData(page: Int) {
         adapter.clearAllElements()
-        viewModel.getCreditHistory(
-            GraphqlHelper.loadRawString(resources, R.raw.gql_query_credit_history),
-            startDate, endDate
-        )
+        viewModel.getCreditHistory(startDate, endDate)
     }
 
     override fun getScreenName(): String? = null
@@ -301,11 +352,6 @@ class TopAdsCreditHistoryFragment :
 
     private fun onErrorGetCredit(t: Throwable?) {
         super.showGetListError(t)
-    }
-
-    override fun onDestroy() {
-        viewModel.flush()
-        super.onDestroy()
     }
 
     override fun onCustomDateSelected(dateSelected: Date, dateEnd: Date) {

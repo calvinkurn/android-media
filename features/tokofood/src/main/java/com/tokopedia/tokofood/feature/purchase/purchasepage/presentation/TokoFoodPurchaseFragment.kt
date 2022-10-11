@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.abstraction.base.view.activity.BaseMultiFragActivity
 import com.tokopedia.abstraction.base.view.activity.BaseToolbarActivity
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
@@ -30,6 +28,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.common.payment.PaymentConstant
 import com.tokopedia.common.payment.model.PaymentPassData
@@ -42,6 +41,7 @@ import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
@@ -128,6 +128,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
             actvt.title = getFragmentTitle()
             actvt.setUpActionBar(getFragmentToolbar())
         }
+        loadData()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -151,7 +152,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         collectShouldRefreshCartData()
         collectTrackerLoadCheckoutData()
         collectTrackerPaymentCheckoutData()
-        loadData()
     }
 
     override fun getFragmentToolbar(): Toolbar? {
@@ -243,17 +243,11 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
 
     private fun initializeToolbar() {
         activity?.let {
-            viewBinding?.toolbarPurchase?.removeAllViews()
-            val tokoFoodPurchaseToolbar = TokoFoodPurchaseToolbar(it).apply {
-                listener = this@TokoFoodPurchaseFragment
-            }
-
-            toolbar = tokoFoodPurchaseToolbar
-
+            toolbar = viewBinding?.toolbarPurchase
             toolbar?.let { toolbar ->
-                viewBinding?.toolbarPurchase?.addView(toolbar)
+                toolbar.listener = this@TokoFoodPurchaseFragment
                 toolbar.setContentInsetsAbsolute(Int.ZERO, Int.ZERO);
-                (activity as AppCompatActivity).setSupportActionBar(viewBinding?.toolbarPurchase)
+                (activity as AppCompatActivity).setSupportActionBar(toolbar)
             }
 
             setToolbarShadowVisibility(false)
@@ -312,7 +306,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         (pair.first as? CheckoutTokoFood)?.let { response ->
                             (pair.second as? Boolean)?.let { isPreviousPopupPromo ->
                                 shopId = response.data.shop.shopId
-                                activityViewModel?.loadCartList(response)
+                                loadCartData(response)
                                 when {
                                     response.data.popupErrorMessage.isNotEmpty() -> {
                                         showToasterError(response.data.popupErrorMessage, getOkayMessage()) {}
@@ -368,12 +362,6 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                 PurchaseUiEvent.EVENT_EMPTY_PRODUCTS -> {
                     activityViewModel?.loadCartList(null)
                     parentFragmentManager.popBackStack()
-                    val emptyProductShopId = (it.data as? String).orEmpty()
-                    if (emptyProductShopId.isBlank()) {
-                        navigateToHomePage()
-                    } else {
-                        navigateToMerchantPage(emptyProductShopId)
-                    }
                 }
                 PurchaseUiEvent.EVENT_SUCCESS_REMOVE_PRODUCT -> onSuccessRemoveProduct(it.data as Int)
                 PurchaseUiEvent.EVENT_SCROLL_TO_UNAVAILABLE_ITEMS -> scrollToIndex(it.data as Int)
@@ -430,14 +418,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                     (it.data as? CheckoutGeneralTokoFoodData)?.let { checkoutData ->
                         val errorMetadata = checkoutData.getErrorMetadataObject()
                         when {
-                            checkoutData.error.isNotEmpty() -> {
-                                showToasterError(checkoutData.error)
-                            }
                             errorMetadata?.popupErrorMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(true, errorMetadata.popupErrorMessage)
                             }
                             errorMetadata?.popupMessage?.text?.isNotEmpty() == true -> {
                                 showToasterFromMetadata(false, errorMetadata.popupMessage)
+                            }
+                            checkoutData.error.isNotEmpty() -> {
+                                showToasterError(checkoutData.error)
                             }
                             else -> {
                                 showDefaultCheckoutGeneralError(checkoutData.message.takeIf { errorMessage ->
@@ -462,6 +450,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                             productUiModel = productUiModel,
                             cartId = productUiModel.cartId,
                             merchantId = shopId,
+                            source = SOURCE,
                             cacheManagerId = ""
                         )
                         navigateToNewFragment(orderCustomizationFragment)
@@ -472,7 +461,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     private fun collectSharedUiState() {
-        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             activityViewModel?.cartDataValidationFlow?.collect {
                 hideLoadingDialog()
                 when(it.state) {
@@ -480,11 +469,13 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         showLoadingDialog()
                     }
                     UiEvent.EVENT_SUCCESS_DELETE_PRODUCT -> {
-                        (it.data as? Pair<*, *>)?.let { pair ->
-                            (pair.first as? String)?.let { previousCartId ->
-                                (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
-                                    viewBinding?.recyclerViewPurchase?.post {
-                                        viewModel.deleteProduct(product.productId, previousCartId)
+                        if (it.source == SOURCE) {
+                            (it.data as? Pair<*, *>)?.let { pair ->
+                                (pair.first as? String)?.let { previousCartId ->
+                                    (pair.second as? CartTokoFoodData)?.carts?.firstOrNull()?.let { product ->
+                                        viewBinding?.recyclerViewPurchase?.post {
+                                            viewModel.deleteProduct(product.productId, previousCartId)
+                                        }
                                     }
                                 }
                             }
@@ -496,74 +487,84 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
                         }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_NOTES -> {
-                        it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
-                            cartTokoFoodData.carts.firstOrNull()?.let { product ->
-                                viewBinding?.recyclerViewPurchase?.post {
-                                    viewModel.updateNotes(product)
-                                }
+                        if (it.source == SOURCE) {
+                            it.data?.getSuccessUpdateResultPair()?.let { (_, cartTokoFoodData) ->
+                                cartTokoFoodData.carts.firstOrNull()?.let { product ->
+                                    viewBinding?.recyclerViewPurchase?.post {
+                                        viewModel.updateNotes(product)
+                                    }
 
-                                val toasterMessage = product.message.takeIf { cartMessage ->
-                                    cartMessage.isNotBlank()
-                                } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes).orEmpty()
-                                showToaster(toasterMessage, getOkayMessage())
+                                    val toasterMessage =
+                                        context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_notes)
+                                            .orEmpty()
+                                    showToaster(toasterMessage, getOkayMessage())
+                                }
                             }
                         }
                     }
                     UiEvent.EVENT_SUCCESS_UPDATE_QUANTITY -> {
-                        it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
-                            viewBinding?.recyclerViewPurchase?.post {
-                                viewModel.updateCartId(updateParams, cartTokoFoodData)
-                            }
+                        if (it.source == SOURCE) {
+                            it.data?.getSuccessUpdateResultPair()?.let { (updateParams, cartTokoFoodData) ->
+                                viewBinding?.recyclerViewPurchase?.post {
+                                    viewModel.updateCartId(updateParams, cartTokoFoodData)
+                                }
 
-                            val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
-                                cartMessage.isNotBlank()
-                            } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
-                            showToaster(toasterMessage, getOkayMessage())
-                        }
-                        viewBinding?.recyclerViewPurchase?.post {
-                            viewModel.refreshPartialCartInformation()
+                                val toasterMessage = cartTokoFoodData.message.takeIf { cartMessage ->
+                                    cartMessage.isNotBlank()
+                                } ?: context?.getString(com.tokopedia.tokofood.R.string.text_purchase_success_quantity).orEmpty()
+                                showToaster(toasterMessage, getOkayMessage())
+                            }
+                            viewBinding?.recyclerViewPurchase?.post {
+                                viewModel.refreshPartialCartInformation()
+                            }
                         }
                     }
                     UiEvent.EVENT_FAILED_DELETE_PRODUCT -> {
-                        it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToServerLogger(
-                                TokofoodErrorLogger.PAGE.PURCHASE,
-                                throwable,
-                                TokofoodErrorLogger.ErrorType.ERROR_REMOVE_FROM_CART,
-                                userSession.deviceId.orEmpty(),
-                                TokofoodErrorLogger.ErrorDescription.REMOVE_FROM_CART_ERROR,
-                                mapOf(
-                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                        if (it.source == SOURCE) {
+                            it.throwable?.let { throwable ->
+                                TokofoodErrorLogger.logExceptionToServerLogger(
+                                    TokofoodErrorLogger.PAGE.PURCHASE,
+                                    throwable,
+                                    TokofoodErrorLogger.ErrorType.ERROR_REMOVE_FROM_CART,
+                                    userSession.deviceId.orEmpty(),
+                                    TokofoodErrorLogger.ErrorDescription.REMOVE_FROM_CART_ERROR,
+                                    mapOf(
+                                        TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     UiEvent.EVENT_FAILED_UPDATE_QUANTITY -> {
-                        it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToServerLogger(
-                                TokofoodErrorLogger.PAGE.PURCHASE,
-                                throwable,
-                                TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
-                                userSession.deviceId.orEmpty(),
-                                TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
-                                mapOf(
-                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                        if (it.source == SOURCE) {
+                            it.throwable?.let { throwable ->
+                                TokofoodErrorLogger.logExceptionToServerLogger(
+                                    TokofoodErrorLogger.PAGE.PURCHASE,
+                                    throwable,
+                                    TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
+                                    userSession.deviceId.orEmpty(),
+                                    TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
+                                    mapOf(
+                                        TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     UiEvent.EVENT_FAILED_UPDATE_NOTES -> {
-                        it.throwable?.let { throwable ->
-                            TokofoodErrorLogger.logExceptionToServerLogger(
-                                TokofoodErrorLogger.PAGE.PURCHASE,
-                                throwable,
-                                TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
-                                userSession.deviceId.orEmpty(),
-                                TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
-                                mapOf(
-                                    TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                        if (it.source == SOURCE) {
+                            it.throwable?.let { throwable ->
+                                TokofoodErrorLogger.logExceptionToServerLogger(
+                                    TokofoodErrorLogger.PAGE.PURCHASE,
+                                    throwable,
+                                    TokofoodErrorLogger.ErrorType.ERROR_UPDATE_CART,
+                                    userSession.deviceId.orEmpty(),
+                                    TokofoodErrorLogger.ErrorDescription.UPDATE_CART_ERROR,
+                                    mapOf(
+                                        TokofoodErrorLogger.PAGE_KEY to PAGE_NAME
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                 }
@@ -661,6 +662,14 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         }
     }
 
+    private fun loadCartData(response: CheckoutTokoFood) {
+        if (response.isEnabled() && !response.data.summaryDetail.hideSummary) {
+            activityViewModel?.loadCartList(response)
+        } else {
+            activityViewModel?.loadCartList(SOURCE)
+        }
+    }
+
     private fun navigateToSetPinpoint(locationPass: LocationPass) {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
         val bundle = Bundle().apply {
@@ -696,16 +705,16 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
         )
     }
 
-    private fun navigateToHomePage() {
-        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME)
+    private fun navigateToHomePage(isFinishCurrent: Boolean = false) {
+        TokofoodRouteManager.routePrioritizeInternal(context, ApplinkConstInternalTokoFood.HOME, isFinishCurrent)
     }
 
-    private fun navigateToMerchantPage(merchantId: String) {
+    private fun navigateToMerchantPage(merchantId: String, isFinishCurrent: Boolean = false) {
         val merchantPageUri = Uri.parse(ApplinkConstInternalTokoFood.MERCHANT)
             .buildUpon()
             .appendQueryParameter(DeeplinkMapperTokoFood.PARAM_MERCHANT_ID, merchantId)
             .build()
-        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString())
+        TokofoodRouteManager.routePrioritizeInternal(context, merchantPageUri.toString(), isFinishCurrent)
     }
 
     private fun scrollToIndex(index: Int) {
@@ -961,6 +970,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     override fun onTextChangeShippingAddressClicked() {
         val intent = RouteManager.getIntent(activity, ApplinkConstInternalLogistic.MANAGE_ADDRESS).apply {
             putExtra(CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS, true)
+            putExtra(PARAM_SOURCE, ManageAddressSource.TOKOFOOD.source)
         }
         startActivityForResult(intent, REQUEST_CODE_CHANGE_ADDRESS)
     }
@@ -975,7 +985,7 @@ class TokoFoodPurchaseFragment : BaseListFragment<Visitable<*>, TokoFoodPurchase
     }
 
     override fun onTextAddItemClicked() {
-        navigateToMerchantPage(shopId)
+        navigateToMerchantPage(shopId, isFinishCurrent = true)
     }
 
     override fun onTextBulkDeleteUnavailableProductsClicked() {

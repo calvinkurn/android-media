@@ -178,8 +178,12 @@ class ReviewVideoPlayer(
         playerControlRef = WeakReference(playerControlViewReviewMediaGallery)
     }
 
-    fun getCurrentPosition(): Long {
+    fun getCurrentPositionMillis(): Long {
         return exoPlayer?.currentPosition.orZero()
+    }
+
+    fun getDurationMillis(): Long {
+        return exoPlayer?.duration.orZero()
     }
 
     fun play() {

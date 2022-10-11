@@ -276,13 +276,13 @@ class AffiliateRecommendedProductFragment : BaseViewModelFragment<AffiliateRecom
 
     }
 
-    override fun onPromotionClick(productId: String, shopId : String, productName: String, productImage: String, productUrl: String, productIdentifier: String, position: Int, commison: String,status: String) {
-        pushPromosikanEvent(productId,productName,position,commison)
+    override fun onPromotionClick(itemID: String, itemName: String, itemImage: String, itemURL: String, position: Int, commison: String, status: String,type: String?) {
+        pushPromosikanEvent(itemID,itemName,position,commison)
         val origin = if(identifier == BOUGHT_IDENTIFIER) AffiliatePromotionBottomSheet.ORIGIN_PERNAH_DIBELI_PROMOSIKA else AffiliatePromotionBottomSheet.ORIGIN_TERAKHIR_DILIHAT
         AffiliatePromotionBottomSheet.newInstance(AffiliatePromotionBottomSheet.Companion.SheetType.LINK_GENERATION,
                 null,null,
-                productId, productName, productImage, productUrl,
-                productIdentifier,origin,commission = commison).show(childFragmentManager, "")
+                itemID, itemName, itemImage, itemURL,
+                "",origin,commission = commison).show(childFragmentManager, "")
     }
 
     private fun pushPromosikanEvent(

@@ -3,7 +3,7 @@ package com.tokopedia.seller.menu.common.domain.entity
 import com.google.gson.annotations.SerializedName
 
 data class TopAdsDepositDataModel(
-        @SerializedName("topadsDashboardDeposits")
+        @SerializedName("topadsDashboardDepositsV2")
         val topAdsDashboardDeposits: TopAdsDashboardDeposits? = TopAdsDashboardDeposits()
 )
 

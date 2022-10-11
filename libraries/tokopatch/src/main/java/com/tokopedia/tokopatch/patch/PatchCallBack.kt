@@ -32,7 +32,8 @@ interface PatchCallBack {
             context: Context,
             debug: Boolean,
             log: String,
-            where: String
+            where: String,
+            patchName: String
     )
 
     fun logMessage(context: Context, debug: Boolean, log: String)

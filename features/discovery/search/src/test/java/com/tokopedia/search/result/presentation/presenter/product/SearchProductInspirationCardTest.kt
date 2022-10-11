@@ -8,7 +8,6 @@ import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SeparatorDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardOptionDataView
 import com.tokopedia.search.result.product.inspirationwidget.size.InspirationSizeDataView
@@ -502,9 +501,9 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         val inspirationWidget = searchProductModel.searchInspirationWidget.data
 
         // 0 -> choose address data
-        // 1 -> separator
-        // 2 -> inspiration size (position 0)
-        // 3 -> separator
+        // 1 -> inspiration size (position 0)
+        // 2 -> product
+        // 3 -> product
         // 4 -> product
         // 5 -> product
         // 6 -> product
@@ -517,13 +516,9 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
         // 13 -> product
         // 14 -> product
         // 15 -> product
-        // 16 -> product
-        // 17 -> product
-        // 18 -> separator
-        // 19 -> inspiration size (position 14)
-        // 20 -> separator
+        // 16 inspiration size (position 14)
 
-        visitableList.size shouldBe 21
+        visitableList.size shouldBe 17
 
         visitableList.forEachIndexed { index, visitable ->
             when (index) {
@@ -532,18 +527,13 @@ internal class SearchProductInspirationCardTest: ProductListPresenterTestFixture
                         "visitable list at index $index should be ChooseAddressDataViewModel"
                     )
                 }
-                1, 3, 18, 20 -> {
-                    visitable.shouldBeInstanceOf<SeparatorDataView>(
-                        "visitable list at index $index should be Separator"
-                    )
-                }
-                2 -> {
+                1 -> {
                     visitable.shouldBeInstanceOf<InspirationSizeDataView>(
                         "visitable list at index $index should be InspirationSizeViewModel"
                     )
                     (visitable as InspirationSizeDataView).assertInspirationSizeViewModel(inspirationWidget[0])
                 }
-                19 -> {
+                16 -> {
                     visitable.shouldBeInstanceOf<InspirationSizeDataView>(
                         "visitable list at index $index should be InspirationSizeViewModel"
                     )

@@ -141,6 +141,7 @@ class ProductManageQuickEditStockFragment(
         setAddButtonClickListener()
         setSubtractButtonClickListener()
         getStockTicker()
+        setMaxStock()
     }
 
     private fun setStockAndStatus() {
@@ -202,7 +203,7 @@ class ProductManageQuickEditStockFragment(
             binding?.quickEditStockQuantityEditor?.setValue(MINIMUM_STOCK)
         }
         val isStatusChecked = binding?.quickEditStockActivateSwitch?.isChecked == true
-        val inputStock = binding?.quickEditStockQuantityEditor?.getValue().orZero()
+        val inputStock = getCurrentInputStock()
         val inputStatus = if (isStatusChecked) {
             ProductStatus.ACTIVE
         } else {
@@ -289,7 +290,7 @@ class ProductManageQuickEditStockFragment(
 
     private fun setupQuantityEditor() {
         binding?.quickEditStockQuantityEditor?.run {
-            maxValue = MAXIMUM_STOCK
+            maxValue = getMaxStock()
             minValue = MINIMUM_STOCK
             editText.filters = arrayOf(InputFilter.LengthFilter(MAXIMUM_STOCK_LENGTH))
             editText.setOnEditorActionListener { _, actionId, _ ->
@@ -337,10 +338,15 @@ class ProductManageQuickEditStockFragment(
         viewModel.getStockTicker(hasEditStockAccess)
     }
 
+    private fun setMaxStock() {
+        viewModel.setMaxStock(product?.maxStock)
+    }
+
     private fun setupStockEditor(stock: Int) {
         when {
             !product.hasEditStockAccess() -> disableStockEditor(stock)
-            stock >= MAXIMUM_STOCK -> setMaxStockBehavior()
+            stock > getMaxStock() -> setAboveMaxStockBehavior()
+            stock == getMaxStock() -> setMaxStockBehavior()
             stock <= MINIMUM_STOCK -> {
                 if (product.suspendAccess()){
                     setZeroStockSuspendBehavior()
@@ -355,11 +361,14 @@ class ProductManageQuickEditStockFragment(
     private fun setZeroStockBehavior() {
         binding?.zeroStockInfo?.visible()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
     }
 
     private fun setZeroStockSuspendBehavior() {
         binding?.suspendStockInfo?.visible()
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = false
+        binding?.quickEditStockSaveButton?.isEnabled = true
     }
 
     private fun setNormalBehavior() {
@@ -367,11 +376,26 @@ class ProductManageQuickEditStockFragment(
         binding?.suspendStockInfo?.gone()
         binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = true
         binding?.quickEditStockQuantityEditor?.subtractButton?.isEnabled = true
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
     }
 
     private fun setMaxStockBehavior() {
         binding?.quickEditStockActivateSwitch?.isSelected = true
         binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText = String.EMPTY
+        binding?.quickEditStockSaveButton?.isEnabled = true
+    }
+
+    private fun setAboveMaxStockBehavior() {
+        binding?.quickEditStockActivateSwitch?.isSelected = true
+        binding?.quickEditStockQuantityEditor?.addButton?.isEnabled = false
+        binding?.quickEditStockQuantityEditor?.errorMessageText =
+            context?.getString(
+                R.string.product_manage_quick_edit_stock_max_stock,
+                getMaxStock().getNumberFormatted()
+            ).orEmpty()
+        binding?.quickEditStockSaveButton?.isEnabled = false
     }
 
     private fun setAddButtonClickListener() {
@@ -387,7 +411,7 @@ class ProductManageQuickEditStockFragment(
 
                 stock++
 
-                if(stock <= MAXIMUM_STOCK) {
+                if(stock <= getMaxStock()) {
                     editText.setText(stock.getNumberFormatted())
                 }
             }
@@ -416,6 +440,14 @@ class ProductManageQuickEditStockFragment(
 
     private fun String.toInt(): Int {
         return replace(".", "").toIntOrZero()
+    }
+
+    private fun getMaxStock(): Int {
+        return product?.maxStock ?: MAXIMUM_STOCK
+    }
+
+    private fun getCurrentInputStock(): Int {
+        return binding?.quickEditStockQuantityEditor?.getValue().orZero()
     }
 
     private fun removeObservers() {

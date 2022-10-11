@@ -12,7 +12,7 @@
             android:id="@+id/rl_map_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="@dimen/dp_80">
+            android:layout_marginBottom="80dp">
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/map_view"
@@ -52,8 +52,8 @@
 
         <ImageView
             android:id="@+id/ic_current_location"
-            android:layout_width="@dimen/dp_60"
-            android:layout_height="@dimen/dp_60"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:layout_above="@+id/cl_bottomsheet_getdistrict"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"

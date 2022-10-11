@@ -27,16 +27,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.core_legacy)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.linker)
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.purchase_platform_common)
-    implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
     implementation rootProject.ext.unifyDependencies.global_error
     implementation rootProject.ext.tkpdInternalLibDependencies.url
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -46,12 +43,9 @@ dependencies {
     implementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.miscDependencies.gson
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.tkpdInternalLibDependencies.analyticConstants
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.dagger
     kapt rootProject.ext.miscDependencies.daggerCompiler
 

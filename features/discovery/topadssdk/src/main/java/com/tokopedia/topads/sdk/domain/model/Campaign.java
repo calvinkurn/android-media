@@ -20,7 +20,7 @@ public class Campaign implements Parcelable {
 
     @SerializedName(KEY_DISCOUNT_PERCENTAGE)
     @Expose
-    private int discountPercentage = 0;
+    private float discountPercentage = 0f;
 
     public Campaign() {
 
@@ -39,19 +39,19 @@ public class Campaign implements Parcelable {
 
     private void setDiscountPercentageFromJSONObject(JSONObject object) throws JSONException {
         if(!object.isNull(KEY_DISCOUNT_PERCENTAGE)) {
-            setDiscountPercentage(object.getInt(KEY_DISCOUNT_PERCENTAGE));
+            setDiscountPercentage((int)object.getDouble(KEY_DISCOUNT_PERCENTAGE));
         }
     }
 
     protected Campaign(Parcel in) {
         originalPrice = in.readString();
-        discountPercentage = in.readInt();
+        discountPercentage = in.readFloat();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(originalPrice);
-        dest.writeInt(discountPercentage);
+        dest.writeFloat(discountPercentage);
     }
 
     @Override
@@ -80,10 +80,10 @@ public class Campaign implements Parcelable {
     }
 
     public void setDiscountPercentage(int discountPercentage) {
-        this.discountPercentage = discountPercentage;
+        this.discountPercentage = (float) discountPercentage;
     }
 
     public int getDiscountPercentage() {
-        return this.discountPercentage;
+        return (int)this.discountPercentage;
     }
 }

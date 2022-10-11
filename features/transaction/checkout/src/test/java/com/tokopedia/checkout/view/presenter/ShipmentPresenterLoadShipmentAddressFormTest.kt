@@ -9,11 +9,13 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
 import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
 import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.checkout.view.DataProvider
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -23,6 +25,7 @@ import com.tokopedia.checkout.view.uimodel.EgoldAttributeModel
 import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel
+import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel
 import com.tokopedia.logisticCommon.data.entity.address.UserAddress
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
@@ -51,6 +54,7 @@ import io.mockk.just
 import io.mockk.verify
 import io.mockk.verifyOrder
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -114,6 +118,9 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
+    @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
     private var shipmentDataConverter = ShipmentDataConverter()
     private var shipmentMapper = ShipmentMapper()
 
@@ -130,7 +137,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 getRatesUseCase, getRatesApiUseCase, clearCacheAutoApplyStackUseCase,
                 ratesStatesConverter, shippingCourierConverter,
                 shipmentAnalyticsActionListener, userSessionInterface, analyticsPurchaseProtection,
-                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase,
+                checkoutAnalytics, shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
                 validateUsePromoRevampUseCase, gson, TestSchedulers, eligibleForAddressUseCase)
         presenter.attachView(view)
     }
@@ -645,6 +652,25 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     }
 
     @Test
+    fun `GIVEN load checkout page with empty cross sell data WHEN load checkout page THEN should set cross sell data`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val crossSell = arrayListOf<CrossSellModel>()
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), crossSell = crossSell))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertTrue(presenter.listShipmentCrossSellModel.size == 0)
+    }
+
+    @Test
     fun `GIVEN load checkout page with ppp data WHEN load checkout page THEN should set ppp page true and should send ppp impression`() {
         // Given
         val purchaseProtectionPlanData = PurchaseProtectionPlanData(
@@ -871,4 +897,34 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         }
     }
 
+    @Test
+    fun `WHEN load checkout page with upsell THEN should have corresponding upsell model`() {
+        // Given
+        val groupAddress = GroupAddress().apply {
+            userAddress = UserAddress(state = 0)
+        }
+        val upsell = UpsellData(
+                isShow = true,
+                title = "title",
+                description = "desc",
+                appLink = "applink",
+                image = "image"
+        )
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
+            firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(CartShipmentAddressFormData(groupAddress = listOf(groupAddress), upsell = upsell))
+        }
+
+        // When
+        presenter.processInitialLoadCheckoutPage(true, false, false, false, false, null, "", "")
+
+        // Then
+        assertEquals(ShipmentUpsellModel(
+                isShow = true,
+                title = "title",
+                description = "desc",
+                appLink = "applink",
+                image = "image"
+        ), presenter.shipmentUpsellModel)
+    }
 }

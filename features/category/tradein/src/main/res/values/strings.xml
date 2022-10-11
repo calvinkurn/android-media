@@ -31,6 +31,11 @@
     <string name="tradein_undiagnosed_info_text">Harga akhir tergantung pada hasil pengecekan kondisi HP.</string>
     <string name="tradein_pilih_method">Pilih Metode Penukaran</string>
     <string name="tradein_edu_heading_1">4 Langkah Mudah Tukar Tambah</string>
+    <string name="tradein_edu_heading_cepat">Prosesnya cepat \ndan mudah</string>
+    <string name="tradein_edu_heading_murah">Dapatkan harga gadget baru yang lebih murah</string>
+    <string name="tradein_edu_heading_segala">Bisa terima segala \nkondisi HP</string>
+    <string name="tradein_edu_heading_praktis">Praktis dan bisa tukar \nHP di mana saja </string>
+    <string name="tradein_edu_heading_keuntungan">Keuntungan Tukar Tambah</string>
     <string name="tradein_edu_subheading_1">Cari toko dan gadget</string>
     <string name="tradein_edu_subtext_1">Cek jangkauan toko dan kisaran harga gadget.</string>
     <string name="tradein_edu_subheading_2">Lakukan Tes Fungsi HP</string>
@@ -70,6 +75,8 @@
     <string name="tradein_outside_coverage_description">Coba cari barang serupa di toko lain yang melayani Tukar Tambah di wilayahmu, ya.</string>
     <string name="tradein_similar_items">Cari di Toko Lain</string>
     <string name="tradein_cant_continue">Oops, belum bisa lanjut  tukar tambah</string>
+    <string name="tradein_pelajari_selengkapnya">Pelajari Selengkapnya</string>
+    <string name="tradein_fraud_description">Kami menemukan adanya indikasi pelanggaran. Coba lagi nanti, ya.</string>
     <string name="trade_in_default_address_info_description">
         <![CDATA[
         1. Tunggu pesananmu diproses oleh toko.<br/><br/>

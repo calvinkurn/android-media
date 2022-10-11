@@ -12,7 +12,7 @@ import com.tokopedia.search.result.domain.model.LastFilterModel.LastFilter
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterInput
 import com.tokopedia.search.result.error
-import com.tokopedia.search.result.presentation.model.LastFilterDataView
+import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.usecase.RequestParams
 import io.mockk.CapturingSlot

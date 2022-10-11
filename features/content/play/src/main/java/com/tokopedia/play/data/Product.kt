@@ -23,7 +23,7 @@ data class Product(
         @SerializedName("price_formatted")
         val priceFormatted: String = "",
         @SerializedName("discount")
-        val discount: Int = 0,
+        val discount: Long = 0,
         @SerializedName("order")
         val order: Int = 0,
         @SerializedName("is_variant")
@@ -39,5 +39,9 @@ data class Product(
         @SerializedName("app_link")
         val appLink: String = "",
         @SerializedName("web_link")
-        val webLink: String = ""
+        val webLink: String = "",
+        @SerializedName("is_toko_now")
+        val isTokoNow: Boolean = false,
+        @SerializedName("is_pinned")
+        val isPinned: Boolean = false,
 )

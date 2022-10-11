@@ -21,6 +21,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.play.widget.analytic.PlayWidgetAnalyticListener
 import com.tokopedia.play.widget.pref.PlayWidgetPreference
 import com.tokopedia.play.widget.ui.PlayWidgetJumboView
@@ -49,7 +51,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAnalyticListener,
-    PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener {
+    PlaySlotTabCallback, SwipeRefreshLayout.OnRefreshListener, FeedPlusTabParentFragment {
 
     private var rvWidget: FeedPlayStickyHeaderRecyclerView? = null
     private var swipeToRefresh: SwipeToRefresh? = null
@@ -102,6 +104,8 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
 
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
+    private var mContainerListener: FeedPlusContainerListener? = null
 
     override fun getScreenName(): String {
         return "VideoTabFragment"
@@ -217,7 +221,7 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
-        feedFloatingButtonManager.setInitialData(requireParentFragment())
+        feedFloatingButtonManager.setInitialData(parentFragment)
         setupView(view)
         playWidgetCoordinator.onResume()
     }
@@ -484,12 +488,15 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
         swipeToRefresh?.isRefreshing = true
         swipeToRefresh?.isEnabled = false
         playFeedVideoTabViewModel.getInitialPlayData()
+
+        mContainerListener?.onChildRefresh()
     }
 
     private fun hideLoading() {
         swipeToRefresh?.isRefreshing = false
         swipeToRefresh?.isEnabled = true
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
@@ -513,5 +520,9 @@ class VideoTabFragment : PlayWidgetListener, BaseDaggerFragment(), PlayWidgetAna
                 }
             }
         }
+    }
+
+    override fun setContainerListener(listener: FeedPlusContainerListener) {
+        this.mContainerListener = listener
     }
 }

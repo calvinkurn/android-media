@@ -1,5 +1,6 @@
 package com.tokopedia.smartbills.presentation.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.os.Bundle
@@ -28,7 +29,7 @@ import com.tokopedia.common.topupbills.view.bottomsheet.callback.AddSmartBillsIn
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.smartbills.R
@@ -126,11 +127,11 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
     }
 
     private fun getPrefixTelco(){
-        viewModel.getPrefixAddTelco(menuId.toIntOrZero())
+        viewModel.getPrefixAddTelco(menuId.toIntSafely())
     }
 
     private fun onInputNumberChanged(inputNumber: String){
-        viewModel.getSelectedOperator(inputNumber, resources.getString(R.string.smart_bills_add_bills_number_not_found))
+        viewModel.getSelectedOperator(inputNumber, context?.resources?.getString(R.string.smart_bills_add_bills_number_not_found).orEmpty())
     }
 
     private fun getInquiryData(){
@@ -273,6 +274,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.hide()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun showMainLayouts(){
         if(isPrepaid()) {
             text_field_sbm_product_nominal.apply {
@@ -287,7 +289,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                                 ) {
                                     val position = "1"
                                     commonTopUpBillsAnalytic.clickDropDownListTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId), textFieldWrapper.hint.toString(), position)
-                                    SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntOrZero(),
+                                    SmartBillsNominalBottomSheet.newInstance(isRequestNominal, catalogProduct, menuId.toIntSafely(),
                                             categoryId.orEmpty(), operatorActive.id, getNumber(), object : SmartBillsGetNominalCallback {
                                         override fun onProductClicked(rechargeProduct: RechargeProduct) {
                                             renderSelectedProduct(rechargeProduct)
@@ -352,8 +354,8 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         btn_sbm_add_telco.apply {
             show()
             isDisableButton()
-            text = if (isPostPaid()) resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_add_telco_post)
-            else resources.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_product_button_inquiry)
+            text = if (isPostPaid()) context?.resources?.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_add_telco_post).orEmpty()
+            else context?.resources?.getString(com.tokopedia.smartbills.R.string.smart_bills_add_bills_product_button_inquiry).orEmpty()
             setOnClickListener {
                 hideKeyBoard()
                 commonTopUpBillsAnalytic.clickTambahTagihanTelcoAddBills(CategoryTelcoType.getCategoryString(categoryId))
@@ -367,7 +369,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 } else if (isPrepaid()) {
                     if (!selectedProduct?.id.isNullOrEmpty()){
                         isButtonTelcoLoading(true)
-                        addBills(selectedProduct?.id.toIntOrZero(), getNumber())
+                        addBills(selectedProduct?.id.toIntSafely(), getNumber())
                     }
                 }
             }
@@ -413,7 +415,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
         val inquiryBottomSheet = AddSmartBillsInquiryBottomSheet(object : AddSmartBillsInquiryCallBack {
             override fun onInquiryClicked() {
                 commonTopUpBillsAnalytic.clickAddInquiry(CategoryTelcoType.getCategoryString(categoryId))
-                addBills(attribute.productId.toIntOrZero(), attribute.clientNumber)
+                addBills(attribute.productId.toIntSafely(), attribute.clientNumber)
             }
 
             override fun onInquiryClose() {
@@ -446,9 +448,9 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
                 selectedProduct = null
                 show()
                 textFieldWrapper.hint = if (CategoryTelcoType.isCategoryPacketData(categoryId)){
-                    resources.getString(R.string.smart_bills_add_bills_packet_data)
+                    context?.resources?.getString(R.string.smart_bills_add_bills_packet_data).orEmpty()
                 } else {
-                    resources.getString(R.string.smart_bills_add_bills_product_nominal_label)
+                    context?.resources?.getString(R.string.smart_bills_add_bills_product_nominal_label).orEmpty()
                 }
                 textFieldInput.ellipsize = TextUtils.TruncateAt.END
             }
@@ -470,7 +472,7 @@ class SmartBillsAddTelcoFragment: BaseDaggerFragment() {
 
     private fun isPrepaid(): Boolean {
         return !templateTelco.isNullOrEmpty() &&
-                templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_PREPAID_TELCO)
+                templateTelco.equals(DeeplinkMapperDigitalConst.TEMPLATE_OLD_PREPAID_TELCO)
     }
 
     private fun isPostPaid(): Boolean {

@@ -55,9 +55,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_shipping"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:layout_height="54dp"
             tools:visibility="visible">
 
             <com.tokopedia.unifycomponents.ImageUnify
@@ -74,8 +72,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:layout_marginBottom="1dp"
                 app:layout_constraintStart_toEndOf="@+id/image_shipping_logo"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/text_shipping_eta"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="display_3"
                 app:typographyWeight="bold"
                 tools:text="Gojek Instan (Rp0)" />
@@ -85,10 +86,12 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="2dp"
+                android:layout_marginTop="1dp"
                 android:layout_marginEnd="14dp"
                 app:layout_constraintStart_toEndOf="@+id/image_shipping_logo"
                 app:layout_constraintTop_toBottomOf="@+id/text_shipping_courier_name"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:typographyType="display_3"
                 tools:text="Tiba dalam 30-60 menit" />
 
@@ -97,9 +100,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/container_loading"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
+            android:layout_height="54dp"
             tools:visibility="gone">
 
             <com.tokopedia.unifycomponents.LoaderUnify
@@ -117,10 +118,12 @@
                 android:id="@+id/loader_tokofood_shipping_top"
                 android:layout_width="141dp"
                 android:layout_height="15dp"
-                android:layout_marginTop="1dp"
+                android:layout_marginBottom="3dp"
                 android:layout_marginStart="7dp"
                 app:layout_constraintStart_toEndOf="@id/loader_tokofood_shipping_icon"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/loader_tokofood_shipping_bottom"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:loader_corner_radius="4dp"
                 app:loader_type="rect"/>
 
@@ -128,12 +131,12 @@
                 android:id="@+id/loader_tokofood_shipping_bottom"
                 android:layout_width="141dp"
                 android:layout_height="15dp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginStart="7dp"
-                android:layout_marginBottom="1dp"
                 app:layout_constraintStart_toEndOf="@id/loader_tokofood_shipping_icon"
                 app:layout_constraintTop_toBottomOf="@id/loader_tokofood_shipping_top"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintVertical_chainStyle="packed"
                 app:loader_corner_radius="4dp"
                 app:loader_type="rect"/>
 

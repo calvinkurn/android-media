@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 //this is old featured brand from external api
 //now doubles with featured brand on dynamic channel
-class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
+class OfficialFeaturedShopViewHolder(view: View, private val listener: FeaturedShopListener): AbstractViewHolder<OfficialFeaturedShopDataModel>(view){
 
     private var adapter: FeaturedShopAdapter? = null
 
@@ -46,7 +46,7 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
             adapter?.notifyDataSetChanged()
 
             it.forEachIndexed { index, shop ->
-                element.listener.onShopImpression(
+                listener.onShopImpression(
                         element.categoryName,
                         index + 1,
                         shop
@@ -55,7 +55,7 @@ class OfficialFeaturedShopViewHolder(view: View, listener: FeaturedShopListener)
 
             adapter?.onItemClickListener = object: FeaturedShopAdapter.OnItemClickListener {
                 override fun onItemClick(position: Int, shop: Shop) {
-                    element.listener.onShopClick(
+                    listener.onShopClick(
                             element.categoryName,
                             position,
                             shop

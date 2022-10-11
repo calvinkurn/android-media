@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.EDU_BOTTOMSHEET_DURATION_RESOURCE_ID
@@ -29,6 +31,7 @@ class TokoNowEducationalInfoBottomSheet :
     BottomSheetUnify(){
 
     companion object {
+        private const val SOURCE_PLAY = "play"
         private const val BACKGROUND_BOTTOMSHEET = "https://images.tokopedia.net/img/android/tokonow/bg_bottomsheet_tokomart_educational_information.png"
         private val TAG = TokoNowEducationalInfoBottomSheet::class.simpleName
 
@@ -37,6 +40,10 @@ class TokoNowEducationalInfoBottomSheet :
         }
     }
 
+    var source: String? = null
+
+    private var listener: EducationalInfoBottomSheetListener? = null
+
     private var binding by autoClearedNullable<BottomsheetTokopedianowEducationalInformationBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -44,8 +51,10 @@ class TokoNowEducationalInfoBottomSheet :
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    fun show(fm: FragmentManager) {
+    fun show(fm: FragmentManager, educationalInfoBottomSheetListener: EducationalInfoBottomSheetListener?) {
         show(fm, TAG)
+        listener = educationalInfoBottomSheetListener
+        listener?.impressUspBottomSheet()
     }
 
     private fun initView() {
@@ -77,8 +86,22 @@ class TokoNowEducationalInfoBottomSheet :
                 Glide.with(context)
                     .load(BACKGROUND_BOTTOMSHEET)
                     .into(ivBackgroundImage)
+
+                setButton()
             }
         }
+    }
+
+    private fun setButton() {
+        binding?.ubtnVisitNow?.shouldShowWithAction(
+            shouldShow = source == SOURCE_PLAY,
+            action = {
+                binding?.ubtnVisitNow?.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalTokopediaNow.HOME)
+                    listener?.clickVisitNowBottomSheet()
+                }
+            }
+        )
     }
 
     private fun setTimeText(serviceType: String, boldColor: String) {
@@ -95,17 +118,17 @@ class TokoNowEducationalInfoBottomSheet :
 
     private fun setTwentyFourHours(serviceType: String, tpTwentyFourHours: Typography, context: Context) {
         getServiceTypeRes(EDU_BOTTOMSHEET_FAQ_RESOURCE_ID, serviceType)?.let {
-            convertStringToLink(tpTwentyFourHours, context, it)
+            convertStringToLink(tpTwentyFourHours, context, it, EDU_BOTTOMSHEET_FAQ_RESOURCE_ID)
         }
     }
 
     private fun setTermAndConditions(serviceType: String, tpTermsAndConditions: Typography, context: Context) {
         getServiceTypeRes(EDU_BOTTOMSHEET_SK_RESOURCE_ID, serviceType)?.let {
-            convertStringToLink(tpTermsAndConditions, context, it)
+            convertStringToLink(tpTermsAndConditions, context, it, EDU_BOTTOMSHEET_SK_RESOURCE_ID)
         }
     }
 
-    private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int) {
+    private fun convertStringToLink(typography: Typography, context: Context, stringRes: Int, keyRes: String) {
         val greenColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
         val linkHelper = HtmlLinkHelper(context, getString(stringRes, greenColor))
         typography.text = linkHelper.spannedString
@@ -113,11 +136,18 @@ class TokoNowEducationalInfoBottomSheet :
         linkHelper.urlList[0].let { link ->
             link.onClick = {
                 goToInformationPage(link.linkUrl)
+                listener?.clickVisitInformationPage(keyRes)
             }
         }
     }
 
     private fun goToInformationPage(linkUrl: String) {
         RouteManager.route(context, "${ApplinkConst.WEBVIEW}?url=${linkUrl}")
+    }
+
+    interface EducationalInfoBottomSheetListener {
+        fun impressUspBottomSheet()
+        fun clickVisitInformationPage(keyRes: String)
+        fun clickVisitNowBottomSheet()
     }
 }

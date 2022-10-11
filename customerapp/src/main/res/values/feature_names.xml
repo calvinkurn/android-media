@@ -86,6 +86,8 @@
     <string name="saldo_deposit_app_name">Saldo</string>
     <string name="ovop2p_app_name">Saldo</string>
     <string name="title_kyc_info_simple">Dokumen Data Diri</string>
+    <string name="title_kyc_form_upload">Kirim Dokumen</string>
+    <string name="title_kyc_info">Verifikasi Data Diri</string>
     <string name="saldo_info_toolbar_title">Informasi Saldo Tertahan</string>
     <string name="saldo_withdrawal_detail_title">Detail Penarikan Saldo</string>
     <string name="saldo_sales_detail_title">Detail Hasil Penjualan</string>
@@ -170,6 +172,7 @@
     <string name="label_category">category</string>
     <string name="hotlist_label">hotlist</string>
     <string name="label_affiliate">Affiliate</string>
+    <string name="title_category_epharmacy">E-Pharmacy</string>
 
 
     <!--Contact Us-->
@@ -345,6 +348,11 @@
     <string name="promo_checkout_marketplace_module_title_activity_promo_list">Pakai Promo</string>
     <string name="title_uoh_list">Daftar Transaksi</string>
     <string name="title_wishlist_v2">Wishlist</string>
+    <string name="page_name_wishlist">Wishlist</string>
+    <string name="page_name_wishlist_collection">Wishlist Collection</string>
+    <string name="page_name_wishlist_collection_detail">Wishlist Collection Detail</string>
+    <string name="page_name_wishlist_collection_host_bottomsheet">Wishlist Collection Host BottomSheet Activity</string>
+
     <string name="add_on_gifting_module_title_activity_add_on_selection">Atur pelengkap produk</string>
     <string name="add_on_gifting_module_title_activity_gallery">Pelengkap produk</string>
 
@@ -412,6 +420,7 @@
 
     <string name="title_image_picker_insta_df">Media Picker</string>
 
+    <string name="title_feed_content_creation">Feed Content Creation</string>
     <string name="title_feed_create_post">Create Post</string>
     <string name="title_feed_people">People</string>
     <string name="swd_activity_withdraw">Penarikan Saldo</string>
@@ -427,4 +436,7 @@
     <!-- TokoFood -->
     <string name="title_tokofood" translatable="false">TokoFood</string>
     <string name="title_tokofood_post_purchase" translatable="false">Detail Pesanan</string>
+
+    <!-- Shop Admin -->
+    <string name="title_shop_admin">Shop Admin</string>
 </resources>

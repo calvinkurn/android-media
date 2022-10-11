@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.profilecompletion.changename.data.analytics.ChangeNameTracker
 import com.tokopedia.profilecompletion.di.DaggerProfileCompletionSettingComponent
 import com.tokopedia.profilecompletion.di.ProfileCompletionSettingComponent
@@ -25,14 +26,14 @@ class ChangeNameActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionS
 	var chances = ""
 
 	try {
-	    oldName = intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_FULL_NAME)
+	    oldName = intent.data?.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_FULL_NAME)
 		.toString()
 	    chances =
-		intent.data?.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME)
+		intent.data?.getQueryParameter(ApplinkConstInternalUserPlatform.PARAM_CHANCE_CHANGE_NAME)
 		    .toString()
 	} finally {
-	    bundle.putString(ApplinkConstInternalGlobal.PARAM_FULL_NAME, oldName)
-	    bundle.putString(ApplinkConstInternalGlobal.PARAM_CHANCE_CHANGE_NAME, chances)
+	    bundle.putString(ApplinkConstInternalUserPlatform.PARAM_FULL_NAME, oldName)
+	    bundle.putString(ApplinkConstInternalUserPlatform.PARAM_CHANCE_CHANGE_NAME, chances)
 	}
 
 	return ChangeNameFragment.createInstance(bundle)

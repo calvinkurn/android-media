@@ -48,6 +48,7 @@
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:text="@string/seller_menu_new_order"
             android:textColor="@color/Unify_N700_96"
+            app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="@id/containerNewOrder"
             app:layout_constraintLeft_toRightOf="@id/containerNewOrder"
             app:layout_constraintTop_toTopOf="@id/containerNewOrder" />
@@ -94,6 +95,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_lvl3"
             android:text="@string/seller_menu_delivery"
+            app:typographyWeight="bold"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintBottom_toBottomOf="@id/containerReadyToShip"
             app:layout_constraintLeft_toRightOf="@id/containerReadyToShip"
