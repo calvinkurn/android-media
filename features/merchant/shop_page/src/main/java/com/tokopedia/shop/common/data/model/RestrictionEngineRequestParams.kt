@@ -9,7 +9,7 @@ data class RestrictionEngineRequestParams(
         var source: String = "",
         @Expose
         @SerializedName("userID")
-        var userId: Int = 0,
+        var userId: Long = 0,
         @Expose
         @SerializedName("dataRequest")
         var dataRequest: MutableList<RestrictionEngineDataRequest> = mutableListOf()
@@ -36,11 +36,11 @@ data class RestrictionEngineDataRequestProduct(
 data class RestrictionEngineDataRequestShop(
         @Expose
         @SerializedName("shopID")
-        var shopID: Int = 0
+        var shopID: Long = 0
 )
 
 data class RestrictionEngineDataRequestCampaign(
         @Expose
         @SerializedName("campaignID")
-        var campaignID: Int = 0
+        var campaignID: Long = 0
 )
