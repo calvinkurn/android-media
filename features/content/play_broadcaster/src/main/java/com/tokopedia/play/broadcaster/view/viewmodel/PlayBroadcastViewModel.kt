@@ -201,7 +201,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = _accountListState.value.size > 1
+        get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -406,7 +406,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
-            }
+            } else if (!isFirstOpen) isFirstOpen = true
 
             // create channel when there are no channel exist
             if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
@@ -1506,8 +1506,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             else if (nonSellerAccount != null) {
                 if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) nonSellerAccount
                 else sellerAccount
-            }
-            else sellerAccount
+            } else sellerAccount
         } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 
@@ -1532,18 +1531,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         selectedAccount: ContentAccountUiModel,
     ): Boolean {
         return when {
-            !configUiModel.streamAllowed -> {
-                if (isFirstOpen && isAllowChangeAccount) return false
-                warningInfoType = WarningType.BANNED
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Banned,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-                false
-            }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 warningInfoType = WarningType.LIVE
@@ -1567,7 +1554,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            !selectedAccount.hasAcceptTnc -> {
+            (selectedAccount.isShop && !configUiModel.streamAllowed) || !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {
