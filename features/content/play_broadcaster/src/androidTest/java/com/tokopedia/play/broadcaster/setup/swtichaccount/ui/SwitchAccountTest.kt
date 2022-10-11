@@ -1,8 +1,6 @@
-package com.tokopedia.play.broadcaster.setup.playbroadcastpreparation
+package com.tokopedia.play.broadcaster.setup.swtichaccount.ui
 
-import PlayBroadcasterPreparationRobot
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import com.tokopedia.abstraction.base.view.fragment.TkpdFragmentFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.content.common.types.ContentCommonUserType
@@ -27,7 +25,7 @@ import org.junit.runner.RunWith
  * Created by fachrizalmrsln on 28/09/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-class PlayBroadcasterPreparationTest {
+class SwitchAccountTest {
 
     private val mockDispatcher: CoroutineDispatchers = CoroutineDispatchersProvider
     private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
@@ -39,7 +37,7 @@ class PlayBroadcasterPreparationTest {
 
     private val mockAddedTag = GetAddedChannelTagsResponse()
 
-    private fun createRobot() = PlayBroadcasterPreparationRobot(
+    private fun createRobot() = SwitchAccountRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
         dispatcher = mockDispatcher,

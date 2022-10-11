@@ -1,3 +1,5 @@
+package com.tokopedia.play.broadcaster.setup.swtichaccount.ui
+
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.lifecycle.Lifecycle
@@ -5,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
+import androidx.savedstate.SavedStateRegistryOwner
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -12,12 +15,23 @@ import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.onboarding.data.UGCOnboardingRepositoryImpl
+import com.tokopedia.content.common.onboarding.view.bottomsheet.UserCompleteOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.bottomsheet.UserTnCOnboardingBottomSheet
+import com.tokopedia.content.common.onboarding.view.strategy.UGCCompleteOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.strategy.UGCTncOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
+import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
+import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
+import com.tokopedia.play.broadcaster.factory.PlayBroTestFragmentFactory
 import com.tokopedia.play.broadcaster.helper.analyticUserSession
 import com.tokopedia.play.broadcaster.setup.parentBroViewModel
 import com.tokopedia.play.broadcaster.setup.preparationBroViewModel
@@ -35,7 +49,7 @@ import com.tokopedia.content.common.R as contentR
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
-class PlayBroadcasterPreparationRobot(
+class SwitchAccountRobot(
     dataStore: PlayBroadcastDataStore,
     hydraConfigStore: HydraConfigStore,
     dispatcher: CoroutineDispatchers,
@@ -55,7 +69,9 @@ class PlayBroadcasterPreparationRobot(
             getChannelUseCase = channelUseCase,
             getAddedChannelTagsUseCase = addedChannelTagsUseCase,
             sharedPref = sharedPreferences,
-        )
+        ).apply {
+            submitAction(PlayBroadcastAction.GetAccountList)
+        }
     }
 
     private val preparationViewModel: PlayBroadcastPrepareViewModel by lazy(NONE) {
@@ -81,26 +97,92 @@ class PlayBroadcasterPreparationRobot(
         }
     }
 
-    private val scenario = launchFragmentInContainer {
-        parentViewModel.submitAction(PlayBroadcastAction.GetAccountList)
-        PlayBroadcastPreparationFragment(
-            parentViewModelFactoryCreator = parentViewModelFactoryCreator,
-            viewModelFactory = viewModelFactory,
-            analytic = PlayBroadcastAnalytic(
-                userSession = analyticUserSession,
-                interactiveAnalytic = mockk(relaxed = true),
-                setupMenuAnalytic = mockk(relaxed = true),
-                setupTitleAnalytic = mockk(relaxed = true),
-                setupCoverAnalytic = mockk(relaxed = true),
-                setupProductAnalytic = mockk(relaxed = true),
-                summaryAnalytic = mockk(relaxed = true),
-                scheduleAnalytic = mockk(relaxed = true),
-                pinProductAnalytic = mockk(relaxed = true),
-                accountAnalytic = mockk(relaxed = true),
-            ),
-            analyticManager = mockk(relaxed = true)
-        )
+    private val playAnalytic = PlayBroadcastAnalytic(
+        userSession = analyticUserSession,
+        interactiveAnalytic = mockk(relaxed = true),
+        setupMenuAnalytic = mockk(relaxed = true),
+        setupTitleAnalytic = mockk(relaxed = true),
+        setupCoverAnalytic = mockk(relaxed = true),
+        setupProductAnalytic = mockk(relaxed = true),
+        summaryAnalytic = mockk(relaxed = true),
+        scheduleAnalytic = mockk(relaxed = true),
+        pinProductAnalytic = mockk(relaxed = true),
+        accountAnalytic = mockk(relaxed = true),
+    )
+
+    private val ugcViewModelFactory = object : UGCOnboardingViewModelFactory.Creator {
+        override fun create(
+            owner: SavedStateRegistryOwner,
+            onboardingType: Int,
+            onboardingStrategy: UGCOnboardingStrategy
+        ): UGCOnboardingViewModelFactory {
+            return UGCOnboardingViewModelFactory(
+                owner,
+                onboardingType,
+                onboardingStrategy,
+                UGCOnboardingViewModelFactory = object :
+                    UGCOnboardingViewModel.Factory {
+                    override fun create(
+                        onboardingType: Int,
+                        onboardingStrategy: UGCOnboardingStrategy
+                    ): UGCOnboardingViewModel {
+                        return UGCOnboardingViewModel(
+                            onboardingType,
+                            onboardingStrategy
+                        )
+                    }
+
+                })
+        }
     }
+
+    private val ugcRepository = UGCOnboardingRepositoryImpl(
+        dispatcher = dispatcher,
+        feedProfileAcceptTncUseCase = mockk(relaxed = true),
+        feedProfileSubmitUseCase = mockk(relaxed = true),
+        feedProfileValidateUsernameUseCase = mockk(relaxed = true)
+    )
+
+    private val onboardingStrategy = UGCOnboardingStrategyFactory(
+        completeStrategy = UGCCompleteOnboardingStrategy(
+            dispatcher = dispatcher,
+            repo = ugcRepository,
+        ),
+        tncStrategy = UGCTncOnboardingStrategy(
+            dispatcher = dispatcher,
+            repo = ugcRepository
+        )
+    )
+
+    private val fragmentFactory = PlayBroTestFragmentFactory(
+        mapOf(
+            PlayBroadcastPreparationFragment::class.java to {
+                PlayBroadcastPreparationFragment(
+                    parentViewModelFactoryCreator = parentViewModelFactoryCreator,
+                    viewModelFactory = viewModelFactory,
+                    analytic = playAnalytic,
+                    analyticManager = mockk(relaxed = true)
+                )
+            },
+            UserCompleteOnboardingBottomSheet::class.java to {
+                UserCompleteOnboardingBottomSheet(
+                    viewModelFactoryCreator = ugcViewModelFactory,
+                    strategyFactory = onboardingStrategy
+                )
+            },
+            UserTnCOnboardingBottomSheet::class.java to {
+                UserTnCOnboardingBottomSheet(
+                    viewModelFactoryCreator = ugcViewModelFactory,
+                    strategyFactory = onboardingStrategy
+                )
+            },
+        )
+    )
+
+    private val scenario = launchFragmentInContainer<PlayBroadcastPreparationFragment>(
+        factory = fragmentFactory,
+        themeResId = R.style.AppTheme,
+    )
 
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -159,7 +241,7 @@ class PlayBroadcasterPreparationRobot(
 
         delay()
 
-        Espresso.onView(withId(contentR.id.tv_warning_title))
+        Espresso.onView(withId(contentR.id.text_field_username))
             .check(matches(isCompletelyDisplayed()))
 
         delay()
@@ -181,7 +263,7 @@ class PlayBroadcasterPreparationRobot(
 
         delay()
 
-        Espresso.onView(withId(contentR.id.tv_warning_title))
+        Espresso.onView(withId(contentR.id.img_onboarding))
             .check(matches(isCompletelyDisplayed()))
 
         delay()
@@ -247,7 +329,7 @@ class PlayBroadcasterPreparationRobot(
             .check(matches(isCompletelyDisplayed()))
     }
 
-    private fun chainable(fn: () -> Unit): PlayBroadcasterPreparationRobot {
+    private fun chainable(fn: () -> Unit): SwitchAccountRobot {
         fn()
         return this
     }

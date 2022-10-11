@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.swtichaccount
+package com.tokopedia.play.broadcaster.setup.swtichaccount.casava
 
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -28,7 +28,7 @@ import org.junit.runner.RunWith
  * Created by fachrizalmrsln on 28/09/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-class SwitchAccountUGCAnalyticTest {
+class SwitchAccountAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -44,7 +44,7 @@ class SwitchAccountUGCAnalyticTest {
     private val mockAddedTag = GetAddedChannelTagsResponse()
     private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_ugc.json"
 
-    private fun createRobot() = SwitchAccountUGCRobot(
+    private fun createRobot() = SwitchAccountAnalyticRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
         userSessionInterface = mockUserSession,
