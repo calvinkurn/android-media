@@ -103,7 +103,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
 
     private fun observeLiveData() {
         observe(viewModel.ingredientItems) {
-            adapter.submitList(it)
+            adapter.submitList(ArrayList(it))
             showHideSearchButton()
             hideProgressBar()
             setMaxHeight()
@@ -115,6 +115,7 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
             tpSubtitle.text = getString(R.string.tokopedianow_recipe_search_ingredient_subtitle_bottomsheet)
             rvIngredients.layoutManager = LinearLayoutManager(context)
             rvIngredients.adapter = adapter
+            rvIngredients.itemAnimator = null
         }
     }
 
