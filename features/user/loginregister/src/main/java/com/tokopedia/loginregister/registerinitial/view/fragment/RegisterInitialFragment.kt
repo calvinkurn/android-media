@@ -167,6 +167,8 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     lateinit var mGoogleSignInClient: GoogleSignInClient
     lateinit var combineLoginTokenAndValidateToken: LiveData<Unit>
 
+    private var viewBinding by autoClearedNullable<FragmentInitialRegisterBinding>()
+
     override fun onStart() {
         super.onStart()
         activity?.let {
@@ -450,7 +452,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     }
                 }
             }
-        })
+        }
         combineLoginTokenAndValidateToken = registerInitialViewModel.loginTokenAfterSQResponse
             .combineWith(registerInitialViewModel.validateToken) { loginToken: Result<LoginTokenPojo>?, validateToken: String? ->
                 if (loginToken is Fail) {
