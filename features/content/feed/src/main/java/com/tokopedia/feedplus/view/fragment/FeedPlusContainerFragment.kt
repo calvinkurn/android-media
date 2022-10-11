@@ -277,19 +277,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         }
     }
 
-    private fun initOldToolBar() {
-        feed_background_frame.show()
-        feedToolbar = context?.let { FeedMainToolbar(it) }
-        setFeedBackgroundCrossfader()
-        feed_appbar.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
-            if (verticalOffset + (feedToolbar?.height ?: 0) < 0) {
-                showNormalTextWhiteToolbar()
-            } else {
-                showWhiteTextTransparentToolbar()
-            }
-        })
-        (feedToolbar as? FeedMainToolbar)?.setToolBarClickListener(this)
-    }
 
     private fun getToolbarIcons(): IconBuilder {
         val icons = IconBuilder(IconBuilderFlag(pageSource = ApplinkConsInternalNavigation.SOURCE_HOME))
@@ -728,53 +715,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
             })
         }
-
         renderCompleteFab()
-    }
-
-    private fun setFeedBackgroundCrossfader() {
-        searchBarTransitionRange = requireContext().resources.getDimensionPixelSize(R.dimen.searchbar_tansition_range)
-        startToTransitionOffset = status_bar_bg.layoutParams.height + requireContext().resources.getDimensionPixelSize(R.dimen.searchbar_start_tansition_offsite)
-        activity?.let {
-            val feedBackgroundGradient = MethodChecker.getDrawable(it, R.drawable.gradient_feed)
-            val feedBackgroundWhite = MethodChecker.getDrawable(it, R.drawable.gradient_feed_white)
-            feedBackgroundCrossfader = TransitionDrawable(arrayOf<Drawable>(feedBackgroundGradient, feedBackgroundWhite))
-        }
-        feed_background_image.setImageDrawable(feedBackgroundCrossfader)
-        feedBackgroundCrossfader.startTransition(0)
-    }
-
-
-    private fun showNormalTextWhiteToolbar() {
-        if (toolbarType != TOOLBAR_GRADIENT) {
-            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
-            toolbarType = TOOLBAR_GRADIENT
-            status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT < Build.VERSION_CODES.M -> View.VISIBLE
-                else -> View.INVISIBLE
-            }
-            activity?.let {
-                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700_32), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_G400))
-            }
-            requestStatusBarDark()
-        }
-    }
-
-    private fun showWhiteTextTransparentToolbar() {
-        if (toolbarType != TOOLBAR_WHITE) {
-            feedBackgroundCrossfader.reverseTransition(FEED_BACKGROUND_CROSSFADER_DURATION)
-            toolbarType = TOOLBAR_WHITE
-            status_bar_bg2.visibility = when {
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP -> View.INVISIBLE
-                else -> View.GONE
-            }
-            activity?.let {
-                tab_layout.getUnifyTabLayout().setSelectedTabIndicatorColor(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                tab_layout.getUnifyTabLayout().setTabTextColors(MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0), MethodChecker.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            }
-            requestStatusBarLight()
-        }
     }
 
     private fun setAdapter() {

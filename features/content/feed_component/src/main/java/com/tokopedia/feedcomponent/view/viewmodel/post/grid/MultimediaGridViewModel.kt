@@ -15,6 +15,6 @@ class MultimediaGridViewModel (
         val totalItems: Int = 0,
         val showGridButton: Boolean = true,
         val trackingList: MutableList<TrackingViewModel> = ArrayList(),
-        override var postId: Int = 0,
+        override var postId: String = "0",
         override var positionInFeed: Int = 0
 ) : BasePostViewModel

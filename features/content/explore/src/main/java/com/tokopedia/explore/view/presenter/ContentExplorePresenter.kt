@@ -45,7 +45,7 @@ class ContentExplorePresenter @Inject constructor(
     private val impressionTrackingChannel: Channel<String> = Channel()
 
     private var cursor = ""
-    private var categoryId = 0
+    private var categoryId : Long = 0
     private var search = ""
 
     override fun attachView(view: ContentExploreContract.View?) {
@@ -125,7 +125,7 @@ class ContentExplorePresenter @Inject constructor(
         this.cursor = cursor
     }
 
-    override fun updateCategoryId(categoryId: Int) {
+    override fun updateCategoryId(categoryId: Long) {
         this.categoryId = categoryId
     }
 

@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleViewModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
@@ -13,8 +13,10 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
+import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
+
 /**
  * @author by nisie on 27/11/18.
  */
@@ -45,6 +47,8 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
 
     fun type(stickyActionButtonViewModel: StickyActionButtonViewModel): Int
 
-    fun type(attachInvoiceSentUiModel: com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel): Int
+    fun type(videoUploadUiModel: VideoUploadUiModel) : Int
+
+    fun type(attachInvoiceSentUiModel: AttachInvoiceSentUiModel): Int
 
 }

@@ -123,6 +123,8 @@ object TrackingConstant {
     const val EMPTY_STRING = ""
     const val TOTAL_FINISHED_MISSION = "%d out of %d missions finished"
     const val PG = "Physical Goods"
+    const val DATA_KEY_LOW_STOCK = "lowStock"
+    const val NOTIFY_ME = "notify me"
 
     //performance
     const val CLICK_SHOP_SCORE = "clickShopScore"
