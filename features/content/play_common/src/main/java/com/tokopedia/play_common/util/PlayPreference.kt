@@ -101,7 +101,7 @@ class PlayPreference @Inject constructor(
         val newUserId = if(userId.isEmpty()) "0" else userId
         return if (variant == SWIPE_LIVE_ROOM_VARIANT) {
             val diff = getDiffDay(newUserId)
-            val newDiff = if (diff <= BUFFER_TIME) A_DAY_IN_MILLIS else diff
+            val newDiff = if (diff <= BUFFER_TIME) A_DAY_IN_MILLIS else diff // add buffer time 10s
             newDiff >= A_DAY_IN_MILLIS
         }
         else sharedPref.getBoolean(String.format(SWIPE_LIVE_ROOM_DEFAULT, newUserId), false)

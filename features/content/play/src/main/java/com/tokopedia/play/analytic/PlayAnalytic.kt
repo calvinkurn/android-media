@@ -47,7 +47,7 @@ class PlayAnalytic(
     fun swipeRoom(nextId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
+                        KEY_EVENT to KEY_TRACK_CLICK_TOP_ADS,
                         KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
                         KEY_EVENT_ACTION to "swipe channel",
                         KEY_EVENT_LABEL to "$mSessionId - $mChannelId - ${mChannelType.value} - $mSourceType - $nextId",
