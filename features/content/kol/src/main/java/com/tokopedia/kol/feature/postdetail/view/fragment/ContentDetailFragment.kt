@@ -1232,6 +1232,8 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         intent.putExtra(ContentDetailArgumentModel.SHOP_NAME, feedXCard.author.name)
         intent.putExtra(ContentDetailArgumentModel.PARAM_ACTIVITY_ID, postId)
         intent.putExtra(ContentDetailArgumentModel.PARAM_POST_TYPE, feedXCard.typename)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_TYPE, feedXCard.campaign.name)
+        intent.putExtra(ContentDetailArgumentModel.PARAM_SALE_STATUS, feedXCard.campaign.status)
         requireActivity().startActivity(intent)
 
     }
