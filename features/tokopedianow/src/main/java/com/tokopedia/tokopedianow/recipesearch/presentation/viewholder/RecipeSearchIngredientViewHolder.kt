@@ -26,17 +26,17 @@ class RecipeSearchIngredientViewHolder(
             root.setOnClickListener {
                 val isChecked = !cbOption.isChecked
                 cbOption.isChecked = isChecked
-                listener?.onCheckIngredient(isChecked, model.id)
+                listener?.onSelectIngredient(isChecked, model.id, model.title)
             }
             cbOption.setOnClickListener {
                 val isChecked = !cbOption.isChecked
-                listener?.onCheckIngredient(isChecked, model.id)
+                listener?.onSelectIngredient(isChecked, model.id, model.title)
             }
         }
     }
 
     interface RecipeSearchIngredientListener {
-        fun onCheckIngredient(isChecked: Boolean, id: String)
+        fun onSelectIngredient(isChecked: Boolean, id: String, title: String)
     }
 
 }

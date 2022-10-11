@@ -19,6 +19,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.setMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeSearchIngredientBinding
+import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
 import com.tokopedia.tokopedianow.recipesearch.di.component.DaggerRecipeSearchComponent
 import com.tokopedia.tokopedianow.recipesearch.presentation.adapter.RecipeSearchIngredientAdapter
 import com.tokopedia.tokopedianow.recipesearch.presentation.viewholder.RecipeSearchIngredientViewHolder
@@ -118,24 +119,22 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
     }
 
     private fun recipeSearchIngredientCallback() = object : RecipeSearchIngredientViewHolder.RecipeSearchIngredientListener {
-        override fun onCheckIngredient(isChecked: Boolean, id: String) {
-            binding?.apply {
-                viewModel.onCheckIngredient(id, isChecked)
-            }
+        override fun onSelectIngredient(isChecked: Boolean, id: String, title: String) {
+            viewModel.onSelectIngredient(id, isChecked, title)
         }
     }
 
     private fun showHideSearchButton() {
         binding?.apply {
-            val selectedIngredientsId = viewModel.selectedFilters
-            val isShown = selectedIngredientsId.size.isMoreThanZero()
+            val selectedIngredients = viewModel.selectedFilters.filter { it.parentId == PARAM_INGREDIENT_ID }
+            val isShown = selectedIngredients.size.isMoreThanZero()
             if (isShown) {
                 ubSearchBtn.setOnClickListener {
                     clickSearchBtn()
                 }
                 ubSearchBtn.text = getString(
                     R.string.tokopedianow_recipe_search_ingredient_button_bottomsheet,
-                    selectedIngredientsId.size
+                    selectedIngredients.size
                 )
                 ubSearchBtn.show()
                 cvSearchBtnBackground.show()

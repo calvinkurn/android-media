@@ -61,7 +61,7 @@ class TokoNowRecipeSearchIngredientViewModelTest : TokoNowRecipeSearchIngredient
         onGetSortFilter_thenReturn(sortFilterResponse)
 
         viewModel.getIngredients()
-        viewModel.onCheckIngredient("11", checkIngredient)
+        viewModel.onSelectIngredient("11", checkIngredient, "Test Create Ingredient 6")
 
         val expectedIngredientItems = listOf(
             RecipeSearchIngredientUiModel(
@@ -110,7 +110,7 @@ class TokoNowRecipeSearchIngredientViewModelTest : TokoNowRecipeSearchIngredient
         )
 
         viewModel.getIngredients()
-        viewModel.onCheckIngredient("11", checkIngredient)
+        viewModel.onSelectIngredient("11", checkIngredient, "Test Create Ingredient 6")
 
         val expectedIngredientItems = listOf(
             RecipeSearchIngredientUiModel(

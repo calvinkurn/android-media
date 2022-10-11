@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowNotChipUiModel
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChipViewHolder.ChipListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSectionHeaderViewHolder.SectionHeaderListener
@@ -99,21 +100,28 @@ class TokoNowSortFilterBottomSheet(
         }
         val index = newItemList.indexOf(chipList)
 
-        val items = chipList.items.map {
-            val selected = it.id == chip.id
-            val isActive = chip.selected == selected
+        val items = chipList.items.map { model ->
+            /**
+             * in this case only TokoNowChipViewHolder will be clickable and TokoNowNotChipViewHolder will not be shown to the screen
+             */
+            if (model is TokoNowChipUiModel) {
+                val selected = model.id == chip.id
+                val isActive = chip.selected == selected
 
-            when {
-                chipList.isMultiSelect && selected -> {
-                    it.copy(selected = !chip.selected)
+                when {
+                    chipList.isMultiSelect && selected -> {
+                        model.copy(selected = !chip.selected)
+                    }
+                    !chipList.isMultiSelect && isActive -> {
+                        model.copy(selected = false)
+                    }
+                    !chipList.isMultiSelect -> {
+                        model.copy(selected = selected)
+                    }
+                    else -> model
                 }
-                !chipList.isMultiSelect && isActive -> {
-                    it.copy(selected = false)
-                }
-                !chipList.isMultiSelect -> {
-                    it.copy(selected = selected)
-                }
-                else -> it
+            } else {
+                model
             }
         }
 
@@ -129,16 +137,24 @@ class TokoNowSortFilterBottomSheet(
     }
 
     fun getSelectedFilters(): ArrayList<SelectedFilter> {
-        val selectedChip = mutableListOf<TokoNowChipUiModel>()
+        val selectedChip = mutableListOf<Visitable<*>>()
 
         adapter.list.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
-            val chips = chipList.items.filter { it.selected }
+            val chips = chipList.items.filter { (it is TokoNowChipUiModel && it.selected ) || it is TokoNowNotChipUiModel }
             selectedChip.addAll(chips)
         }
 
-        return ArrayList(selectedChip.map {
-            SelectedFilter(it.id, it.parentId, it.text)
-        })
+        /**
+         * Add both TokoNowChipUiModel and TokoNowNotChipUiModel as selected filter
+         */
+        val selectedFilters = arrayListOf<SelectedFilter>()
+        selectedChip.forEach {
+            when(it) {
+                is TokoNowChipUiModel -> selectedFilters.add(SelectedFilter(it.id, it.parentId, it.text))
+                is TokoNowNotChipUiModel -> selectedFilters.add(SelectedFilter(it.id, it.parentId, it.text))
+            }
+        }
+        return selectedFilters
     }
 
     fun submitList(items: List<Visitable<*>>) {

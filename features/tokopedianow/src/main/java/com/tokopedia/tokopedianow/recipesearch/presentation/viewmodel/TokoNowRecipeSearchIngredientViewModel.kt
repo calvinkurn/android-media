@@ -37,11 +37,11 @@ class TokoNowRecipeSearchIngredientViewModel @Inject constructor(
         }
     }
 
-    fun onCheckIngredient(id: String, isChecked: Boolean) {
+    fun onSelectIngredient(id: String, isChecked: Boolean, title: String) {
         if (isChecked) {
-            selectedFilters.add(SelectedFilter(id, PARAM_INGREDIENT_ID))
+            selectedFilters.add(SelectedFilter(id, PARAM_INGREDIENT_ID, title))
         } else {
-            selectedFilters.remove(SelectedFilter(id, PARAM_INGREDIENT_ID))
+            selectedFilters.remove(SelectedFilter(id, PARAM_INGREDIENT_ID, title))
         }
 
         ingredientList.updateIngredients(id, isChecked)
