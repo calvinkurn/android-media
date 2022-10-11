@@ -47,7 +47,9 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDeleg
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.OngoingFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.RegisteredFlashSaleDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.UpcomingFlashSaleDelegateAdapter
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.FinishedFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.LoadingItem
+import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.OngoingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.RegisteredFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.item.UpcomingFlashSaleItem
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.EmptyStateConfig
@@ -57,6 +59,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleLis
 import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.TabConfig
 import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
+import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -71,7 +74,7 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         private const val PAGE_SIZE = 10
         private const val SELLER_EDU_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val OLD_CAMPAIGN_FLASH_SALE_URL = "https://seller.tokopedia.com/manage-campaign/flash-sale/"
-
+        private const val QUOTA_USAGE_FULL = 100
 
         @JvmStatic
         fun newInstance(tabId: Int, tabName: String): FlashSaleListFragment {
@@ -87,13 +90,14 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     private val tabId by lazy { arguments?.getInt(BUNDLE_KEY_TAB_ID).orZero() }
     private val tabName by lazy { arguments?.getString(BUNDLE_KEY_TAB_NAME).orEmpty() }
+    private val now = Date()
 
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(UpcomingFlashSaleDelegateAdapter(onFlashSaleClicked, onUpcomingFlashSaleButtonClicked))
             .add(RegisteredFlashSaleDelegateAdapter(onFlashSaleClicked, onRegisteredFlashSaleButtonClicked))
-            .add(OngoingFlashSaleDelegateAdapter(onFlashSaleClicked))
-            .add(FinishedFlashSaleDelegateAdapter(onFlashSaleClicked))
+            .add(OngoingFlashSaleDelegateAdapter(onOngoingFlashSaleCardClicked))
+            .add(FinishedFlashSaleDelegateAdapter(onFinishedFlashSaleCardClicked))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -180,6 +184,9 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker: FlashSaleListPageTracker
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -528,6 +535,9 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
             }
 
             navigateToFlashSaleDetailPage(selectedFlashSaleId)
+
+            handleUpcomingFlashSaleTracker(selectedItem, tabName)
+
         }
     }
 
@@ -542,8 +552,39 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
             }
 
             handleRegisteredCampaignRedirection(selectedFlashSaleId, status)
+            handleRegisteredFlashSaleTracker(selectedFlashSaleId, status)
         }
     }
+
+    private val onOngoingFlashSaleCardClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : OngoingFlashSaleItem? = (selectedFlashSale as? OngoingFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            navigateToFlashSaleDetailPage(selectedFlashSaleId)
+            tracker.sendOngoingFlashSaleCardClickEvent(selectedFlashSaleId, tabName)
+        }
+    }
+
+    private val onFinishedFlashSaleCardClicked: (Int) -> Unit = { selectedItemPosition ->
+        val selectedFlashSale = flashSaleAdapter.getItems()[selectedItemPosition]
+        val selectedFlashSaleId = (selectedFlashSale.id() as? Long).orZero()
+        val selectedItem : FinishedFlashSaleItem? = (selectedFlashSale as? FinishedFlashSaleItem)
+        selectedItem?.run {
+            if (!useMultiLocation) {
+                routeToUrl(OLD_CAMPAIGN_FLASH_SALE_URL)
+                return@run
+            }
+
+            navigateToFlashSaleDetailPage(selectedFlashSaleId)
+        }
+    }
+
 
     private fun navigateToFlashSaleDetailPage(flashSaleId : Long) {
         CampaignDetailActivity.start(context ?: return, flashSaleId)
@@ -557,4 +598,19 @@ class FlashSaleListFragment : BaseDaggerFragment(), HasPaginatedList by HasPagin
         }
     }
 
+    private fun handleRegisteredFlashSaleTracker(selectedFlashSaleId: Long, status: FlashSaleStatus) {
+        when(status) {
+            FlashSaleStatus.NO_REGISTERED_PRODUCT -> tracker.sendAddProductButtonClickEvent(selectedFlashSaleId, tabName)
+            FlashSaleStatus.WAITING_FOR_SELECTION -> tracker.sendUpdateProductButtonClickEvent(selectedFlashSaleId, tabName)
+            FlashSaleStatus.ON_SELECTION_PROCESS -> tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSaleId, tabName)
+            FlashSaleStatus.SELECTION_FINISHED ->  tracker.sendViewCampaignDetailButtonClickEvent(selectedFlashSaleId, tabName)
+            else -> {}
+        }
+    }
+
+    private fun handleUpcomingFlashSaleTracker(selectedFlashSale: UpcomingFlashSaleItem, tabName: String) {
+        if (selectedFlashSale.quotaUsagePercentage < QUOTA_USAGE_FULL && now.before(selectedFlashSale.submissionEndDate)) {
+            tracker.sendRegisterFlashSaleEvent(selectedFlashSale.id, tabName)
+        }
+    }
 }

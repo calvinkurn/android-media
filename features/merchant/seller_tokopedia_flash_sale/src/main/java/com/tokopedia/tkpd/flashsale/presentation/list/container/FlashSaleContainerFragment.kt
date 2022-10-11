@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
+import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleListPageTracker
 import com.tokopedia.unifycomponents.TabsUnifyMediator
 import com.tokopedia.unifycomponents.setCustomText
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -45,6 +46,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
     companion object {
         private const val REDIRECTION_DELAY : Long = 500
         private const val DEFAULT_TOTAL_CAMPAIGN_COUNT = 0
+        private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val SELLER_EDU_ARTICLE_URL = "https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/"
         private const val INELIGIBLE_ACCESS_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access_fs_tokopedia.png"
         @JvmStatic
@@ -53,6 +55,9 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var tracker: FlashSaleListPageTracker
 
     private var binding by autoClearedNullable<StfsFragmentFlashSaleListContainerBinding>()
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
@@ -265,6 +270,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
             val tickerAdapter = TickerPagerAdapter(activity ?: return, tickers)
             tickerAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
+                    sendTickerHyperlinkClickEvent(linkUrl.toString())
                     routeToUrl(linkUrl.toString())
                 }
             })
@@ -300,7 +306,13 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun showIneligibleAccessBottomSheet() {
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonClicked { routeToUrl(SELLER_EDU_ARTICLE_URL) }
+        bottomSheet.setOnButtonClicked { routeToUrl(FEATURE_LEARN_MORE_ARTICLE_URL) }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun sendTickerHyperlinkClickEvent(linkUrl: String) {
+        val description = getString(R.string.stfs_multi_location_ticker_description)
+        val eventLabel = "$description - $linkUrl"
+        tracker.sendClickReadArticleEvent(eventLabel)
     }
 }

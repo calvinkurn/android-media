@@ -17,7 +17,7 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<StfsBottomsheetProductCheckBinding>()
     private var productName: String = ""
-    private var locationCheckingResults: List<ProductCheckingResult> = emptyList()
+    private var productCheckingResults: List<ProductCheckingResult> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,19 +41,21 @@ class ProductCheckBottomSheet : BottomSheetUnify() {
         binding?.rvResult?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ProductCheckingResultAdapter().apply {
-                setDataList(locationCheckingResults)
+                setDataList(productCheckingResults)
             }
         }
     }
 
+    fun setProductName(name: String) {
+        this.productName = name
+    }
+
     fun show(
-        productName: String,
-        locationCheckingResults: List<ProductCheckingResult>,
+        productCheckingResults: List<ProductCheckingResult>,
         manager: FragmentManager,
         tag: String?
     ) {
-        this.locationCheckingResults = locationCheckingResults
-        this.productName = productName
+        this.productCheckingResults = productCheckingResults
         show(manager, tag)
     }
 }

@@ -58,6 +58,7 @@
     <string name="stfs_no_product_sold">Belum ada produkmu yang terjual di campaign ini. Daftarkan produkmu ke campaign lain, yuk!</string>
     <string name="stfs_all_product_rejected_with_hyperlink">Semua produkmu ditolak. Cek Alasan</string>
     <string name="stfs_multi_location_ticker"><![CDATA[Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu. <a href="https://seller.tokopedia.com/edu/cara-daftar-produk-flash-sale/">Baca Artikel</a>]]></string>
+    <string name="stfs_multi_location_ticker_description">Sekarang kamu bisa mendaftarkan produk dari semua lokasi gudangmu.</string>
     <string name="stfs_check_reason">Cek Alasan</string>
     <string name="stfs_missed_reason">Terlewat karena kamu tidak mengajukan produk hingga batas waktu yang ditentukan.</string>
 
@@ -107,6 +108,7 @@
     <string name="commonbs_product_check_stock_format">Stok Campaign: %d</string>
     <string name="commonbs_product_check_subsidy_format">Menerima subsidi sebesar %s dari Tokopedia</string>
     <string name="commonbs_product_check_location_count_format">Detail di %d Lokasi</string>
+    <string name="commonbs_product_check_location_count_suffix_format">%s di %d Lokasi</string>
     <string name="commonbs_field_required">Diwajibkan</string>
     <string name="commonbs_field_limited">Dibatasi</string>
 
@@ -262,7 +264,7 @@
     <string name="stfs_product_item_original_price_format">%1s-%2s</string>
     <string name="stfs_product_item_discount_label_percentage_format_non_range">%1s\%%</string>
     <string name="stfs_product_item_discount_label_percentage_format_range">%1s-%2s\%%</string>
-    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di %2s lokasi</string>
+    <string name="stfs_product_item_total_stock_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]> di Beberapa Lokasi</string>
     <string name="stfs_product_item_total_stock_non_multi_loc_format">Stok Campaign: <![CDATA[<b>%1s</b>]]></string>
     <string name="stfs_product_item_manage_button_text">Atur Diskon</string>
     <string name="stfs_product_item_edit_button_text">Ubah</string>

@@ -3,7 +3,9 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultBinding
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemCampaignCriteriaResultContentBinding
@@ -14,17 +16,29 @@ import com.tokopedia.utils.currency.CurrencyFormatUtil
 
 class CampaignCriteriaCheckingResultViewHolder(
     private val binding: StfsItemCampaignCriteriaResultBinding,
-    private val onTickerClick: (locationResult: List<CriteriaCheckingResult.LocationCheckingResult>) -> Unit
+    private val onTickerClick: (locationResult: List<CriteriaCheckingResult.LocationCheckingResult>) -> Unit,
+    isVariant: Boolean,
 ) : RecyclerView.ViewHolder(binding.root) {
 
     init {
+        if (isVariant) initIconExpandListener()
+        else setupNonVariant()
+        adjustLayoutItemWidth(binding.layoutContent)
+    }
+
+    private fun initIconExpandListener() {
         binding.iconExpand.setOnClickListener {
             binding.layoutContent.root.apply {
                 isVisible = !isVisible
                 setExpandIcon(isVisible)
             }
         }
-        adjustLayoutItemWidth(binding.layoutContent)
+    }
+
+    private fun setupNonVariant() {
+        binding.iconExpand.gone()
+        binding.tfVariantName.gone()
+        binding.layoutContent.root.visible()
     }
 
     private fun setExpandIcon(isContentVisible: Boolean) {

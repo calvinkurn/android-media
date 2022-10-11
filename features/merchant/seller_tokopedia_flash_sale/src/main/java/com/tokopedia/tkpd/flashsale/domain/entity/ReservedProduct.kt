@@ -26,17 +26,19 @@ data class ReservedProduct(
         val warehouses: List<Warehouse>
     ) : Parcelable {
 
-        fun getTotalLocation(): Int {
+        fun getTotalDiscountedLocation(): Int {
             return if (isParentProduct) {
-                childProducts.sumOf {
-                    it.warehouses.filteredWarehouse().size
-                }
+                childProducts.map { childProduct ->
+                    childProduct.warehouses.filteredWarehouse().map { warehouse ->
+                        warehouse
+                    }
+                }.flatten().distinctBy { it.warehouseId }.size
             } else {
-                warehouses.filteredWarehouse().size
+                warehouses.filteredWarehouse().distinctBy { it.warehouseId }.size
             }
         }
 
-        fun getCampaignStock(): Long {
+        fun getDiscountedProductCampaignStock(): Long {
             return if (isParentProduct) {
                 childProducts.sumOf {
                     it.warehouses.filteredWarehouse().getWarehouseDiscountedStock()
@@ -109,7 +111,7 @@ data class ReservedProduct(
         }
 
         fun List<Warehouse>.filteredWarehouse(): List<Warehouse> {
-            return filter { !it.isDisabled && !it.discountSetup.stock.isZero()}
+            return filter { !it.isDisabled && !it.discountSetup.stock.isZero() && it.isToggleOn}
         }
 
         @Parcelize

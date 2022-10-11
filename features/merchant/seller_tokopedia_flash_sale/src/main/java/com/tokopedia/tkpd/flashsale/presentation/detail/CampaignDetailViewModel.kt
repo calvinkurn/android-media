@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.tkpd.flashsale.common.extension.*
 import com.tokopedia.tkpd.flashsale.data.request.GetFlashSaleSubmittedProductListRequest
@@ -22,6 +23,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.Ong
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
+import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.ProductCriteriaModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
@@ -67,6 +69,10 @@ class CampaignDetailViewModel @Inject constructor(
     private var _flashSaleRegistrationResult = MutableLiveData<FlashSaleRegistrationResult>()
     val flashSaleRegistrationResult: LiveData<FlashSaleRegistrationResult>
         get() = _flashSaleRegistrationResult
+
+    private var _submittedProductVariant = MutableLiveData<List<ProductCheckingResult>>()
+    val submittedProductVariant: LiveData<List<ProductCheckingResult>>
+        get() = _submittedProductVariant
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
@@ -136,6 +142,27 @@ class CampaignDetailViewModel @Inject constructor(
             },
             onError = { error ->
                 _submittedProduct.postValue(Fail(error))
+            }
+        )
+    }
+
+    fun getSubmittedProductVariant(campaignId: Long, productId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getFlashSaleSubmittedProductListUseCase.execute(
+                    productId = productId,
+                    campaignId = campaignId,
+                    pagination = GetFlashSaleSubmittedProductListRequest.Pagination(
+                        PAGE_SIZE,
+                        Int.ZERO
+                    )
+                )
+                _submittedProductVariant.postValue(
+                    ProductCheckingResultMapper.map(result.productList))
+            },
+            onError = { error ->
+                _error.postValue(error)
             }
         )
     }

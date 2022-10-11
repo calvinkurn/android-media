@@ -55,6 +55,8 @@ class VariantViewHolder(
                 tickerPriceError.gone()
                 textFieldPriceDiscountNominal.editText.setText(discount?.price.toStringOrEmpty())
                 textFieldPriceDiscountPercentage.editText.setText(discount?.discount.toStringOrEmpty())
+                quantityEditor.minValue = criteria.minCustomStock
+                quantityEditor.maxValue = criteria.maxCustomStock
                 quantityEditor.editText.setText(discount?.stock.orZero().toString())
                 textQuantityEditorTitle.text =
                     root.context.getString(R.string.manageproductnonvar_stock_title)

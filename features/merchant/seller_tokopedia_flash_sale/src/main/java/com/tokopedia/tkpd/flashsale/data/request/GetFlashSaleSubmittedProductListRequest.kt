@@ -8,10 +8,10 @@ data class GetFlashSaleSubmittedProductListRequest(
     val requestHeader: SubmittedProductListRequestHeader = SubmittedProductListRequestHeader(),
     @SuppressLint("Invalid Data Type")
     @SerializedName("campaign_id")
-    val campaignId: Int = 0,
+    val campaignId: Long = 0,
     @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
-    val productId: Int = 0,
+    val productId: Long = 0,
     @SerializedName("pagination")
     val pagination: Pagination = Pagination(),
     @SerializedName("filter")
