@@ -716,7 +716,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
      * please remove this function if [ItemContainerChipGroupViewHolder] has stable
      */
     override fun showVariantWithChipGroup(): Boolean {
-        return remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP, true)
+        return remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP, false)
     }
 
     private fun onSaveButtonClicked() {
