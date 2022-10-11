@@ -143,7 +143,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        viewModel.setMiniCartData(miniCartSimplifiedData)
+        viewModel.getMiniCart()
     }
 
     override fun onQuantityChanged(productId: String, shopId: String, quantity: Int) {
