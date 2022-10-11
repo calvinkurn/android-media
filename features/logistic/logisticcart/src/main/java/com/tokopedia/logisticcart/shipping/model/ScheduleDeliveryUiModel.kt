@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.model
 import android.os.Parcelable
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -21,7 +22,8 @@ data class ScheduleDeliveryUiModel(
     // selected delivery products
     var deliveryProduct: DeliveryProduct? = null,
     // show coach mark
-    var isNeedShowCoachMark: Boolean = false
+    var isNeedShowCoachMark: Boolean = false,
+    var notice: Notice
 ) : Parcelable {
 
     fun setScheduleDateAndTimeslotId(

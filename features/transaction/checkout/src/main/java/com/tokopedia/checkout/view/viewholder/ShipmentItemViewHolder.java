@@ -24,6 +24,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -1841,6 +1842,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             if (shipperId == id) return true;
         }
         return false;
+    }
+
+    @NonNull
+    @Override
+    public FragmentManager getHostFragmentManager() {
+        return mActionListener.getCurrentFragmentManager();
     }
 
     private interface SaveStateDebounceListener {
