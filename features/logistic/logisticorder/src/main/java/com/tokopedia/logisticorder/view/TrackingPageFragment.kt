@@ -229,6 +229,7 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
 
     private fun setTippingData(data: TrackingDataModel) {
         val tippingData = data.tipping
+        val driverData = data.lastDriver
         binding?.tippingGojekLayout?.apply {
             if (tippingData.status == OPEN) {
                 imgFindDriver.setImageUrl(ICON_OPEN_TIPPING_GOJEK)
@@ -248,22 +249,23 @@ class TrackingPageFragment : BaseDaggerFragment(), TrackingHistoryAdapter.OnImag
                     tippingDescription.setTextColor(textColor)
                 }
             }
-            if (tippingData.tippingLastDriver.name.isEmpty()) {
+
+            if (driverData.name.isEmpty()) {
                 driverName.text = getString(R.string.driver_not_found_title)
                 driverPhone.text = getString(R.string.driver_not_found_subtitle)
                 btnInformation.visibility = View.GONE
             } else {
-                if (tippingData.tippingLastDriver.photo.isNotEmpty()) {
-                    imgDriver.setImageUrl(tippingData.tippingLastDriver.photo)
+                if (driverData.photo.isNotEmpty()) {
+                    imgDriver.setImageUrl(driverData.photo)
                 }
-                driverName.text = tippingData.tippingLastDriver.name
-                driverPhone.text = tippingData.tippingLastDriver.licenseNumber
+                driverName.text = driverData.name
+                driverPhone.text = driverData.licenseNumber
             }
 
-            if (tippingData.tippingLastDriver.phone.isNotEmpty()) {
+            if (driverData.phone.isNotEmpty()) {
                 btnCall.setOnClickListener {
                     val callIntent = Intent(Intent.ACTION_DIAL).apply {
-                        this.data = Uri.parse("tel:${tippingData.tippingLastDriver.phone}")
+                        this.data = Uri.parse("tel:${driverData.phone}")
                     }
                     startActivity(callIntent)
                 }

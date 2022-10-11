@@ -25,6 +25,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_PRIVACY_POLICY
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PAGE_TERM_AND_CONDITION
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.network.refreshtoken.EncoderDecoder
 import com.tokopedia.profilecompletion.R
@@ -65,262 +66,268 @@ open class AddNameRegisterPhoneFragment : BaseDaggerFragment(), AddNameListener.
     lateinit var userSession: UserSessionInterface
 
     companion object {
-	val MIN_NAME = 3
-	val MAX_NAME = 35
+        val MIN_NAME = 3
+        val MAX_NAME = 35
 
-	fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
-	    val fragment = AddNameRegisterPhoneFragment()
-	    fragment.arguments = bundle
-	    return fragment
-	}
+		private const val SPAN_34 = 34
+		private const val SPAN_54 = 54
+		private const val SPAN_61 = 61
+		private const val SPAN_78 = 78
+		private const val FLAG_0 = 0
+
+		fun createInstance(bundle: Bundle): AddNameRegisterPhoneFragment {
+            val fragment = AddNameRegisterPhoneFragment()
+            fragment.arguments = bundle
+            return fragment
+        }
     }
 
     override fun getScreenName(): String {
-	return ""
+        return ""
     }
 
     override fun initInjector() {
-	if (activity != null && activity?.application != null) {
-	    DaggerAddNameComponent.builder().baseAppComponent(
-		((activity as Activity).application as BaseMainApplication).baseAppComponent
-	    )
-		.build()
-		.inject(this)
-	}
+        if (activity != null && activity?.application != null) {
+            DaggerAddNameComponent.builder().baseAppComponent(
+                ((activity as Activity).application as BaseMainApplication).baseAppComponent
+            )
+                .build()
+                .inject(this)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-	super.onCreate(savedInstanceState)
-	ColorUtils.setBackgroundColor(context, activity)
-	phoneNumber = getParamString(
-	    ApplinkConstInternalGlobal.PARAM_PHONE,
-	    arguments,
-	    savedInstanceState,
-	    ""
-	)
-	uuid =
-	    getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
+        super.onCreate(savedInstanceState)
+        ColorUtils.setBackgroundColor(context, activity)
+        phoneNumber = getParamString(
+            ApplinkConstInternalGlobal.PARAM_PHONE,
+            arguments,
+            savedInstanceState,
+            ""
+        )
+        uuid =
+            getParamString(ApplinkConstInternalGlobal.PARAM_UUID, arguments, savedInstanceState, "")
     }
 
     override fun onCreateView(
-	inflater: LayoutInflater,
-	container: ViewGroup?,
-	savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-	splitCompatInstall()
+        splitCompatInstall()
 
-	return try {
-	    val view = inflater.inflate(
-		com.tokopedia.profilecompletion.R.layout.fragment_add_name_register,
-		container,
-		false
-	    )
-	    bottomInfo = view.findViewById(R.id.bottom_info)
-	    progressBar = view.findViewById(R.id.progress_bar)
-	    mainContent = view.findViewById(R.id.main_content)
-	    textName = view.findViewById(R.id.et_name)
-	    btnNext = view.findViewById(R.id.btn_continue)
-	    view
-	} catch (e: Throwable) {
-	    e.printStackTrace();
-	    null
-	}
+        return try {
+            val view = inflater.inflate(
+                com.tokopedia.profilecompletion.R.layout.fragment_add_name_register,
+                container,
+                false
+            )
+            bottomInfo = view.findViewById(R.id.bottom_info)
+            progressBar = view.findViewById(R.id.progress_bar)
+            mainContent = view.findViewById(R.id.main_content)
+            textName = view.findViewById(R.id.et_name)
+            btnNext = view.findViewById(R.id.btn_continue)
+            view
+        } catch (e: Throwable) {
+            e.printStackTrace();
+            null
+        }
 
     }
 
     private fun splitCompatInstall() {
-	activity?.let {
-	    SplitCompat.installActivity(it)
-	}
+        activity?.let {
+            SplitCompat.installActivity(it)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-	super.onViewCreated(view, savedInstanceState)
-	presenter.attachView(this)
-	setView()
-	setViewListener()
-	btnNext?.let { disableButton(it) }
+        super.onViewCreated(view, savedInstanceState)
+        presenter.attachView(this)
+        setView()
+        setViewListener()
+        btnNext?.let { disableButton(it) }
     }
 
     private fun setViewListener() {
-	textName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
-	    override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+        textName?.textFieldInput?.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
 
-	    }
+            }
 
-	    override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
-		if (charSequence.isNotEmpty()) {
-		    btnNext?.let { enableButton(it) }
-		} else {
-		    btnNext?.let { disableButton(it) }
-		}
-		if (isError) {
-		    hideValidationError()
-		}
-	    }
+            override fun onTextChanged(charSequence: CharSequence, i: Int, i1: Int, i2: Int) {
+                if (charSequence.isNotEmpty()) {
+                    btnNext?.let { enableButton(it) }
+                } else {
+                    btnNext?.let { disableButton(it) }
+                }
+                if (isError) {
+                    hideValidationError()
+                }
+            }
 
-	    override fun afterTextChanged(editable: Editable) {
+            override fun afterTextChanged(editable: Editable) {
 
-	    }
-	})
+            }
+        })
 
-	btnNext?.setOnClickListener { onContinueClick() }
+        btnNext?.setOnClickListener { onContinueClick() }
     }
 
     private fun onContinueClick() {
-	KeyboardHandler.DropKeyboard(activity, view)
-	phoneNumber?.let {
-	    registerPhoneAndName(textName?.textFieldInput?.text.toString(), it)
-	    analytics.trackClickFinishAddNameButton()
-	}
+        KeyboardHandler.DropKeyboard(activity, view)
+        phoneNumber?.let {
+            registerPhoneAndName(textName?.textFieldInput?.text.toString(), it)
+            analytics.trackClickFinishAddNameButton()
+        }
     }
 
     private fun registerPhoneAndName(name: String, phoneNumber: String) {
-	if (isValidate(name)) {
-	    presenter.registerPhoneNumberAndName(name, phoneNumber)
-	}
+        if (isValidate(name)) {
+            presenter.registerPhoneNumberAndName(name, phoneNumber)
+        }
     }
 
     private fun isValidate(name: String): Boolean {
-	context?.let {
-	    if (name.length < MIN_NAME) {
-		showValidationError(it.resources.getString(R.string.error_name_too_short))
-		analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_short))
-		return false
-	    }
-	    if (name.length > MAX_NAME) {
-		showValidationError(it.resources.getString(R.string.error_name_too_long))
-		analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_long))
-		return false
-	    }
-	    hideValidationError()
-	}
-	return true
+        context?.let {
+            if (name.length < MIN_NAME) {
+                showValidationError(it.resources.getString(R.string.error_name_too_short))
+                analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_short))
+                return false
+            }
+            if (name.length > MAX_NAME) {
+                showValidationError(it.resources.getString(R.string.error_name_too_long))
+                analytics.trackErrorFinishAddNameButton(it.resources.getString(R.string.error_name_too_long))
+                return false
+            }
+            hideValidationError()
+        }
+        return true
     }
 
     private fun setView() {
-	btnNext?.let { disableButton(it) }
-	initTermPrivacyView()
+        btnNext?.let { disableButton(it) }
+        initTermPrivacyView()
     }
 
     private fun initTermPrivacyView() {
-	context?.let {
-	    val msg = getString(R.string.profile_completion_detail_term_and_privacy)
-	    if (msg.isNotEmpty()) {
-		val termPrivacy =
-		    SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
-		termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), 34, 54, 0)
-		termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), 61, 78, 0)
-		termPrivacy.setSpan(
-		    ForegroundColorSpan(
-			ContextCompat.getColor(
-			    it,
-			    com.tokopedia.unifyprinciples.R.color.Unify_G500
-			)
-		    ), 34, 54, 0
-		)
-		termPrivacy.setSpan(
-		    ForegroundColorSpan(
-			ContextCompat.getColor(
-			    it,
-			    com.tokopedia.unifyprinciples.R.color.Unify_G500
-			)
-		    ), 61, 78, 0
-		)
+        context?.let {
+            val msg = getString(R.string.profile_completion_detail_term_and_privacy)
+            if (msg.isNotEmpty()) {
+                val termPrivacy =
+                    SpannableString(getString(R.string.profile_completion_detail_term_and_privacy))
+                termPrivacy.setSpan(clickableSpan(PAGE_TERM_AND_CONDITION), SPAN_34, SPAN_54, FLAG_0)
+                termPrivacy.setSpan(clickableSpan(PAGE_PRIVACY_POLICY), SPAN_61, SPAN_78, FLAG_0)
+                termPrivacy.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    ), SPAN_34, SPAN_54, FLAG_0
+                )
+                termPrivacy.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            it,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    ), SPAN_61, SPAN_78, FLAG_0
+                )
 
-		bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
-		bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
-		bottomInfo?.isSelected = false
-	    }
-	}
+                bottomInfo?.setText(termPrivacy, TextView.BufferType.SPANNABLE)
+                bottomInfo?.movementMethod = LinkMovementMethod.getInstance()
+                bottomInfo?.isSelected = false
+            }
+        }
     }
 
     private fun clickableSpan(page: String): ClickableSpan {
-	return object : ClickableSpan() {
-	    override fun onClick(widget: View) {
-		context?.let {
-		    startActivity(
-			RouteManager.getIntent(
-			    it,
-			    ApplinkConstInternalGlobal.TERM_PRIVACY,
-			    page
-			)
-		    )
-		}
-	    }
+        return object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                context?.let {
+                    startActivity(
+                        RouteManager.getIntent(
+                            it,
+                            ApplinkConstInternalUserPlatform.TERM_PRIVACY,
+                            page
+                        )
+                    )
+                }
+            }
 
-	    override fun updateDrawState(ds: TextPaint) {
-		super.updateDrawState(ds)
-		ds.isUnderlineText = false
-		ds.color = ContextCompat.getColor(
-		    requireContext(),
-		    com.tokopedia.unifyprinciples.R.color.Unify_G400
-		)
-	    }
-	}
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = false
+                ds.color = ContextCompat.getColor(
+                    requireContext(),
+                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                )
+            }
+        }
     }
 
     private fun hideValidationError() {
-	isError = false
-	textName?.setError(false)
-	textName?.setMessage("")
+        isError = false
+        textName?.setError(false)
+        textName?.setMessage("")
     }
 
     private fun showValidationError(errorMessage: String) {
-	isError = true
-	textName?.setError(true)
-	textName?.setMessage(errorMessage)
+        isError = true
+        textName?.setError(true)
+        textName?.setMessage(errorMessage)
     }
 
     private fun enableButton(button: UnifyButton) {
-	button.isEnabled = true
+        button.isEnabled = true
     }
 
     private fun disableButton(button: TextView) {
-	button.isEnabled = false
+        button.isEnabled = false
     }
 
     override fun showLoading() {
-	mainContent?.visibility = View.GONE
-	progressBar?.visibility = View.VISIBLE
+        mainContent?.visibility = View.GONE
+        progressBar?.visibility = View.VISIBLE
     }
 
     fun dismissLoading() {
-	mainContent?.visibility = View.VISIBLE
-	progressBar?.visibility = View.GONE
+        mainContent?.visibility = View.VISIBLE
+        progressBar?.visibility = View.GONE
     }
 
     override fun onErrorRegister(throwable: Throwable) {
-	userSession.clearToken()
-	dismissLoading()
-	showValidationError(ErrorHandler.getErrorMessage(context, throwable))
-	analytics.trackErrorFinishAddNameButton(ErrorHandler.getErrorMessage(context, throwable))
+        userSession.clearToken()
+        dismissLoading()
+        showValidationError(ErrorHandler.getErrorMessage(context, throwable))
+        analytics.trackErrorFinishAddNameButton(ErrorHandler.getErrorMessage(context, throwable))
 
     }
 
     override fun onSuccessRegister(registerInfo: RegisterInfo) {
-	userSession.clearToken()
-	userSession.setToken(
-	    registerInfo.accessToken,
-	    "Bearer",
-	    EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV)
-	)
+        userSession.clearToken()
+        userSession.setToken(
+            registerInfo.accessToken,
+            "Bearer",
+            EncoderDecoder.Encrypt(registerInfo.refreshToken, userSession.refreshTokenIV)
+        )
 
-	activity?.run {
-	    dismissLoading()
-	    analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)
+        activity?.run {
+            dismissLoading()
+            analytics.trackSuccessRegisterPhoneNumber(registerInfo.userId)
 
-	    setResult(Activity.RESULT_OK, Intent().apply {
-		putExtras(Bundle().apply {
-		    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
-		    putExtra(
-			ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA,
-			registerInfo.enableSkip2Fa
-		    )
-		})
-	    })
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtras(Bundle().apply {
+                    putExtra(ApplinkConstInternalGlobal.PARAM_ENABLE_2FA, registerInfo.enable2Fa)
+                    putExtra(
+                        ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA,
+                        registerInfo.enableSkip2Fa
+                    )
+                })
+            })
 
-	    finish()
-	}
+            finish()
+        }
     }
 }

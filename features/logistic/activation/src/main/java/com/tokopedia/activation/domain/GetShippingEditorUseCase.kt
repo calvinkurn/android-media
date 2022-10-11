@@ -12,15 +12,15 @@ class GetShippingEditorUseCase @Inject constructor(private val graphqlUseCase: G
 
     override suspend fun executeOnBackground(): ShippingEditorModel {
         graphqlUseCase.setGraphqlQuery(QUERY)
-        graphqlUseCase.setRequestParams(mapOf(PARAM_USER_ID to useCaseRequestParams.getInt(PARAM_USER_ID, 0 )))
+        graphqlUseCase.setRequestParams(mapOf(PARAM_USER_ID to useCaseRequestParams.getLong(PARAM_USER_ID, 0 )))
         graphqlUseCase.setTypeClass(ShippingEditorResponse::class.java)
         val result = graphqlUseCase.executeOnBackground()
         return mapper.convertToUIModel(result.keroGetShippingEditor.data.activatedShipping)
     }
 
-    fun generateRequestParams(userId: Int): RequestParams {
+    fun generateRequestParams(userId: Long): RequestParams {
         return RequestParams.create().apply {
-            putInt(PARAM_USER_ID, userId)
+            putLong(PARAM_USER_ID, userId)
         }
     }
 

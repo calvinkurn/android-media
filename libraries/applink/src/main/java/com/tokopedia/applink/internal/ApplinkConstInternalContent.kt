@@ -31,7 +31,7 @@ object ApplinkConstInternalContent {
 
     const val SHOP_POST_PICKER = "$INTERNAL_CONTENT/content-shop/picker"
 
-    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}/"
+    const val PROFILE_DETAIL = "${DeeplinkConstant.SCHEME_INTERNAL}://people/{user_id}"
 
     const val HOST_PLAY = "play"
     const val INTERNAL_PLAY = "${DeeplinkConstant.SCHEME_INTERNAL}://$HOST_PLAY"

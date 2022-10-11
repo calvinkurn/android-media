@@ -1,7 +1,7 @@
 package com.tokopedia.flight.resend_eticket.domain
 
 import com.tokopedia.flight.resend_eticket.data.FlightOrderDetailResendETicketEntity
-import com.tokopedia.flight.resend_eticket.data.FlightOrderGqlConst
+import com.tokopedia.flight.resend_eticket.data.QueryFlightOrder
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -21,7 +21,7 @@ class FlightOrderResendEmailUseCase @Inject constructor(
 
         val params = mapOf(PARAM_INVOICE_ID to invoiceId,
             PARAM_EMAIL to userEmail)
-        val graphqlRequest = GraphqlRequest(FlightOrderGqlConst.QUERY_RESEND_E_TICKET,
+        val graphqlRequest = GraphqlRequest(QueryFlightOrder(),
             FlightOrderDetailResendETicketEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 

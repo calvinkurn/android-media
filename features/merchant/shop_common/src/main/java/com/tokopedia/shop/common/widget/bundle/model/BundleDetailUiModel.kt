@@ -14,5 +14,8 @@ data class BundleDetailUiModel(
     var isSelected: Boolean = false,
     var totalSold: Int = 0,
     var shopInfo: BundleShopUiModel? = null,
-    var products: List<BundleProductUiModel> = emptyList()
+    var products: List<BundleProductUiModel> = emptyList(),
+    val productSoldInfo: String = "",
+    val useProductSoldInfo: Boolean = false,
+    var applink: String = "",
 )

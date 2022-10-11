@@ -44,6 +44,8 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     val pinpointValidation: LiveData<Result<PinpointValidationResponse.PinpointValidations.PinpointValidationResponseData>>
         get() = _pinpointValidation
 
+    var source: String = ""
+
     fun getDistrictDetail(districtId: String) {
         viewModelScope.launch {
             try {
@@ -58,7 +60,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun getAddressDetail(addressId: String) {
         viewModelScope.launch {
             try {
-                val addressDetail = repo.getAddressDetail(addressId)
+                val addressDetail = repo.getAddressDetail(addressId, source)
                 _addressDetail.value = Success(addressDetail)
             } catch (e: Throwable) {
                 _addressDetail.value = Fail(e)
@@ -80,7 +82,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveAddress(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val saveAddressData = repo.saveAddress(model)
+                val saveAddressData = repo.saveAddress(model, source)
                 _saveAddress.value = Success(saveAddressData.keroAddAddress.data)
             } catch (e: Throwable) {
                 _saveAddress.value = Fail(e)
@@ -91,7 +93,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
     fun saveEditAddress(model: SaveAddressDataModel) {
         viewModelScope.launch {
             try {
-                val editAddressData = repo.editAddress(model)
+                val editAddressData = repo.editAddress(model, source)
                 _editAddress.value = Success(editAddressData.keroEditAddress.data)
             } catch (e: Throwable) {
                 _editAddress.value = Fail(e)

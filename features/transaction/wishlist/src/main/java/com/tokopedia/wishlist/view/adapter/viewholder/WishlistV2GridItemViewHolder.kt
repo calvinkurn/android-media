@@ -60,19 +60,19 @@ class WishlistV2GridItemViewHolder(private val binding: WishlistV2GridItemBindin
         binding.wishlistCheckbox.skipAnimation()
         binding.wishlistCheckbox.setOnClickListener {
             if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         buttonSecondary.gone()
         rlPrimaryButton.gone()
         binding.pcGridItem.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
             if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
         binding.root.setOnClickListener {
             binding.wishlistCheckbox.isChecked = !binding.wishlistCheckbox.isChecked
             if (isAutoSelected) actionListener?.onUncheckAutomatedBulkDelete(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
-            else actionListener?.onCheckBulkDeleteOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
+            else actionListener?.onCheckBulkOption(item.wishlistItem.id, binding.wishlistCheckbox.isChecked, position)
         }
     }
 

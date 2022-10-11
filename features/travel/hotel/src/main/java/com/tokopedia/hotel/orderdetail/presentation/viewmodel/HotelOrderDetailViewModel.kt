@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
 import com.tokopedia.common.travel.domain.TravelCrossSellingUseCase
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.hotel.orderdetail.data.model.HotelOrderDetail
 import com.tokopedia.hotel.orderdetail.usecase.GetHotelOrderDetailUseCase
 import com.tokopedia.usecase.coroutines.Result
@@ -23,7 +24,7 @@ class HotelOrderDetailViewModel @Inject constructor(dispatcher: CoroutineDispatc
     val orderDetailData = MutableLiveData<Result<HotelOrderDetail>>()
     val crossSellData = MutableLiveData<Result<TravelCrossSelling>>()
 
-    fun getOrderDetail(orderDetailQuery: String, crossSellQuery: String?, orderId: String, orderCategory: String) {
+    fun getOrderDetail(orderDetailQuery: GqlQueryInterface, crossSellQuery: GqlQueryInterface?, orderId: String, orderCategory: String) {
         launch {
             orderDetailData.postValue(useCase.execute(orderDetailQuery, orderId, orderCategory, true))
             if (crossSellQuery != null) crossSellData.postValue(crossSellingUseCase.execute(crossSellQuery, orderId, TravelCrossSellingUseCase.PARAM_HOTEL_PRODUCT))

@@ -1,21 +1,15 @@
 package com.tokopedia.analyticsdebugger.cassava.di
 
-import android.app.Activity
-import android.app.Application
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.google.gson.GsonBuilder
-import com.tokopedia.abstraction.common.di.scope.ApplicationScope
 import com.tokopedia.analyticsdebugger.cassava.data.api.CassavaApi
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
+import com.tokopedia.analyticsdebugger.cassava.data.CassavaDatabase
 import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDao
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.url.TokopediaUrl
 import dagger.Module
 import dagger.Provides
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -45,7 +39,7 @@ class CassavaModule() {
 
     @Provides
     fun provideGtmDao(context: Context): GtmLogDao {
-        return TkpdAnalyticsDatabase.getInstance(context).gtmLogDao()
+        return CassavaDatabase.getInstance(context).cassavaDao()
     }
 
 }

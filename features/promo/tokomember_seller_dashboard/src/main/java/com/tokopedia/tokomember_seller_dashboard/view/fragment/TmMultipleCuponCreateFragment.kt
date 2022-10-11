@@ -64,10 +64,11 @@ import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_DESC_END
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE
 import com.tokopedia.tokomember_seller_dashboard.util.DATE_TITLE_END
-import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_CTA_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_DESC_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE
+import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_NO_INTERNET
 import com.tokopedia.tokomember_seller_dashboard.util.ERROR_CREATING_TITLE_RETRY
 import com.tokopedia.tokomember_seller_dashboard.util.ErrorState
 import com.tokopedia.tokomember_seller_dashboard.util.PREMIUM
@@ -97,6 +98,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.getTimeInMillis
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setDatePreview
 import com.tokopedia.tokomember_seller_dashboard.util.TmDateUtil.setTime
 import com.tokopedia.tokomember_seller_dashboard.util.TmFileUtil
+import com.tokopedia.tokomember_seller_dashboard.util.TmInternetCheck
 import com.tokopedia.tokomember_seller_dashboard.util.TokoLiveDataResult
 import com.tokopedia.tokomember_seller_dashboard.util.VIP
 import com.tokopedia.tokomember_seller_dashboard.util.locale
@@ -123,6 +125,15 @@ import kotlinx.android.synthetic.main.tm_dash_tnc_coupon_creation.view.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+
+private const val MINUTE_30 = 30
+private const val MINUTE_59 = 59
+private const val HOUR_4 = 4
+private const val HOUR_20 = 20
+private const val HOUR_23 = 23
+private const val ROTATION_180 = 180f
+private const val PROGRESS_67 = 67
+private const val PROGRESS_80 = 80
 
 class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
@@ -161,6 +172,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private var isDateManual = false
     private var programType = ""
     private var periodMonth = 0
+    private var firstTimeStart = false
+    private var firstTimeEnd = false
+    private var tmCouponStartTimeUnix : Calendar? = null
+    private var tmCouponEndTimeUnix : Calendar? = null
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -210,7 +225,47 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         observeViewModel()
 
         tmEligibilityViewModel.getSellerInfo()
-        tmDashCreateViewModel.getInitialCouponData(CREATE, "")
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.getInitialCouponData(CREATE, "")
+        }
+        else{
+            noInternetUi { tmDashCreateViewModel.getInitialCouponData(CREATE, "") }
+        }
+    }
+
+    private fun noInternetUi(action: () -> Unit) {
+        //show no internet bottomsheet
+
+        val bundle = Bundle()
+        val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
+            ERROR_CREATING_TITLE_NO_INTERNET,
+            ERROR_CREATING_DESC_NO_INTERNET,
+            "",
+            RETRY,
+            errorCount = retryCount,
+            showSecondaryCta = true
+        )
+        bundle.putString(TokomemberBottomsheet.ARG_BOTTOMSHEET, Gson().toJson(tmIntroBottomsheetModel))
+        val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
+        bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
+            override fun onButtonClick(errorCount: Int) {
+                action()
+            }})
+        if(programActionType == ProgramActionType.CREATE){
+            bottomsheet.setSecondaryCta {
+                arguments?.getInt(BUNDLE_SHOP_ID)?.let {
+                    TokomemberDashIntroActivity.openActivity(
+                        it,
+                        arguments?.getString(BUNDLE_SHOP_AVATAR).toString(),
+                        arguments?.getString(BUNDLE_SHOP_NAME).toString(),
+                        context = context
+                    )
+                }
+                activity?.finish()
+            }
+        }
+        bottomsheet.show(childFragmentManager,"")
+        setButtonState()
     }
 
     override fun getScreenName() = ""
@@ -333,14 +388,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                             if(programActionType == ProgramActionType.EXTEND){
                                 source = SOURCE_MULTIPLE_COUPON_EXTEND
                             }
-                            tmDashCreateViewModel.validateProgram(
-                                arguments?.getInt(
-                                    BUNDLE_SHOP_ID
-                                ).toString(),
-                                getTimeInMillis(updatedStartTimeCoupon),
-                                getTimeInMillis(updatedEndTimeCoupon),
-                                source
-                            )
+                            validateProgram(source)
                         } else {
                             closeLoadingDialog()
                             view?.let { v ->
@@ -469,6 +517,22 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         })
     }
 
+    private fun validateProgram(source: String) {
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.validateProgram(
+                arguments?.getInt(
+                    BUNDLE_SHOP_ID
+                ).toString(),
+                getTimeInMillis(updatedStartTimeCoupon),
+                getTimeInMillis(updatedEndTimeCoupon),
+                source
+            )
+        }
+        else{
+            noInternetUi{validateProgram(source)}
+        }
+    }
+
     private fun handleServerError(){
         setButtonState()
         closeLoadingDialog()
@@ -498,7 +562,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
     private fun handleDataError(){
         containerViewFlipper.displayedChild = ERROR
         globalError.setActionClickListener {
-            tmDashCreateViewModel.getInitialCouponData(CREATE, "")
+
+            if (TmInternetCheck.isConnectedToInternet(context)) {
+                tmDashCreateViewModel.getInitialCouponData(CREATE, "")
+            }
+            else{
+                noInternetUi{ handleDataError()}
+            }
         }
     }
 
@@ -636,14 +706,30 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bottomSheet.setUpBottomSheetListener(object : BottomSheetClickListener {
             override fun onButtonClick(errorCount: Int) {
                 when (errorCount) {
-                    0 -> tmDashCreateViewModel.validateProgram(
-                        arguments?.getInt(
-                            BUNDLE_SHOP_ID
-                        ).toString(),
-                        getTimeInMillis(updatedStartTimeCoupon),
-                        getTimeInMillis(updatedEndTimeCoupon),
-                        SOURCE_MULTIPLE_COUPON_CREATE
-                    )
+                    0 -> {
+
+                        if (TmInternetCheck.isConnectedToInternet(context)) {
+                            tmDashCreateViewModel.validateProgram(
+                                arguments?.getInt(
+                                    BUNDLE_SHOP_ID
+                                ).toString(),
+                                getTimeInMillis(updatedStartTimeCoupon),
+                                getTimeInMillis(updatedEndTimeCoupon),
+                                SOURCE_MULTIPLE_COUPON_CREATE
+                            )
+                        }
+                        else{
+                            noInternetUi{
+                                tmDashCreateViewModel.validateProgram(
+                                    arguments?.getInt(
+                                        BUNDLE_SHOP_ID
+                                    ).toString(),
+                                    getTimeInMillis(updatedStartTimeCoupon),
+                                    getTimeInMillis(updatedEndTimeCoupon),
+                                    SOURCE_MULTIPLE_COUPON_CREATE
+                                )}
+                        }
+                    }
                     else -> {
                         if (programActionType == ProgramActionType.CREATE) {
                             (TokomemberDashIntroActivity.openActivity(
@@ -717,10 +803,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         when (programActionType) {
             ProgramActionType.EXTEND -> {
                 val startDate = GregorianCalendar(locale)
-                startDate.add(Calendar.HOUR, 4)
+                startDate.add(Calendar.HOUR, HOUR_4)
                 val minuteCurrent = startDate.get(Calendar.MINUTE)
-                if (minuteCurrent <= 30) {
-                    startDate.set(Calendar.MINUTE, 30)
+                if (minuteCurrent <= MINUTE_30) {
+                    startDate.set(Calendar.MINUTE, MINUTE_30)
                 } else {
                     startDate.add(Calendar.HOUR_OF_DAY, 1)
                     startDate.set(Calendar.MINUTE, 0)
@@ -731,8 +817,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 manualEndTimeProgram = TmDateUtil.addDuration(timeWindow?.endTime ?: "", periodMonth)
                 val maxProgramEndDate = GregorianCalendar(locale)
                 maxProgramEndDate.add(Calendar.YEAR, 1)
-                maxProgramEndDate.set(Calendar.HOUR_OF_DAY,23)
-                maxProgramEndDate.set(Calendar.MINUTE,59)
+                maxProgramEndDate.set(Calendar.HOUR_OF_DAY, HOUR_23)
+                maxProgramEndDate.set(Calendar.MINUTE, MINUTE_59)
                 val endDate = GregorianCalendar(locale)
                 val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
                 endDate.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
@@ -752,12 +838,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 //currentDate 14 july time jo bhi hoga
                 //currentStartDate 15 july 00:00
                 manualStartTimeProgram =
-                    if (currentHour >= 20 && checkYesterDay(currentDate, currentStartDate)) {
+                    if (currentHour >= HOUR_20 && checkYesterDay(currentDate, currentStartDate)) {
                         currentDate.set(Calendar.HOUR_OF_DAY,currentHour)
                         currentDate.set(Calendar.MINUTE,0)
-                        currentDate.add(Calendar.HOUR,4)
-                        if (minuteCurrent <= 30) {
-                            currentDate.set(Calendar.MINUTE, 30)
+                        currentDate.add(Calendar.HOUR, HOUR_4)
+                        if (minuteCurrent <= MINUTE_30) {
+                            currentDate.set(Calendar.MINUTE, MINUTE_30)
                         } else {
                             currentDate.add(Calendar.HOUR_OF_DAY, 1)
                             currentDate.set(Calendar.MINUTE, 0)
@@ -810,7 +896,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             progressKupon?.apply {
                 progressBarColorType = ProgressBarUnify.COLOR_GREEN
                 progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                setValue(80, false)
+                setValue(PROGRESS_80, false)
             }
 
             title = COUPON_HEADER_TITLE
@@ -829,7 +915,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     progressKupon?.apply {
                         progressBarColorType = ProgressBarUnify.COLOR_GREEN
                         progressBarHeight = ProgressBarUnify.SIZE_SMALL
-                        setValue(67, false)
+                        setValue(PROGRESS_67, false)
                     }
                 }
                 ProgramActionType.EXTEND ->{
@@ -905,6 +991,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 it.isClickable = false
                 couponPremiumData = tmPremiumCoupon?.getSingleCouponData()
                 couponVip = tmVipCoupon?.getSingleCouponData()
+
                 preValidateCouponPremium(couponPremiumData)
             }
         }
@@ -934,7 +1021,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
             }
         }
-        tmDashCreateViewModel.preValidateMultipleCoupon(validationRequest)
+
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.preValidateMultipleCoupon(validationRequest)
+        }
+        else{
+            noInternetUi{ preValidateCouponVip(coupon) }
+        }
     }
 
     private fun preValidateCouponPremium(couponPremiumData: TmSingleCouponData?) {
@@ -962,7 +1055,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 }
             }
         }
-        tmDashCreateViewModel.preValidateCoupon(validationRequest)
+        if (TmInternetCheck.isConnectedToInternet(context)) {
+            tmDashCreateViewModel.preValidateCoupon(validationRequest)
+        }
+        else{
+            noInternetUi{ preValidateCouponPremium(couponPremiumData)}
+        }
     }
 
     private fun uploadImagePremium() {
@@ -973,7 +1071,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 tmCouponListPremiumItemPreview = TmCouponListItemPreview(
                     file.absolutePath, "Premium", couponPremiumData?.quota ?: "100"
                 )
-                tmDashCreateViewModel.uploadImagePremium(file)
+
+                if (TmInternetCheck.isConnectedToInternet(context)) {
+                    tmDashCreateViewModel.uploadImagePremium(file)
+                }
+                else{
+                    noInternetUi{ uploadImagePremium() }
+                }
             }
         }
     }
@@ -986,7 +1090,13 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 tmCouponListVipItemPreview = TmCouponListItemPreview(
                     file.absolutePath, "VIP", couponVip?.quota ?: "100"
                 )
-                tmDashCreateViewModel.uploadImageVip(file)
+
+                if (TmInternetCheck.isConnectedToInternet(context)) {
+                    tmDashCreateViewModel.uploadImageVip(file)                }
+                else{
+                    noInternetUi{tmDashCreateViewModel.uploadImageVip(file)}
+                }
+
             }
         }
     }
@@ -1000,7 +1110,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         icArrowPremium.setOnClickListener {
             isCollapsedPremium = if (isCollapsedPremium) {
-                icArrowPremium?.animate()?.rotation(180f)?.duration = 100L
+                icArrowPremium?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmPremiumCoupon)
                 !isCollapsedPremium
             } else{
@@ -1012,7 +1122,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
 
         icArrowVip.setOnClickListener {
             isCollapsedVip = if (isCollapsedVip) {
-                icArrowVip?.animate()?.rotation(180f)?.duration = 100L
+                icArrowVip?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmVipCoupon)
                 !isCollapsedVip
             } else{
@@ -1147,26 +1257,37 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var day = 0
         var dayInId = ""
         context?.let {
+            val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             val currentDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
             val maxDate = GregorianCalendar(LocaleUtils.getCurrentLocale(it))
 
             when(type){
                  0 -> {
                      val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                     minDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                      currentDate.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
                      maxDate.time = currentDate.time
                      maxDate.add(Calendar.YEAR, 1)
+
+                     if(updatedStartTimeCoupon.isNotEmpty() && firstTimeStart){
+                         currentDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
+                     }
                  }
 
                 1 -> {
                     val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    minDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
                     currentDate.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
                     maxDate.time = currentDate.time
                     maxDate.add(Calendar.YEAR, 1)
+
+                    if(updatedEndTimeCoupon.isNotEmpty() && firstTimeEnd){
+                        currentDate.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
+                    }
                 }
             }
 
-            val datepickerObject = DateTimePickerUnify(it, currentDate, currentDate, maxDate).apply {
+            val datepickerObject = DateTimePickerUnify(it, minDate, currentDate, maxDate).apply {
                 setTitle(title)
                 setInfo(desc)
                 setInfoVisible(true)
@@ -1187,6 +1308,8 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 couponStartDate = selectedCalendar?.time?.let { dateTime ->
                                     convertDateTime(dateTime)
                                 }.toString()
+
+                                firstTimeStart = true
                                 updatedStartTimeCoupon = couponStartDate.substring(0, couponStartDate.length-2)
                                 couponStartDate = couponStartDate.substringBefore(" ")
                             }
@@ -1194,6 +1317,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                                 couponEndDate = selectedCalendar?.time?.let { dateTime ->
                                     convertDateTime(dateTime)
                                 }.toString()
+                                firstTimeEnd = true
                                 updatedEndTimeCoupon = couponEndDate.substring(0, couponEndDate.length-2)
                                 couponEndDate = couponEndDate.substringBefore(" ")
                             }
@@ -1224,12 +1348,21 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         var selectedHour = ""
         var selectedMinute = ""
         context?.let { ctx ->
-            val currentDate =
-                GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            val defaultTime = GregorianCalendar(LocaleUtils.getCurrentLocale(ctx))
+            when(type){
+                0 -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    defaultTime.time = sdf.parse(manualStartTimeProgram + "00") ?: Date()
+                }
+                1 -> {
+                    val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                    defaultTime.time = sdf.parse(manualEndTimeProgram + "00") ?: Date()
+                }
+            }
             val maxDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
                     set(Calendar.HOUR_OF_DAY, 23)
-                    set(Calendar.MINUTE, 59)
+                    set(Calendar.MINUTE, MINUTE_59)
                 }
             val minDate =
                 GregorianCalendar(LocaleUtils.getCurrentLocale(ctx)).apply {
@@ -1237,10 +1370,17 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     set(Calendar.MINUTE, 0)
                 }
 
+            if(tmCouponStartTimeUnix != null && type == 0 && firstTimeStart){
+                defaultTime.time = tmCouponStartTimeUnix?.time
+            }
+            if(tmCouponEndTimeUnix != null && type == 1 && firstTimeEnd){
+                defaultTime.time = tmCouponEndTimeUnix?.time
+            }
+
             val timerPickerUnify = DateTimePickerUnify(
                 context = ctx,
                 minDate = minDate,
-                defaultDate = currentDate,
+                defaultDate = defaultTime,
                 maxDate = maxDate,
                 type = DateTimePickerUnify.TYPE_TIMEPICKER
             ).apply {
@@ -1249,20 +1389,33 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 setInfoVisible(true)
                 minuteInterval = 30
                 datePickerButton.setOnClickListener {
-                    startTime = getDate()
                     selectedHour = timePicker.hourPicker.activeValue
                     selectedMinute = timePicker.minutePicker.activeValue
 
                     when (type) {
                         0 -> {
+                            startTime = getDate()
+                            firstTimeStart = true
                             couponStartTime = "$selectedHour:$selectedMinute"
-                            updatedStartTimeCoupon = startTime?.time?.let { dateTime ->
+                            tmCouponStartTimeUnix = startTime
+                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                            tmCouponStartTimeUnix?.time = sdf.parse(updatedStartTimeCoupon + "00") ?: Date()
+                            tmCouponStartTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
+                            tmCouponStartTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            updatedStartTimeCoupon = tmCouponStartTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
                         }
                         1 -> {
+                            startTime = getDate()
+                            firstTimeEnd = true
                             couponEndTime = "$selectedHour:$selectedMinute"
-                            updatedEndTimeCoupon = startTime?.time?.let { dateTime ->
+                            tmCouponEndTimeUnix = startTime
+                            val sdf = SimpleDateFormat(SIMPLE_DATE_FORMAT, locale)
+                            tmCouponEndTimeUnix?.time = sdf.parse(updatedEndTimeCoupon + "00") ?: Date()
+                            tmCouponEndTimeUnix?.set(Calendar.HOUR_OF_DAY, selectedHour.toInt())
+                            tmCouponEndTimeUnix?.set(Calendar.MINUTE, selectedMinute.toInt())
+                            updatedEndTimeCoupon = tmCouponEndTimeUnix?.time?.let { dateTime ->
                                 convertDateTime(dateTime)
                             }.toString()
                         }

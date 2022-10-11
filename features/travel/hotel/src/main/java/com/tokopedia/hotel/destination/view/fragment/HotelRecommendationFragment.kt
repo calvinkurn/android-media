@@ -23,7 +23,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.common.util.ErrorHandlerHotel
-import com.tokopedia.hotel.common.util.HotelGqlMutation
+import com.tokopedia.hotel.common.util.MutationDeleteRecentSearchUUID
 import com.tokopedia.hotel.databinding.FragmentHotelRecommendationBinding
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.data.model.RecentSearch
@@ -224,12 +224,12 @@ class HotelRecommendationFragment : BaseListFragment<PopularSearch, PopularSearc
 
     override fun onDeleteRecentSearchItem(uuid: String) {
         if (recentSearchAdapter.itemCount == 0) recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, uuid)
+        destinationViewModel.deleteRecentSearch(MutationDeleteRecentSearchUUID(), uuid)
     }
 
     override fun onDeleteAllRecentSearch() {
         recentSearchLayout.visibility = View.GONE
-        destinationViewModel.deleteRecentSearch(HotelGqlMutation.DELETE_RECENT_SEARCH_UUID, "")
+        destinationViewModel.deleteRecentSearch(MutationDeleteRecentSearchUUID(), "")
     }
 
     override fun onItemClicked(recentSearch: RecentSearch) {

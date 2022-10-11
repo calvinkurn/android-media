@@ -14,12 +14,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.databinding.WidgetCreateReviewProductCardBinding
 import com.tokopedia.review.feature.createreputation.model.ProductData
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProductCardUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewProductCard @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L
@@ -56,15 +58,19 @@ class CreateReviewProductCard @JvmOverloads constructor(
         }
     }
 
-    fun updateUi(uiState: CreateReviewProductCardUiState) {
+    fun updateUi(uiState: CreateReviewProductCardUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewProductCardUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewProductCardUiState.Showing -> {
                 binding.showProductCard(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

@@ -23,11 +23,18 @@ import com.tokopedia.common.topupbills.data.product.CatalogOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoFavoriteNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
+import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
+import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.common.topupbills.utils.generateRechargeCheckoutToken
 import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
+import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
 import com.tokopedia.common_digital.atc.utils.DeviceUtil
 import com.tokopedia.common_digital.common.constant.DigitalExtraParam
+import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
 import com.tokopedia.digital_product_detail.R
 import com.tokopedia.digital_product_detail.data.model.data.DigitalCatalogOperatorSelectGroup
 import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant
@@ -35,15 +42,10 @@ import com.tokopedia.digital_product_detail.data.model.data.DigitalPDPConstant.L
 import com.tokopedia.digital_product_detail.data.model.param.GeneralExtraParam
 import com.tokopedia.digital_product_detail.databinding.FragmentDigitalPdpTagihanBinding
 import com.tokopedia.digital_product_detail.di.DigitalPDPComponent
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.PrefillModel
-import com.tokopedia.common.topupbills.favoritepdp.util.FavoriteNumberType
 import com.tokopedia.digital_product_detail.presentation.bottomsheet.MoreInfoPDPBottomsheet
 import com.tokopedia.digital_product_detail.presentation.listener.DigitalHistoryIconListener
-import com.tokopedia.common_digital.common.util.DigitalKeyboardWatcher
-import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPAnalytics
+import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPCategoryUtil
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPWidgetMapper
 import com.tokopedia.digital_product_detail.presentation.viewmodel.DigitalPDPTagihanViewModel
 import com.tokopedia.kotlin.extensions.view.getDimens
@@ -60,12 +62,13 @@ import com.tokopedia.recharge_component.listener.ClientNumberFilterChipListener
 import com.tokopedia.recharge_component.listener.ClientNumberInputFieldListener
 import com.tokopedia.recharge_component.listener.ClientNumberSortFilterListener
 import com.tokopedia.recharge_component.listener.RechargeSimplifyWidgetListener
-import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.InputNumberActionType
-import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
-import com.tokopedia.common.topupbills.view.model.TopupBillsAutoCompleteContactModel
+import com.tokopedia.recharge_component.model.client_number.InputFieldType
 import com.tokopedia.recharge_component.model.client_number.RechargeClientNumberChipModel
 import com.tokopedia.recharge_component.result.RechargeNetworkResult
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -84,8 +87,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     ClientNumberInputFieldListener,
     ClientNumberFilterChipListener,
     ClientNumberAutoCompleteListener,
-    ClientNumberSortFilterListener
-{
+    ClientNumberSortFilterListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -110,6 +112,10 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
     private var inputNumberActionType = InputNumberActionType.MANUAL
     private var actionTypeTrackingJob: Job? = null
     private var loader: LoaderDialog? = null
+
+    private val remoteConfig: RemoteConfig by lazy {
+        FirebaseRemoteConfigImpl(context)
+    }
 
     override fun initInjector() {
         getComponent(DigitalPDPComponent::class.java).inject(this)
@@ -267,12 +273,12 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             val digitalTelcoExtraParam = this.getParcelable(DigitalPDPConstant.EXTRA_PARAM)
                 ?: GeneralExtraParam()
             clientNumber = digitalTelcoExtraParam.clientNumber
-            productId = digitalTelcoExtraParam.productId.toIntOrNull() ?: 0
+            productId = digitalTelcoExtraParam.productId.toIntOrZero()
             if (digitalTelcoExtraParam.categoryId.isNotEmpty()) {
-                categoryId = digitalTelcoExtraParam.categoryId.toInt()
+                categoryId = digitalTelcoExtraParam.categoryId.toIntOrZero()
             }
             if (digitalTelcoExtraParam.menuId.isNotEmpty()) {
-                menuId = digitalTelcoExtraParam.menuId.toIntOrNull() ?: 0
+                menuId = digitalTelcoExtraParam.menuId.toIntOrZero()
             }
             operatorId = digitalTelcoExtraParam.operatorId
         }
@@ -361,7 +367,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             setFilterChipShimmer(false, favoriteChips.isEmpty())
             if (favoriteChips.isNotEmpty()) {
                 setFavoriteNumber(
-                    DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips))
+                    DigitalPDPWidgetMapper.mapFavoriteChipsToWidgetModels(favoriteChips)
+                )
 
                 val extendedPadding = getDimens(unifyDimens.layout_lvl8)
                 binding?.rechargePdpTagihanListrikSvContainer?.setPadding(0, extendedPadding, 0, 0)
@@ -373,7 +380,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
         binding?.rechargePdpTagihanListrikClientNumberWidget?.run {
             if (autoComplete.isNotEmpty()) {
                 setAutoCompleteList(
-                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete))
+                    DigitalPDPWidgetMapper.mapAutoCompletesToWidgetModels(autoComplete)
+                )
             }
         }
     }
@@ -454,7 +462,7 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             setFavoriteNumberLoading()
             getFavoriteNumbers(
                 listOf(categoryId),
-                viewModel.operatorList.map { it.id.toInt() },
+                viewModel.operatorList.map { it.id.toIntOrZero() },
                 favoriteNumberTypes
             )
         }
@@ -715,7 +723,8 @@ class DigitalPDPTagihanFragment : BaseDaggerFragment(),
             addToCart(
                 DeviceUtil.getDigitalIdentifierParam(requireActivity()),
                 DigitalSubscriptionParams(),
-                userSession.userId
+                userSession.userId,
+                remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_RECHARGE_ATC_CHECKOUT_GQL, true)
             )
         }
     }

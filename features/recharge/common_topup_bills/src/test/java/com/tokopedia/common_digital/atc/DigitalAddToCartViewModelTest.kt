@@ -1,16 +1,12 @@
 package com.tokopedia.common_digital.atc
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.google.gson.reflect.TypeToken
-import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.common.topupbills.response.CommonTopupbillsDummyData.getDummyCartData
 import com.tokopedia.common_digital.atc.DigitalAddToCartViewModel.Companion.MESSAGE_ERROR_NON_LOGIN
 import com.tokopedia.common_digital.atc.data.response.DigitalSubscriptionParams
-import com.tokopedia.common_digital.atc.data.response.ResponseCartData
 import com.tokopedia.common_digital.cart.data.entity.requestbody.RequestBodyIdentifier
 import com.tokopedia.common_digital.cart.view.model.DigitalCheckoutPassData
 import com.tokopedia.common_digital.common.RechargeAnalytics
-import com.tokopedia.network.data.model.response.DataResponse
+import com.tokopedia.common_digital.common.presentation.model.DigitalAtcTrackingModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -18,14 +14,12 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.lang.reflect.Type
 
 class DigitalAddToCartViewModelTest {
 
@@ -49,7 +43,8 @@ class DigitalAddToCartViewModelTest {
     fun setUp() {
         MockKAnnotations.init(this)
         digitalAddToCartViewModel = DigitalAddToCartViewModel(
-                digitalAddToCartUseCase, userSession, dispatcher, rechargeAnalytics)
+            digitalAddToCartUseCase, userSession, dispatcher, rechargeAnalytics
+        )
     }
 
     @Test
@@ -59,9 +54,10 @@ class DigitalAddToCartViewModelTest {
 
         // When
         digitalAddToCartViewModel.addToCart(
-                DigitalCheckoutPassData(),
-                RequestBodyIdentifier(),
-                DigitalSubscriptionParams()
+            DigitalCheckoutPassData(),
+            RequestBodyIdentifier(),
+            DigitalSubscriptionParams(),
+            false
         )
 
         // Then
@@ -76,48 +72,61 @@ class DigitalAddToCartViewModelTest {
     @Test
     fun addToCart_loggedIn_returnsSuccessData() {
         // Given
-        val dataResponse = DataResponse<ResponseCartData>()
-        dataResponse.data = getDummyCartData(isNull = false)
+        val dummyResponse = DigitalAtcTrackingModel(
+            cartId = "17211378",
+            productId = "",
+            operatorName = "",
+            categoryId = "",
+            categoryName = "",
+            priceText = "",
+            pricePlain = 0.0,
+            isInstantCheckout = false,
+            source = 0,
+            userId = "123",
+            isSpecialProduct = false,
+            channelId = ""
+        )
 
-        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
-        val response = RestResponse(dataResponse, 200, false)
-        val responseMap = mapOf<Type, RestResponse>(token to response)
-
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+        } returns dummyResponse
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(),
+            DigitalSubscriptionParams(),
+            false
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value
-        Assert.assertNotNull(resultData)
+        assertNotNull(resultData)
         assert(resultData is Success)
     }
 
     @Test
     fun addToCart_loggedInNullId_returnsNoConnectionError() {
         // Given
-        val dataResponse = DataResponse<ResponseCartData>()
-        dataResponse.data = getDummyCartData(isNull = true)
-
-        val token = object : TypeToken<DataResponse<ResponseCartData>>() {}.type
-        val response = RestResponse(dataResponse, 200, false)
-        val responseMap = mapOf<Type, RestResponse>(token to response)
-
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } returns responseMap
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+        } returns null
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(),
+            DigitalSubscriptionParams(),
+            false
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value
@@ -133,19 +142,25 @@ class DigitalAddToCartViewModelTest {
         // Given
         val errorMessage = "this is error message"
         val throwable = Throwable(errorMessage)
-        coEvery { digitalAddToCartUseCase.executeOnBackground() } throws throwable
+        coEvery {
+            digitalAddToCartUseCase.execute(any(), any(), any(), any(), any(), any())
+        } throws throwable
         coEvery { userSession.isLoggedIn } returns true
         coEvery { userSession.userId } returns "123"
 
         // When
         val digitalCheckoutPassData = DigitalCheckoutPassData()
         digitalCheckoutPassData.categoryId = "1"
-        digitalAddToCartViewModel.addToCart(digitalCheckoutPassData,
-                RequestBodyIdentifier(), DigitalSubscriptionParams())
+        digitalAddToCartViewModel.addToCart(
+            digitalCheckoutPassData,
+            RequestBodyIdentifier(),
+            DigitalSubscriptionParams(),
+            false
+        )
 
         // Then
         val resultData = digitalAddToCartViewModel.addToCartResult.value
-        Assert.assertNotNull(resultData)
+        assertNotNull(resultData)
         assert(resultData is Fail)
 
         val throwableResult = (resultData as Fail).throwable

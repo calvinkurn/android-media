@@ -54,6 +54,7 @@ private const val OTOMATIS_LEARN_MORE_LINK = "https://seller.tokopedia.com/edu/t
 
 class BaseEditKeywordFragment : BaseDaggerFragment(), EditKeywordsFragment.ButtonAction {
 
+    val isBidAutomatic : Boolean get() = autoBidSwitch?.isBidAutomatic ?: false
     private var autoBidSwitch: TopadsAutoBidSwitchPartialLayout? = null
     private var keywordGroup: LinearLayout? = null
     private var autoBidTicker: Ticker? = null

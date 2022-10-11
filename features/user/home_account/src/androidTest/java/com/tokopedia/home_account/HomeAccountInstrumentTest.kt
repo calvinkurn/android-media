@@ -50,7 +50,8 @@ class HomeAccountInstrumentTest : HomeAccountTest() {
     @Test
     fun click_more_account_settings() {
         runTest {
-            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
+            Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(
+                Activity.RESULT_OK, null))
             onView(withId(R.id.home_account_member_layout_member_forward)).check(matches(isDisplayed())).perform(click())
         }.validate(QueryUtils.queryMoreSettings("Member"))
     }

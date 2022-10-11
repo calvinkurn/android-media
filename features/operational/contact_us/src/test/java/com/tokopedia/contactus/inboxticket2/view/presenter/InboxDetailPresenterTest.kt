@@ -1,6 +1,9 @@
 package com.tokopedia.contactus.inboxticket2.view.presenter
 
 import android.app.Activity
+import android.content.Intent
+import android.text.TextWatcher
+import android.view.MenuItem
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.contactus.common.analytics.ContactUsTracking
 import com.tokopedia.contactus.common.analytics.InboxTicketTracking
@@ -22,10 +25,11 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
-import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.Assert.*
+
 
 @ExperimentalCoroutinesApi
 class InboxDetailPresenterTest {
@@ -50,6 +54,7 @@ class InboxDetailPresenterTest {
     private lateinit var presenter: InboxDetailPresenter
 
     private lateinit var view: InboxDetailContract.InboxDetailView
+    private var viewNullable: InboxDetailContract.InboxDetailView? = null
 
 
     @Before
@@ -78,11 +83,12 @@ class InboxDetailPresenterTest {
                 uploadImageUseCase,
                 chipUploadHostConfigUseCase,
                 secureUploadUseCase,
-                userSession, testRule.dispatchers)
+                userSession, testRule.dispatchers
+            )
         )
 
         view = mockk(relaxed = true)
-        presenter.attachView(view)
+        viewNullable = mockk(relaxed = true)
     }
 
 
@@ -98,6 +104,8 @@ class InboxDetailPresenterTest {
     @Test
     fun `check getTicketDetails`() {
 
+        presenter.attachView(view)
+
         coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns mockk(relaxed = true)
 
         presenter.getTicketDetails("")
@@ -108,7 +116,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of renderMessageList on invocation of getTicketDetails when success`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
         val responseData = mockk<Data>(relaxed = true)
         val utils = mockk<Utils>(relaxed = true)
@@ -133,7 +141,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of getCommentsWithTopItem on invocation of getTicketDetails when success and comments empty`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
         val responseData = mockk<Data>(relaxed = true)
         val utils = mockk<Utils>(relaxed = true)
@@ -166,7 +174,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of getShortTime on invocation of getTicketDetails when success and comments create time not empty`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
         val responseData = mockk<Data>(relaxed = true)
         val utils = mockk<Utils>(relaxed = true)
@@ -199,7 +207,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideProgressBar on invocation of getTicketDetails when success`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>()
         val responseData = mockk<Data>()
         val utils = mockk<Utils>(relaxed = true)
@@ -223,7 +231,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showNoTicketView on invocation of getTicketDetails when not success`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
         val responseData = mockk<Data>()
 
@@ -246,7 +254,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check onSearchSubmitted`() {
-
+        presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
         every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
@@ -258,7 +266,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of initializeIndicesList on invocation onSearchSubmitted`() {
-
+        presenter.attachView(view)
         val ticketDetail = Tickets()
         val commentsItem = CommentsItem()
         commentsItem.messagePlaintext = "a string with dummy text"
@@ -283,7 +291,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideProgressBar on invocation onSearchSubmitted`() {
-
+        presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
         every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
@@ -294,7 +302,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of enterSearchMode on invocation onSearchSubmitted`() {
-
+        presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
         every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
@@ -305,7 +313,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of sendGTMInboxTicket on invocation onSearchSubmitted when searchIndices size greater than 0`() {
-
+        presenter.attachView(view)
         val ticketDetail = Tickets()
         val commentsItem = CommentsItem()
         commentsItem.messagePlaintext = "a string with dummy text"
@@ -330,7 +338,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of setSnackBarErrorMessage on invocation onSearchSubmitted when searchIndices size is 0`() {
-
+        presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
         every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
@@ -342,24 +350,38 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of sendGTMInboxTicket on invocation onSearchSubmitted when searchIndices size is 0`() {
-
+        presenter.attachView(view)
         mockkStatic(ContactUsTracking::class)
         every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
 
         presenter.onSearchSubmitted("dummy")
 
         verify {
-            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), InboxTicketTracking.Label.NoResult)
+            ContactUsTracking.sendGTMInboxTicket(
+                any(),
+                any(),
+                any(),
+                any(),
+                InboxTicketTracking.Label.NoResult
+            )
         }
 
     }
 
     @Test
     fun `check invocation of hideProgressBar on invocation onSearchSubmitted when exception in search method`() {
-
+        presenter.attachView(view)
         runBlockingTest {
             mockkStatic(ContactUsTracking::class)
-            every { ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any()) } just runs
+            every {
+                ContactUsTracking.sendGTMInboxTicket(
+                    any(),
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                )
+            } just runs
 
             every { view.enterSearchMode(any(), any()) } throws Exception("getting exception")
 
@@ -372,7 +394,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check search is not invoked  on invocation onSearchSubmitted text is empty`() {
-
+        presenter.attachView(view)
         presenter.onSearchSubmitted("")
 
         verify(exactly = 0) { view.showProgressBar() }
@@ -385,7 +407,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of onSearchSubmitted on invocation of onSearchTextChanged`() {
-
+        presenter.attachView(view)
         presenter.onSearchTextChanged("")
 
         verify { presenter.onSearchSubmitted(any()) }
@@ -399,7 +421,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of getTicketDetails on invocation of refreshLayout`() {
-
+        presenter.attachView(view)
         presenter.refreshLayout()
 
         verify { presenter.getTicketDetails(any()) }
@@ -413,29 +435,122 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of submitCsatRating on invocation of onActivityResult`() {
-
-        every { submitRatingUseCase.createRequestParams(any(), any(), any()) } returns mockk(relaxed = true)
+        presenter.attachView(view)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns mockk(relaxed = true)
 
-        presenter.onActivityResult(InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK, Activity.RESULT_OK, mockk(relaxed = true))
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            mockk(relaxed = true)
+        )
 
         verify { view.showProgressBar() }
 
     }
 
+    @Test
+    fun `check invocation of submitCsatRating on invocation of onActivityResult but data is Null`() {
+        presenter.attachView(view)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns mockk(relaxed = true)
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            null
+        )
+
+        verify { view.showProgressBar() }
+
+    }
+
+    @Test
+    fun `check invocation of submitCsatRating on invocation of onActivityResult but data is Null and view is null`() {
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns mockk(relaxed = true)
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            null
+        )
+
+        verify(exactly = 0) { view.showProgressBar() }
+    }
+
+    @Test
+    fun `check invocation of submitCsatRating on invocation getString return emptyString`() {
+        presenter.attachView(viewNullable)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns mockk(relaxed = true)
+
+        every { viewNullable?.getActivity()?.getString(any()) } returns null
+
+        mockkStatic(ContactUsTracking::class)
+        every {
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
+        } just runs
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            null
+        )
+
+        verify { viewNullable?.showMessage("") }
+    }
 
     @Test
     fun `check invocation of showErrorMessage on invocation of onActivityResult`() {
+        presenter.attachView(view)
         val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
 
-        every { submitRatingUseCase.createRequestParams(any(), any(), any()) } returns mockk(relaxed = true)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
 
         every { chipGetInboxDetail.messageError } returns listOf("error")
 
-        presenter.onActivityResult(InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK, Activity.RESULT_OK, mockk(relaxed = true))
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            mockk(relaxed = true)
+        )
 
         verify { view.showErrorMessage(any()) }
 
@@ -443,15 +558,26 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showMessage on invocation of onActivityResult`() {
+        presenter.attachView(view)
         val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
 
-        every { submitRatingUseCase.createRequestParams(any(), any(), any()) } returns mockk(relaxed = true)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
 
         every { chipGetInboxDetail.messageError } returns listOf()
 
-        presenter.onActivityResult(InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK, Activity.RESULT_OK, mockk(relaxed = true))
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            mockk(relaxed = true)
+        )
 
         verify { view.showMessage(any()) }
 
@@ -459,15 +585,26 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showIssueClosed on invocation of onActivityResult`() {
+        presenter.attachView(view)
         val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
 
-        every { submitRatingUseCase.createRequestParams(any(), any(), any()) } returns mockk(relaxed = true)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
 
         every { chipGetInboxDetail.messageError } returns listOf()
 
-        presenter.onActivityResult(InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK, Activity.RESULT_OK, mockk(relaxed = true))
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            mockk(relaxed = true)
+        )
 
         verify { view.showIssueClosed() }
 
@@ -495,12 +632,22 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideProgressBar on invocation of onActivityResult with exception`() {
-
-        every { submitRatingUseCase.createRequestParams(any(), any(), any()) } returns mockk(relaxed = true)
+        presenter.attachView(view)
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception("my exception")
 
-        presenter.onActivityResult(InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK, Activity.RESULT_OK, mockk(relaxed = true))
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            mockk(relaxed = true)
+        )
 
         verify { view.hideProgressBar() }
 
@@ -513,6 +660,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of setSnackBarErrorMessage on invocation onImageSelect and fileSize is not valid`() {
+        presenter.attachView(view)
         val utils = mockk<Utils>()
         every { presenter.getUtils() } returns utils
 
@@ -528,7 +676,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of setSnackBarErrorMessage on invocation onImageSelect and bitmapDimen is not valid`() {
-
+        presenter.attachView(view)
         val utils = mockk<Utils>()
         every { presenter.getUtils() } returns utils
 
@@ -546,7 +694,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of addImage on invocation onImageSelect and bitmapDimen and fileSize is valid`() {
-
+        presenter.attachView(view)
         val utils = mockk<Utils>()
         every { presenter.getUtils() } returns utils
 
@@ -569,7 +717,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of setSnackBarErrorMessage on invocation of isUploadImageValid when imageList is empty and attachment required`() {
-
+        presenter.attachView(view)
         val mTicketDetail = mockk<Tickets>(relaxed = true)
 
         every { presenter.mTicketDetail } returns mTicketDetail
@@ -589,7 +737,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideSendProgress on invocation of isUploadImageValid when imageList is empty and attachment required`() {
-
+        presenter.attachView(view)
         val mTicketDetail = mockk<Tickets>(relaxed = true)
 
         every { presenter.mTicketDetail } returns mTicketDetail
@@ -609,7 +757,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of isUploadImageValid when imageList is empty and attachment required`() {
-
+        presenter.attachView(view)
         val mTicketDetail = mockk<Tickets>(relaxed = true)
 
         every { presenter.mTicketDetail } returns mTicketDetail
@@ -629,7 +777,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of isUploadImageValid when imageList is not empty`() {
-
+        presenter.attachView(view)
         val utils = mockk<Utils>(relaxed = true)
 
         every { view.imageList } returns listOf(ImageUpload(), ImageUpload())
@@ -646,7 +794,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of isUploadImageValid when imageList is not empty and image is not valid`() {
-
+        presenter.attachView(view)
         val utils = mockk<Utils>(relaxed = true)
 
         every { view.imageList } returns listOf(ImageUpload(), ImageUpload())
@@ -663,7 +811,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of isUploadImageValid when imageList is empty`() {
-
+        presenter.attachView(view)
         every { view.imageList } returns listOf()
 
         presenter.isUploadImageValid
@@ -679,12 +827,15 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideSendProgress and setSnackBarErrorMessage on invocation of sendMessage when isUploadImageValid equals to 0`() {
-
+        presenter.attachView(view)
         val response = mockk<TicketReplyResponse>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 0
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java)} returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { response.ticketReply?.ticketReplyData?.status } returns ""
 
@@ -698,7 +849,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check updation of comment in Ticket on invocation of sendMessage when isUploadImageValid equals to 0`() {
-
+        presenter.attachView(view)
         val response = mockk<TicketReplyResponse>(relaxed = true)
         val tickets = Tickets()
         tickets.comments = mutableListOf()
@@ -708,7 +859,10 @@ class InboxDetailPresenterTest {
 
         every { presenter.isUploadImageValid } returns 0
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { response.ticketReply?.ticketReplyData?.status } returns "OK"
 
@@ -718,7 +872,9 @@ class InboxDetailPresenterTest {
 
         every { view.userMessage } returns "message"
 
-        every { view.updateAddComment(capture(slot)) } answers { actual = slot.captured.message?:""}
+        every { view.updateAddComment(capture(slot)) } answers {
+            actual = slot.captured.message ?: ""
+        }
 
         presenter.sendMessage()
 
@@ -729,7 +885,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideSendProgress invocation of sendMessage when isUploadImageValid equals to 0 throws exception`() {
-
+        presenter.attachView(view)
         val tickets = Tickets()
         tickets.comments = mutableListOf()
 
@@ -745,7 +901,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of setSnackBarErrorMessage invocation of sendMessage when isUploadImageValid returns -1`() {
-
+        presenter.attachView(view)
         every { presenter.isUploadImageValid } returns -1
 
         presenter.sendMessage()
@@ -756,8 +912,15 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK`() {
-
-        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "key")))
+        presenter.attachView(view)
+        val response = TicketReplyResponse(
+            TicketReplyResponse.TicketReply(
+                TicketReplyResponse.TicketReply.Data(
+                    status = "OK",
+                    postKey = "key"
+                )
+            )
+        )
 
         val utils = mockk<Utils>(relaxed = true)
 
@@ -770,11 +933,23 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns null
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -790,8 +965,15 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of sendMessageWithImages on invocation of sendMessage when isUploadImageValid returns 1 or more than 1 and response return status OK and postKey empty`() {
-
-        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "")))
+        presenter.attachView(view)
+        val response = TicketReplyResponse(
+            TicketReplyResponse.TicketReply(
+                TicketReplyResponse.TicketReply.Data(
+                    status = "OK",
+                    postKey = ""
+                )
+            )
+        )
 
         val utils = mockk<Utils>(relaxed = true)
 
@@ -804,11 +986,23 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns null
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -830,9 +1024,20 @@ class InboxDetailPresenterTest {
     */
     @Test
     fun `invocation of sendImages`() {
-
-        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "key")))
-        val response2 = StepTwoResponse(StepTwoResponse.TicketReplyAttach(StepTwoResponse.TicketReplyAttach.TicketReplyAttachData(isSuccess = 0)))
+        presenter.attachView(view)
+        val response = TicketReplyResponse(
+            TicketReplyResponse.TicketReply(
+                TicketReplyResponse.TicketReply.Data(
+                    status = "OK",
+                    postKey = "key"
+                )
+            )
+        )
+        val response2 = StepTwoResponse(
+            StepTwoResponse.TicketReplyAttach(
+                StepTwoResponse.TicketReplyAttach.TicketReplyAttachData(isSuccess = 0)
+            )
+        )
 
         val utils = mockk<Utils>(relaxed = true)
 
@@ -845,11 +1050,23 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns response2
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -872,8 +1089,15 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `invocation of sendImages with exception`() {
-
-        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "key")))
+        presenter.attachView(view)
+        val response = TicketReplyResponse(
+            TicketReplyResponse.TicketReply(
+                TicketReplyResponse.TicketReply.Data(
+                    status = "OK",
+                    postKey = "key"
+                )
+            )
+        )
         val utils = mockk<Utils>(relaxed = true)
 
         every { presenter.isUploadImageValid } returns 2
@@ -885,11 +1109,23 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } throws java.lang.Exception("my exception")
 
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         every { presenter.getUtils() } returns utils
 
@@ -912,9 +1148,20 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `invocation of addNewLocalComment`() {
-
-        val response = TicketReplyResponse(TicketReplyResponse.TicketReply(TicketReplyResponse.TicketReply.Data(status = "OK", postKey = "key")))
-        val response2 = StepTwoResponse(StepTwoResponse.TicketReplyAttach(StepTwoResponse.TicketReplyAttach.TicketReplyAttachData(isSuccess = 1)))
+        presenter.attachView(view)
+        val response = TicketReplyResponse(
+            TicketReplyResponse.TicketReply(
+                TicketReplyResponse.TicketReply.Data(
+                    status = "OK",
+                    postKey = "key"
+                )
+            )
+        )
+        val response2 = StepTwoResponse(
+            StepTwoResponse.TicketReplyAttach(
+                StepTwoResponse.TicketReplyAttach.TicketReplyAttachData(isSuccess = 1)
+            )
+        )
 
         val utils = mockk<Utils>(relaxed = true)
         val slot = slot<CommentsItem>()
@@ -931,8 +1178,20 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
-        coEvery { postMessageUseCase.getCreateTicketResult(any()).getData<TicketReplyResponse>(TicketReplyResponse::class.java) } returns response
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
+        coEvery {
+            postMessageUseCase.getCreateTicketResult(any())
+                .getData<TicketReplyResponse>(TicketReplyResponse::class.java)
+        } returns response
 
         coEvery { postMessageUseCase2.getInboxDataResponse(any()) } returns response2
 
@@ -944,9 +1203,13 @@ class InboxDetailPresenterTest {
 
         every { view.userMessage } returns "message"
 
-        every { view.updateAddComment(capture(slot)) } answers { actual = slot.captured.attachment?.getOrNull(0)?.thumbnail?:""}
+        every { view.updateAddComment(capture(slot)) } answers {
+            actual = slot.captured.attachment?.getOrNull(0)?.thumbnail ?: ""
+        }
 
-        coEvery { presenter.getSecurelyUploadedImages(any(), any()) } returns arrayListOf(ImageUpload())
+        coEvery { presenter.getSecurelyUploadedImages(any(), any()) } returns arrayListOf(
+            ImageUpload()
+        )
 
         presenter.sendMessage()
 
@@ -963,7 +1226,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `invocation of sendMessageWithImages with exception`() {
-
+        presenter.attachView(view)
 
         val utils = mockk<Utils>(relaxed = true)
 
@@ -976,7 +1239,16 @@ class InboxDetailPresenterTest {
 
         every { presenter.getUtils().getAttachmentAsString(any()) } returns ""
 
-        every { postMessageUseCase.createRequestParams(any(), any(), any(), any(), any(), any()) } returns mockk()
+        every {
+            postMessageUseCase.createRequestParams(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk()
 
         coEvery { postMessageUseCase.getCreateTicketResult(any()) } throws java.lang.Exception("my exception")
 
@@ -999,7 +1271,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showImagePreview on invocation of showImagePreview`() {
-
+        presenter.attachView(view)
         val attachmentItem = AttachmentItem()
         attachmentItem.url = "dummy url"
 
@@ -1021,7 +1293,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of searchIndices on invocation of getNextResult`() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf(1, 2)
 
         val result = presenter.getNextResult()
@@ -1034,7 +1306,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showMessage on invocation of getNextResult when searchIndices size is 1 `() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf(1)
         every { presenter.next } returns 0
 
@@ -1047,7 +1319,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showMessage on invocation of getNextResult when searchIndices size is 0`() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf()
 
         val result = presenter.getNextResult()
@@ -1064,7 +1336,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of searchIndices on invocation of getPreviousResult`() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf(1, 2)
         every { presenter.next } returns 1
 
@@ -1078,7 +1350,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showMessage on invocation of getPreviousResult when searchIndices size is 1 `() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf(1)
         every { presenter.next } returns 1
 
@@ -1091,7 +1363,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showMessage on invocation of getPreviousResult when searchIndices size is 0`() {
-
+        presenter.attachView(view)
         every { presenter.searchIndices } returns arrayListOf()
 
         val result = presenter.getPreviousResult()
@@ -1108,7 +1380,6 @@ class InboxDetailPresenterTest {
 
 //    @Test
 //    fun `check invocation of onClickEmoji on invocation of showImagePreview`() {
-//
 //        mockkStatic(ContactUsTracking::class)
 //        every {
 //            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any())
@@ -1134,7 +1405,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showErrorMessage on invocation of onClick`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
@@ -1149,7 +1420,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of onSuccessSubmitOfRating on invocation of onClick`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
 
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns response
@@ -1163,7 +1434,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideProgressBar on invocation of onClick when exception`() {
-
+        presenter.attachView(view)
         coEvery { submitRatingUseCase.getChipInboxDetail(any()) } throws Exception("my exception")
 
         presenter.onClick(true, 0, "dummy id")
@@ -1178,7 +1449,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of showErrorMessage on invocation of closeTicket`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
 
         coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
@@ -1192,7 +1463,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of OnSucessfullTicketClose on invocation of closeTicket`() {
-
+        presenter.attachView(view)
         val response = mockk<ChipGetInboxDetail>(relaxed = true)
 
         coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } returns response
@@ -1206,7 +1477,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check invocation of hideProgressBar on invocation of closeTicket`() {
-
+        presenter.attachView(view)
         coEvery { closeTicketByUserUseCase.getChipInboxDetail(any()) } throws Exception("my exception")
 
         presenter.closeTicket()
@@ -1222,7 +1493,7 @@ class InboxDetailPresenterTest {
 
     @Test
     fun `check value of getTicketStatus`() {
-
+        presenter.attachView(view)
         val tickets = Tickets()
         tickets.status = "status"
 
@@ -1236,7 +1507,7 @@ class InboxDetailPresenterTest {
     /******************************************getTicketStatus()***********************************/
 
     @Test
-    fun `check getUserId`(){
+    fun `check getUserId`() {
         every { userSession.userId } returns "123"
 
         val actual = presenter.getUserId()
@@ -1244,4 +1515,286 @@ class InboxDetailPresenterTest {
         assertEquals("123", actual)
     }
 
+    @Test
+    fun `is detachView running`() {
+        presenter.attachView(view)
+        presenter.detachView()
+    }
+
+    @Test
+    fun `is onDestroy running`() {
+        presenter.attachView(view)
+        presenter.onDestroy()
+    }
+
+    @Test
+    fun `is reAttachView running`() {
+        presenter.attachView(view)
+        presenter.reAttachView()
+    }
+
+    @Test
+    fun `is clickCloseSearch running`() {
+        presenter.attachView(view)
+        presenter.clickCloseSearch()
+    }
+
+    @Test
+    fun `check invocation of submitCsatRating on invocation of onActivityResult but intent extra is null`() {
+        presenter.attachView(view)
+        val responseIntent = mockk<Intent>(relaxed = true)
+        val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
+
+        every { responseIntent.data } returns null
+
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
+
+        every { chipGetInboxDetail.messageError } returns arrayListOf("ads", "bisa")
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            responseIntent
+        )
+
+        verify { view.showErrorMessage(any()) }
+    }
+
+    @Test
+    fun `check invocation of submitCsatRating on invocation of onActivityResult but intent extra and view is null`() {
+        val responseIntent = mockk<Intent>(relaxed = true)
+        val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
+
+        every { responseIntent.data } returns null
+
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
+
+        every { chipGetInboxDetail.messageError } returns arrayListOf("ads", "bisa")
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            responseIntent
+        )
+
+        verify(exactly = 0) { view.showErrorMessage(any()) }
+    }
+
+    @Test
+    fun `check getTicketDetails isShowingRating False`() {
+        val responseIntent = mockk<Intent>(relaxed = true)
+        val chipGetInboxDetail = mockk<ChipGetInboxDetail>(relaxed = true)
+
+        every { responseIntent.data } returns null
+
+        mockkStatic(ContactUsTracking::class)
+        every {
+            ContactUsTracking.sendGTMInboxTicket(any(), any(), any(), any(), any())
+        } just runs
+
+        every {
+            submitRatingUseCase.createRequestParams(
+                any(),
+                any(),
+                any()
+            )
+        } returns mockk(relaxed = true)
+
+        coEvery { submitRatingUseCase.getChipInboxDetail(any()) } returns chipGetInboxDetail
+
+        every { chipGetInboxDetail.messageError } returns arrayListOf()
+
+        presenter.onActivityResult(
+            InboxBaseContract.InboxBaseView.REQUEST_SUBMIT_FEEDBACK,
+            Activity.RESULT_OK,
+            responseIntent
+        )
+
+        val response = mockk<ChipGetInboxDetail>(relaxed = true)
+
+        coEvery { inboxOptionUseCase.getChipInboxDetail(any()) } returns response
+
+        every { response.data?.isSuccess } returns 1
+
+        presenter.getTicketDetails("")
+
+        assertEquals(false, presenter.mTicketDetail?.isShowRating)
+    }
+
+    @Test
+    fun `run get search listener`() {
+        presenter.attachView(view)
+        val actualResult = presenter.getSearchListener()
+        assertEquals(true, actualResult is InboxDetailPresenter)
+    }
+
+    @Test
+    fun `run on Options Item Selected is action search`() {
+        presenter.attachView(view)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 2131296681
+
+        val actualResult = presenter.onOptionsItemSelected(menu)
+        assertTrue(actualResult)
+        verify { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected is action search but view empty`() {
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 2131296681
+
+        val actualResult = presenter.onOptionsItemSelected(menu)
+        assertTrue(actualResult)
+        verify(exactly = 0) { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected not action search or home`() {
+        presenter.attachView(view)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 1
+
+        val actualResult = presenter.onOptionsItemSelected(menu)
+        assertFalse(actualResult)
+        verify(exactly = 0) { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home and view mode is search mode`() {
+        presenter.attachView(view)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns true
+
+        presenter.onOptionsItemSelected(menu)
+        verify { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home and view mode is search mode and show ratting true`() {
+        presenter.attachView(view)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns true
+        every { presenter.mTicketDetail?.isShowRating } returns true
+
+        presenter.onOptionsItemSelected(menu)
+        verify { view.toggleTextToolbar(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home and view mode is search mode and show ratting false plus status is CLOSED`() {
+        presenter.attachView(view)
+
+        mockkStatic(Utils::class)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns true
+        every { presenter.mTicketDetail?.isShowRating } returns false
+        every { presenter.mTicketDetail?.status } returns "closed"
+
+        presenter.onOptionsItemSelected(menu)
+        verify { view.showIssueClosed() }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home and view mode is search mode and show ratting false plus status is CLOSED but view null`() {
+
+        mockkStatic(Utils::class)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns true
+        every { presenter.mTicketDetail?.isShowRating } returns false
+        every { presenter.mTicketDetail?.status } returns "closed"
+
+        presenter.onOptionsItemSelected(menu)
+        verify(exactly = 0) { view.showIssueClosed() }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home and view mode is search mode and show ratting false plus status is CLOSED but view is null`() {
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns true
+        every { presenter.mTicketDetail?.isShowRating } returns false
+        every { presenter.mTicketDetail?.status } returns CLOSED.toString()
+
+        presenter.onOptionsItemSelected(menu)
+        verify(exactly = 0) { view.showIssueClosed() }
+    }
+
+    @Test
+    fun `run on Options Item Selected is home but view mode is not search mode`() {
+        presenter.attachView(view)
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 16908332
+        every { view.isSearchMode() } returns false
+
+        val actional = presenter.onOptionsItemSelected(menu)
+        assertFalse(actional)
+        verify(exactly = 0) { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run on Options Item Selected when view is null`() {
+        val menu = mockk<MenuItem>(relaxed = true)
+        every { menu.itemId } returns 1
+
+        presenter.onOptionsItemSelected(menu)
+        verify(exactly = 0) { view.toggleSearch(any()) }
+    }
+
+    @Test
+    fun `run and verify of textWatcher`() {
+        presenter.attachView(view)
+        val actualCase = presenter.watcher()
+        assertEquals(true, actualCase is TextWatcher)
+    }
+
+    @Test
+    fun `run and verify of textWatcher and is running on onTextChanged for size text minimum`() {
+        presenter.attachView(view)
+        val actualCase = presenter.watcher()
+        actualCase.onTextChanged("just only testing", mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
+        verify { view.setSubmitButtonEnabled(true) }
+    }
+
+    @Test
+    fun `run and verify of textWatcher and is running on onTextChanged for size text below minimum`() {
+        presenter.attachView(view)
+        val actualCase = presenter.watcher()
+        actualCase.onTextChanged("just only", mockk(relaxed = true), mockk(relaxed = true), mockk(relaxed = true))
+        verify { view.setSubmitButtonEnabled(false) }
+    }
+
+    @Test
+    fun `run and verify of textWatcher and is running on afterTextChanged`(){
+        presenter.attachView(view)
+        val actualCase = presenter.watcher()
+        actualCase.afterTextChanged(mockk(relaxed = true))
+    }
+
+    @Test
+    fun `run and verify of textWatcher and is running on beforeTextChanged`(){
+        presenter.attachView(view)
+        val actualCase = presenter.watcher()
+        actualCase.beforeTextChanged(mockk(relaxed = true),mockk(relaxed = true),mockk(relaxed = true),mockk(relaxed = true))
+    }
 }

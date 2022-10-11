@@ -16,8 +16,15 @@ buildscript {
 }
 
 android {
+    defaultConfig {
+        testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
+        testInstrumentationRunnerArguments clearPackageData: 'true'
+    }
     buildFeatures {
         buildConfig true
+    }
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
     }
 }
 
@@ -29,6 +36,12 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dataStore
     implementation rootProject.ext.miscDependencies.protobufLite
     implementation projectOrAar(rootProject.ext.libraries.encryption)
+    androidTestImplementation(rootProject.ext.testDependencies.androidxTest)
+    androidTestImplementation(rootProject.ext.testDependencies.workManagerTest)
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.testDependencies.androidTestRunner
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestUtil rootProject.ext.testDependencies.orchestrator
 }
 
 protobuf {

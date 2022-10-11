@@ -197,6 +197,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
                         else emptyList()
                     }
+
+                    override fun isEligibleForPin(): Boolean = false
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {
@@ -325,7 +327,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             when (val content = it.peekContent()) {
                 is NetworkResult.Fail -> {
                     binding.formTitle.setLoading(false)
-                    toaster.showError(content.error)
+                    toaster.showError(content.error, content.error.message)
                 }
                 is NetworkResult.Success -> {
                     if (!it.hasBeenHandled) {

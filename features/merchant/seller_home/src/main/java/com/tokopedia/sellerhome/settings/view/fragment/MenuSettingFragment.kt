@@ -51,6 +51,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import timber.log.Timber
 import javax.inject.Inject
 
 class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTypeFactory>(),
@@ -301,7 +302,7 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun addOrChangePassword() {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalGlobal.HAS_PASSWORD)
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.HAS_PASSWORD)
         startActivity(intent)
     }
 
@@ -311,13 +312,13 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
         sendIntent.action = Intent.ACTION_SEND
         sendIntent.putExtra(
             Intent.EXTRA_TEXT,
-            resources.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
+            context?.resources?.getString(R.string.msg_share_apps) + "\n" + urlPlayStore
         )
         sendIntent.type = "text/plain"
         activity?.startActivity(
             Intent.createChooser(
                 sendIntent,
-                resources.getText(R.string.title_share)
+                context?.resources?.getText(R.string.title_share)
             )
         )
     }
@@ -354,30 +355,34 @@ class MenuSettingFragment : BaseListFragment<SettingUiModel, OtherMenuAdapterTyp
     }
 
     private fun showLogoutDialog() {
-        var dialogBuilder: AlertDialog.Builder? = null
-        context?.let { dialogBuilder = AlertDialog.Builder(it) }
-        dialogBuilder?.apply {
-            setIcon(logoutIconDrawable)
-            setTitle(context.getString(R.string.seller_home_logout_title))
-            setMessage(context.getString(R.string.seller_home_logout_confirm))
-            setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
-                val progressDialog = showProgressDialog()
-                dialogInterface.dismiss()
-                RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
-                progressDialog.dismiss()
-                activity?.finish()
-            }
-            setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
-                dialogInterface.dismiss()
-            }
-            show()
+        context?.let {
+            AlertDialog.Builder(it).apply {
+                try {
+                    setIcon(logoutIconDrawable)
+                } catch (e: Exception) {
+                    Timber.e(e)
+                }
+
+                setTitle(context.getString(R.string.seller_home_logout_title))
+                setMessage(context.getString(R.string.seller_home_logout_confirm))
+                setPositiveButton(context.getString(R.string.seller_home_logout_button)) { dialogInterface, _ ->
+                    val progressDialog = showProgressDialog()
+                    dialogInterface.dismiss()
+                    RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGOUT)
+                    progressDialog.dismiss()
+                    activity?.finish()
+                }
+                setNegativeButton(context.getString(R.string.seller_home_cancel)) { dialogInterface, _ ->
+                    dialogInterface.dismiss()
+                }
+            }.show()
         }
     }
 
     private fun showProgressDialog(): ProgressDialog {
         val progressDialog = ProgressDialog(context)
         return progressDialog.apply {
-            setMessage(resources.getString(R.string.seller_home_loading))
+            setMessage(context?.resources?.getString(R.string.seller_home_loading).orEmpty())
             setTitle("")
             setCancelable(false)
             show()

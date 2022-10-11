@@ -11,7 +11,6 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.buyerorder.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
@@ -35,14 +34,12 @@ class OrderListDetailActivityTwoTickerTest {
     }
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     val activityRule: IntentsTestRule<OrderListDetailActivity> =
         object : IntentsTestRule<OrderListDetailActivity>(OrderListDetailActivity::class.java) {
             override fun beforeActivityLaunched() {
                 super.beforeActivityLaunched()
-                gtmLogDBSource.deleteAll().subscribe()
                 setupGraphqlMockResponse {
                     addMockResponse(
                         KEY_CONTAINS_ORDER_DETAILS,

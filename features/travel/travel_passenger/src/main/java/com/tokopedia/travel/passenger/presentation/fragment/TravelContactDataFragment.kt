@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
@@ -25,11 +24,10 @@ import com.tokopedia.travel.passenger.presentation.activity.TravelContactDataAct
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
 import com.tokopedia.travel.passenger.presentation.model.TravelContactData
 import com.tokopedia.travel.passenger.presentation.viewmodel.TravelContactDataViewModel
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlMutation
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
+import com.tokopedia.travel.passenger.util.MutationUpsertContact
+import com.tokopedia.travel.passenger.util.QueryGetContactList
 import kotlinx.android.synthetic.main.fragment_travel_contact_data.*
 import javax.inject.Inject
-
 
 class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapter.ContactArrayListener {
 
@@ -51,7 +49,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
         super.onCreate(savedInstanceState)
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             contactViewModel = viewModelProvider.get(TravelContactDataViewModel::class.java)
         }
 
@@ -70,7 +68,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
 
         initView()
 
-        contactViewModel.getContactList(TravelPassengerGqlQuery.CONTACT_LIST, travelProduct)
+        contactViewModel.getContactList(QueryGetContactList(), travelProduct)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -169,7 +167,7 @@ class TravelContactDataFragment : BaseDaggerFragment(), TravelContactArrayAdapte
             contactData.phone = til_contact_phone_number.textFieldInput.text.toString()
             contactData.phoneCode = (sp_contact_phone_code.selectedItem as String).toInt()
 
-            contactViewModel.updateContactList(TravelPassengerGqlMutation.UPSERT_CONTACT,
+            contactViewModel.updateContactList(MutationUpsertContact(),
                     TravelUpsertContactModel.Contact(fullName = contactData.name, email = contactData.email, phoneNumber = contactData.phone,
                             phoneCountryCode = contactData.phoneCode))
 

@@ -1063,6 +1063,10 @@ class TokoNowHomeFragment: Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
+                        actionText = getString(R.string.tokopedianow_lihat),
+                        onClickActionBtn = {
+                            showMiniCartBottomSheet()
+                        },
                         type = TYPE_NORMAL
                     )
                 }
@@ -1334,7 +1338,13 @@ class TokoNowHomeFragment: Fragment(),
         )
     }
 
-    private fun showToaster(message: String, duration: Int = LENGTH_SHORT, type: Int) {
+    private fun showToaster(
+        message: String,
+        duration: Int = LENGTH_SHORT,
+        type: Int,
+        actionText: String = "",
+        onClickActionBtn: View.OnClickListener = View.OnClickListener {  }
+    ) {
         view?.let { view ->
             if (message.isNotBlank()) {
                 Toaster.toasterCustomBottomHeight = getMiniCartHeight()
@@ -1342,7 +1352,9 @@ class TokoNowHomeFragment: Fragment(),
                     view = view,
                     text = message,
                     duration = duration,
-                    type = type
+                    type = type,
+                    actionText = actionText,
+                    clickListener = onClickActionBtn
                 )
                 toaster.show()
             }
@@ -1387,9 +1399,13 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun showBottomSheetMiniCartList() {
         if (isOpenMiniCartList) {
-            miniCartWidget?.showMiniCartListBottomSheet(this)
+            showMiniCartBottomSheet()
             isOpenMiniCartList = false
         }
+    }
+
+    private fun showMiniCartBottomSheet() {
+        miniCartWidget?.showMiniCartListBottomSheet(this)
     }
 
     private fun getIsOpenMiniCartListFromUri(uri: Uri): Boolean {

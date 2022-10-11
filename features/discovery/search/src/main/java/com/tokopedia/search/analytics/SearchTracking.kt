@@ -22,6 +22,7 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LI
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.utils.joinActiveOptionsToString
+import com.tokopedia.search.utils.orNone
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -205,7 +206,7 @@ object SearchTracking {
                         "products", DataLayer.listOf(item)
                     )
                 ),
-                "searchFilter", productAnalyticsData.filterSortParams
+                "searchFilter", productAnalyticsData.filterSortParams,
             )
         )
     }
@@ -230,19 +231,20 @@ object SearchTracking {
             list: ArrayList<Any>,
             eventLabel: String?,
             irisSessionId: String,
-            userId: String
+            userId: String,
     ) {
-        val map = DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
-                TrackAppUtils.EVENT_LABEL, eventLabel,
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchTrackingConstant.USER_ID, userId,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                ECOMMERCE, DataLayer.mapOf(
+        val map = DataLayer.mapOf(
+            TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
+            TrackAppUtils.EVENT_LABEL, eventLabel,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.USER_ID, userId,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
                 "impressions", list
-            )
+            ),
         ) as HashMap<String, Any>
         if (!TextUtils.isEmpty(irisSessionId)) map[KEY_SESSION_IRIS] = irisSessionId
         trackingQueue.putEETracking(
@@ -403,6 +405,7 @@ object SearchTracking {
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
             SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
             SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
+            SearchEventTracking.EXTERNAL_REFERENCE, generalSearchTrackingModel.externalReference.orNone(),
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }

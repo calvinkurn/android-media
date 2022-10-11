@@ -1,5 +1,6 @@
 package com.tokopedia.shop.campaign.view.fragment
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
@@ -258,9 +259,12 @@ class ShopPageCampaignFragment :
     }
 
     override fun onMultipleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedMultipleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
+        bundleType: String,
         bundlePosition: Int,
         widgetTitle: String,
         widgetName: String,
@@ -282,13 +286,16 @@ class ShopPageCampaignFragment :
     }
 
     override fun onSingleBundleProductClicked(
+        shopId: String,
+        warehouseId: String,
         selectedProduct: ShopHomeBundleProductUiModel,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         bundleName: String,
         bundlePosition: Int,
-        widgetName: String,
         widgetTitle: String,
-        productItemPosition: Int
+        widgetName: String,
+        productItemPosition: Int,
+        bundleType: String
     ) {
         shopCampaignTabTracker.clickCampaignTabProduct(
             selectedProduct.productId,
@@ -329,12 +336,15 @@ class ShopPageCampaignFragment :
     }
 
     override fun impressionProductBundleSingle(
+        shopId: String,
+        warehouseId: String,
         selectedSingleBundle: ShopHomeProductBundleDetailUiModel,
         selectedProduct: ShopHomeBundleProductUiModel,
         bundleName: String,
         bundlePosition: Int,
         widgetTitle: String,
-        widgetName: String
+        widgetName: String,
+        bundleType: String
     ) {
         shopCampaignTabTracker.impressionCampaignTabProduct(
             selectedProduct.productId,
@@ -576,9 +586,9 @@ class ShopPageCampaignFragment :
             }
             val gradient = GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM, colors)
             gradient.cornerRadius = 0f
-            topView?.setBackgroundColor(Color.parseColor(listBackgroundColor.firstOrNull()))
+            topView?.setBackgroundColor(parseColor(listBackgroundColor.firstOrNull().orEmpty()))
             centerView?.background = gradient
-            bottomView?.setBackgroundColor(Color.parseColor(listBackgroundColor.lastOrNull()))
+            bottomView?.setBackgroundColor(parseColor(listBackgroundColor.lastOrNull().orEmpty()))
         } else {
             topView?.hide()
             centerView?.hide()
@@ -746,6 +756,22 @@ class ShopPageCampaignFragment :
 
     fun setPageBackgroundColor(listBackgroundColor: List<String>) {
         this.listBackgroundColor = listBackgroundColor
+        checkIfListBackgroundColorValueIsEmpty()
+    }
+
+    @SuppressLint("ResourceType")
+    private fun checkIfListBackgroundColorValueIsEmpty() {
+        if (listBackgroundColor.all { it.isEmpty() }) {
+            this.listBackgroundColor = getDefaultListBackgroundColor()
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getDefaultListBackgroundColor(): List<String> {
+        return listOf(
+            getString(R.color.clr_dms_shop_campaign_tab_first_color),
+            getString(R.color.clr_dms_shop_campaign_tab_second_color)
+        )
     }
 
     fun setPageTextColor(textColor: String) {

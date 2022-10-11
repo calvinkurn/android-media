@@ -105,18 +105,18 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
             }
             WAITING ->{
                 // Allow editing
-                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN400)))
-                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_YN400))
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN400)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_YN400))
                 btn_edit.show()
             }
             ACTIVE ->{
-                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
-                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 btn_edit.hide()
             }
             ACTIVE_OLDER ->{
-                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500)))
-                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_GN500))
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
                 btn_edit.show()
                 btn_edit.text = "Perpanjang Program"
                 btn_edit.setOnClickListener {
@@ -125,13 +125,13 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
             }
             ENDED ->{
                 btn_edit.hide()
-                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             CANCELED ->{
                 btn_edit.hide()
-                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400)))
-                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, R.color.Unify_NN400))
+                programStatus.setTextColor(ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400)))
+                view_status.backgroundTintList = ColorStateList.valueOf(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
             }
             else ->{
                 btn_edit.hide()

@@ -10,7 +10,9 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperPurchasePlatform {
     fun getRegisteredNavigationWishlist(context: Context): String {
-        return if (isWishlistV2(context)) {
+        return if (isUsingWishlistCollection(context)) {
+            ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION
+        } else if (isWishlistV2(context)) {
             ApplinkConstInternalPurchasePlatform.WISHLIST_V2
         } else {
             ApplinkConsInternalHome.HOME_WISHLIST
@@ -25,8 +27,24 @@ object DeeplinkMapperPurchasePlatform {
 
     private fun useWishlistV2Rollence(): Boolean {
         return try {
-            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT)
-            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_V2_VARIANT)
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
+
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    fun isUsingWishlistCollection(context: Context): Boolean {
+        return isEnableRemoteConfigWishlistCollection(context) && isEnableRollenceWishlistCollection()
+    }
+
+    private fun isEnableRemoteConfigWishlistCollection(context: Context) = FirebaseRemoteConfigInstance.get(context).getBoolean(RemoteConfigKey.ENABLE_WISHLIST_COLLECTION)
+
+    private fun isEnableRollenceWishlistCollection(): Boolean {
+        return try {
+            val remoteConfigRollenceValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_CONTROL_VARIANT)
+            return (remoteConfigRollenceValue == RollenceKey.WISHLIST_EXPERIMENT_VARIANT)
 
         } catch (e: Exception) {
             true

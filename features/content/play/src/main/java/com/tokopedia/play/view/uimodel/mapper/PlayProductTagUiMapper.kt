@@ -39,30 +39,37 @@ class PlayProductTagUiMapper @Inject constructor() {
 
     private fun mapReminder(hasReminder: Boolean, campaignId: Long) : PlayUpcomingBellStatus = if(hasReminder) PlayUpcomingBellStatus.Off(campaignId) else PlayUpcomingBellStatus.Unknown
 
-    private fun mapProduct(input: Product, sectionType: ProductSectionType = ProductSectionType.Unknown): PlayProductUiModel.Product {
+    private fun mapProduct(
+        input: Product,
+        sectionType: ProductSectionType = ProductSectionType.Unknown,
+    ): PlayProductUiModel.Product {
         return PlayProductUiModel.Product(
-                id = input.id,
-                shopId = input.shopId,
-                imageUrl = input.image,
-                title = input.name,
-                price = if (input.discount != 0) {
-                    DiscountedPrice(
-                            originalPrice = input.originalPriceFormatted,
-                            discountedPrice = input.priceFormatted,
-                            discountedPriceNumber = input.price,
-                            discountPercent = input.discount
-                    )
-                } else {
-                    OriginalPrice(price = input.originalPriceFormatted,
-                            priceNumber = input.originalPrice)
-                },
-                isVariantAvailable = input.isVariant,
-                stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
-                    if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
-                minQty = input.minimumQuantity,
-                isFreeShipping = input.isFreeShipping,
-                applink = input.appLink,
-                isTokoNow = input.isTokoNow,
+            id = input.id,
+            shopId = input.shopId,
+            imageUrl = input.image,
+            title = input.name,
+            price = if (input.discount != 0) {
+                DiscountedPrice(
+                    originalPrice = input.originalPriceFormatted,
+                    discountedPrice = input.priceFormatted,
+                    discountedPriceNumber = input.price,
+                    discountPercent = input.discount
+                )
+            } else {
+                OriginalPrice(
+                    price = input.originalPriceFormatted,
+                    priceNumber = input.originalPrice
+                )
+            },
+            isVariantAvailable = input.isVariant,
+            stock = if (sectionType == ProductSectionType.Upcoming) ComingSoon else
+                if (input.quantity > 0 && input.isAvailable) StockAvailable(input.quantity) else OutOfStock,
+            minQty = input.minimumQuantity,
+            isFreeShipping = input.isFreeShipping,
+            applink = input.appLink,
+            isTokoNow = input.isTokoNow,
+            isPinned = input.isPinned,
+            isRilisanSpesial = sectionType == ProductSectionType.Active || sectionType == ProductSectionType.Upcoming,
         )
     }
 }

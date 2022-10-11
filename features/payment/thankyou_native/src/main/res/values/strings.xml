@@ -132,5 +132,5 @@
     <string name="thank_tokomember_register_fail">Oops, ada sedikit gangguan. Coba lagi, ya.</string>
     <string name="thank_tokomember_konten_gagal_dimuat">Konten gagal dimuat</string>
     <string name="thank_tokomember_error_desc">Muat ulang dengan klik tombol di samping, ya!</string>
-
+    <string name="thank_you_page_success_illustration">Thank you page success illustration</string>
 </resources>

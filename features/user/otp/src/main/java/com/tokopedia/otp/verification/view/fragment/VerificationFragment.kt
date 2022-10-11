@@ -26,6 +26,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -397,7 +398,7 @@ open class VerificationFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     open fun redirectAfterValidationSuccessful(bundle: Bundle) {
         if ((activity as VerificationActivity).isResetPin2FA) {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.CHANGE_PIN).apply {
+            val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.CHANGE_PIN).apply {
                 bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_RESET_PIN, true)
                 bundle.putString(ApplinkConstInternalGlobal.PARAM_USER_ID, otpData.userId)
                 putExtras(bundle)

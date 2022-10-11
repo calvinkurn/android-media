@@ -62,7 +62,8 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getVariant(
-        product: PlayProductUiModel.Product
+        product: PlayProductUiModel.Product,
+        isProductFeatured: Boolean,
     ): VariantUiModel = withContext(dispatchers.io) {
         val response = getProductVariantUseCase.apply {
             params = getProductVariantUseCase.createParams(product.id)
@@ -79,6 +80,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             selectedVariants = selectedVariants,
             categories = categories.orEmpty(),
             stockWording = "",
+            isFeatured = isProductFeatured,
         )
     }
 

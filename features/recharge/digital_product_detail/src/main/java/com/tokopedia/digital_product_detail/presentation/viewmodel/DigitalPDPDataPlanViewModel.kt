@@ -201,14 +201,16 @@ class DigitalPDPDataPlanViewModel @Inject constructor(
     fun addToCart(
         digitalIdentifierParam: RequestBodyIdentifier,
         digitalSubscriptionParams: DigitalSubscriptionParams,
-        userId: String
+        userId: String,
+        isUseGql: Boolean
     ) {
         viewModelScope.launchCatchError(dispatchers.main, block = {
             val categoryIdAtc = repo.addToCart(
                 digitalCheckoutPassData,
                 digitalIdentifierParam,
                 digitalSubscriptionParams,
-                userId
+                userId,
+                isUseGql
             )
             _addToCartResult.value = RechargeNetworkResult.Success(categoryIdAtc)
         }) {

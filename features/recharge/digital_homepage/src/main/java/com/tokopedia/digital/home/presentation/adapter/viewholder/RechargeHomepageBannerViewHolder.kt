@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 /**
  * @author by resakemal on 15/06/20.
@@ -61,7 +62,7 @@ class RechargeHomepageBannerViewHolder(itemView: View,
         bind: ViewRechargeHomeBannerBinding,
         section: RechargeHomepageSections.Section
     ){
-        val list = slidesList.map { CircularModel(it.id.toIntOrZero(), it.mediaUrl) }
+        val list = slidesList.map { CircularModel(it.id.toIntSafely(), it.mediaUrl) }
         with (bind) {
             circularViewPager.setIndicatorPageChangeListener(object : CircularViewPager.IndicatorPageChangeListener {
                 override fun onIndicatorPageChange(newIndicatorPosition: Int) {

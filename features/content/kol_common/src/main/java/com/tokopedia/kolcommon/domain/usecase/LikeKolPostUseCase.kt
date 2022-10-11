@@ -4,15 +4,13 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
-
-import javax.inject.Inject
-
 import rx.Observable
+import javax.inject.Inject
 
 /**
  * @author by nisie on 11/3/17.
  */
-
+@Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitLikeContentUseCase")
 class LikeKolPostUseCase @Inject constructor(
         private val graphqlUseCase: GraphqlUseCase
 ) : UseCase<Boolean>() {

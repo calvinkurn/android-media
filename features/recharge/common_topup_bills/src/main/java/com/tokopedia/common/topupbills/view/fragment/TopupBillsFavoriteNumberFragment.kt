@@ -55,6 +55,7 @@ import com.tokopedia.common.topupbills.view.viewmodel.TopupBillsViewModel.Compan
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -497,7 +498,7 @@ class TopupBillsFavoriteNumberFragment:
     }
 
     override fun onFavoriteNumberMenuClick(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntSafely())
         commonTopupBillsAnalytics.eventClickFavoriteNumberKebabMenu(
                 currentCategoryName, operatorName, userSession.userId)
 
@@ -522,7 +523,7 @@ class TopupBillsFavoriteNumberFragment:
     }
 
     override fun onChangeName(newName: String, favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntSafely())
         commonTopupBillsAnalytics.eventClickFavoriteNumberSaveBottomSheet(
                 currentCategoryName, operatorName, userSession.userId)
 
@@ -531,8 +532,8 @@ class TopupBillsFavoriteNumberFragment:
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = favNumberItem.categoryId.toIntOrZero(),
-                        productId = favNumberItem.productId.toIntOrZero(),
+                        categoryId = favNumberItem.categoryId.toIntSafely(),
+                        productId = favNumberItem.productId.toIntSafely(),
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = newName,
@@ -569,14 +570,14 @@ class TopupBillsFavoriteNumberFragment:
             }
         }
 
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntSafely())
         commonTopupBillsAnalytics.eventImpressionFavoriteNumberDeletePopUp(
                 currentCategoryName, operatorName, userSession.userId
         )
     }
 
     private fun onConfirmDelete(favNumberItem: TopupBillsSeamlessFavNumberItem) {
-        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntOrZero())
+        val operatorName = getOperatorNameById(favNumberItem.operatorId.toIntSafely())
         commonTopupBillsAnalytics.eventClickFavoriteNumberConfirmDelete(
                 currentCategoryName, operatorName, userSession.userId
         )
@@ -586,8 +587,8 @@ class TopupBillsFavoriteNumberFragment:
         topUpBillsViewModel.modifySeamlessFavoriteNumber(
                 CommonTopupBillsGqlMutation.updateSeamlessFavoriteNumber,
                 topUpBillsViewModel.createSeamlessFavoriteNumberUpdateParams(
-                        categoryId = favNumberItem.categoryId.toIntOrZero(),
-                        productId = favNumberItem.productId.toIntOrZero(),
+                        categoryId = favNumberItem.categoryId.toIntSafely(),
+                        productId = favNumberItem.productId.toIntSafely(),
                         clientNumber = favNumberItem.clientNumber,
                         totalTransaction = DEFAULT_TOTAL_TRANSACTION,
                         label = favNumberItem.clientName,

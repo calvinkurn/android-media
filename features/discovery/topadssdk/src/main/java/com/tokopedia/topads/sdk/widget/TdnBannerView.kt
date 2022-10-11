@@ -16,6 +16,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.utils.TdnHelper
 import com.tokopedia.topads.sdk.viewmodel.TopAdsImageViewViewModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import timber.log.Timber
@@ -94,16 +95,18 @@ class TdnBannerView : FrameLayout {
 
     fun renderTdnBanner(
         tdnBanners: List<TopAdsImageViewModel>,
-        cornerRadius: Int,
-        onTdnBannerClicked: (String) -> Unit
+        cornerRadius: Int = 8.toPx(),
+        onTdnBannerClicked: (String) -> Unit,
+        onLoadFailed: () -> Unit = {} ,
+        onTdnBannerImpressed: () -> Unit = {}
     ) {
         val layoutType = tdnBanners.firstOrNull()?.layoutType
         if (layoutType == TYPE_CAROUSEL) {
-            tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius)
+            tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
             tdnCarouselView?.show()
             singleTdnView?.hide()
         } else if (layoutType == TYPE_SINGLE || layoutType == "") {
-            singleTdnView?.setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius)
+            singleTdnView?.setTdnModel(tdnBanners.first(), onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
             singleTdnView?.show()
             tdnCarouselView?.hide()
         }

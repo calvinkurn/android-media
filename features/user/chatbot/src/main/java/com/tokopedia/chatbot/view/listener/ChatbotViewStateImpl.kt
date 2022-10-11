@@ -19,7 +19,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
@@ -109,6 +111,46 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun handleReplyBox(isEnable: Boolean) {
        showReplyBox(isEnable)
+    }
+
+    override fun onSendingMessage(it: MessageUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    ) {
+        val localId = IdentifierUtil.generateLocalId()
+        val message = MessageUiModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatUiModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .withParentReply(parentReply)
+            .build()
+        getAdapter().addElement(message)
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
+
     }
 
     override fun hideQuickReplyOnClick() {

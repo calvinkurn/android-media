@@ -51,6 +51,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isFreeShipping: Boolean,
         appLink: String,
         isTokoNow: Boolean,
+        isPinned: Boolean,
+        isRilisanSpesial: Boolean,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -63,6 +65,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isFreeShipping = isFreeShipping,
         applink = appLink,
         isTokoNow = isTokoNow,
+        isPinned = isPinned,
+        isRilisanSpesial = isRilisanSpesial,
     )
 
     override fun buildMerchantVoucher(
@@ -94,7 +98,7 @@ class TagItemBuilderImpl : TagItemBuilder {
     ) =  ProductSectionUiModel.Section(
         productList = productList,
         config = config,
-        id = id
+        id = id,
     )
 
     override fun buildSectionConfig(
@@ -114,6 +118,6 @@ class TagItemBuilderImpl : TagItemBuilder {
         startTime = startTime,
         endTime = endTime,
         background = background,
-        reminder = reminderStatus
+        reminder = reminderStatus,
     )
 }

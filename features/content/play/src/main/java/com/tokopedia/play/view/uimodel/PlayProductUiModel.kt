@@ -8,17 +8,19 @@ import com.tokopedia.play.view.type.*
 sealed class PlayProductUiModel {
 
     data class Product(
-            val id: String,
-            val shopId: String,
-            val imageUrl: String,
-            val title: String,
-            val stock: ProductStock,
-            val isVariantAvailable: Boolean,
-            val price: ProductPrice,
-            val minQty: Int,
-            val isFreeShipping: Boolean,
-            val applink: String?,
-            val isTokoNow: Boolean,
+        val id: String,
+        val shopId: String,
+        val imageUrl: String,
+        val title: String,
+        val stock: ProductStock,
+        val isVariantAvailable: Boolean,
+        val price: ProductPrice,
+        val minQty: Int,
+        val isFreeShipping: Boolean,
+        val applink: String?,
+        val isTokoNow: Boolean,
+        val isPinned: Boolean,
+        val isRilisanSpesial: Boolean,
     ) : PlayProductUiModel() {
         companion object {
             val Empty: Product
@@ -34,6 +36,8 @@ sealed class PlayProductUiModel {
                     isFreeShipping = false,
                     applink = null,
                     isTokoNow = false,
+                    isPinned = false,
+                    isRilisanSpesial = false,
                 )
         }
     }

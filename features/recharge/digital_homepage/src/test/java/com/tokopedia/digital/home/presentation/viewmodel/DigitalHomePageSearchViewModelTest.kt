@@ -2,21 +2,23 @@ package com.tokopedia.digital.home.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.digital.home.old.domain.DigitalHomepageSearchByDynamicIconUseCase
 import com.tokopedia.digital.home.old.domain.SearchAutoCompleteHomePageUseCase
 import com.tokopedia.digital.home.old.domain.SearchCategoryHomePageUseCase
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.old.model.DigitalHomePageSearchNewModel
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
-import io.mockk.every
 import io.mockk.impl.annotations.RelaxedMockK
-import junit.framework.Assert.assertEquals
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.cancelAndJoin
+import kotlinx.coroutines.launch
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,7 +57,7 @@ class DigitalHomePageSearchViewModelTest {
         coEvery { searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } returns
                DigitalHomePageSearchNewModel(false, Tracking(), "test", listOf(DigitalHomePageSearchCategoryModel(searchQuery = "test")))
 
-        digitalHomePageSearchViewModel.searchCategoryList("", "test")
+        digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
         assert(actualData is Success)
         val response = actualData as Success
@@ -68,7 +70,7 @@ class DigitalHomePageSearchViewModelTest {
         coEvery{ searchCategoryHomePageUseCase.searchCategoryList(any(), any(), any()) } throws
                 MessageErrorException()
 
-        digitalHomePageSearchViewModel.searchCategoryList("", "test")
+        digitalHomePageSearchViewModel.searchCategoryList(DummyDigitalQueryInterface(), "test")
         val actualData = digitalHomePageSearchViewModel.searchCategoryList.value
         assert(actualData is Fail)
     }

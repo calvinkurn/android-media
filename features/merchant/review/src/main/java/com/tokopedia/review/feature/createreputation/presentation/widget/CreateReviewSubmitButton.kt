@@ -11,12 +11,14 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.review.databinding.WidgetCreateReviewSubmitButtonBinding
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewSubmitButton @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = Int.ZERO
-) : BaseCreateReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
+) : BaseReviewCustomView<WidgetCreateReviewSubmitButtonBinding>(context, attrs, defStyleAttr) {
 
     companion object {
         private const val TRANSITION_DURATION = 300L
@@ -49,23 +51,31 @@ class CreateReviewSubmitButton @JvmOverloads constructor(
         layoutSubmitButton.root.isLoading = sending
     }
 
-    fun updateUi(uiState: CreateReviewSubmitButtonUiState) {
+    fun updateUi(uiState: CreateReviewSubmitButtonUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewSubmitButtonUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Enabled -> {
                 binding.showButton(enabled = true, sending = false)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Disabled -> {
                 binding.showButton(enabled = false, sending = false)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewSubmitButtonUiState.Sending -> {
                 binding.showButton(enabled = false, sending = true)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }

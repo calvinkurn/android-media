@@ -40,10 +40,10 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
 import com.tokopedia.abstraction.base.view.activity.BaseActivity;
-import com.tokopedia.abstraction.base.view.appupdate.AppUpdateDialogBuilder;
 import com.tokopedia.abstraction.base.view.appupdate.ApplicationUpdate;
 import com.tokopedia.abstraction.base.view.appupdate.model.DetailUpdate;
 import com.tokopedia.abstraction.base.view.fragment.lifecycle.FragmentLifecycleObserver;
+import com.tokopedia.abstraction.base.view.model.InAppCallback;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.di.component.HasComponent;
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils;
@@ -61,15 +61,16 @@ import com.tokopedia.applink.internal.ApplinkConstInternalCategory;
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery;
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal;
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace;
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperPurchasePlatform;
 import com.tokopedia.core.analytics.AppEventTracking;
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker;
-import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker;
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker;
 import com.tokopedia.dynamicfeatures.DFInstaller;
 import com.tokopedia.home.HomeInternalRouter;
 import com.tokopedia.home.beranda.presentation.view.fragment.HomeRevampFragment;
 import com.tokopedia.home_wishlist.view.fragment.WishlistFragment;
 import com.tokopedia.inappupdate.AppUpdateManagerWrapper;
+import com.tokopedia.kotlin.extensions.view.StringExtKt;
 import com.tokopedia.navigation.GlobalNavAnalytics;
 import com.tokopedia.navigation.GlobalNavConstant;
 import com.tokopedia.navigation.R;
@@ -137,7 +138,8 @@ public class MainParentActivity extends BaseActivity implements
         OfficialStorePerformanceMonitoringListener,
         IBottomClickListener,
         MainParentStateListener,
-        ITelemetryActivity
+        ITelemetryActivity,
+        InAppCallback
 {
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
@@ -202,6 +204,8 @@ public class MainParentActivity extends BaseActivity implements
     public static final String PARAM_HOME = "home";
     public static final String PARAM_ACTIVITY_WISHLIST_V2 = "activity_wishlist_v2";
     private static final String ENABLE_REVAMP_WISHLIST_V2 = "android_revamp_wishlist_v2";
+    private static final String ENABLE_WISHLIST_COLLECTION = "android_enable_wishlist_collection";
+    public static final String PARAM_ACTIVITY_WISHLIST_COLLECTION = "activity_wishlist_collection";
     private static final String SUFFIX_ALPHA = "-alpha";
 
     ArrayList<BottomMenu> menu = new ArrayList<>();
@@ -404,7 +408,6 @@ public class MainParentActivity extends BaseActivity implements
             }
         };
         Weaver.Companion.executeWeaveCoRoutineWithFirebase(firstTimeWeave, RemoteConfigKey.ENABLE_ASYNC_FIRSTTIME_EVENT, getContext(), true);
-        checkAppUpdateAndInApp();
         checkApplinkCouponCode(getIntent());
         showSelectedPage();
         bottomNavigation = findViewById(R.id.bottom_navbar);
@@ -454,7 +457,7 @@ public class MainParentActivity extends BaseActivity implements
             if (getIntent().getExtras().getString(ARGS_TAB_POSITION) != null) {
                 try {
                     String posString = getIntent().getExtras().getString(ARGS_TAB_POSITION);
-                    return Integer.parseInt(posString);
+                    return StringExtKt.toIntOrZero(posString);
                 } catch (Exception e) {
                     return HOME_MENU;
                 }
@@ -467,7 +470,7 @@ public class MainParentActivity extends BaseActivity implements
                         getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
             try {
                 String posString = getIntent().getData().getQueryParameter(ARGS_TAB_POSITION);
-                return Integer.parseInt(posString);
+                return StringExtKt.toIntOrZero(posString);
             } catch (Exception e) {
                 return HOME_MENU;
             }
@@ -744,6 +747,7 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unRegisterNewFeedClickedReceiver();
         if (presenter != null)
             presenter.get().onDestroy();
     }
@@ -768,18 +772,28 @@ public class MainParentActivity extends BaseActivity implements
             fragmentList.add(OfficialHomeContainerFragment.newInstance(bundleOS));
         }
 
-        if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
-            Bundle bundleWishlist = getIntent().getExtras();
-            if (bundleWishlist == null) {
-                bundleWishlist = new Bundle();
+        if (useWishlistCollectionRollence() && useRemoteConfigWishlistCollection()) {
+            Bundle bundleWishlistCollection = getIntent().getExtras();
+            if (bundleWishlistCollection == null) {
+                bundleWishlistCollection = new Bundle();
             }
-            bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
-            bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
-            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+            bundleWishlistCollection.putString(PARAM_ACTIVITY_WISHLIST_COLLECTION, PARAM_HOME);
+            bundleWishlistCollection.putString("WishlistCollectionFragment", MainParentActivity.class.getSimpleName());
+            fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_COLLECTION_FRAGMENT, bundleWishlistCollection));
         } else {
-            Bundle bundleWishlist = new Bundle();
-            bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
-            fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            if (useWishlistV2Rollence() && useRemoteConfigWishlistV2Revamp()) {
+                Bundle bundleWishlist = getIntent().getExtras();
+                if (bundleWishlist == null) {
+                    bundleWishlist = new Bundle();
+                }
+                bundleWishlist.putString(PARAM_ACTIVITY_WISHLIST_V2, PARAM_HOME);
+                bundleWishlist.putString("WishlistV2Fragment", MainParentActivity.class.getSimpleName());
+                fragmentList.add(RouteManager.instantiateFragment(this, FragmentConst.WISHLIST_V2_FRAGMENT, bundleWishlist));
+            } else {
+                Bundle bundleWishlist = new Bundle();
+                bundleWishlist.putString(WishlistFragment.PARAM_LAUNCH_WISHLIST, WishlistFragment.PARAM_HOME);
+                fragmentList.add(WishlistFragment.Companion.newInstance(bundleWishlist));
+            }
         }
 
         Bundle bundleUoh = getIntent().getExtras();
@@ -797,7 +811,7 @@ public class MainParentActivity extends BaseActivity implements
     private boolean useWishlistV2Rollence() {
         boolean isWishlistV2;
         try {
-            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_OLD_VARIANT).equals(RollenceKey.WISHLIST_V2_VARIANT);
+            isWishlistV2 = getAbTestPlatform().getString(RollenceKey.WISHLIST_V2_REVAMP, RollenceKey.WISHLIST_V2_REVAMP).equals(RollenceKey.WISHLIST_EXPERIMENT_VARIANT);
         } catch (Exception e) {
             isWishlistV2 = true;
         }
@@ -806,6 +820,20 @@ public class MainParentActivity extends BaseActivity implements
 
     private boolean useRemoteConfigWishlistV2Revamp() {
         return remoteConfig.get().getBoolean(ENABLE_REVAMP_WISHLIST_V2);
+    }
+
+    private boolean useWishlistCollectionRollence() {
+        boolean isWishlistCollection;
+        try {
+            isWishlistCollection = getAbTestPlatform().getString(RollenceKey.WISHLIST_COLLECTION, RollenceKey.WISHLIST_EXPERIMENT_VARIANT).equals(RollenceKey.WISHLIST_EXPERIMENT_VARIANT);
+        } catch (Exception e) {
+            isWishlistCollection = true;
+        }
+        return isWishlistCollection;
+    }
+
+    private boolean useRemoteConfigWishlistCollection() {
+        return remoteConfig.get().getBoolean(ENABLE_WISHLIST_COLLECTION);
     }
 
     private AbTestPlatform getAbTestPlatform() {
@@ -976,59 +1004,30 @@ public class MainParentActivity extends BaseActivity implements
         return cache.getBoolean(GlobalNavConstant.Cache.KEY_IS_FIRST_TIME, false);
     }
 
-    @Override
-    public void checkAppUpdateAndInApp() {
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            // if download finished or flexible update is in progress, we do not need to show the update dialog
-            AppUpdateManagerWrapper.checkUpdateInFlexibleProgressOrCompleted(this, isOnProgress -> {
-                if (!isOnProgress) {
-                    checkAppUpdateRemoteConfig();
-                }
-                return null;
-            });
-        } else {
-            checkAppUpdateRemoteConfig();
-        }
-    }
-
-    private void checkAppUpdateRemoteConfig() {
-        appUpdate.checkApplicationUpdate(new ApplicationUpdate.OnUpdateListener() {
+    protected InAppCallback getInAppCallback(){
+        return new InAppCallback() {
             @Override
-            public void onNeedUpdate(DetailUpdate detail) {
-                if (!isFinishing()) {
-                    AppUpdateDialogBuilder appUpdateDialogBuilder =
-                            new AppUpdateDialogBuilder(
-                                    MainParentActivity.this,
-                                    detail,
-                                    new AppUpdateDialogBuilder.Listener() {
-                                        @Override
-                                        public void onPositiveButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.get().eventClickAppUpdate(detail.isForceUpdate());
-                                        }
-
-                                        @Override
-                                        public void onNegativeButtonClicked(DetailUpdate detail) {
-                                            globalNavAnalytics.get().eventClickCancelAppUpdate(detail.isForceUpdate());
-                                        }
-                                    }
-                            );
-                    appUpdateDialogBuilder.getAlertDialog().show();
-                    globalNavAnalytics.get().eventImpressionAppUpdate(detail.isForceUpdate());
-                }
+            public void onPositiveButtonInAppClicked(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventClickAppUpdate(detailUpdate.isForceUpdate());
             }
 
             @Override
-            public void onError(Exception e) {
-                e.printStackTrace();
+            public void onNegativeButtonInAppClicked(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventClickCancelAppUpdate(detailUpdate.isForceUpdate());
             }
 
             @Override
-            public void onNotNeedUpdate() {
+            public void onNotNeedUpdateInApp() {
                 if (!isFinishing()) {
                     checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
                 }
             }
-        });
+
+            @Override
+            public void onNeedUpdateInApp(DetailUpdate detailUpdate) {
+                globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
+            }
+        };
     }
 
     private void checkIsNeedUpdateIfComeFromUnsupportedApplink(Intent intent) {
@@ -1089,7 +1088,9 @@ public class MainParentActivity extends BaseActivity implements
     }
 
     private void unRegisterNewFeedClickedReceiver() {
-        LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+        if (newFeedClickedReceiver != null) {
+            LocalBroadcastManager.getInstance(getContext().getApplicationContext()).unregisterReceiver(newFeedClickedReceiver);
+        }
     }
 
     @RestrictTo(RestrictTo.Scope.TESTS)
@@ -1442,5 +1443,27 @@ public class MainParentActivity extends BaseActivity implements
     @Override
     public String getTelemetrySectionName() {
         return "home";
+    }
+
+    @Override
+    public void onPositiveButtonInAppClicked(DetailUpdate detailUpdate) {
+        globalNavAnalytics.get().eventClickAppUpdate(detailUpdate.isForceUpdate());
+    }
+
+    @Override
+    public void onNegativeButtonInAppClicked(DetailUpdate detailUpdate) {
+        globalNavAnalytics.get().eventClickCancelAppUpdate(detailUpdate.isForceUpdate());
+    }
+
+    @Override
+    public void onNotNeedUpdateInApp() {
+        if (!isFinishing()) {
+            checkIsNeedUpdateIfComeFromUnsupportedApplink(MainParentActivity.this.getIntent());
+        }
+    }
+
+    @Override
+    public void onNeedUpdateInApp(DetailUpdate detailUpdate) {
+        globalNavAnalytics.get().eventImpressionAppUpdate(detailUpdate.isForceUpdate());
     }
 }

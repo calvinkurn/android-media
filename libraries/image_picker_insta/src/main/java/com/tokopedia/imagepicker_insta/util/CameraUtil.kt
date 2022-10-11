@@ -27,6 +27,7 @@ object CameraUtil {
         videoMaxDuration:Long,
         selectedFeedAccountId: String,
         requestCode: Int = NO_REQUEST_CODE,
+        isOpenFrom: Int,
     ) {
         if(fragment.context!=null){
             val intent = CameraActivity.getIntent(
@@ -34,6 +35,7 @@ object CameraUtil {
                 applinkToNavigateAfterMediaCapture,
                 videoMaxDuration,
                 selectedFeedAccountId,
+                isOpenFrom,
             )
 
             fragment.apply {

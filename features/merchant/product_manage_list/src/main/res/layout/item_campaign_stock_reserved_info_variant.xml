@@ -28,6 +28,7 @@
         android:id="@+id/tv_campaign_reserved_info_variant_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_G500"
         android:gravity="center_vertical"
         android:layout_marginBottom="16dp"

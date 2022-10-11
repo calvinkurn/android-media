@@ -31,4 +31,6 @@ interface PlayBroProductRepository {
     suspend fun setProductTags(channelId: String, productIds: List<String>)
 
     suspend fun getProductTagSummarySection(channelID: String): List<ProductTagSectionUiModel>
+
+    suspend fun setPinProduct(channelId: String, product: ProductUiModel): Boolean
 }

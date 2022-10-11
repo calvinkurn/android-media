@@ -29,6 +29,7 @@ import com.tokopedia.common_tradein.model.MoneyInKeroGetAddressResponse.Response
 import com.tokopedia.moneyin.model.MoneyInScheduleOptionResponse.ResponseData.GetPickupScheduleOption.ScheduleDate
 import com.tokopedia.moneyin.viewmodel.*
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.logisticCommon.data.entity.address.AddressModel
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInCourierBottomSheet
 import com.tokopedia.moneyin.viewcontrollers.bottomsheet.MoneyInScheduledTimeBottomSheet
@@ -62,6 +63,8 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
         const val MONEY_IN_ORDER_VALUE = "MONEY_IN_PRICE"
         const val MONEY_IN_HARDWARE_ID = "HARDWARE_ID"
         const val STATUS_SUCCESS = 2
+        const val MONEY_IN_TNC_SPAN_START_INDEX =16
+        const val MONEY_IN_TNC_SPAN_END_INDEX =36
     }
 
     override fun initInject() {
@@ -113,7 +116,7 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
             }
         }
         val mTvTnc = findViewById<Typography>(R.id.terms_text) as Typography
-        spannableString.setSpan(clickableSpan, 16, 36, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(clickableSpan, MONEY_IN_TNC_SPAN_START_INDEX, MONEY_IN_TNC_SPAN_END_INDEX, Spanned.SPAN_INCLUSIVE_EXCLUSIVE)
         mTvTnc.text = spannableString
         mTvTnc.isClickable = true
         mTvTnc.movementMethod = LinkMovementMethod.getInstance()
@@ -348,29 +351,34 @@ class MoneyInCheckoutActivity : BaseMoneyInActivity<MoneyInCheckoutViewModel>(),
                         val addressModel = data.getParcelableExtra<RecipientAddressModel>(
                                 CheckoutConstant.EXTRA_SELECTED_ADDRESS_DATA
                         ) ?: RecipientAddressModel()
-                        val recipientAddress = KeroGetAddress.Data(
-                                addressModel.id.toInt(),
-                                addressModel.addressName,
-                                addressModel.addressName,
-                                addressModel.addressName,
-                                addressModel.cityId.toInt(),
+                        if (addressModel.id != null && addressModel.cityId != null
+                            && addressModel.provinceId != null && addressModel.destinationDistrictId != null) {
+                            val recipientAddress = KeroGetAddress.Data(
+                                addressModel.id.toIntOrZero(),
+                                addressModel.addressName ?: "",
+                                addressModel.addressName ?: "",
+                                addressModel.addressName ?: "",
+                                addressModel.cityId.toIntOrZero(),
                                 addressModel.cityName ?: "",
                                 addressModel.countryName ?: "",
-                                addressModel.destinationDistrictId.toInt(),
-                                addressModel.destinationDistrictName,
+                                addressModel.destinationDistrictId.toIntOrZero(),
+                                addressModel.destinationDistrictName ?: "",
                                 addressModel.isSelected,
                                 addressModel.isSelected,
                                 addressModel.isSelected,
-                                addressModel.latitude,
-                                addressModel.longitude,
+                                addressModel.latitude ?: "",
+                                addressModel.longitude ?: "",
                                 addressModel.recipientPhoneNumber,
-                                addressModel.postalCode,
-                                addressModel.provinceId.toInt(),
-                                addressModel.provinceName,
-                                addressModel.recipientName,
+                                addressModel.postalCode ?: "",
+                                addressModel.provinceId.toIntOrZero(),
+                                addressModel.provinceName ?: "",
+                                addressModel.recipientName ?: "",
                                 addressModel.addressStatus
-                        )
-                        setAddressView(recipientAddress)
+                            )
+                            setAddressView(recipientAddress)
+                        }else{
+                            showMessage(getString(R.string.money_in_alert_error_fetching_location))
+                        }
                     }
                 }
 

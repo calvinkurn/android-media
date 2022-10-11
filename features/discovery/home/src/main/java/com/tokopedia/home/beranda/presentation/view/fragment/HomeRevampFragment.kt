@@ -594,6 +594,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             it.setIcon(icons)
         }
         onChooseAddressUpdated()
+        getSearchPlaceHolderHint()
 
         refreshLayout = view.findViewById(R.id.home_swipe_refresh_layout)
         stickyLoginView = view.findViewById(R.id.sticky_login_text)
@@ -607,6 +608,12 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         setupHomeRecyclerView()
         initEggDragListener()
         return view
+    }
+
+    private fun getSearchPlaceHolderHint() {
+        if (this::viewModel.isInitialized) {
+            getHomeViewModel().getSearchHint(isFirstInstall())
+        }
     }
 
     private fun getInboxIcon(): Int {

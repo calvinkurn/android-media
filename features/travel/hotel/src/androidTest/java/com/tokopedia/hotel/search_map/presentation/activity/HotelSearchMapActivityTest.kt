@@ -20,8 +20,7 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiSelector
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
-import com.tokopedia.cassavatest.getAnalyticsWithQuery
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.hotel.R
 import com.tokopedia.hotel.destination.view.activity.HotelDestinationActivity
@@ -39,7 +38,6 @@ import org.junit.Test
 class HotelSearchMapActivityTest {
 
     private val targetContext = getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
     private val uiDevice = UiDevice.getInstance(getInstrumentation())
 
     @get:Rule
@@ -61,6 +59,9 @@ class HotelSearchMapActivityTest {
             }
         }
     }
+
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
 
     private fun getHotelSearchModel(): HotelSearchModel {
         return HotelSearchModel(
@@ -102,7 +103,7 @@ class HotelSearchMapActivityTest {
         validateHotelSearchPageTracking()
         clickOnChangeDestination()
         Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-        assertThat(getAnalyticsWithQuery(gtmLogDBSource, targetContext, ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
+        assertThat(cassavaRule.validate(ANALYTIC_VALIDATOR_QUERY_HOTEL_DISCO), hasAllSuccess())
     }
 
     private fun validateHotelSearchPageTracking() {
@@ -214,11 +215,6 @@ class HotelSearchMapActivityTest {
                 UiSelector().description("MAP READY")
         ).pinchIn(50, 2)
         Espresso.onView(AllOf.allOf(ViewMatchers.withText("Cari di sekitar sini"))).perform(ViewActions.click())
-    }
-
-    @After
-    fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
     }
 
     companion object {

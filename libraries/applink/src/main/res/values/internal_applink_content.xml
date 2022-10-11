@@ -24,7 +24,6 @@
     <string name="path_profile_detail" translatable="false">/.*\</string>
 
     <string name="applink_title_on_boarding">Onboarding</string>
-    <string name="applink_title_profile">Profile</string>
 
     <string name="host_affiliate" translatable="false">affiliate</string>
 
@@ -48,5 +47,6 @@
     <string name="applink_ip_title" translatable="false">Pilih Inspirasi Kamu</string>
 
     <string name="applink_af_title_create_post">Create Post</string>
+    <string name="applink_title_people">People</string>
 
 </resources>

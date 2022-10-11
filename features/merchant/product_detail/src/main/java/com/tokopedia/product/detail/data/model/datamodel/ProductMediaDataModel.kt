@@ -12,7 +12,8 @@ data class ProductMediaDataModel(
         var initialScrollPosition: Int = -1,
         var variantOptionIdScrollAnchor: String = "",
         var shouldUpdateImage: Boolean = false,
-        var shouldAnimateLabel: Boolean = true
+        var shouldAnimateLabel: Boolean = true,
+        var containerType: MediaContainerType = MediaContainerType.Square
 ) : DynamicPdpDataModel {
     companion object {
         const val VIDEO_TYPE = "video"
@@ -100,3 +101,13 @@ data class ThumbnailDataModel(
         val isSelected: Boolean = false,
         val impressHolder: ImpressHolder = ImpressHolder()
 )
+
+sealed class MediaContainerType(val type: String, val ratio: String) {
+    object Square: MediaContainerType(type = "square", "H,1:1")
+    object Portrait: MediaContainerType(type = "portrait", "H,4:5")
+}
+
+internal fun String?.asMediaContainerType(): MediaContainerType = when (this) {
+    MediaContainerType.Portrait.type -> MediaContainerType.Portrait
+    else -> MediaContainerType.Square
+}

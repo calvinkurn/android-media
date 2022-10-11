@@ -25,11 +25,14 @@ class ProductMediaViewHolder(private val view: View,
 
             val scrollPosition = element.getScrollPosition()
 
-            viewMediaPager.setup(element.listOfMedia,
-                    listener,
-                    getComponentTrackData(element),
-                    scrollPosition,
-                    element.shouldAnimateLabel)
+            viewMediaPager.setup(
+                media = element.listOfMedia,
+                listener = listener,
+                componentTrackDataModel = getComponentTrackData(element),
+                initialScrollPosition = scrollPosition,
+                shouldAnimateLabel = element.shouldAnimateLabel,
+                containerType = element.containerType
+            )
 
             element.shouldAnimateLabel = false
             element.shouldUpdateImage = false

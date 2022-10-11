@@ -7,13 +7,10 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.review.R
-import com.tokopedia.review.common.presentation.listener.ReviewBasicInfoListener
 import com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
-import com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
 import com.tokopedia.review.common.util.ReviewUtil
 import com.tokopedia.review.feature.reading.analytics.ReadReviewTracking
 import com.tokopedia.review.feature.reading.data.LikeDislike
@@ -26,6 +23,9 @@ import com.tokopedia.reviewcommon.feature.media.gallery.detailed.domain.model.Us
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.adapter.typefactory.ReviewMediaThumbnailTypeFactory
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.ReviewMediaThumbnailUiModel
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.listener.ReviewBasicInfoThreeDotsListener
+import com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
 import com.tokopedia.unifyprinciples.Typography
 
 class ReadReviewViewHolder(
@@ -34,7 +34,7 @@ class ReadReviewViewHolder(
     reviewMediaThumbnailListener: ReviewMediaThumbnailTypeFactory.Listener,
     private val readReviewItemListener: ReadReviewItemListener,
     private val reviewBasicInfoListener: ReviewBasicInfoListener,
-) : AbstractViewHolder<ReadReviewUiModel>(view) {
+) : AbstractViewHolder<ReadReviewUiModel>(view), ReviewBasicInfoThreeDotsListener {
 
     companion object {
         val LAYOUT = com.tokopedia.review.R.layout.item_read_review
@@ -45,8 +45,12 @@ class ReadReviewViewHolder(
     }
 
     private var productInfo: ReadReviewProductInfo? = null
-    private var basicInfo: ReviewBasicInfoWidget? = null
-    private var reportOption: IconUnify? = null
+    private val basicInfo: ProductReviewBasicInfoWidget?
+        get() = if (isProductReview) {
+            itemView.findViewById(R.id.read_product_review_basic_info)
+        } else {
+            itemView.findViewById(R.id.read_shop_review_basic_info)
+        }
     private var likeImage: IconUnify? = null
     private var likeCount: Typography? = null
     private var reviewMessage: Typography? = null
@@ -55,6 +59,7 @@ class ReadReviewViewHolder(
     private var showResponseChevron: IconUnify? = null
     private var sellerResponse: ReadReviewSellerResponse? = null
     private var isProductReview = false
+    private var reviewId = ""
     private var shopId = ""
     private var badRatingReason: ReviewBadRatingReasonWidget? = null
 
@@ -66,6 +71,7 @@ class ReadReviewViewHolder(
 
     override fun bind(element: ReadReviewUiModel) {
         isProductReview = !element.isShopViewHolder
+        reviewId = element.reviewData.feedbackID
         shopId = element.shopId
         with(element.reviewData) {
             if (!isProductReview) {
@@ -97,12 +103,12 @@ class ReadReviewViewHolder(
             setRating(productRating)
             setCreateTime(reviewCreateTimestamp)
             setReviewerName(user.fullName)
+            setReviewerLabel(user.label)
             setReviewerStats(userReviewStats)
             setProfilePicture(user.image)
+            setVariantName(variantName)
             showReportOptionWithCondition(
-                isReportable = isReportable && !element.isShopViewHolder,
-                reviewId = feedbackID,
-                shopId = element.shopId
+                isReportable = isReportable && !element.isShopViewHolder
             )
             setReview(message, feedbackID, element.productId)
             showAttachedImages(element.mediaThumbnails)
@@ -113,13 +119,17 @@ class ReadReviewViewHolder(
             setReply(element.shopName, reviewResponse, feedbackID, element.productId)
             showBadRatingReason(badRatingReasonFmt)
         }
+        itemView.findViewById<View>(R.id.read_product_review_basic_info)?.showWithCondition(isProductReview)
+        itemView.findViewById<View>(R.id.read_shop_review_basic_info)?.showWithCondition(!isProductReview)
+    }
+
+    override fun onThreeDotsClicked() {
+        readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
     }
 
     private fun bindViews() {
         with(itemView) {
             productInfo = findViewById(R.id.read_review_product_info)
-            basicInfo = findViewById(R.id.read_review_basic_info)
-            reportOption = findViewById(R.id.read_review_item_three_dots)
             reviewMessage = findViewById(R.id.read_review_item_review)
             attachedMedia = findViewById(R.id.read_review_attached_media)
             likeImage = findViewById(R.id.read_review_like_button)
@@ -165,25 +175,24 @@ class ReadReviewViewHolder(
         basicInfo?.setCreateTime(createTime)
     }
 
-    private fun showReportOptionWithCondition(
-        isReportable: Boolean,
-        reviewId: String,
-        shopId: String
-    ) {
-        reportOption?.apply {
-            if (isReportable) {
-                show()
-                setOnClickListener {
-                    readReviewItemListener.onThreeDotsClicked(reviewId, shopId)
-                }
-            } else {
-                hide()
-            }
+    private fun showReportOptionWithCondition(isReportable: Boolean) {
+        if (isReportable) {
+            basicInfo?.showThreeDots()
+        } else {
+            basicInfo?.hideThreeDots()
         }
     }
 
     private fun setReviewerName(name: String) {
         basicInfo?.setReviewerName(name)
+    }
+
+    private fun setReviewerLabel(label: String) {
+        basicInfo?.setReviewerLabel(label)
+    }
+
+    private fun setVariantName(variantName: String) {
+        basicInfo?.setVariantName(variantName)
     }
 
     private fun setReview(message: String, feedbackId: String, productId: String) {
@@ -343,7 +352,7 @@ class ReadReviewViewHolder(
 
     private fun setBasicInfoDataAndListener(isAnonymous: Boolean, userId: String, feedbackId: String) {
         basicInfo?.setCredibilityData(isProductReview, isAnonymous, userId, feedbackId)
-        basicInfo?.setListener(reviewBasicInfoListener)
+        basicInfo?.setListeners(reviewBasicInfoListener, this)
     }
 
     private fun showBadRatingReason(reason: String) {

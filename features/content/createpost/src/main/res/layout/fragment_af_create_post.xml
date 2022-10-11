@@ -50,7 +50,7 @@
                 android:id="@+id/counter"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/sp_8"
+                android:lineSpacingExtra="8sp"
                 android:visibility="gone"
                 app:typographyType="small"
                 app:typographyWeight="reguler"
@@ -173,7 +173,7 @@
 
     <LinearLayout android:id="@+id/action_bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_56"
+        android:layout_height="56dp"
         android:orientation="horizontal"
         android:background="@drawable/card_shadow_top"
         android:paddingLeft="16dp"

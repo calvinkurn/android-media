@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import com.tokopedia.topads.common.constant.TopAdsCommonConstant.RECOMMENDATION_BUDGET_MULTIPLIER
 import com.tokopedia.topads.common.data.response.GetKeywordResponse
 import com.tokopedia.topads.common.data.response.TopAdsBidSettingsModel
+import com.tokopedia.topads.common.data.util.TopAdsEditUtils
 
 /**
  * Created by Pika on 14/4/20.
@@ -39,23 +40,17 @@ class SharedViewModel : ViewModel() {
     }
 
     fun setDailyBudget(budget:Int){
-        dailyBudget.value = budget*RECOMMENDATION_BUDGET_MULTIPLIER
+        dailyBudget.value = budget
         setMaxBudgetValue()
 
     }
 
     private fun setMaxBudgetValue() {
-        val dailyBudget = dailyBudget.value
-        val rekomendedBudget = rekomendedBudget.value
-        if (dailyBudget != null && rekomendedBudget != null) {
-            if (dailyBudget > rekomendedBudget) {
-                maxBudget.value = dailyBudget
-            } else maxBudget.value = rekomendedBudget
-        }
+        maxBudget.value = TopAdsEditUtils.calculateDailyBudget(dailyBudget.value, rekomendedBudget.value)
     }
 
     fun setRekomendedBudget(budget:Int){
-        rekomendedBudget.value = budget * RECOMMENDATION_BUDGET_MULTIPLIER
+        rekomendedBudget.value = budget
         setMaxBudgetValue()
     }
 

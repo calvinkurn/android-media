@@ -3,6 +3,8 @@ package com.tokopedia.topchat.chatroom.view.uimodel.product_bundling
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.DeferredAttachment
 import com.tokopedia.chat_common.data.SendableUiModel
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
+import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingData
 import com.tokopedia.topchat.chatroom.domain.pojo.product_bundling.ProductBundlingPojo
 import com.tokopedia.topchat.chatroom.view.adapter.TopChatTypeFactory
@@ -51,6 +53,8 @@ class MultipleProductBundlingUiModel constructor(
 
         internal var listProductBundling: ArrayList<ProductBundlingUiModel> = arrayListOf()
         internal var needSync: Boolean = true
+        private var chatPojo: ChatSocketPojo? = null
+        private var reply: Reply? = null
 
         override fun build(): MultipleProductBundlingUiModel {
             return MultipleProductBundlingUiModel(this)
@@ -67,16 +71,32 @@ class MultipleProductBundlingUiModel constructor(
             return self()
         }
 
+        override fun withResponseFromWs(reply: ChatSocketPojo): Builder {
+            this.chatPojo = reply
+            return super.withResponseFromWs(reply)
+        }
+
+        override fun withResponseFromGQL(reply: Reply): Builder {
+            this.reply = reply
+            return super.withResponseFromGQL(reply)
+        }
+
         private fun mapToListProductBundling(
             listProductBundling: List<ProductBundlingData>
         ): List<ProductBundlingUiModel> {
             val listResult = arrayListOf<ProductBundlingUiModel>()
             for (i in listProductBundling.indices) {
-                val productBundling = ProductBundlingUiModel.Builder()
+                val productBundlingBuilder = ProductBundlingUiModel.Builder()
                     .withIsSender(isSender)
                     .withProductBundling(listProductBundling[i])
                     .withNeedSync(needSync)
-                    .build()
+                chatPojo?.let {
+                    productBundlingBuilder.withResponseFromWs(it)
+                }
+                reply?.let {
+                    productBundlingBuilder.withResponseFromGQL(it)
+                }
+                val productBundling = productBundlingBuilder.build()
                 listResult.add(productBundling)
             }
             return listResult

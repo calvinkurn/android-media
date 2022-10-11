@@ -63,6 +63,7 @@ class SearchApiConst {
         const val FIRST_INSTALL = "first_install"
         const val SRP_PAGE_TITLE = "srp_page_title"
         const val SRP_PAGE_ID = "srp_page_id"
+        const val SRP_EXT_REF = "srp_ext_ref"
         const val USER_LAT = "user_lat"
         const val USER_LONG = "user_long"
         const val USER_CITY_ID = "user_cityId"

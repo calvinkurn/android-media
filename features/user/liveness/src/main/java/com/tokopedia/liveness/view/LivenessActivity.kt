@@ -40,7 +40,7 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setActionSequence(false,
+        livenessSdk.setActionSequence(true,
             Detector.DetectionType.MOUTH,
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
