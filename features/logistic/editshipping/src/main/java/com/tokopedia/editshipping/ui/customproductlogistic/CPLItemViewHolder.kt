@@ -3,11 +3,11 @@ package com.tokopedia.editshipping.ui.customproductlogistic
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.editshipping.databinding.ItemShippingEditorCardBinding
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
+import com.tokopedia.media.loader.loadImage
 
 class CPLItemViewHolder(
     private val binding: ItemShippingEditorCardBinding,
@@ -28,10 +28,7 @@ class CPLItemViewHolder(
     }
 
     private fun bindNormalShipment(data: ShipperCPLModel) {
-        // todo use loadurl
-        binding.imgShipmentItem.let {
-            ImageHandler.loadImageFitCenter(binding.root.context, it, data.logo)
-        }
+        binding.imgShipmentItem.loadImage(data.logo)
         setAdapterData(data)
         setItemChecked(data)
     }
