@@ -21,8 +21,14 @@ import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
+import com.tokopedia.remoteconfig.RemoteConfig
+import javax.inject.Inject
 
 open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var fragment: Fragment? = null
 
@@ -37,10 +43,13 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        component.inject(this)
+
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setActionSequence(true,
+        livenessSdk.setActionSequence(
+            isRandomDetection(),
             Detector.DetectionType.MOUTH,
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
@@ -148,4 +157,9 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
                     finish()
                 }.create().show()
     }
+
+    private fun isRandomDetection(): Boolean = remoteConfig.getBoolean(
+        REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION,
+        false
+    )
 }
