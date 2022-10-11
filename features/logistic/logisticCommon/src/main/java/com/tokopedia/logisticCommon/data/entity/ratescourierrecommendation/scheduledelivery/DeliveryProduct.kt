@@ -17,9 +17,9 @@ class DeliveryProduct(
     @SerializedName("shipper_product_id")
     val shipperProductId: Long = 0L,
     @SerializedName("final_price")
-    val finalPrice: Double? = 0.0,
+    val finalPrice: Double = 0.0,
     @SerializedName("real_price")
-    val realPrice: Double? = 0.0,
+    val realPrice: Double = 0.0,
     @SerializedName("text_final_price")
     val textFinalPrice: String = "",
     @SerializedName("text_real_price")
