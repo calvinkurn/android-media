@@ -3,6 +3,7 @@ package com.tokopedia.checkout.view.viewholder
 import android.text.SpannableString
 import android.text.style.RelativeSizeSpan
 import android.view.View
+import android.widget.FrameLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.checkout.R
 import com.tokopedia.checkout.view.ShipmentAdapterActionListener
@@ -22,12 +23,15 @@ class ShipmentNewUpsellViewHolder(
 ) : RecyclerView.ViewHolder(itemView) {
 
     private val container: ContainerUnify = itemView.findViewById(R.id.checkout_upsell_container)
+    private val frame: FrameLayout = itemView.findViewById(R.id.checkout_upsell_frame)
     private val image: ImageUnify = itemView.findViewById(R.id.checkout_upsell_image)
     private val title: Typography = itemView.findViewById(R.id.checkout_upsell_title)
     private val description: Typography = itemView.findViewById(R.id.checkout_upsell_description)
     private val button: UnifyButton = itemView.findViewById(R.id.checkout_upsell_button)
 
     fun bind(data: ShipmentNewUpsellModel) {
+        frame.setBackgroundResource(R.drawable.checkout_module_upsell_background)
+
         image.setImageUrl(data.image)
         title.text = HtmlLinkHelper(description.context, data.description).spannedString
         button.text = data.buttonText

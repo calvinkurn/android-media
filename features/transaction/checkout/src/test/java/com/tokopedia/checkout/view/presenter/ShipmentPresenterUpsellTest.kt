@@ -131,12 +131,14 @@ class ShipmentPresenterUpsellTest {
     @Test
     fun `WHEN cancel upsell THEN should try clear all BO`() {
         // Given
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -228,12 +230,14 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -321,11 +325,13 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -412,12 +418,14 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel()
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -504,10 +512,12 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -594,12 +604,14 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(
@@ -686,12 +698,14 @@ class ShipmentPresenterUpsellTest {
             true
         )
 
-        presenter.shipmentCartItemModelList = listOf(ShipmentCartItemModel().apply {
-            cartItemModels = listOf(CartItemModel())
-            cartString = "cartString"
-            shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
-            voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
-        })
+        presenter.shipmentCartItemModelList = listOf(
+            ShipmentCartItemModel().apply {
+                cartItemModels = listOf(CartItemModel())
+                cartString = "cartString"
+                shipmentCartData = ShipmentCartData(boMetadata = BoMetadata())
+                voucherLogisticItemUiModel = VoucherLogisticItemUiModel("BOCODE")
+            }
+        )
         every { clearCacheAutoApplyStackUseCase.createObservable(any()) } returns Observable.just(
             ClearPromoUiModel(
                 successDataModel = SuccessDataUiModel(

@@ -1275,7 +1275,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     fun `GIVEN not null shipment button data WHEN get shipment button data THEN should return shipment button data`() {
         // Given
         presenter.shipmentButtonPaymentModel = ShipmentButtonPaymentModel(
-            totalPrice = "Rp1.000", quantity = 1
+            totalPrice = "Rp1.000",
+            quantity = 1
         )
 
         // Then
@@ -1650,7 +1651,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 description = "desc",
                 appLink = "applink",
                 image = "image"
-            ), presenter.shipmentUpsellModel
+            ),
+            presenter.shipmentUpsellModel
         )
     }
 
@@ -1729,7 +1731,8 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
                 duration = "duration",
                 summaryInfo = "wording",
                 buttonText = "button"
-            ), presenter.shipmentNewUpsellModel
+            ),
+            presenter.shipmentNewUpsellModel
         )
     }
 }
