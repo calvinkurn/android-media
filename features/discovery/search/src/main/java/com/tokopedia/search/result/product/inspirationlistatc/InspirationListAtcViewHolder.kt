@@ -99,7 +99,7 @@ class InspirationListAtcViewHolder(
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             cardInteraction = true,
             hasAddToCartButton = true,
-            isTopAds = isOrganicAds
+            isTopAds = isOrganicAds,
         )
     }
 
