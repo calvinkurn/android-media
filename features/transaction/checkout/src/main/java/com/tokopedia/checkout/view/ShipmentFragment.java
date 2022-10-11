@@ -145,8 +145,9 @@ import com.tokopedia.purchase_platform.common.constant.CartConstant;
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant;
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.GeneralBottomSheet;
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.PrescriptionViewHolder;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionListener;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionViewHolder;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnWordingModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel;
@@ -212,7 +213,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         ShipmentContract.AnalyticsActionListener, ShipmentAdapterActionListener,
         ShippingDurationBottomsheetListener, ShippingCourierBottomsheetListener,
         PromoNotEligibleActionListener, SellerCashbackListener,
-        ExpireTimeDialogListener, PrescriptionViewHolder.Listener {
+        ExpireTimeDialogListener, UploadPrescriptionListener {
 
     private static final int REQUEST_CODE_EDIT_ADDRESS = 11;
     private static final int REQUEST_CODE_COURIER_PINPOINT = 13;
@@ -666,7 +667,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     public void onNext(Long aLong) {
                         if (!isUnsubscribed()) {
                             RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(shipmentAdapter.getUploadPrescriptionPosition());
-                            if (viewHolder instanceof PrescriptionViewHolder) {
+                            if (viewHolder instanceof UploadPrescriptionViewHolder) {
                                 CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, "Pesanan obat kerasmu butuh resep", "Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~", CoachMark2.POSITION_TOP);
                                 ArrayList<CoachMark2Item> list = new ArrayList<>();
                                 list.add(item);
@@ -3580,10 +3581,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     @Override
-    public void onClickPrescriptionWidget(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+    public void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
         if (uploadPrescriptionUiModel.getCheckoutId() != null)
             ePharmacyAnalytics.sendPrescriptionWidgetClick(uploadPrescriptionUiModel.getCheckoutId());
-        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), PrescriptionViewHolder.EPharmacyAppLink);
+        Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
         uploadPrescriptionIntent.putExtra(EXTRA_CHECKOUT_ID_STRING, uploadPrescriptionUiModel.getCheckoutId());
         startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
     }
@@ -3596,7 +3597,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             uploadModel.setError(false);
             if (!isApi || (prescriptions != null && !prescriptions.isEmpty())) {
                 uploadModel.setUploadImageText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text));
-                uploadModel.setLeftIconUrl(PrescriptionViewHolder.EPharmacyCountImageUrl);
+                uploadModel.setLeftIconUrl(UploadPrescriptionViewHolder.EPharmacyCountImageUrl);
                 uploadModel.setPrescriptionIds(prescriptions);
                 uploadModel.setUploadedImageCount(prescriptions.size());
                 uploadModel.setDescriptionText(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_count_text,
