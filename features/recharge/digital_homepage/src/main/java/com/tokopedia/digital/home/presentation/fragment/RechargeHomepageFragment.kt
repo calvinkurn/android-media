@@ -188,29 +188,21 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
 
     private fun hideStatusBar() {
 
-        binding.digitalHomepageContainer.fitsSystemWindows = false
-        binding.digitalHomepageContainer.requestApplyInsets()
+        binding.digitalHomepageContainer.apply {
+            fitsSystemWindows = false
+            requestApplyInsets()
+        }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags = binding.digitalHomepageContainer.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            binding.digitalHomepageContainer.systemUiVisibility = flags
-            context?.run {
-                activity?.window?.statusBarColor =
-                    androidx.core.content.ContextCompat.getColor(
-                        this,
-                        com.tokopedia.unifyprinciples.R.color.Unify_N0
-                    )
+        activity?.window?.let { window ->
+            if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             }
-        }
 
-        if (Build.VERSION.SDK_INT in Build.VERSION_CODES.KITKAT..Build.VERSION_CODES.KITKAT_WATCH) {
-            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-            activity?.window?.statusBarColor = Color.TRANSPARENT
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS)
+                window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                window.statusBarColor = Color.TRANSPARENT
+            }
         }
     }
 
