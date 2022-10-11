@@ -37,6 +37,7 @@
         android:id="@+id/miniCart"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         tools:layout_height="52dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>
