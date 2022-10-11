@@ -36,7 +36,20 @@ data class ShipperList(
     @SerializedName("description")
     var description: String = "",
     @SerializedName("shipper")
-    var shipper: List<Shipper> = listOf()
+    var shipper: List<Shipper> = listOf(),
+    @SerializedName("whitelabels")
+    var whitelabelShipper: List<WhitelabelShipper> = listOf()
+)
+
+data class WhitelabelShipper(
+    @SerializedName("title")
+    var title: String = "",
+    @SerializedName("description")
+    var description: String = "",
+    @SerializedName("shipper_product_ids")
+    var shipperProductIds: List<Long> = listOf(),
+    @SerializedName("is_active")
+    var isActive: Boolean = false
 )
 
 data class Shipper(
