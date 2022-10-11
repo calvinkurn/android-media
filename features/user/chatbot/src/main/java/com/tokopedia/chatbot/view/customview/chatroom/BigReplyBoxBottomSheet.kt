@@ -29,18 +29,6 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         clearContentPadding = true
     }
 
-    companion object {
-        @JvmStatic
-        fun newInstance(context: FragmentActivity): BigReplyBoxBottomSheet {
-            return BigReplyBoxBottomSheet().apply {
-                this.context = context
-            }
-        }
-        var replyBoxClickListener : ReplyBoxClickListener? = null
-        val LAYOUT = R.layout.bottom_sheet_big_reply_box
-        const val MINIMUM_NUMBER_OF_WORDS = 2
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -61,7 +49,9 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun bindClickListeners() {
         getBindingView().sendButton.setOnClickListener {
-            replyBoxClickListener?.getMessageContentFromBottomSheet(getBindingView().chatText?.editText?.text?.toString() ?: "")
+            replyBoxClickListener?.getMessageContentFromBottomSheet(
+                getBindingView().chatText.editText.text?.toString() ?: ""
+            )
             dismissAllowingStateLoss()
         }
         getBindingView().ivChatMenu.setOnClickListener {
@@ -103,6 +93,19 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     override fun enableSendButton() {
         getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
         isSendButtonActivated = true
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(context: FragmentActivity): BigReplyBoxBottomSheet {
+            return BigReplyBoxBottomSheet().apply {
+                this.context = context
+            }
+        }
+
+        var replyBoxClickListener: ReplyBoxClickListener? = null
+        val LAYOUT = R.layout.bottom_sheet_big_reply_box
+        const val MINIMUM_NUMBER_OF_WORDS = 2
     }
 
 }
