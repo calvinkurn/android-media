@@ -7,10 +7,13 @@ import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class GetP1DataUseCase @Inject constructor(
@@ -61,5 +64,10 @@ class GetP1DataUseCase @Inject constructor(
             p0DataRequestState.getBuyerOrderDetailRequestState.result.invoice
         ),
         ::mapP1UseCasesRequestState
-    )
+    ).catch {
+        emit(GetP1DataRequestState.Complete(
+            GetOrderResolutionRequestState.Error(it),
+            GetInsuranceDetailRequestState.Error(it)
+        ))
+    }.flowOn(Dispatchers.IO)
 }
