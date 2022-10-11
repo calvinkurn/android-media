@@ -121,5 +121,6 @@
     <string name="placeholder_searchbar_hansel">Search by Function Name or Patch Id</string>
     <string name="title_button_hansel_patch_list">View Hansel Patch List</string>
     <string name="btn_title_hansel">View Hansel Patch List</string>
+    <string name="label_is_device_test">Device Hansel Test: %1$s</string>
 
 </resources>

@@ -2,7 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_is_test_device"
+        android:layout_margin="@dimen/unify_space_4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Device Hansel Test: True"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btn_hansel_patch"
@@ -13,5 +22,4 @@
         android:text="@string/btn_title_hansel"
         app:unifyButtonType="main"
         app:unifyButtonSize="medium" />
-
 </LinearLayout>

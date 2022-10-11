@@ -60,7 +60,6 @@
         <activity
             android:name=".hansel.HanselActivity"
             android:screenOrientation="portrait"
-            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <service
