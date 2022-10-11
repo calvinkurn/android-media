@@ -193,7 +193,7 @@
       "userId": ".*"
     },
     {
-      "event": "(clickSellerBroadcast|clickPG)",
+      "event": "clickSellerBroadcast",
       "eventAction": "click - etalase card",
       "eventCategory": "seller broadcast",
       "eventLabel": "\\d+",
