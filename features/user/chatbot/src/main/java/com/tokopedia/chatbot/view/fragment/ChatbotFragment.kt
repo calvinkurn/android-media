@@ -6,7 +6,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -130,7 +129,7 @@ import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBox
 import com.tokopedia.chatbot.view.customview.chatroom.BigReplyBoxBottomSheet
 import com.tokopedia.chatbot.view.customview.chatroom.SmallReplyBox
-import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
+import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -189,7 +188,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     View.OnClickListener, TransactionInvoiceBottomSheetListener, StickyActionButtonClickListener,
     VideoUploadListener, AttachmentMenu.AttachmentMenuListener, ReplyBubbleAreaMessage.Listener,
     ChatbotSendButtonListener, ChatbotFloatingInvoice.InvoiceListener,
-    ReplyBoxAttachmentMenuListener {
+    ReplyBoxClickListener {
 
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
@@ -379,7 +378,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     }
 
     private fun setUpBigReplyBoxListeners() {
-        bigReplyBox?.replyBoxAttachmentMenuListener = this
+        bigReplyBox?.replyBoxClickListener = this
         bigReplyBox?.sendButtonListener = this
     }
     private fun initSmoothScroller(){
@@ -1818,7 +1817,7 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     override fun goToBigReplyBoxBottomSheet() {
         activity?.let {
             val bottomSheetUnify = BigReplyBoxBottomSheet.newInstance(it)
-            BigReplyBoxBottomSheet.replyBoxAttachmentMenuListener = this
+            BigReplyBoxBottomSheet.replyBoxClickListener = this
             bottomSheetUnify.clearContentPadding = true
             bottomSheetUnify.show(childFragmentManager, "")
         }

@@ -39,7 +39,7 @@
     </FrameLayout>
 
     <ImageView
-        android:id="@+id/send_but"
+        android:id="@+id/send_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="center"

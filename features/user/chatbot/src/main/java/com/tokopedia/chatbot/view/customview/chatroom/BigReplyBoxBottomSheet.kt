@@ -6,20 +6,20 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
+import com.tokopedia.chatbot.databinding.BottomSheetBigReplyBoxBinding
+import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
 
 class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private lateinit var context: FragmentActivity
-    private var sendButton: ImageView? = null
-    private var messageText: TextFieldUnify2? = null
     private var isSendButtonActivated: Boolean = false
+
+    private var _viewBinding: BottomSheetBigReplyBoxBinding? = null
+    private fun getBindingView() = _viewBinding!!
 
     init {
         isFullpage = false
@@ -36,7 +36,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
                 this.context = context
             }
         }
-        var replyBoxAttachmentMenuListener : ReplyBoxAttachmentMenuListener? = null
+        var replyBoxClickListener : ReplyBoxClickListener? = null
         val LAYOUT = R.layout.bottom_sheet_big_reply_box
         const val MINIMUM_NUMBER_OF_WORDS = 2
     }
@@ -46,12 +46,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val contentView = View.inflate(context, LAYOUT, null)
-        setChild(contentView)
-        contentView.run {
-            sendButton = findViewById(R.id.send_but)
-            messageText = findViewById(R.id.chat_text)
-        }
+        _viewBinding = BottomSheetBigReplyBoxBinding.inflate(LayoutInflater.from(context))
+        setChild(getBindingView().root)
         setUpTextWatcher()
         disableSendButton()
         bindClickListeners()
@@ -60,18 +56,22 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
 
     private fun setUpTextWatcher() {
         val textWatcher = getTextWatcherForMessage()
-        messageText?.editText?.addTextChangedListener(textWatcher)
+        getBindingView().chatText.editText.addTextChangedListener(textWatcher)
     }
 
     private fun bindClickListeners() {
-        sendButton?.setOnClickListener {
-            replyBoxAttachmentMenuListener?.getMessageContentFromBottomSheet(messageText?.editText?.text?.toString() ?: "")
+        getBindingView().sendButton.setOnClickListener {
+            replyBoxClickListener?.getMessageContentFromBottomSheet(getBindingView().chatText?.editText?.text?.toString() ?: "")
             dismissAllowingStateLoss()
+        }
+        getBindingView().ivChatMenu.setOnClickListener {
+            dismissAllowingStateLoss()
+            replyBoxClickListener?.onAttachmentMenuClicked()
         }
     }
 
     private fun getWordCount(): Int {
-        val words = messageText?.editText?.text?.toString()?.trim() ?: ""
+        val words = getBindingView().chatText.editText.text?.toString()?.trim() ?: ""
         return words.split("\\s+".toRegex()).size
     }
 
@@ -96,12 +96,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     }
 
     override fun disableSendButton() {
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send_deactivated)
+        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send_deactivated)
         isSendButtonActivated = false
     }
 
     override fun enableSendButton() {
-        sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+        getBindingView().sendButton.setImageResource(R.drawable.ic_chatbot_send)
         isSendButtonActivated = true
     }
 

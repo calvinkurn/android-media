@@ -6,7 +6,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxAttachmentMenuListener
+import com.tokopedia.chatbot.view.customview.chatroom.listener.ReplyBoxClickListener
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.unifycomponents.CardUnify2
 
@@ -19,7 +19,7 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     private var parentLayout: ConstraintLayout? = null
 
     var sendButtonListener : ChatbotSendButtonListener? = null
-    var replyBoxAttachmentMenuListener : ReplyBoxAttachmentMenuListener? = null
+    var replyBoxClickListener : ReplyBoxClickListener? = null
 
     init {
         initViewBindings()
@@ -34,15 +34,15 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
-            replyBox?.setOnClickListener {
-                replyBoxAttachmentMenuListener?.goToBigReplyBoxBottomSheet()
-            }
         }
     }
 
     private fun bindClickListeners() {
         addAttachmentMenu?.setOnClickListener {
-            replyBoxAttachmentMenuListener?.onAttachmentMenuClicked()
+            replyBoxClickListener?.onAttachmentMenuClicked()
+        }
+        replyBox?.setOnClickListener {
+            replyBoxClickListener?.goToBigReplyBoxBottomSheet()
         }
     }
 
