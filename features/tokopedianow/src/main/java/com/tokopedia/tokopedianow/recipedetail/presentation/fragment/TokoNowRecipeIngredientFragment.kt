@@ -87,6 +87,7 @@ class TokoNowRecipeIngredientFragment : Fragment(), RecipeProductListener, OutOf
 
     fun setItemList(itemList: List<Visitable<*>>) {
         this.items = itemList
+        submitList(items)
     }
 
     private fun setupRecyclerView() {

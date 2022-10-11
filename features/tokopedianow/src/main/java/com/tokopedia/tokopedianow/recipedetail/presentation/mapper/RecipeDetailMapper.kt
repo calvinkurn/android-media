@@ -30,6 +30,7 @@ object RecipeDetailMapper {
     private const val MAX_LABEL_COUNT = 3
     private const val TAKE_LABEL_COUNT = 4
     private const val PRODUCT_DEFAULT_QTY = 0
+    private const val DEFAULT_ID = 1
 
     private const val MEDIA_TYPE_IMAGE = "Image"
 
@@ -173,6 +174,7 @@ object RecipeDetailMapper {
         }
 
         return RecipeTabUiModel(
+            DEFAULT_ID,
             IngredientTabUiModel(ingredientTabItems),
             InstructionTabUiModel(instructionTabItems)
         )

@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class RecipeTabViewHolder(
     itemView: View,
     private val recipeDetailView: RecipeDetailView
-): AbstractViewHolder<RecipeTabUiModel>(itemView) {
+) : AbstractViewHolder<RecipeTabUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_tab
@@ -29,47 +29,60 @@ class RecipeTabViewHolder(
 
     private var binding: ItemTokopedianowRecipeTabBinding? by viewBinding()
 
+    private var ingredientTab: TokoNowRecipeIngredientFragment? = null
+    private var instructionTab: TokoNowRecipeInstructionFragment? = null
+
     private val analytics by lazy { recipeDetailView.getTracker() }
+    private val tabAdapter by lazy { createTabAdapter() }
+
+    init {
+        setupViewPager()
+    }
 
     override fun bind(tab: RecipeTabUiModel) {
-        recipeDetailView.getFragmentActivity()?.let {
-            val recipeTab = binding?.recipeTab
-            val viewPager = binding?.viewPager
-            val ingredientTabTitle = itemView.context.resources.getString(
-                R.string.tokopedianow_recipe_ingredient_tab_title)
-            val instructionTabTitle = itemView.context.resources.getString(
-                R.string.tokopedianow_recipe_instruction_tab_title)
+        ingredientTab?.setItemList(tab.ingredient.items)
+        instructionTab?.setItemList(tab.instruction.items)
 
-            val ingredientFragment = TokoNowRecipeIngredientFragment.newInstance().apply {
+        analytics.trackImpressionBuyIngredientsTab()
+        analytics.trackImpressionHowToTab()
+    }
+
+    private fun setupViewPager() {
+        val recipeTab = binding?.recipeTab
+        val viewPager = binding?.viewPager
+        val ingredientTabTitle = itemView.context.resources.getString(
+            R.string.tokopedianow_recipe_ingredient_tab_title
+        )
+        val instructionTabTitle = itemView.context.resources.getString(
+            R.string.tokopedianow_recipe_instruction_tab_title
+        )
+
+        recipeTab?.apply {
+            addNewTab(ingredientTabTitle)
+            addNewTab(instructionTabTitle)
+            addOnTabSelectedListener(viewPager)
+        }
+
+        viewPager?.apply {
+            adapter = tabAdapter
+            registerPageChangeCallback(recipeTab)
+            setPageTransformer { page, _ ->
+                updatePagerHeightForChild(page, viewPager)
+            }
+        }
+    }
+
+    private fun createTabAdapter(): RecipeTabAdapter? {
+        return recipeDetailView.getFragmentActivity()?.run {
+            ingredientTab = TokoNowRecipeIngredientFragment.newInstance().apply {
                 setRecipeDetailView(recipeDetailView)
-                setItemList(tab.ingredient.items)
             }
+            instructionTab = TokoNowRecipeInstructionFragment.newInstance()
 
-            val instructionFragment = TokoNowRecipeInstructionFragment.newInstance().apply {
-                setItemList(tab.instruction.items)
+            RecipeTabAdapter(this).apply {
+                addFragment(ingredientTab)
+                addFragment(instructionTab)
             }
-
-            val recipeTabAdapter = RecipeTabAdapter(it).apply {
-                addFragment(ingredientFragment)
-                addFragment(instructionFragment)
-            }
-
-            recipeTab?.apply {
-                addNewTab(ingredientTabTitle)
-                addNewTab(instructionTabTitle)
-                addOnTabSelectedListener(viewPager)
-            }
-
-            viewPager?.apply {
-                adapter = recipeTabAdapter
-                registerPageChangeCallback(recipeTab)
-                setPageTransformer { page, _ ->
-                    updatePagerHeightForChild(page, viewPager)
-                }
-            }
-
-            analytics.trackImpressionBuyIngredientsTab()
-            analytics.trackImpressionHowToTab()
         }
     }
 

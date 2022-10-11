@@ -54,6 +54,7 @@ class TokoNowRecipeInstructionFragment: Fragment() {
 
     fun setItemList(items: List<Visitable<*>>) {
         this.items = items
+        submitList(items)
     }
 
     private fun submitList(items: List<Visitable<*>>) {

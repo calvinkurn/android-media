@@ -14,7 +14,9 @@ class RecipeTabAdapter(fragmentActivity: FragmentActivity): FragmentStateAdapter
         return fragments[position]
     }
 
-    fun addFragment(fragment: Fragment) {
-        fragments.add(fragment)
+    fun addFragment(fragment: Fragment?) {
+        fragment?.let {
+            fragments.add(it)
+        }
     }
 }
