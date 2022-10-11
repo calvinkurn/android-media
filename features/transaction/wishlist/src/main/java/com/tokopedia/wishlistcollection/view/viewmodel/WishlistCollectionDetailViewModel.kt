@@ -58,6 +58,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val atcUseCase: AddToCartUseCase,
     private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
 ) : BaseViewModel(dispatcher.main) {
+    private var recommSrc = ""
 
     private val _collectionItems =
         MutableLiveData<Result<GetWishlistCollectionItemsResponse>>()
@@ -107,6 +108,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     ) {
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
+            recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
             _collectionItems.value = Success(result)
             _collectionData.value = Success(
                 organizeWishlistV2Data(
@@ -114,9 +116,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     typeLayout,
                     isAutomaticDelete,
                     getRecommendationWishlistV2(
-                        1, listOf(),
-                        EMPTY_WISHLIST_PAGE_NAME
-                    ),
+                        1, listOf(), recommSrc),
                     getTopAdsData(), true
                 )
             )
@@ -130,9 +130,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         launch {
             try {
                 val recommItems = getRecommendationWishlistV2(
-                    page, listOf(),
-                    EMPTY_WISHLIST_PAGE_NAME
-                )
+                    page, listOf(), recommSrc)
                 recommItems.recommendationProductCardModelData.forEach { item ->
                     listData.add(
                         WishlistV2TypeLayoutData(
@@ -167,9 +165,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     }
 
     suspend fun getTopAdsData(): TopAdsImageViewModel? {
-        var result: TopAdsImageViewModel? = null
-        launchCatchError(dispatcher.io, {
-            result = topAdsImageViewUseCase.getImageData(
+        return try {
+            val queryParams =
                 topAdsImageViewUseCase.getQueryMap(
                     "",
                     WISHLIST_TOPADS_SOURCE,
@@ -178,11 +175,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     WISHLIST_TOPADS_DIMENS,
                     ""
                 )
-            ).firstOrNull()
-        }, {
-            result = null
-        })
-        return result
+            topAdsImageViewUseCase.getImageData(queryParams).firstOrNull()
+        } catch (t: Throwable) {
+            null
+        }
     }
 
     fun deleteWishlistV2(productId: String, userId: String) {
@@ -268,5 +264,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         }, onError = {
             _addWishlistCollectionItem.value = Fail(it)
         })
+    }
+
+    companion object {
+        private const val WISHLIST_PAGE_NAME = "wishlist"
+        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
     }
 }

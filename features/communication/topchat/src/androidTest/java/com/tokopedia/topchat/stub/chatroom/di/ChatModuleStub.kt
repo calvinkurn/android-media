@@ -34,7 +34,6 @@ import com.tokopedia.topchat.common.websocket.WebsocketPayloadGenerator
 import com.tokopedia.topchat.stub.common.DefaultWebsocketPayloadFakeGenerator
 import com.tokopedia.topchat.stub.common.UserSessionStub
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
@@ -156,12 +155,6 @@ class ChatModuleStub {
     @Provides
     internal fun provideTopchatCacheManager(): TopchatCacheManager {
         return FakeTopchatCacheManager()
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @ChatScope

@@ -321,7 +321,7 @@ class VideoDetailFragment :
     private fun onLikeSectionClicked(): View.OnClickListener {
         return View.OnClickListener {
             if (userSession.isLoggedIn) {
-                presenter.likeKol(id.toInt(), 0, this)
+                presenter.likeKol(id.toLongOrZero(), 0, this)
             } else {
                 goToLogin()
             }
@@ -339,7 +339,7 @@ class VideoDetailFragment :
                 if (callSource == PARAM_FEED) {
                     val intent = getCallingIntent(
                         requireContext(),
-                        id.toInt(),
+                        id.toIntOrZero(),
                         0,
                         authorId,
                         isFollowed,
@@ -351,7 +351,7 @@ class VideoDetailFragment :
                     startActivityForResult(
                         KolCommentActivity.getCallingIntent(
                             requireActivity(),
-                            id.toInt(),
+                            id.toIntOrZero(),
                             0
                         ), INTENT_COMMENT
                     )

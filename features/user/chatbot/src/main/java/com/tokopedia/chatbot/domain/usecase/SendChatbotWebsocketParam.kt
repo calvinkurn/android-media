@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import com.google.gson.JsonObject
 import com.tokopedia.chat_common.data.AttachmentType
 import com.tokopedia.chat_common.data.WebsocketEvent
+import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
@@ -65,6 +66,7 @@ object SendChatbotWebsocketParam {
         attributeSelected.addProperty("title", invoiceLinkPojo.attributes.title)
         attributeSelected.addProperty("total_amount", invoiceLinkPojo.attributes.totalAmount)
         attributeSelected.addProperty("used_by", usedBy)
+        attributeSelected.addProperty("color", invoiceLinkPojo.attributes.color)
 
         payload.addProperty("type", "Undefined")
         data.addProperty("start_time", startTime)
@@ -213,6 +215,30 @@ object SendChatbotWebsocketParam {
         data.addProperty("to_uid", toUid)
         json.add("data", data)
         return json
+    }
+
+    fun generateParamSendVideoAttachment(
+        filePath: String,
+        startTime: String,
+        messageId: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val data = JsonObject()
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
+        data.addProperty("message", "Uploaded Video")
+        data.addProperty(
+            "attachment_type", (
+                    ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+                    ).toIntOrZero()
+        )
+        data.addProperty("file_path", filePath)
+        data.addProperty("start_time", startTime)
+
+        json.add("data", data)
+        return json
+
     }
 
 

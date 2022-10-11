@@ -82,7 +82,9 @@ import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.view.wrapper.InteractionEvent
 import com.tokopedia.play.view.wrapper.LoginStateEvent
 import com.tokopedia.play_common.eventbus.EventBus
+import com.tokopedia.play_common.lifecycle.lifecycleBound
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.util.ActivityResultHelper
 import com.tokopedia.play_common.util.PerformanceClassConfig
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.*
@@ -173,6 +175,10 @@ class PlayUserInteractionFragment @Inject constructor(
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this) }
+
+    private val activityResultHelper by lifecycleBound({
+        ActivityResultHelper(this)
+    })
 
     private val offset8 by lazy { requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3) }
 
@@ -323,19 +329,24 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (resultCode == Activity.RESULT_OK) {
+            activityResultHelper.processResult(requestCode)
+        }
+
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == Activity.RESULT_OK) {
             val lastAction = viewModel.observableLoggedInInteractionEvent.value?.peekContent()
             if (lastAction != null) handleInteractionEvent(lastAction.event)
-        } else {
-            playViewModel.submitAction(
-                    OpenPageResultAction(isSuccess = resultCode == Activity.RESULT_OK, requestCode = requestCode)
-            )
-            super.onActivityResult(requestCode, resultCode, data)
-        }
-
-        if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
+        } else if(requestCode == REQUEST_CODE_ADDRESS_LIST && resultCode == Activity.RESULT_OK) {
             chooseAddressView?.hideBottomSheet()
             initAddress()
+        } else {
+            playViewModel.submitAction(
+                OpenPageResultAction(
+                    isSuccess = resultCode == Activity.RESULT_OK,
+                    requestCode = requestCode
+                )
+            )
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -900,6 +911,13 @@ class PlayUserInteractionFragment @Inject constructor(
                             pipMode = event.pipMode
                         )
                     }
+                    is LoginEvent -> {
+                        val reqCode = activityResultHelper.generateRequestCode(event.afterSuccess)
+                        openApplink(
+                            ApplinkConst.LOGIN,
+                            requestCode = reqCode
+                        )
+                    }
                     is ShowInfoEvent -> {
                         doShowToaster(
                             toasterType = Toaster.TYPE_NORMAL,
@@ -1126,7 +1144,7 @@ class PlayUserInteractionFragment @Inject constructor(
     //TODO("This action is duplicated with the one in PlayBottomSheetFragment, find a way to prevent duplication")
     private fun doOpenProductDetail(product: PlayProductUiModel.Product, position: Int) {
         if (product.applink != null && product.applink.isNotEmpty()) {
-            analytic.clickProduct(product, ProductSectionUiModel.Section.ConfigUiModel.Empty, position)
+            analytic.clickProduct(product, ProductSectionUiModel.Section.Empty, position)
             openPageByApplink(product.applink, pipMode = true)
         }
     }
@@ -1897,9 +1915,10 @@ class PlayUserInteractionFragment @Inject constructor(
                 )
             }
             is ProductCarouselUiComponent.Event.OnClicked -> {
-                RouteManager.route(
-                    context,
+                if (event.product.applink == null) return
+                openPageByApplink(
                     event.product.applink,
+                    pipMode = true,
                 )
             }
             else -> {}
@@ -1928,8 +1947,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val FADE_TRANSITION_DELAY = 3000L
 
         private const val AUTO_SWIPE_DELAY = 500L
-
-        private const val MASK_NO_CUT_HEIGHT = 0f
 
         private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
 

@@ -338,7 +338,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -589,7 +590,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                         productCard = ProductCardModel(
                             hasSimilarProductButton = true,
                             isOutOfStock = true
-                        )
+                        ),
+                        position = 2
                     )
                 )
             )
@@ -865,7 +867,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -941,7 +944,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -1017,7 +1021,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -1318,7 +1323,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             ),
             createRepurchaseProductUiModel(
                 id = "2",
@@ -1326,7 +1332,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             )
         )
 
@@ -1395,7 +1402,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             ),
             createRepurchaseProductUiModel(
                 id = "2",
@@ -1405,7 +1413,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                         minQuantity = 0,
                         maxQuantity = 10
                     )
-                )
+                ),
+                position = 1
             )
         )
 
