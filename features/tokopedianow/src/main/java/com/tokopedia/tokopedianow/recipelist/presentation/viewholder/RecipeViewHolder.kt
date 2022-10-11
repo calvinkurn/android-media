@@ -84,7 +84,6 @@ class RecipeViewHolder(
             changeIconBookmark(this, isBookmarked)
             setOnClickListener {
                 isBookmarked = !isBookmarked
-                changeIconBookmark(this, isBookmarked)
                 listener.onClickBookmark(recipe, layoutPosition, isBookmarked)
             }
         }

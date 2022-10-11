@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -233,6 +234,12 @@ abstract class BaseTokoNowRecipeListFragment : Fragment(),
         binding?.recyclerView?.apply {
             adapter = this@BaseTokoNowRecipeListFragment.adapter
             layoutManager = LinearLayoutManager(context)
+            itemAnimator = object : DefaultItemAnimator() {
+                override fun animateAdd(holder: RecyclerView.ViewHolder?): Boolean {
+                    dispatchAddFinished(holder)
+                    return true
+                }
+            }
         }
         addLoadMoreListener()
     }

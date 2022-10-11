@@ -24,6 +24,7 @@ class RecipeTabViewHolder(
 
         private const val INDEX_BUY_INGREDIENT_TAB = 0
         private const val INDEX_HOW_TO_TAB = 1
+        private const val UNSPECIFIED_HEIGHT = 0
     }
 
     private var binding: ItemTokopedianowRecipeTabBinding? by viewBinding()
@@ -62,6 +63,9 @@ class RecipeTabViewHolder(
             viewPager?.apply {
                 adapter = recipeTabAdapter
                 registerPageChangeCallback(recipeTab)
+                setPageTransformer { page, _ ->
+                    updatePagerHeightForChild(page, viewPager)
+                }
             }
 
             analytics.trackImpressionBuyIngredientsTab()
@@ -97,5 +101,12 @@ class RecipeTabViewHolder(
             INDEX_BUY_INGREDIENT_TAB -> analytics.trackClickBuyIngredientsTab()
             INDEX_HOW_TO_TAB -> analytics.trackClickHowToTab()
         }
+    }
+
+    private fun updatePagerHeightForChild(view: View, pager: ViewPager2) {
+        val wMeasureSpec = View.MeasureSpec.makeMeasureSpec(view.width, View.MeasureSpec.EXACTLY)
+        val hMeasureSpec = View.MeasureSpec.makeMeasureSpec(UNSPECIFIED_HEIGHT, View.MeasureSpec.UNSPECIFIED)
+        view.measure(wMeasureSpec, hMeasureSpec)
+        pager.layoutParams = pager.layoutParams.also { lp -> lp.height = view.measuredHeight }
     }
 }

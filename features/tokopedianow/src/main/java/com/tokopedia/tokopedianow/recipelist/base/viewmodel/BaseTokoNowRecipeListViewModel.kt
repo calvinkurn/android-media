@@ -33,6 +33,7 @@ import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMappe
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.addRecipeItems
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.removeHeaderItem
 import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.removeLoadMoreItem
+import com.tokopedia.tokopedianow.recipelist.presentation.mapper.RecipeListMapper.updateRecipeBookmark
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.tokopedianow.recipelist.util.LoadPageStatus
 import com.tokopedia.tokopedianow.sortfilter.presentation.model.SelectedFilter
@@ -144,6 +145,12 @@ open class BaseTokoNowRecipeListViewModel(
                     )
                 )
             )
+
+            visitableItems.updateRecipeBookmark(
+                recipeId = recipeId,
+                isBookmarked = true
+            )
+            updateVisitableItems()
         }) {
             _showBookmarkToaster.postValue(
                 ToasterUiModel(
@@ -155,6 +162,12 @@ open class BaseTokoNowRecipeListViewModel(
                     )
                 )
             )
+
+            visitableItems.updateRecipeBookmark(
+                recipeId = recipeId,
+                isBookmarked = false
+            )
+            updateVisitableItems()
         }
     }
 
@@ -173,6 +186,12 @@ open class BaseTokoNowRecipeListViewModel(
                     isSuccess = true
                 )
             ))
+
+            visitableItems.updateRecipeBookmark(
+                recipeId = recipeId,
+                isBookmarked = false
+            )
+            updateVisitableItems()
         }) {
             _showBookmarkToaster.value = ToasterUiModel(
                 isRemoving = true,
@@ -182,6 +201,12 @@ open class BaseTokoNowRecipeListViewModel(
                     isSuccess = false
                 )
             )
+
+            visitableItems.updateRecipeBookmark(
+                recipeId = recipeId,
+                isBookmarked = true
+            )
+            updateVisitableItems()
         }
     }
 

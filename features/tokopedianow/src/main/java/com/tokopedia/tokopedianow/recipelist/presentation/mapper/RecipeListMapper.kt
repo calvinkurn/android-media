@@ -48,6 +48,14 @@ object RecipeListMapper {
         addAll(recipeItems)
     }
 
+    fun MutableList<Visitable<*>>.updateRecipeBookmark(recipeId: String, isBookmarked: Boolean) {
+        find { it is RecipeUiModel && it.id == recipeId }?.let {
+            val model = it as RecipeUiModel
+            val itemIndex = indexOf(model)
+            set(itemIndex, model.copy(isBookmarked = isBookmarked))
+        }
+    }
+
     fun MutableList<Visitable<*>>.addRecipeCount(response: GetRecipeListResponse) {
         add(RecipeCountUiModel(response.metadata.total))
     }

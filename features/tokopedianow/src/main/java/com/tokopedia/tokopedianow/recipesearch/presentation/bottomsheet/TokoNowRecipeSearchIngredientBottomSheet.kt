@@ -121,7 +121,6 @@ class TokoNowRecipeSearchIngredientBottomSheet: BottomSheetUnify() {
         override fun onCheckIngredient(isChecked: Boolean, id: String) {
             binding?.apply {
                 viewModel.onCheckIngredient(id, isChecked)
-                showHideSearchButton()
             }
         }
     }
