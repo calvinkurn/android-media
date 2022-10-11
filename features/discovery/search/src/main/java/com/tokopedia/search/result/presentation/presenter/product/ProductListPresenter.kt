@@ -67,6 +67,9 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
@@ -148,24 +151,27 @@ class ProductListPresenter @Inject constructor(
     private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
     private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
     private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
+    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
     DynamicFilterModelProvider,
-    LastFilterPresenter by lastFilterPresenterDelegate{
+    LastFilterPresenter by lastFilterPresenterDelegate,
+    InspirationListAtcPresenter by inspirationListAtcPresenterDelegate {
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
         private val showInspirationCarouselLayout = listOf(
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
         )
         private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
@@ -1254,6 +1260,8 @@ class ProductListPresenter @Inject constructor(
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
+            data.isListAtcLayout() ->
+                inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1269,6 +1277,8 @@ class ProductListPresenter @Inject constructor(
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
     private fun InspirationCarouselDataView.isBundleLayout() =
         layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
+    private fun InspirationCarouselDataView.isListAtcLayout() =
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
 
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView

@@ -1364,6 +1364,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
         // wishlist collection only
     }
 
+    override fun goToMyWishlist() {
+        // wishlist collection only
+    }
+
+    override fun goToHome() {
+        // wishlist collection only
+    }
+
     override fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item) {
         showBottomSheetThreeDotsMenu(itemWishlist)
         WishlistV2Analytics.clickThreeDotsOnProductCard()

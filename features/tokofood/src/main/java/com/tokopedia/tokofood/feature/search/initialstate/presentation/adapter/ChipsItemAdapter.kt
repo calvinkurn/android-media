@@ -51,7 +51,7 @@ class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
 
         fun bind(data: ChipsPopularSearch) {
             with(binding.chipsPopularSearch) {
-                bindImpressionRecentSearchListener(data, adapterPosition)
+                bindImpressionRecentSearchListener(data, bindingAdapterPosition)
                 val searchColor = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN400)
                 chipImageResource = getIconUnifyDrawable(context, IconUnify.SEARCH, searchColor)
                 centerText = true
@@ -66,20 +66,8 @@ class ChipsItemAdapter(private val chipsItemListener: ChipsItemListener) :
             item: ChipsPopularSearch,
             position: Int
         ) {
-            binding.root.addOnImpressionListener(
-                item,
-                createViewHintListener(item, position)
-            )
-        }
-
-        private fun createViewHintListener(
-            item: ChipsPopularSearch,
-            position: Int
-        ): ViewHintListener {
-            return object : ViewHintListener {
-                override fun onViewHint() {
-                    chipsItemListener.onImpressionPopularSearch(item, position)
-                }
+            binding.root.addOnImpressionListener(item) {
+                chipsItemListener.onImpressionPopularSearch(item, position)
             }
         }
     }

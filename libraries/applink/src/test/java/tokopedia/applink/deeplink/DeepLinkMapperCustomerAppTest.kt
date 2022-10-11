@@ -1168,6 +1168,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check Plus order appLink then should return tokopedia internal Plus order in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=plus"
+        assertEqualsDeepLinkMapper(ApplinkConst.TOKOPEDIA_PLUS_ORDER, expectedDeepLink)
+    }
+
+    @Test
     fun `check hotel order appLink then should return tokopedia internal hotel order in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=hotel"
         assertEqualsDeepLinkMapper(ApplinkConst.HOTEL_ORDER, expectedDeepLink)
