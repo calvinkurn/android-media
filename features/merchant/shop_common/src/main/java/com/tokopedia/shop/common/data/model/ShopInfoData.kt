@@ -17,6 +17,7 @@ data class ShopInfoData(
     val openSince: String,
     val shipments: List<ShopShipmentData>,
     val shopSnippetUrl: String,
+    val isGoApotik: Boolean,
     val siaNumber: String,
     val sipaNumber: String,
     val apj: String,

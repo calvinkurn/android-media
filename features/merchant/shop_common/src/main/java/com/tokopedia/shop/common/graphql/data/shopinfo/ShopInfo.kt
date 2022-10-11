@@ -103,6 +103,10 @@ data class ShopInfo(
     @Expose
     val tickerData: List<TickerDataResponse> = emptyList(),
 
+    @SerializedName("isGoApotik")
+    @Expose
+    val isGoApotik: Boolean = false,
+
     @SerializedName("epharmacyInfo")
     @Expose
     val epharmacyInfo: EPharmacyInfo = EPharmacyInfo(),
@@ -137,6 +141,7 @@ data class ShopInfo(
             openSince = createdInfo.openSince,
             shipments = shipmentsData,
             shopSnippetUrl = shopSnippetUrl,
+            isGoApotik = isGoApotik,
             siaNumber = epharmacyInfo.siaNumber,
             sipaNumber = epharmacyInfo.sipaNumber,
             apj = epharmacyInfo.apj,
