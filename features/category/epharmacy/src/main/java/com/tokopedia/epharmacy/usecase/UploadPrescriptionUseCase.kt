@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.usecase
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.util.Log
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.coroutines.usecase.RestRequestUseCase
