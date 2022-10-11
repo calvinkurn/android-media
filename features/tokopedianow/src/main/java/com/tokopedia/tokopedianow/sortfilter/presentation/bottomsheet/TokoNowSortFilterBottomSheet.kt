@@ -52,7 +52,6 @@ class TokoNowSortFilterBottomSheet(
     var sortValue: Int = FREQUENTLY_BOUGHT
     var filterItemsDisplayed: List<Visitable<*>> = listOf()
     var allSelectedFilters: List<Visitable<*>> = listOf()
-    var selectedFilters: MutableList<TokoNowChipUiModel> = mutableListOf()
     var sectionHeaderListener: SectionHeaderListener? = null
     var buttonText: String = ""
 
