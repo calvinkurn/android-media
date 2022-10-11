@@ -1,9 +1,7 @@
 package com.tokopedia.epharmacy.usecase
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
 import android.util.Base64
 import android.util.Log
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
@@ -16,17 +14,13 @@ import com.tokopedia.epharmacy.network.request.UploadPrescriptionRequest
 import com.tokopedia.epharmacy.network.response.EPharmacyPrescriptionUploadResponse
 import com.tokopedia.epharmacy.utils.EPharmacyImageQuality
 import com.tokopedia.epharmacy.utils.EPharmacyUtils
-import com.tokopedia.picker.common.utils.ImageCompressor
 import com.tokopedia.url.TokopediaUrl
 import java.io.ByteArrayOutputStream
-import java.lang.NullPointerException
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class UploadPrescriptionUseCase @Inject constructor(
-        private val repository: RestRepository,
-        private val context: Context
-): RestRequestUseCase(repository) {
+        private val repository: RestRepository): RestRequestUseCase(repository) {
 
 
     suspend fun executeOnBackground(id : Long, localFilePath: String): Map<Type, RestResponse> {
