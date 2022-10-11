@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.list.container
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
@@ -73,7 +74,8 @@ class FlashSaleContainerViewModel @Inject constructor(
 
                 val isMultiLocationTickerPreviouslyDismissed = preferenceDataStore.isMultiLocationTickerDismissed()
                 val showTicker = !isMultiLocationTickerPreviouslyDismissed
-                val isEligibleUsingFeature = sellerEligibility.isDeviceAllowed && sellerEligibility.isUserAllowed
+
+                val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
 
                 _uiState.update {
                     it.copy(
@@ -97,6 +99,16 @@ class FlashSaleContainerViewModel @Inject constructor(
             }
         )
 
+    }
+
+    private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
+        val isRbacRuleActive = isDeviceAllowed
+
+        return when {
+            isRbacRuleActive && isUserAllowed -> true
+            !isRbacRuleActive -> true
+            else -> false
+        }
     }
 
 }
