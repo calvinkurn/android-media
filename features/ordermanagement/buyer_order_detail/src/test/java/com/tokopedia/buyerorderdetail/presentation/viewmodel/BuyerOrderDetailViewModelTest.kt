@@ -55,7 +55,8 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing)
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing) // showing without P1 data
+            assertTrue(uiStates[2] is BuyerOrderDetailUiState.Showing) // showing with P1 data
         }
 
     @Test
@@ -79,11 +80,13 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
-            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing)
-            for (i in 2 until uiStates.size.dec()) {
+            assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing) // showing without P1 data
+            assertTrue(uiStates[2] is BuyerOrderDetailUiState.Showing) // showing with P1 data
+            for (i in 3 until uiStates.size - 2) {
                 assertTrue(uiStates[i] is BuyerOrderDetailUiState.PullRefreshLoading)
             }
-            assertTrue(uiStates.last() is BuyerOrderDetailUiState.Showing)
+            assertTrue(uiStates[uiStates.size - 2] is BuyerOrderDetailUiState.Showing) // showing without P1 data
+            assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.Showing) // showing with P1 data
         }
 
     @Test

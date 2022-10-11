@@ -268,6 +268,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every {
                 ProductListUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
+                    any<GetInsuranceDetailRequestState>(),
                     any<Map<String, AddToCartSingleRequestState>>()
                 )
             } returns showingState
