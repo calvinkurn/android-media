@@ -6,14 +6,12 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import com.tokopedia.logisticcart.databinding.ItemShipmentNowTimeOptionBinding
 import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel

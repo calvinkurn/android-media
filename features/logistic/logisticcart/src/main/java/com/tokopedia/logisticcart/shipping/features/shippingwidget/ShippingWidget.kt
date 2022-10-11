@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.animation.CycleInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -69,6 +70,8 @@ class ShippingWidget : ConstraintLayout {
         fun onViewErrorInCourierSection(logPromoDesc: String)
 
         fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
+
+        fun getHostFragmentManager() : FragmentManager
     }
 
     fun setupListener(shippingWidgetListener: ShippingWidgetListener) {
@@ -620,6 +623,10 @@ class ShippingWidget : ConstraintLayout {
             listener = object : ShippingScheduleWidget.ShippingScheduleWidgetListener {
                 override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
                     mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
+                }
+
+                override fun getFragmentManager(): FragmentManager? {
+                    return mListener?.getHostFragmentManager()
                 }
             }
         )
