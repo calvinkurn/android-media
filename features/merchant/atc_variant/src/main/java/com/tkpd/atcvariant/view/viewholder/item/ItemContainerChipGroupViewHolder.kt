@@ -3,10 +3,10 @@ package com.tkpd.atcvariant.view.viewholder.item
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.TextView
+import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.chip.ChipGroup
 import com.tkpd.atcvariant.R
+import com.tkpd.atcvariant.databinding.ItemAtcVariantContainerChipGroupViewHolderBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
@@ -17,31 +17,39 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.product.detail.common.extensions.getColorChecker
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.unifycomponents.ChipsUnify
-import java.util.*
+import java.util.Locale
 
 
 /**
  * Created by mzennis on 2020-03-11.
  */
 class ItemContainerChipGroupViewHolder(
-    val view: View,
-    val listener: AtcVariantListener
-) : RecyclerView.ViewHolder(view), AtcVariantListener by listener {
-
-    private val txtVariantSelectedOption = view.findViewById<TextView>(R.id.txt_variant_selected_option)
-    private val txtVariantCategoryName = view.findViewById<TextView>(R.id.txt_variant_category_name)
-    private val txtVariantGuideline = view.findViewById<TextView>(R.id.txt_variant_guideline)
-    private val chipGroup = view.findViewById<ChipGroup>(R.id.rv_atc_variant)
+    private val binding: ItemAtcVariantContainerChipGroupViewHolderBinding,
+    private val listener: AtcVariantListener
+) : RecyclerView.ViewHolder(binding.root), AtcVariantListener by listener {
 
     private val context: Context
-        get() = view.context
+        get() = binding.root.context
 
     companion object {
 
         private const val ELLIPSIZE_VARIANT_NAME = 15
+
+        fun create(
+            parent: ViewGroup,
+            listener: AtcVariantListener
+        ): ItemContainerChipGroupViewHolder {
+            val inflater = LayoutInflater.from(parent.context)
+            val binding = ItemAtcVariantContainerChipGroupViewHolderBinding.inflate(
+                inflater,
+                parent,
+                false
+            )
+            return ItemContainerChipGroupViewHolder(binding, listener)
+        }
     }
 
-    fun bind(data: VariantCategory) {
+    fun bind(data: VariantCategory) = with(binding) {
         processBind(variants = data.variantOptions)
         setSelectedOptionText(data)
 
@@ -55,12 +63,12 @@ class ItemContainerChipGroupViewHolder(
         }
     }
 
-    private fun processBind(variants: List<VariantOptionWithAttribute>) {
-        chipGroup.removeAllViews()
+    private fun processBind(variants: List<VariantOptionWithAttribute>) = with(binding) {
+        chipGroupAtcVariant.removeAllViews()
 
         variants.forEachIndexed { index, data ->
             val child = createChip(element = data, position = index)
-            chipGroup.addView(child)
+            chipGroupAtcVariant.addView(child)
         }
     }
 
@@ -68,7 +76,7 @@ class ItemContainerChipGroupViewHolder(
         return LayoutInflater.from(context)
             .inflate(
                 com.tokopedia.product.detail.common.R.layout.atc_variant_chip_viewholder,
-                null,
+                binding.root,
                 false
             ).also {
                 val chip = it.findViewById<ChipsUnify>(
@@ -155,7 +163,7 @@ class ItemContainerChipGroupViewHolder(
         } else text
     }
 
-    private fun setSelectedOptionText(data: VariantCategory) {
+    private fun setSelectedOptionText(data: VariantCategory) = with(binding) {
         txtVariantCategoryName.text = context.getString(
             R.string.atc_variant_option_builder_3,
             data.name
