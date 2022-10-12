@@ -47,7 +47,6 @@ import com.tokopedia.sellerhomecommon.presentation.model.MilestoneDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PieChartDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.ProgressDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
