@@ -10,7 +10,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
+import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.talk.R
 import com.tokopedia.talk.analytics.util.*
 import com.tokopedia.talk.analytics.util.TalkPageRobot.Companion.QUESTION_ID
@@ -28,7 +28,6 @@ import org.junit.Test
 class TalkReplyActivityTest {
 
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(targetContext)
 
     @get:Rule
     var activityRule: IntentsTestRule<TalkReplyActivity> = object: IntentsTestRule<TalkReplyActivity>(TalkReplyActivity::class.java) {
@@ -48,9 +47,11 @@ class TalkReplyActivityTest {
         }
     }
 
+    @get:Rule
+    var cassavaRule = CassavaTestRule()
+
     @Before
     fun setup() {
-        gtmLogDBSource.deleteAll().toBlocking().first()
         setupGraphqlMockResponse(TalkMockResponse())
         intendingIntent()
     }
@@ -68,8 +69,7 @@ class TalkReplyActivityTest {
         } assertTest {
             performClose(activityRule)
             waitForTrackerSent()
-            validate(gtmLogDBSource, targetContext, TALK_CLICK_SENT_TO_REPLY_PATH)
-            gtmLogDBSource.finishTest()
+            validate(cassavaRule, TALK_CLICK_SENT_TO_REPLY_PATH)
         }
     }
 

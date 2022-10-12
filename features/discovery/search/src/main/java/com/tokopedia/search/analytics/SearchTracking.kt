@@ -22,6 +22,7 @@ import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.LI
 import com.tokopedia.search.analytics.SearchEventTracking.ECommerce.Companion.PRODUCTS
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselAnalyticsData
 import com.tokopedia.search.utils.joinActiveOptionsToString
+import com.tokopedia.search.utils.orNone
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
@@ -205,7 +206,7 @@ object SearchTracking {
                         "products", DataLayer.listOf(item)
                     )
                 ),
-                "searchFilter", productAnalyticsData.filterSortParams
+                "searchFilter", productAnalyticsData.filterSortParams,
             )
         )
     }
@@ -230,34 +231,25 @@ object SearchTracking {
             list: ArrayList<Any>,
             eventLabel: String?,
             irisSessionId: String,
-            userId: String
+            userId: String,
     ) {
-        val map = DataLayer.mapOf(TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
-                TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
-                TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
-                TrackAppUtils.EVENT_LABEL, eventLabel,
-                SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
-                SearchTrackingConstant.USER_ID, userId,
-                SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
-                ECOMMERCE, DataLayer.mapOf(
+        val map = DataLayer.mapOf(
+            TrackAppUtils.EVENT, SearchEventTracking.Event.PRODUCT_VIEW,
+            TrackAppUtils.EVENT_CATEGORY, SearchEventTracking.Category.SEARCH_RESULT,
+            TrackAppUtils.EVENT_ACTION, SearchEventTracking.Action.IMPRESSION_PRODUCT,
+            TrackAppUtils.EVENT_LABEL, eventLabel,
+            SearchEventTracking.CURRENT_SITE, SearchEventTracking.TOKOPEDIA_MARKETPLACE,
+            SearchTrackingConstant.USER_ID, userId,
+            SearchEventTracking.BUSINESS_UNIT, SearchEventTracking.SEARCH,
+            ECOMMERCE, DataLayer.mapOf(
                 "currencyCode", "IDR",
                 "impressions", list
-            )
+            ),
         ) as HashMap<String, Any>
         if (!TextUtils.isEmpty(irisSessionId)) map[KEY_SESSION_IRIS] = irisSessionId
         trackingQueue.putEETracking(
                 map
         )
-    }
-
-    @JvmStatic
-    fun eventSearchResultChangeGrid(gridName: String, screenName: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.GRID_MENU,
-                SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ))
     }
 
     @JvmStatic
@@ -343,31 +335,11 @@ object SearchTracking {
                 SearchEventTracking.Action.LONG_PRESS_PRODUCT, String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId))
     }
 
-    @JvmStatic
-    fun trackEventImpressionBannedProductsEmptySearch(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY,
-                keyword
-        )
-    }
-
     fun trackEventClickGoToBrowserBannedProductsEmptySearch(keyword: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_EMPTY,
-                keyword
-        )
-    }
-
-    @JvmStatic
-    fun trackEventImpressionBannedProductsWithResult(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
                 keyword
         )
     }
@@ -403,6 +375,7 @@ object SearchTracking {
             SearchTrackingConstant.SEARCHFILTER, generalSearchTrackingModel.searchFilter,
             SearchTrackingConstant.ANDROID_ID, TrackApp.getInstance().appsFlyer.googleAdId,
             SearchComponentTrackingConst.COMPONENT, generalSearchTrackingModel.componentId,
+            SearchEventTracking.EXTERNAL_REFERENCE, generalSearchTrackingModel.externalReference.orNone(),
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(value)
     }

@@ -23,7 +23,6 @@ import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchProduct
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupVariantDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
@@ -33,6 +32,7 @@ import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.product.banner.BannerDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterDataView
@@ -49,6 +49,7 @@ class ProductViewModelMapper {
         dimension90: String,
         keyword: String,
         isLocalSearchRecommendation: Boolean,
+        externalReference: String,
     ): ProductDataView {
         val (searchProductHeader, searchProductData) = searchProductModel.searchProduct
 
@@ -65,6 +66,7 @@ class ProductViewModelMapper {
             isLocalSearch,
             dimension90,
             keyword,
+            externalReference,
         )
         productDataView.productList = convertToProductItemDataViewList(
             lastProductItemPosition,
@@ -72,7 +74,9 @@ class ProductViewModelMapper {
             pageTitle,
             dimension90,
             isLocalSearchRecommendation,
-            searchProductModel.getProductListType()
+            searchProductModel.getProductListType(),
+            externalReference,
+            searchProductData.keywordIntention,
         )
         productDataView.tickerModel = convertToTickerDataView(
             searchProductData,
@@ -88,12 +92,13 @@ class ProductViewModelMapper {
         productDataView.totalDataText = searchProductHeader.totalDataText
         productDataView.responseCode = searchProductHeader.responseCode
         productDataView.keywordProcess = searchProductHeader.keywordProcess
-        productDataView.errorMessage = searchProductHeader.errorMessage
         productDataView.pageComponentId = searchProductHeader.componentId
         productDataView.isQuerySafe = searchProductData.isQuerySafe
         productDataView.inspirationCarouselDataView = convertToInspirationCarouselViewModel(
             searchProductModel.searchInspirationCarousel,
             dimension90,
+            externalReference,
+            keyword,
         )
         productDataView.inspirationWidgetDataView = InspirationWidgetVisitable.create(
             searchProductModel.searchInspirationWidget,
@@ -117,6 +122,7 @@ class ProductViewModelMapper {
         productDataView.categoryIdL2 = searchProductModel.lastFilter.data.categoryIdL2
         productDataView.violation = convertToViolationView(searchProductData.violation)
         productDataView.backendFilters = searchProductModel.backendFilters
+        productDataView.keywordIntention = searchProductModel.keywordIntention
 
         return productDataView
     }
@@ -126,6 +132,7 @@ class ProductViewModelMapper {
         isLocalSearch: Boolean,
         dimension90: String,
         actualKeyword: String,
+        externalReference: String,
     ): RelatedDataView =
         RelatedDataView(
             related.relatedKeyword,
@@ -137,6 +144,7 @@ class ProductViewModelMapper {
                     dimension90,
                     related.trackingOption,
                     actualKeyword,
+                    externalReference,
                 )
             }
         )
@@ -147,6 +155,7 @@ class ProductViewModelMapper {
         dimension90: String,
         trackingOption: Int,
         actualKeyword: String,
+        externalReference: String,
     ): BroadMatchDataView {
         val broadMatchItemDataViewList = otherRelated.productList.mapIndexed { index, otherRelatedProduct ->
             val position = index + 1
@@ -155,6 +164,7 @@ class ProductViewModelMapper {
                 position,
                 otherRelated.keyword,
                 dimension90,
+                externalReference
             )
         }
 
@@ -177,6 +187,7 @@ class ProductViewModelMapper {
         position: Int,
         alternativeKeyword: String,
         dimension90: String,
+        externalReference: String,
     ): BroadMatchItemDataView {
         val isOrganicAds = otherRelatedProduct.isOrganicAds()
 
@@ -203,6 +214,7 @@ class ProductViewModelMapper {
             carouselProductType = BroadMatchProduct(),
             dimension90 = dimension90,
             componentId = otherRelatedProduct.componentId,
+            externalReference = externalReference,
         )
     }
 
@@ -220,6 +232,8 @@ class ProductViewModelMapper {
             dimension90: String,
             isLocalSearchRecommendation: Boolean,
             productListType: String,
+            externalReference: String,
+            keywordIntention: Int,
     ): List<ProductItemDataView> {
         return productModels.mapIndexed { index, productModel ->
             val position = lastProductItemPosition + index + 1
@@ -230,6 +244,8 @@ class ProductViewModelMapper {
                 dimension90,
                 isLocalSearchRecommendation,
                 productListType,
+                externalReference,
+                keywordIntention,
             )
         }
     }
@@ -241,6 +257,8 @@ class ProductViewModelMapper {
             dimension90: String,
             isLocalSearchRecommendation: Boolean,
             productListType: String,
+            externalReference: String,
+            keywordIntention: Int,
     ): ProductItemDataView {
         val productItem = ProductItemDataView()
         productItem.productID = productModel.id
@@ -284,6 +302,8 @@ class ProductViewModelMapper {
         productItem.applink = productModel.applink
         productItem.customVideoURL = productModel.customVideoURL
         productItem.productListType = productListType
+        productItem.dimension131 = externalReference
+        productItem.keywordIntention = keywordIntention
         return productItem
     }
 
@@ -359,15 +379,22 @@ class ProductViewModelMapper {
     private fun convertToInspirationCarouselViewModel(
             searchInspirationCarousel: SearchInspirationCarousel,
             dimension90: String,
+            externalReference: String,
+            keyword: String,
     ): List<InspirationCarouselDataView> {
         return searchInspirationCarousel.data.map { data ->
             InspirationCarouselDataView(
-                    data.title,
-                    data.type,
-                    data.position,
-                    data.layout,
-                    data.trackingOption.toIntOrZero(),
-                    convertToInspirationCarouselOptionViewModel(data, dimension90),
+                data.title,
+                data.type,
+                data.position,
+                data.layout,
+                data.trackingOption.toIntOrZero(),
+                convertToInspirationCarouselOptionViewModel(
+                    data,
+                    dimension90,
+                    externalReference,
+                    keyword,
+                ),
             )
         }
     }
@@ -375,6 +402,8 @@ class ProductViewModelMapper {
     private fun convertToInspirationCarouselOptionViewModel(
             data: InspirationCarouselData,
             dimension90: String,
+            externalReference: String,
+            keyword: String,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
 
@@ -399,6 +428,8 @@ class ProductViewModelMapper {
                         opt.title,
                         data.title,
                         dimension90,
+                        externalReference,
+                        data.trackingOption.toIntOrZero()
                     ),
                     data.type,
                     data.layout,
@@ -412,6 +443,8 @@ class ProductViewModelMapper {
                     data.trackingOption.toIntOrZero(),
                     dimension90,
                     createInspirationCarouselCardButtonViewModel(opt),
+                    InspirationCarouselDataView.Bundle.create(opt),
+                    keyword,
             )
         }
     }
@@ -430,17 +463,10 @@ class ProductViewModelMapper {
         keyword: String,
         dimension90: String,
     ): LastFilterDataView {
-        val lastFilterData = searchProductModel.lastFilter.data
-
-        return LastFilterDataView(
-            filterList = lastFilterData.filters,
-            title = lastFilterData.title,
-            keyword = keyword,
-            applink = lastFilterData.applink,
-            trackingOption = lastFilterData.trackingOption,
-            componentId = lastFilterData.componentId,
-            dimension90 = dimension90,
-            valueName = lastFilterData.title + lastFilterData.filters.joinToString { it.name }
+        return LastFilterDataView.create(
+            searchProductModel.lastFilter,
+            keyword,
+            dimension90
         )
     }
 

@@ -364,7 +364,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun goToLoginPhoneVerifyPage(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, LoginConstants.OtpType.OTP_LOGIN_PHONE_NUMBER)
@@ -377,7 +377,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     private fun goToRegisterPhoneVerifyPage(phone: String) {
         userSession.loginMethod = UserSessionInterface.LOGIN_METHOD_PHONE
 
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, RegisterConstants.OtpType.OTP_REGISTER_PHONE_NUMBER)
@@ -388,7 +388,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToAddPhoneVerifyPage(phoneNumber: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, "")
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phoneNumber)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_PHONE_VERIFICATION)
@@ -407,7 +407,7 @@ class PhoneShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToRegisterAddNamePage(phone: String, validateToken: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
 

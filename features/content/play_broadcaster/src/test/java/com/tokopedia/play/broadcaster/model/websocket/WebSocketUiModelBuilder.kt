@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
@@ -434,4 +435,28 @@ class WebSocketUiModelBuilder {
         timeStatus = timeStatus,
         endGameDelayInMs = endGameDelayInMs,
     )
+
+    fun buildUnknownTypeChannelQuizString(
+        channelId: Long = 1,
+        interactiveID: Long = 0,
+        status: Int = -9, // unknown type const
+        question: String = "",
+        prize: String = "",
+        countdownEnd: Int = 1,
+        waitingDuration: Int = 0,
+    ) = """
+        {
+            "type": "CHANNEL_QUIZ",
+            "data": {
+              "channel_id": $channelId,
+              "interactive_id": $interactiveID,
+              "question": "$question",
+              "prize": "$prize",
+              "status": $status,
+              "countdown_end": $countdownEnd,
+              "waiting_duration": $waitingDuration
+            }
+        }
+    """.trimIndent()
+
 }

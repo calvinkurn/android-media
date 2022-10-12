@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -399,7 +400,7 @@ class OrderCustomizationFragment : BaseMultiFragment(),
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
-        var applicationLink = ApplinkConstInternalGlobal.ADD_PHONE
+        var applicationLink = ApplinkConstInternalUserPlatform.ADD_PHONE
         if (appLink.isNotEmpty()) applicationLink = appLink
         context?.run {
             TokofoodRouteManager.routePrioritizeInternal(this, applicationLink)

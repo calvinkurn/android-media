@@ -484,6 +484,19 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
+        launchCatchError(context = dispatcher.main, block = {
+            val newFilterData = somListGetFilterListUseCase.executeOnBackground(
+                useCache = false
+            ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
+            newFilterData.refreshOrder = refreshOrders && !afterSuccessfulLoadFromCache
+            setTabActiveFromAppLink("")
+            _filterResult.value = Success(newFilterData)
+        }, onError = {
+            _filterResult.value = Fail(it)
+        })
+    }
+
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
             delay(DELAY_BULK_REQUEST_PICK_UP)
@@ -521,28 +534,17 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        if (somListGetFilterListUseCase.isFirstLoad) {
-            somListGetFilterListUseCase.isFirstLoad = false
-            launchCatchError(context = dispatcher.main, block = {
-                if (_canShowOrderData.value == true) {
-                    val result = somListGetFilterListUseCase.executeOnBackground(true)
-                    result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
-                    result.refreshOrder = refreshOrders
-                    setTabActiveFromAppLink("")
-                    _filterResult.value = Success(result)
-                }
-            }, onError = {})
-        }
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                val result = somListGetFilterListUseCase.executeOnBackground(false)
+                val result = somListGetFilterListUseCase.executeOnBackground(true)
                 result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
                 result.refreshOrder = refreshOrders
                 setTabActiveFromAppLink("")
                 _filterResult.value = Success(result)
+                getFiltersFromCloud(refreshOrders, true)
             }
         }, onError = {
-            _filterResult.value = Fail(it)
+            getFiltersFromCloud(refreshOrders, false)
         })
     }
 
@@ -680,10 +682,6 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
-
-    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
-        return this.getOrderListParams.statusList != orderStatusIds
-    }
 
     fun getAdminPermission() {
         launchCatchError(

@@ -6,7 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.loginregister.shopcreation.domain.param.RegisterCheckParam
 import com.tokopedia.loginregister.shopcreation.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.shopcreation.domain.query.MutationRegisterCheck
+import com.tokopedia.loginregister.common.domain.query.MutationRegisterCheck
 import javax.inject.Inject
 
 class RegisterCheckUseCase @Inject constructor(

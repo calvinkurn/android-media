@@ -1,5 +1,6 @@
 package com.tokopedia.travel.country_code.domain
 
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -22,7 +23,7 @@ import javax.inject.Inject
  */
 class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase, private val graphqlUseCase: GraphqlUseCase) {
 
-    suspend fun execute(rawQuery: String): Result<List<TravelCountryPhoneCode>> {
+    suspend fun execute(rawQuery: GqlQueryInterface): Result<List<TravelCountryPhoneCode>> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).setExpiryTime(TimeUnit.DAYS.toMillis(EXPIRED_CACHE_DAYS)).build())
         useCase.clearRequest()
         return try {
@@ -38,7 +39,7 @@ class TravelCountryCodeUseCase @Inject constructor(private val useCase: MultiReq
         }
     }
 
-    fun createObservable(query: String): Observable<GraphqlResponse> {
+    fun createObservable(query: GqlQueryInterface): Observable<GraphqlResponse> {
         val graphqlRequest = GraphqlRequest(query, TravelPhoneCodeEntity.Response::class.java)
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

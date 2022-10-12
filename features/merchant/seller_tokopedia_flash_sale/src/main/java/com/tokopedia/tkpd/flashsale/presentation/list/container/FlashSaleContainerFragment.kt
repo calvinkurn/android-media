@@ -99,6 +99,7 @@ class FlashSaleContainerFragment : BaseDaggerFragment() {
 
     private fun setupView() {
         binding?.run {
+            header.headerTitle = getString(R.string.fs_tkpd_title)
             header.setNavigationOnClickListener { activity?.finish() }
         }
         addToolbarIcon()

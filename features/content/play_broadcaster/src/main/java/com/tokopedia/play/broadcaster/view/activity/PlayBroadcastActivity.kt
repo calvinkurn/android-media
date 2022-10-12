@@ -34,7 +34,7 @@ import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.pusher.PlayBroadcaster
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.view.PlayLivePusherDebugView
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
@@ -59,6 +59,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
@@ -355,7 +356,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         if (config.streamAllowed) {
             this.channelType = config.channelStatus
-            if (channelType == ChannelStatus.Live) {
+            if (channelType.isLive) {
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
@@ -642,9 +643,19 @@ class PlayBroadcastActivity : BaseActivity(),
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            broadcaster.create(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize)
         }
         else showPermissionPage()
+    }
+
+    private fun initBroadcasterWithDelay(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+    ) {
+        lifecycleScope.launch(dispatcher.main) {
+            delay(INIT_BROADCASTER_DELAY)
+            broadcaster.create(holder, surfaceSize)
+        }
     }
 
     private fun releaseBroadcaster() {
@@ -679,7 +690,7 @@ class PlayBroadcastActivity : BaseActivity(),
     }
 
     override fun onBroadcastStateChanged(state: PlayBroadcasterState) {
-        viewModel.submitAction(BroadcastStateChanged(state))
+        viewModel.submitAction(PlayBroadcastAction.BroadcastStateChanged(state))
         lifecycleScope.launch(dispatcher.main) {
             debugView?.logBroadcastState(state)
         }
@@ -708,5 +719,6 @@ class PlayBroadcastActivity : BaseActivity(),
         const val RESULT_PERMISSION_CODE = 3297
 
         private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
+        private const val INIT_BROADCASTER_DELAY = 500L
     }
 }

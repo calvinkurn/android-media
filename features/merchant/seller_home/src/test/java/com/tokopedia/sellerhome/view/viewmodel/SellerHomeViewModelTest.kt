@@ -12,6 +12,7 @@ import com.tokopedia.sellerhome.utils.observeAwaitValue
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.WidgetType
+import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.domain.usecase.GetAnnouncementDataUseCase
@@ -29,6 +30,8 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetProgressDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
@@ -56,11 +59,15 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
@@ -68,6 +75,7 @@ import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -80,11 +88,14 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
@@ -108,6 +119,7 @@ class SellerHomeViewModelTest {
         private const val DATA_KEY_ANNOUNCEMENT = "ANNOUNCEMENT"
         private const val DATA_KEY_RECOMMENDATION = "RECOMMENDATION"
         private const val DATA_KEY_MILESTONE = "MILESTONE"
+        private const val DATA_KEY_UNIFICATION = "UNIFICATION"
     }
 
     @RelaxedMockK
@@ -162,10 +174,16 @@ class SellerHomeViewModelTest {
     lateinit var getCalendarDataUseCase: GetCalendarDataUseCase
 
     @RelaxedMockK
+    lateinit var getUnificationDataUseCase: GetUnificationDataUseCase
+
+    @RelaxedMockK
     lateinit var getShopInfoByIdUseCase: GetShopInfoByIdUseCase
 
     @RelaxedMockK
     lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
+
+    @RelaxedMockK
+    lateinit var submitWidgetDismissUseCase: SubmitWidgetDismissUseCase
 
     @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
@@ -198,6 +216,8 @@ class SellerHomeViewModelTest {
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
+            { getUnificationDataUseCase },
+            { userSession },
             { remoteConfig },
             coroutineTestRule.dispatchers
         )
@@ -220,8 +240,10 @@ class SellerHomeViewModelTest {
             { getRecommendationDataUseCase },
             { getMilestoneDataUseCase },
             { getCalendarDataUseCase },
+            { getUnificationDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
+            { submitWidgetDismissUseCase },
             { sellerHomeLayoutHelper },
             remoteConfig,
             coroutineTestRule.dispatchers
@@ -413,6 +435,8 @@ class SellerHomeViewModelTest {
             RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
         val milestoneDataUiModel =
             MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+        val unificationDataUiModel =
+            UnificationDataUiModel(DATA_KEY_UNIFICATION, showWidget = true)
 
         getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -444,7 +468,8 @@ class SellerHomeViewModelTest {
             multiLineGraphDataUiModel,
             announcementDataUiModel,
             recommendationDataUiModel,
-            milestoneDataUiModel
+            milestoneDataUiModel,
+            unificationDataUiModel
         )
 
         viewModel.getWidgetLayout(widgetHeightInDp)
@@ -472,6 +497,7 @@ class SellerHomeViewModelTest {
                 is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                 is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
                 is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                is UnificationWidgetUiModel -> it.apply { data = unificationDataUiModel }
                 else -> it
             }
         }.map {
@@ -509,6 +535,8 @@ class SellerHomeViewModelTest {
                 RecommendationDataUiModel(DATA_KEY_RECOMMENDATION, showWidget = true)
             val milestoneDataUiModel =
                 MilestoneDataUiModel(DATA_KEY_MILESTONE, showWidget = true)
+            val unificationDataUiModel =
+                UnificationDataUiModel(DATA_KEY_UNIFICATION, showWidget = true)
 
             getLayoutUseCase.params = GetLayoutUseCase.getRequestParams(shopId, page)
 
@@ -537,7 +565,8 @@ class SellerHomeViewModelTest {
                 multiLineGraphDataUiModel,
                 announcementDataUiModel,
                 recommendationDataUiModel,
-                milestoneDataUiModel
+                milestoneDataUiModel,
+                unificationDataUiModel
             )
 
             viewModel.getWidgetLayout(5000f)
@@ -563,6 +592,7 @@ class SellerHomeViewModelTest {
                     is AnnouncementWidgetUiModel -> it.apply { data = announcementDataUiModel }
                     is RecommendationWidgetUiModel -> it.apply { data = recommendationDataUiModel }
                     is MilestoneWidgetUiModel -> it.apply { data = milestoneDataUiModel }
+                    is UnificationWidgetUiModel -> it.apply { data = unificationDataUiModel }
                     else -> it
                 }
             }.map {
@@ -1134,6 +1164,106 @@ class SellerHomeViewModelTest {
     }
 
     @Test
+    fun `get unification widget data then returns success result`() = runBlocking {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+
+        val result = listOf(UnificationDataUiModel())
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } returns result
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        coVerify {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Success(result)
+        Assertions.assertTrue(widgets.size == expectedResult.data.size)
+        viewModel.unificationWidgetData.verifySuccessEquals(expectedResult)
+    }
+
+    @Test
+    fun `get unification widget data then returns failed result`() = runBlocking {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+        val throwable = MessageErrorException("error message")
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } throws throwable
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        coVerify {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        viewModel.unificationWidgetData.verifyErrorEquals(Fail(throwable))
+    }
+
+    @Test
+    fun `when get unification from network and cache are failed, will return throwable from network`() {
+        val widgets = getUnificationMockData()
+        val shopId = "123"
+
+        getUnificationDataUseCase.setParam(
+            shopId = shopId,
+            widgets = widgets,
+            dynamicParameter = dynamicParameter
+        )
+        val networkException = Exception("from network")
+        val cacheException = Exception("from cache")
+
+        every {
+            remoteConfig.isSellerHomeDashboardCachingEnabled()
+        } returns true
+
+        var useCaseExecutedCount = 0
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } coAnswers {
+            useCaseExecutedCount++
+            if (useCaseExecutedCount <= 1) {
+                throw networkException
+            } else {
+                throw cacheException
+            }
+        }
+
+        viewModel.getUnificationWidgetData(widgets)
+
+        verify(exactly = 1) {
+            getUnificationDataUseCase.setUseCache(false)
+        }
+
+        verify(exactly = 1) {
+            getUnificationDataUseCase.setUseCache(true)
+        }
+
+        coVerify(exactly = 2) {
+            getUnificationDataUseCase.executeOnBackground()
+        }
+
+        val expectedResult = Fail(networkException)
+        viewModel.unificationWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
     fun `get progress widget data from remote then returns success result`() = runBlocking {
         val dateStr = "02-02-2020"
         val dataKeys = listOf("x", "y", "z")
@@ -1320,6 +1450,52 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.postListWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel()
+            val mockResult = WidgetDismissalResultUiModel()
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(any())
+            } returns mockResult
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(param)
+            }
+
+            assert(param.action == mockResult.action)
+
+            val expected = Success(mockResult)
+            viewModel.submitWidgetDismissal.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS
+            )
+            val exception = MessageErrorException()
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(any())
+            } throws exception
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(param)
+            }
+
+            val expectedResult = Fail(exception)
+            viewModel.submitWidgetDismissal.verifyValueEquals(expectedResult)
+        }
     }
 
     @Test
@@ -3107,7 +3283,8 @@ class SellerHomeViewModelTest {
         multiLineGraphDataUiModel: MultiLineGraphDataUiModel,
         announcementDataUiModel: AnnouncementDataUiModel,
         recommendationDataUiModel: RecommendationDataUiModel,
-        milestoneDataUiModel: MilestoneDataUiModel
+        milestoneDataUiModel: MilestoneDataUiModel,
+        unificationDataUiModel: UnificationDataUiModel
     ) {
         coEvery {
             getCardDataUseCase.executeOnBackground()
@@ -3145,5 +3322,31 @@ class SellerHomeViewModelTest {
         coEvery {
             getMilestoneDataUseCase.executeOnBackground()
         } returns listOf(milestoneDataUiModel)
+        coEvery {
+            getUnificationDataUseCase.executeOnBackground()
+        } returns listOf(unificationDataUiModel)
+    }
+
+    private fun getUnificationMockData(): List<UnificationWidgetUiModel> {
+        return listOf(
+            UnificationWidgetUiModel(
+                id = "123",
+                widgetType = WidgetType.UNIFICATION,
+                title = "unification",
+                subtitle = "",
+                tooltip = null,
+                tag = "",
+                appLink = "",
+                dataKey = DATA_KEY_UNIFICATION,
+                ctaText = "",
+                gridSize = WidgetGridSize.GRID_SIZE_1,
+                isShowEmpty = true,
+                data = null,
+                isLoaded = false,
+                isLoading = false,
+                isFromCache = false,
+                emptyState = WidgetEmptyStateUiModel()
+            )
+        )
     }
 }

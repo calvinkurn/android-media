@@ -1306,7 +1306,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             )
 
             btnSelectAllProduct.setOnClickListener {
-                viewModel.removeAllSelectedItems()
                 onShowOrHideItemCheckBox()
             }
         }

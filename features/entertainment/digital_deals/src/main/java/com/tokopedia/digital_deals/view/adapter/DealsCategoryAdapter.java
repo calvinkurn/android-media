@@ -29,7 +29,7 @@ import com.tokopedia.digital_deals.di.DealsComponentInstance;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.contractor.DealCategoryAdapterContract;
 import com.tokopedia.digital_deals.view.customview.ExpandableTextView;
-import com.tokopedia.digital_deals.view.model.Brand;
+import com.tokopedia.common_entertainment.data.Brand;
 import com.tokopedia.digital_deals.view.model.Location;
 import com.tokopedia.digital_deals.view.model.ProductItem;
 import com.tokopedia.digital_deals.view.presenter.DealCategoryAdapterPresenter;

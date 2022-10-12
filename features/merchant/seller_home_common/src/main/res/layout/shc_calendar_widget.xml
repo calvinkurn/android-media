@@ -126,9 +126,8 @@
             app:layout_constraintTop_toBottomOf="@+id/tvShcCalendarTitle"
             app:layout_constraintVertical_bias="0" />
 
-        <include
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetErrorStateView
             android:id="@+id/shcCalendarWidgetErrorState"
-            layout="@layout/shc_calendar_widget_error_state"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="48dp"
@@ -141,7 +140,7 @@
 
         <include
             android:id="@+id/shcCalendarWidgetEmptyState"
-            layout="@layout/shc_partial_common_widget_state_error"
+            layout="@layout/shc_widget_error_state_view"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="64dp"

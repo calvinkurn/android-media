@@ -11,6 +11,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.destination.data.model.PopularSearch
 import com.tokopedia.hotel.destination.usecase.GetPropertyPopularUseCase
 import com.tokopedia.hotel.homepage.data.cloud.entity.HotelDeleteRecentSearchEntity
@@ -196,7 +197,7 @@ class HotelHomepageViewModelTest {
                         mapOf<Type, List<GraphqlError>>(), false)
 
         //when
-        hotelHomepageViewModel.getDefaultHomepageParameter("")
+        hotelHomepageViewModel.getDefaultHomepageParameter(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.homepageDefaultParam.value != null)
@@ -212,7 +213,7 @@ class HotelHomepageViewModelTest {
                         mapOf<Type, List<GraphqlError>>(), false)
 
         //when
-        hotelHomepageViewModel.getDefaultHomepageParameter("")
+        hotelHomepageViewModel.getDefaultHomepageParameter(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.homepageDefaultParam.value == null)
@@ -227,7 +228,7 @@ class HotelHomepageViewModelTest {
         coEvery { travelRecentSearchUseCase.execute(any(), true) } returns recentSearchesDummy
 
         //when
-        hotelHomepageViewModel.getRecentSearch("")
+        hotelHomepageViewModel.getRecentSearch(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.recentSearch.value != null)
@@ -247,7 +248,7 @@ class HotelHomepageViewModelTest {
         coEvery { travelRecentSearchUseCase.execute(any(), true) } coAnswers { throw Throwable() }
 
         //when
-        hotelHomepageViewModel.getRecentSearch("")
+        hotelHomepageViewModel.getRecentSearch(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.recentSearch.value != null)
@@ -262,7 +263,7 @@ class HotelHomepageViewModelTest {
                         mapOf<Type, List<GraphqlError>>(), false)
 
         //when
-        hotelHomepageViewModel.deleteRecentSearch("")
+        hotelHomepageViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.deleteRecentSearch.value != null)
@@ -278,7 +279,7 @@ class HotelHomepageViewModelTest {
                         mapOf<Type, List<GraphqlError>>(GraphqlError::class.java to listOf(GraphqlError())), false)
 
         //when
-        hotelHomepageViewModel.deleteRecentSearch("")
+        hotelHomepageViewModel.deleteRecentSearch(DummyHotelGqlQueryInterfaceImpl())
 
         //then
         assert(hotelHomepageViewModel.deleteRecentSearch.value != null)

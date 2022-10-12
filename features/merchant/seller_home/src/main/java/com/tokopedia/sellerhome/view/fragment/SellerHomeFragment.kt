@@ -8,12 +8,20 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
@@ -28,9 +36,17 @@ import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.gm.common.utils.CoachMarkPrefHelper
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
+import com.tokopedia.kotlin.extensions.view.getResDrawable
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.seller.active.common.plt.LoadTimeMonitoringActivity
@@ -45,6 +61,7 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_ANNOUNCEMENT_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_BAR_CHART_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CALENDAR_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CARD_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_CAROUSEL_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_LINE_GRAPH_TRACE
@@ -55,6 +72,7 @@ import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonito
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_PROGRESS_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_RECOMMENDATION_TRACE
 import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_TABLE_TRACE
+import com.tokopedia.sellerhome.analytic.performance.SellerHomePerformanceMonitoringConstant.SELLER_HOME_UNIFICATION_TRACE
 import com.tokopedia.sellerhome.common.SellerHomeConst
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
@@ -75,11 +93,52 @@ import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetListener
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.SellerHomeUrl
+import com.tokopedia.sellerhomecommon.domain.mapper.PostMapper
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
 import com.tokopedia.sellerhomecommon.presentation.adapter.WidgetAdapterFactoryImpl
-import com.tokopedia.sellerhomecommon.presentation.model.*
+import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BarChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseDismissibleWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseMilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.DateFilterItem
+import com.tokopedia.sellerhomecommon.presentation.model.DescriptionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.FeedbackLoopOptionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.LastUpdatedDataInterface
+import com.tokopedia.sellerhomecommon.presentation.model.LineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneFinishMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneMissionUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MilestoneWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineGraphWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.MultiLineMetricUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PieChartWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.PostListWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationTabUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.CalendarWidgetDateFilterBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.FeedbackLoopOptionsBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.PostMoreOptionBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.TooltipBottomSheet
+import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.UnificationTabBottomSheet
 import com.tokopedia.sellerhomecommon.presentation.view.bottomsheet.WidgetFilterBottomSheet
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.sellerhomecommon.utils.Utils
@@ -100,7 +159,6 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import timber.log.Timber
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -132,10 +190,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         private const val DEFAULT_HEIGHT_DP = 720f
         private const val RV_TOP_POSITION = 0
         private const val TICKER_FIRST_INDEX = 0
-
-        private const val ANNIV_PATTERN_URL = "https://images.tokopedia.net/img/android/sellerhome/bg_anniv_13th_checkered.png"
-        private const val ANNIV_GRADIENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_gradient.webp"
-        private const val ANNIV_ORNAMENT_URL = "https://images.tokopedia.net/img/android/seller_home/ic_sah_anniv_13th_ornament.webp"
+        private const val FEEDBACK_OPTION_1 = 0
+        private const val FEEDBACK_OPTION_2 = 1
+        private const val FEEDBACK_OPTION_3 = 2
+        private const val FEEDBACK_OPTION_4 = 3
+        private const val ANNOUNCEMENT_DISMISSAL_KEY = "widget.announcement.%s"
+        private const val POST_LIST_DISMISSAL_KEY = "widget.post.%s"
     }
 
     @Inject
@@ -194,8 +254,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var emptyState: EmptyStateUnify? = null
 
     private var rebateWidgetView: View? = null
+    private var unificationWidgetTitleView: View? = null
     private var navigationOtherMenuView: View? = null
     private var rebateCoachMark: CoachMark2? = null
+    private var unificationWidgetCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shopShareData: ShopShareDataUiModel? = null
     private var shopImageFilePath: String = ""
@@ -256,10 +318,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeWidgetData(sellerHomeViewModel.recommendationWidgetData, WidgetType.RECOMMENDATION)
         observeWidgetData(sellerHomeViewModel.milestoneWidgetData, WidgetType.MILESTONE)
         observeWidgetData(sellerHomeViewModel.calendarWidgetData, WidgetType.CALENDAR)
+        observeWidgetData(sellerHomeViewModel.unificationWidgetData, WidgetType.UNIFICATION)
         observeTickerLiveData()
         observeCustomTracePerformanceMonitoring()
         observeShopShareData()
         observeShopShareTracker()
+        observeWidgetDismissalStatus()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -290,6 +354,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         if (hidden) {
             rebateCoachMark?.dismissCoachMark()
+            unificationWidgetCoachMark?.dismissCoachMark()
         } else {
             SellerHomeTracking.sendScreen(screenName)
             view?.post {
@@ -298,6 +363,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             recyclerView?.post {
                 resetWidgetImpressionHolder()
                 showRebateCoachMark()
+                showUnificationWidgetCoachMark()
             }
         }
     }
@@ -459,7 +525,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showErrorToaster(error)
     }
 
-    override fun showPostFilter(element: PostListWidgetUiModel, adapterPosition: Int) {
+    override fun showPostFilter(element: PostListWidgetUiModel) {
         if (!isAdded || context == null) return
 
         val postFilterBottomSheet =
@@ -644,6 +710,53 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendAnnouncementClickEvent(element)
     }
 
+    override fun sendUnificationImpressionEvent(element: UnificationWidgetUiModel) {
+        SellerHomeTracking.sendUnificationImpressionEvent(element.dataKey)
+    }
+
+    override fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationEmptyStateCtaClickEvent(element.dataKey, selectedTab)
+    }
+
+    override fun sendUnificationTableItemClickEvent(
+        element: UnificationWidgetUiModel,
+        text: String,
+        isEmpty: Boolean
+    ) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab, text, isEmpty)
+    }
+
+    override fun showUnificationWidgetCoachMark(anchor: View) {
+        val isEligibleCoachMark = !coachMarkPrefHelper.getUnificationCoachMarkStatus()
+        if (isEligibleCoachMark) {
+            if (this.unificationWidgetTitleView == null) {
+                this.unificationWidgetTitleView = anchor
+
+                context?.let {
+                    unificationWidgetCoachMark = CoachMark2(it).apply {
+                        simpleCloseIcon?.setOnClickListener {
+                            coachMarkPrefHelper.saveUnificationMarkFlag()
+                            unificationWidgetCoachMark = null
+                            dismissCoachMark()
+                        }
+                    }
+                    showUnificationWidgetCoachMark()
+                }
+            }
+        }
+    }
+
+    override fun sendUnificationSeeMoreClickEvent(dataKey: String, tab: UnificationTabUiModel) {
+        SellerHomeTracking.sendUnificationSeeMoreClickEvent(dataKey, tab)
+    }
+
+    override fun sendUnificationTabImpressionEvent(element: UnificationWidgetUiModel) {
+        val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTabImpressionEvent(element.dataKey, selectedTab)
+    }
+
     override fun showAnnouncementWidgetCoachMark(dataKey: String, view: View) {
         val isEligibleCoachMark = !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
         if (isEligibleCoachMark && dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY) {
@@ -660,6 +773,34 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 showRebateCoachMark()
             }
         }
+    }
+
+    override fun setOnAnnouncementWidgetYesClicked(element: AnnouncementWidgetUiModel) {
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.KEEP,
+            dismissKey = String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey),
+            feedbackWidgetIDParent = element.id,
+            dismissObjectIDs = listOf(element.id),
+            shopId = userSession.shopId,
+            isFeedbackPositive = true
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
+        SellerHomeTracking.sendClickWidgetAnnouncementDismissalPromptEvent(element.dataKey, true)
+    }
+
+    override fun setOnAnnouncementWidgetNoClicked(element: AnnouncementWidgetUiModel) {
+        showFeedbackLoopOption(element)
+        SellerHomeTracking.sendClickWidgetAnnouncementDismissalPromptEvent(element.dataKey, false)
+    }
+
+    override fun setOnWidgetCancelDismissal(element: BaseDismissibleWidgetUiModel<*>) {
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.CANCEL,
+            dismissToken = element.dismissToken,
+            shopId = userSession.shopId
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
+        sendCancelDismissalTracker(element)
     }
 
     override fun showProgressBarCoachMark(dataKey: String, view: View) {
@@ -750,6 +891,40 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendCalendarItemClickEvent(element, event)
     }
 
+    override fun showUnificationTabBottomSheets(element: UnificationWidgetUiModel) {
+        val tabs = element.data?.tabs.orEmpty()
+
+        if (tabs.isEmpty()) return
+
+        val bottomSheet = UnificationTabBottomSheet.createInstance()
+        bottomSheet.setItems(tabs)
+            .setOnTabItemSelected { selectedTab ->
+                val prevSelected = tabs.firstOrNull { it.isSelected }
+                if (prevSelected?.dataKey != selectedTab.dataKey) {
+                    applyUnificationTabSelected(element, selectedTab)
+                }
+                bottomSheet.dismiss()
+            }
+            .show(childFragmentManager)
+
+        val selectedTab = tabs.firstOrNull { it.isSelected } ?: return
+        SellerHomeTracking.sendUnificationTabClickEvent(element.dataKey, selectedTab)
+    }
+
+    override fun showPostWidgetMoreOption(element: PostListWidgetUiModel) {
+        val bottomSheet = PostMoreOptionBottomSheet.createInstance()
+        bottomSheet.setOnRemoveArticleOptionClicked {
+            bottomSheet.dismiss()
+            switchPostWidgetCheckingMode(element)
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    override fun setOnPostWidgetRemoveItemClicked(element: PostListWidgetUiModel) {
+        showFeedbackLoopOption(element)
+        SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
+    }
+
     fun setNavigationOtherMenuView(view: View?) {
         if (navigationOtherMenuView == null) {
             navigationOtherMenuView = view
@@ -790,6 +965,53 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 coachMark.isDismissed = false
                 coachMark.showCoachMark(coachMarkItems)
             }
+        }
+    }
+
+    private fun showUnificationWidgetCoachMark() {
+        unificationWidgetCoachMark?.let { coachMark ->
+            val coachMarkItems = getCoachMarkUnification()
+            if (coachMarkItems.isNotEmpty()) {
+                coachMark.isDismissed = false
+                coachMark.showCoachMark(coachMarkItems)
+            }
+        }
+    }
+
+    private fun applyUnificationTabSelected(
+        element: UnificationWidgetUiModel,
+        selectedTab: UnificationTabUiModel
+    ) {
+        val unificationWidgets = mutableListOf<BaseWidgetUiModel<*>>()
+        val isTabAuthorized = !selectedTab.isUnauthorized
+        val widgets = adapter.data.map { widget ->
+            return@map if (widget.dataKey == element.dataKey && widget is UnificationWidgetUiModel) {
+                val unificationWidget = widget.copyWidget().apply unificationWidget@{
+                    val widgetData = widget.data
+                    data = widgetData?.copy(
+                        tabs = widgetData.tabs.map tab@{
+                            it.isSelected = it.dataKey == selectedTab.dataKey
+                            return@tab it
+                        }
+                    )
+                    impressHolder = ImpressHolder()
+                    if (isTabAuthorized) {
+                        showLoadingState = true
+                    }
+                }
+                if (isTabAuthorized) {
+                    unificationWidgets.add(unificationWidget)
+                }
+                unificationWidget
+            } else {
+                widget
+            }
+        }
+
+        getWidgetsData(unificationWidgets)
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
         }
     }
 
@@ -888,6 +1110,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             setOnVerticalScrollListener {
                 requestVisibleWidgetsData()
                 handleRebateCoachMark()
+                handleUnificationCoachMark()
             }
         }
         recyclerView?.run {
@@ -908,7 +1131,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         setupEmptyState()
         setRecyclerViewLayoutAnimation()
         setViewBackground()
-        loadAnniversaryIllustrations()
     }
 
     private fun setupEmptyState() {
@@ -1079,13 +1301,20 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun getCalendarData(widgets: List<BaseWidgetUiModel<*>>) {
-        startCustomMetric(SELLER_HOME_MILESTONE_TRACE)
+        startCustomMetric(SELLER_HOME_CALENDAR_TRACE)
         widgets.setLoading()
         val dataKeys = widgets.filterIsInstance<CalendarWidgetUiModel>()
             .map {
                 it.filter
             }
         sellerHomeViewModel.getCalendarWidgetData(dataKeys)
+    }
+
+    private fun getUnificationData(widgets: List<BaseWidgetUiModel<*>>) {
+        startCustomMetric(SELLER_HOME_UNIFICATION_TRACE)
+        widgets.setLoading()
+        val mWidgets = widgets.filterIsInstance<UnificationWidgetUiModel>()
+        sellerHomeViewModel.getUnificationWidgetData(mWidgets)
     }
 
     private fun setupShopSharing() {
@@ -1180,7 +1409,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeShopLocationLiveData() {
-        sellerHomeViewModel.shopLocation.observe(viewLifecycleOwner, { result ->
+        sellerHomeViewModel.shopLocation.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> setOnSuccessGetShopLocation(result.data)
                 is Fail -> {
@@ -1196,7 +1425,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
             setProgressBarVisibility(false)
-        })
+        }
 
         setProgressBarVisibility(true)
         sellerHomeViewModel.getShopLocation()
@@ -1212,7 +1441,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeWidgetLayoutLiveData() {
-        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner, { result ->
+        sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     stopLayoutCustomMetric(result.data)
@@ -1226,7 +1455,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     setOnErrorGetLayout(result.throwable)
                 }
             }
-        })
+        }
 
         setProgressBarVisibility(true)
     }
@@ -1372,10 +1601,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         newWidget: BaseWidgetUiModel<*>
     ): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
-                oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
-                oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-                oldWidget.emptyState == newWidget.emptyState
+            oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
+            oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
+            oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
+            oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -1394,6 +1623,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         groupedWidgets[WidgetType.RECOMMENDATION]?.run { getRecommendationData(this) }
         groupedWidgets[WidgetType.MILESTONE]?.run { getMilestoneData(this) }
         groupedWidgets[WidgetType.CALENDAR]?.run { getCalendarData(this) }
+        groupedWidgets[WidgetType.UNIFICATION]?.run { getUnificationData(this) }
         groupedWidgets[WidgetType.SECTION]?.run {
             recyclerView?.post {
                 val newWidgetList = adapter.data.toMutableList()
@@ -1540,7 +1770,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeTickerLiveData() {
-        sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner, {
+        sellerHomeViewModel.homeTicker.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
                     stopCustomMetric(
@@ -1567,7 +1797,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     binding?.relTicker?.gone()
                 }
             }
-        })
+        }
         startCustomMetric(SellerHomePerformanceMonitoringConstant.SELLER_HOME_TICKER_TRACE)
         sellerHomeViewModel.getTicker()
     }
@@ -1618,24 +1848,38 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
     }
 
-    private fun setViewBackground() {
-        try {
-            binding?.viewBgShopStatus?.setImageResource(R.drawable.bg_sah_anniv)
-        } catch (ex: Exception) {
-            Timber.e(ex)
+    private fun observeWidgetDismissalStatus() {
+        observe(sellerHomeViewModel.submitWidgetDismissal) {
+            when (it) {
+                is Success -> setSubmitDismissalSuccess(it.data)
+                is Fail -> it.throwable.showErrorToaster()
+            }
         }
     }
 
-    private fun loadAnniversaryIllustrations() {
-        binding?.ivSahPattern?.loadImageWithoutPlaceholder(ANNIV_PATTERN_URL)
-        binding?.ivSahOrnament?.loadImageWithoutPlaceholder(ANNIV_ORNAMENT_URL)
-        binding?.ivSahGradient?.loadImageWithoutPlaceholder(ANNIV_GRADIENT_URL)
+    private fun setViewBackground() = binding?.run {
+        val isOfficialStore = userSession.isShopOfficialStore
+        val isPowerMerchant = userSession.isPowerMerchantIdle || userSession.isGoldMerchant
+        when {
+            isOfficialStore -> {
+                viewBgShopStatus.visible()
+                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_official_store)
+            }
+            isPowerMerchant -> {
+                viewBgShopStatus.visible()
+                viewBgShopStatus.setImageResource(R.drawable.sah_shop_state_bg_power_merchant)
+            }
+            else -> {
+                viewBgShopStatus.gone()
+            }
+        }
     }
+
     private inline fun <reified D : BaseDataUiModel> observeWidgetData(
         liveData: LiveData<Result<List<D>>>,
         type: String
     ) {
-        liveData.observe(viewLifecycleOwner, { result ->
+        liveData.observe(viewLifecycleOwner) { result ->
             startHomeLayoutRenderMonitoring()
             when (result) {
                 is Success -> result.data.setOnSuccessWidgetState(type)
@@ -1646,7 +1890,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 }
             }
             loadNextUnloadedWidget()
-        })
+        }
     }
 
     /**
@@ -2084,7 +2328,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-                this !is DescriptionWidgetUiModel
+            this !is DescriptionWidgetUiModel
     }
 
     private fun handleRebateCoachMark() {
@@ -2093,9 +2337,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getSellerHomeLayoutManager()?.let { layoutManager ->
             val rebateWidget = adapter.data.indexOfFirst {
                 val isRebateMvp = it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY
-                        && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
+                    && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
                 val isRebateUltimate = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
-                        it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
+                    it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
                 return@indexOfFirst isRebateMvp || isRebateUltimate
             }
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
@@ -2106,6 +2350,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 showRebateCoachMark()
             } else {
                 rebateCoachMark?.dismissCoachMark()
+            }
+        }
+    }
+
+    private fun handleUnificationCoachMark() {
+        if (unificationWidgetTitleView == null) return
+
+        getSellerHomeLayoutManager()?.let { layoutManager ->
+            val unificationWidget = adapter.data.indexOfFirst { it is UnificationWidgetUiModel }
+            val firstVisibleIndex = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+            if (unificationWidget != RecyclerView.NO_POSITION
+                && unificationWidget in firstVisibleIndex..lastVisibleIndex
+            ) {
+                showUnificationWidgetCoachMark()
+            } else {
+                unificationWidgetCoachMark?.dismissCoachMark()
             }
         }
     }
@@ -2122,6 +2383,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     anchorView = view,
                     title = view.context.getString(R.string.sah_rebate_coach_mark_title),
                     description = view.context.getString(R.string.sah_rebate_coach_mark_description),
+                    position = CoachMark2.POSITION_BOTTOM
+                )
+            )
+        }
+        return coachMarkItems
+    }
+
+    private fun getCoachMarkUnification(): ArrayList<CoachMark2Item> {
+        val coachMarkItems = arrayListOf<CoachMark2Item>()
+        unificationWidgetTitleView?.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    anchorView = view,
+                    title = view.context.getString(R.string.sah_unification_coach_mark_title),
+                    description = view.context.getString(R.string.sah_unification_coach_mark_description),
                     position = CoachMark2.POSITION_BOTTOM
                 )
             )
@@ -2154,6 +2430,166 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
         updateWidgets(widgets)
         getWidgetsData(similarWidget)
+    }
+
+    private fun switchPostWidgetCheckingMode(element: PostListWidgetUiModel) {
+        val widgets = adapter.data.map {
+            val isTheSameWidget = it.dataKey == element.dataKey && it is PostListWidgetUiModel
+            if (isTheSameWidget) {
+                val widget = it.copyWidget() as? PostListWidgetUiModel
+                widget?.let {
+                    widget.isCheckingMode = !widget.isCheckingMode
+                    return@map widget
+                }
+                return@map it
+            } else {
+                return@map it
+            }
+        }
+
+        notifyWidgetWithSdkChecking {
+            updateWidgets(widgets)
+        }
+    }
+
+    private fun showFeedbackLoopOption(element: BaseWidgetUiModel<*>) {
+        val bottomSheet = FeedbackLoopOptionsBottomSheet.createInstance()
+        bottomSheet.setOnSubmitClickedListener {
+            submitFeedback(element, it)
+            bottomSheet.dismiss()
+        }
+        bottomSheet.show(childFragmentManager)
+    }
+
+    private fun submitFeedback(
+        element: BaseWidgetUiModel<*>,
+        reasons: List<FeedbackLoopOptionUiModel>
+    ) {
+        val dismissObjectIDs: List<String>
+        val dismissSign: String
+        val dismissKey = when (element) {
+            is AnnouncementWidgetUiModel -> {
+                dismissObjectIDs = listOf(element.id)
+                dismissSign = element.data?.widgetDataSign.orEmpty()
+                SellerHomeTracking.sendClickWidgetAnnouncementSubmitDismissalEvent(element.dataKey)
+
+                String.format(ANNOUNCEMENT_DISMISSAL_KEY, element.dataKey)
+            }
+            is PostListWidgetUiModel -> {
+                dismissObjectIDs = element.data?.postPagers?.flatMap { it.postList }
+                    ?.filter { it.isChecked }?.map { it.postItemId }.orEmpty()
+                dismissSign = element.data?.widgetDataSign.orEmpty()
+                val numberPosts = dismissObjectIDs.size
+                SellerHomeTracking.sendClickWidgetPostSubmitDismissalEvent(
+                    element.dataKey,
+                    numberPosts
+                )
+
+                String.format(POST_LIST_DISMISSAL_KEY, element.dataKey)
+            }
+            else -> {
+                dismissObjectIDs = emptyList()
+                dismissSign = String.EMPTY
+                String.EMPTY
+            }
+        }
+
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.DISMISS,
+            dismissKey = dismissKey,
+            feedbackReason1 = reasons.getOrNull(FEEDBACK_OPTION_1)?.isSelected.orFalse(),
+            feedbackReason2 = reasons.getOrNull(FEEDBACK_OPTION_2)?.isSelected.orFalse(),
+            feedbackReason3 = reasons.getOrNull(FEEDBACK_OPTION_3)?.isSelected.orFalse(),
+            feedbackReasonOther = (reasons.getOrNull(FEEDBACK_OPTION_4) as? FeedbackLoopOptionUiModel.Other)
+                ?.value.orEmpty(),
+            feedbackWidgetIDParent = element.id,
+            dismissObjectIDs = dismissObjectIDs,
+            dismissSign = dismissSign,
+            shopId = userSession.shopId
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
+    }
+
+    private fun setSubmitDismissalSuccess(result: WidgetDismissalResultUiModel) {
+        var shouldUpdateWidget = false
+        val widgets: List<BaseWidgetUiModel<*>> = adapter.data.map {
+            return@map when {
+                it.id == result.widgetId && it is AnnouncementWidgetUiModel -> {
+                    shouldUpdateWidget = true
+                    getDismissalAnnouncementWidget(it, result)
+                }
+                it.id == result.widgetId && it is PostListWidgetUiModel -> {
+                    shouldUpdateWidget = true
+                    getDismissalPostListWidget(it, result)
+                }
+                else -> it
+            }
+        }
+
+        if (shouldUpdateWidget) {
+            notifyWidgetWithSdkChecking {
+                updateWidgets(widgets)
+            }
+        }
+    }
+
+    private fun getDismissalPostListWidget(
+        widget: PostListWidgetUiModel, result: WidgetDismissalResultUiModel
+    ): BaseWidgetUiModel<*> {
+        val isDismissAction = result.action == SubmitWidgetDismissUiModel.Action.DISMISS
+
+        val prevPostList = widget.data?.postPagers?.flatMap { it.postList }
+            .orEmpty()
+        val postDismissalItem = PostItemUiModel.PostTimerDismissalUiModel(
+            totalDeletedItems = prevPostList.count { it.isChecked },
+            runningTimeInMillis = Int.ZERO.toLong()
+        )
+        val tempPostList = listOf(postDismissalItem).plus(prevPostList)
+        val maxItemPerPage = if (widget.maxDisplay == Int.ZERO) {
+            PostMapper.MAX_ITEM_PER_PAGE
+        } else {
+            widget.maxDisplay
+        }
+
+        val postPagers = tempPostList.chunked(maxItemPerPage).map {
+            return@map PostListPagerUiModel(it)
+        }
+        return widget.copy(
+            dismissToken = result.dismissToken,
+            shouldShowDismissalTimer = isDismissAction,
+            data = widget.data?.copy(
+                postPagers = postPagers
+            ),
+            isCheckingMode = false
+        )
+    }
+
+    private fun getDismissalAnnouncementWidget(
+        widget: AnnouncementWidgetUiModel, result: WidgetDismissalResultUiModel
+    ): BaseWidgetUiModel<*> {
+        val isDismissAction = result.action == SubmitWidgetDismissUiModel.Action.DISMISS
+        val isKeepAction = result.action == SubmitWidgetDismissUiModel.Action.KEEP
+        return widget.copy(
+            dismissToken = result.dismissToken,
+            shouldShowDismissalTimer = isDismissAction,
+            isDismissible = isKeepAction
+        ).copyWidget()
+    }
+
+    private fun sendCancelDismissalTracker(element: BaseDismissibleWidgetUiModel<*>) {
+        when (element) {
+            is AnnouncementWidgetUiModel -> {
+                SellerHomeTracking.sendClickWidgetAnnouncementCancelDismissalEvent(element.dataKey)
+            }
+            is PostListWidgetUiModel -> {
+                val numberOfPosts = element.data?.postPagers?.flatMap { it.postList }
+                    ?.count { it.isChecked }.orZero()
+                SellerHomeTracking.sendClickWidgetPostCancelDismissalEvent(
+                    element.dataKey,
+                    numberOfPosts
+                )
+            }
+        }
     }
 
     interface Listener {

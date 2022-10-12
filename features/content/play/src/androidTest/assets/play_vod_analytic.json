@@ -230,6 +230,16 @@
       "clientId": ".*",
       "userId": ".*",
       "businessUnit": "play"
+    },
+    {
+      "businessUnit": "play",
+      "eventCategory": "groupchat room",
+      "currentSite": ".*",
+      "event": "clickGroupChat",
+      "userId": ".*",
+      "eventAction": "swipe channel",
+      "eventLabel": ".+",
+      "sessionIris": ".*"
     }
   ]
 }

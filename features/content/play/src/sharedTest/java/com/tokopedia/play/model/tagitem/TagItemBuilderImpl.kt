@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import java.util.*
 
 class TagItemBuilderImpl : TagItemBuilder {
 
@@ -51,6 +52,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isFreeShipping: Boolean,
         appLink: String,
         isTokoNow: Boolean,
+        isPinned: Boolean,
+        isRilisanSpesial: Boolean,
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -63,6 +66,8 @@ class TagItemBuilderImpl : TagItemBuilder {
         isFreeShipping = isFreeShipping,
         applink = appLink,
         isTokoNow = isTokoNow,
+        isPinned = isPinned,
+        isRilisanSpesial = isRilisanSpesial,
     )
 
     override fun buildMerchantVoucher(
@@ -94,26 +99,28 @@ class TagItemBuilderImpl : TagItemBuilder {
     ) =  ProductSectionUiModel.Section(
         productList = productList,
         config = config,
-        id = id
+        id = id,
     )
 
     override fun buildSectionConfig(
         type: ProductSectionType,
         title: String,
         timerInfo: String,
-        serverTime: String,
-        startTime: String,
-        endTime: String,
+        controlTime: Date,
+        serverTime: Date?,
+        startTime: Date?,
+        endTime: Date?,
         background: ProductSectionUiModel.Section.BackgroundUiModel,
         reminderStatus: PlayUpcomingBellStatus
     ) = ProductSectionUiModel.Section.ConfigUiModel (
         type = type,
         title = title,
         timerInfo = timerInfo,
+        controlTime = controlTime,
         serverTime = serverTime,
         startTime = startTime,
         endTime = endTime,
         background = background,
-        reminder = reminderStatus
+        reminder = reminderStatus,
     )
 }

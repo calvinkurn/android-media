@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp">
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/dateContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        app:cardCornerRadius="12dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardBackgroundColor="@color/Unify_B100"
+        android:layout_centerHorizontal="true">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700_68"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            app:typographyType="body_3"
+            tools:text="1 Jan"/>
+
+    </androidx.cardview.widget.CardView>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_group_chat_message"
+        android:layout_width="240dp"
+        android:layout_height="240dp"
+        app:layout_constraintTop_toBottomOf="@+id/dateContainer"
+        app:layout_constraintRight_toRightOf="parent"
+        app:cardBackgroundColor="@color/Unify_N0"
+        app:cardCornerRadius="3dp"
+        android:layout_marginTop="16dp"
+        app:cardElevation="0dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/parent"
+            android:padding="2dp">
+
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/video_player"
+            app:use_controller="false"
+            app:surface_type="texture_view"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:background="@color/Unify_N75" />
+
+            <FrameLayout
+                android:id="@+id/progress_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <include layout="@layout/video_loading_layout" />
+
+            </FrameLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="@dimen/dp_chatbot_18"
+                android:layout_height="@dimen/dp_chatbot_18"
+                android:layout_marginLeft="@dimen/unify_space_8"
+                app:icon_name="PLAY"
+                app:icon_color_light_enable="@color/Unify_N0"
+                android:id="@+id/play_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/llReadStatusContainer"
+                />
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintLeft_toRightOf="@id/play_icon"
+                tools:text="11:00"
+                android:id="@+id/video_length"
+                android:textColor="@color/Unify_N0"
+                app:typographyType="body_3"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/llReadStatusContainer"
+                />
+
+            <LinearLayout
+                android:id="@+id/llReadStatusContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end|center_vertical"
+                android:paddingTop="4dp"
+                android:paddingEnd="16dp"
+                android:paddingRight="16dp"
+                android:paddingBottom="@dimen/dp_chatbot_10"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                tools:ignore="RtlSymmetry">
+
+                <include
+                    layout="@layout/item_chatcommon_chat_read_status_attachment" />
+
+            </LinearLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </androidx.cardview.widget.CardView>
+
+
+    <ImageView
+        android:id="@+id/left_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/card_group_chat_message"
+        android:layout_alignBottom="@+id/card_group_chat_message"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        app:layout_constraintRight_toLeftOf="@+id/card_group_chat_message"
+        android:contentDescription="@null"
+        app:layout_constraintTop_toTopOf="@id/card_group_chat_message"
+        app:layout_constraintBottom_toBottomOf="@id/card_group_chat_message"
+        android:visibility="visible"
+        app:srcCompat="@drawable/ic_retry_image_send" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -21,7 +21,12 @@ import com.tokopedia.abstraction.common.utils.snackbar.SnackbarRetry
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
@@ -32,9 +37,6 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFrag
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
-import com.tokopedia.user_identification_common.KYCConstant
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
-import com.tokopedia.user_identification_common.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
@@ -54,9 +56,10 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         intent?.data?.let {
-            projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID)?.toInt() ?: KYCConstant.STATUS_DEFAULT
+            projectId = it.getQueryParameter(
+                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+            )?.toIntOrZero() ?: KycStatus.DEFAULT.code
             kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
             intent.putExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId)
         }
@@ -91,7 +94,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     }
 
     override fun getListFragment(): List<Fragment> {
-        return if (projectId == KYCConstant.STATUS_DEFAULT) {
+        return if (projectId == KycStatus.DEFAULT.code) {
             val notFoundList = ArrayList<Fragment>()
             notFoundList.add(NotFoundFragment.createInstance())
             notFoundList
@@ -128,14 +131,18 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                     throw Exception()
                 }
             }
+
             fragmentList[actualPosition] = fragment
-            val fragmentArguments = fragment.arguments
-            val bundle: Bundle = fragmentArguments ?: Bundle()
-            bundle.putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
-            fragment.arguments = bundle
-            supportFragmentManager.beginTransaction()
-                .replace(parentView, fragment, fragment.javaClass.simpleName)
-                .commit()
+            val stepperBundle = Bundle().apply {
+                putParcelable(STEPPER_MODEL_EXTRA, stepperModel)
+            }
+            fragment.arguments?.putAll(stepperBundle)
+
+            if (savedinstancestate == null) {
+                supportFragmentManager.beginTransaction()
+                    .replace(parentView, fragment, fragment.javaClass.simpleName)
+                    .commit()
+            }
         }
     }
 
@@ -196,7 +203,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                 if (snackbar?.isShown == true) {
                     snackbar?.hideRetrySnackbar()
                 }
-                super.onOptionsItemSelected(item)
+                onBackEvent()
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
@@ -209,8 +217,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
     fun setTextViewWithBullet(text: String, context: Context, layout: LinearLayout) {
         val tv = Typography(context)
         val span = SpannableString(text)
-        val radius = dpToPx(4)
-        val gapWidth = dpToPx(12)
+        val radius = dpToPx(RADIUS_FOUR)
+        val gapWidth = dpToPx(GAP_WIDTH)
         val color = ResourcesCompat.getColor(
             resources,
             com.tokopedia.unifyprinciples.R.color.Unify_N100,
@@ -229,7 +237,7 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val margin = dpToPx(8)
+        val margin = dpToPx(MARGIN_EIGHT)
         setMargins(tv, 0, 0, 0, margin)
         layout.addView(tv)
     }
@@ -266,5 +274,9 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
             intent.putExtras(bundle)
             return intent
         }
+
+        private const val RADIUS_FOUR = 4
+        private const val GAP_WIDTH = 12
+        private const val MARGIN_EIGHT = 8
     }
 }

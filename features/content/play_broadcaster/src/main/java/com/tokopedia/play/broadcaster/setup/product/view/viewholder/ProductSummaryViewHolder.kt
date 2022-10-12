@@ -1,11 +1,17 @@
 package com.tokopedia.play.broadcaster.setup.product.view.viewholder
 
+import android.content.Context
 import android.graphics.Paint
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryBodyListBinding
 import com.tokopedia.play.broadcaster.databinding.ItemProductSummaryHeaderListBinding
 import com.tokopedia.play.broadcaster.setup.product.view.adapter.ProductSummaryAdapter
@@ -13,6 +19,7 @@ import com.tokopedia.play.broadcaster.type.DiscountedPrice
 import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play_common.util.extension.buildSpannedString
 import com.tokopedia.play_common.view.loadImage
 import com.tokopedia.unifycomponents.Label
 
@@ -68,27 +75,32 @@ internal class ProductSummaryViewHolder private constructor() {
                 binding.tvProductSummaryOriginalPrice.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
         }
 
+        private val ctx: Context
+            get() = itemView.context
+
+        private val baseColor: ForegroundColorSpan
+            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_NN950))
+
+        private val fgColor: ForegroundColorSpan
+            get() = ForegroundColorSpan(MethodChecker.getColor(ctx, unifyR.color.Unify_G500))
+
         fun bind(item: ProductSummaryAdapter.Model.Body) {
             binding.ivProductSummaryImage.loadImage(item.product.imageUrl)
             binding.tvProductSummaryName.text = item.product.name
 
-            if(item.product.stock > 0) {
-                binding.tvProductSummaryStock.apply {
-                    text = itemView.context.getString(
-                        R.string.play_bro_product_chooser_stock,
-                        item.product.stock
-                    )
-                    visibility = View.VISIBLE
+            binding.tvPinnedProductCarouselInfo.apply {
+                text = buildSpannedString {
+                    if(item.product.pinStatus.isPinned) {
+                        append(ctx.getString(R.string.play_bro_pinned_product_info), fgColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                        if (item.product.stock > 0) append(" • ", baseColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
+                    }
+                    if(item.product.stock > 0) append(ctx.getString(R.string.play_bro_product_chooser_stock, item.product.stock), baseColor, Spanned.SPAN_EXCLUSIVE_INCLUSIVE)
                 }
-                binding.tvProductSummaryEmptyStock.visibility = View.GONE
-                binding.ivProductSummaryCover.visibility = View.GONE
+                visibility = if(text.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
-            else {
-                binding.tvProductSummaryStock.visibility = View.GONE
 
-                binding.tvProductSummaryEmptyStock.visibility = View.VISIBLE
-                binding.ivProductSummaryCover.visibility = View.VISIBLE
-            }
+            binding.ivProductSummaryCover.showWithCondition(item.product.stock <= 0)
+            binding.tvProductSummaryEmptyStock.showWithCondition(item.product.stock <= 0)
 
             when(item.product.price) {
                 is OriginalPrice -> {
@@ -116,6 +128,14 @@ internal class ProductSummaryViewHolder private constructor() {
             binding.icProductSummaryDelete.setOnClickListener {
                 listener.onProductDeleteClicked(item.product)
             }
+            binding.ivPinnedProductCarouselInfo.showWithCondition(item.product.pinStatus.isPinned)
+            if (item.product.pinStatus.isPinned) listener.onImpressPinnedProduct(item.product)
+
+            binding.viewPinProduct.showWithCondition(item.product.pinStatus.canPin && item.isEligibleForPin)
+            binding.viewPinProduct.setupPinned(item.product.pinStatus.isPinned, item.product.pinStatus.isLoading)
+            binding.viewPinProduct.setOnClickListener {
+                listener.onPinClicked(item.product)
+            }
         }
 
         companion object {
@@ -131,6 +151,8 @@ internal class ProductSummaryViewHolder private constructor() {
 
         interface Listener {
             fun onProductDeleteClicked(product: ProductUiModel)
+            fun onPinClicked(product: ProductUiModel)
+            fun onImpressPinnedProduct(product: ProductUiModel)
         }
     }
 }

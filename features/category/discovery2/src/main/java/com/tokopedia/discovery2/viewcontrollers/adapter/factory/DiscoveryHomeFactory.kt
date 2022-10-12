@@ -97,6 +97,8 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvouchercarousel.*
@@ -105,6 +107,7 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.myco
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponItemViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.mycoupon.MyCouponViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productbundling.*
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardcarousel.MixLeftEmptyViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.productcardliststate.ErrorLoadViewHolder
@@ -253,6 +256,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.BannerInfinite, ::ShopBannerInfiniteViewHolder, ::ShopBannerInfiniteViewModel)
             initializeComponent(ComponentsList.BannerInfiniteItem, ::ShopBannerInfiniteItemViewHolder, ::ShopBannerInfiniteItemViewModel)
             initializeComponent(ComponentsList.ShopCardInfinite, ::ShopCardInfiniteViewHolder, ::ShopCardInfiniteViewModel)
+            initializeComponent(ComponentsList.ExplicitWidget, ::ExplicitWidgetViewHolder, ::ExplicitWidgetViewModel)
+            initializeComponent(ComponentsList.ProductBundling, ::ProductBundlingViewHolder,::ProductBundlingViewModel)
 
         }
 

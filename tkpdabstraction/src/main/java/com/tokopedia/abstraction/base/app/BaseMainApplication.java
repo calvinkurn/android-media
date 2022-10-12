@@ -27,11 +27,6 @@ public class BaseMainApplication extends MultiDexApplication {
         return baseAppComponent;
     }
 
-    public BaseAppComponent reinitBaseAppComponent(AppModule appModule){
-        return baseAppComponent = DaggerBaseAppComponent.builder()
-                .appModule(appModule).build();
-    }
-
     public void setComponent(BaseAppComponent appComponent) {
         this.baseAppComponent = appComponent;
     }

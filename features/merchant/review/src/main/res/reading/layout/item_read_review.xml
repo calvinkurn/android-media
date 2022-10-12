@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:viewBindingIgnore="true" >
+    tools:viewBindingIgnore="true">
 
     <com.tokopedia.review.feature.reading.presentation.widget.ReadReviewProductInfo
         android:id="@+id/read_review_product_info"
@@ -13,25 +13,33 @@
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.review.common.presentation.widget.ReviewBasicInfoWidget
-        android:id="@+id/read_review_basic_info"
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ProductReviewBasicInfoWidget
+        android:id="@+id/read_product_review_basic_info"
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
-        app:layout_constraintEnd_toStartOf="@id/read_review_item_three_dots"
         app:layout_goneMarginTop="@dimen/layout_lvl2" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/read_review_item_three_dots"
-        android:layout_width="@dimen/layout_lvl2"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl2"
-        android:layout_marginEnd="@dimen/layout_lvl2"
-        app:icon_name="MENU_KEBAB_VERTICAL"
+    <com.tokopedia.reviewcommon.feature.reviewer.presentation.widget.ShopReviewBasicInfoWidget
+        android:id="@+id/read_shop_review_basic_info"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/layout_lvl1"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/read_review_product_info"
+        app:layout_goneMarginTop="@dimen/layout_lvl2" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrierReviewBasicInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="read_product_review_basic_info,read_shop_review_basic_info"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_item_review"
@@ -43,10 +51,21 @@
         android:ellipsize="end"
         android:maxLines="3"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_basic_info"
-        app:typographyType="display_2"
+        app:layout_constraintTop_toBottomOf="@id/barrierReviewBasicInfo"
+        app:typographyType="paragraph_2"
         app:typographyWeight="reguler"
         tools:text="Saya sangat puas sekali!! Awalnya saya gak percaya. Dengan memakai handphone ini, saya bisa mendengarkan suaara jernih... Selengkapnya" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/read_review_item_review_see_more"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/layout_lvl2"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
+        app:typographyType="paragraph_2"
+        app:typographyWeight="reguler"
+        tools:text="Selengkapnya" />
 
     <com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.widget.ReviewMediaThumbnail
         android:id="@+id/read_review_attached_media"
@@ -57,7 +76,7 @@
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/read_review_item_review"
+        app:layout_constraintTop_toBottomOf="@id/read_review_item_review_see_more"
         tools:visibility="visible" />
 
     <com.tokopedia.review.common.presentation.widget.ReviewBadRatingReasonWidget
@@ -73,9 +92,9 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginTop="@dimen/layout_lvl1"
+        app:icon_name="THUMB"
         app:layout_constraintStart_toStartOf="@id/read_review_item_review"
-        app:layout_constraintTop_toBottomOf="@id/read_review_bad_rating_reason"
-        app:icon_name="THUMB" />
+        app:layout_constraintTop_toBottomOf="@id/read_review_bad_rating_reason" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/read_review_like_count"
@@ -113,8 +132,9 @@
         android:layout_width="@dimen/layout_lvl0"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginEnd="16dp"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="@id/read_review_item_three_dots"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@id/read_review_like_button"
         app:layout_constraintTop_toBottomOf="@id/read_review_like_button" />
 

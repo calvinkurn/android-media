@@ -7,7 +7,7 @@ class PlayWidgetVideoTabAnalyticModel : PlayWidgetAnalyticModel {
 
     override val prefix: String = "VIDEO_TAB"
 
-    override val category: String = "content feed timeline - cmp"
+    override val category: String = "content feed timeline - video"
 
     override val promotionsItemName: String = "play-video-tab-widget"
 

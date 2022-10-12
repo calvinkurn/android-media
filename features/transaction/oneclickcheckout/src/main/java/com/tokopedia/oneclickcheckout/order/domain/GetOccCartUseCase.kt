@@ -60,6 +60,7 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
     error_message
     status
     data {
+      cart_data
       errors
       error_code
       pop_up_message
@@ -559,6 +560,8 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
               success
               cart_id
               unique_id
+              shipping_id
+              sp_id
               order_id
               shop_id
               is_po

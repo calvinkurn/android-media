@@ -30,7 +30,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/penalty_detail_toolbar"
-            app:typographyType="heading_5"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
             tools:text="@string/example_title_detail_penalty" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -44,7 +45,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvTitleDetailPenalty"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="@string/example_date_penalty_detail" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -58,7 +59,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvStartDateDetailPenalty"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="@string/example_summary_detail_penalty" />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -81,7 +82,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/separatorDetailPenalty"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold" />
 
         <androidx.cardview.widget.CardView
@@ -105,7 +106,7 @@
                 android:padding="@dimen/spacing_lvl3"
                 android:text="@string/total_deduction_point_performance"
                 android:textColor="@color/Unify_N700_96"
-                app:typographyType="body_3"
+                app:typographyType="display_3"
                 app:typographyWeight="reguler" />
 
         </androidx.cardview.widget.CardView>
@@ -122,7 +123,7 @@
             app:layout_constraintEnd_toStartOf="@id/ic_info_status_penalty"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/card_total_deduction_point_penalty"
-            app:typographyType="body_2"
+            app:typographyType="display_2"
             app:typographyWeight="bold" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -162,7 +163,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/rv_timeline_status_penalty"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -176,7 +177,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tvDescResultDetailPenalty"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="reguler"
             tools:text="@string/example_date_result_detail_penalty" />
 

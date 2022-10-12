@@ -15,45 +15,59 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
  */
 
 class PostListPagerAdapter(
-    private val onPostItemClicked: (PostItemUiModel) -> Unit
+    private val listener: Listener
 ) : RecyclerView.Adapter<PostListPagerAdapter.PostListPagerViewHolder>() {
 
-    var pagers = listOf<PostListPagerUiModel>()
+    private val pagers = mutableListOf<PostListPagerUiModel>()
+    private var isCheckingMode: Boolean = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PostListPagerViewHolder {
         val binding = ShcItemPostListPagerBinding.inflate(
             LayoutInflater.from(parent.context), parent, false
         )
-        return PostListPagerViewHolder(binding)
+        return PostListPagerViewHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: PostListPagerViewHolder, position: Int) {
         val pager = pagers[position]
-        holder.bind(pager, onPostItemClicked)
+        holder.bind(pager, isCheckingMode)
     }
 
     override fun getItemCount(): Int = pagers.size
 
+    fun setCheckingMode(isCheckingMode: Boolean) {
+        this.isCheckingMode = isCheckingMode
+    }
+
+    fun setPagers(pagers: List<PostListPagerUiModel>) {
+        this.pagers.clear()
+        this.pagers.addAll(pagers)
+    }
+
     inner class PostListPagerViewHolder(
-        private val binding: ShcItemPostListPagerBinding
+        private val binding: ShcItemPostListPagerBinding,
+        private val listener: Listener
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private val postAdapter = BaseListAdapter<PostItemUiModel, PostListAdapterTypeFactoryImpl>(
-            PostListAdapterTypeFactoryImpl()
-        )
-
-        fun bind(pager: PostListPagerUiModel, onPostItemClicked: (PostItemUiModel) -> Unit) {
+        fun bind(pager: PostListPagerUiModel, isCheckingMode: Boolean) {
             with(binding) {
+                val postAdapter = BaseListAdapter<PostItemUiModel, PostListAdapterTypeFactoryImpl>(
+                    PostListAdapterTypeFactoryImpl(listener, isCheckingMode)
+                )
+                postAdapter.data.addAll(pager.postList)
+
                 rvShcPostList.layoutManager = object : LinearLayoutManager(itemView.context) {
                     override fun canScrollVertically(): Boolean = false
                 }
                 rvShcPostList.adapter = postAdapter
             }
-
-            postAdapter.data.addAll(pager.postList)
-            postAdapter.setOnAdapterInteractionListener {
-                onPostItemClicked(it)
-            }
         }
+    }
+
+    interface Listener {
+        fun onItemClicked(model: PostItemUiModel)
+        fun onCheckedListener(isChecked: Boolean)
+        fun onTimerFinished()
+        fun onCancelDismissalClicked()
     }
 }

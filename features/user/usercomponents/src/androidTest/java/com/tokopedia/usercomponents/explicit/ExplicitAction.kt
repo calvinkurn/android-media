@@ -13,8 +13,8 @@ fun initQuestionDisplayed() {
         R.id.img_dismiss,
         R.id.txt_title,
         R.id.txt_description,
-        R.id.btn_positif_action,
-        R.id.btn_negatif_action
+        R.id.btn_positive_action,
+        R.id.btn_negative_action
     )
     isTextDisplayed(
         "Kamu hanya konsumsi kuliner halal?",
@@ -24,7 +24,7 @@ fun initQuestionDisplayed() {
     )
 }
 
-fun isErrorDisplayed() {
+fun isFailedDisplayed() {
     isDisplayed(R.id.container_local_load)
     isTextDisplayed(
         "Konten gagal ditampilkan",
@@ -41,15 +41,15 @@ fun isSuccessDisplayed() {
     )
 }
 
-fun isHideQuestion() {
+fun isHideWidget() {
     isNotDisplayed(
         R.id.img_background,
         R.id.img_icon,
         R.id.img_dismiss,
         R.id.txt_title,
         R.id.txt_description,
-        R.id.btn_positif_action,
-        R.id.btn_negatif_action,
+        R.id.btn_positive_action,
+        R.id.btn_negative_action,
         R.id.img_success_background,
         R.id.img_success_icon,
         R.id.img_success_dismiss,
@@ -58,10 +58,22 @@ fun isHideQuestion() {
 }
 
 fun clickButtonAnswer(isPositive: Boolean) {
-    clickOnButton(if (isPositive) R.id.btn_positif_action else R.id.btn_negatif_action)
+    clickOnButton(
+        if (isPositive) {
+            R.id.btn_positive_action
+        } else {
+            R.id.btn_negative_action
+        }
+    )
 }
 
 //if onQuestionPage = false then click dismiss on success page
 fun clickOnDismiss(onQuestionPage: Boolean) {
-    clickOnButton(if (onQuestionPage) R.id.img_dismiss else R.id.img_success_dismiss)
+    clickOnButton(
+        if (onQuestionPage) {
+            R.id.img_dismiss
+        } else {
+            R.id.img_success_dismiss
+        }
+    )
 }

@@ -1,6 +1,10 @@
 package com.tokopedia.kotlin.extensions.view
 
 import android.text.Html
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.util.Locale
@@ -10,7 +14,8 @@ import java.util.Locale
  */
 
 fun String?.toIntOrZero(): Int {
-    return this?.toIntOrNull() ?: 0
+    return this?.toIntOrZero {
+    } ?: 0
 }
 
 fun String?.toLongOrString() = this?.toLongOrNull() ?: this
@@ -130,6 +135,35 @@ fun String.digitsOnly(): Long {
     return try {
         this.filter { it.isDigit() }.toLong()
     } catch (e: Exception) {
+        0
+    }
+}
+
+private const val IS_NUMERIC_REGEX = """-?[0-9]+(\\.[0-9]+)?"""
+fun String.isNumeric(): Boolean = this.matches(Regex(IS_NUMERIC_REGEX))
+
+
+const val INTEGER_OUT_RANGE_MAX_LENGTH = 1000
+fun String.toIntOrZero(error_block:(number:String)->Unit):Int {
+    return try {
+        val longValue: Long = this.toLong()
+        return if (longValue < Int.MIN_VALUE || longValue > Int.MAX_VALUE) {
+            throw NumberFormatException("Integer Out Of Range value :- ${this}")
+        } else {
+            longValue.toInt()
+        }
+    }catch (e:Exception) {
+        val sw = StringWriter()
+        e.printStackTrace(PrintWriter(sw))
+        ServerLogger.log(
+            Priority.P1, "INTEGER_PARSING_ERROR",
+            mapOf(
+                "error_msg " to (e.message?:"Integer Parsing"),
+                "trace " to sw.toString().take(INTEGER_OUT_RANGE_MAX_LENGTH).trim()
+            ))
+
+        // calling error block in case of exception
+        error_block(this)
         0
     }
 }

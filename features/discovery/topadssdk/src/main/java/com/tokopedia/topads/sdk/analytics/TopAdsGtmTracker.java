@@ -1,16 +1,8 @@
 package com.tokopedia.topads.sdk.analytics;
 
-import static com.tokopedia.topads.sdk.analytics.TopAdsGtmTrackerConstant.BUSINESS_UNIT;
-import static com.tokopedia.topads.sdk.analytics.TopAdsGtmTrackerConstant.SEARCH_RESULT;
-
 import android.content.Context;
-import android.os.Bundle;
 import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
-
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.tokopedia.analytic_constant.Event;
 import com.tokopedia.analyticconstant.DataLayer;
 import com.tokopedia.iris.util.ConstantKt;
 import com.tokopedia.iris.util.IrisSession;
@@ -21,12 +13,10 @@ import com.tokopedia.track.TrackApp;
 import com.tokopedia.track.TrackAppUtils;
 import com.tokopedia.track.interfaces.Analytics;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import kotlin.collections.CollectionsKt;
 
 /**
@@ -112,6 +102,7 @@ public class TopAdsGtmTracker {
             String irisSessionId,
             int topadsTag,
             String dimension115,
+            String dimension131,
             String componentId
     ) {
         List<Object> impressionList = createSearchResultProductImpressionDataLayer(
@@ -120,6 +111,7 @@ public class TopAdsGtmTracker {
                 dimension90,
                 topadsTag,
                 dimension115,
+                dimension131,
                 componentId
         );
 
@@ -152,6 +144,7 @@ public class TopAdsGtmTracker {
             String dimension90,
             int topadsTag,
             String dimension115,
+            String dimension131,
             String componentId
     ) {
         List<Object> impressionList = new ArrayList<>();
@@ -172,7 +165,8 @@ public class TopAdsGtmTracker {
                 TopAdsGtmTrackerConstant.Product.POSITION, position,
                 TopAdsGtmTrackerConstant.DIMENSION83, setFreeOngkirDataLayer(item),
                 TopAdsGtmTrackerConstant.DIMENSION90, dimension90,
-                TopAdsGtmTrackerConstant.DIMENSION115, dimension115
+                TopAdsGtmTrackerConstant.DIMENSION115, dimension115,
+                TopAdsGtmTrackerConstant.DIMENSION131, dimension131
         );
 
         impressionList.add(impression);
@@ -336,6 +330,7 @@ public class TopAdsGtmTracker {
             String dimension90,
             int topadsTag,
             String dimension115,
+            String dimension131,
             String componentId
     ) {
         Analytics tracker = getTracker();
@@ -347,16 +342,18 @@ public class TopAdsGtmTracker {
             );
 
             Map<String, Object> productItemMap = DataLayer.mapOf(
-                    "name", item.getName(),
-                    "id", item.getId(),
-                    "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
-                    "brand", "none/other",
-                    "category", getCategoryBreadcrumb(item),
-                    "variant", "none/other",
-                    "position", position,
-                    "dimension83", setFreeOngkirDataLayer(item),
-                    "dimension90", dimension90,
-                    "dimension115", dimension115);
+                "name", item.getName(),
+                "id", item.getId(),
+                "price", item.getPriceFormat().replaceAll("[^0-9]", ""),
+                "brand", "none/other",
+                "category", getCategoryBreadcrumb(item),
+                "variant", "none/other",
+                "position", position,
+                "dimension83", setFreeOngkirDataLayer(item),
+                "dimension90", dimension90,
+                "dimension115", dimension115,
+                "dimension131", dimension131
+            );
 
             Map<String, Object> map = DataLayer.mapOf(
                     "event", "productClick",

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginBottom="@dimen/spacing_lvl1">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/foto_resep_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        app:typographyType="body_2"
+        app:typographyWeight="bold"
+        android:text="@string/epharmacy_foto_resep"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/gallery_rv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/foto_resep_title"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:paddingEnd="@dimen/spacing_lvl4"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        android:orientation="horizontal"
+        tools:itemCount="5"
+        tools:listitem="@layout/epharmacy_prescription_gallery_view_item"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/epharmacy_divider"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_8"
+        app:layout_constraintTop_toBottomOf="@id/gallery_rv"
+        android:layout_marginTop="@dimen/spacing_lvl6"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/products_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/epharmacy_divider"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:text="@string/epharmacy_products_title"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
