@@ -40,18 +40,22 @@ class PlayBroadcastToasterManager(
     ) {
         val errMessage = if (customErrMessage == null) {
             ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
+                context,
+                err,
+                ErrorHandler.Builder()
                     .className(this::class.java.simpleName)
                     .build()
             )
         } else {
             val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
+                context,
+                err,
+                ErrorHandler.Builder()
                     .className(this::class.java.simpleName)
                     .build()
             )
             fragment.getString(
-                R.string.play_custom_error_handler_msg,
+                R.string.play_bro_custom_error_handler_msg,
                 customErrMessage,
                 errCode
             )
