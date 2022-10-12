@@ -550,29 +550,21 @@ class SellerHomeViewModel @Inject constructor(
                 .map {
                     widgetSseMapper.get().mappingWidget(it.event, it.message)
                 }
-                .flowOn(dispatcher.main)
-                .collect {
-                    handleSSEMessage(it)
+                .collect { data ->
+                    data?.let {
+                        handleSSEMessage(it)
+                    }
                 }
         }
     }
 
-    private fun handleSSEMessage(model: BaseDataUiModel) {
-        when (model) {
-            is CardDataUiModel -> setLiveWidgetLiveData(_cardWidgetData, model)
-            is LineGraphDataUiModel -> setLiveWidgetLiveData(_lineGraphWidgetData, model)
-            is ProgressDataUiModel -> setLiveWidgetLiveData(_progressWidgetData, model)
-            is PostListDataUiModel -> setLiveWidgetLiveData(_postListWidgetData, model)
-            is CarouselDataUiModel -> setLiveWidgetLiveData(_carouselWidgetData, model)
-            is TableDataUiModel -> setLiveWidgetLiveData(_tableWidgetData, model)
-            is PieChartDataUiModel -> setLiveWidgetLiveData(_pieChartWidgetData, model)
-            is BarChartDataUiModel -> setLiveWidgetLiveData(_barChartWidgetData, model)
-            is MultiLineGraphDataUiModel -> setLiveWidgetLiveData(_multiLineGraphWidgetData, model)
-            is AnnouncementDataUiModel -> setLiveWidgetLiveData(_announcementWidgetData, model)
-            is RecommendationDataUiModel -> setLiveWidgetLiveData(_recommendationWidgetData, model)
-            is MilestoneDataUiModel -> setLiveWidgetLiveData(_milestoneWidgetData, model)
-            is CalendarDataUiModel -> setLiveWidgetLiveData(_calendarWidgetData, model)
-            is UnificationDataUiModel -> setLiveWidgetLiveData(_unificationWidgetData, model)
+    private suspend fun handleSSEMessage(model: BaseDataUiModel) {
+        withContext(dispatcher.main) {
+            println("SSE : Model -> $model")
+            when (model) {
+                is CardDataUiModel -> setLiveWidgetLiveData(_cardWidgetData, model)
+                is MilestoneDataUiModel -> setLiveWidgetLiveData(_milestoneWidgetData, model)
+            }
         }
     }
 
