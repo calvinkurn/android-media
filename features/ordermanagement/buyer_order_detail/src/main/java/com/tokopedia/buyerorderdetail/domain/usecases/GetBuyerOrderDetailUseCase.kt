@@ -6,7 +6,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestSt
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 class GetBuyerOrderDetailUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
-) : FlowUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers.io) {
+) : BaseGraphqlUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers) {
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
         return RequestParams.create().apply {
@@ -25,7 +24,11 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     private suspend fun sendRequest(
         params: GetBuyerOrderDetailParams
     ): GetBuyerOrderDetailResponse.Data {
-        return repository.request(graphqlQuery(), createRequestParam(params))
+        return repository.request(
+            graphqlQuery(),
+            createRequestParam(params),
+            getCacheStrategy(params.shouldCheckCache)
+        )
     }
 
     override fun graphqlQuery() = QUERY

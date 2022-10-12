@@ -1,11 +1,11 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -13,23 +13,27 @@ import javax.inject.Inject
 
 class GetOrderResolutionUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
-) : FlowUseCase<Long, GetOrderResolutionRequestState>(dispatchers.io) {
+) : BaseGraphqlUseCase<GetOrderResolutionParams, GetOrderResolutionRequestState>(dispatchers) {
 
-    private fun createRequestParam(orderId: Long): Map<String, Any> {
+    private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {
         return RequestParams.create().apply {
-            putLong(PARAM_ORDER_ID, orderId)
+            putLong(PARAM_ORDER_ID, params.orderId)
         }.parameters
     }
 
     private suspend fun sendRequest(
-        params: Long
+        params: GetOrderResolutionParams
     ): GetResolutionTicketStatusResponse {
-        return repository.request(graphqlQuery(), createRequestParam(params))
+        return repository.request(
+            graphqlQuery(),
+            createRequestParam(params),
+            getCacheStrategy(params.shouldCheckCache)
+        )
     }
 
     override fun graphqlQuery() = QUERY
 
-    override suspend fun execute(params: Long) = flow {
+    override suspend fun execute(params: GetOrderResolutionParams) = flow {
         emit(GetOrderResolutionRequestState.Requesting)
         emit(GetOrderResolutionRequestState.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {

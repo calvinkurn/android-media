@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-data class GetP1DataParams(
-    val hasResoStatus: Boolean,
+data class GetOrderResolutionParams(
     val orderId: Long,
     val shouldCheckCache: Boolean
 )

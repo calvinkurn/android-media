@@ -1,9 +1,9 @@
 package com.tokopedia.buyerorderdetail.domain.usecases
 
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
-import com.tokopedia.kotlin.extensions.orFalse
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -16,17 +16,21 @@ import javax.inject.Inject
 class GetP1DataUseCase @Inject constructor(
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase
 ) {
-    private fun getOrderResolutionUseCaseRequestStates(hasResoStatus: Boolean, orderId: Long) =
-        flow {
-            if (hasResoStatus) {
-                emitAll(executeOrderResolutionUseCase(orderId))
-            } else {
-                emit(GetOrderResolutionRequestState.Success(null))
-            }
+    private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
+        if (params.hasResoStatus) {
+            emitAll(
+                executeOrderResolutionUseCase(
+                    GetOrderResolutionParams(params.orderId, params.shouldCheckCache)
+                )
+            )
+        } else {
+            emit(GetOrderResolutionRequestState.Success(null))
         }
+    }
 
-    private suspend fun executeOrderResolutionUseCase(orderId: Long) =
-        getOrderResolutionUseCase(orderId)
+    private suspend fun executeOrderResolutionUseCase(
+        params: GetOrderResolutionParams
+    ) = getOrderResolutionUseCase(params)
 
     private fun mapP1UseCasesRequestState(
         orderResolutionRequestState: GetOrderResolutionRequestState
@@ -40,7 +44,7 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
         return combine(
-            getOrderResolutionUseCaseRequestStates(params.hasResoStatus.orFalse(), params.orderId)
+            getOrderResolutionUseCaseRequestStates(params)
         ) { (orderResolutionRequestState) ->
             mapP1UseCasesRequestState(orderResolutionRequestState)
         }.catch {

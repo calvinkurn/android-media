@@ -24,7 +24,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
 ) {
 
     private fun mapGetP0DataRequestStateToGetAllDataRequestState(
-        p0DataRequestState: GetP0DataRequestState
+        p0DataRequestState: GetP0DataRequestState,
+        shouldCheckCache: Boolean
     ): Flow<GetBuyerOrderDetailDataRequestState> = flow {
         when (p0DataRequestState) {
             is GetP0DataRequestState.Requesting -> {
@@ -37,7 +38,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             is GetP0DataRequestState.Success -> {
                 val getP1DataParams = GetP1DataParams(
                     p0DataRequestState.getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
-                    p0DataRequestState.getBuyerOrderDetailRequestState.result.orderId.toLongOrZero()
+                    p0DataRequestState.getBuyerOrderDetailRequestState.result.orderId.toLongOrZero(),
+                    shouldCheckCache
                 )
                 emitAll(combineWithP1(getP1DataParams, p0DataRequestState))
             }
@@ -80,8 +82,10 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     private suspend fun execute(
         params: GetBuyerOrderDetailDataParams
     ) = getP0DataUseCase(
-        GetP0DataParams(params.cart, params.orderId, params.paymentId)
-    ).flatMapLatest(::mapGetP0DataRequestStateToGetAllDataRequestState).catch {
+        GetP0DataParams(params.cart, params.orderId, params.paymentId, params.shouldCheckCache)
+    ).flatMapLatest { p0DataRequestState ->
+        mapGetP0DataRequestStateToGetAllDataRequestState(p0DataRequestState, params.shouldCheckCache)
+    }.catch {
         emit(
             GetBuyerOrderDetailDataRequestState.Error(
                 GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(it)),

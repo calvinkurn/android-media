@@ -219,7 +219,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         setupViews()
         buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
         if (savedInstanceState == null) {
-            loadInitialData()
+            loadInitialData(false)
         } else {
             restoreFragmentState(savedInstanceState)
         }
@@ -282,11 +282,11 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             BuyerOrderDetailCommonIntentParamKey.CACHE_ID
         ).orEmpty()
         cacheManager.id = cacheManagerId
-        loadInitialData()
+        loadInitialData(true)
     }
 
-    private fun loadInitialData() {
-        loadBuyerOrderDetail()
+    private fun loadInitialData(shouldCheckCache: Boolean) {
+        loadBuyerOrderDetail(shouldCheckCache)
     }
 
     private fun setupViews() {
@@ -317,7 +317,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupGlobalError() {
-        globalErrorBuyerOrderDetail?.setActionClickListener { loadBuyerOrderDetail() }
+        globalErrorBuyerOrderDetail?.setActionClickListener { loadBuyerOrderDetail(false) }
         emptyStateBuyerOrderDetail?.apply {
             try {
                 emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
@@ -328,13 +328,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
-            setPrimaryCTAClickListener { loadBuyerOrderDetail() }
+            setPrimaryCTAClickListener { loadBuyerOrderDetail(false) }
         }
     }
 
     private fun setupSwipeRefreshLayout() {
         swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
-            loadBuyerOrderDetail()
+            loadBuyerOrderDetail(false)
         }
     }
 
@@ -352,12 +352,12 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun loadBuyerOrderDetail() {
+    private fun loadBuyerOrderDetail(shouldCheckCache: Boolean) {
         coachMarkManager?.resetCoachMarkState()
         val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
         val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
-        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
     }
 
     private fun observeBuyerOrderDetail() {
@@ -447,7 +447,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
         bottomSheetManager.dismissBottomSheets()
         showCommonToaster(data.message.firstOrNull().orEmpty())
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
     }
 
     private fun onFailedReceiveConfirmation(throwable: Throwable) {
@@ -609,16 +609,16 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
             if (result != BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED) {
-                loadBuyerOrderDetail()
+                loadBuyerOrderDetail(false)
             }
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
-            loadBuyerOrderDetail()
+            loadBuyerOrderDetail(false)
         }
         bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleComplaintResult() {
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
     }
 
@@ -653,7 +653,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun handleResultRefreshOnly() {
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
     }
 
