@@ -317,7 +317,7 @@ class PlayViewerIdGenerator {
     @Test
     fun youTubePlayer() {
         val mockChannelStorage = mockk<PlayChannelStateStorage>(relaxed = true)
-        every { mockChannelStorage.getChannelList() } returns listOf("12669")
+        every { mockChannelStorage.getChannelList() } returns listOf("12680")
         every { mockChannelStorage.getData(any()) } returns PlayChannelData(
             id = "12669",
             channelDetail = PlayChannelDetailUiModel(),
@@ -350,12 +350,12 @@ class PlayViewerIdGenerator {
 
         val intent = RouteManager.getIntent(
             targetContext,
-            "tokopedia://play/12669"
+            "tokopedia://play/12680"
         )
         val scenario = ActivityScenario.launch<PlayActivity>(intent)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(5000)
 
         scenario.onActivity {
             val youTubeFragment = viewPrinter.printAsCSV(
