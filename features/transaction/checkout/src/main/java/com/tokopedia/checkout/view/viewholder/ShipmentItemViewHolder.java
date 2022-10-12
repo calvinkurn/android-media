@@ -769,7 +769,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout createProductInfoTextWithIcon(CartItemModel cartItemModel )  {
         LinearLayout propertyLayoutWithIcon = new LinearLayout(itemView.getContext());
         propertyLayoutWithIcon.setOrientation(LinearLayout.HORIZONTAL);
-        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_addon_checkout_identifier,null);
+        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,null);
         ImageUnify propertyIcon = propertiesBinding.findViewById(R.id.checkout_iv_identifier);
         if(propertyIcon != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getIconUrl())){
             ImageHandler.loadImageWithoutPlaceholderAndError(propertyIcon, cartItemModel.getEthicalDrugDataModel().getIconUrl());

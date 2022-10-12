@@ -7,6 +7,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.CourierSelectionError
 import com.tokopedia.oneclickcheckout.order.view.model.ProductTrackerData
 import com.tokopedia.oneclickcheckout.order.view.model.WholesalePrice
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -198,6 +200,7 @@ class GetOccCartMapper @Inject constructor() {
             errorMessage = product.errors.firstOrNull() ?: ""
             isError = errorMessage.isNotEmpty() || shop.isError
             addOn = mapAddOns(product.addOns)
+            ethicalDrug = mapEthicalDrug(product.ethicalDrug)
         }
         return orderProduct
     }
@@ -568,6 +571,14 @@ class GetOccCartMapper @Inject constructor() {
                 packagingAndGreetingCard = addOnWording.packagingAndGreetingCard,
                 onlyGreetingCard = addOnWording.onlyGreetingCard,
                 invoiceNotSendToRecipient = addOnWording.invoiceNotSendToRecipient
+        )
+    }
+
+    private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse) : EthicalDrugDataModel {
+        return EthicalDrugDataModel(
+            needPrescription = ethicalDrugResponse.needPrescription,
+            iconUrl = ethicalDrugResponse.iconUrl,
+            text = ethicalDrugResponse.text
         )
     }
 }

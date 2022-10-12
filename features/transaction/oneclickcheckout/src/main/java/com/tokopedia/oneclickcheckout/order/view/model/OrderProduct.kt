@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
@@ -49,7 +50,7 @@ data class OrderProduct(
         var errorMessage: String = "",
         var isError: Boolean = false,
         var addOn: AddOnsDataModel = AddOnsDataModel(),
-
+        var ethicalDrug: EthicalDrugDataModel = EthicalDrugDataModel(),
         // Analytics
         var hasTriggerViewErrorProductLevelTicker: Boolean = false
 ) {
