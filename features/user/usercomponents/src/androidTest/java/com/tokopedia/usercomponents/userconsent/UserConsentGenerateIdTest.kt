@@ -15,7 +15,9 @@ class UserConsentGenerateIdTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        UserConsentDebugActivity::class.java, false, false
+        UserConsentDebugActivity::class.java,
+        false,
+        false
     )
 
     @Test
