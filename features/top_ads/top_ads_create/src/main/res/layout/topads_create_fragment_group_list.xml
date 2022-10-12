@@ -49,7 +49,7 @@
         android:id="@+id/error_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/bright_red"
+        android:textColor="@color/Unify_YN200"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/group_name_input"

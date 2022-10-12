@@ -38,7 +38,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginRight="16dp"
         android:text="@string/add_keyword"
-        android:textColor="@color/medium_green"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/keyword_count"
         app:typographyType="heading_4"
