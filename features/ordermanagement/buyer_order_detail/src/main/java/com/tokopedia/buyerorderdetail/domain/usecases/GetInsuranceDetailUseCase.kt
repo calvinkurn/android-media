@@ -6,7 +6,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestSta
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.graphql.domain.flow.FlowUseCase
 import com.tokopedia.usecase.RequestParams
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 class GetInsuranceDetailUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
-) : FlowUseCase<GetInsuranceDetailParams, GetInsuranceDetailRequestState>(dispatchers.io) {
+) : BaseGraphqlUseCase<GetInsuranceDetailParams, GetInsuranceDetailRequestState>(dispatchers) {
     override fun graphqlQuery(): String {
         return QUERY
     }
@@ -35,7 +34,11 @@ class GetInsuranceDetailUseCase @Inject constructor(
     private suspend fun sendRequest(
         params: GetInsuranceDetailParams
     ): GetInsuranceDetailResponse.Data {
-        return repository.request(graphqlQuery(), createRequestParam(params))
+        return repository.request(
+            graphqlQuery(),
+            createRequestParam(params),
+            getCacheStrategy(params.shouldCheckCache)
+        )
     }
 
     companion object {

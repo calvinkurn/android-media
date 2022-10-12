@@ -35,9 +35,13 @@ class GetP1DataUseCase @Inject constructor(
         params: GetOrderResolutionParams
     ) = getOrderResolutionUseCase(params)
 
-    private fun getInsuranceDetailUseCaseRequestStates(hasInsurance: Boolean, invoice: String) = flow {
-        if (hasInsurance) {
-            emitAll(executeInsuranceDetailUseCase(GetInsuranceDetailParams(invoice)))
+    private fun getInsuranceDetailUseCaseRequestStates(params: GetP1DataParams) = flow {
+        if (params.hasInsurance) {
+            emitAll(
+                executeInsuranceDetailUseCase(
+                    GetInsuranceDetailParams(params.invoice, params.shouldCheckCache)
+                )
+            )
         } else {
             emit(GetInsuranceDetailRequestState.Success(null))
         }
@@ -62,7 +66,7 @@ class GetP1DataUseCase @Inject constructor(
     private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
         return combine(
             getOrderResolutionUseCaseRequestStates(params),
-            getInsuranceDetailUseCaseRequestStates(params.hasInsurance, params.invoice)
+            getInsuranceDetailUseCaseRequestStates(params)
         ) { flows ->
             mapP1UseCasesRequestState(
                 flows[0] as GetOrderResolutionRequestState,
