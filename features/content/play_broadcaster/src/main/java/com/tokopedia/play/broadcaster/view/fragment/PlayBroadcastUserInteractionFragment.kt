@@ -411,7 +411,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (::exitDialog.isInitialized) getExitDialog().dismiss()
         if (::forceStopDialog.isInitialized) forceStopDialog.dismiss()
 
-//        toasterManager.dismissActiveToaster()
+        toasterManager.dismissActiveToaster()
 
         super.onDestroyView()
     }
