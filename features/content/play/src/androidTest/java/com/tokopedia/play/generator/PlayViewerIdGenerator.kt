@@ -279,7 +279,7 @@ class PlayViewerIdGenerator {
         val scenario = ActivityScenario.launch<PlayActivity>(intent)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(5000)
 
         scenario.onActivity {
             val parent = parentViewPrinter.printAsCSV(
