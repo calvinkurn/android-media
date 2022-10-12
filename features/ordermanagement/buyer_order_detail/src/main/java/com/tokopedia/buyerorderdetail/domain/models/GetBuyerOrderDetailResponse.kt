@@ -76,7 +76,10 @@ data class GetBuyerOrderDetailResponse(
             val addonInfo: AddonInfo? = AddonInfo(),
             @SerializedName("details")
             @Expose
-            val details: Details? = Details()
+            val details: Details? = Details(),
+            @SerializedName("has_reso_status")
+            @Expose
+            val hasResoStatus: Boolean? = false
         ) {
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }

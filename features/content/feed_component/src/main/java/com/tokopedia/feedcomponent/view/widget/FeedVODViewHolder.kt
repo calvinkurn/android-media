@@ -55,7 +55,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
     private var mUpdateViewsText: ((String) -> Unit)? = null
     private var mFeedXMedia: FeedXMedia? = null
     private var mFeedXCard: FeedXCard? = null
-    private var mfinalPostId: Int = 0
     private var mPostionInFeed: Int = 0
     private var mIsMute : Boolean = false
     private var mRatio: String = "1"
@@ -109,10 +108,6 @@ class FeedVODViewHolder @JvmOverloads constructor(
         this.mFeedXCard = feedXCard
         this.mProducts = products
         this.mPostionInFeed = positionInFeed
-
-        mfinalPostId = if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID.toIntOrZero() else feedXCard.id.toIntOrZero()
-
-
     }
 
     private fun setConstraintsForVODLayout(){

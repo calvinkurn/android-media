@@ -18,7 +18,6 @@ import com.tokopedia.notifcenter.domain.NotifcenterDetailUseCase
 import com.tokopedia.notifcenter.domain.NotifcenterFilterV2UseCase
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
@@ -111,19 +110,4 @@ class FakeNotifcenterUsecase {
             FakeRecommendationGraphqlUseCase(), userSession
         )
     }
-
-    // -- separator -- //
-
-    @Provides
-    @NotificationScope
-    fun provideAddWishlistUseCase(
-        fake: FakeNotifCenterAddWishlist
-    ): AddWishListUseCase = fake
-
-    @Provides
-    @NotificationScope
-    fun provideFakeAddWishlistUseCase(
-        @NotificationContext
-        context: Context
-    ): FakeNotifCenterAddWishlist = FakeNotifCenterAddWishlist(context)
 }

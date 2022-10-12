@@ -19,6 +19,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -67,9 +68,13 @@ interface ChatbotContract {
 
         fun sendInvoiceForArticle()
 
-        fun replyBubbleStateHandler(state: Boolean)
-
         fun visibilityReplyBubble(state: Boolean)
+
+        fun sessionChangeStateHandler(state : Boolean)
+
+        fun videoUploadEligibilityHandler(state : Boolean)
+
+        fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -97,11 +102,13 @@ interface ChatbotContract {
         fun sendReasonRating(messageId: String, reason: String, timestamp: String,
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
-        fun submitCsatRating(inputItem: InputItem,
+        fun submitCsatRating(messageId: String,
+                             inputItem: InputItem,
                              onError: (Throwable) -> Unit,
                              onSuccess: (String) -> Unit)
 
-        fun showTickerData(onError: (Throwable) -> Unit,
+        fun showTickerData(messageId: String,
+                           onError: (Throwable) -> Unit,
                            onSuccesGetTickerData: (TickerData) -> Unit)
 
         fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
@@ -117,9 +124,10 @@ interface ChatbotContract {
 
         fun destroyWebSocket()
 
-        fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?)
+        fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsViewModel?)
 
-        fun submitChatCsat(input: ChipSubmitChatCsatInput,
+        fun submitChatCsat(messageId : String,
+                           input: ChipSubmitChatCsatInput,
                            onsubmitingChatCsatSuccess: (String) -> Unit,
                            onError: (Throwable) -> Unit)
 
@@ -127,7 +135,8 @@ interface ChatbotContract {
 
         fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel
 
-        fun checkLinkForRedirection(invoiceRefNum: String,
+        fun checkLinkForRedirection(messageId: String,
+                                    invoiceRefNum: String,
                                     onGetSuccessResponse: (String) -> Unit,
                                     setStickyButtonStatus: (Boolean) -> Unit,
                                     onError: (Throwable) -> Unit)
@@ -146,6 +155,12 @@ interface ChatbotContract {
         fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
+
+        fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
+
+        fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
+
+        fun checkUploadVideoEligibility(msgId : String)
 
         fun sendMessage(
             messageId: String, sendMessage: String,

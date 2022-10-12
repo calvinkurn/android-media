@@ -167,7 +167,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualReplyRate() {
         val tvActualReplyRate: Typography? = childView?.findViewById(R.id.tv_actual_chat_reply_rate)
-        val textActualReplyRate = "${ticker.data?.chatReplied}%"
+        val textActualReplyRate = "${ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT)}%"
         tvActualReplyRate?.let {
             it.text = textActualReplyRate
             val replyRateColor = getActualReplyRateTextColor()
@@ -194,7 +194,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualReplySpeed() {
         val tvActualReplySpeed: Typography? = childView?.findViewById(R.id.tv_actual_chat_reply_speed)
-        val textActualReplySpeed = "${ticker.data?.chatSpeed} menit"
+        val textActualReplySpeed = "${ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT)} menit"
         tvActualReplySpeed?.let {
             it.text = textActualReplySpeed
             val replyRateColor = getActualReplySpeedTextColor()
@@ -221,7 +221,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualDiscussionReplyRate() {
         val tvActualReplyRate: Typography? = childView?.findViewById(R.id.tv_actual_chat_and_discussion_reply_rate)
-        val textActualReplyRate = "${ticker.data?.discussionReplied}%"
+        val textActualReplyRate = "${ticker.data?.discussionReplied.toString().removeSuffix(SUFFIX_FLOAT)}%"
         tvActualReplyRate?.let {
             it.text = textActualReplyRate
             val replyRateColor = getActualDiscussionReplyRateTextColor()
@@ -248,7 +248,7 @@ class OperationalInsightBottomSheet(
 
     private fun initActualDiscussionReplySpeed() {
         val tvActualReplySpeed: Typography? = childView?.findViewById(R.id.tv_actual_chat_and_discussion_reply_speed)
-        val textActualReplySpeed = "${ticker.data?.discussionSpeed} menit"
+        val textActualReplySpeed = "${ticker.data?.discussionSpeed.toString().removeSuffix(SUFFIX_FLOAT)} menit"
         tvActualReplySpeed?.let {
             it.text = textActualReplySpeed
             val replyRateColor = getActualDiscussionReplySpeedTextColor()
@@ -280,7 +280,7 @@ class OperationalInsightBottomSheet(
     private fun initTarget() {
         val tvReplyRateTarget: Typography? = childView?.findViewById(R.id.tv_target_rate_reply)
         val replyRateTarget = ticker.target?.chatRepliedTarget.toIntSafely()
-        val textReplyRate = "${ticker.target?.chatRepliedTarget}%"
+        val textReplyRate = "${ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT)}%"
         val textReplyRateTarget = if (replyRateTarget < LIMIT) {
             ">$textReplyRate"
         } else {
@@ -291,7 +291,7 @@ class OperationalInsightBottomSheet(
         }
 
         val tvReplyRateSpeed: Typography? = childView?.findViewById(R.id.tv_target_rate_speed)
-        val textReplyRateSpeed = "<${ticker.target?.chatSpeedTarget} menit"
+        val textReplyRateSpeed = "<${ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT)} menit"
         tvReplyRateSpeed?.let {
             it.text = textReplyRateSpeed
         }
@@ -375,10 +375,10 @@ class OperationalInsightBottomSheet(
         eventViewOperationalInsightBottomSheet(
             shopId = shopId,
             stateReport = getOperationalInsightStateReport(ticker.isMaintain),
-            replyChatRate = ticker.data?.chatReplied.toString(),
-            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
-            replyChatSpeed = ticker.data?.chatSpeed.toString(),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+            replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
         )
     }
 
@@ -386,10 +386,10 @@ class OperationalInsightBottomSheet(
         eventClickOperationalInsightCta(
             shopId = shopId,
             stateReport = getOperationalInsightStateReport(ticker.isMaintain),
-            replyChatRate = ticker.data?.chatReplied.toString(),
-            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
-            replyChatSpeed = ticker.data?.chatSpeed.toString(),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+            replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
         )
     }
 
@@ -397,14 +397,15 @@ class OperationalInsightBottomSheet(
         eventClickShopPerformanceOperationalInsightBottomSheet(
             shopId = shopId,
             stateReport = getOperationalInsightStateReport(ticker.isMaintain),
-            replyChatRate = ticker.data?.chatReplied.toString(),
-            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString(),
-            replyChatSpeed = ticker.data?.chatSpeed.toString(),
-            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString(),
+            replyChatRate = ticker.data?.chatReplied.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatRate = ticker.target?.chatRepliedTarget.toString().removeSuffix(SUFFIX_FLOAT),
+            replyChatSpeed = ticker.data?.chatSpeed.toString().removeSuffix(SUFFIX_FLOAT),
+            targetReplyChatSpeed = ticker.target?.chatSpeedTarget.toString().removeSuffix(SUFFIX_FLOAT),
         )
     }
 
     companion object {
         private const val LIMIT = 100
+        private const val SUFFIX_FLOAT = ".0"
     }
 }

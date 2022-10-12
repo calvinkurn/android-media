@@ -33,7 +33,7 @@ import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState

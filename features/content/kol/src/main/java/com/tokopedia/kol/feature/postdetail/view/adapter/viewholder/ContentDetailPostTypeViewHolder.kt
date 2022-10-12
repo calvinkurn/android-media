@@ -1053,14 +1053,21 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         adapter.focusItemAt(pageControl.indicatorCurrentPosition)
-        feedVODViewHolder.onResume()
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
+            feedVODViewHolder.onResume()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         adapter.onPause()
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
         feedVODViewHolder.onPause()
         job.cancelChildren()
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        if (mData.isTypeVOD || mData.isTypeLongVideo)
+        feedVODViewHolder.onDestroy()
     }
 
     companion object {
