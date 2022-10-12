@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.domain.mapper
 
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import javax.inject.Inject
 
@@ -31,6 +32,9 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperOnDemand(response: List<OnDemand>): List<OnDemandModel> {
         val onDemandModelList =  ArrayList<OnDemandModel>()
         response.forEach { data ->
+            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            // todo get whitelabel description from ?
+            val shipperDescription = if (isWhitelabelShipper) "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
             val onDemandUiModel = OnDemandModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
@@ -39,6 +43,8 @@ class ShippingEditorMapper @Inject constructor() {
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
                 shipperProduct = mapShipperProduct(data.shipperProduct)
+                isWhitelabel = isWhitelabelShipper
+                description = shipperDescription
             }
             onDemandModelList.add(onDemandUiModel)
         }
@@ -48,6 +54,9 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperConventional(response: List<Conventional>): List<ConventionalModel> {
         val conventionalModelList = ArrayList<ConventionalModel>()
         response.forEach { data ->
+            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            // todo get whitelabel description from ?
+            val shipperDescription = if (isWhitelabelShipper) "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
             val conventionalUiModel = ConventionalModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
@@ -56,10 +65,16 @@ class ShippingEditorMapper @Inject constructor() {
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
                 shipperProduct = mapShipperProduct(data.shipperProduct)
+                isWhitelabel = isWhitelabelShipper
+                description = shipperDescription
             }
             conventionalModelList.add(conventionalUiModel)
         }
         return conventionalModelList
+    }
+
+    private fun isWhitelabelShipper(shipperId: Long) : Boolean {
+        return WHITELABEL_SHIPPER_ID.contains(shipperId)
     }
 
     private fun mapFeatureInfo(response: List<FeatureInfo>): List<FeatureInfoModel> {

@@ -26,5 +26,6 @@ object EditShippingConstant {
     const val BOTTOMSHEET_SHIPPER_DETAIL_TITLE = "Detail Kurir Pengiriman"
 
     const val GOCAR_SHIPPER_PRODUCT_ID = "28"
+    val WHITELABEL_SHIPPER_ID = listOf<Long>(1000, 999, 1003, 1001, 1005, 1002, 1004)
 
 }
