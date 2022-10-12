@@ -2,6 +2,7 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
@@ -109,8 +110,9 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             labelStatus.text = statusText
             labelStatus.setLabelType(statusType)
             labelStatus.isVisible = !item.isMultiloc && statusText.isNotEmpty()
-            tfSubsidy.text = context.getString(R.string.commonbs_product_check_subsidy_format,
+            val textSubsidy = context.getString(R.string.stfs_subsidy_value_placeholder,
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
+            tfSubsidy.text = MethodChecker.fromHtml(textSubsidy)
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
         }
         setupPrice(binding, item)

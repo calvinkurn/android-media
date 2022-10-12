@@ -3,11 +3,11 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductLocationCheckResultBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductCheckingResult
-import com.tokopedia.unifycomponents.Label
 
 class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocationCheckingResultAdapter.CriteriaViewHolder>() {
 
@@ -43,8 +43,9 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 tfSlashPrice.text = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
                 tfSlashPrice.strikethrough()
                 labelDiscount.text = "${item.checkingDetailResult.discountPercent}%"
-                tfSubsidiary.text = context.getString(R.string.commonbs_product_check_subsidy_format,
+                val textSubsidy = context.getString(R.string.stfs_subsidy_value_placeholder,
                     item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
+                tfSubsidiary.text = MethodChecker.fromHtml(textSubsidy)
                 tfSubsidiary.isVisible = item.checkingDetailResult.isSubsidy
                 tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format,
                     item.checkingDetailResult.stock)
