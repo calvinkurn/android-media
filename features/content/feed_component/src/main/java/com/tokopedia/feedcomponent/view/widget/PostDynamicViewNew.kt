@@ -1340,6 +1340,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         feedVODViewHolder.updateLikedText {
             likedText.text = it
+            likedText.setWeight(Typography.BOLD)
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute
