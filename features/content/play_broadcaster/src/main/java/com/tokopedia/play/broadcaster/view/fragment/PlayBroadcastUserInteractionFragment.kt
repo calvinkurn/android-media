@@ -386,14 +386,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             resumeBroadcast(false)
             isPausedFragment = false
         }
-
-        showErrorToaster(Exception("haha"), getString(R.string.play_broadcaster_default_error),
-            duration = Toaster.LENGTH_INDEFINITE,
-            actionLabel = getString(R.string.play_broadcast_try_again),
-            actionListener = {
-                showLoading(true)
-                reconnectLiveStreaming()
-            })
     }
 
     override fun onPause() {
