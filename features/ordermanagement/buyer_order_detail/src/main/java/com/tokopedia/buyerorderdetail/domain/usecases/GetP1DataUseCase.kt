@@ -50,7 +50,7 @@ class GetP1DataUseCase @Inject constructor(
         ) {
             GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState)
         } else {
-            GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState))
+            GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState)
         }
     }
 
@@ -58,8 +58,11 @@ class GetP1DataUseCase @Inject constructor(
         return combine(
             getOrderResolutionUseCaseRequestStates(params.hasResoStatus.orFalse(), params.orderId),
             getInsuranceDetailUseCaseRequestStates(params.hasInsurance, params.invoice)
-        ) { (orderResolutionRequestState, insuranceDetailRequestState) ->
-            mapP1UseCasesRequestState(orderResolutionRequestState, insuranceDetailRequestState)
+        ) { flows ->
+            mapP1UseCasesRequestState(
+                flows[0] as GetOrderResolutionRequestState,
+                flows[1] as GetInsuranceDetailRequestState
+            )
         }.catch {
             emit(
                 GetP1DataRequestState.Complete(
