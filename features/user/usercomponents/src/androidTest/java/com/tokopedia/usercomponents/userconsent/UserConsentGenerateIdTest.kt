@@ -2,14 +2,14 @@ package com.tokopedia.usercomponents.userconsent
 
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tokopedia.test.application.annotations.CassavaTest
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.usercomponents.common.ViewIdGenerator
 import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@CassavaTest
+@UiTest
 @RunWith(AndroidJUnit4::class)
 class UserConsentGenerateIdTest {
 
