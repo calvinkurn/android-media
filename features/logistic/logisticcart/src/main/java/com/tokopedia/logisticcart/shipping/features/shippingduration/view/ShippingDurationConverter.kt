@@ -86,7 +86,7 @@ class ShippingDurationConverter @Inject constructor() {
             available = true,
             hidden = false,
             title = "Jadwal lainnya",
-            text = "",
+            text = "Semua jadwal lain penuh dipesan",
             deliveryServices = arrayListOf(
                 DeliveryService(
                     title = "Hari ini, 20 Sep",
@@ -109,7 +109,24 @@ class ShippingDurationConverter @Inject constructor() {
                             shipperProductId = 28,
                             available = true,
                             hidden = false,
-                            recommend = true
+                            recommend = true,
+                            promoCode = ""
+                        ),
+                        DeliveryProduct(
+                            title = "Tiba 16:00 - 18:00",
+                            textEta = "Tiba Besok, 08:00 - 10:00",
+                            id = 2022092014124, // timeslot_id from schelly
+                            finalPrice = 10000.0,
+                            realPrice = 0.0,
+                            textFinalPrice = "Rp10.000",
+                            textRealPrice = "",
+                            text = "Sisa 3 slot",
+                            shipperId = 10,
+                            shipperProductId = 28,
+                            available = true,
+                            hidden = false,
+                            recommend = false,
+                            promoText = "Kuota gratis ongkirmu habis"
                         )
                     )
                 )

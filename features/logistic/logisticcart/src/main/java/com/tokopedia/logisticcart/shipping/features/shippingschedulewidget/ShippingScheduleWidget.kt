@@ -1,7 +1,6 @@
 package com.tokopedia.logisticcart.shipping.features.shippingschedulewidget
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -15,7 +14,7 @@ import com.tokopedia.logisticcart.databinding.ShippingNowWidgetBinding
 import com.tokopedia.logisticcart.shipping.model.ShippingScheduleWidgetModel
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.unifycomponents.HtmlLinkHelper
 
 class ShippingScheduleWidget : ConstraintLayout {
 
@@ -66,52 +65,92 @@ class ShippingScheduleWidget : ConstraintLayout {
         val shippingScheduleWidgets: ArrayList<ShippingScheduleWidgetModel> = arrayListOf()
 
         shippingScheduleWidgets.add(
-            ShippingScheduleWidgetModel(
-                isEnable = true,
-                title = titleNow2H,
-                description = descriptionNow2H,
-                titleWeightType = Typography.BOLD,
-                label = labelNow2H,
-                isNowTwoHours = true,
-                isSelected = scheduleDeliveryUiModel?.isSelected != true,
-                onSelectedWidgetListener = {
-                    scheduleDeliveryUiModel?.apply {
-                        isSelected = false
-                        mListener?.onChangeScheduleDelivery(this)
-                    }
-                }
+            create2HWidget(
+                titleNow2H = titleNow2H,
+                descriptionNow2H = descriptionNow2H,
+                labelNow2H = labelNow2H,
+                scheduleDeliveryUiModel = scheduleDeliveryUiModel
             )
         )
 
         scheduleDeliveryUiModel?.apply {
-            val onClickIconListener: (() -> Unit)? = if (available) {
-                {
-                    openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel)
-                }
-            } else null
-
-            shippingScheduleWidgets.add(
-                ShippingScheduleWidgetModel(
-                    isEnable = available,
-                    title = "$title (${deliveryProduct?.textFinalPrice} ${deliveryProduct?.textRealPrice})",
-                    titleWeightType = Typography.BOLD,
-                    description = deliveryProduct?.textEta,
-                    label = text,
-                    isNowTwoHours = false,
-                    isSelected = isSelected,
-                    isShowCoachMark = available && isNeedShowCoachMark,
-                    onSelectedWidgetListener = {
-                        scheduleDeliveryUiModel.isSelected = true
-                        mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
-                    },
-                    onClickIconListener = onClickIconListener
-                )
-            )
-
+            shippingScheduleWidgets.add(createOtherOptionWidget())
             isNeedShowCoachMark = false
         }
 
         return shippingScheduleWidgets
+    }
+
+    private fun create2HWidget(
+        titleNow2H: CharSequence?,
+        descriptionNow2H: String?,
+        labelNow2H: CharSequence?,
+        scheduleDeliveryUiModel: ScheduleDeliveryUiModel?
+    ): ShippingScheduleWidgetModel {
+        return ShippingScheduleWidgetModel(
+            isEnable = true,
+            title = titleNow2H,
+            description = descriptionNow2H,
+            label = labelNow2H,
+            isSelected = scheduleDeliveryUiModel?.isSelected != true,
+            onSelectedWidgetListener = {
+                scheduleDeliveryUiModel?.apply {
+                    isSelected = false
+                    mListener?.onChangeScheduleDelivery(this)
+                }
+            }
+        )
+    }
+
+    private fun ScheduleDeliveryUiModel.createOtherOptionWidget(): ShippingScheduleWidgetModel {
+        val onClickIconListener: (() -> Unit)? = if (available) {
+            {
+                openScheduleDeliveryBottomSheet(this)
+            }
+        } else null
+
+        return ShippingScheduleWidgetModel(
+            isEnable = available,
+            title = getTitleOtherOption(),
+            description = if (available) deliveryProduct?.textEta else text,
+            label = deliveryProduct?.promoText,
+            isSelected = isSelected,
+            isShowCoachMark = available && isNeedShowCoachMark,
+            onSelectedWidgetListener = {
+                isSelected = true
+                mListener?.onChangeScheduleDelivery(this)
+            },
+            onClickIconListener = onClickIconListener
+        )
+    }
+
+    private fun ScheduleDeliveryUiModel.getTitleOtherOption(): CharSequence {
+        val text = StringBuilder().apply {
+            appendHtmlBoldText(title)
+            if (available) {
+                if (deliveryProduct?.textRealPrice?.isNotBlank() == true) {
+                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice} ")
+                    appendHtmlStrikethroughText("${deliveryProduct?.textRealPrice}")
+                    appendHtmlBoldText(")")
+                } else {
+                    appendHtmlBoldText(" (${deliveryProduct?.textFinalPrice})")
+                }
+            }
+        }.toString()
+
+        return HtmlLinkHelper(context, text).spannedString ?: ""
+    }
+
+    private fun StringBuilder.appendHtmlBoldText(text: String) {
+        if (text.isNotBlank()) {
+            append(String.format(HTML_BOLD_FORMAT, text))
+        }
+    }
+
+    private fun StringBuilder.appendHtmlStrikethroughText(text: String) {
+        if (text.isNotBlank()) {
+            append(String.format(HTML_STRIKETHROUGH_FORMAT, text))
+        }
     }
 
     private fun openScheduleDeliveryBottomSheet(scheduleDeliveryUiModel: ScheduleDeliveryUiModel?) {
@@ -132,10 +171,9 @@ class ShippingScheduleWidget : ConstraintLayout {
                     shippingNowTimeOption.isSelected,
                     shippingNowTimeOption.onSelectedWidgetListener
                 )
-                setTitle(shippingNowTimeOption.title ?: "", shippingNowTimeOption.titleWeightType)
+                setTitle(shippingNowTimeOption.title ?: "")
                 setDescription(shippingNowTimeOption.description)
-                setLabel(shippingNowTimeOption.label)
-                showRightIcon(shippingNowTimeOption.isNowTwoHours.not() && shippingNowTimeOption.isEnable)
+                setLabel(shippingNowTimeOption.label, shippingNowTimeOption.isSelected)
                 showRightIcon(shippingNowTimeOption.onClickIconListener != null)
                 setTimeOptionEnable(shippingNowTimeOption.isEnable)
                 showCoachMark(shippingNowTimeOption.isShowCoachMark)
@@ -149,10 +187,7 @@ class ShippingScheduleWidget : ConstraintLayout {
         if (isShow) {
             rightIcon.apply {
                 val coachMarkItem = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(context).apply {
-                    simpleCloseIcon?.gone()
-                    isOutsideTouchable = true
-                }
+                val coachMark = CoachMark2(context)
                 coachMarkItem.add(
                     CoachMark2Item(
                         this,
@@ -173,7 +208,7 @@ class ShippingScheduleWidget : ConstraintLayout {
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             )
             tvDescriptionShipment.setTextColor(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             )
             tvLabelShipment.setTextColor(
                 ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N600)
@@ -201,12 +236,7 @@ class ShippingScheduleWidget : ConstraintLayout {
         }
     }
 
-    private fun ItemShipmentNowTimeOptionBinding.setTitle(
-        title: CharSequence,
-        titleWeightType: Int
-    ) {
-        tvTitleShipment.weightType = titleWeightType
-//        tvTitleShipment.setTypeface(null, Typeface.BOLD)
+    private fun ItemShipmentNowTimeOptionBinding.setTitle(title: CharSequence) {
         tvTitleShipment.text = title
     }
 
@@ -220,9 +250,9 @@ class ShippingScheduleWidget : ConstraintLayout {
     }
 
     private fun ItemShipmentNowTimeOptionBinding.setLabel(
-        label: CharSequence?
+        label: CharSequence?, showLabel: Boolean
     ) {
-        if (label?.isNotBlank() == true) {
+        if (label?.isNotBlank() == true && showLabel) {
             tvLabelShipment.apply {
                 visible()
                 text = label
@@ -240,5 +270,10 @@ class ShippingScheduleWidget : ConstraintLayout {
         } else {
             rightIcon.gone()
         }
+    }
+
+    companion object {
+        const val HTML_BOLD_FORMAT = "<b>%s</b>"
+        private const val HTML_STRIKETHROUGH_FORMAT =  "<s>%s</s>"
     }
 }

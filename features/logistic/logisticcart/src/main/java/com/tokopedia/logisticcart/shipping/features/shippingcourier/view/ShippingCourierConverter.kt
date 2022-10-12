@@ -121,21 +121,19 @@ class ShippingCourierConverter @Inject constructor() {
     private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
         scheduleDate: String? = null,
         timeslotId: Long? = null
-    ) : ScheduleDeliveryUiModel? {
-        var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
+    ) : ScheduleDeliveryUiModel {
 
-        scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+        return ScheduleDeliveryUiModel(
             isSelected = recommendAdditionalShipper,
             available = available,
             hidden = hidden,
             title = title,
             text = text,
+            notice = notice,
             deliveryServices = deliveryServices,
             isNeedShowCoachMark = true
         ).apply {
             setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
         }
-
-        return scheduleDeliveryUiModel
     }
 }
