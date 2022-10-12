@@ -131,6 +131,7 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListener
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
+import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import java.net.SocketTimeoutException
@@ -962,10 +963,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             if (activityWishlistV2 != PARAM_HOME) {
                 wishlistCollectionDetailNavtoolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
                 icons = IconBuilder().apply {
-                    if (collectionType == TYPE_COLLECTION_PRIVATE_SELF
-                        || collectionType == TYPE_COLLECTION_PUBLIC_SELF
-                        || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
-                        addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
+                    if (WishlistV2RemoteConfigRollenceUtil.isEnableRollenceWishlistSharing()) {
+                        if (collectionType == TYPE_COLLECTION_PRIVATE_SELF
+                            || collectionType == TYPE_COLLECTION_PUBLIC_SELF
+                            || collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                            addIcon(iconId = IconList.ID_SHARE, disableRouteManager = true, onClick = { handleCollectionSharing() }, disableDefaultGtmTracker = true)
+                        }
                     }
                     addIcon(iconId = IconList.ID_CART) {}
                     addIcon(iconId = IconList.ID_NAV_GLOBAL) {}
