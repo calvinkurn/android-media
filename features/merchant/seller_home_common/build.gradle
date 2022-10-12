@@ -72,7 +72,7 @@ project.ext {
     artifactId = 'seller_home_common'
     groupId = 'com.tokopedia.sellerhomecommon'
     versionName = "0.0.1"
-    artifactName ="seller_home_common-release"
+    artifactName = "seller_home_common-release"
 }
 
 apply from: '../../../publish_local.gradle'

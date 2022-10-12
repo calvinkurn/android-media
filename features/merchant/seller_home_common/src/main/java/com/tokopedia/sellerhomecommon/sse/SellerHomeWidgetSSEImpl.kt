@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flowOn
 import okhttp3.Request
 import okhttp3.Response
-import timber.log.Timber
 
 /**
  * Created by @ilhamsuaib on 10/10/22.
@@ -36,6 +35,8 @@ class SellerHomeWidgetSSEImpl(
     private var sseFlow = MutableSharedFlow<WidgetSSEModel>(extraBufferCapacity = 100)
 
     override fun connect(page: String, dataKeys: List<String>) {
+        printLog("SSE Connecting...")
+
         val dataKey = dataKeys.joinToString(DATA_KEY_SEPARATOR)
         val url = String.format(URL, page, dataKey)
 
@@ -51,7 +52,7 @@ class SellerHomeWidgetSSEImpl(
         sse = OkSse().newServerSentEvent(request, object : ServerSentEvent.Listener {
 
             override fun onOpen(sse: ServerSentEvent, response: Response) {
-                Timber.d("SSE Listener : onOpen")
+                printLog("SellerHomeWidgetSSE : onOpen")
             }
 
             override fun onMessage(
@@ -60,16 +61,16 @@ class SellerHomeWidgetSSEImpl(
                 event: String,
                 message: String
             ) {
-                Timber.d("SSE Listener : onMessage -> $event")
+                printLog("SellerHomeWidgetSSE : onMessage -> $event")
                 sseFlow.tryEmit(WidgetSSEModel(event = event, message = message))
             }
 
             override fun onComment(sse: ServerSentEvent, comment: String) {
-                Timber.d("SSE Listener : onComment")
+                printLog("SellerHomeWidgetSSE : onComment")
             }
 
             override fun onRetryTime(sse: ServerSentEvent, milliseconds: Long): Boolean {
-                Timber.d("SSE Listener : onRetryTime : $milliseconds")
+                printLog("SellerHomeWidgetSSE : onRetryTime : $milliseconds")
                 return true
             }
 
@@ -78,19 +79,23 @@ class SellerHomeWidgetSSEImpl(
                 throwable: Throwable,
                 response: Response?
             ): Boolean {
-                Timber.d("SSE Listener : onRetryError : ${throwable.message}")
+                printLog("SellerHomeWidgetSSE : onRetryError : ${throwable.message}")
                 return true
             }
 
             override fun onClosed(sse: ServerSentEvent) {
-                Timber.d("SSE Listener : onClosed")
+                printLog("SellerHomeWidgetSSE : onClosed")
             }
 
             override fun onPreRetry(sse: ServerSentEvent, originalRequest: Request): Request {
-                Timber.d("SSE Listener : onPreRetry")
+                printLog("SellerHomeWidgetSSE : onPreRetry")
                 return request
             }
         })
+    }
+
+    private fun printLog(s: String) {
+        println(s)
     }
 
     override fun close() {
