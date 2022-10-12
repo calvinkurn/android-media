@@ -1,10 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
-import com.tokopedia.buyerorderdetail.common.extension.get
-import com.tokopedia.buyerorderdetail.common.extension.put
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -12,17 +9,13 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.verify
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -30,24 +23,26 @@ import org.junit.Test
 class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
     @Test
-    fun `getP0Data should execute UseCase once with expected params`() {
-        val expectedParams = GetP0DataParams(
-            cart = cart,
-            orderId = orderId,
-            paymentId = paymentId
-        )
+    fun `getBuyerOrderDetailData should execute UseCase once with expected params`() {
+        runCollectingUiState {
+            val expectedParams = GetBuyerOrderDetailDataParams(
+                cart = cart,
+                orderId = orderId,
+                paymentId = paymentId
+            )
 
-        viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
-        coVerify(exactly = 1) { getP0DataUseCase.getP0Data(expectedParams) }
+            coVerify(exactly = 1) { getBuyerOrderDetailDataUseCase(expectedParams) }
+        }
     }
 
     @Test
     fun `UI state should equals to Showing when getP0DataRequestState is Success`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing)
@@ -56,9 +51,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to Error when getP0DataRequestState is Error`() =
         runCollectingUiState { uiStates ->
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             assertTrue(uiStates[1] is BuyerOrderDetailUiState.Error)
@@ -67,15 +62,15 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `UI state should equals to PullRefreshLoading when reloading P0 data`() =
         runCollectingUiState { uiStates ->
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
             // reload
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
 
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             assertTrue(uiStates[1] is BuyerOrderDetailUiState.Showing)
-            for (i in 2 until uiStates.size.dec()) {
+            for (i in 3 until uiStates.size.dec()) {
                 assertTrue(uiStates[i] is BuyerOrderDetailUiState.PullRefreshLoading)
             }
             assertTrue(uiStates.last() is BuyerOrderDetailUiState.Showing)
@@ -93,10 +88,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
-        createSuccessGetP0DataResult()
+        createSuccessGetBuyerOrderDetailDataResult()
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
             viewModel.finishOrder()
 
             coVerify {
@@ -112,9 +107,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
-        createSuccessGetP0DataResult()
+        createSuccessGetBuyerOrderDetailDataResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
             viewModel.finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
@@ -128,10 +123,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.orderStatusHeaderUiModel.orderId } returns orderId
         }
 
-        createSuccessGetP0DataResult()
+        createSuccessGetBuyerOrderDetailDataResult()
         createSuccessFinishOrderResult()
         mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
             viewModel.finishOrder()
 
             assertTrue(viewModel.finishOrderResult.value is Success)
@@ -148,10 +143,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.orderStatusHeaderUiModel.orderId } returns orderId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createFailedFinishOrderResult(expectedException)
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
                 viewModel.finishOrder()
 
                 val result = viewModel.finishOrderResult.value as Fail
@@ -166,10 +161,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.productListHeaderUiModel.shopId } returns shopId
         }
 
-        createSuccessGetP0DataResult()
+        createSuccessGetBuyerOrderDetailDataResult()
         createSuccessATCResult()
         mockProductListUiStateMapper(showingState = productListShowingState) {
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
             viewModel.addSingleToCart(product)
 
             coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
@@ -183,10 +178,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -203,10 +198,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
                 viewModel.addSingleToCart(product)
 
                 val result = viewModel.singleAtcResult.value
@@ -224,10 +219,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productList } returns listOf(product)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+                viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
                 viewModel.addMultipleToCart()
 
                 coVerify(exactly = 1) { atcUseCase.execute(userId, "", atcExpectedParams) }
@@ -237,9 +232,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should not execute UseCase when UI state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId = orderId, paymentId = paymentId, cart = cart)
+            viewModel.getBuyerOrderDetailData(orderId = orderId, paymentId = paymentId, cart = cart)
             viewModel.addMultipleToCart()
 
             coVerify(inverse = true) { atcUseCase.execute(any(), any(), any()) }
@@ -253,10 +248,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productList } returns listOf(product)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createSuccessATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
                 viewModel.addMultipleToCart()
 
                 val result = viewModel.multiAtcResult.value
@@ -272,10 +267,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             every { data.productList } returns listOf(product)
         }
 
-        createSuccessGetP0DataResult()
+        createSuccessGetBuyerOrderDetailDataResult()
         createSuccessATCResult(Fail(mockk(relaxed = true)))
         mockProductListUiStateMapper(showingState = productListShowingState) {
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
             viewModel.addMultipleToCart()
 
             val result = viewModel.multiAtcResult.value
@@ -292,10 +287,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productList } returns listOf(product)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             createFailedATCResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
                 viewModel.addMultipleToCart()
 
                 val result = viewModel.multiAtcResult.value
@@ -307,9 +302,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `addMultipleToCart should failed when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
             viewModel.addMultipleToCart()
 
             val result = viewModel.multiAtcResult.value
@@ -325,9 +320,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.secondaryActionButtons } returns listOf(actionButton)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockActionButtonsUiStateMapper(showingState = actionButtonsShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 val actionButtonList = viewModel.getSecondaryActionButtons()
                 assertEquals(actionButton, actionButtonList.firstOrNull())
@@ -337,9 +332,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getSecondaryActionButtons should return empty list when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertTrue(viewModel.getSecondaryActionButtons().isEmpty())
         }
@@ -351,9 +346,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productList } returns listOf(product)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(product, viewModel.getProducts().firstOrNull())
             }
@@ -362,9 +357,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getProducts should return empty products list when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertTrue(viewModel.getProducts().isEmpty())
         }
@@ -376,9 +371,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopId } returns shopId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(shopId, viewModel.getShopId())
             }
@@ -387,9 +382,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopId should return 0 when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals("0", viewModel.getShopId())
         }
@@ -401,9 +396,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopName } returns shopName
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(shopName, viewModel.getShopName())
             }
@@ -412,9 +407,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopName should return empty shop name when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals("", viewModel.getShopName())
         }
@@ -426,9 +421,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productListHeaderUiModel.shopType } returns shopType
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(shopType, viewModel.getShopType())
             }
@@ -437,9 +432,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getShopType should return 0 shop type when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals(0, viewModel.getShopType())
         }
@@ -451,9 +446,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productList } returns listOf(product)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(1, categoryId.size)
@@ -501,9 +496,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 )
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(2, categoryId.size)
@@ -515,9 +510,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getCategoryId should return 0 shop type when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertTrue(viewModel.getCategoryId().isEmpty())
         }
@@ -537,9 +532,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.productBundlingList } returns listOf(productBundlingItem)
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockProductListUiStateMapper(showingState = productListShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 val categoryId = viewModel.getCategoryId()
                 assertEquals(1, categoryId.size)
@@ -559,9 +554,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.orderStatusHeaderUiModel.orderStatusId } returns orderStatusId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(orderStatusId, viewModel.getOrderStatusId())
             }
@@ -570,9 +565,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderStatusId should 0 when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals("0", viewModel.getOrderStatusId())
         }
@@ -584,9 +579,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
                 every { data.orderStatusHeaderUiModel.orderId } returns orderId
             }
 
-            createSuccessGetP0DataResult()
+            createSuccessGetBuyerOrderDetailDataResult()
             mockOrderStatusUiStateMapper(showingState = orderStatusShowingState) {
-                viewModel.getP0Data(orderId, paymentId, cart)
+                viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
                 assertEquals(orderId, viewModel.getOrderId())
             }
@@ -595,141 +590,10 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
     @Test
     fun `getOrderId should 0 when ui state is not equals to Showing`() =
         runCollectingUiState {
-            createFailedGetP0DataResult()
+            createFailedGetBuyerOrderDetailDataResult()
 
-            viewModel.getP0Data(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals("0", viewModel.getOrderId())
-        }
-
-    @Test
-    fun `saveUiState should save order detail and resolution result`() {
-        mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-            val cacheManager = mockk<CacheManager>(relaxed = true)
-
-            viewModel.saveUiState(cacheManager)
-
-            verify {
-                cacheManager.put(
-                    customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                    objectToPut = any<GetP0DataRequestState>(),
-                    gson = gson
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `restoreUiState should restore get P0 data request state`() = runCollectingUiState {
-        mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-            val savedGetP0DataRequestState = mockk<GetP0DataRequestState.Error>(relaxed = true)
-            val cacheManager = mockk<CacheManager>(relaxed = true)
-
-            every {
-                cacheManager.get<GetP0DataRequestState>(
-                    customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                    type = GetP0DataRequestState::class.java,
-                    gson = gson
-                )
-            } returns savedGetP0DataRequestState
-
-            viewModel.restoreUiState(cacheManager)
-
-            assertTrue(viewModel.buyerOrderDetailUiState.value is BuyerOrderDetailUiState.Error)
-        }
-    }
-
-    @Test
-    fun `restoreUiState should return true when cache manager contain GetP0DataRequestState#Success`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetP0DataRequestState = mockk<GetP0DataRequestState.Success>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetP0DataRequestState>(
-                        customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                        type = GetP0DataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetP0DataRequestState
-
-                assertTrue(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return true when cache manager contain GetP0DataRequestState#Error`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetP0DataRequestState = mockk<GetP0DataRequestState.Error>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetP0DataRequestState>(
-                        customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                        type = GetP0DataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetP0DataRequestState
-
-                assertTrue(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager contain GetP0DataRequestState#Idle`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetP0DataRequestState = mockk<GetP0DataRequestState.Idle>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetP0DataRequestState>(
-                        customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                        type = GetP0DataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetP0DataRequestState
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager contain GetP0DataRequestState#Requesting`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetP0DataRequestState = mockk<GetP0DataRequestState.Requesting>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetP0DataRequestState>(
-                        customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                        type = GetP0DataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetP0DataRequestState
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager does not contain saved P0 request state`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetP0DataRequestState>(
-                        customId = "SAVED_GET_P0_DATA_REQUEST_STATE",
-                        type = GetP0DataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns null
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
         }
 }
