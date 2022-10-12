@@ -10,6 +10,7 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.util.ChatDiffUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 
@@ -37,6 +38,32 @@ class ChatbotAdapter(private val adapterTypeFactory: ChatbotTypeFactoryImpl)
         if (visitables[position] is ImageUploadUiModel) {
             (visitables[position] as ImageUploadUiModel).isRetry = true
             notifyItemChanged(position)
+        }
+    }
+
+    fun showRetryForVideo(model: VideoUploadUiModel) {
+        val position = visitables.indexOf(model)
+        if (position < 0) return
+        if (visitables[position] is VideoUploadUiModel) {
+            (visitables[position] as VideoUploadUiModel).isRetry = true
+            notifyItemChanged(position)
+        }
+    }
+
+    fun removeDummyVideo() {
+        if (visitables.isNotEmpty()) {
+            val iter = visitables.iterator()
+
+            while (iter.hasNext()) {
+                val chatItem = iter.next()
+                if (chatItem is VideoUploadUiModel
+                    && chatItem.isDummy) {
+                    val position = this.visitables.indexOf(chatItem)
+                    this.visitables.remove(chatItem)
+                    notifyItemRemoved(position)
+                    break
+                }
+            }
         }
     }
 

@@ -37,8 +37,6 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.BannedProductsEmptySearchDataView
-import com.tokopedia.search.result.presentation.model.BannedProductsTickerDataView
 import com.tokopedia.search.result.presentation.model.BroadMatch
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -58,6 +56,7 @@ import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDa
 import com.tokopedia.search.result.presentation.model.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
@@ -68,6 +67,9 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
@@ -148,24 +150,28 @@ class ProductListPresenter @Inject constructor(
     private val paginationImpl: PaginationImpl,
     private val lastFilterPresenterDelegate: LastFilterPresenterDelegate,
     private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
+    private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
+    private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
     DynamicFilterModelProvider,
-    LastFilterPresenter by lastFilterPresenterDelegate{
+    LastFilterPresenter by lastFilterPresenterDelegate,
+    InspirationListAtcPresenter by inspirationListAtcPresenterDelegate {
 
     companion object {
         private val showBroadMatchResponseCodeList = listOf("0", "4", "5")
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
         private val showInspirationCarouselLayout = listOf(
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
-                SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
+            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
         )
         private val showInspirationCarouselLayoutWithVideo = showInspirationCarouselLayout + SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
@@ -719,8 +725,11 @@ class ProductListPresenter @Inject constructor(
         if (isShowBroadMatch()) {
             getViewToShowBroadMatchToReplaceEmptySearch()
         } else {
-            if (!productDataView.errorMessage.isNullOrEmpty()) {
-                getViewToHandleEmptySearchWithErrorMessage(searchProduct, productDataView)
+            if (bannedProductsPresenterDelegate.isBannedProducts(searchProduct)) {
+                bannedProductsPresenterDelegate.processBannedProducts(
+                    searchProduct,
+                    getGlobalNavViewModel(productDataView)
+                )
             } else if(productDataView.violation != null) {
                 getViewToHandleViolation(productDataView)
             } else {
@@ -767,31 +776,6 @@ class ProductListPresenter @Inject constructor(
             relatedDataView = null
         }
     }
-
-    private fun getViewToHandleEmptySearchWithErrorMessage(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ) {
-        val bannedProductsVisitableList =
-            createBannedProductsVisitableList(searchProduct, productDataView)
-
-        view.removeLoading()
-        view.setBannedProductsErrorMessage(bannedProductsVisitableList)
-        view.trackEventImpressionBannedProducts(true)
-    }
-
-    private fun createBannedProductsVisitableList(
-        searchProduct: SearchProductModel.SearchProduct,
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(BannedProductsEmptySearchDataView(searchProduct.header.errorMessage))
-        }
-
 
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
@@ -1001,11 +985,6 @@ class ProductListPresenter @Inject constructor(
             }
         }
 
-        if (searchProduct.header.errorMessage.isNotEmpty()) {
-            list.add(createBannedProductsTickerDataView(searchProduct.header.errorMessage))
-            view.trackEventImpressionBannedProducts(false)
-        }
-
         adsInjector.resetTopAdsPosition()
         productList = createProductItemVisitableList(
             productDataView,
@@ -1181,11 +1160,6 @@ class ProductListPresenter @Inject constructor(
         visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
     }
 
-    private fun createBannedProductsTickerDataView(errorMessage: String): BannedProductsTickerDataView {
-        val htmlErrorMessage = "$errorMessage Gunakan browser"
-        return BannedProductsTickerDataView(htmlErrorMessage)
-    }
-
     private fun processInspirationWidgetPosition(
         searchParameter: Map<String, Any>,
         list: MutableList<Visitable<*>>,
@@ -1286,6 +1260,8 @@ class ProductListPresenter @Inject constructor(
             data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
             data.isValidVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
             data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
+            data.isListAtcLayout() ->
+                inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
     private fun InspirationCarouselDataView.isValidVideoLayout() : Boolean {
@@ -1301,6 +1277,8 @@ class ProductListPresenter @Inject constructor(
             layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
     private fun InspirationCarouselDataView.isBundleLayout() =
         layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
+    private fun InspirationCarouselDataView.isListAtcLayout() =
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
 
     private fun convertInspirationCarouselToInspirationProductBundle(
         data: InspirationCarouselDataView
