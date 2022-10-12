@@ -29,7 +29,9 @@ class ExplicitGenerateId {
 
     @get:Rule
     var activityTestRule = IntentsTestRule(
-        ExplicitDebugActivity::class.java, false, false
+        ExplicitDebugActivity::class.java,
+        false,
+        false
     )
 
     private val applicationContext: Context
