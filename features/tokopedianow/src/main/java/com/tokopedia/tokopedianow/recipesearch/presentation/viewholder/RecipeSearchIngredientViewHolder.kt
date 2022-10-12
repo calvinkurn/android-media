@@ -24,19 +24,17 @@ class RecipeSearchIngredientViewHolder(
                 .setAllCornerSizes(ALL_CORNER_SIZES)
                 .build()
             root.setOnClickListener {
-                val isChecked = !cbOption.isChecked
-                cbOption.isChecked = isChecked
-                listener?.onCheckIngredient(isChecked, model.id)
+                listener?.onSelectIngredient(!model.isChecked, model.id, model.title)
             }
             cbOption.setOnClickListener {
-                val isChecked = !cbOption.isChecked
-                listener?.onCheckIngredient(isChecked, model.id)
+                cbOption.isChecked = model.isChecked
+                listener?.onSelectIngredient(!model.isChecked, model.id, model.title)
             }
         }
     }
 
     interface RecipeSearchIngredientListener {
-        fun onCheckIngredient(isChecked: Boolean, id: String)
+        fun onSelectIngredient(isChecked: Boolean, id: String, title: String)
     }
 
 }

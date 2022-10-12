@@ -56,7 +56,7 @@ class TokoNowSortFilterFragment : Fragment() {
 
         val bottomSheet = TokoNowSortFilterBottomSheet.newInstance().apply {
             setTitle(title)
-            sortFilterItems = items
+            filterItemsDisplayed = items
             sortValue = sort
         }
 

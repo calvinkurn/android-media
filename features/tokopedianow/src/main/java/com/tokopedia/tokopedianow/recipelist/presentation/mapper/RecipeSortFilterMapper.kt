@@ -51,22 +51,21 @@ object RecipeSortFilterMapper {
         response: RecipeFilterSortDataResponse,
         selectedFilters: List<SelectedFilter>
     ) {
-        response.filter.forEach {
-            val parentId = it.options.first().key
+        response.filter.forEach { recipeResponse ->
+            val parentId = recipeResponse.options.first().key
 
             val sectionHeader = if(parentId == PARAM_INGREDIENT_ID) {
                 RecipeFilterSectionHeader(
-                    text = it.title,
+                    text = recipeResponse.title,
                     appLink = ApplinkConstInternalTokopediaNow.RECIPE_INGREDIENT_BOTTOM_SHEET
                 )
             } else {
-                RecipeFilterSectionHeader(text = it.title)
+                RecipeFilterSectionHeader(text = recipeResponse.title)
             }
 
             val filterChipList = TokoNowChipListUiModel(
                 parentId = parentId,
-                items = it.options
-                    .filter { option -> option.isPopular }
+                items = recipeResponse.options
                     .map { option ->
                         val selectedFilterIds = selectedFilters
                             .filter { filter -> filter.parentId == option.key }
@@ -77,7 +76,8 @@ object RecipeSortFilterMapper {
                             parentId = option.key,
                             text = option.name,
                             imageUrl = option.icon,
-                            selected = selectedFilterIds.contains(option.value)
+                            selected = selectedFilterIds.contains(option.value),
+                            isPopular = option.isPopular
                         )
                     },
                 isMultiSelect = multiSelectFilterTypes.contains(parentId)
