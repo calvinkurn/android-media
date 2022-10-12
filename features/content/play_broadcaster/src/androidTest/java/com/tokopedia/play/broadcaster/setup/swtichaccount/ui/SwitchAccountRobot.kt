@@ -225,7 +225,7 @@ class SwitchAccountRobot(
         delay()
     }
 
-    fun switchAccountSellerToNotEligibleBuyer() = chainable {
+    fun switchAccountSellerToBuyerAndNotHaveUsername() = chainable {
         Espresso.onView(withId(contentR.id.text_com_toolbar_subtitle))
             .check(matches(withText("Shop")))
             .perform(click())

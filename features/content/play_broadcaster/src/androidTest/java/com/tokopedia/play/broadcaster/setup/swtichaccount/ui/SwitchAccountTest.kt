@@ -84,7 +84,7 @@ class SwitchAccountTest {
     fun test_switchAccountSellerToBuyerAndNotHaveUsername() {
         coEvery { mockRepo.getAccountList() } returns accountListResponse(buyerHasUsername = false)
 
-        createRobot().switchAccountSellerToNotEligibleBuyer()
+        createRobot().switchAccountSellerToBuyerAndNotHaveUsername()
     }
 
     @Test
