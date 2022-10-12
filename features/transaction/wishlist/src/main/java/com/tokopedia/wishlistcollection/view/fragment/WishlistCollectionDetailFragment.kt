@@ -1506,16 +1506,14 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             }
 
             override fun onSaveCheckboxSelection() {
+                paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                 if (listOptionIdSelected.isNotEmpty()) {
-                    paramGetCollectionItems.sortFilters.removeAll { it.name == nameSelected }
                     paramGetCollectionItems.sortFilters.add(
                         GetWishlistCollectionItemsParams.WishlistSortFilterParam(
                             name = nameSelected,
                             selected = listOptionIdSelected as ArrayList<String>
                         )
                     )
-                } else {
-                    paramGetCollectionItems.sortFilters.clear()
                 }
 
                 filterBottomSheet.dismiss()
