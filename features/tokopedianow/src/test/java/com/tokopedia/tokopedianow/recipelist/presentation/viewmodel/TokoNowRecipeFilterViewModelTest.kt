@@ -60,6 +60,14 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "Balado",
                     imageUrl = "https://images-staging.tokopedia.net/img/MKEzJd/2022/9/29/4a72ad37-909f-4677-8f97-4076a278c285.jpg",
                     selected = false
+                ),
+                TokoNowChipUiModel(
+                    id = "11",
+                    parentId = "ingredient_ids",
+                    text = "Test Create Ingredient 6",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = true
@@ -79,6 +87,22 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "< 30 Menit",
                     imageUrl = "",
                     selected = false
+                ),
+                TokoNowChipUiModel(
+                    id = "30To60",
+                    parentId = "duration",
+                    text = "30 - 60 Menit",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
+                ),
+                TokoNowChipUiModel(
+                    id = "MoreThan60",
+                    parentId = "duration",
+                    text = "> 60 Menit",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = false
@@ -98,6 +122,22 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "< 5 Orang",
                     imageUrl = "",
                     selected = false
+                ),
+                TokoNowChipUiModel(
+                    id = "5To10",
+                    parentId = "portion",
+                    text = "5 - 10 Orang",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
+                ),
+                TokoNowChipUiModel(
+                    id = "MoreThan10",
+                    parentId = "portion",
+                    text = "> 10 Orang",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = false
@@ -117,6 +157,14 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "Test Create Tag 2",
                     imageUrl = "",
                     selected = false
+                ),
+                TokoNowChipUiModel(
+                    id = "4",
+                    parentId = "tag_ids",
+                    text = "Test Create Tag 3",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = true
@@ -144,23 +192,33 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
         val selectedFilters = listOf(
             SelectedFilter(
                 id = "Oldest",
-                parentId = "sort_by"
+                parentId = "sort_by",
+                text = "Terlama"
             ),
             SelectedFilter(
                 id = "53",
-                parentId = "ingredient_ids"
+                parentId = "ingredient_ids",
+                text = "Balado"
+            ),
+            SelectedFilter(
+                id = "11",
+                parentId = "ingredient_ids",
+                text = "Test Create Ingredient 6"
             ),
             SelectedFilter(
                 id = "LessThan30",
-                parentId = "duration"
+                parentId = "duration",
+                text = "< 30 Menit"
             ),
             SelectedFilter(
                 id = "LessThan5",
-                parentId = "portion"
+                parentId = "portion",
+                text = "< 5 Orang"
             ),
             SelectedFilter(
                 id = "3",
-                parentId = "tag_ids"
+                parentId = "tag_ids",
+                text = "Test Create Tag 2"
             )
         )
 
@@ -207,6 +265,14 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "Balado",
                     imageUrl = "https://images-staging.tokopedia.net/img/MKEzJd/2022/9/29/4a72ad37-909f-4677-8f97-4076a278c285.jpg",
                     selected = true
+                ),
+                TokoNowChipUiModel(
+                    id = "11",
+                    parentId = "ingredient_ids",
+                    text = "Test Create Ingredient 6",
+                    imageUrl = "",
+                    selected = true,
+                    isPopular = false
                 )
             ),
             isMultiSelect = true
@@ -226,6 +292,22 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "< 30 Menit",
                     imageUrl = "",
                     selected = true
+                ),
+                TokoNowChipUiModel(
+                    id = "30To60",
+                    parentId = "duration",
+                    text = "30 - 60 Menit",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
+                ),
+                TokoNowChipUiModel(
+                    id = "MoreThan60",
+                    parentId = "duration",
+                    text = "> 60 Menit",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = false
@@ -245,6 +327,22 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "< 5 Orang",
                     imageUrl = "",
                     selected = true
+                ),
+                TokoNowChipUiModel(
+                    id = "5To10",
+                    parentId = "portion",
+                    text = "5 - 10 Orang",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
+                ),
+                TokoNowChipUiModel(
+                    id = "MoreThan10",
+                    parentId = "portion",
+                    text = "> 10 Orang",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = false
@@ -264,6 +362,14 @@ class TokoNowRecipeFilterViewModelTest : TokoNowRecipeFilterViewModelTestFixture
                     text = "Test Create Tag 2",
                     imageUrl = "",
                     selected = true
+                ),
+                TokoNowChipUiModel(
+                    id = "4",
+                    parentId = "tag_ids",
+                    text = "Test Create Tag 3",
+                    imageUrl = "",
+                    selected = false,
+                    isPopular = false
                 )
             ),
             isMultiSelect = true

@@ -81,7 +81,8 @@ class TokoNowRecipeSearchIngredientViewModelTest : TokoNowRecipeSearchIngredient
         val expectedSelectedFilter = listOf(
             SelectedFilter(
                 id = "11",
-                parentId = "ingredient_ids"
+                parentId = "ingredient_ids",
+                text = "Test Create Ingredient 6"
             )
         )
 

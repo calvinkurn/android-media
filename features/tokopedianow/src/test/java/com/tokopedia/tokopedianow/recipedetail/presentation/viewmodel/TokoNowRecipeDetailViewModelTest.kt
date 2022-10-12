@@ -202,6 +202,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         val instructionTabUiModel = InstructionTabUiModel(instructionTabItems)
 
         val recipeTabUiModel = RecipeTabUiModel(
+            1,
             ingredientTabUiModel,
             instructionTabUiModel
         )
@@ -280,6 +281,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         val instructionTabUiModel = InstructionTabUiModel(instructionTabItems)
 
         val recipeTabUiModel = RecipeTabUiModel(
+            1,
             ingredientTabUiModel,
             instructionTabUiModel
         )
