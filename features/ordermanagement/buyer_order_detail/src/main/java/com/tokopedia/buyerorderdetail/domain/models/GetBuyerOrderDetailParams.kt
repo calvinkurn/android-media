@@ -12,5 +12,8 @@ data class GetBuyerOrderDetailParams(
     val orderId: String = "0",
     @Expose
     @SerializedName("payment_id")
-    val paymentId: String = ""
+    val paymentId: String = "",
+    @Expose(serialize = false, deserialize = false)
+    @Transient
+    val shouldCheckCache: Boolean
 )

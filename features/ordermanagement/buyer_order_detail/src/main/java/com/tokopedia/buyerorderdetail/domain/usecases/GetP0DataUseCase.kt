@@ -31,7 +31,9 @@ class GetP0DataUseCase @Inject constructor(
     }
 
     private suspend fun execute(params: GetP0DataParams) = getBuyerOrderDetailUseCase(
-        GetBuyerOrderDetailParams(params.cart, params.orderId, params.paymentId)
+        GetBuyerOrderDetailParams(
+            params.cart, params.orderId, params.paymentId, params.shouldCheckCache
+        )
     ).flatMapLatest(::mapToGetP0DataRequestState).catch {
         emit(GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(it)))
     }

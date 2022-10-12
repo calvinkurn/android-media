@@ -242,13 +242,19 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
-    fun getBuyerOrderDetailData(orderId: String, paymentId: String, cart: String) {
+    fun getBuyerOrderDetailData(
+        orderId: String,
+        paymentId: String,
+        cart: String,
+        shouldCheckCache: Boolean
+    ) {
         viewModelScope.launch {
             buyerOrderDetailDataRequestParams.emit(
                 GetBuyerOrderDetailDataParams(
                     cart = cart,
                     orderId = orderId,
-                    paymentId = paymentId
+                    paymentId = paymentId,
+                    shouldCheckCache = shouldCheckCache
                 )
             )
         }
