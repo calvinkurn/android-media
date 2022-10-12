@@ -3,6 +3,7 @@ package com.tokopedia.logisticcart.shipping.model
 import android.os.Parcelable
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,6 +14,7 @@ data class ScheduleDeliveryUiModel(
     val hidden: Boolean = false,
     val title: String = "",
     val text: String = "",
+    val notice: Notice? = null,
     val deliveryServices: List<DeliveryService> = arrayListOf(),
     // service id
     var scheduleDate: String = "",

@@ -34,6 +34,8 @@ class DeliveryProduct(
     val text: String = "",
     @SerializedName("promo_code")
     val promoCode: String = "",
+    @SerializedName("promo_text")
+    val promoText: String = "",
     @Transient
     var scheduleDate: String = "",
 ) : Parcelable
