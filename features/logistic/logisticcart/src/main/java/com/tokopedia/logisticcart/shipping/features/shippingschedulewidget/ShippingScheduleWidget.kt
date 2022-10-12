@@ -128,9 +128,22 @@ class ShippingScheduleWidget : ConstraintLayout {
                 it.deliveryProduct ?: DeliveryProduct(),
                 it.notice
             )
-            mListener?.getFragmentManager()?.let {
-                fragmentManager ->  ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
+            mListener?.getFragmentManager()?.let { fragmentManager ->
+
+                    val bottomsheet =
+                        ScheduleSlotBottomSheet.show(fragmentManager, bottomsheetUiModel)
+                    bottomsheet.setListener(object :
+                        ScheduleSlotBottomSheet.ScheduleSlotBottomSheetListener {
+                        override fun onChooseTimeListener(timeId: Long, dateId: String) {
+                            scheduleDeliveryUiModel.setScheduleDateAndTimeslotId(
+                                scheduleDate = dateId,
+                                timeslotId = timeId
+                            )
+                        }
+                    })
+
             }
+
         }
     }
 
