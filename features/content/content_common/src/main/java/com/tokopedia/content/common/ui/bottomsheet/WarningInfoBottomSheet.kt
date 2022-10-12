@@ -69,15 +69,6 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
 
     private fun setupView() = with(binding) {
         when (mWarningType) {
-            WarningType.BOTH_BANNED -> {
-                icIconWarning.setImage(newIconId = IconUnify.LOCK)
-                tvWarningTitle.text = getString(R.string.ugc_warning_both_account_banned_title)
-                tvWarningSubtitle.text = getString(R.string.ugc_warning_both_account_banned_subtitle)
-                tvCta.apply {
-                    show()
-                    setOnClickListener { routeToWebViewGetToKnowMore() }
-                }
-            }
             WarningType.BANNED -> {
                 icIconWarning.setImage(newIconId = IconUnify.LOCK)
                 tvWarningTitle.text = getString(R.string.ugc_warning_account_banned_title)
@@ -87,7 +78,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                     setOnClickListener { routeToWebViewGetToKnowMore() }
                 }
             }
-            WarningType.BOTH_LIVE, WarningType.LIVE -> {
+            WarningType.LIVE -> {
                 icIconWarning.setImage(newIconId = IconUnify.WARNING)
                 tvWarningTitle.text = getString(R.string.ugc_warning_both_account_live_title)
                 tvWarningSubtitle.text = getString(R.string.ugc_warning_both_account_live_subtitle)
@@ -128,7 +119,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
     }
 
     enum class WarningType {
-        BOTH_BANNED, BOTH_LIVE, BANNED, LIVE
+        BANNED, LIVE
     }
 
     interface Listener {
