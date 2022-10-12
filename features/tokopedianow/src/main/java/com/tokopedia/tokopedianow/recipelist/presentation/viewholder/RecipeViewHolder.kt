@@ -15,6 +15,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipelist.presentation.uimodel.RecipeUiModel
 import com.tokopedia.unifycomponents.ImageUnify
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.view.binding.viewBinding
 
 class RecipeViewHolder(
@@ -25,6 +26,8 @@ class RecipeViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_recipe
+
+        private const val ICON_SIZE = 16
     }
 
     private var binding: ItemTokopedianowRecipeBinding? by viewBinding()
@@ -66,7 +69,7 @@ class RecipeViewHolder(
         binding?.textPersonCount?.apply {
             text = itemView.context.resources
                 .getString(R.string.tokopedianow_recipe_portion, recipe.portion)
-            setDrawableLeft(R.drawable.tokopedianow_ic_user)
+            setDrawableLeft(com.tokopedia.iconunify.R.drawable.iconunify_user)
         }
     }
 
@@ -74,7 +77,7 @@ class RecipeViewHolder(
         binding?.textDuration?.apply {
             text = itemView.context.resources
                 .getString(R.string.tokopedianow_recipe_duration, recipe.duration)
-            setDrawableLeft(R.drawable.tokopedianow_ic_clock)
+            setDrawableLeft(com.tokopedia.iconunify.R.drawable.iconunify_clock)
         }
     }
 
@@ -98,13 +101,8 @@ class RecipeViewHolder(
 
     private fun TextView.setDrawableLeft(@DrawableRes drawableRes: Int) {
         val icon = ContextCompat.getDrawable(itemView.context, drawableRes)
-        icon?.setTint(
-            ContextCompat.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN0
-            )
-        )
-        setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null)
+        icon?.setBounds(0, 0, ICON_SIZE.toPx(), ICON_SIZE.toPx())
+        setCompoundDrawables(icon, null, null, null)
         compoundDrawablePadding = itemView.context.resources
             .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
     }

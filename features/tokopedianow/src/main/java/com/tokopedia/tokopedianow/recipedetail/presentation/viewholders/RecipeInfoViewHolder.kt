@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 
 import android.view.View
+import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +12,7 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.adapter.TagAdapter
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
 import com.tokopedia.tokopedianow.recipedetail.presentation.decoration.RecipeInfoTagDecoration
 import com.tokopedia.tokopedianow.recipedetail.presentation.uimodel.RecipeInfoUiModel
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -21,6 +23,8 @@ class RecipeInfoViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_tokopedianow_recipe_info
+
+        private const val ICON_SIZE = 18
     }
 
     private var binding: ItemTokopedianowRecipeInfoBinding? by viewBinding()
@@ -45,7 +49,10 @@ class RecipeInfoViewHolder(
         binding?.textPersonCount?.apply {
             text = itemView.context.resources
                 .getString(R.string.tokopedianow_recipe_portion, recipe.portion)
-            setDrawableLeft(R.drawable.tokopedianow_ic_user)
+            setDrawableLeft(
+                com.tokopedia.iconunify.R.drawable.iconunify_user,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            )
         }
     }
 
@@ -53,7 +60,10 @@ class RecipeInfoViewHolder(
         binding?.textDuration?.apply {
             text = itemView.context.resources
                 .getString(R.string.tokopedianow_recipe_duration, recipe.duration)
-            setDrawableLeft(R.drawable.tokopedianow_ic_clock)
+            setDrawableLeft(
+                com.tokopedia.iconunify.R.drawable.iconunify_clock,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN500
+            )
         }
     }
 
@@ -70,9 +80,16 @@ class RecipeInfoViewHolder(
         }
     }
 
-    private fun Typography.setDrawableLeft(@DrawableRes drawableRes: Int) {
+    private fun Typography.setDrawableLeft(
+        @DrawableRes drawableRes: Int,
+        @ColorRes colorRes: Int? = null
+    ) {
         val icon = ContextCompat.getDrawable(itemView.context, drawableRes)
-        setCompoundDrawablesRelativeWithIntrinsicBounds(icon, null, null, null)
+        colorRes?.let {
+            icon?.setTint(ContextCompat.getColor(itemView.context, it))
+        }
+        icon?.setBounds(0, 0, ICON_SIZE.toPx(), ICON_SIZE.toPx())
+        setCompoundDrawables(icon, null, null, null)
         compoundDrawablePadding = itemView.context.resources
             .getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
     }
