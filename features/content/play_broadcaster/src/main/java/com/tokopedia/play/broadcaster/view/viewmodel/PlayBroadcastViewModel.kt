@@ -405,7 +405,9 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     handleSwitchAccount(false)
                 } else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
-            } else if (isFirstOpen) isFirstOpen = false
+            }
+
+            isFirstOpen = false
 
             // create channel when there are no channel exist
             if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
