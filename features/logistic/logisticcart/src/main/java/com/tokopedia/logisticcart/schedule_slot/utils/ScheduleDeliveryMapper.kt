@@ -104,7 +104,7 @@ object ScheduleDeliveryMapper {
         return if (time.finalPrice == time.realPrice) {
             "<b>" + timeTitle + " (${time.textFinalPrice})</b>"
         } else {
-            "<b>" + timeTitle + " (${time.textFinalPrice}<s>${time.textRealPrice}</s>)</b>"
+            "<b>" + timeTitle + " (${time.textFinalPrice}</b> <s>${time.textRealPrice}</s><b>)</b>"
         }
     }
 }
