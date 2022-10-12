@@ -188,6 +188,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var isCTAResetOfferFilterClicked = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -1426,11 +1427,12 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         if (filterItem.isActive) {
             if (filterItem.name == FILTER_OFFERS) {
                 filterBottomSheet.setAction(CTA_RESET) {
+                    isCTAResetOfferFilterClicked = true
+                    listOptionIdSelected.clear()
+                    listTitleCheckboxIdSelected.clear()
                     filterBottomSheetAdapter.isResetCheckbox = true
                     filterBottomSheetAdapter.notifyDataSetChanged()
                     filterBottomSheet.showButtonSave()
-                    listOptionIdSelected.clear()
-                    listTitleCheckboxIdSelected.clear()
                 }
             } else {
                 filterBottomSheet.setAction(CTA_RESET) {
@@ -1465,6 +1467,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         nameSelected = FILTER_OFFERS
                     }
                 }
+
                 if (isChecked) {
                     nameSelected = name
                     if (!listOptionIdSelected.contains(optionId)) {
@@ -1474,6 +1477,15 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                         listTitleCheckboxIdSelected.add(titleCheckbox)
                     }
                 } else {
+                    if (isCTAResetOfferFilterClicked) {
+                        isCTAResetOfferFilterClicked = false
+                        paramGetCollectionItems.sortFilters.forEach { sortFilterParam ->
+                            if (sortFilterParam.name == FILTER_OFFERS) {
+                                listOptionIdSelected.clear()
+                            }
+                        }
+                    }
+
                     listOptionIdSelected.remove(optionId)
                     listTitleCheckboxIdSelected.remove(titleCheckbox)
                 }
@@ -1502,6 +1514,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             selected = listOptionIdSelected as ArrayList<String>
                         )
                     )
+                } else {
+                    paramGetCollectionItems.sortFilters.clear()
                 }
 
                 filterBottomSheet.dismiss()
