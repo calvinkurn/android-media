@@ -25,6 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.tokopedia.campaignlist.R
+import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.AVAILABLE_STATUS_ID
+import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.ONGOING_STATUS_ID
+import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.UPCOMING_IN_NEAR_TIME_STATUS_ID
+import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
@@ -39,10 +43,6 @@ import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyTicker
 import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
-import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.AVAILABLE_STATUS_ID
-import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.ONGOING_STATUS_ID
-import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_IN_NEAR_TIME_STATUS_ID
-import com.tokopedia.campaignlist.page.presentation.viewholder.ActiveCampaignViewHolder.Companion.UPCOMING_STATUS_ID
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
