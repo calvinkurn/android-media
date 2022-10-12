@@ -59,21 +59,23 @@ object ProductCheckingResultMapper {
 
     fun map (
         item: List<SubmittedProduct>,
-        displayProductSold: Boolean = false
+        displayProductSold: Boolean = false,
+        fallbackProductImage: String = ""
     ) = item.map {
-        mapItem(it, displayProductSold)
+        mapItem(it, displayProductSold, fallbackProductImage)
     }
 
     fun mapItem (
         item: SubmittedProduct,
-        displayProductSold: Boolean = false
+        displayProductSold: Boolean = false,
+        fallbackProductImage: String = ""
     ): ProductCheckingResult {
         val productName = item.name.getVariantName()
         val warehouses = item.warehouses.mapToCheckingResult(displayProductSold)
         return ProductCheckingResult (
             productId = item.productId.toString(),
             name = productName,
-            imageUrl = item.picture,
+            imageUrl = item.picture.ifEmpty { fallbackProductImage },
             isMultiloc = item.isMultiwarehouse,
             checkingDetailResult = warehouses.firstOrNull()?.checkingDetailResult
                 ?: ProductCheckingResult.CheckingDetailResult(),
@@ -82,7 +84,7 @@ object ProductCheckingResultMapper {
         )
     }
 
-    fun mapFromWarehouses(
+    fun mapFromAdapterItem(
         selectedProduct: DelegateAdapterItem,
         displayProductSold: Boolean
     ): ProductCheckingResult {
