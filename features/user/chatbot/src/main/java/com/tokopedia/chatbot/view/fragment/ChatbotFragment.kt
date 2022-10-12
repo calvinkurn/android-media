@@ -262,6 +262,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
+        private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
+        private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
     }
 
     override fun initInjector() {
@@ -1601,11 +1603,11 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private fun setGuidelineForReplyBubble(toSet: Boolean) {
         if (toSet) {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = context?.dpToPx(65)?.toInt() ?: 0
+            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt() ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
         } else {
             val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
-            params.guideBegin = 0
+            params.guideBegin = DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
             guideline?.layoutParams = params
         }
     }
