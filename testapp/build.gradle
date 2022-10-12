@@ -66,13 +66,6 @@ android {
     }
     buildFeatures {
         buildConfig true
-        compose true //you can delete composeOptions if you are not using jetpack compose
-    }
-    /**
-     * you can delete composeOptions if you are not using jetpack compose
-     */
-    composeOptions {
-        kotlinCompilerExtensionVersion = rootProject.ext.composeCompiler
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
@@ -130,21 +123,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.loginregister)
     implementation projectOrAar(rootProject.ext.features.logout)
     implementation projectOrAar(rootProject.ext.libraries.deviceFingerprint)
-
-    /**
-     * you can delete below line if you are not using jetpack compose
-     */
-    implementation projectOrAar(rootProject.ext.libraries.commonCompose)
-    implementation rootProject.ext.composeDependencies.composeCompiler
-    implementation rootProject.ext.composeDependencies.composeUi
-    implementation rootProject.ext.composeDependencies.composeMaterial
-    implementation rootProject.ext.composeDependencies.composeUiTooling
-    implementation rootProject.ext.composeDependencies.composePreview
-    implementation rootProject.ext.composeDependencies.composeFoundation
-    implementation rootProject.ext.composeDependencies.composeRuntime
-    implementation rootProject.ext.composeDependencies.composeActivity
-    implementation rootProject.ext.composeDependencies.composeConstraint
-    implementation rootProject.ext.composeDependencies.composeLiveData
 
     //you can delete below line if you are not using developer options, then Build -> Switch to TestApp again
     //you have to DELETE, not only COMMENT, because testapp plugins still add it to compile list even when commented
