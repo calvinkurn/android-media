@@ -41,4 +41,6 @@ sealed class FlashSaleManageProductListUiEffect {
 
     object ClearProductList : FlashSaleManageProductListUiEffect()
 
+    data class SetShopId(val shopId: String) : FlashSaleManageProductListUiEffect()
+
 }

@@ -29,6 +29,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.Flash
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import java.util.*
@@ -40,7 +41,8 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleProductSubmissionUseCase: DoFlashSaleProductSubmissionUseCase,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val userSession: UserSessionInterface
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -84,7 +86,16 @@ class FlashSaleManageProductListListViewModel @Inject constructor(
             is FlashSaleManageProductListUiEvent.UpdateProductData -> {
                 updateProductData(event.productData)
             }
+            is FlashSaleManageProductListUiEvent.GetShopId -> {
+                getShopId()
+            }
         }
+    }
+
+    private fun getShopId() {
+        launchCatchError(dispatchers.io, {
+            _uiEffect.emit(FlashSaleManageProductListUiEffect.SetShopId(userSession.shopId))
+        }) {}
     }
 
     private fun updateProductData(productData: ReservedProduct.Product) {

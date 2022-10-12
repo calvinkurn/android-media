@@ -48,6 +48,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.Flash
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT
+import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleManageProductListPageTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -93,6 +94,8 @@ class FlashSaleManageProductListFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: FlashSaleManageProductListPageTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleManageProductListListViewModel::class.java) }
     private val coachMark by lazy {
@@ -101,6 +104,7 @@ class FlashSaleManageProductListFragment :
         }
     }
     private var currentOffset: Int = 0
+    private var shopId: String = ""
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleManageProductListItemDelegate(this))
@@ -116,8 +120,13 @@ class FlashSaleManageProductListFragment :
         configRecyclerView()
         getCampaignDetailBottomSheetData()
         getReservedProductList()
+        getShopId()
         observeUiState()
         observeUiEffect()
+    }
+
+    private fun getShopId() {
+        viewModel.processEvent(FlashSaleManageProductListUiEvent.GetShopId)
     }
 
     private fun configRecyclerView() {
@@ -221,9 +230,16 @@ class FlashSaleManageProductListFragment :
                     is FlashSaleManageProductListUiEffect.ClearProductList -> {
                         clearProductList()
                     }
+                    is FlashSaleManageProductListUiEffect.SetShopId -> {
+                        setShopId(it.shopId)
+                    }
                 }
             }
         }
+    }
+
+    private fun setShopId(shopId: String) {
+        this.shopId = shopId
     }
 
     private fun clearProductList() {
@@ -497,7 +513,12 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onSubmitButtonClicked() {
+        sendClickApplyProductDiscountTracker()
         submitDiscountedProduct()
+    }
+
+    private fun sendClickApplyProductDiscountTracker() {
+        tracker.sendClickApplyManageDiscountEvent(campaignId, shopId)
     }
 
     private fun submitDiscountedProduct() {
@@ -518,7 +539,16 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onManageProductButtonClicked(productData: ReservedProduct.Product) {
+        sendClickManageProductDiscountTracker(productData)
         redirectToManageProductDetailPage(productData)
+    }
+
+    private fun sendClickManageProductDiscountTracker(productData: ReservedProduct.Product) {
+        tracker.sendClickManageProductDiscountEvent(
+            campaignId,
+            productData.productId.toString(),
+            shopId
+        )
     }
 
     private fun redirectToManageProductDetailPage(productData: ReservedProduct.Product) {
