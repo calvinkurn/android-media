@@ -101,7 +101,7 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
-                UnifyTheme(true) {
+                UnifyTheme {
                     CampaignListScreen(
                         uiState = viewModel.uiState.collectAsState(),
                         onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
