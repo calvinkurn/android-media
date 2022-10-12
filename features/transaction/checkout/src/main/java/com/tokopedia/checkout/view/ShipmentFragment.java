@@ -3606,10 +3606,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             CourierItemData courierItemData = shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier();
             courierItemData.setScheduleDeliveryUiModel(scheduleDeliveryUiModel);
 
-            DeliveryProduct selectedDeliveryProduct = courierItemData.getScheduleDeliveryUiModel().getDeliveryProduct();
-            if (scheduleDeliveryUiModel.isSelected() && selectedDeliveryProduct != null) {
-                shipmentCartItemModel.setScheduleDate(selectedDeliveryProduct.getScheduleDate());
-                shipmentCartItemModel.setTimeslotId(selectedDeliveryProduct.getId());
+            if (scheduleDeliveryUiModel.isSelected()) {
+                shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
+                shipmentCartItemModel.setTimeslotId(scheduleDeliveryUiModel.getTimeslotId());
             }
             else {
                 shipmentCartItemModel.setScheduleDate("");
@@ -3619,7 +3618,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             shipmentAdapter.updateCheckoutButtonData(null);
             onNeedUpdateViewItem(position);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
-            checkCourierPromo(shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier(), position);
+            checkCourierPromo(courierItemData, position);
         }
     }
 

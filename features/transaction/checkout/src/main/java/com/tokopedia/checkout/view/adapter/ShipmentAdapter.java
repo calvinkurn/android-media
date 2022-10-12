@@ -928,7 +928,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (isTradeInPickup) {
                         if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                             shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourierTradeInDropOff().getRealShipperPrice();
+                                    .getSelectedCourierTradeInDropOff().getShipperPrice();
                             if (useInsurance != null && useInsurance) {
                                 insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                         .getSelectedCourierTradeInDropOff().getInsurancePrice();
