@@ -29,7 +29,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">@dimen/dp_8</item>
         <item name="typographyType">heading_6</item>
-        <item name="android:textColor">@color/topads_light_shadow</item>
+        <item name="android:textColor">@color/Unify_N700_68</item>
     </style>
 
     <style name="BottomSheetInsightTitle">

@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.groupitem.DataItem
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.NOT_VALID
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
@@ -84,7 +85,8 @@ class HeadLineAdItemsItemViewHolder(
                 checkBox?.visibility = View.VISIBLE
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    Unify_NN0
+                ))
                 imgMenu?.visibility = View.VISIBLE
                 checkBox?.visibility = View.GONE
                 checkBox?.isChecked = false
@@ -93,7 +95,7 @@ class HeadLineAdItemsItemViewHolder(
             checkBox?.isChecked = it.isChecked
             if (checkBox?.isChecked == false) {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
                     R.color.topads_select_color))
@@ -144,7 +146,7 @@ class HeadLineAdItemsItemViewHolder(
                             R.color.topads_select_color))
                     else
                         cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_dash_white))
+                            Unify_NN0))
                 }
             }
             itemCard?.setOnLongClickListener {

@@ -10,7 +10,7 @@
         <clip>
             <shape>
                 <corners android:radius="3dip"/>
-                <gradient android:startColor="@color/tkpd_main_green" android:endColor="@color/tkpd_main_green" android:angle="90"/>
+                <gradient android:startColor="@color/Unify_GN500" android:endColor="@color/Unify_GN500" android:angle="90"/>
             </shape>
         </clip>
     </item>
@@ -18,7 +18,7 @@
         <clip>
             <shape>
                 <corners android:radius="3dip"/>
-                <gradient android:startColor="@color/tkpd_main_green" android:endColor="@color/tkpd_main_green" android:angle="90"/>
+                <gradient android:startColor="@color/Unify_GN500" android:endColor="@color/Unify_GN500" android:angle="90"/>
             </shape>
         </clip>
     </item>

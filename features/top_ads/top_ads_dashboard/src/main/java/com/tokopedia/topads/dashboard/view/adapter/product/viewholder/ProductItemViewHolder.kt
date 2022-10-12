@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.view.adapter.product.viewmodel.ProductItemModel
@@ -62,7 +63,7 @@ class ProductItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        Unify_NN0
                     )
                 )
                 btnSwitch?.visibility = View.VISIBLE
@@ -98,7 +99,7 @@ class ProductItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        Unify_NN0
                     )
                 )
             } else {
@@ -124,7 +125,7 @@ class ProductItemViewHolder(
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                R.color.topads_dash_white
+                                Unify_NN0
                             )
                         )
                 }

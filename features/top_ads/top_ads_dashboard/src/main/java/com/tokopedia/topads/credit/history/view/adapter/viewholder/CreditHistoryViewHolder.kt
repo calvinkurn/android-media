@@ -25,7 +25,7 @@ class CreditHistoryViewHolder(val view: View) : AbstractViewHolder<CreditHistory
                 setTextColor(ContextCompat.getColor(
                     context,
                     if (!element.isReduction) {
-                        com.tokopedia.topads.common.R.color.topads_common_green_tab
+                        com.tokopedia.topads.common.R.color.Unify_GN500
                     } else {
                         com.tokopedia.topads.common.R.color.Unify_N700_96
                     }

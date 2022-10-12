@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.STATUS_TIDAK_TAMPIL
 import com.tokopedia.topads.dashboard.view.adapter.keyword.viewmodel.KeywordItemModel
@@ -61,7 +62,7 @@ class KeywordItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        Unify_NN0
                     )
                 )
                 btnSwitch.visibility = View.VISIBLE
@@ -89,7 +90,7 @@ class KeywordItemViewHolder(
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        Unify_NN0
                     )
                 )
             } else {
@@ -122,7 +123,7 @@ class KeywordItemViewHolder(
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                R.color.topads_dash_white
+                                Unify_NN0
                             )
                         )
                 }
