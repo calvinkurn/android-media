@@ -10,6 +10,7 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
+import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -21,7 +22,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class DtHomeViewModel @Inject constructor(
-//    private val getHomeLayoutDataUseCase: GetHomeLayoutDataUseCase,
+    private val getHomeLayoutDataUseCase: DtGetHomeLayoutDataUseCase,
 //    private val getCategoryListUseCase: GetCategoryListUseCase,
 //    private val getKeywordSearchUseCase: GetKeywordSearchUseCase,
 //    private val getTickerUseCase: GetTickerUseCase,
@@ -73,13 +74,13 @@ class DtHomeViewModel @Inject constructor(
         launchCatchError(block = {
             homeLayoutItemList.clear()
 
-//            val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
-//                localCacheModel = localCacheModel
-//            )
+            val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
+                localCacheModel = localCacheModel
+            )
 //            channelToken = homeLayoutResponse.first().token
 
             homeLayoutItemList.mapHomeLayoutList(
-//                homeLayoutResponse,
+                homeLayoutResponse,
 //                hasTickerBeenRemoved,
 //                removeAbleWidgets,
 //                miniCartSimplifiedData,
@@ -98,6 +99,19 @@ class DtHomeViewModel @Inject constructor(
 //            getHomeLayoutJob = it
         }
     }
+
+    fun getLoadingState() {
+//        channelToken = ""
+        homeLayoutItemList.clear()
+//        homeLayoutItemList.addLoadingIntoList()
+        val data = HomeLayoutListUiModel(
+            items = getHomeVisitableList(),
+            state = DtLayoutState.LOADING
+        )
+        _homeLayoutList.postValue(Success(data))
+    }
+
+
 
 
 }

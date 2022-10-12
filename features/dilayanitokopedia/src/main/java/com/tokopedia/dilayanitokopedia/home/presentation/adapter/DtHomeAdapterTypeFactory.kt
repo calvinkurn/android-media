@@ -10,6 +10,7 @@ import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.DtChooseAddressWidgetViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
@@ -42,6 +43,9 @@ import com.tokopedia.home_component.visitable.ReminderWidgetModel
 import timber.log.Timber
 
 
+/**
+ * Created by irpan on 12/09/22.
+ */
 class DtHomeAdapterTypeFactory(
     private val dtView: DtView? = null,
 //    private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
@@ -55,7 +59,7 @@ class DtHomeAdapterTypeFactory(
 //    private val serverErrorListener: TokoNowServerErrorViewHolder.ServerErrorListener? = null,
 //    private val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocListener? = null,
 //    private val homeQuestSequenceWidgetListener : HomeQuestSequenceWidgetListener? = null,
-//    private val dynamicLegoBannerCallback: DynamicLegoBannerCallback? = null,
+    private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
 //    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
 //    private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
@@ -131,7 +135,10 @@ class DtHomeAdapterTypeFactory(
 //            // region Common TokoNow Component
 //            TokoNowCategoryGridViewHolder.LAYOUT -> TokoNowCategoryGridViewHolder(view, tokoNowCategoryGridListener)
 //            TokoNowRepurchaseViewHolder.LAYOUT -> TokoNowRepurchaseViewHolder(view, tokoNowProductCardListener, tokoNowView)
+
+            //LCA
             DtChooseAddressWidgetViewHolder.LAYOUT -> DtChooseAddressWidgetViewHolder(view, dtView, dtChooseAddressWidgetListener)
+
 //            TokoNowEmptyStateOocViewHolder.LAYOUT -> TokoNowEmptyStateOocViewHolder(view, tokoNowEmptyStateOocListener)
 //            TokoNowServerErrorViewHolder.LAYOUT -> TokoNowServerErrorViewHolder(view, serverErrorListener)
 //            // endregion
@@ -154,9 +161,13 @@ class DtHomeAdapterTypeFactory(
 //            // endregion
 
             // region Global Home Component
-//            DynamicLegoBannerViewHolder.LAYOUT -> {
-//                DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
-//            }
+            // home component - reuse from component
+
+            DynamicLegoBannerViewHolder.LAYOUT -> {
+                DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
+            }
+
+
             BannerComponentViewHolder.LAYOUT -> {
                 BannerComponentViewHolder(view, bannerComponentListener, null)
             }
@@ -164,7 +175,10 @@ class DtHomeAdapterTypeFactory(
                 MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
             }
             // endregion
-            else -> super.createViewHolder(view, type)
+            else -> {
+                //TODO - should handle biar gak crash
+                super.createViewHolder(view, type)
+            }
         }
     }
 

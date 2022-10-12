@@ -2,10 +2,12 @@ package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -13,19 +15,23 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
+import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
+import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
 import com.tokopedia.dilayanitokopedia.home.domain.model.Data
 import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
+import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
+import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -36,12 +42,13 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
 
-
+/**
+ * Created by irpan on 07/09/22.
+ */
 class DtHomeFragment : Fragment() {
 
     companion object {
@@ -67,7 +74,7 @@ class DtHomeFragment : Fragment() {
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
-//                tokoNowView = this,
+                dtView = createDtView(),
 //                homeTickerListener = this,
 //                tokoNowChooseAddressWidgetListener = this,
 //                tokoNowCategoryGridListener = this,
@@ -82,12 +89,15 @@ class DtHomeFragment : Fragment() {
 //                dynamicLegoBannerCallback = createLegoBannerCallback(),
 //                homeSwitcherListener = createHomeSwitcherListener(),
 //                homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
-//                homeLeftCarouselListener = createLeftCarouselCallback(),
+
+                homeLeftCarouselListener = createLeftCarouselCallback(),
+                dynamicLegoBannerCallback = createLegoBannerCallback()
 //                playWidgetCoordinator = createPlayWidgetCoordinator()
             ),
             differ = HomeListDiffer()
         )
     }
+
 
     override fun onAttach(context: Context) {
         initInjector()
@@ -100,6 +110,7 @@ class DtHomeFragment : Fragment() {
             .build()
             .inject(this)
     }
+
     private var binding by autoClearedNullable<FragmentDtHomeBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -253,7 +264,7 @@ class DtHomeFragment : Fragment() {
         when (data.state) {
             DtLayoutState.SHOW -> onShowHomeLayout(data)
 //            DtLayoutState.HIDE -> onHideHomeLayout(data)
-//            DtLayoutState.LOADING -> onLoadingHomeLayout(data)
+            DtLayoutState.LOADING -> onLoadingHomeLayout(data)
             else -> showHomeLayout(data)
         }
     }
@@ -274,6 +285,7 @@ class DtHomeFragment : Fragment() {
 
             when (it) {
                 is Success -> onSuccessGetHomeLayout(it.data)
+                is Fail -> Timber.d(it.throwable)
 //                is Fail -> onFailedGetHomeLayout(it.throwable)
             }
 
@@ -290,7 +302,8 @@ class DtHomeFragment : Fragment() {
 //                HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
 //                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
 //            )
-            viewModelDtHome.getHomeLayout(it,
+            viewModelDtHome.getHomeLayout(
+                it,
 //                removeAbleWidgets
             )
         }
@@ -309,11 +322,78 @@ class DtHomeFragment : Fragment() {
                 rvLayoutManager = CustomLinearLayoutManager(it)
                 layoutManager = rvLayoutManager
             }
-
+//            tokopedia://product/6099214630?extParam=src%3Dcampaign%26whid%3D7025696
 //            rvHome?.setItemViewCacheSize(ITEM_VIEW_CACHE_SIZE)
 //            addHomeComponentScrollListener()
         }
     }
 
+    private fun createLeftCarouselCallback(): MixLeftComponentListener {
+        return DtHomeLeftCarouselCallback(
+            requireContext(),
+//            analytics
+        )
+    }
+
+
+    private fun createLegoBannerCallback(): DynamicLegoBannerListener? {
+        return DtDynamicLegoBannerCallback(
+            requireContext(), viewModelDtHome
+//            viewModelTokoNow, userSession, analytics
+        )
+
+    }
+
+    private fun createDtView(): DtView? {
+        return object : DtView {
+
+            override fun getFragmentPage() = this@DtHomeFragment
+            override fun getFragmentManagerPage(): FragmentManager = this@DtHomeFragment.childFragmentManager
+            override fun refreshLayoutPage() = onRefreshLayout()
+
+            override fun getScrollState(adapterPosition: Int): Parcelable? {
+                //TODO -update later
+                return null
+            }
+
+            override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
+                //TODO -update later
+            }
+
+            override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
+                TODO("Not yet implemented")
+            }
+
+            override fun getParallaxState(): Map<String, Float> {
+                TODO("Not yet implemented")
+            }
+
+        }
+    }
+
+    private fun onRefreshLayout() {
+//        refreshMiniCart()
+//        resetMovingPosition()
+//        removeAllScrollListener()
+//        hideStickyLogin()
+        rvLayoutManager?.setScrollEnabled(true)
+//        carouselScrollState.clear()
+//        carouselParallaxState.clear()
+//        isRefreshed = true
+        loadLayout()
+    }
+
+    private fun loadLayout() {
+        viewModelDtHome.getLoadingState()
+    }
+
+    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
+        showHomeLayout(data)
+//        loadHeaderBackground()
+//        checkAddressDataAndServiceArea()
+        showLayout()
+//        showHideChooseAddress()
+//        hideSwitcherCoachMark()
+    }
 
 }

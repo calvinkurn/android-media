@@ -3,17 +3,16 @@ package com.tokopedia.dilayanitokopedia.home.presentation.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.fragment.app.Fragment
-import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.common.model.DtChooseAddressWidgetUiModel
 import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.ItemDtChooseAddressWidgetBinding
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeFragment.Companion.SOURCE
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -39,38 +38,39 @@ class DtChooseAddressWidgetViewHolder(
     }
 
     private fun bindChooseAddressWidget() {
-        dtView?.getFragmentPage()?.let { fragment ->
-            chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
-                override fun onLocalizingAddressUpdatedFromWidget() {
-                    dtView.refreshLayoutPage()
-                }
 
-                override fun onLocalizingAddressServerDown() {
-                    dtChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
-                }
 
-                override fun onClickChooseAddressTokoNowTracker() {
-                   dtChooseAddressWidgetListener?.onClickChooseAddressWidgetTracker()
-                }
+        chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
+            override fun onLocalizingAddressUpdatedFromWidget() {
+                dtView!!.refreshLayoutPage()
+            }
 
-                override fun needToTrackTokoNow(): Boolean = true
+            override fun onLocalizingAddressServerDown() {
+                dtChooseAddressWidgetListener?.onChooseAddressWidgetRemoved()
+            }
 
-                override fun getLocalizingAddressHostFragment(): Fragment = fragment
+            override fun onClickChooseAddressTokoNowTracker() {
+                dtChooseAddressWidgetListener?.onClickChooseAddressWidgetTracker()
+            }
 
-                override fun getLocalizingAddressHostSourceData(): String = SOURCE
+            override fun needToTrackTokoNow(): Boolean = true
 
-                override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
+            override fun getLocalizingAddressHostFragment(): Fragment = dtView?.getFragmentPage()!!
 
-                override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */
-                }
+            override fun getLocalizingAddressHostSourceData(): String = SOURCE
 
-                override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */
-                }
+            override fun getLocalizingAddressHostSourceTrackingData(): String = SOURCE_TRACKING
 
-                override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */
-                }
-            })
-        }
+            override fun onLocalizingAddressUpdatedFromBackground() { /* to do : nothing */
+            }
+
+            override fun onLocalizingAddressRollOutUser(isRollOutUser: Boolean) { /* to do : nothing */
+            }
+
+            override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */
+            }
+        })
+
     }
 
     private fun setupChooseAddressWidget() {
@@ -103,7 +103,7 @@ class DtChooseAddressWidgetViewHolder(
 //                )
 //            }
 //        } else {
-            return null
+        return null
 //        }
     }
 
