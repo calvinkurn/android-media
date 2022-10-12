@@ -173,14 +173,25 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
                 }
             }
 
-            if (data.featureInfo.isEmpty()) {
+            setFeatureInfo(data.featureInfo)
+        }
+
+        private fun setFeatureInfo(featureInfo: List<FeatureInfoModel>) {
+            if (featureInfo.isEmpty()) {
                 shipmentFeatureRv?.gone()
                 labelInformation?.gone()
             } else {
                 shipmentFeatureRv?.visible()
+                shipmentFeatureRv.apply {
+                    layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+                    adapter = featureItemAdapter
+                }
+
+                featureItemAdapter.setData(featureInfo)
+
                 labelInformation?.visible()
                 labelInformation?.setOnClickListener {
-                    listener.onFeatureInfoConventionalClicked(data.featureInfo)
+                    listener.onFeatureInfoConventionalClicked(featureInfo)
                 }
             }
         }
@@ -192,13 +203,6 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
             }
 
             productItemAdapter.addData(data.shipperProduct)
-
-            shipmentFeatureRv.apply {
-                layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-                adapter = featureItemAdapter
-            }
-
-            featureItemAdapter.setData(data.featureInfo)
 
             initUncheckedListener()
         }

@@ -176,14 +176,24 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 }
             }
 
-            if (data.featureInfo.isEmpty()) {
+            setFeatureInfo(data.featureInfo)
+        }
+
+        private fun setFeatureInfo(featureInfo: List<FeatureInfoModel>) {
+            if (featureInfo.isEmpty()) {
                 shipmentFeatureRv?.gone()
                 labelInformation?.gone()
             } else {
                 shipmentFeatureRv?.visible()
+                shipmentFeatureRv?.layoutManager = FlexboxLayoutManager(itemView.context).apply {
+                    alignItems = AlignItems.FLEX_START
+                }
+                shipmentFeatureRv?.adapter = featureItemAdapter
+                featureItemAdapter.setData(featureInfo)
+
                 labelInformation?.visible()
                 labelInformation?.setOnClickListener {
-                    listener.onFeatureInfoOnDemandClicked(data.featureInfo)
+                    listener.onFeatureInfoOnDemandClicked(featureInfo)
                 }
             }
         }
@@ -195,13 +205,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
             }
 
             productItemAdapter.addData(data.shipperProduct)
-
-            shipmentFeatureRv?.layoutManager = FlexboxLayoutManager(itemView.context).apply {
-                    alignItems = AlignItems.FLEX_START
-                }
-            shipmentFeatureRv?.adapter = featureItemAdapter
-
-            featureItemAdapter.setData(data.featureInfo)
 
             initUncheckedListener()
         }
