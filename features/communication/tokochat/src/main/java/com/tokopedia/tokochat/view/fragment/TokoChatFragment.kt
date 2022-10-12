@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -20,6 +21,8 @@ import com.tokopedia.tokochat.view.activity.TokoChatActivity
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatImageUrl
+import com.tokopedia.tokochat_common.util.TokoChatSource
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
@@ -39,6 +42,8 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
+    private var source: String? = null
+
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
     override fun getScreenName(): String = TAG
@@ -57,6 +62,10 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         setupToolbarData("")
         setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
         setupReceiverDummyMessages()
+    }
+
+    private fun setDataFromArguments() {
+        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)
     }
 
     private fun renderBackground(url: String) {
@@ -264,6 +273,13 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
             subTitle.text = uiModel.subTitle
             imageUrl.setImageUrl(uiModel.imageUrl)
 
+            val sourceLogoUrl = getSourceLogoUrl(source)
+
+            if (sourceLogoUrl.isNotBlank()) {
+                val sourceLogo = findViewById<ImageUnify>(R.id.tokochat_iv_source_logo)
+                sourceLogo.setImageUrl(sourceLogoUrl)
+            }
+
             callMenu.run {
                 setImage(IconUnify.CALL)
 
@@ -287,6 +303,13 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
+        }
+    }
+
+    private fun getSourceLogoUrl(source: String?): String {
+        return when (source) {
+            TokoChatSource.TokoFood -> TokoChatImageUrl.IC_TOKOFOOD_SOURCE
+            else -> ""
         }
     }
 
