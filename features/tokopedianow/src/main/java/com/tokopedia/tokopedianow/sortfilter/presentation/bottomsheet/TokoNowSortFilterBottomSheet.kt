@@ -50,7 +50,8 @@ class TokoNowSortFilterBottomSheet(
     }
 
     var sortValue: Int = FREQUENTLY_BOUGHT
-    var sortFilterItems: List<Visitable<*>> = listOf()
+    var filterItemsDisplayed: List<Visitable<*>> = listOf()
+    var allSelectedFilters: List<Visitable<*>> = listOf()
     var sectionHeaderListener: SectionHeaderListener? = null
     var buttonText: String = ""
 
@@ -85,7 +86,7 @@ class TokoNowSortFilterBottomSheet(
 
     override fun onClickSortItem(isChecked: Boolean, position: Int, value: Int) {
         val newItemList = mutableListOf<SortFilterUiModel>()
-        sortFilterItems.filterIsInstance<SortFilterUiModel>().forEachIndexed { index, model ->
+        filterItemsDisplayed.filterIsInstance<SortFilterUiModel>().forEachIndexed { index, model ->
             newItemList.add(model.copy(isChecked = index == position))
         }
         adapter.submitList(newItemList)
@@ -93,34 +94,9 @@ class TokoNowSortFilterBottomSheet(
     }
 
     override fun onClickChipItem(chip: TokoNowChipUiModel) {
-        val newItemList = adapter.list.toMutableList()
-        val chipList = newItemList.filterIsInstance<TokoNowChipListUiModel>().first {
-            it.parentId == chip.parentId
-        }
-        val index = newItemList.indexOf(chipList)
-
-        val items = chipList.items.map {
-            val selected = it.id == chip.id
-            val isActive = chip.selected == selected
-
-            when {
-                chipList.isMultiSelect && selected -> {
-                    it.copy(selected = !chip.selected)
-                }
-                !chipList.isMultiSelect && isActive -> {
-                    it.copy(selected = false)
-                }
-                !chipList.isMultiSelect -> {
-                    it.copy(selected = selected)
-                }
-                else -> it
-            }
-        }
-
-        val newChipList = chipList.copy(items = items)
-        newItemList[index] = newChipList
-
-        adapter.submitList(newItemList)
+        allSelectedFilters = updateItems(chip, allSelectedFilters)
+        filterItemsDisplayed = updateItems(chip, filterItemsDisplayed)
+        adapter.submitList(filterItemsDisplayed)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -131,7 +107,7 @@ class TokoNowSortFilterBottomSheet(
     fun getSelectedFilters(): ArrayList<SelectedFilter> {
         val selectedChip = mutableListOf<TokoNowChipUiModel>()
 
-        adapter.list.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
+        allSelectedFilters.filterIsInstance<TokoNowChipListUiModel>().forEach { chipList ->
             val chips = chipList.items.filter { it.selected }
             selectedChip.addAll(chips)
         }
@@ -142,8 +118,21 @@ class TokoNowSortFilterBottomSheet(
     }
 
     fun submitList(items: List<Visitable<*>>) {
-        sortFilterItems = items
-        adapter.submitList(items)
+        allSelectedFilters = items.map { uiModel ->
+            if (uiModel is TokoNowChipListUiModel) {
+                uiModel.copy(items = uiModel.items.filter { it.selected || it.isPopular})
+            } else {
+                uiModel
+            }
+        }
+        filterItemsDisplayed = allSelectedFilters.map { uiModel ->
+            if (uiModel is TokoNowChipListUiModel) {
+                uiModel.copy(items = uiModel.items.filter { it.isPopular })
+            } else {
+                uiModel
+            }
+        }
+        adapter.submitList(filterItemsDisplayed)
     }
 
     fun show(fm: FragmentManager) {
@@ -172,7 +161,7 @@ class TokoNowSortFilterBottomSheet(
             adapter = this@TokoNowSortFilterBottomSheet.adapter
             itemAnimator = null
         }
-        submitList(sortFilterItems)
+        submitList(filterItemsDisplayed)
     }
 
     private fun setupBtnFilter() {
@@ -185,6 +174,37 @@ class TokoNowSortFilterBottomSheet(
             activity?.setResult(Activity.RESULT_OK, intent)
             dismiss()
         }
+    }
+
+    private fun updateItems(chip: TokoNowChipUiModel, items: List<Visitable<*>>): List<Visitable<*>> {
+        val newItemList = items.toMutableList()
+        val chipList = newItemList.filterIsInstance<TokoNowChipListUiModel>().first {
+            it.parentId == chip.parentId
+        }
+        val index = newItemList.indexOf(chipList)
+
+        val chipListItems = chipList.items.map {
+            val selected = it.id == chip.id
+            val isActive = chip.selected == selected
+
+            when {
+                chipList.isMultiSelect && selected -> {
+                    it.copy(selected = !chip.selected)
+                }
+                !chipList.isMultiSelect && isActive -> {
+                    it.copy(selected = false)
+                }
+                !chipList.isMultiSelect -> {
+                    it.copy(selected = selected)
+                }
+                else -> it
+            }
+        }
+
+        val newChipList = chipList.copy(items = chipListItems)
+        newItemList[index] = newChipList
+
+        return newItemList
     }
 
     interface TokoNowSortFilterTracker {

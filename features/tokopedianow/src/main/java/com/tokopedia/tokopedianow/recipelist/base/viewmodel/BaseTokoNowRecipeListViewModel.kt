@@ -162,12 +162,6 @@ open class BaseTokoNowRecipeListViewModel(
                     )
                 )
             )
-
-            visitableItems.updateRecipeBookmark(
-                recipeId = recipeId,
-                isBookmarked = false
-            )
-            updateVisitableItems()
         }
     }
 
@@ -177,13 +171,14 @@ open class BaseTokoNowRecipeListViewModel(
                 recipeId = recipeId
             )
 
-            _showBookmarkToaster.postValue(ToasterUiModel(
-                isRemoving = true,
-                position = position,
-                model = ToasterModel(
-                    title = title,
-                    recipeId = recipeId,
-                    isSuccess = true
+            _showBookmarkToaster.postValue(
+                ToasterUiModel(
+                    isRemoving = true,
+                    position = position,
+                    model = ToasterModel(
+                        title = title,
+                        recipeId = recipeId,
+                        isSuccess = true
                 )
             ))
 
@@ -193,20 +188,15 @@ open class BaseTokoNowRecipeListViewModel(
             )
             updateVisitableItems()
         }) {
-            _showBookmarkToaster.value = ToasterUiModel(
-                isRemoving = true,
-                position = position,
-                model = ToasterModel(
-                    recipeId = recipeId,
-                    isSuccess = false
+            _showBookmarkToaster.postValue(
+                ToasterUiModel(
+                    isRemoving = true,
+                    position = position,
+                    model = ToasterModel(
+                        recipeId = recipeId,
+                        isSuccess = false
                 )
-            )
-
-            visitableItems.updateRecipeBookmark(
-                recipeId = recipeId,
-                isBookmarked = true
-            )
-            updateVisitableItems()
+            ))
         }
     }
 

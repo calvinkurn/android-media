@@ -25,27 +25,29 @@ class TokoNowChipListViewHolder(
 
     private var binding: ItemTokopedianowRecyclerViewBinding? by viewBinding()
 
-    private val adapter by lazy {
+    private val mAdapter by lazy {
         TokoNowChipListAdapter(TokoNowChipListAdapterTypeFactory(listener))
     }
 
     init {
-        val layoutManager = ChipsLayoutManager
+        binding?.recyclerView?.apply {
+            addItemDecoration(ChipListDecoration())
+            itemAnimator = null
+            setHasFixedSize(true)
+        }
+    }
+
+    override fun bind(chip: TokoNowChipListUiModel) {
+        val chipsLayoutManager = ChipsLayoutManager
             .newBuilder(itemView.context)
             .setOrientation(ChipsLayoutManager.HORIZONTAL)
             .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
             .build()
 
         binding?.recyclerView?.apply {
-            addItemDecoration(ChipListDecoration())
-            this.layoutManager = layoutManager
-            this.itemAnimator = null
-            setHasFixedSize(true)
+            this.adapter = mAdapter
+            layoutManager = chipsLayoutManager
         }
-    }
-
-    override fun bind(chip: TokoNowChipListUiModel) {
-        binding?.recyclerView?.adapter = adapter
-        adapter.submitList(chip.items)
+        mAdapter.submitList(chip.items)
     }
 }

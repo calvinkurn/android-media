@@ -80,11 +80,9 @@ class RecipeViewHolder(
 
     private fun renderBookmark(recipe: RecipeUiModel) {
         binding?.imageBookmark?.apply {
-            var isBookmarked= recipe.isBookmarked
-            changeIconBookmark(this, isBookmarked)
+            changeIconBookmark(this, recipe.isBookmarked)
             setOnClickListener {
-                isBookmarked = !isBookmarked
-                listener.onClickBookmark(recipe, layoutPosition, isBookmarked)
+                listener.onClickBookmark(recipe, layoutPosition, !recipe.isBookmarked)
             }
         }
     }
