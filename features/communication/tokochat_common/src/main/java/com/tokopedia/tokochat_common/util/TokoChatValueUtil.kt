@@ -6,4 +6,9 @@ object TokoChatValueUtil {
 
     const val STATUS_NORMAL = 1
     const val STATUS_DELETED = 5
+
+    /**
+     * SOURCE
+     */
+    const val TOKOFOOD = "tokofood"
 }

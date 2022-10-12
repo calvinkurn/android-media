@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
@@ -80,7 +81,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             TokoChatFragment.getFragment(
                 supportFragmentManager,
                 classLoader,
-                bundle ?: Bundle()
+                getFragmentBundle()
             )
         }
     }
@@ -95,6 +96,13 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             setBackIconUnify()
             contentInsetStartWithNavigation = Int.ZERO
             contentInsetEndWithActions = Int.ZERO
+        }
+    }
+
+    private fun getFragmentBundle(): Bundle {
+        val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
+        return Bundle().apply {
+            putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
         }
     }
 }

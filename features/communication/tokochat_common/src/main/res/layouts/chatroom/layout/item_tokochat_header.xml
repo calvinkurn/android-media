@@ -20,6 +20,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             app:unify_image_corner_radius="0"
+            app:unify_image_type="circle"
             android:contentDescription="@string/tokochat_content_desc_user_avatar"
             tools:src="@color/Unify_Y500" />
 
@@ -47,6 +48,18 @@
         android:layout_toEndOf="@+id/tokochat_layout_photo_container"
         android:gravity="center_vertical">
 
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/tokochat_iv_source_logo"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="circle"
+            android:contentDescription="@string/tokochat_content_desc_source_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tokochat_text_user_title"
+            app:layout_constraintBottom_toBottomOf="@id/tokochat_text_user_title"
+            tools:src="@color/Unify_Y300" />
+
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tokochat_text_user_title"
             android:layout_width="wrap_content"
@@ -55,10 +68,11 @@
             android:includeFontPadding="false"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
+            android:layout_marginStart="4dp"
             app:layout_constrainedWidth="true"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/tokochat_iv_source_logo"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="display_1"
             app:typographyWeight="bold"

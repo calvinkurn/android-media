@@ -173,6 +173,10 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
                 orderDetailResultUiModel.toolbarLiveTrackingUiModel,
                 actualResult.data.toolbarLiveTrackingUiModel
             )
+            assertEquals(
+                orderDetailResultUiModel.invoiceOrderNumberUiModel,
+                actualResult.data.invoiceOrderNumberUiModel
+            )
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
 
             coVerify {

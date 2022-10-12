@@ -9,17 +9,20 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.activity.TokoChatActivity
+import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
@@ -38,6 +41,8 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
+    private var source: String = ""
+
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
     override fun getScreenName(): String = TAG
@@ -52,10 +57,15 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     override fun initViews() {
         super.initViews()
+        setDataFromArguments()
         setupBackground()
-        setupToolbarData()
+        setupToolbarData("")
         setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
         setupReceiverDummyMessages()
+    }
+
+    private fun setDataFromArguments() {
+        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
     }
 
     private fun renderBackground(url: String) {
@@ -246,7 +256,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
     }
 
-    private fun setupToolbarData() {
+    private fun setupToolbarData(driverPhoneNumber: String) {
         val uiModel = TokoChatHeaderUiModel(
             title = "Omar Maryadi",
             subTitle = "D7088FGX",
@@ -263,11 +273,26 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
             subTitle.text = uiModel.subTitle
             imageUrl.setImageUrl(uiModel.imageUrl)
 
+            val sourceLogoUrl = getSourceLogoUrl(source)
+
+            if (sourceLogoUrl.isNotBlank()) {
+                val sourceLogo = findViewById<ImageUnify>(R.id.tokochat_iv_source_logo)
+                sourceLogo.setImageUrl(sourceLogoUrl)
+            }
+
             callMenu.run {
                 setImage(IconUnify.CALL)
-                setOnClickListener { }
+
+                setOnClickListener {
+                    showMaskingPhoneNumberBottomSheet(driverPhoneNumber)
+                }
             }
         }
+    }
+
+    private fun showMaskingPhoneNumberBottomSheet(driverPhoneNumber: String) {
+        val bottomSheetMaskingPhoneNumber = MaskingPhoneNumberBottomSheet.newInstance(driverPhoneNumber)
+        bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
     private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
@@ -278,6 +303,13 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
+        }
+    }
+
+    private fun getSourceLogoUrl(source: String?): String {
+        return when (source) {
+            TOKOFOOD -> IC_TOKOFOOD_SOURCE
+            else -> ""
         }
     }
 
