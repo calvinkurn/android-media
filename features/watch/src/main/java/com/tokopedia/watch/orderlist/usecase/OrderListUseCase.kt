@@ -35,8 +35,7 @@ class GetOrderListUseCase(
             OrderListModel::class.java,
             createParams(
                 "01/01/2022",
-                "27/09/2022",
-                220,
+                "12/10/2022",
                 0
             ).parameters
         )
@@ -69,7 +68,7 @@ class GetOrderListUseCase(
             }
         """
 
-        fun createParams(startDateFmt: String, endDateFmt: String, statusId: Int, sortBy: Int): RequestParams {
+        fun createParams(startDateFmt: String, endDateFmt: String, sortBy: Int): RequestParams {
             val input = InputParameterModel(
                 startDate = startDateFmt,
                 endDate = endDateFmt,

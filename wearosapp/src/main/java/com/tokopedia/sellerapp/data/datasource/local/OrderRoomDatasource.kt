@@ -11,6 +11,7 @@ class OrderRoomDatasource(
     private val orderDao: OrderDao
 ) {
     fun saveOrderList(orderList: OrderListModel) {
+        orderDao.clear()
         orderDao.insertOrderList(orderList.mapModelToOrderEntity())
         orderDao.insertOrderProducts(orderList.mapModelToProductEntity())
     }

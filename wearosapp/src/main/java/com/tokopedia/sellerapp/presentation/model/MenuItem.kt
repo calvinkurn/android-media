@@ -1,8 +1,8 @@
 package com.tokopedia.sellerapp.presentation.model
 
-import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_NEW_ORDER
-import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_READY_TO_SHIP
-import com.tokopedia.sellerapp.domain.mapper.SummaryDomainMapper.DATAKEY_UNREAD_CHAT
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_READY_TO_SHIP
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_UNREAD_CHAT
 import com.tokopedia.iconunify.R.drawable as iconR
 
 data class MenuItem(

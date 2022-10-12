@@ -71,6 +71,13 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _orderSummary = MutableStateFlow<UiState<SummaryModel>>(UiState.Loading())
+    val orderSummary : StateFlow<UiState<SummaryModel>> = _orderSummary.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _currentState = MutableStateFlow<UiState<PhoneState>>(UiState.Loading())
     val currentState : StateFlow<UiState<PhoneState>> = _currentState.stateIn(
         scope = viewModelScope,
@@ -92,6 +99,16 @@ class SharedViewModel @Inject constructor(
     fun checkPhoneState() {
         viewModelScope.launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+        }
+    }
+
+    fun getOrderSummary(dataKey: String) {
+        viewModelScope.launch {
+            _orderSummary.emitAll(
+                getSummaryUseCase.getOrderSummary(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
         }
     }
 

@@ -10,6 +10,7 @@ class SummaryRoomDatasource(
     private val summaryDao: SummaryDao
 ) {
     fun saveSummary(summaryDataModel: SummaryDataModel) {
+        summaryDao.clear()
         summaryDao.insertSummary(summaryDataModel.mapModelToEntity())
     }
 
