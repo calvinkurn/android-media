@@ -193,7 +193,8 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             }
             COUPON_ON_GOING -> {
                 optionMenu.setOnClickListener {
-                    item.voucherId?.let { it1 ->
+                    item.voucherId.let { it1 ->
+                        tmTracker?.clickCouponListThreeDot(item.shopId)
                         val actions = Actions()
                         val tripleDots = arrayListOf<TripleDotsItem?>()
                         tripleDots.add(TripleDotsItem("Tambah Kuota", ADD_QUOTA))
@@ -318,6 +319,7 @@ class TmCouponVh(itemView: View, private val fragmentManager: FragmentManager) :
             )
             btnAddQuota.show()
             btnAddQuota.setOnClickListener {
+                tmTracker?.clickBsAddQuotaButton(item.shopId)
                 item.voucherId?.let { it1 ->
                     item.voucherTypeFormatted?.let { it2 ->
                         item.voucherQuota?.let { it3 ->

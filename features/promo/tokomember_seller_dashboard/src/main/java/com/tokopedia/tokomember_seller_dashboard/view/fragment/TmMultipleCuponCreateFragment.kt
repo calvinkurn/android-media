@@ -797,7 +797,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
         bundle.putParcelable(BUNDLE_COUPON_PREVIEW_DATA, tmCouponPreviewData)
         bundle.putInt(BUNDLE_PROGRAM_TYPE, programActionType)
         bundle.putParcelable(BUNDLE_COUPON_CREATE_DATA, tmMerchantCouponCreateData)
-        tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW, bundle)
+        tmOpenFragmentCallback.openFragment(CreateScreenType.PREVIEW_EXTEND, bundle)
         closeLoadingDialog()
         setButtonState()
     }
@@ -932,6 +932,9 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                 if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_BUAT){
                     tmTracker?.clickCouponCreationBackFromProgramList(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
+                if(arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_EXTEND){
+                    tmTracker?.clickProgramExtensionCouponBack(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS).toString())
+                }
                 else{
                     tmTracker?.clickCouponCreationBack(arguments?.getInt(BUNDLE_SHOP_ID).toString())
                 }
@@ -992,7 +995,11 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
                     tmTracker?.clickCouponCreationFromProgramList(
                         arguments?.getInt(BUNDLE_SHOP_ID).toString()
                     )
-                } else {
+                }
+                else if (arguments?.getInt(BUNDLE_CREATE_SCREEN_TYPE) == CreateScreenType.COUPON_MULTIPLE_EXTEND){
+                    tmTracker?.clickProgramExtensionCouponCreation(arguments?.getInt(BUNDLE_SHOP_ID).toString(), arguments?.getInt(BUNDLE_PROGRAM_ID_IN_TOOLS).toString())
+                }
+                else {
                     tmTracker?.clickCouponCreationButton(
                         arguments?.getInt(BUNDLE_SHOP_ID).toString()
                     )
