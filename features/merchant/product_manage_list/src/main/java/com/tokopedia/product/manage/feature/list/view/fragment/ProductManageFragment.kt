@@ -648,9 +648,7 @@ open class ProductManageFragment :
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.add_product_menu && !viewModel.shopStatus.value?.isOnModerationMode()
-                .orTrue()
-        ) {
+        if (item.itemId == R.id.add_product_menu) {
             if (GlobalConfig.isSellerApp()) {
                 val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_ADD)
                 startActivityForResult(intent, REQUEST_CODE_ADD_PRODUCT)
@@ -3049,8 +3047,8 @@ open class ProductManageFragment :
 // endregion
 
     private fun observeShopStatus() {
-        observe(viewModel.shopStatus) {
-            if (it.isOnModerationMode()) {
+        observe(viewModel.shopStatus) { statusInfo ->
+            if (statusInfo.isOnModerationMode()) {
                 val layoutMenuAddProduct =
                     optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
                 val iconMenuAddProduct =
@@ -3066,9 +3064,15 @@ open class ProductManageFragment :
                         color, PorterDuff.Mode.SRC_ATOP
                     )
                 }
-                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
 
-                optionsMenu?.findItem(R.id.add_product_menu)?.setOnMenuItemClickListener(null)
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
+                optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
+
+            } else {
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
+                optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
+                    onOptionsItemSelected(menuItem)
+                }
             }
         }
     }

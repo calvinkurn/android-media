@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.domain.GetStatusShopUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.ClearUploadStatusUseCase
 import com.tokopedia.product.manage.common.feature.uploadstatus.domain.GetUploadStatusUseCase
@@ -153,7 +154,7 @@ class ProductManageViewModel @Inject constructor(
         get() = _topAdsInfo
     val uploadStatus: MutableLiveData<UploadStatusModel>
         get() = _uploadStatus
-    val shopStatus: MutableLiveData<ShopStatusUIModel>
+    val shopStatus: MutableLiveData<StatusInfo>
         get() = _shopStatus
 
     private val _viewState = MutableLiveData<ViewState>()
@@ -182,7 +183,7 @@ class ProductManageViewModel @Inject constructor(
     private val _productManageAccess = MutableLiveData<Result<ProductManageAccess>>()
     private val _deleteProductDialog = MutableLiveData<DeleteProductDialogType>()
     private val _uploadStatus = MutableLiveData<UploadStatusModel>()
-    private val _shopStatus = MutableLiveData<ShopStatusUIModel>()
+    private val _shopStatus = MutableLiveData<StatusInfo>()
 
     private var access: ProductManageAccess? = null
     private var getProductListJob: Job? = null
@@ -459,7 +460,7 @@ class ProductManageViewModel @Inject constructor(
                 }
             val (productAccess, shopStatus) = currentAccess
             access = productAccess
-            _shopStatus.value = mapperShopStatusResponse(shopStatus)
+            _shopStatus.value = shopStatus
             _productManageAccess.value = Success(productAccess)
         }) {
             _productManageAccess.value = Fail(it)

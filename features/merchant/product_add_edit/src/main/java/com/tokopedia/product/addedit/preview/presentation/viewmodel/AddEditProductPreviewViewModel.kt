@@ -493,7 +493,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val shopStatus = withContext(dispatcher.io){
                 getStatusShopUseCase.executeOnBackground()
             }
-            mIsOnModerationMode.value = Success(shopStatus.statusInfo.isOnModerationMode())
+            mIsOnModerationMode.value = Success(shopStatus.isOnModerationMode())
         }, onError = {
             mIsOnModerationMode.value = Fail(it)
         })
