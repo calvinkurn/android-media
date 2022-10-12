@@ -345,6 +345,16 @@
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
+                <com.tokopedia.logisticcart.shipping.features.shippingschedulewidget.ShippingScheduleWidget
+                    android:id="@+id/shipping_now_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="16dp"
+                    android:paddingBottom="8dp"
+                    android:visibility="gone"/>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/layout_state_has_error_shipping"
                     android:layout_width="match_parent"

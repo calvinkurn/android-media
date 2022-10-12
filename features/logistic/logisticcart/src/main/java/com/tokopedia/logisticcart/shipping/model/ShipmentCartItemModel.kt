@@ -116,6 +116,7 @@ class ShipmentCartItemModel(
         var isHasShownCourierError: Boolean = false,
 
         // Scheduled Delivery
+        var isShowScheduleDelivery : Boolean = false,
         var scheduleDate: String = "",
         var timeslotId: Long = 0L
 ) : Parcelable {
@@ -171,6 +172,7 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.isAutoCourierSelection = shipmentCartItemModel.isAutoCourierSelection
             newShipmentCartItemModel.isHideChangeCourierCard = shipmentCartItemModel.isHideChangeCourierCard
             newShipmentCartItemModel.durationCardDescription = shipmentCartItemModel.durationCardDescription
+            newShipmentCartItemModel.isShowScheduleDelivery = shipmentCartItemModel.isShowScheduleDelivery
             newShipmentCartItemModel.timeslotId = shipmentCartItemModel.timeslotId
             newShipmentCartItemModel.scheduleDate = shipmentCartItemModel.scheduleDate
             return newShipmentCartItemModel

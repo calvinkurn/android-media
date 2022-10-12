@@ -1,6 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.AdditionalDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -17,7 +18,11 @@ class ShippingCourierConverter @Inject constructor() {
         }
     }
 
-    fun convertToCourierItemData(shippingCourierUiModel: ShippingCourierUiModel): CourierItemData {
+    fun convertToCourierItemData(
+        shippingCourierUiModel: ShippingCourierUiModel,
+        shippingRecommendationData: ShippingRecommendationData? = null,
+        shipmentCartItemModel: ShipmentCartItemModel? = null
+    ): CourierItemData {
         val courierItemData = CourierItemData()
         courierItemData.shipperId = shippingCourierUiModel.productData.shipperId
         courierItemData.serviceId = shippingCourierUiModel.serviceData.serviceId
@@ -27,15 +32,21 @@ class ShippingCourierConverter @Inject constructor() {
         courierItemData.minEtd = shippingCourierUiModel.productData.etd.minEtd
         courierItemData.maxEtd = shippingCourierUiModel.productData.etd.maxEtd
         courierItemData.shipperPrice = shippingCourierUiModel.productData.price.price
-        courierItemData.shipperFormattedPrice = shippingCourierUiModel.productData.price.formattedPrice
+        courierItemData.shipperFormattedPrice =
+            shippingCourierUiModel.productData.price.formattedPrice
         courierItemData.insurancePrice = shippingCourierUiModel.productData.insurance.insurancePrice
         courierItemData.insuranceType = shippingCourierUiModel.productData.insurance.insuranceType
-        courierItemData.insuranceUsedType = shippingCourierUiModel.productData.insurance.insuranceUsedType
-        courierItemData.insuranceUsedInfo = shippingCourierUiModel.productData.insurance.insuranceUsedInfo
-        courierItemData.insuranceUsedDefault = shippingCourierUiModel.productData.insurance.insuranceUsedDefault
+        courierItemData.insuranceUsedType =
+            shippingCourierUiModel.productData.insurance.insuranceUsedType
+        courierItemData.insuranceUsedInfo =
+            shippingCourierUiModel.productData.insurance.insuranceUsedInfo
+        courierItemData.insuranceUsedDefault =
+            shippingCourierUiModel.productData.insurance.insuranceUsedDefault
         courierItemData.isUsePinPoint = shippingCourierUiModel.productData.isShowMap == 1
-        courierItemData.isHideChangeCourierCard = shippingCourierUiModel.serviceData.selectedShipperProductId > 0
-        courierItemData.durationCardDescription = shippingCourierUiModel.serviceData.texts.textEtaSummarize
+        courierItemData.isHideChangeCourierCard =
+            shippingCourierUiModel.serviceData.selectedShipperProductId > 0
+        courierItemData.durationCardDescription =
+            shippingCourierUiModel.serviceData.texts.textEtaSummarize
         if (!courierItemData.isUsePinPoint) {
             if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 courierItemData.isUsePinPoint = true
@@ -44,13 +55,20 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.serviceData.orderPriority != null) {
             courierItemData.now = shippingCourierUiModel.serviceData.orderPriority.now
             courierItemData.priorityPrice = shippingCourierUiModel.serviceData.orderPriority.price
-            courierItemData.priorityFormattedPrice = shippingCourierUiModel.serviceData.orderPriority.formattedPrice
-            courierItemData.priorityInnactiveMessage = shippingCourierUiModel.serviceData.orderPriority.inactiveMessage
-            courierItemData.priorityDurationMessage = shippingCourierUiModel.serviceData.orderPriority.staticMessage.getDurationMessage()
-            courierItemData.priorityFeeMessage = shippingCourierUiModel.serviceData.orderPriority.staticMessage.getFeeMessage()
-            courierItemData.priorityWarningboxMessage = shippingCourierUiModel.serviceData.orderPriority.staticMessage.getWarningBoxMessage()
-            courierItemData.priorityCheckboxMessage = shippingCourierUiModel.serviceData.orderPriority.staticMessage.getCheckboxMessage()
-            courierItemData.priorityPdpMessage = shippingCourierUiModel.serviceData.orderPriority.staticMessage.getPdpMessage()
+            courierItemData.priorityFormattedPrice =
+                shippingCourierUiModel.serviceData.orderPriority.formattedPrice
+            courierItemData.priorityInnactiveMessage =
+                shippingCourierUiModel.serviceData.orderPriority.inactiveMessage
+            courierItemData.priorityDurationMessage =
+                shippingCourierUiModel.serviceData.orderPriority.staticMessage.getDurationMessage()
+            courierItemData.priorityFeeMessage =
+                shippingCourierUiModel.serviceData.orderPriority.staticMessage.getFeeMessage()
+            courierItemData.priorityWarningboxMessage =
+                shippingCourierUiModel.serviceData.orderPriority.staticMessage.getWarningBoxMessage()
+            courierItemData.priorityCheckboxMessage =
+                shippingCourierUiModel.serviceData.orderPriority.staticMessage.getCheckboxMessage()
+            courierItemData.priorityPdpMessage =
+                shippingCourierUiModel.serviceData.orderPriority.staticMessage.getPdpMessage()
         }
         courierItemData.isAllowDropshiper = shippingCourierUiModel.isAllowDropshipper
         courierItemData.additionalPrice = shippingCourierUiModel.additionalFee
@@ -65,23 +83,24 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee != null) {
             val otdPrev = shippingCourierUiModel.productData.features.ontimeDeliveryGuarantee
             val otd = OntimeDelivery(
-                    otdPrev.available,
-                    otdPrev.textLabel,
-                    otdPrev.textDetail,
-                    otdPrev.urlDetail,
-                    otdPrev.value,
-                    otdPrev.iconUrl
+                otdPrev.available,
+                otdPrev.textLabel,
+                otdPrev.textDetail,
+                otdPrev.urlDetail,
+                otdPrev.value,
+                otdPrev.iconUrl
             )
             courierItemData.ontimeDelivery = otd
         }
 
         /*merchant voucher*/
         if (shippingCourierUiModel.productData.features.merchantVoucherProductData != null) {
-            val merchantVoucherProductData = shippingCourierUiModel.productData.features.merchantVoucherProductData
+            val merchantVoucherProductData =
+                shippingCourierUiModel.productData.features.merchantVoucherProductData
             val mvc = MerchantVoucherProductModel(
-                    merchantVoucherProductData.isMvc,
-                    merchantVoucherProductData.mvcLogo,
-                    merchantVoucherProductData.mvcErrorMessage
+                merchantVoucherProductData.isMvc,
+                merchantVoucherProductData.mvcLogo,
+                merchantVoucherProductData.mvcErrorMessage
             )
             courierItemData.merchantVoucherProductModel = mvc
         }
@@ -90,21 +109,53 @@ class ShippingCourierConverter @Inject constructor() {
         if (shippingCourierUiModel.productData.codProductData != null) {
             val codProductData = shippingCourierUiModel.productData.codProductData
             val codProduct = CashOnDeliveryProduct(
-                    codProductData.isCodAvailable,
-                    codProductData.codText,
-                    codProductData.codPrice,
-                    codProductData.formattedPrice,
-                    codProductData.tncText,
-                    codProductData.tncLink
+                codProductData.isCodAvailable,
+                codProductData.codText,
+                codProductData.codPrice,
+                codProductData.formattedPrice,
+                codProductData.tncText,
+                codProductData.tncLink
             )
             courierItemData.codProductData = codProduct
         }
 
         /*ETA*/
         if (shippingCourierUiModel.productData.estimatedTimeArrival != null) {
-            courierItemData.etaText = shippingCourierUiModel.productData.estimatedTimeArrival.textEta
-            courierItemData.etaErrorCode = shippingCourierUiModel.productData.estimatedTimeArrival.errorCode
+            courierItemData.etaText =
+                shippingCourierUiModel.productData.estimatedTimeArrival.textEta
+            courierItemData.etaErrorCode =
+                shippingCourierUiModel.productData.estimatedTimeArrival.errorCode
         }
+
+        /*Schedule Delivery*/
+        shippingRecommendationData?.additionalDeliveryData?.takeIf { it.hidden.not() }?.apply {
+            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
+                shipmentCartItemModel?.scheduleDate ?: "",
+                shipmentCartItemModel?.timeslotId ?: 0L,
+            )
+        }
+
         return courierItemData
+    }
+
+    private fun AdditionalDeliveryData.convertToScheduleDeliveryUiModel(
+        scheduleDate: String,
+        timeslotId: Long
+    ): ScheduleDeliveryUiModel? {
+        var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
+
+        scheduleDeliveryUiModel = ScheduleDeliveryUiModel(
+            isSelected = recommendAdditionalShipper,
+            available = available,
+            hidden = hidden,
+            title = title,
+            text = text,
+            deliveryServices = deliveryServices,
+            isNeedShowCoachMark = true
+        ).apply {
+            setScheduleDateAndTimeslotId(scheduleDate, timeslotId)
+        }
+
+        return scheduleDeliveryUiModel
     }
 }

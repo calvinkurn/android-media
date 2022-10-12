@@ -8,6 +8,8 @@ import kotlinx.parcelize.Parcelize
 class DeliveryProduct(
     @SerializedName("title")
     val title: String = "",
+    @SerializedName("text_eta")
+    val textEta: String = "",
     @SerializedName("id")
     val id: Long = 0L,
     @SerializedName("shipper_id")

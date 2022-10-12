@@ -57,4 +57,7 @@
     <string name="occ_pinpoint_error_title">Atur pinpoint alamatmu dulu, ya.</string>
     <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="occ_pinpoint_error_action">Atur</string>
+    <string name="label_choose_delivery_time">Pilih Waktu Pengiriman</string>
+    <string name="title_coachmark_option_schedule_delivery">Bisa atur kapan pesanan tiba sesuai kebutuhan 😄</string>
+    <string name="description_coachmark_option_schedule_delivery">Tersedia khusus pesanan Tokopedia NOW!</string>
 </resources>

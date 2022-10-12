@@ -17,7 +17,9 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceBinding
+import com.tokopedia.logisticcart.shipping.features.shippingschedulewidget.ShippingScheduleWidget
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.purchase_platform.common.utils.Utils.removeDecimalSuffix
@@ -65,6 +67,8 @@ class ShippingWidget : ConstraintLayout {
         )
 
         fun onViewErrorInCourierSection(logPromoDesc: String)
+
+        fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel)
     }
 
     fun setupListener(shippingWidgetListener: ShippingWidgetListener) {
@@ -110,6 +114,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedFreeShipping.gone()
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
+            shippingNowWidget.gone()
             labelErrorShippingTitle.text = shipmentCartItemModel.courierSelectionErrorTitle
             labelErrorShippingDescription.text =
                 shipmentCartItemModel.courierSelectionErrorDescription
@@ -135,6 +140,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            shippingNowWidget.gone()
             layoutStateHasSelectedSingleShipping.visible()
             layoutStateHasSelectedSingleShipping.setOnClickListener { }
         }
@@ -143,12 +149,7 @@ class ShippingWidget : ConstraintLayout {
     private fun showLabelSingleShippingEta(selectedCourierItemData: CourierItemData) {
         binding?.apply {
             labelSingleShippingEta.visibility = VISIBLE
-            labelSingleShippingEta.text =
-                if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
-                    selectedCourierItemData.etaText
-                } else {
-                    context.getString(R.string.estimasi_tidak_tersedia)
-                }
+            labelSingleShippingEta.text = getSingleShippingLabelEta(selectedCourierItemData)
         }
     }
 
@@ -172,6 +173,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
+            shippingNowWidget.gone()
             layoutStateHasSelectedFreeShipping.visible()
             layoutStateHasSelectedFreeShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -235,6 +237,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
+            shippingNowWidget.gone()
             layoutStateHasSelectedNormalShipping.visible()
             TextAndContentDescriptionUtil.setTextAndContentDescription(
                 labelSelectedShippingDuration,
@@ -392,29 +395,24 @@ class ShippingWidget : ConstraintLayout {
         selectedCourierItemData: CourierItemData
     ) {
         showLayoutSingleShippingCourier()
-
-        binding?.labelSelectedSingleShippingTitle?.apply {
-            text = if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
-                // Change duration to promo title after promo is applied
-                val htmlLinkHelper = HtmlLinkHelper(
-                    context, selectedCourierItemData.freeShippingChosenCourierTitle
-                )
-                htmlLinkHelper.spannedString
+        binding?.labelSelectedSingleShippingTitle?.text = getSingleShippingTitle(shipmentCartItemModel, selectedCourierItemData)
+        showLabelSingleShippingEta(selectedCourierItemData)
+        doCheckLabelSingleShippingPromo(shipmentCartItemModel, selectedCourierItemData) { labelSingleShippingPromo ->
+            if (labelSingleShippingPromo?.isNotBlank() == true) {
+                showLabelSingleShippingMessage(labelSingleShippingPromo)
             } else {
-                val price = removeDecimalSuffix(
-                    convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
-                        false
-                    )
-                )
-                selectedCourierItemData.name + " (" + price + ")"
+                hideLabelSingleShippingMessage()
             }
         }
+    }
 
-        showLabelSingleShippingEta(selectedCourierItemData)
-
+    private fun doCheckLabelSingleShippingPromo(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        selectedCourierItemData: CourierItemData,
+        labelSingleShippingPromo: (CharSequence?) -> Unit
+    ) {
         if (selectedCourierItemData.logPromoDesc != null && selectedCourierItemData.logPromoDesc?.isNotEmpty() == true) {
-            showLabelSingleShippingMessage(
+            labelSingleShippingPromo.invoke(
                 MethodChecker.fromHtml(
                     selectedCourierItemData.logPromoDesc
                 )
@@ -424,7 +422,38 @@ class ShippingWidget : ConstraintLayout {
                 shipmentCartItemModel.isHasShownCourierError = true
             }
         } else {
-            hideLabelSingleShippingMessage()
+            labelSingleShippingPromo.invoke(null)
+        }
+    }
+
+    private fun getSingleShippingTitle(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        selectedCourierItemData: CourierItemData
+    ): CharSequence?{
+        return if (shipmentCartItemModel.voucherLogisticItemUiModel != null) {
+            // Change duration to promo title after promo is applied
+            val htmlLinkHelper = HtmlLinkHelper(
+                context, selectedCourierItemData.freeShippingChosenCourierTitle
+            )
+            htmlLinkHelper.spannedString
+        } else {
+            val price = removeDecimalSuffix(
+                convertPriceValueToIdrFormat(
+                    selectedCourierItemData.shipperPrice,
+                    false
+                )
+            )
+            selectedCourierItemData.name + " (" + price + ")"
+        }
+    }
+
+    private fun getSingleShippingLabelEta(
+        selectedCourierItemData: CourierItemData
+    ) : String? {
+        return if (selectedCourierItemData.etaErrorCode == 0 && selectedCourierItemData.etaText?.isNotEmpty() == true) {
+            selectedCourierItemData.etaText
+        } else {
+            context.getString(R.string.estimasi_tidak_tersedia)
         }
     }
 
@@ -438,6 +467,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedSingleShipping.gone()
+            shippingNowWidget.gone()
             layoutStateHasSelectedFreeShipping.visible()
             layoutStateHasSelectedFreeShipping.setOnClickListener {
                 mListener?.onChangeDurationClickListener(shipmentCartItemModel, currentAddress)
@@ -498,6 +528,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasSelectedSingleShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
+            shippingNowWidget.gone()
         }
     }
 
@@ -538,6 +569,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
             layoutStateHasSelectedFreeShipping.gone()
+            shippingNowWidget.gone()
 
             labelSelectedSingleShippingTitle.setText(R.string.checkout_label_set_pinpoint_title)
             labelSingleShippingEta.gone()
@@ -565,6 +597,42 @@ class ShippingWidget : ConstraintLayout {
                 mListener?.onClickSetPinpoint()
             }
             layoutStateHasSelectedSingleShipping.visible()
+        }
+    }
+
+    fun renderScheduleDeliveryWidget(
+        shipmentCartItemModel: ShipmentCartItemModel,
+        selectedCourierItemData: CourierItemData
+    ) {
+        showScheduleDeliveryWidget()
+
+        var labelNow2H: CharSequence? = null
+
+        doCheckLabelSingleShippingPromo(shipmentCartItemModel, selectedCourierItemData) { labelSingleShippingPromo ->
+            labelNow2H = labelSingleShippingPromo
+        }
+
+        binding?.shippingNowWidget?.bind(
+            titleNow2H = getSingleShippingTitle(shipmentCartItemModel, selectedCourierItemData),
+            descriptionNow2H = getSingleShippingLabelEta(selectedCourierItemData),
+            labelNow2H = labelNow2H,
+            scheduleDeliveryUiModel = selectedCourierItemData.scheduleDeliveryUiModel,
+            listener = object : ShippingScheduleWidget.ShippingScheduleWidgetListener {
+                override fun onChangeScheduleDelivery(scheduleDeliveryUiModel: ScheduleDeliveryUiModel) {
+                    mListener?.onChangeScheduleDelivery(scheduleDeliveryUiModel)
+                }
+            }
+        )
+    }
+
+    private fun showScheduleDeliveryWidget() {
+        binding?.apply {
+            layoutStateHasSelectedNormalShipping.gone()
+            layoutStateFailedShipping.gone()
+            layoutStateHasErrorShipping.gone()
+            layoutStateHasSelectedFreeShipping.gone()
+            layoutStateHasSelectedSingleShipping.gone()
+            shippingNowWidget.visible()
         }
     }
 
