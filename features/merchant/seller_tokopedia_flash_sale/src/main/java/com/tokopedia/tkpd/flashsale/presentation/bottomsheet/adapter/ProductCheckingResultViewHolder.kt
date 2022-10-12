@@ -61,6 +61,7 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             tfPrice.text = priceText
             tfSlashPrice.text = slashPriceText
             labelDiscount.text = percentText
+            tfSlashPrice.strikethrough()
         }
     }
 
@@ -100,11 +101,13 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
 
     fun bind(item: ProductCheckingResult) {
         val statusText = item.checkingDetailResult.statusText
+        val statusType = item.checkingDetailResult.statusLabelType
         binding.apply {
             imgProduct.loadImage(item.imageUrl)
             tfProductName.text = item.name
             tfProductName.isVisible = item.name.isNotEmpty()
             labelStatus.text = statusText
+            labelStatus.setLabelType(statusType)
             labelStatus.isVisible = !item.isMultiloc && statusText.isNotEmpty()
             tfSubsidy.text = context.getString(R.string.commonbs_product_check_subsidy_format,
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())

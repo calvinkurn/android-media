@@ -11,21 +11,25 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
+import com.tokopedia.unifycomponents.Label
 
 object ProductCheckingResultMapper {
 
     private const val PRODUCT_NAME_DELIMITER_REMOTE = " - "
     private const val VARIANT_NAME_DELIMITER_REMOTE = ", "
     private const val VARIANT_NAME_DELIMITER_LOCAL = " | "
+    private const val PRODUCT_STATUS_REGISTERED = 0L
+    private const val PRODUCT_STATUS_ACCEPTED = 1L
+    private const val PRODUCT_STATUS_REFUSED = 2L
 
     private fun String.getVariantName() =
         split(PRODUCT_NAME_DELIMITER_REMOTE).lastOrNull().orEmpty().replace(
             VARIANT_NAME_DELIMITER_REMOTE, VARIANT_NAME_DELIMITER_LOCAL)
 
     private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult() = map {
-        val originalPrice = it.discountSetup?.price.orZero().toLong()
+        val originalPrice = it.price.toLong()
         val discountPercent = it.discountSetup?.discount.orZero()
-        val discountedPrice = DiscountUtil.calculatePrice(discountPercent, originalPrice)
+        val discountedPrice = it.discountSetup?.price.orZero().toLong()
         ProductCheckingResult.LocationCheckingResult(
             warehouseId = it.warehouseId.toString(),
             cityName = it.name,
@@ -34,12 +38,23 @@ object ProductCheckingResultMapper {
                 originalPrice = originalPrice,
                 discountPercent = discountPercent.toInt(),
                 stock = it.discountSetup?.stock.orZero(),
+                statusId = it.statusId,
                 statusText = it.statusText,
+                statusLabelType = it.getLabelType(),
                 isSubsidy = it.subsidy.hasSubsidy,
                 subsidyAmount = it.subsidy.subsidyAmount,
                 rejectionReason = it.rejectionReason
             )
         )
+    }
+
+    private fun SubmittedProduct.Warehouse.getLabelType(): Int {
+        return when(statusId) {
+            PRODUCT_STATUS_REGISTERED -> Label.HIGHLIGHT_LIGHT_ORANGE
+            PRODUCT_STATUS_ACCEPTED -> Label.HIGHLIGHT_LIGHT_GREEN
+            PRODUCT_STATUS_REFUSED -> Label.HIGHLIGHT_LIGHT_RED
+            else -> Label.HIGHLIGHT_LIGHT_GREEN
+        }
     }
 
     fun map (item: List<SubmittedProduct>) = item.map {

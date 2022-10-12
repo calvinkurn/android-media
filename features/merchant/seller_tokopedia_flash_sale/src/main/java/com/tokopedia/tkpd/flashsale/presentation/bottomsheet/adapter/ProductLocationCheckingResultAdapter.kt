@@ -3,13 +3,11 @@ package com.tokopedia.tkpd.flashsale.presentation.bottomsheet.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsItemProductLocationCheckResultBinding
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductCheckingResult
+import com.tokopedia.unifycomponents.Label
 
 class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocationCheckingResultAdapter.CriteriaViewHolder>() {
 
@@ -43,6 +41,7 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 tfLocationName.text = item.cityName
                 tfPrice.text = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
                 tfSlashPrice.text = item.checkingDetailResult.originalPrice.getCurrencyFormatted()
+                tfSlashPrice.strikethrough()
                 labelDiscount.text = "${item.checkingDetailResult.discountPercent}%"
                 tfSubsidiary.text = context.getString(R.string.commonbs_product_check_subsidy_format,
                     item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
@@ -50,6 +49,7 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format,
                     item.checkingDetailResult.stock)
                 labelStatus.setTextAndCheckShow(item.checkingDetailResult.statusText)
+                labelStatus.setLabelType(item.checkingDetailResult.statusLabelType)
             }
         }
     }

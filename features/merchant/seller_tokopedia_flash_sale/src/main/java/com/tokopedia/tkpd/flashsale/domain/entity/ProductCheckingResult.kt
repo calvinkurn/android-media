@@ -15,6 +15,7 @@ data class ProductCheckingResult(
         val stock: Long = 0,
         val statusId: Long = 0,
         val statusText: String = "",
+        val statusLabelType: Int = 0,
         val isSubsidy: Boolean = false,
         val subsidyAmount: Long = 0,
         val rejectionReason: String = ""
