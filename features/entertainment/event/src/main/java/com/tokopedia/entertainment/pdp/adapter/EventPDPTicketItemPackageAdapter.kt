@@ -94,7 +94,6 @@ class EventPDPTicketItemPackageAdapter(
                     quantityEditor.setValue(items.minQty.toIntSafely())
                     quantityEditor.minValue = items.minQty.toIntSafely() - 1
                     quantityEditor.maxValue = items.maxQty.toIntSafely()
-                    quantityEditor.editText.keyListener = null
 
                     quantityEditor.setValueChangedListener { newValue, _, _ ->
                         isError = !((quantityEditor.getValue() >= items.minQty.toIntSafely() || quantityEditor.getValue() >= EMPTY_QTY) && quantityEditor.getValue() <= items.maxQty.toIntSafely())
