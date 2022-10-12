@@ -319,36 +319,36 @@ fun UnifyToolbar(
         elevation = 1.dp,
         modifier = modifier
     ) {
-        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .height(44.dp),
-                horizontalArrangement = Arrangement.Start,
-                verticalAlignment = Alignment.CenterVertically
+
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .height(44.dp),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(16.dp))
+            IconButton(
+                modifier = Modifier
+                    .height(16.dp)
+                    .width(18.dp),
+                onClick = onToolbarBackIconPressed
             ) {
-                Spacer(modifier = Modifier.width(16.dp))
-                IconButton(
-                    modifier = Modifier
-                        .height(16.dp)
-                        .width(18.dp),
-                    onClick = onToolbarBackIconPressed
-                ) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Back"
-                    )
-                }
-                Spacer(modifier = Modifier.width(16.dp))
-                UnifyTypography(
-                    text = title,
-                    textStyle = LocalTypography.current.display1.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = LocalColors.current.NN950
-                    )
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "Back"
                 )
             }
+            Spacer(modifier = Modifier.width(16.dp))
+            UnifyTypography(
+                text = title,
+                textStyle = LocalTypography.current.display1.copy(
+                    fontWeight = FontWeight.Bold,
+                    color = LocalColors.current.NN950
+                )
+            )
         }
+
     }
 }
 
