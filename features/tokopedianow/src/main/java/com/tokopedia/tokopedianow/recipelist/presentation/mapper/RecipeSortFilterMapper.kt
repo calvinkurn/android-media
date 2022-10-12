@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.tokopedianow.common.model.TokoNowChipListUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChipUiModel
-import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterOptionResponse
 import com.tokopedia.tokopedianow.recipelist.domain.model.RecipeFilterSortDataResponse
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_INGREDIENT_ID
 import com.tokopedia.tokopedianow.recipelist.domain.param.RecipeListParam.Companion.PARAM_SORT_BY
@@ -64,26 +63,9 @@ object RecipeSortFilterMapper {
                 RecipeFilterSectionHeader(text = recipeResponse.title)
             }
 
-            /**
-             * filter the option which is popular or the option has been selected before
-             */
-            val selectedFilterPopular = mutableListOf<RecipeFilterOptionResponse>()
-            for (option in recipeResponse.options) {
-                if (option.isPopular) {
-                    selectedFilterPopular.add(option)
-                } else {
-                    for (filter in selectedFilters) {
-                        if (option.value == filter.id && option.key == filter.parentId) {
-                            selectedFilterPopular.add(option)
-                            break
-                        }
-                    }
-                }
-            }
-
             val filterChipList = TokoNowChipListUiModel(
                 parentId = parentId,
-                items = selectedFilterPopular
+                items = recipeResponse.options
                     .map { option ->
                         val selectedFilterIds = selectedFilters
                             .filter { filter -> filter.parentId == option.key }

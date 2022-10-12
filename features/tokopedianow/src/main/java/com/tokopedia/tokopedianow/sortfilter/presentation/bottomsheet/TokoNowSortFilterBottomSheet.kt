@@ -118,15 +118,20 @@ class TokoNowSortFilterBottomSheet(
     }
 
     fun submitList(items: List<Visitable<*>>) {
-        allSelectedFilters = items
-        val newFilterItemsDisplayed = items.map { uiModel ->
+        allSelectedFilters = items.map { uiModel ->
+            if (uiModel is TokoNowChipListUiModel) {
+                uiModel.copy(items = uiModel.items.filter { it.selected || it.isPopular})
+            } else {
+                uiModel
+            }
+        }
+        filterItemsDisplayed = allSelectedFilters.map { uiModel ->
             if (uiModel is TokoNowChipListUiModel) {
                 uiModel.copy(items = uiModel.items.filter { it.isPopular })
             } else {
                 uiModel
             }
         }
-        filterItemsDisplayed = newFilterItemsDisplayed
         adapter.submitList(filterItemsDisplayed)
     }
 

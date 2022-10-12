@@ -5,7 +5,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 object BottomSheetUtil {
-    internal fun BottomSheetUnify.configureMaxHeight() {
+    internal fun BottomSheetUnify.configureMaxHeight(maxHeightNeeded: Boolean = false) {
         val screenHeight = getScreenHeight()
         customPeekHeight = screenHeight / 2
 
@@ -13,7 +13,7 @@ object BottomSheetUtil {
             var maxHeight = (screenHeight * 0.9f).toInt()
             val bottomSheetHeight = bottomSheetWrapper.height
 
-            maxHeight = if (bottomSheetHeight < maxHeight) {
+            maxHeight = if (!maxHeightNeeded && bottomSheetHeight < maxHeight) {
                 bottomSheetHeight
             } else {
                 maxHeight
@@ -24,17 +24,6 @@ object BottomSheetUtil {
                 maxHeight
             )
         }
-    }
-
-    internal fun BottomSheetUnify.configureMaxPeek() {
-        val screenHeight = getScreenHeight()
-        val maxHeight = (screenHeight * 0.9f).toInt()
-        customPeekHeight = maxHeight
-
-        bottomSheetWrapper.layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            maxHeight
-        )
     }
 
     internal fun BottomSheetUnify.setMaxHeight() {

@@ -9,7 +9,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxPeek
+import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeProductAdapter
@@ -62,7 +62,7 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        configureMaxPeek()
+        configureMaxHeight(true)
         setupRecyclerView()
     }
 
