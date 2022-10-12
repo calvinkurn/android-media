@@ -6,8 +6,8 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.util.extension.showToaster
-import com.tokopedia.play_common.R
 import com.tokopedia.unifycomponents.Toaster
 
 /**
@@ -25,7 +25,7 @@ class PlayBroadcastToasterManager(
 
     private val toasterBottomMargin: Int by lazy(LazyThreadSafetyMode.NONE) {
         context.resources.getDimensionPixelOffset(
-            com.tokopedia.unifyprinciples.R.dimen.spacing_lvl8
+            R.dimen.play_bro_toaster_bottom_margin
         )
     }
 
