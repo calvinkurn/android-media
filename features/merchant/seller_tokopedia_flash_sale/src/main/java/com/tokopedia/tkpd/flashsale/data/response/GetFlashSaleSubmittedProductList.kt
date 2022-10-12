@@ -77,7 +77,9 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("stock")
         val stock: Int,
         @SerializedName("warehouse_id")
-        val warehouseId: Long
+        val warehouseId: Long,
+        @SerializedName("sold_count")
+        val soldCount: Int
     )
 
     data class DiscountSetup(

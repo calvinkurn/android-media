@@ -103,6 +103,11 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
     fun bind(item: ProductCheckingResult) {
         val statusText = item.checkingDetailResult.statusText
         val statusType = item.checkingDetailResult.statusLabelType
+        val subsidyText = context.getString(R.string.stfs_subsidy_value_placeholder,
+            item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
+        val soldCountText = context.getString(R.string.commonbs_product_sold_count_format,
+            item.soldCount)
+
         binding.apply {
             imgProduct.loadImage(item.imageUrl)
             tfProductName.text = item.name
@@ -110,10 +115,10 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             labelStatus.text = statusText
             labelStatus.setLabelType(statusType)
             labelStatus.isVisible = !item.isMultiloc && statusText.isNotEmpty()
-            val textSubsidy = context.getString(R.string.stfs_subsidy_value_placeholder,
-                item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
-            tfSubsidy.text = MethodChecker.fromHtml(textSubsidy)
+            tfSubsidy.text = MethodChecker.fromHtml(subsidyText)
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
+            tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
+            tfSoldCount.isVisible = !item.isMultiloc
         }
         setupPrice(binding, item)
         setupStock(binding, item)
@@ -125,7 +130,8 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
         item: ProductCheckingResult,
     ) {
         val stock = item.locationCheckingResult.sumOf { it.checkingDetailResult.stock }
-        binding.tfCampaignStock.text = context.getString(R.string.commonbs_product_check_stock_format, stock)
+        val stockText = context.getString(R.string.commonbs_product_check_stock_format, stock)
+        binding.tfCampaignStock.text = MethodChecker.fromHtml(stockText)
         if (item.isMultiloc) binding.tfCampaignStock.apply {
             text = context.getString(R.string.commonbs_product_check_location_count_suffix_format, text, item.locationCheckingResult.size)
         }

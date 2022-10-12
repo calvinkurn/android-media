@@ -33,6 +33,7 @@ object ProductCheckingResultMapper {
         ProductCheckingResult.LocationCheckingResult(
             warehouseId = it.warehouseId.toString(),
             cityName = it.name,
+            soldCount = it.soldCount,
             checkingDetailResult = ProductCheckingResult.CheckingDetailResult(
                 discountedPrice = discountedPrice,
                 originalPrice = originalPrice,
@@ -71,7 +72,8 @@ object ProductCheckingResultMapper {
             isMultiloc = item.isMultiwarehouse,
             checkingDetailResult = warehouses.firstOrNull()?.checkingDetailResult
                 ?: ProductCheckingResult.CheckingDetailResult(),
-            locationCheckingResult = warehouses
+            locationCheckingResult = warehouses,
+            soldCount = item.soldCount
         )
     }
 
@@ -147,6 +149,17 @@ object ProductCheckingResultMapper {
             is FinishedProcessSelectionItem -> selectedProduct.picture
             is OnSelectionProcessItem -> selectedProduct.picture
             is WaitingForSelectionItem -> selectedProduct.picture
+            else -> ""
+        }.toString()
+    }
+
+    fun getProductSold(selectedProduct: DelegateAdapterItem): String {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.soldCount
+            is OngoingRejectedItem -> selectedProduct.soldCount
+            is FinishedProcessSelectionItem -> ""
+            is OnSelectionProcessItem -> ""
+            is WaitingForSelectionItem -> ""
             else -> ""
         }.toString()
     }

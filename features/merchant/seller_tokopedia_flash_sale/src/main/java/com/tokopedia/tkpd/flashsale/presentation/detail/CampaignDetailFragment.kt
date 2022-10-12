@@ -1412,6 +1412,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val isVariantProduct = ProductCheckingResultMapper.isVariantProduct(selectedProduct)
         val isMultiloc = ProductCheckingResultMapper.isMultiloc(selectedProduct)
         val productName = ProductCheckingResultMapper.getProductName(selectedProduct)
+        val displayProductSold = ProductCheckingResultMapper.getProductSold(selectedProduct).isNotEmpty()
 
         checkProductBottomSheet.setProductName(productName)
 
