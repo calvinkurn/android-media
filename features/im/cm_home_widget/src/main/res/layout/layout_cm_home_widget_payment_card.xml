@@ -17,8 +17,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_cm_home_widget_payment"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:scaleType="fitCenter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,7 @@
             android:id="@+id/tv_cm_home_widget_payment_account_no"
             android:layout_width="@dimen/cm_home_widget_dp_0"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="6dp"
             android:layout_marginStart="@dimen/unify_space_8"
             android:ellipsize="end"
             android:textColor="@color/Unify_N700_68"
