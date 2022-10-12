@@ -1477,7 +1477,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             _accountListState.value = accountList
 
-            if (accountList.value.isNotEmpty()) {
+            if (accountList.isNotEmpty()) {
                 updateSelectedAccount(
                     getSelectedAccount(
                         cacheSelectedType = sharedPref.getLastSelectedAccount(),
