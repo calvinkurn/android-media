@@ -18,6 +18,11 @@ private val OpenSauce = FontFamily(
 val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)
 
 data class UnifyTypography(
+    val display1 : TextStyle = TextStyle(
+        fontFamily = OpenSauce,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp
+    ),
     val display2 : TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,

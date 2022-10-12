@@ -20,9 +20,9 @@ import com.tokopedia.campaignlist.page.presentation.ui.color.UnifyNN700Dark
 import com.tokopedia.campaignlist.page.presentation.ui.color.getColor
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.LocalElevations
-import com.tokopedia.campaignlist.page.presentation.ui.font.UnifyTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
+import com.tokopedia.campaignlist.page.presentation.ui.font.UnifyTypography
 
 
 private val UnifyThemeLight = lightColors(

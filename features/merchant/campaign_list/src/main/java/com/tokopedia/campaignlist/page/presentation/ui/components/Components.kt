@@ -4,9 +4,11 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -19,14 +21,19 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,6 +57,7 @@ import coil.compose.rememberImagePainter
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
+import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 
 data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
 
@@ -299,6 +307,52 @@ fun UnifyLabel(
 
 }
 
+
+@Composable
+fun UnifyToolbar(
+    modifier: Modifier = Modifier,
+    title: String,
+    onToolbarBackIconPressed: () -> Unit
+) {
+    Surface(
+        color = LocalColors.current.NN0,
+        elevation = 1.dp,
+        modifier = modifier
+    ) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .height(44.dp),
+                horizontalArrangement = Arrangement.Start,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Spacer(modifier = Modifier.width(16.dp))
+                IconButton(
+                    modifier = Modifier
+                        .height(16.dp)
+                        .width(18.dp),
+                    onClick = onToolbarBackIconPressed
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.ArrowBack,
+                        contentDescription = "Back"
+                    )
+                }
+                Spacer(modifier = Modifier.width(16.dp))
+                UnifyTypography(
+                    text = title,
+                    textStyle = LocalTypography.current.display1.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = LocalColors.current.NN950
+                    )
+                )
+            }
+        }
+    }
+}
+
+
 @Composable
 fun UnifyButton(
     modifier: Modifier = Modifier,
@@ -361,6 +415,23 @@ fun UnifySortFilterPreview() {
     )
     UnifySortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
 }
+
+@Preview(name = "Toolbar")
+@Composable
+fun UnifyToolbarPreview() {
+    UnifyTheme(darkTheme = false) {
+        UnifyToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
+    }
+}
+
+@Preview(name = "Toolbar (Dark)")
+@Composable
+fun UnifyToolbarDarkPreview() {
+    UnifyTheme(darkTheme = true) {
+        UnifyToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
+    }
+}
+
 
 @Preview(name = "Sort Filter Item (Selected)")
 @Composable

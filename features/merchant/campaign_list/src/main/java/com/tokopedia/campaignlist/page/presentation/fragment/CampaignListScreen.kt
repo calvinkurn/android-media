@@ -46,6 +46,7 @@ import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
+import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyToolbar
 
 @Composable
 fun CampaignListScreen(
@@ -57,12 +58,18 @@ fun CampaignListScreen(
     onSearchbarCleared: () -> Unit,
     onTickerDismissed: () -> Unit,
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
+    onToolbarBackIconPressed: () -> Unit
 ) {
     Column(modifier = Modifier
         .background(color = MaterialTheme.colors.primary)
         .fillMaxSize()
         .semantics { contentDescription = "Campaign List" }
     ) {
+        Toolbar(
+            title = stringResource(id = R.string.active_campaign_list),
+            onToolbarBackIconPressed = onToolbarBackIconPressed
+        )
+
         SearchBar(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
             onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
@@ -110,6 +117,19 @@ private fun SearchBar(
         placeholderText = stringResource(id = R.string.search_active_campaign),
         onSearchBarCleared = onSearchbarCleared,
         onKeyboardSearchAction = onSearchBarKeywordSubmit
+    )
+}
+
+@Composable
+private fun Toolbar(
+    modifier: Modifier = Modifier,
+    title: String,
+    onToolbarBackIconPressed: () -> Unit
+) {
+    UnifyToolbar(
+        modifier = modifier,
+        title = title,
+        onToolbarBackIconPressed = onToolbarBackIconPressed
     )
 }
 

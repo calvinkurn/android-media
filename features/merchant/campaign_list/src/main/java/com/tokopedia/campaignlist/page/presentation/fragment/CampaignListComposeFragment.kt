@@ -122,7 +122,8 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                             )
                         },
                         onSearchbarCleared = { viewModel.getCampaignList() },
-                        onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) }
+                        onTickerDismissed = { viewModel.onEvent(CampaignListViewModel.UiEvent.DismissTicker) },
+                        onToolbarBackIconPressed = { activity?.finish() }
                     )
                 }
 

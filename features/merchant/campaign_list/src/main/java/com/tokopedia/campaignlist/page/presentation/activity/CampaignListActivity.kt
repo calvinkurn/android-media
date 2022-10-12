@@ -4,17 +4,12 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.fragment.CampaignListComposeFragment
-import com.tokopedia.header.HeaderUnify
 
 class CampaignListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_campaign_list)
-
-        val toolbar = findViewById<HeaderUnify>(R.id.header)
-        toolbar.headerTitle = getString(R.string.active_campaign_list)
-        toolbar.setNavigationOnClickListener { finish() }
 
         if (savedInstanceState == null) {
             val fragment = CampaignListComposeFragment.createInstance()
