@@ -29,7 +29,7 @@ class PlayBroadcastToasterManager(
         )
     }
 
-    private var activeIndefiniteToaster: Snackbar? = null
+    private var activeToaster: Snackbar? = null
 
     fun showErrorToaster(
         err: Throwable,
@@ -76,13 +76,11 @@ class PlayBroadcastToasterManager(
             bottomMargin = toasterBottomMargin
         )
 
-        if(toaster != null && duration == Toaster.LENGTH_INDEFINITE) {
-            activeIndefiniteToaster = toaster
-        }
+        activeToaster = toaster
     }
 
-    fun dismissAllToaster() {
-        activeIndefiniteToaster?.dismiss()
-        activeIndefiniteToaster = null
+    fun dismissActiveToaster() {
+        activeToaster?.dismiss()
+        activeToaster = null
     }
 }
