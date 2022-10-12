@@ -41,7 +41,6 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
     private val viewModel by viewModels<DealsPDPAllLocationViewModel> { viewModelFactory }
     private var binding by autoClearedNullable<FragmentDealsDetailLocationBinding>()
     private var outlets: List<Outlet>? = null
-    private var isShowSearchBar: Boolean = true
     private var toolbar: HeaderUnify? = null
     private var noContentLayout: LinearLayout? = null
     private var recycleView: RecyclerView? = null
@@ -55,7 +54,6 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         outlets = arguments?.getParcelableArrayList<Outlet>(EXTRA_OUTLETS).orEmpty()
-        isShowSearchBar = arguments?.getBoolean(EXTRA_TOGGLE, true) ?: true
         super.onCreate(savedInstanceState)
     }
 
@@ -109,29 +107,25 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     private fun setupSearchBar() {
         searchBar?.apply {
-            if (isShowSearchBar) {
-                show()
-                searchBarTextField.addTextChangedListener(object : TextWatcher {
-                    override fun afterTextChanged(text: Editable?) {
-                        text?.let { text ->
-                            outlets?.let { outlets ->
-                                viewModel.submitSearch(text.toString(), outlets)
-                            }
+            searchBarTextField.addTextChangedListener(object : TextWatcher {
+                override fun afterTextChanged(text: Editable?) {
+                    text?.let { text ->
+                        outlets?.let { outlets ->
+                            viewModel.submitSearch(text.toString(), outlets)
                         }
                     }
+                }
 
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                })
-            } else {
-                gone()
-            }
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+            })
         }
     }
 
     private fun setupRecycleView(outlets: List<Outlet>) {
         context?.let { context ->
-            val adapter = DealsDetailAllLocationAdapter(object : DealsDetailAllLocationAdapter.LocationCallBack {
+            val adapter = DealsDetailAllLocationAdapter(object :
+                DealsDetailAllLocationAdapter.LocationCallBack {
                 override fun onClickLocation(latLang: String) {
                     openGoogleMaps(context, latLang)
                 }
@@ -181,15 +175,13 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     companion object {
         private const val EXTRA_OUTLETS = "EXTRA_OUTLETS"
-        private const val EXTRA_TOGGLE = "EXTRA_TOGGLE"
         private const val PACKAGE_MAPS = "com.google.android.apps.maps"
         private const val URI_MAPS = "geo:0,0?q="
 
-        fun createInstance(outlets: List<Outlet>, isShowSearchBar: Boolean): DealsPDPAllLocationFragment {
+        fun createInstance(outlets: List<Outlet>): DealsPDPAllLocationFragment {
             val fragment = DealsPDPAllLocationFragment()
             val bundle = Bundle()
             bundle.putParcelableArrayList(EXTRA_OUTLETS, ArrayList(outlets))
-            bundle.putBoolean(EXTRA_TOGGLE, isShowSearchBar)
             fragment.arguments = bundle
             return fragment
         }
