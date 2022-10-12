@@ -58,6 +58,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     override fun initViews() {
         super.initViews()
+        setDataFromArguments()
         setupBackground()
         setupToolbarData("")
         setupReplySection(true, getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat))
