@@ -76,7 +76,6 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
     }
 
     inner class ShippingEditorConventionalViewHolder(itemView: View, private val listener: ShippingEditorConventionalListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener) : RecyclerView.ViewHolder(itemView) {
-        lateinit var conventionalModel: ConventionalModel
         private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
@@ -93,26 +92,53 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         private val labelInformation = itemView.findViewById<IconUnify>(R.id.btn_information)
 
         fun binData(data: ConventionalModel) {
-            conventionalModel = data
             setItemData(data)
-            setAdapterData(data)
-            setItemChecked(data)
+            if (data.isWhitelabel) {
+                hideShipperServices()
+                setWhitelabelCheckListener(data)
+            } else {
+                setAdapterData(data)
+                setItemChecked(data)
+            }
+        }
+
+        private fun setWhitelabelCheckListener(data: ConventionalModel) {
+            setCheckboxEnableState(data)
+
+            shipmentItemCb.isChecked = data.isActive
+
+            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                data.isActive = isChecked
+                data.shipperProduct.forEach { it.isActive = isChecked }
+            }
+        }
+
+        private fun setCheckboxEnableState(data: ConventionalModel) {
+            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                data.isActive = false
+                shipmentItemCb.isEnabled = false
+            } else {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                shipmentItemCb.isEnabled = true
+            }
+        }
+
+        private fun hideShipperServices() {
+            childLayout.gone()
         }
 
         private fun setItemData(data: ConventionalModel) {
-            val shipperName = data.shipperProduct
-            var sb = StringBuilder()
-
-            shipmentItemImage?.let {
-                ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
-            }
             shipmentName.text = data.shipperName
+            shipmentCategory.text = data.description
 
-            for (x in shipperName.indices) {
-                sb.append(shipperName[x].shipperProductName).append(" | ")
+            if (data.image.isNotEmpty()) {
+                shipmentItemImage?.let {
+                    ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
+                }
+            } else {
+                shipmentItemImage.gone()
             }
-
-            shipmentCategory.text = sb.substring(0, sb.length - 2)
 
             if(data.textPromo.isEmpty()) {
                 couponLayout.visibility = View.GONE
@@ -178,14 +204,9 @@ class ShippingEditorConventionalAdapter(private val listener: ShippingEditorConv
         }
 
         private fun setItemChecked(data: ConventionalModel) {
+            setCheckboxEnableState(data)
             if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
-                data.isActive = false
                 productItemAdapter?.updateChecked(data.isActive)
-                shipmentItemCb.isEnabled = false
-            } else {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
-                shipmentItemCb.isEnabled = true
             }
 
             shipmentItemCb.isChecked = data.isActive
