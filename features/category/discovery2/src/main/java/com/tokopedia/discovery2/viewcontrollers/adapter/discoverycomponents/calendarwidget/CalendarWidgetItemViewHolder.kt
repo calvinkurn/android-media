@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.Constant.Calendar
 import com.tokopedia.discovery2.R
+import com.tokopedia.discovery2.R.id.calendar_card_unify
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
 import com.tokopedia.discovery2.data.ComponentsItem
@@ -43,7 +44,7 @@ const val TRIPLE_WIDTH_RATIO = 3
 class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private lateinit var calendarWidgetItemViewModel: CalendarWidgetItemViewModel
-    private var calendarCardUnify: CardUnify = itemView.findViewById(R.id.calendar_card_unify)
+    private var calendarCardUnify: CardUnify = itemView.findViewById(calendar_card_unify)
     private var mNotifyCampaignId = ""
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
@@ -105,12 +106,12 @@ class CalendarWidgetItemViewHolder(itemView: View, val fragment: Fragment) :
         val layoutParams = calendarCardUnify.layoutParams
         when (properties.calendarLayout) {
             Calendar.CAROUSEL -> {
-                layoutParams.width = (width / CAROUSEL_WIDTH_RATIO).roundToInt()
-                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_250)
+                layoutParams.width = itemView.context.resources.getDimensionPixelSize(R.dimen.calendar_banner_widget_width)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.calendar_banner_widget_height)
             }
             Calendar.GRID -> {
                 layoutParams.width = ((width) / 2)
-                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_280)
+                layoutParams.height = itemView.context.resources.getDimensionPixelSize(R.dimen.dp_300)
             }
         }
         if(dataItem?.widgetHomeBanner.isNullOrEmpty()) {
