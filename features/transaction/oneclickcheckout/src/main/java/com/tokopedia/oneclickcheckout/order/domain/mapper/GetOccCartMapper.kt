@@ -574,7 +574,7 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse) : EthicalDrugDataModel {
+    private fun mapEthicalDrug(ethicalDrugResponse: EthicalDrugResponse): EthicalDrugDataModel {
         return EthicalDrugDataModel(
             needPrescription = ethicalDrugResponse.needPrescription,
             iconUrl = ethicalDrugResponse.iconUrl,
