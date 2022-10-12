@@ -90,9 +90,8 @@ class SellerHomeModule {
     @SellerHomeScope
     @Provides
     fun provideSellerHomeSSE(
-        userSession: UserSessionInterface,
         dispatchers: CoroutineDispatchers
     ): SellerHomeWidgetSSE {
-        return SellerHomeWidgetSSEImpl(userSession, dispatchers)
+        return SellerHomeWidgetSSEImpl(dispatchers)
     }
 }
