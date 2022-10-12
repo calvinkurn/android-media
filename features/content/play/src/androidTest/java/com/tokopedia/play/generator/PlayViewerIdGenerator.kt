@@ -44,6 +44,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -61,6 +62,7 @@ import java.util.*
  * Created by kenny.hadisaputra on 17/03/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class PlayViewerIdGenerator {
 
     @get:Rule
