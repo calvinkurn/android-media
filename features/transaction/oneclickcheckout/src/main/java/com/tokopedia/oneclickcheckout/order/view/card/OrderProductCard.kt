@@ -22,6 +22,7 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
@@ -30,7 +31,6 @@ import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.
 import com.tokopedia.purchase_platform.common.utils.Utils
 import com.tokopedia.purchase_platform.common.utils.removeDecimalSuffix
 import com.tokopedia.purchase_platform.common.utils.showSoftKeyboard
-import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.currency.CurrencyFormatUtil
 import kotlinx.coroutines.CoroutineScope
@@ -194,24 +194,17 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     private fun renderEthicalDrugMessage(ethicalDrugDataModel: EthicalDrugDataModel): LinearLayout {
         val propertyLayoutWithIcon = LinearLayout(itemView.context)
         propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
-        val propertiesBinding = LayoutInflater.from(itemView.context).inflate(
-            com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,
-            null
-        )
-        val propertyIcon =
-            propertiesBinding.findViewById<ImageUnify>(R.id.checkout_iv_identifier)
-        if (propertyIcon != null && !TextUtils.isEmpty(ethicalDrugDataModel.iconUrl)) {
+        val itemProductInfoBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context))
+        if (!TextUtils.isEmpty(ethicalDrugDataModel.iconUrl)) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
-                propertyIcon,
+                itemProductInfoBinding.ppIvProductInfoAddOn,
                 ethicalDrugDataModel.iconUrl
             )
         }
-        val propertyText =
-            propertiesBinding.findViewById<Typography>(R.id.checkout_label_identifier)
-        if (propertyText != null && !TextUtils.isEmpty(ethicalDrugDataModel.text)) {
-            propertyText.text = ethicalDrugDataModel.text
+        if (!TextUtils.isEmpty(ethicalDrugDataModel.text)) {
+            itemProductInfoBinding.ppLabelProductInfoAddOn.text = ethicalDrugDataModel.text
         }
-        propertyLayoutWithIcon.addView(propertiesBinding)
+        propertyLayoutWithIcon.addView(itemProductInfoBinding.root)
         return propertyLayoutWithIcon
     }
 
