@@ -138,6 +138,7 @@ import com.tokopedia.home.beranda.presentation.view.listener.RecommendationListC
 import com.tokopedia.home.beranda.presentation.view.listener.SalamWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.SpecialReleaseComponentCallback
 import com.tokopedia.home.beranda.presentation.view.listener.VpsWidgetComponentCallback
+import com.tokopedia.home.beranda.presentation.view.listener.LegoProductCallback
 import com.tokopedia.home.beranda.presentation.viewModel.HomeRevampViewModel
 import com.tokopedia.home.constant.BerandaUrl
 import com.tokopedia.home.constant.ConstantKey
@@ -1329,7 +1330,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             CueWidgetComponentCallback(this),
             VpsWidgetComponentCallback(this),
             CategoryWidgetV2Callback(context, this),
-            MissionWidgetComponentCallback(this, getHomeViewModel())
+            MissionWidgetComponentCallback(this, getHomeViewModel()),
+            LegoProductCallback(this)
         )
         val asyncDifferConfig = AsyncDifferConfig.Builder(HomeVisitableDiffUtil())
                 .setBackgroundThreadExecutor(Executors.newSingleThreadExecutor())
