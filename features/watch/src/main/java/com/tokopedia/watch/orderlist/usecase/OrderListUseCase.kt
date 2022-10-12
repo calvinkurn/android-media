@@ -10,6 +10,8 @@ import com.tokopedia.watch.orderlist.model.InputParameterModel
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import rx.Observable
 import rx.functions.Func1
+import java.text.SimpleDateFormat
+import java.util.*
 
 class GetOrderListUseCase(
     private val graphqlUseCase: GraphqlUseCase,
@@ -34,8 +36,13 @@ class GetOrderListUseCase(
             OrderListQuery.GQL_QUERY,
             OrderListModel::class.java,
             createParams(
-                "01/01/2022",
-                "12/10/2022",
+                "01/01/${Calendar.getInstance().get(Calendar.YEAR)}",
+                SimpleDateFormat(
+                    "dd/MM/yyyy",
+                    Locale.getDefault()
+                ).format(
+                    Calendar.getInstance().time
+                ),
                 0
             ).parameters
         )
