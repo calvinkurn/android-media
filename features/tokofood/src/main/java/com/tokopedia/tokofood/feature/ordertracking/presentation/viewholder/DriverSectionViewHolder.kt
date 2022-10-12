@@ -5,7 +5,9 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.remoteconfig.RemoteConfigInstance
@@ -80,7 +82,8 @@ class DriverSectionViewHolder(
 
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
-            val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isCallable)
+            var (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isCallable)
+            callIconColor = if(callIconColor != Int.ZERO) callIconColor else null
 
             isClickable = isClickableCall
             setImage(IconUnify.CALL, callIconColor, callIconColor)
@@ -100,10 +103,11 @@ class DriverSectionViewHolder(
         icDriverChat.run {
             if (isShowDriverChat()) {
                 show()
-                val (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
+                var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
+                chatIconColor = if(chatIconColor != Int.ZERO) chatIconColor else null
 
                 isClickable = isClickableCall
-                setImage(IconUnify.CHAT, callIconColor, callIconColor)
+                setImage(IconUnify.CHAT, chatIconColor, chatIconColor)
 
                 if (isClickableCall) {
                     setOnClickListener {
@@ -117,17 +121,17 @@ class DriverSectionViewHolder(
     }
 
 
-    private fun getIsEnableAndColorIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int> {
+    private fun getIsEnableAndColorIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int?> {
        return if (isEnable) {
             val nn900Color =
-                ContextCompat.getColor(
+                MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN900
                 )
             Pair(true, nn900Color)
         } else {
             val nn300Color =
-                ContextCompat.getColor(
+                MethodChecker.getColor(
                     context,
                     com.tokopedia.unifyprinciples.R.color.Unify_NN300
                 )
