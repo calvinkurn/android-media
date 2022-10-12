@@ -21,6 +21,7 @@ import com.tokopedia.search.result.domain.usecase.savelastfilter.SaveLastFilterU
 import com.tokopedia.search.result.domain.usecase.searchproduct.SearchProductUseCaseModule
 import com.tokopedia.search.result.domain.usecase.searchsamesessionrecommendation.SearchSameSessionRecommendationUseCaseModule
 import com.tokopedia.search.result.presentation.presenter.product.ProductListPresenterModule
+import com.tokopedia.search.result.product.addtocart.AddToCartModule
 import com.tokopedia.search.result.product.banned.BannedProductsViewModule
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressViewModule
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcModule
@@ -61,6 +62,7 @@ import dagger.Component
     RecycledViewPoolModule::class,
     SearchNavigationListenerModule::class,
     InspirationListAtcModule::class,
+    AddToCartModule::class,
  ], dependencies = [BaseAppComponent::class])
 interface ProductListViewComponent {
 

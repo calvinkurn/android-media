@@ -9,6 +9,9 @@ data class AddToCartData(
     val shopId: String,
     val parentId: String,
     val componentId: String,
+    val topAdsClickUrl: String,
+    val topAdsImpressionUrl: String,
+    val imageUrl: String,
 ) {
 
     fun shouldOpenVariantBottomSheet(): Boolean {

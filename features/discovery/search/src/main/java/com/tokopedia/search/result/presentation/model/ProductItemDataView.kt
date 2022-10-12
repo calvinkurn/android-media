@@ -73,6 +73,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var dimension131: String = ""
     var keywordIntention: Int = DEFAULT_KEYWORD_INTENT
     var showButtonAtc: Boolean = false
+    var parentId: String = "0"
 
     override fun type(typeFactory: ProductListTypeFactory?): Int {
         return typeFactory?.type(this) ?: 0
@@ -114,8 +115,11 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             price,
             "",
             shopID,
-            parentId = "0",
+            parentId = parentId,
             componentId = "",
+            topadsClickUrl ?: "",
+            topadsImpressionUrl ?: "",
+            imageUrl,
         )
     }
 

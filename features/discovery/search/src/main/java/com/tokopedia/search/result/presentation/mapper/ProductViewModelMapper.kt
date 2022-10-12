@@ -309,6 +309,7 @@ class ProductViewModelMapper {
         productItem.dimension131 = externalReference
         productItem.keywordIntention = keywordIntention
         productItem.showButtonAtc = showButtonAtc
+        productItem.parentId = productModel.parentId
         return productItem
     }
 

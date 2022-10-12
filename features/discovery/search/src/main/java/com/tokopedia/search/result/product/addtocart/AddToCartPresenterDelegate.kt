@@ -5,6 +5,7 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
@@ -12,54 +13,57 @@ import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtc
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
+@SearchScope
 class AddToCartPresenterDelegate @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
-    private val inspirationListAtcView: InspirationListAtcView,
+    private val addToCartView: AddToCartView,
     searchParameterProvider: SearchParameterProvider,
 ): AddToCartPresenter,
     SearchParameterProvider by searchParameterProvider {
 
     @Suppress("LateinitUsage")
-    override lateinit var productAddedToCart: InspirationCarouselDataView.Option.Product
+    override lateinit var productAddedToCart: AddToCartData
         private set
 
     override fun addToCart(addToCartData: AddToCartData?) {
         addToCartData ?: return
+        productAddedToCart = addToCartData
 
         if (addToCartData.shouldOpenVariantBottomSheet()) {
 //            inspirationListAtcView.trackAddToCartVariant(product)
 //
-//            inspirationListAtcView.openVariantBottomSheet(product, type)
+            addToCartView.openVariantBottomSheet(addToCartData, "")
+
         } else {
             executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, addToCartData)
         }
     }
 
     private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
-//        inspirationListAtcView.updateSearchBarNotification()
+        addToCartView.updateSearchBarNotification()
 
         val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
-//        inspirationListAtcView.openAddToCartToaster(message, true)
+        addToCartView.openAddToCartToaster(message, true)
 
         val product = productAddedToCart
         val cartId = addToCartDataModel?.data?.cartId ?: ""
         val quantity = addToCartDataModel?.data?.quantity ?: 0
 
-        val trackingData =
-            InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
-                product,
-                getSearchParameter(),
-                cartId,
-                quantity
-            )
-        inspirationListAtcView.trackItemClick(trackingData)
-        inspirationListAtcView.trackAddToCart(trackingData)
+//        val trackingData =
+//            InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
+//                product,
+//                getSearchParameter(),
+//                cartId,
+//                quantity
+//            )
+//        inspirationListAtcView.trackItemClick(trackingData)
+//        inspirationListAtcView.trackAddToCart(trackingData)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
         val message = throwable?.message ?: ""
-        inspirationListAtcView.openAddToCartToaster(message, false)
+        addToCartView.openAddToCartToaster(message, false)
     }
 
     private fun executeAtcCommon(
