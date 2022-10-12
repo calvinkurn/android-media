@@ -128,7 +128,7 @@ class AffiliateHomeViewModelTest{
         val filterResponse = AffiliateDateFilterResponse(AffiliateDateFilterResponse.Data(
             list,
             arrayListOf(ticker)))
-        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() }returns filterResponse
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         val affiliatePerformanceListData: AffiliatePerformanceListData = mockk(relaxed = true)
         val item : AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data.Item = mockk(relaxed = true)
         val data = AffiliatePerformanceListData.GetAffiliatePerformanceList.Data.Data(
@@ -140,7 +140,14 @@ class AffiliateHomeViewModelTest{
         affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO)
         assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value,false)
 
-
+        val affiliatePerformanceListItemData: AffiliateUserPerformaListItemData = mockk(relaxed = true)
+        val itemTypes: AffiliatePerformanceItemTypeListData = mockk(relaxed = true)
+        coEvery { affiliatePerformanceDataUseCase.affiliateItemPerformanceList(any(),any(),any()) } returns affiliatePerformanceListData
+        coEvery { affiliateUserPerformanceUseCase.affiliateUserperformance(affiliateHomeViewModel.getSelectedDate()) } returns affiliatePerformanceListItemData
+        coEvery { affiliatePerformanceItemTypeUseCase.affiliatePerformanceItemTypeList() } returns itemTypes
+        affiliateHomeViewModel.getAffiliatePerformance(PAGE_ZERO, true)
+        assertEquals(affiliateHomeViewModel.noMoreDataAvailable().value,false)
+        assertEquals(affiliateHomeViewModel.getDataShimmerVisibility().value, false)
     }
 
     @Test

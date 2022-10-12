@@ -43,6 +43,8 @@ data class AffiliatePerformanceListData(
                     var image: Image?,
                         @SerializedName("ItemID")
                     var itemID: String?,
+                        @SerializedName("LinkGeneratedAt")
+                    var linkGeneratedAt: String?,
                         @SerializedName("ItemTitle")
                     var itemTitle: String?,
                         @SerializedName("ItemType")

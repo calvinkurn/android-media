@@ -102,7 +102,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive() && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
                                 chooseAddressPref?.setLocalCache(localData)
                                 chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                                 // trigger home to refresh data
@@ -127,7 +127,7 @@ class ChooseAddressWidget : ConstraintLayout,
                                 serviceType = data.tokonowModel.serviceType,
                                 lastUpdate = data.tokonowModel.lastUpdate
                             )
-                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive() && ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
+                            if (viewModel.isFirstLoad && chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true &&  ChooseAddressUtils.isLocalizingTokonowHasUpdated(context, localData)) {
                                 chooseAddressPref?.setLocalCache(localData)
                                 chooseAddressWidgetListener?.onLocalizingAddressUpdatedFromBackground()
                                 // trigger home to refresh data
@@ -213,7 +213,7 @@ class ChooseAddressWidget : ConstraintLayout,
                 initChosenAddressObserver()
                 chooseAddressWidgetListener?.getLocalizingAddressHostSourceData()
                     ?.let { viewModel.getStateChosenAddress(it, isSupportWarehouseLoc) }
-            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true && ChooseAddressUtils.isRefreshTokonowRollenceActive()) {
+            } else if (chooseAddressWidgetListener?.isNeedToRefreshTokonowData() == true) {
                 initRefreshTokonowObserver()
                 viewModel.getTokonowData(localData)
             } else {

@@ -42,7 +42,6 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         }
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.epharmacy_upload_title))
-        userViewUploadPrescriptionPage()
     }
 
     override fun getLayoutRes() = R.layout.epharmacy_activity
@@ -78,8 +77,10 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
 
     private fun extractEntryPoint() {
         entryPoint = if(orderId == DEFAULT_ZERO_VALUE){
+            userViewUploadPrescriptionPage(ENTRY_POINT_CHECKOUT, checkoutId)
             ENTRY_POINT_CHECKOUT
         }else {
+            userViewUploadPrescriptionPage(ENTRY_POINT_ORDER, orderId.toString())
             ENTRY_POINT_ORDER
         }
     }
@@ -104,7 +105,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
                 .baseAppComponent
         ).build()
 
-    private fun userViewUploadPrescriptionPage() {
+    private fun userViewUploadPrescriptionPage(ep : String , id  : String) {
         Tracker.Builder()
             .setEvent(EventKeys.OPEN_SCREEN)
             .setCustomProperty(EventKeys.TRACKER_ID, OPEN_SCREEN_ID)
@@ -112,7 +113,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn.toString())
             .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $entryPoint - new flow")
+            .setCustomProperty(EventKeys.SCREEN_NAME, "view upload prescription page - $ep - new flow - $id")
             .setUserId(userSession.userId)
             .build()
             .send()

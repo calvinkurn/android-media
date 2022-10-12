@@ -91,7 +91,7 @@ class ShopInfoViewModel @Inject constructor(private val userSessionInterface: Us
     }
 
     private suspend fun getShopReputation(shopId: String): ShopBadge {
-        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toInt())
+        getShopReputationUseCase.params = GetShopReputationUseCase.createParams(shopId.toIntOrZero())
         return getShopReputationUseCase.executeOnBackground()
     }
 
