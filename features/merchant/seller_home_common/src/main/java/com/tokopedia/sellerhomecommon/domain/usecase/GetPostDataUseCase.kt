@@ -70,6 +70,7 @@ class GetPostDataUseCase(
                     stateMediaURL
                     stateText
                     pinned
+                    postItemID
                     countdownDate
                   }
                   cta{
@@ -80,6 +81,7 @@ class GetPostDataUseCase(
                   errorMsg
                   showWidget
                   emphasizeType
+                  widgetDataSign
                 }
               }
             }

@@ -7,6 +7,17 @@
     android:layout_marginBottom="@dimen/shc_dimen_6dp"
     tools:background="@drawable/shc_bg_ripple_radius_4dp">
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbShcItemPostTextEmphasize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/parentViewShcItemPostTextEmphasized"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/parentViewShcItemPostTextEmphasized"
+        tools:visibility="visible" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/parentViewShcItemPostTextEmphasized"
         android:layout_width="0dp"
@@ -16,7 +27,7 @@
         android:paddingEnd="8dp"
         android:paddingBottom="@dimen/shc_dimen_6dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbShcItemPostTextEmphasize"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.tokopedia.unifycomponents.ImageUnify

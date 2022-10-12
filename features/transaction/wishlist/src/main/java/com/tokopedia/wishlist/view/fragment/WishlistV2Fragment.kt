@@ -1264,14 +1264,6 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onBannerTopAdsClick(topAdsImageViewModel: TopAdsImageViewModel, position: Int) {
-        TopAdsUrlHitter(context).hitClickUrl(
-                this::class.java.simpleName,
-                topAdsImageViewModel.adClickUrl,
-                "",
-                "",
-                topAdsImageViewModel.imageUrl
-        )
-        WishlistV2Analytics.clickTopAdsBanner(topAdsImageViewModel, userSession.userId, position)
         RouteManager.route(context, topAdsImageViewModel.applink)
     }
 
@@ -1369,6 +1361,14 @@ class WishlistV2Fragment : BaseDaggerFragment(), WishlistV2Adapter.ActionListene
     }
 
     override fun onChangeCollectionName() {
+        // wishlist collection only
+    }
+
+    override fun goToMyWishlist() {
+        // wishlist collection only
+    }
+
+    override fun goToHome() {
         // wishlist collection only
     }
 

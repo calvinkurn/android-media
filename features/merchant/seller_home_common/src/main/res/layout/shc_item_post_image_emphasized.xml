@@ -12,6 +12,16 @@
     android:paddingBottom="@dimen/shc_dimen_6dp"
     tools:background="@drawable/shc_bg_ripple_radius_4dp">
 
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbShcItemPostImageEmphasize"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/imgPost"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imgPost"
+        tools:visibility="visible" />
+
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imgPost"
         android:layout_width="@dimen/shc_dimen_56dp"
@@ -20,7 +30,7 @@
         android:contentDescription="@string/shc_content_desc_image_post"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cbShcItemPostImageEmphasize"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 

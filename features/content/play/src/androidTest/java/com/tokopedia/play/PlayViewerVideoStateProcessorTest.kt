@@ -34,7 +34,9 @@ class PlayViewerVideoStateProcessorTest {
     private val appContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val testExoPlayerCreator = TestExoPlayerCreator(appContext)
-    private val playVideoManager = PlayVideoManager.getInstance(appContext, testExoPlayerCreator)
+    private val playVideoManager = PlayVideoWrapper.Builder(appContext)
+        .setExoPlayerCreator(testExoPlayerCreator)
+        .build()
     private val playbackExceptionParser = ExoPlaybackExceptionParser()
     private val testDispatcher = TestCoroutineDispatcher()
     private val dispatcher = object : CoroutineDispatchers {
@@ -58,7 +60,7 @@ class PlayViewerVideoStateProcessorTest {
     ).create(
             scope = scope,
             channelTypeSource = { PlayChannelType.Live },
-            playVideoPlayer = PlayVideoWrapper.Builder(appContext).build()
+            playVideoPlayer = playVideoManager,
     )
 
     private var theState: PlayViewerVideoState = PlayViewerVideoState.Unknown

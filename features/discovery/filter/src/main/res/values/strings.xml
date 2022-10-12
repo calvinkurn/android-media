@@ -49,4 +49,6 @@
     <string name="content_desc_ratingView">rating view</string>
     <string name="content_desc_filter_colorSample">color sample</string>
     <string name="content_desc_filter_optionIcon">option icon</string>
+
+    <string name="filter_price_range_label">Rentang harga</string>
 </resources>

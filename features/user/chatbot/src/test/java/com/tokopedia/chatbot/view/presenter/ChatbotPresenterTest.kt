@@ -4,13 +4,13 @@ import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
-import com.tokopedia.chat_common.domain.SendWebsocketParam
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
@@ -21,6 +21,7 @@ import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -37,6 +38,8 @@ import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -55,8 +58,13 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.resetMain
-import org.junit.*
+import org.junit.After
+import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class ChatbotPresenterTest {
@@ -85,7 +93,9 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
+    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
 
     private lateinit var presenter: ChatbotPresenter
     private lateinit var view: ChatbotContract.View
@@ -116,6 +126,8 @@ class ChatbotPresenterTest {
         checkUploadSecureUseCase = mockk(relaxed = true)
         chatBotSecureImageUploadUseCase = mockk(relaxed = true)
         getExistingChatMapper = mockk(relaxed = true)
+        uploaderUseCase = mockk(relaxed = true)
+        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -137,7 +149,9 @@ class ChatbotPresenterTest {
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
                 chatBotSecureImageUploadUseCase,
-                getExistingChatMapper
+                uploaderUseCase,
+                chatbotVideoUploadVideoEligibilityUseCase,
+                getExistingChatMapper,
             )
         )
 
@@ -245,13 +259,13 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         presenter.getBottomChat("123456", { viewModel, chatReplies -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
 
     }
@@ -323,14 +337,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         // When
         presenter.getTopChat("123456", { viewModel, chatReplies -> }, {}, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
 
     }
@@ -415,14 +429,14 @@ class ChatbotPresenterTest {
         } returns chatRatingListInput
 
         coEvery {
-            presenter.getChatRatingList(any(), any())
+            presenter.getChatRatingList(any(), any(), any())
         }
 
         // When
         presenter.getExistingChat("123456", { }, { viewModel, chatReplies -> }, {})
 
         verify {
-            presenter.getChatRatingList(chatRatingListInput, any())
+            presenter.getChatRatingList(chatRatingListInput, any(), any())
         }
     }
 
@@ -459,7 +473,7 @@ class ChatbotPresenterTest {
             response.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
         } returns ratingListResponse
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput()) { chipGetChatRatingList ->
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123456") { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
@@ -477,7 +491,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), {})
+        presenter.getChatRatingList(ChipGetChatRatingListInput(),"123456", {})
 
         verify {
             exception.printStackTrace()
@@ -656,7 +670,7 @@ class ChatbotPresenterTest {
             chipSubmitChatCsatUseCase.execute(any(), any())
         } just runs
 
-        presenter.submitChatCsat(ChipSubmitChatCsatInput(), {}, {})
+        presenter.submitChatCsat("123456", ChipSubmitChatCsatInput(), {}, {})
 
         verify {
             chipSubmitChatCsatUseCase.execute(any(), any())
@@ -938,5 +952,120 @@ class ChatbotPresenterTest {
 
     }
 
+    @Test
+    fun `sendVideoAttachment message via socket success` () {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                any(), any(), any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendVideoAttachment("","","")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        }
+
+    }
+
+    @Test
+    fun `startNewUploadMediaJob success when uploaderUseCase returns success`() {
+        val response = mockk<UploadResult.Success>(relaxed = true)
+        var result : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            result = response.videoUrl
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(result)
+
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure` () {
+        val response = mockk<UploadResult.Error>(relaxed = true)
+        var message : String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            message = response.message
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(message)
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure` () {
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } answers {
+            throw mockThrowable
+        }
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        verify {
+            presenter.updateMediaUploadResults(any(), any())
+        }
+
+    }
+
+    @Test
+    fun `checkUploadVideoEligibility success`() {
+
+        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
+
+        coEvery {
+            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.checkUploadVideoEligibility("1234")
+
+        verify {
+            view.videoUploadEligibilityHandler(any())
+        }
+
+    }
 
 }

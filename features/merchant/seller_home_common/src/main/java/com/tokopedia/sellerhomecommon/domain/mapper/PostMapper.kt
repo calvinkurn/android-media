@@ -27,7 +27,7 @@ class PostMapper @Inject constructor(
     BaseResponseMapper<GetPostDataResponse, List<PostListDataUiModel>> {
 
     companion object {
-        private const val MAX_ITEM_PER_PAGE = 3
+        const val MAX_ITEM_PER_PAGE = 3
         private const val MILLIS_1000 = 1000
     }
 
@@ -37,20 +37,21 @@ class PostMapper @Inject constructor(
         response: GetPostDataResponse,
         isFromCache: Boolean
     ): List<PostListDataUiModel> {
-        return response.getPostWidgetData?.data.orEmpty().mapIndexed { i, post ->
+        return response.getPostWidgetData.data.mapIndexed { i, post ->
             val maxDisplay = dataKeys.getOrNull(i)?.maxDisplay ?: MAX_ITEM_PER_PAGE
             PostListDataUiModel(
-                dataKey = post.dataKey.orEmpty(),
-                postPagers = getPostPagers(post.list.orEmpty(), post.emphasizeType, maxDisplay),
+                dataKey = post.dataKey,
+                postPagers = getPostPagers(post.list, post.emphasizeType, maxDisplay),
                 cta = PostCtaDataUiModel(
-                    text = post.cta?.text.orEmpty(),
-                    appLink = post.cta?.appLink.orEmpty()
+                    text = post.cta.text,
+                    appLink = post.cta.appLink
                 ),
-                error = post.error.orEmpty(),
+                error = post.error,
                 isFromCache = isFromCache,
-                showWidget = post.showWidget.orFalse(),
+                showWidget = post.showWidget,
                 emphasizeType = post.emphasizeType ?: PostListDataUiModel.IMAGE_EMPHASIZED,
-                lastUpdated = getLastUpdatedMillis(post.dataKey.orEmpty(), isFromCache)
+                lastUpdated = getLastUpdatedMillis(post.dataKey, isFromCache),
+                widgetDataSign = post.widgetDataSign
             )
         }
     }
@@ -84,25 +85,26 @@ class PostMapper @Inject constructor(
                 when (emphasizeType) {
                     PostListDataUiModel.TEXT_EMPHASIZED -> {
                         PostItemUiModel.PostTextEmphasizedUiModel(
-                            title = postItem.title.orEmpty(),
-                            appLink = postItem.appLink.orEmpty(),
-                            url = postItem.url.orEmpty(),
-                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                            subtitle = postItem.subtitle.orEmpty(),
+                            title = postItem.title,
+                            appLink = postItem.appLink,
+                            url = postItem.url,
+                            featuredMediaUrl = postItem.featuredMediaURL,
+                            subtitle = postItem.subtitle,
                             textEmphasizeType = PostListDataUiModel.TEXT_EMPHASIZED,
-                            stateText = postItem.stateText.orEmpty(),
-                            stateMediaUrl = postItem.stateMediaUrl.orEmpty(),
+                            stateText = postItem.stateText,
+                            stateMediaUrl = postItem.stateMediaUrl,
                             shouldShowUnderLine = index != postList.size.minus(Int.ONE),
-                            isPinned = postItem.isPinned
+                            isPinned = postItem.isPinned,
+                            postItemId = postItem.postItemID
                         )
                     }
                     else -> {
                         PostItemUiModel.PostImageEmphasizedUiModel(
-                            title = postItem.title.orEmpty(),
-                            appLink = postItem.appLink.orEmpty(),
-                            url = postItem.url.orEmpty(),
-                            featuredMediaUrl = postItem.featuredMediaURL.orEmpty(),
-                            subtitle = postItem.subtitle.orEmpty(),
+                            title = postItem.title,
+                            appLink = postItem.appLink,
+                            url = postItem.url,
+                            featuredMediaUrl = postItem.featuredMediaURL,
+                            subtitle = postItem.subtitle,
                             textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
                             isPinned = postItem.isPinned,
                             countdownDate = try {

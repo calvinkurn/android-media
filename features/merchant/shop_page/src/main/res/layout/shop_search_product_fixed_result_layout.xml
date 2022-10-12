@@ -50,6 +50,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.5"
-        app:srcCompat="@drawable/ic_arrow_right_dark" />
+        app:srcCompat="@drawable/ic_arrow_right_dark"
+        android:contentDescription="@string/shop_page_search_fixed_result_image" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
