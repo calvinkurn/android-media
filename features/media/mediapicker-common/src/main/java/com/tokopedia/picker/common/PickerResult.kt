@@ -8,6 +8,9 @@ data class PickerResult(
     // the collection of files both of images and videos
     val originalPaths: List<String> = emptyList(),
 
+    // the collection of videos
+    val videoFiles: List<String> = emptyList(),
+
     // the collection of images (only) has compressed
     val compressedImages: List<String> = emptyList()
 ) : Parcelable

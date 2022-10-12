@@ -40,7 +40,7 @@ import com.tokopedia.globalerror.showUnifyError
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recharge_pdp_emoney.R
@@ -185,7 +185,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         })
 
         topUpBillsViewModel.favNumberData.observe(viewLifecycleOwner, Observer {
-            emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntOrZero())
+            emoneyPdpViewModel.getPrefixOperator(detailPassData.menuId.toIntSafely())
         })
 
 
@@ -263,6 +263,12 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
         })
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            renderErrorMessage(MessageErrorException(it.title))
+            binding.emoneyFullPageLoadingLayout.hide()
+            binding.emoneyBuyWidget.onBuyButtonLoading(false)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -277,9 +283,9 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         binding.emoneyPdpShimmeringLayout.root.show()
         topUpBillsViewModel.getMenuDetail(
             CommonTopupBillsGqlQuery.catalogMenuDetail,
-            topUpBillsViewModel.createMenuDetailParams(detailPassData.menuId.toIntOrZero())
+            topUpBillsViewModel.createMenuDetailParams(detailPassData.menuId.toIntSafely())
         )
-        topUpBillsViewModel.getFavoriteNumbers(listOf(detailPassData.categoryId.toIntOrZero()))
+        topUpBillsViewModel.getFavoriteNumbers(listOf(detailPassData.categoryId.toIntSafely()))
     }
 
     private fun setAnimationAppBarLayout() {
@@ -595,7 +601,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         issuerId = prefix.key
         binding.emoneyPdpProductWidget.showShimmering()
         binding.emoneyBuyWidgetLayout.hide()
-        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntOrZero(), prefix.key)
+        emoneyPdpViewModel.getProductFromOperator(detailPassData.menuId.toIntSafely(), prefix.key)
     }
 
     private fun renderProducts(productList: List<CatalogProduct>) {
@@ -636,7 +642,7 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
         } else {
             binding.emoneyBuyWidget.setTotalPrice(
                 CurrencyFormatUtil.convertPriceValueToIdrFormatNoSpace(
-                    product.attributes.pricePlain.toIntOrZero()
+                    product.attributes.pricePlain.toIntSafely()
                 )
             )
         }

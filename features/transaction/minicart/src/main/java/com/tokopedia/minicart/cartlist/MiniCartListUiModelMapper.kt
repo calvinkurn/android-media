@@ -2,6 +2,7 @@ package com.tokopedia.minicart.cartlist
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.domain.model.response.ProductDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.minicart.cartlist.subpage.summarytransaction.MiniCartSummaryTransactionUiModel
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartAccordionUiModel
@@ -25,6 +26,7 @@ import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.Product
 import com.tokopedia.minicart.common.data.response.minicartlist.ShipmentInformation
 import com.tokopedia.minicart.common.data.response.minicartlist.Shop
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
@@ -110,6 +112,20 @@ class MiniCartListUiModelMapper @Inject constructor() {
                     }
                 }
             }
+        }
+    }
+
+    fun mapToProductBundlRecomAtcItemTracker(
+        productList :List<ProductDataModel>,
+        productDetails: List<ShopHomeBundleProductUiModel>
+    ): List<ProductBundleRecomAtcItemTracker> {
+        return productList.map {  product ->
+            ProductBundleRecomAtcItemTracker(
+                id = product.productId,
+                name = productDetails.firstOrNull { it.productId == product.productId }?.productName.orEmpty(),
+                cartId = product.cartId,
+                quantity = product.quantity
+            )
         }
     }
 

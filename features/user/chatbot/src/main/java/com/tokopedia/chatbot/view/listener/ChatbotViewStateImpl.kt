@@ -19,7 +19,9 @@ import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
+import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
@@ -32,6 +34,7 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyListViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.rating.ChatRatingViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
@@ -55,8 +58,8 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
                            attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
                            override val toolbar: Toolbar,
                            private val adapter: BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory>,
-                           private val onChatMenuButtonClicked: () -> Unit,
                            val sendAnalytics:( impressionType:String)->Unit
+
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener), ChatbotViewState {
 
     private lateinit var quickReplyAdapter: QuickReplyAdapter
@@ -109,6 +112,46 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
 
     override fun handleReplyBox(isEnable: Boolean) {
        showReplyBox(isEnable)
+    }
+
+    override fun onSendingMessage(it: MessageUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String,
+        parentReply: ParentReply?
+    ) {
+        val localId = IdentifierUtil.generateLocalId()
+        val message = MessageUiModel.Builder()
+            .withMsgId(messageId)
+            .withFromUid(userId)
+            .withFrom(name)
+            .withReplyTime(BaseChatUiModel.SENDING_TEXT)
+            .withStartTime(startTime)
+            .withMsg(sendMessage)
+            .withLocalId(localId)
+            .withIsDummy(true)
+            .withIsSender(true)
+            .withIsRead(false)
+            .withParentReply(parentReply)
+            .build()
+        getAdapter().addElement(message)
+    }
+
+    override fun onSendingMessage(
+        messageId: String,
+        userId: String,
+        name: String,
+        sendMessage: String,
+        startTime: String
+    ) {
+
     }
 
     override fun hideQuickReplyOnClick() {
@@ -233,6 +276,11 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         scrollDownWhenInBottom()
     }
 
+    override fun onVideoUpload(it: VideoUploadUiModel) {
+        getAdapter().addElement(it)
+        scrollDownWhenInBottom()
+    }
+
     private fun isMyMessage(fromUid: String?): Boolean {
         return fromUid != null && userSession.userId == fromUid
     }
@@ -337,6 +385,14 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         getAdapter().showRetryFor(image, retry)
     }
 
+    override fun showRetryUploadVideos(video: VideoUploadUiModel) {
+        getAdapter().showRetryForVideo(video)
+    }
+
+    override fun hideDummyVideoAttachment() {
+        getAdapter().removeDummyVideo()
+    }
+
     override fun removeDummy(visitable: Visitable<*>) {
         getAdapter().removeDummy(visitable)
     }
@@ -368,7 +424,7 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         val title = toolbar.findViewById<TextView>(R.id.title)
         val interlocutorName = getInterlocutorName(chatroomViewModel.getHeaderName())
         title.text = MethodChecker.fromHtml(interlocutorName)
-        loadAvatar(chatroomViewModel.headerModel.image)
+    //    loadAvatar(chatroomViewModel.headerModel.image)
     }
 
     override fun getInterlocutorName(headerName: String): String  = headerName
@@ -384,12 +440,6 @@ class ChatbotViewStateImpl(@NonNull override val view: View,
         } else {
             action.hide()
             notifier.hide()
-        }
-    }
-
-    override fun setupChatMenu() {
-        chatMenuButton.setOnClickListener {
-            onChatMenuButtonClicked.invoke()
         }
     }
 

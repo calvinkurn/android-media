@@ -23,7 +23,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private lateinit var listProducts: List<FeedXProduct>
     private var listener: Listener? = null
-    private var postId: Int = 0
+    private var postId: String = "0"
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var shopName: String = ""
@@ -149,7 +149,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         fragmentManager: FragmentManager,
         products: List<FeedXProduct>,
         listener: Listener?,
-        postId: Int,
+        postId: String,
         shopId: String,
         type: String,
         isFollowed: Boolean,

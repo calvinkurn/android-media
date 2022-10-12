@@ -25,6 +25,7 @@ import org.junit.Test
 import rx.Subscriber
 
 private const val initialStateWithSeeMoreRecentSearch = "autocomplete/initialstate/with-5-data-show-more-recent-search.json"
+private const val initialStateWithSearchBarEducation = "autocomplete/initialstate/with-searchbar-education.json"
 
 internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
 
@@ -262,5 +263,29 @@ internal class InitialStatePresenterTest: InitialStatePresenterTestFixtures() {
         initialStateParams.shouldNotContain(USER_DISTRICT_ID)
         initialStateParams.shouldNotContain(USER_POST_CODE)
         initialStateParams.shouldNotContain(USER_WAREHOUSE_ID)
+    }
+
+    @Test
+    fun `Test initial state with searchbar education`() {
+        val initialStateData = initialStateWithSearchBarEducation.jsonToObject<InitialStateUniverse>()
+        `Test Initial State Data`(initialStateData)
+
+        `Then verify initial state view will call showInitialStateResult behavior`()
+        `Then verify visitable list has SearchBarEducationDataView`(initialStateData)
+    }
+
+    private fun `Then verify visitable list has SearchBarEducationDataView`(
+        initialStateUniverse: InitialStateUniverse
+    ) {
+        val expectedData = initialStateUniverse.data
+        val visitableList = slotVisitableList.captured
+
+        `Then verify PopularSearchDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
+
+        `Then verify SearchBarEducationDataView`(
+            visitableList, expectedData, expectedDefaultDimension90, keyword,
+        )
     }
 }

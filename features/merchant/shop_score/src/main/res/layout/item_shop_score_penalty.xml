@@ -32,7 +32,7 @@
             android:layout_marginStart="12dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             app:typographyWeight="bold"
             tools:text="Sedang berlangsung" />
 
@@ -57,7 +57,7 @@
             android:layout_marginEnd="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="27 Jan 2021" />
 
         <com.tokopedia.unifycomponents.DividerUnify
@@ -79,7 +79,8 @@
             app:layout_constraintStart_toStartOf="@id/tv_end_date_status_penalty"
             app:layout_constraintTop_toBottomOf="@id/separator_status_penalty"
             app:layout_constraintEnd_toStartOf="@id/ic_transaction_penalty_to_detail"
-            app:typographyType="heading_5"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
             tools:text="Pelanggaran Produk" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -91,7 +92,7 @@
             app:layout_constraintStart_toStartOf="@id/tv_title_type_penalty"
             app:layout_constraintTop_toBottomOf="@id/tv_title_type_penalty"
             app:layout_constraintEnd_toStartOf="@id/ic_transaction_penalty_to_detail"
-            app:typographyType="body_3"
+            app:typographyType="display_3"
             tools:text="INV/20210126/XX/V/553738285" />
 
         <com.tokopedia.iconunify.IconUnify

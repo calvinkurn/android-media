@@ -337,7 +337,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                 bundleName = bundleName,
                 bundleType = bundleType,
                 bundlePosition = bundlePosition,
-                priceCut = priceCut
+                priceCut = priceCut,
+                productDetails = productDetails
             )
         }) { throwable ->
             _globalEvent.postValue(
@@ -357,7 +358,8 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
         bundleName: String,
         bundleType: String,
         bundlePosition: Int,
-        priceCut: String
+        priceCut: String,
+        productDetails: List<ShopHomeBundleProductUiModel>,
     ) {
         response.validateResponse(
             onSuccess = {
@@ -367,7 +369,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                     )
                 )
 
-                val productData = response.addToCartBundleDataModel.data.firstOrNull()
+                val products = response.addToCartBundleDataModel.data
                 _productBundleRecomTracker.postValue(
                     ProductBundleRecomTracker(
                         shopId = shopId,
@@ -377,8 +379,10 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
                         bundleType = bundleType,
                         bundlePosition = bundlePosition,
                         priceCut = priceCut,
-                        cartId = productData?.cartId.orEmpty(),
-                        quantity = productData?.quantity.toString(),
+                        atcItems = miniCartListUiModelMapper.mapToProductBundlRecomAtcItemTracker(
+                            productList = products,
+                            productDetails = productDetails
+                        ),
                         state = STATE_PRODUCT_BUNDLE_RECOM_ATC
                     )
                 )
@@ -412,10 +416,7 @@ class MiniCartViewModel @Inject constructor(private val executorDispatchers: Cor
             val tmpMiniCartListUiModel = miniCartListUiModelMapper.mapUiModel(miniCartData)
             val tmpMiniCartChatListUiModel = miniCartChatListUiModelMapper.mapUiModel(miniCartData)
 
-            /**
-            * Don't remove this line of code. Need to wait get product bundle recom from BE to production
-            **/
-//            getProductBundleRecommendation(tmpMiniCartListUiModel)
+            getProductBundleRecommendation(tmpMiniCartListUiModel)
 
             tmpMiniCartListUiModel.isFirstLoad = isFirstLoad
             tmpMiniCartChatListUiModel.isFirstLoad = isFirstLoad

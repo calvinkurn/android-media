@@ -53,7 +53,7 @@ class GlideErrorLogHelper : CoroutineScope {
     }
 
     private fun isNetworkAvailable(context: Context): Boolean {
-        val connectivityManager: ConnectivityManager? = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+        val connectivityManager: ConnectivityManager? = context.applicationContext.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
         return connectivityManager?.activeNetworkInfo?.isConnected ?: true
     }
 }

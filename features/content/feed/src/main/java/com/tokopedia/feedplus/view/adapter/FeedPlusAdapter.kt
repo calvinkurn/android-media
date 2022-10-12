@@ -16,7 +16,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
-import com.tokopedia.feedplus.view.viewmodel.RetryModel
 
 /**
  * @author by nisie on 5/15/17.
@@ -30,9 +29,10 @@ class FeedPlusAdapter(
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
-    private val retryModel: RetryModel = RetryModel()
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
+
+    @Suppress("MagicNumber")
     var itemTreshold = 5
 
     // used to determine dynamicPostViewHolder.setVideo
@@ -168,14 +168,6 @@ class FeedPlusAdapter(
 
     fun removeEmpty() {
         remove(emptyModel)
-    }
-
-    fun showRetry() {
-        add(retryModel)
-    }
-
-    fun removeRetry() {
-        remove(retryModel)
     }
 
     fun showLoading() {

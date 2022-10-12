@@ -24,6 +24,8 @@ import com.tokopedia.review.feature.createreputation.presentation.viewholder.Cre
 import com.tokopedia.review.feature.createreputation.presentation.viewholder.CreateReviewMediaPreviewVideoViewHolder
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.HtmlLinkHelper
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
 
 class CreateReviewMediaPicker @JvmOverloads constructor(
     context: Context,
@@ -32,7 +34,6 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
 ) : BaseReviewCustomView<WidgetCreateReviewMediaPickerBinding>(context, attrs, defStyleAttr) {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
         const val MAX_MEDIA_COUNT = 5
         private const val MEDIA_SPAN_SIZE_SMALL = 1
         private const val MEDIA_SPAN_SIZE_BIG = MAX_MEDIA_COUNT
@@ -107,23 +108,31 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
         binding.layoutMediaPickerWaitingState.tvCreateReviewMediaPickerPoem.text = waitingText
     }
 
-    fun updateUi(uiState: CreateReviewMediaPickerUiState) {
+    fun updateUi(uiState: CreateReviewMediaPickerUiState, continuation: Continuation<Unit>) {
         when(uiState) {
             is CreateReviewMediaPickerUiState.Loading -> {
                 showLoading()
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.Uploading -> {
                 showMediaPickerUploadingState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.SuccessUpload -> {
                 showMediaPickerSuccessUploadState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
             is CreateReviewMediaPickerUiState.FailedUpload -> {
                 showMediaPickerFailedUploadState(uiState)
-                animateShow()
+                animateShow(onAnimationEnd = {
+                    continuation.resume(Unit)
+                })
             }
         }
     }
@@ -155,7 +164,7 @@ class CreateReviewMediaPicker @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutMediaPicker.root)
                 addTarget(binding.layoutMediaPickerError.root)
                 addTarget(binding.layoutMediaPickerLoading.root)

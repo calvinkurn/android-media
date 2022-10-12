@@ -20,6 +20,7 @@ class DeveloperOptionAdapter(
      * Keyword you need while searching something
      **/
     companion object {
+        const val KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION = "Enable Developer Options on Notification"
         const val KEYWORD_PRODUCT_DETAIL_DEV = "Product Detail Dev"
         const val KEYWORD_ACCESS_TOKEN = "Access Token"
         const val KEYWORD_SYSTEM_APPS = "System Apps"
@@ -93,6 +94,7 @@ class DeveloperOptionAdapter(
      * Variable contains UiModels that you want to show in RecyclerView, put keyword as param
      **/
     private val defaultItems = mutableListOf(
+        DeveloperOptionsOnNotificationUiModel(listOf(KEYWORD_DEVELOPER_OPTIONS_ON_NOTIFICATION)),
         PdpDevUiModel(listOf(KEYWORD_PRODUCT_DETAIL_DEV)),
         AccessTokenUiModel(listOf(KEYWORD_ACCESS_TOKEN)),
         AppAuthSecretUiModel(listOf(KEYWORD_APP_AUTH_SECRET)),

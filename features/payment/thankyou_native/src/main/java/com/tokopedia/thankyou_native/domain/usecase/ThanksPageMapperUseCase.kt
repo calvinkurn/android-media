@@ -34,10 +34,12 @@ class ThanksPageMapperUseCase @Inject constructor() : UseCase<ThanksPageData>() 
         }
         thanksPageData.configFlagData = configFlagData
 
+        val gyroData = thanksPageData.customDataOther?.gyroData?.let {
+            val map: MutableMap<String, Any?> = HashMap()
+            Gson().fromJson(it, map.javaClass)
+        }
+        thanksPageData.gyroData = gyroData
+
         return thanksPageData
     }
-
 }
-
-
-

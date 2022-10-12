@@ -354,6 +354,11 @@ class AddEditProductPreviewFragment :
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        outOfStockCoachMark?.dismissCoachMark()
+    }
+
     override fun onStartDrag(viewHolder: RecyclerView.ViewHolder) {
         photoItemTouchHelper?.startDrag(viewHolder)
         //countTouchPhoto is used for count how many times images hit
@@ -752,12 +757,6 @@ class AddEditProductPreviewFragment :
         }
     }
 
-    private fun moveToManageProduct() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.PRODUCT_MANAGE_LIST)
-        startActivity(intent)
-        activity?.finish()
-    }
-
     private fun saveProductToDraft() {
         // increment wholesale min order by one because of > symbol
         viewModel.productInputModel.value?.run {
@@ -819,16 +818,18 @@ class AddEditProductPreviewFragment :
     }
 
     private fun displayEmptyStockCoachmark(anchor: View) {
-        val items = listOf(
-            CoachMark2Item(anchor, "",
-                getString(R.string.label_coachmark_out_of_stock),
-                CoachMarkContentPosition.BOTTOM.position
+        if(activity?.isDestroyed == false && activity?.isFinishing == false) {
+            val items = listOf(
+                CoachMark2Item(anchor, "",
+                    getString(R.string.label_coachmark_out_of_stock),
+                    CoachMarkContentPosition.BOTTOM.position
+                )
             )
-        )
-        outOfStockCoachMark = CoachMark2(context ?: return)
-        outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
-        outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
-        outOfStockCoachMark?.showCoachMark(ArrayList(items))
+            outOfStockCoachMark = CoachMark2(context ?: return)
+            outOfStockCoachMark?.simpleCloseIcon?.isVisible = false
+            outOfStockCoachMark?.hideCoachmarkWhenTouchOutside(anchor)
+            outOfStockCoachMark?.showCoachMark(ArrayList(items))
+        }
     }
 
     private fun displayAddModeDetail(productInputModel: ProductInputModel) {
@@ -1548,7 +1549,7 @@ class AddEditProductPreviewFragment :
                 setDescription(getString(R.string.label_description_on_dialog))
                 setSecondaryCTAClickListener {
                     saveProductToDraft()
-                    moveToManageProduct()
+                    activity?.finish()
                     ProductAddStepperTracking.trackDraftYes(shopId)
                 }
                 setPrimaryCTAClickListener {

@@ -9,7 +9,7 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0">
+        android:background="@color/Unify_Background">
 
         <RelativeLayout
             android:id="@+id/rl_content"
@@ -42,7 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/rl_search_address_container"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:visibility="gone"

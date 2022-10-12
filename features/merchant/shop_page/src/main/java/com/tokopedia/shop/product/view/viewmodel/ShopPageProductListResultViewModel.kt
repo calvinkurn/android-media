@@ -26,6 +26,7 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -53,6 +54,9 @@ import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.withContext
 import rx.Subscriber
 import javax.inject.Inject
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 
 class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                                              private val getShopInfoUseCase: GQLGetShopInfoUseCase,
@@ -244,7 +248,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                 widgetUserAddressLocalData.district_id,
                                 widgetUserAddressLocalData.city_id,
                                 widgetUserAddressLocalData.lat,
-                                widgetUserAddressLocalData.long
+                                widgetUserAddressLocalData.long,
+                                shopProductFilterParameter.getExtraParam()
                         ),
                         etalaseType,
                         isEnableDirectPurchase
@@ -366,7 +371,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             shopId: String,
             productFilter: ShopProductFilterInput,
             etalaseType: Int,
-            isEnableDirectPurchase: Boolean
+            isEnableDirectPurchase: Boolean,
     ): GetShopProductUiModel {
         getShopProductUseCase.params = GqlGetShopProductUseCase.createParams(shopId, productFilter)
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -382,6 +387,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                     isEnableDirectPurchase
                 ) },
                 totalProductData,
+                productFilter.page,
                 GetShopProductSuggestionUiModel(
                         productListResponse.suggestion.text,
                         productListResponse.suggestion.query,
@@ -463,7 +469,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                widgetUserAddressLocalData.long,
+                tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
@@ -682,5 +689,19 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             componentName
         )
         _shopPageAtcTracker.postValue(mvcLockedToProductAddToCartTracker)
+    }
+
+    fun initAffiliateCookie(
+        affiliateCookieHelper: AffiliateCookieHelper,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            affiliateCookieHelper.initCookie(
+                "",
+                "",
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId))
+            )
+        }) {
+        }
     }
 }
