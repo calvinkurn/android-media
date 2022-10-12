@@ -136,7 +136,7 @@ object PGRecommendationWidgetUiStateMapper {
         return PGRecommendationWidgetUiModel(adsPageName, productIdList)
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToPGRecommendationWidgetUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): PGRecommendationWidgetUiState {
         return when (getBuyerOrderDetailDataRequestState) {

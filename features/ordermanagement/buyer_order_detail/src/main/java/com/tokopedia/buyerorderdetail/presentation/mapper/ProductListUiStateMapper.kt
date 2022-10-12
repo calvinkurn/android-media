@@ -6,8 +6,8 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -415,7 +415,7 @@ object ProductListUiStateMapper {
         )
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToProductListUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {

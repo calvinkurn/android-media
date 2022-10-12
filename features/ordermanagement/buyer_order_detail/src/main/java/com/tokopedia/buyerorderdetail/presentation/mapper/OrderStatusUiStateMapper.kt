@@ -230,7 +230,7 @@ object OrderStatusUiStateMapper {
         )
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToOrderStatusUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderStatusUiState {
         return when (getBuyerOrderDetailDataRequestState) {

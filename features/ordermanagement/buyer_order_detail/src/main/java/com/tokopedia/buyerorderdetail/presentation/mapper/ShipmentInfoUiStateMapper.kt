@@ -295,7 +295,7 @@ object ShipmentInfoUiStateMapper {
         return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToShipmentInfoUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {

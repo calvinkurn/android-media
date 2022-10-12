@@ -2,7 +2,6 @@ package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
@@ -48,9 +47,6 @@ import org.junit.Before
 import org.junit.Rule
 
 abstract class BuyerOrderDetailViewModelTestFixture {
-
-    @RelaxedMockK
-    lateinit var gson: Gson
 
     @RelaxedMockK
     lateinit var resourceProvider: ResourceProvider
@@ -135,8 +131,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             getBuyerOrderDetailDataUseCase = { getBuyerOrderDetailDataUseCase },
             finishOrderUseCase = { finishOrderUseCase },
             atcUseCase = { atcUseCase },
-            resourceProvider = { resourceProvider },
-            gson = { gson }
+            resourceProvider = { resourceProvider }
         )
 
         every { userSession.userId } returns userId
@@ -153,13 +148,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
         getInsuranceDetailResult: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data = mockk(relaxed = true),
     ) {
         coEvery {
-            getBuyerOrderDetailDataUseCase.getBuyerOrderDetailData(any())
+            getBuyerOrderDetailDataUseCase(any())
         } returns flow {
             emit(
                 GetBuyerOrderDetailDataRequestState.Requesting(
-                    GetP0DataRequestState.Requesting(
-                        GetBuyerOrderDetailRequestState.Requesting
-                    ),
+                    GetP0DataRequestState.Requesting(GetBuyerOrderDetailRequestState.Requesting),
                     GetP1DataRequestState.Requesting(
                         GetOrderResolutionRequestState.Requesting,
                         GetInsuranceDetailRequestState.Requesting
@@ -182,7 +175,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun createFailedGetBuyerOrderDetailDataResult(throwable: Throwable = mockk(relaxed = true)) {
         coEvery {
-            getBuyerOrderDetailDataUseCase.getBuyerOrderDetailData(any())
+            getBuyerOrderDetailDataUseCase(any())
         } returns flow {
             emit(
                 GetBuyerOrderDetailDataRequestState.Requesting(

@@ -3,10 +3,9 @@ package com.tokopedia.buyerorderdetail.domain.usecases
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailParams
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetP1DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.kotlin.extensions.orFalse
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -20,13 +19,14 @@ class GetP1DataUseCase @Inject constructor(
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase,
     private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase
 ) {
-    private fun getOrderResolutionUseCaseRequestStates(hasResoStatus: Boolean, orderId: Long) = flow {
-        if (hasResoStatus) {
-            emitAll(executeOrderResolutionUseCase(orderId))
-        } else {
-            emit(GetOrderResolutionRequestState.Success(null))
+    private fun getOrderResolutionUseCaseRequestStates(hasResoStatus: Boolean, orderId: Long) =
+        flow {
+            if (hasResoStatus) {
+                emitAll(executeOrderResolutionUseCase(orderId))
+            } else {
+                emit(GetOrderResolutionRequestState.Success(null))
+            }
         }
-    }
 
     private suspend fun executeOrderResolutionUseCase(orderId: Long) = getOrderResolutionUseCase(orderId)
 
@@ -42,32 +42,33 @@ class GetP1DataUseCase @Inject constructor(
 
     private fun mapP1UseCasesRequestState(
         orderResolutionRequestState: GetOrderResolutionRequestState,
-        getInsuranceDetailRequestState: GetInsuranceDetailRequestState
+        insuranceDetailRequestState: GetInsuranceDetailRequestState
     ): GetP1DataRequestState {
         return if (
             orderResolutionRequestState is GetOrderResolutionRequestState.Requesting ||
-            getInsuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting
+            insuranceDetailRequestState is GetInsuranceDetailRequestState.Requesting
         ) {
-            GetP1DataRequestState.Requesting(orderResolutionRequestState, getInsuranceDetailRequestState)
+            GetP1DataRequestState.Requesting(orderResolutionRequestState, insuranceDetailRequestState)
         } else {
-            GetP1DataRequestState.Complete(orderResolutionRequestState, getInsuranceDetailRequestState)
+            GetP1DataRequestState.Complete(orderResolutionRequestState, insuranceDetailRequestState))
         }
     }
 
-    fun getP1Data(p0DataRequestState: GetP0DataRequestState.Success): Flow<GetP1DataRequestState> = combine(
-        getOrderResolutionUseCaseRequestStates(
-            p0DataRequestState.getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
-            p0DataRequestState.getBuyerOrderDetailRequestState.result.orderId.toLongOrZero()
-        ),
-        getInsuranceDetailUseCaseRequestStates(
-            p0DataRequestState.getBuyerOrderDetailRequestState.result.hasInsurance.orFalse(),
-            p0DataRequestState.getBuyerOrderDetailRequestState.result.invoice
-        ),
-        ::mapP1UseCasesRequestState
-    ).catch {
-        emit(GetP1DataRequestState.Complete(
-            GetOrderResolutionRequestState.Error(it),
-            GetInsuranceDetailRequestState.Error(it)
-        ))
-    }.flowOn(Dispatchers.IO)
+    private fun execute(params: GetP1DataParams): Flow<GetP1DataRequestState> {
+        return combine(
+            getOrderResolutionUseCaseRequestStates(params.hasResoStatus.orFalse(), params.orderId),
+            getInsuranceDetailUseCaseRequestStates(params.hasInsurance, params.invoice)
+        ) { (orderResolutionRequestState, insuranceDetailRequestState) ->
+            mapP1UseCasesRequestState(orderResolutionRequestState, insuranceDetailRequestState)
+        }.catch {
+            emit(
+                GetP1DataRequestState.Complete(
+                    GetOrderResolutionRequestState.Error(it),
+                    GetInsuranceDetailRequestState.Error(it)
+                )
+            )
+        }
+    }
+
+    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
 }

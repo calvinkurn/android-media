@@ -249,12 +249,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.saveUiState(cacheManager)
-        outState.putString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheManager.id)
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         coachMarkManager?.dismissCoachMark()
@@ -288,9 +282,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             BuyerOrderDetailCommonIntentParamKey.CACHE_ID
         ).orEmpty()
         cacheManager.id = cacheManagerId
-        if (!viewModel.restoreUiState(cacheManager)) {
-            loadInitialData()
-        }
+        loadInitialData()
     }
 
     private fun loadInitialData() {

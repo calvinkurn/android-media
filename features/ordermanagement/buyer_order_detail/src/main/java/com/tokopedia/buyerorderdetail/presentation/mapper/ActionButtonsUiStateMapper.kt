@@ -191,7 +191,7 @@ object ActionButtonsUiStateMapper {
         )
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToActionButtonsUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): ActionButtonsUiState {
         return when (getBuyerOrderDetailDataRequestState) {

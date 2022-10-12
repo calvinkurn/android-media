@@ -207,7 +207,7 @@ object PaymentInfoUiStateMapper {
         return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToPaymentInfoUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
         resourceProvider: ResourceProvider
     ): PaymentInfoUiState {

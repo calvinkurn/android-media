@@ -1,15 +1,7 @@
 package com.tokopedia.buyerorderdetail.presentation.viewmodel
 
-import com.tokopedia.buyerorderdetail.common.extension.get
-import com.tokopedia.buyerorderdetail.common.extension.put
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataParams
-import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -17,17 +9,13 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
-import com.tokopedia.cachemanager.CacheManager
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
-import io.mockk.verify
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -36,15 +24,17 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
 
     @Test
     fun `getBuyerOrderDetailData should execute UseCase once with expected params`() {
-        val expectedParams = GetBuyerOrderDetailDataParams(
-            cart = cart,
-            orderId = orderId,
-            paymentId = paymentId
-        )
+        runCollectingUiState {
+            val expectedParams = GetBuyerOrderDetailDataParams(
+                cart = cart,
+                orderId = orderId,
+                paymentId = paymentId
+            )
 
-        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
+            viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
-        coVerify(exactly = 1) { getBuyerOrderDetailDataUseCase.getBuyerOrderDetailData(expectedParams) }
+            coVerify(exactly = 1) { getBuyerOrderDetailDataUseCase(expectedParams) }
+        }
     }
 
     @Test
@@ -608,142 +598,5 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             viewModel.getBuyerOrderDetailData(orderId, paymentId, cart)
 
             assertEquals("0", viewModel.getOrderId())
-        }
-
-    @Test
-    fun `saveUiState should save buyer order detail data`() {
-        mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-            val cacheManager = mockk<CacheManager>(relaxed = true)
-
-            viewModel.saveUiState(cacheManager)
-
-            verify {
-                cacheManager.put(
-                    customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                    objectToPut = any<GetBuyerOrderDetailDataRequestState>(),
-                    gson = gson
-                )
-            }
-        }
-    }
-
-    @Test
-    fun `restoreUiState should restore get buyer order detail UI state`() = runCollectingUiState {
-        mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-            val savedGetBuyerOrderDetailDataRequestState = GetBuyerOrderDetailDataRequestState.Error(
-                GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(mockk(relaxed = true))),
-                GetP1DataRequestState.Complete(
-                    GetOrderResolutionRequestState.Error(mockk(relaxed = true)),
-                    GetInsuranceDetailRequestState.Error(mockk(relaxed = true))
-                )
-            )
-            val cacheManager = mockk<CacheManager>(relaxed = true)
-
-            every {
-                cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                    customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                    type = GetBuyerOrderDetailDataRequestState::class.java,
-                    gson = gson
-                )
-            } returns savedGetBuyerOrderDetailDataRequestState
-
-            viewModel.restoreUiState(cacheManager)
-
-            assertTrue(viewModel.buyerOrderDetailUiState.value is BuyerOrderDetailUiState.Error)
-        }
-    }
-
-    @Test
-    fun `restoreUiState should return true when cache manager contain GetBuyerOrderDetailDataRequestState#Success`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetBuyerOrderDetailDataRequestState = mockk<GetBuyerOrderDetailDataRequestState.Success>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                        customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                        type = GetBuyerOrderDetailDataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetBuyerOrderDetailDataRequestState
-
-                assertTrue(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return true when cache manager contain GetBuyerOrderDetailDataRequestState#Error`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetBuyerOrderDetailDataRequestState = mockk<GetBuyerOrderDetailDataRequestState.Error>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                        customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                        type = GetBuyerOrderDetailDataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetBuyerOrderDetailDataRequestState
-
-                assertTrue(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager contain GetBuyerOrderDetailDataRequestState#Idle`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetBuyerOrderDetailDataRequestState = mockk<GetBuyerOrderDetailDataRequestState.Idle>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                        customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                        type = GetBuyerOrderDetailDataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetBuyerOrderDetailDataRequestState
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager contain GetBuyerOrderDetailDataRequestState#Requesting`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val savedGetBuyerOrderDetailDataRequestState = mockk<GetBuyerOrderDetailDataRequestState.Requesting>(relaxed = true)
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                        customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                        type = GetBuyerOrderDetailDataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns savedGetBuyerOrderDetailDataRequestState
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
-        }
-
-    @Test
-    fun `restoreUiState should return false when cache manager does not contain saved get buyer order detail request state`() =
-        runCollectingUiState {
-            mockkStatic("com.tokopedia.buyerorderdetail.common.extension.CacheManagerExtKt") {
-                val cacheManager = mockk<CacheManager>(relaxed = true)
-
-                every {
-                    cacheManager.get<GetBuyerOrderDetailDataRequestState>(
-                        customId = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE",
-                        type = GetBuyerOrderDetailDataRequestState::class.java,
-                        gson = gson
-                    )
-                } returns null
-
-                assertFalse(viewModel.restoreUiState(cacheManager))
-            }
         }
 }

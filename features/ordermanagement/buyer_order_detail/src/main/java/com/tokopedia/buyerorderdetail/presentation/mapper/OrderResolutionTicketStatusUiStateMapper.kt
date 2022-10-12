@@ -95,7 +95,7 @@ object OrderResolutionTicketStatusUiStateMapper {
         )
     }
 
-    fun mapGetBuyerOrderDetailDataRequestStateToOrderResolutionTicketStatusUiState(
+    fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderResolutionTicketStatusUiState {
         return when (getBuyerOrderDetailDataRequestState) {

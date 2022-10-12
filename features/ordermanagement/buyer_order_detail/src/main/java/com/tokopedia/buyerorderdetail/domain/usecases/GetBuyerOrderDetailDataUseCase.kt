@@ -7,7 +7,10 @@ import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestSta
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetP1DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -29,13 +32,18 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             is GetP0DataRequestState.Requesting -> {
                 emit(
                     GetBuyerOrderDetailDataRequestState.Requesting(
-                        p0DataRequestState,
-                        GetP1DataRequestState.Requesting()
+                        p0DataRequestState, GetP1DataRequestState.Requesting()
                     )
                 )
             }
             is GetP0DataRequestState.Success -> {
-                emitAll(combineWithP1(p0DataRequestState))
+                val getP1DataParams = GetP1DataParams(
+                    p0DataRequestState.getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
+                    p0DataRequestState.getBuyerOrderDetailRequestState.result.hasInsurance.orFalse(),
+                    p0DataRequestState.getBuyerOrderDetailRequestState.result.orderId.toLongOrZero(),
+                    p0DataRequestState.getBuyerOrderDetailRequestState.result.invoice
+                )
+                emitAll(combineWithP1(getP1DataParams, p0DataRequestState))
             }
             is GetP0DataRequestState.Error -> {
                 emit(
@@ -52,45 +60,46 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     }
 
     private suspend fun combineWithP1(
-        p0DataRequestState: GetP0DataRequestState.Success
-    ): Flow<GetBuyerOrderDetailDataRequestState> = getP1DataUseCase.getP1Data(p0DataRequestState).flatMapLatest { p1DataRequestState ->
-        flow {
-            when (p1DataRequestState) {
-                is GetP1DataRequestState.Requesting -> {
-                    emit(
-                        GetBuyerOrderDetailDataRequestState.Requesting(
-                            p0DataRequestState,
-                            p1DataRequestState
+        getP1DataParams: GetP1DataParams, p0DataRequestState: GetP0DataRequestState.Success
+    ): Flow<GetBuyerOrderDetailDataRequestState> =
+        getP1DataUseCase(getP1DataParams).flatMapLatest { p1DataRequestState ->
+            flow {
+                when (p1DataRequestState) {
+                    is GetP1DataRequestState.Requesting -> {
+                        emit(
+                            GetBuyerOrderDetailDataRequestState.Requesting(
+                                p0DataRequestState, p1DataRequestState
+                            )
                         )
-                    )
-                }
-                is GetP1DataRequestState.Complete -> {
-                    emit(
-                        GetBuyerOrderDetailDataRequestState.Success(
-                            p0DataRequestState,
-                            p1DataRequestState
+                    }
+                    is GetP1DataRequestState.Complete -> {
+                        emit(
+                            GetBuyerOrderDetailDataRequestState.Success(
+                                p0DataRequestState, p1DataRequestState
+                            )
                         )
-                    )
+                    }
                 }
             }
         }
-    }
 
-    suspend fun getBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams) = getP0DataUseCase
-        .getP0Data(GetP0DataParams(params.cart, params.orderId, params.paymentId))
-        .flatMapLatest(::mapGetP0DataRequestStateToGetAllDataRequestState)
-        .catch {
-            emit(
-                GetBuyerOrderDetailDataRequestState.Error(
-                    GetP0DataRequestState.Error(
-                        GetBuyerOrderDetailRequestState.Error(it)
-                    ),
-                    GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Error(it),
-                        GetInsuranceDetailRequestState.Error(it)
-                    )
+    private suspend fun execute(
+        params: GetBuyerOrderDetailDataParams
+    ) = getP0DataUseCase(
+        GetP0DataParams(params.cart, params.orderId, params.paymentId)
+    ).flatMapLatest(::mapGetP0DataRequestStateToGetAllDataRequestState).catch {
+        emit(
+            GetBuyerOrderDetailDataRequestState.Error(
+                GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(it)),
+                GetP1DataRequestState.Complete(
+                    GetOrderResolutionRequestState.Error(it),
+                    GetInsuranceDetailRequestState.Error(it)
                 )
             )
-        }
-        .flowOn(Dispatchers.IO)
+        )
+    }
+
+    suspend operator fun invoke(
+        params: GetBuyerOrderDetailDataParams
+    ) = execute(params).flowOn(Dispatchers.IO)
 }
