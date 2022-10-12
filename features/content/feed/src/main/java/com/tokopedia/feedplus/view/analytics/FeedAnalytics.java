@@ -584,7 +584,7 @@ public class FeedAnalytics {
         }
         Map map = DataLayer.mapOf(
                 EVENT_NAME, PRODUCT_CLICK,
-                EVENT_CATEGORY, CONTENT_FEED_TIMELINE_BOTTOM_SHEET,
+                EVENT_CATEGORY, CONTENT_FEED_TIMELINE_DETAIL,
                 EVENT_ACTION, eventAction,
                 EVENT_LABEL, eventlabel,
                 KEY_USER_ID, userId,

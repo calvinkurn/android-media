@@ -37,11 +37,11 @@ data class ProductPostTagViewModelNew(
     var adClickUrl:String = "",
     var playChannelId:String = "",
     val saleType: String = "",
-    val saleStatus: String = ""
+    val saleStatus: String = "",
+    var isWishlisted: Boolean = false
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)
-
     }
 
     val isRilisanSpl: Boolean
@@ -58,7 +58,5 @@ data class ProductPostTagViewModelNew(
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
         private const val Upcoming = "upcoming"
         private const val Ongoing = "ongoing"
-        const val PRODUCT_TYPE = "product"
-
     }
 }

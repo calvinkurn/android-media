@@ -175,6 +175,7 @@
                 android:visibility="gone"
                 layout="@layout/item_stock_progress_product_detail_view"
                 android:scaleType="fitStart"
+                tools:visibility="visible"
                 />
         </LinearLayout>
 
@@ -197,7 +198,7 @@
             layout="@layout/item_sale_atc_wishlist_feed_detail_layout"
             app:layout_constraintStart_toStartOf="@id/productLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productLayout"
+            app:layout_constraintTop_toBottomOf="@id/productNameSection"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
 

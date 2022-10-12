@@ -10,6 +10,7 @@ import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -49,8 +50,9 @@ class ProductPostTagViewHolderNew(
     private lateinit var star: IconUnify
     private lateinit var menuBtn: IconUnify
     private lateinit var card: CardUnify
+    private lateinit var addToWishlistBtnIcon: IconUnify
 
-    override fun bind(item: ProductPostTagViewModelNew) {
+    init {
         productLayout = itemView.findViewById(R.id.productLayout)
         productImage = itemView.findViewById(R.id.productImage)
         productPrice = itemView.findViewById(R.id.productPrice)
@@ -72,9 +74,13 @@ class ProductPostTagViewHolderNew(
         addToCartBtn = itemView.findViewById(R.id.button_add_to_cart)
         stockProgressBar = itemView.findViewById(R.id.ongoing_progress_bar)
         addToWishlistBtn = itemView.findViewById(R.id.button_add_to_wishlist)
+        addToWishlistBtnIcon = itemView.findViewById(R.id.image_add_to_wishlist)
+    }
+
+    override fun bind(item: ProductPostTagViewModelNew) {
         label.showWithCondition(item.isDiscount && item.isUpcoming.not())
-        productTag.showWithCondition(item.isDiscount)
-        discountlayout.showWithCondition(item.isDiscount)
+        productTag.showWithCondition(item.isDiscount || item.isUpcoming)
+        discountlayout.showWithCondition(item.isDiscount || item.isUpcoming)
         if (item.isUpcoming) {
             productPrice.text = item.product.priceMaskedFmt
             productTag.apply {
@@ -114,6 +120,7 @@ class ProductPostTagViewHolderNew(
         menuBtn.setOnClickListener {
             listener.onBottomSheetThreeDotsClicked(item, mainView.context)
         }
+        menuBtn.showWithCondition((item.isFlashSaleToko || item.isRilisanSpl).not())
         rating.text = String.format("%.1f", item.rating.toDouble() / RATING_FORMAT)
         val soldInfoText = getString(R.string.feed_common_terjual) + " " + item.totalSold.toString()
         soldInfo.text = soldInfoText
@@ -128,7 +135,10 @@ class ProductPostTagViewHolderNew(
         addToCartBtn.isEnabled = item.product.cartable && !isUpcomingAndRilisanSpecial
 
         addToCartBtn.setOnClickListener { listener.onAddToCartButtonClicked(item) }
-        addToWishlistBtn.setOnClickListener { listener.onAddToWishlistButtonClicked(item) }
+        setWislistIconStateColor(item.isWishlisted)
+        addToWishlistBtn.setOnClickListener {
+            listener.onAddToWishlistButtonClicked(item, adapterPosition)
+        }
 
         if (isUpcomingAndRilisanSpecial) {
             addToCartBtn.apply {
@@ -154,6 +164,25 @@ class ProductPostTagViewHolderNew(
         stockProgressBar.progressBarColor = progressBarColor
         stockText.text = item.product.stockWording
         stockBarLayout.visible()
+    }
+
+    private fun setWislistIconStateColor(isWishlisted: Boolean) {
+        itemView.run {
+            if (isWishlisted) {
+                val colorRed =
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    )
+                addToWishlistBtnIcon.setImage(IconUnify.HEART_FILLED, colorRed, colorRed)
+            }else{ val colorRed =
+                MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                )
+                addToWishlistBtnIcon.setImage(IconUnify.HEART, colorRed, colorRed)
+            }
+        }
     }
 
 

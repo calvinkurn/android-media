@@ -232,8 +232,18 @@ class FeedViewModel @Inject constructor(
                 campaignId = campaign.campaignId,
                 reminderType = campaign.reminder
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(campaign.campaignId)
-            _asgcReminderButtonStatus.value = Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaign.campaignId, reminderStatus = reminderStatusRes))
+            if (data.first) {
+                val reminderStatusRes = campaign.reminder.reversed(campaign.campaignId)
+                _asgcReminderButtonStatus.value = Success(
+                    FeedAsgcCampaignResponseModel(
+                        rowNumber = rowNumber,
+                        campaignId = campaign.campaignId,
+                        reminderStatus = reminderStatusRes
+                    )
+                )
+            } else {
+                _asgcReminderButtonStatus.value = Fail(Throwable(data.second))
+            }
         }) {
             _asgcReminderButtonStatus.value = Fail(it)
         }
@@ -487,18 +497,27 @@ class FeedViewModel @Inject constructor(
         activityId: String,
         productId: String,
         shopId: String,
+        positionInFeed: Int,
         position: Int,
         type: String,
         isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
+        onSuccess: (String, String, String, Boolean,Int,Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
         context: Context
     ) {
         launch(baseDispatcher.main) {
             addToWishlistV2UseCase.setParams(productId, userSession.userId)
             val result = withContext(baseDispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
-                onSuccess.invoke(activityId, shopId, type, isFollowed, result.data)
+                onSuccess.invoke(
+                    activityId,
+                    shopId,
+                    type,
+                    isFollowed,
+                    position,
+                    positionInFeed,
+                    result.data
+                )
             } else if (result is Fail) {
                 val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
                 onFail.invoke(errorMessage)

@@ -124,7 +124,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.*
@@ -137,7 +136,6 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kotlin.extensions.view.*
 
@@ -264,7 +262,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
         private const val PARAM_BROADCAST_NEW_FEED = "PARAM_BROADCAST_NEW_FEED"
         private const val PARAM_BROADCAST_NEW_FEED_CLICKED = "PARAM_BROADCAST_NEW_FEED_CLICKED"
-        private const val REMOTE_CONFIG_ENABLE_INTEREST_PICK = "mainapp_enable_interest_pick"
         private const val PARAM_POST_POSITION = "position"
         private const val PARAM_COMMENT_COUNT = "comment_count"
         private const val PARAM_LIKE_COUNT = "like_count"
@@ -279,7 +276,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         const val PARAM_POST_TYPE = "POST_TYPE"
         const val PARAM_IS_POST_FOLLOWED = "IS_FOLLOWED"
         const val PARAM_START_TIME = "START_TIME"
-
 
         //region Content Report Param
         private const val CONTENT_REPORT_RESULT_SUCCESS = "result_success"
@@ -506,7 +502,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                            getString(R.string.default_request_error_unknown),
+                            it.throwable.message
+                                ?: getString(R.string.default_request_error_unknown),
                             Toaster.TYPE_ERROR
                         )
                     }
@@ -1662,7 +1659,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     isFollowed,
                     authorId,
                     mediaType,
-                    trackerIdReport
+                    trackerId = trackerIdReport,
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn) {
                     context?.let {
@@ -1695,7 +1693,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 feedAnalytics.eventClickThreeDotsOption(
                     finalId, "unfollow",
                     postType,
-                    isFollowed, authorId, mediaType
+                    isFollowed, authorId, mediaType,
+                    trackerId = "17986",
+                    campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
                 if (userSession.isLoggedIn)
                     onHeaderActionClick(
@@ -1747,7 +1747,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun getTrackerLabelSuffixForCampaignSaleTracker(card: FeedXCard) =
         if (card.campaign.status.isNotEmpty()) {
-            if (card.isUpcoming)
+            if (card.campaign.isUpcoming)
                 "pre"
             else
                 "ongoing"
@@ -1771,7 +1771,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (positionInFeed < list.size && list[positionInFeed] is DynamicPostUiModel) {
             val item = list[positionInFeed] as DynamicPostUiModel
             val card = item.feedXCard
-            trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+            trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                 if (card.followers.isFollowed)
                     trackerIdAsgc
                 else
@@ -2276,10 +2276,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 shopId,
                 postTagItem.id,
                 if (item.isUpcoming) "pre" else "ongoing",
-                postTagItem.productName,
+                postTagItem.name,
                 postTagItem.price.toString(),
                 1,
-                postTagItem.shopName
+                item.shopName
             )
         }
 
@@ -2409,7 +2409,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         feedXCard: FeedXCard
     ) {
         feedAnalytics.eventImageClicked(feedXCard.id, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
-        if (feedXCard.isRilisanSpl || feedXCard.isFlashSaleToko) {
+        if (feedXCard.campaign.isRilisanSpl || feedXCard.campaign.isFlashSaleToko) {
             val product =
                 if (feedXCard.lastCarouselIndex in (feedXCard.products.indices)) feedXCard.products[feedXCard.lastCarouselIndex] else null
             product?.let {
@@ -2435,6 +2435,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (products.isNotEmpty()) {
             val finalId = if (card.typename == TYPE_FEED_X_CARD_PLAY) card.playChannelID else card.id
+            if (!::productTagBS.isInitialized)
             productTagBS = ProductItemInfoBottomSheet()
             val label = getTrackerLabelSuffixForCampaignSaleTracker(card)
             feedAnalytics.eventTagClicked(
@@ -2463,7 +2464,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             )
             productTagBS.closeClicked = {
-                val trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+                val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                     if (card.followers.isFollowed)
                         "13441"
                     else
@@ -2480,7 +2481,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
             productTagBS.disMissed = {
-                val trackerId = if (card.isFlashSaleToko || card.isRilisanSpl) {
+                val trackerId = if (card.campaign.isFlashSaleToko || card.campaign.isRilisanSpl) {
                     if (card.followers.isFollowed)
                         "13448"
                     else
@@ -2508,6 +2509,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         playChannelId: String,
         mediaType: String,
+        productRowNumber: Int = 0,
+        positionInFeed: Int,
         trackerid: String = "",
         campaignStatus: String = ""
     ) {
@@ -2533,7 +2536,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     postId,
                     productId,
                     shopId,
-                    0,
+                    positionInFeed,
+                    productRowNumber,
                     type,
                     isFollowed,
                     ::onWishListFail,
@@ -2583,14 +2587,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         type: String,
         isFollowed: Boolean,
+        itemRowNumber: Int,
+        positionInFeed: Int,
         result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-            }
-        }
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+        Toaster.build(
+            requireView(),
+            getString(Rwishlist.string.on_success_add_to_wishlist_msg),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(Rwishlist.string.cta_success_add_to_wishlist),
+            View.OnClickListener {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed))
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }).show()
+        productTagBS.changeWishlistIconOnWishlistSuccess(itemRowNumber)
     }
 
     private fun onShareProduct(
@@ -2730,8 +2741,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     index
                 )
             }
-
-
         }
     }
 
@@ -2967,12 +2976,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     private fun showToastOnSuccessReminderSetForFSTorRS(card: FeedXCard) {
         when{
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isFlashSaleToko -> showToast(
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isFlashSaleToko -> showToast(
                 context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_fst_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
             )
-            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.isRilisanSpl -> showToast(
+            card.campaign.reminder is FeedASGCUpcomingReminderStatus.On && card.campaign.isRilisanSpl -> showToast(
                 context?.getString(com.tokopedia.feedcomponent.R.string.feed_asgc_reminder_activate_rs_message)
                     ?: "",
                 Toaster.TYPE_NORMAL
@@ -3043,11 +3052,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     )
                 }
 
-                val trackerId = if (feedXCardData.isFlashSaleToko || feedXCardData.isRilisanSpl) {
+                val trackerId = if (feedXCardData.campaign.isFlashSaleToko || feedXCardData.campaign.isRilisanSpl) {
                     if (feedXCardData.followers.isFollowed)
                         "13423"
                     else
-                        "17986"
+                        ""
                 } else ""
 
                 feedAnalytics.eventClickFollowitem(
@@ -3057,7 +3066,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     !item.feedXCard.followers.isFollowed,
                     item.feedXCard.author.id,
                     item.feedXCard.media.firstOrNull()?.type ?: "",
-                    trackerId
+                    trackerId = trackerId
                 )
 
                 if (item.feedXCard.followers.isFollowed)
@@ -3400,7 +3409,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             sendTopadsUrlClick(getAdClickUrl(positionInFeed = positionInFeed))
             feedAnalytics.clickSekSekarang(postId, shopId, type, isFollowed)
         } else {
-            val trackerId = if (feedXCard.isFlashSaleToko || feedXCard.isRilisanSpl) {
+            val trackerId = if (feedXCard.campaign.isFlashSaleToko || feedXCard.campaign.isRilisanSpl) {
                 if (feedXCard.followers.isFollowed)
                     "13451"
                 else
@@ -3672,7 +3681,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.isFollowed,
                 item.shopId,
                 item.playChannelId,
-                item.mediaType
+                item.mediaType,
+                positionInFeed = item.positionInFeed
             )
         }
     }
@@ -3697,7 +3707,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
     }
 
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew) {
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int) {
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         val trackerId = if (item.isFlashSaleToko || item.isRilisanSpl) {
@@ -3714,6 +3724,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             item.shopId,
             item.playChannelId,
             item.mediaType,
+            rowNumber,
+            item.positionInFeed,
             trackerId,
             getTrackerLabelSuffixFromPosition(item.positionInFeed)
         )

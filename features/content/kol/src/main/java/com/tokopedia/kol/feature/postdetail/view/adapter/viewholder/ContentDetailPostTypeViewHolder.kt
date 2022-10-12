@@ -377,8 +377,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 ASGC_RESTOCK_PRODUCTS -> context.getString(
                     feedComponentR.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->  mData.campaign.name
-                ASGC_RILISAN_SPECIAL ->  mData.campaign.name
+                ASGC_FLASH_SALE_TOKO ->  context.getString(feedComponentR.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL ->  context.getString(feedComponentR.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
@@ -787,7 +787,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         commentButton.invisible()
         seeAllCommentText.hide()
 
-        if (feedXCard.isTypeProductHighlight && feedXCard.isUpcoming)
+        if (feedXCard.isTypeProductHighlight && feedXCard.campaign.isUpcoming)
             listener?.onIngatkanSayaBtnImpressed(mData, positionInCdp)
 
         adapter.setItemsAndAnimateChanges(mediaList)
@@ -974,7 +974,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             card.isAsgcColorChangedAsPerWidgetColor = true
 
             if (card.isTypeProductHighlight) {
-                if ((card.isRilisanSpl || card.isFlashSaleToko) && colorGradient.isNotEmpty()) {
+                if ((card.campaign.isRilisanSpl || card.campaign.isFlashSaleToko) && colorGradient.isNotEmpty()) {
                     changeCTABtnColorAsPerColorGradientFromBE(colorGradient.map { colorGradient ->
                         colorGradient.color
                     } as? ArrayList<String>)

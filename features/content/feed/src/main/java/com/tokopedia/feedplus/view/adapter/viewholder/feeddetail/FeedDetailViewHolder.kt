@@ -6,7 +6,6 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
@@ -14,11 +13,10 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.listener.FeedPlusDetailListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.loadImage
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.feedcomponent.R as feedComponentR
 import kotlin.math.roundToInt
 
 /**
@@ -44,6 +42,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private var menuBtn: IconUnify
     private var btnAddToCart: UnifyButton
     private var btnAddToWishlist: FrameLayout
+    private var btnAddToWishlistIcon: IconUnify
     private var progressBar: ProgressBarUnify
     private var stockProgressBarLayout: View
     private var stockText: Typography
@@ -61,6 +60,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             menuBtn = findViewById(R.id.menu)
             btnAddToCart = findViewById(R.id.button_add_to_cart_product_detail)
             btnAddToWishlist = findViewById(R.id.button_add_to_wishlist_product_detail)
+            btnAddToWishlistIcon = findViewById(R.id.image_add_to_wishlist_product_detail)
             progressBar = findViewById(R.id.ongoing_progress_bar_product_detail)
             stockText = findViewById(R.id.stock_text_product_detail)
             stockProgressBarLayout = findViewById(R.id.product_stock_bar_layout)
@@ -75,17 +75,23 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             productImage.setImageUrl(feedDetailProductModel.imgUrl)
             productName.text = MethodChecker.fromHtml(feedDetailProductModel.text)
 
-            discountLayout.showWithCondition(feedDetailProductModel.isDiscount)
+            discountLayout.showWithCondition(feedDetailProductModel.isDiscount || feedDetailProductModel.isUpcoming)
             discountLabel.showWithCondition(feedDetailProductModel.isDiscount)
             if (feedDetailProductModel.isUpcoming) {
                 productPrice.text = feedDetailProductModel.product.priceMaskedFmt
+                productTag.apply {
+                    paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+                    text = feedDetailProductModel.priceFmt
+                    discountLabel.hide()
+                }
             } else {
                 if (feedDetailProductModel.isDiscount) {
                     discountLabel.text = feedDetailProductModel.discountFmt
                     productTag.apply {
                         paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                        text = feedDetailProductModel.originalPriceFmt
+                        text = feedDetailProductModel.priceFmt
                     }
+                    discountLabel.show()
                     productPrice.text = feedDetailProductModel.priceDiscountFmt
                 } else {
                     productPrice.text = feedDetailProductModel.priceFmt
@@ -98,7 +104,7 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             }
 
             rating.text = String.format("%.1f", feedDetailProductModel.rating.toDouble() / RATING_FORMAT)
-            val soldInfoText = getString(com.tokopedia.feedcomponent.R.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
+            val soldInfoText = getString(feedComponentR.string.feed_common_terjual) + " " + feedDetailProductModel.totalSold.productThousandFormatted(formatLimit = 1000, isASGCDetailPage = true)
 
             soldInfo.text = soldInfoText
             star.showWithCondition(feedDetailProductModel.rating != 0)
@@ -110,18 +116,19 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             btnAddToCart.showWithCondition(feedDetailProductModel.isUpcoming || feedDetailProductModel.isOngoing)
             val isUpcomingAndRilisanSpecial = feedDetailProductModel.isUpcoming && feedDetailProductModel.isRilisanSpl
             btnAddToCart.isEnabled = feedDetailProductModel.product.cartable
+            setWishlistIconStateColor(false)
             if (isUpcomingAndRilisanSpecial){
                 btnAddToCart.apply {
                     isEnabled = false
                     text =
-                        getString(com.tokopedia.feedcomponent.R.string.btn_add_to_cart_text_disabled)
+                        getString(feedComponentR.string.btn_add_to_cart_text_disabled)
                 }
             }
             btnAddToCart.setOnClickListener {
                 viewListener.onAddToCartButtonClicked(feedDetailProductModel)
             }
             btnAddToWishlist.setOnClickListener {
-                viewListener.onAddToWishlistButtonClicked(feedDetailProductModel)
+                viewListener.onAddToWishlistButtonClicked(feedDetailProductModel, adapterPosition)
             }
 
             setOnClickListener {
@@ -136,10 +143,23 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
             setGradientColorForProgressBar(feedDetailProductModel, itemView)
     }
 
-    private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View){
+    override fun bind(element: FeedDetailProductModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() is Int && (payloads.firstOrNull() as Int == PAYLOAD_CLICK_WISHLIST)) {
+            element?.isWishlisted = true
+            setWishlistIconStateColor(true)
+        }
+    }
+
+    private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View) {
         val progressBarColor: IntArray = intArrayOf(
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
-            ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)
+            MethodChecker.getColor(
+                itemView.context,
+                feedComponentR.color.feed_dms_asgc_progress_0_color
+            ),
+            MethodChecker.getColor(
+                itemView.context,
+                feedComponentR.color.feed_dms_asgc_progress_100_color
+            )
         )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
@@ -150,11 +170,35 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         }
     }
 
+    private fun setWishlistIconStateColor(isWishlisted: Boolean) {
+        itemView.run {
+            if (isWishlisted) {
+                val colorRed =
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                    )
+                btnAddToWishlistIcon.setImage(IconUnify.HEART_FILLED, colorRed, colorRed)
+                btnAddToWishlist.isEnabled = false
+                btnAddToWishlistIcon.isEnabled = false
+            } else {
+                val colorGrey =
+                    MethodChecker.getColor(
+                        context,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN500
+                    )
+                btnAddToWishlistIcon.setImage(IconUnify.HEART, colorGrey, colorGrey)
+                btnAddToWishlist.isEnabled = true
+                btnAddToWishlistIcon.isEnabled = true
+            }
+        }
+    }
 
     companion object {
         @JvmField
         @LayoutRes
         val LAYOUT = R.layout.list_feed_detail
+        const val PAYLOAD_CLICK_WISHLIST = 90
     }
 
 }
