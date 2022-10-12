@@ -39,7 +39,8 @@ class PltPlayBroadcasterPerformanceTest {
         IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
 
-        /** Use mock for now since we can't perform real gql network request due to
+        /**
+         * Use mock for now since we can't perform real gql network request due to
          * unable to login real user with InstrumentationAuthHelper.loginToAnUser()
          */
         setupGraphqlMockResponse(PrepareModelConfig())
