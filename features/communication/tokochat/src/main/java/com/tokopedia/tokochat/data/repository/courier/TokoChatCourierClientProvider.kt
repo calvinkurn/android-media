@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.data.repository
+package com.tokopedia.tokochat.data.repository.courier
 
 import android.content.Context
 import android.util.Log
@@ -32,25 +32,21 @@ class TokoChatCourierClientProvider @Inject constructor(
             gson = gson,
             applicationId = "com.gojek.app.staging",
             retrofit = retrofit,
-//            authenticationApiUrl = "authentication",
-//            authenticationApiUrl = "v3/cf34f513-2a6c-4188-b612-fd057c67a0c5",
             authenticationApiUrl = "courier/v1/token",
             usernameProvider = getUsernameProvider(),
             eventTracker = getEventTracker(),
             mqttInterceptors = getMqttInterceptors(),
-//            debuggingEnabled = BuildConfig.DEBUG,
-            debuggingEnabled = true,
+            debuggingEnabled = BuildConfig.DEBUG,
             courierRemoteConfig = courierRemoteConfig,
             connectionLifecycle = TokoChatCourierConnectionLifecycle
         )
-//        TODO: do not obfuscate
-//        test.handleAppEvent(AppEvent.AppLogout)
         return CourierComponent.getOrCreate(params).courierConnection()
     }
 
     private fun getUsernameProvider(): UsernameProvider {
         return object : UsernameProvider {
             override fun get(): String {
+                // Change this to userSession.userId
                 return "3306058"
             }
         }
@@ -58,9 +54,7 @@ class TokoChatCourierClientProvider @Inject constructor(
 
     private fun getEventTracker(): EventTracker {
         return object : EventTracker {
-            override fun trackEvent(name: String, properties: Map<String, Any>) {
-                Log.d("Courier", "Event received: $name, properties: $properties")
-            }
+            override fun trackEvent(name: String, properties: Map<String, Any>) {}
         }
     }
 

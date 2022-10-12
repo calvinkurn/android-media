@@ -4,7 +4,7 @@ import com.gojek.courier.CourierConnection
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
 
-class MutationProfileUseCase @Inject constructor(
+class TokoChatMutationProfileUseCase @Inject constructor(
     private val repository: TokoChatRepository,
     private val courierConnection: CourierConnection
 ) {

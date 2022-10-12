@@ -37,7 +37,7 @@ class TokoChatRepository @Inject constructor(
     private fun getConversationsConfig(): ConversationsConfig {
         return ConversationsConfig(
             enabledChannelTypes = listOf(ChannelType.GroupBooking),
-            notificationIcon = R.drawable.ic_launcher_tokochat,
+            notificationIcon = 0,
             isSupportMetaServiceEnabled = false,
             isMessageRetryEnabled = true,
             contactsVerifyingBatchSize =

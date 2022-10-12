@@ -8,9 +8,9 @@ import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.tokochat.data.repository.TokoCourierStateObservable
-import com.tokopedia.tokochat.data.repository.TokoChatBabbleCourierImpl
-import com.tokopedia.tokochat.data.repository.TokoChatCourierClientProvider
+import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
+import com.tokopedia.tokochat.data.repository.courier.TokoChatBabbleCourierImpl
+import com.tokopedia.tokochat.data.repository.courier.TokoChatCourierClientProvider
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import com.tokopedia.tokochat.di.TokoChatNetworkModule.RETROFIT_NAME
 import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl
@@ -44,7 +44,7 @@ object TokoChatModule {
     @Provides
     fun provideTokoChatBabbleCourier(
         courierConnection: CourierConnection,
-        courierStateObservable: TokoCourierStateObservable
+        courierStateObservable: TokoChatCourierStateObservable
     ): BabbleCourierClient {
         return TokoChatBabbleCourierImpl(
             courierConnection, courierStateObservable)

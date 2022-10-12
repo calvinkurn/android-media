@@ -348,10 +348,6 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     }
 
     /**
-     * Tokochat Config Common
-     */
-
-    /**
      * System : Chat Ticker
      */
 

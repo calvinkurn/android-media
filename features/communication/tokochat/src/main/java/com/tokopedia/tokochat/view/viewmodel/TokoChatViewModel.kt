@@ -14,17 +14,17 @@ import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.GetAllChannelsUseCase
-import com.tokopedia.tokochat.domain.usecase.GetChatHistoryUseCase
-import com.tokopedia.tokochat.domain.usecase.GetTypingUseCase
-import com.tokopedia.tokochat.domain.usecase.MarkAsReadUseCase
-import com.tokopedia.tokochat.domain.usecase.RegistrationActiveChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.MutationTokoChatMessageUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetAllChannelsUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
-import com.tokopedia.tokochat.domain.usecase.MutationProfileUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -36,15 +36,15 @@ import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
-    private val getAllChannelsUseCase: GetAllChannelsUseCase,
-    private val getChatHistoryUseCase: GetChatHistoryUseCase,
-    private val markAsReadUseCase: MarkAsReadUseCase,
-    private val registrationActiveChannelUseCase: RegistrationActiveChannelUseCase,
-    private val mutationTokoChatMessageUseCase: MutationTokoChatMessageUseCase,
-    private val getTypingUseCase: GetTypingUseCase,
+    private val getAllChannelsUseCase: TokoChatGetAllChannelsUseCase,
+    private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
+    private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
+    private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
+    private val sendMessageUseCase: TokoChatSendMessageUseCase,
+    private val getTypingUseCase: TokoChatGetTypingUseCase,
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
-    private val profileUseCase: MutationProfileUseCase,
+    private val profileUseCase: TokoChatMutationProfileUseCase,
     private val dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -71,7 +71,7 @@ class TokoChatViewModel @Inject constructor(
     fun sendMessage(channelId: String, text: String) {
         try {
             val messageMetaData = SendMessageMetaData()
-            mutationTokoChatMessageUseCase.sendTextMessage(
+            sendMessageUseCase.sendTextMessage(
                 channelId,
                 text,
                 messageMetaData
@@ -138,7 +138,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun registerActiveChannel(channelId: String) {
         try {
-            registrationActiveChannelUseCase.registerActiveChannel(channelId)
+            registrationChannelUseCase.registerActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
@@ -146,7 +146,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun deRegisterActiveChannel(channelId: String) {
         try {
-            registrationActiveChannelUseCase.deRegisterActiveChannel(channelId)
+            registrationChannelUseCase.deRegisterActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
         }

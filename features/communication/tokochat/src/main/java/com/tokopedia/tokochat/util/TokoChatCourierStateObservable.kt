@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.data.repository
+package com.tokopedia.tokochat.util
 
 import com.gojek.conversations.courier.CourierState
 import com.gojek.courier.CourierConnection
@@ -8,7 +8,7 @@ import rx.Observable
 import rx.subjects.BehaviorSubject
 import javax.inject.Inject
 
-class TokoCourierStateObservable @Inject constructor(
+class TokoChatCourierStateObservable @Inject constructor(
     courierConnection: CourierConnection
 ) {
     private val publishSubject = BehaviorSubject.create<CourierState>()

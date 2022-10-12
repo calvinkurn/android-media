@@ -23,8 +23,6 @@ object TokoChatNetworkModule {
     //TODO: Move this to TokopediaUrl
     private const val BASE_URL = "https://integration-api.gojekapi.com/"
 
-    //courier/v1/token
-
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
     private const val NET_CONNECT_TIMEOUT = 300

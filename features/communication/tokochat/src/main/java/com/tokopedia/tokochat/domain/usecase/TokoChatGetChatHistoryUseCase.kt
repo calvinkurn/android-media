@@ -6,7 +6,7 @@ import com.gojek.conversations.database.chats.ConversationsMessage
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
 
-class GetChatHistoryUseCase @Inject constructor(
+class TokoChatGetChatHistoryUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
     operator fun invoke(channelUrl: String): LiveData<List<ConversationsMessage>> {
