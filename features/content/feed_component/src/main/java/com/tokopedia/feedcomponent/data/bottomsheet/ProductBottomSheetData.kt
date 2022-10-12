@@ -4,7 +4,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 
 data class ProductBottomSheetData(
     val products: List<FeedXProduct>,
-    val postId: Int,
+    val postId: String,
     val shopId: String,
     val postType: String,
     val isFollowed: Boolean,

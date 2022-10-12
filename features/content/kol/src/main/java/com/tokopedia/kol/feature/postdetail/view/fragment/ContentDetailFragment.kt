@@ -1124,7 +1124,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 this,
                 ProductBottomSheetData(
                     products = products,
-                    postId = feedXCard.id.toIntOrZero(),
+                    postId = feedXCard.id,
                     shopId = feedXCard.author.id,
                     postType = feedXCard.typename,
                     isFollowed = feedXCard.followers.isFollowed,

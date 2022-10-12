@@ -1053,19 +1053,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun getCTAButtonText(card: FeedXCard) =
-        if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(feedComponentR.string.feeds_check_x_products, card.totalProducts)
-        else if (card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(
-                feedComponentR.string.feeds_asgc_disc_x_products,
-                card.totalProducts,
-                card.maximumDisPercentFmt
-            )
-        else if (card.isASGCDiscountToko && card.totalProducts == 1)
-            context.getString(
-                feedComponentR.string.feeds_asgc_disc_one_products,
-                card.maximumDisPercentFmt
-            )
+        if (card.isTypeProductHighlight) card.cta.text
         else context.getString(feedComponentR.string.feeds_cek_sekarang)
 
 

@@ -29,7 +29,6 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             ProductInfoBottomSheetAdapter(it)
         }
     }
-    private var postId: Int = 0
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var shopName: String = ""
