@@ -50,11 +50,10 @@
         android:id="@+id/iv_review_credibility_achievement_avatar_background"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1:1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.56"
+        app:layout_constraintBottom_toBottomOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintEnd_toEndOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintStart_toStartOf="@id/iv_review_credibility_achievement_avatar_border"
+        app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar_border"
         app:srcCompat="@drawable/bg_review_credibility_achievement_avatar"
         app:unify_image_type="circle" />
 
@@ -62,13 +61,13 @@
         android:id="@+id/iv_review_credibility_achievement_avatar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitCenter"
+        android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@id/iv_review_credibility_achievement_avatar_border"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="@id/iv_review_credibility_achievement_avatar_border"
         app:layout_constraintStart_toStartOf="@id/iv_review_credibility_achievement_avatar_border"
         app:layout_constraintTop_toTopOf="@id/iv_review_credibility_achievement_avatar_border"
-        app:layout_constraintWidth_percent="0.35"
+        app:layout_constraintWidth_percent="0.32"
         app:unify_image_corner_radius="0" />
 
     <com.tokopedia.unifycomponents.ImageUnify
@@ -79,7 +78,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_percent="0.56"
+        app:layout_constraintWidth_percent="0.5"
         app:srcCompat="@drawable/border_review_credibility_achievement_avatar"
         app:unify_image_type="circle" />
 
