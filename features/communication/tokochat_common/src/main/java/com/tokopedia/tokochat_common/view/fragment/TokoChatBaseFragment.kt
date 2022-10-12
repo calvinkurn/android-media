@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat_common.view.fragment
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,10 +9,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.tokochat_common.R
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatLoadingUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 /**
@@ -23,6 +25,8 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     protected var binding: viewBinding? by autoClearedNullable()
     protected var baseBinding: TokochatBaseFragmentBinding? by autoClearedNullable()
     abstract var adapter: TokoChatBaseAdapter
+
+    private val shimmerUiModel = TokoChatLoadingUiModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,6 +53,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     protected open fun initViews(view: View, savedInstanceState: Bundle?) {
         setupChatRoomRecyclerView()
+        addInitialShimmering()
     }
 
     private fun setupChatRoomRecyclerView() {
@@ -60,6 +65,23 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).stackFromEnd = false
         (baseBinding?.tokochatChatroomRv?.layoutManager as LinearLayoutManager).reverseLayout = true
         baseBinding?.tokochatChatroomRv?.adapter = adapter
+    }
+
+    private fun addInitialShimmering() {
+        adapter.addItem(shimmerUiModel)
+        adapter.notifyItemInserted(adapter.itemCount)
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    protected fun removeShimmering() {
+        adapter.removeItem(shimmerUiModel)
+        adapter.notifyDataSetChanged()
+    }
+
+    protected fun scrollToBottom() {
+        if (adapter.itemCount > 0) {
+            baseBinding?.tokochatChatroomRv?.smoothScrollToPosition(Int.ZERO)
+        }
     }
 
     protected fun getTokoChatHeader(): HeaderUnify? {

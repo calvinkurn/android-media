@@ -18,16 +18,19 @@ import com.tokopedia.tokochat.view.activity.TokoChatListActivity
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
+class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>(),
+    TokochatReminderTickerListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
 
     private var channelUrl: String = ""
 
@@ -216,5 +219,20 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 arguments = bundle
             } as TokoChatFragmentExp
         }
+    }
+
+    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+
+    }
+
+    override fun onClickLinkReminderTicker(
+        element: TokochatReminderTickerUiModel,
+        linkUrl: String
+    ) {
+
+    }
+
+    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+
     }
 }

@@ -98,7 +98,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.courierMessageAdapter
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
-    implementation "com.gojek.courier:courier-client:0.0.4"
+    implementation files('libs/courier-client-0.0.4-release.aar')
     implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.miscDependencies.dagger

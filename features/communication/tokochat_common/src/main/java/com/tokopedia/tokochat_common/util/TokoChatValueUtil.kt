@@ -2,6 +2,11 @@ package com.tokopedia.tokochat_common.util
 
 object TokoChatValueUtil {
     /**
+     * Role Value
+     */
+    const val DRIVER = "driver"
+
+    /**
      * Message status
      */
     const val PENDING_VALUE = 0

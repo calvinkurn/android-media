@@ -7,6 +7,7 @@ import com.gojek.conversations.utils.ConversationsConstants
 import com.tokopedia.tokochat.di.TokoChatContext
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import java.util.*
 import javax.inject.Inject
 
@@ -16,6 +17,12 @@ class TokoChatConversationUiMapper @Inject constructor(
 
     private var bottomMostHeaderDate: TokoChatHeaderDateUiModel? = null
     private var topMostHeaderDate: TokoChatHeaderDateUiModel? = null
+
+    private var firstTicker: TokochatReminderTickerUiModel? = null
+
+    fun setFirstTicker(reminderTickerUiModel: TokochatReminderTickerUiModel?) {
+        firstTicker = reminderTickerUiModel
+    }
 
     fun mapToChatUiModel(
         list: List<ConversationsMessage>,
@@ -53,6 +60,10 @@ class TokoChatConversationUiMapper @Inject constructor(
                     }
                 }
             }
+        }
+
+        firstTicker?.let {
+            resultList.add(resultList.size, it)
         }
         return resultList
     }

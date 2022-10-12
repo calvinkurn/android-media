@@ -10,10 +10,10 @@ data class TokochatRoomTickerResponse(
 ) {
     data class TokochatRoomTicker(
         @SerializedName("enable")
-        val enable: Boolean = false,
+        var enable: Boolean = false,
         @SerializedName("message")
-        val message: String = "",
+        var message: String = "",
         @SerializedName("tickerType")
-        val tickerType: Int = Int.ZERO
+        var tickerType: Int = Int.ZERO
     )
 }

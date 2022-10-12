@@ -1,22 +1,19 @@
 package com.tokopedia.tokochat.view.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
-import com.gojek.conversations.babble.channel.data.CreateChannelInfo
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
 import com.gojek.conversations.channel.ConversationsChannel
 import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.database.chats.ConversationsMessage
-import com.gojek.conversations.extensions.ExtensionMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokochat.domain.usecase.CreateChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.GetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.usecase.GetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTypingUseCase
@@ -38,7 +35,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
-    private val createChannelUseCase: CreateChannelUseCase,
+    private val chatChannelUseCase: TokoChatChannelUseCase,
     private val getAllChannelsUseCase: GetAllChannelsUseCase,
     private val getChatHistoryUseCase: GetChatHistoryUseCase,
     private val markAsReadUseCase: MarkAsReadUseCase,
@@ -91,7 +88,7 @@ class TokoChatViewModel @Inject constructor(
         orderChatType: OrderChatType = OrderChatType.Unknown
     ) {
         try {
-            createChannelUseCase.initGroupBookingChat(
+            chatChannelUseCase.initGroupBookingChat(
                 orderId = orderId,
                 serviceType = serviceType,
                 groupBookingListener = groupBookingListener,
@@ -104,7 +101,7 @@ class TokoChatViewModel @Inject constructor(
 
     fun getGroupBookingChannel(channelId: String) {
         try {
-            createChannelUseCase.getGroupBookingChannel(channelId, onSuccess = {
+            chatChannelUseCase.getGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
                 _channelDetail.postValue(Fail(it))
@@ -208,7 +205,7 @@ class TokoChatViewModel @Inject constructor(
         launchCatchError(context = dispatcher.io, block = {
             withContext(NonCancellable) {
                 while (true) {
-                    _isChatConnected.postValue(createChannelUseCase.isChatConnected())
+                    _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
                     delay(5000)
                 }
             }
@@ -218,7 +215,7 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun isChatConnected(): Boolean {
-        return createChannelUseCase.isChatConnected()
+        return chatChannelUseCase.isChatConnected()
     }
 
     fun getTotalUnreadCount(): LiveData<Int> {
@@ -242,7 +239,12 @@ class TokoChatViewModel @Inject constructor(
 
     fun loadChatRoomTicker(messageId: String) {
         launchCatchError(block = {
-            val result = getTokoChatRoomTickerUseCase(messageId)
+//            TODO: Change after BE side ready
+//            val result = getTokoChatRoomTickerUseCase(messageId)
+            val result = TokochatRoomTickerResponse().apply {
+                this.tokochatRoomTicker.message = "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput & antar pesanan ke kamu."
+                this.tokochatRoomTicker.tickerType = 0
+            }
             _chatRoomTicker.value = Success(result)
         }, onError = {
             _chatRoomTicker.value = Fail(it)

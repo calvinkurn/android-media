@@ -4,7 +4,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class TokochatReminderTickerUiModel(
     val message: String,
-    val tickerType: String
+    val tickerType: Int
 ) {
     val impressHolder = ImpressHolder()
 }

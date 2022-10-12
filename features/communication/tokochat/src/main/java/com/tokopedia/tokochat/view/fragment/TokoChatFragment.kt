@@ -1,6 +1,5 @@
 package com.tokopedia.tokochat.view.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +14,7 @@ import com.gojek.courier.lifecycle.LifecycleEvent
 import com.google.android.material.snackbar.Snackbar
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
@@ -27,11 +27,14 @@ import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
+import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -39,8 +42,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoChatTypingListener,
-    TokoChatReplyTextListener {
+class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
+    TokoChatTypingListener,
+    TokoChatReplyTextListener,
+    TokochatReminderTickerListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -50,8 +55,9 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var channelId = ""
+    private var firstTimeOpen = true
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
 
     override fun getScreenName(): String = TAG
 
@@ -203,7 +209,17 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
-                    //TODO will adjust by kelvin
+                    val ticker = TokochatReminderTickerUiModel(
+                        it.data.tokochatRoomTicker.message,
+                        it.data.tokochatRoomTicker.tickerType
+                    )
+                    mapper.setFirstTicker(ticker)
+
+                    // If the ticker is not in list, manually add ticker
+                    if (!adapter.getItems().contains(ticker)) {
+                        adapter.addItem(adapter.itemCount, ticker)
+                        adapter.notifyItemInserted(adapter.itemCount)
+                    }
                 }
                 is Fail -> {
                     //no op
@@ -217,7 +233,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
             when (it) {
                 is Success -> {
                     it.data.members.forEach { member ->
-                        if (member.ownerType == "driver") {
+                        if (member.ownerType == DRIVER) {
                             headerUiModel = TokoChatHeaderUiModel(
                                 member.id,
                                 member.name,
@@ -292,12 +308,11 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
         return object : ConversationsGroupBookingListener {
 
             override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                view?.let {
-                    var errorMessage = error.getErrorMessage()
-                    if (errorMessage.isEmpty()) {
-                        errorMessage = error.toString()
-                        showSnackbarError(errorMessage)
-                    }
+                removeShimmering()
+                var errorMessage = error.getErrorMessage()
+                if (errorMessage.isEmpty()) {
+                    errorMessage = error.toString()
+                    showSnackbarError(errorMessage)
                 }
             }
 
@@ -307,20 +322,38 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
                 this@TokoChatFragment.channelId = channelUrl
                 viewModel.registerActiveChannel(channelUrl)
                 viewModel.getGroupBookingChannel(channelId)
+                removeShimmering()
                 observeChatHistory()
             }
 
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun observeChatHistory() {
         observe(viewModel.getChatHistory(channelId)) {
+            // First time get Chat History
+            if (firstTimeOpen) {
+                firstTimeOpen = false
+                viewModel.loadChatRoomTicker(channelId)
+            }
+
+            // Map conversation message into ui model
             val result = mapper.mapToChatUiModel(it, viewModel.getUserId())
-            adapter.setItems(result)
-            adapter.notifyDataSetChanged()
+            adapter.setItemsAndAnimateChanges(result)
+            scrollToBottom()
+
+            // Mark the chat as read
+            viewModel.markChatAsRead(channelId)
         }
     }
+
+    /**
+     * Tokochat Config Common
+     */
+
+    /**
+     * System : Chat Ticker
+     */
 
     override fun onStartTyping() {
         viewModel.setTypingStatus(true)
@@ -338,6 +371,30 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCh
                 hideInterlocutorTypingStatus()
             }
         }
+    }
+
+    /**
+     * Listeners
+     */
+
+    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+        // TODO: Tracker
+    }
+
+    override fun onClickLinkReminderTicker(
+        element: TokochatReminderTickerUiModel,
+        linkUrl: String
+    ) {
+        if (linkUrl.isNotEmpty()) {
+            context?.let {
+                RouteManager.route(it, linkUrl)
+            }
+        }
+    }
+
+    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+        adapter.removeItem(element)
+        mapper.setFirstTicker(null)
     }
 
     companion object {
