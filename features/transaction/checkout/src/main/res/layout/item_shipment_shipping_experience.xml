@@ -340,7 +340,6 @@
                         android:id="@+id/label_whitelabel_otd_tnc"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/label_otdg_whitelabel"
                         android:textColor="@color/Unify_G500"
                         app:layout_constraintBaseline_toBaselineOf="@+id/label_whitelabel_description"
                         app:layout_constraintStart_toEndOf="@+id/label_whitelabel_description"

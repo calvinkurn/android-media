@@ -1079,10 +1079,11 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
 
         // On time delivery guarantee
-        if (ontimeDelivery != null && ontimeDelivery.getAvailable()) {
+        if (ontimeDelivery != null && ontimeDelivery.getAvailable() && !ontimeDelivery.getTextLabel().isEmpty()) {
             if (!shippingDescription.isEmpty()) {
                 shippingDescription = shippingDescription + " & ";
             }
+            labelWhitelabelOtdTnc.setText(ontimeDelivery.getTextLabel());
             labelWhitelabelOtdTnc.setOnClickListener(view -> {
                 mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
             });
