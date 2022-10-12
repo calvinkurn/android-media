@@ -7,10 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
+import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -55,7 +58,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
             when(it) {
                 is Success -> {
                     if(it.data.authCode.isNotEmpty()) {
-                        binding?.gotoSeamlessPrimaryBtn?.text = "Masuk ke ${it.data.countryCode}${it.data.phone}"
+                        renderPositiveButtonTxt(it.data)
                     } else {
                         cancelSeamlessLoginFlow()
                     }
@@ -85,6 +88,26 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
         binding?.gotoSeamlessPrimaryBtn?.isLoading = true
         viewModel.getGojekData()
+    }
+
+    private fun renderPositiveButtonTxt(data: GojekProfileData) {
+        context?.let {
+            var description = it.getString(R.string.goto_seamless_description_text_2)
+            val text = when(getVariant()) {
+                TOKO_NAME_VARIANT -> "Masuk sebagai ${data.tokopediaName}"
+                GOJEK_NAME_VARIANT -> {
+                    val icon = MethodChecker.getDrawable(it, R.drawable.ic_gojek_small)
+                    binding?.gotoSeamlessPrimaryBtn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                    "Masuk sebagai ${data.name}"
+                }
+                else -> {
+                    description = it.getString(R.string.goto_seamless_description_text)
+                    "Masuk ke ${data.countryCode}${data.phone}"
+                }
+            }
+            binding?.gotoSeamlessPrimaryBtn?.text = text
+            binding?.gotoSeamlessDescriptionTxt?.text = description
+        }
     }
 
     private fun showGeneralErrorToaster() {
@@ -129,13 +152,17 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     }
 
     private fun getVariant(): String {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
-        return PHONE_VARIANT
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
     }
 
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
         const val RESULT_OTHER_ACCS = 235
+
+        private const val ROLLENCE_SEAMLESS_KEY = "seamless_experiment"
+        private const val PHONE_VARIANT = "control_variant"
+        private const val TOKO_NAME_VARIANT = "inapp_variant"
+        private const val GOJEK_NAME_VARIANT = "other_variant"
 
         fun createInstance(): GotoSeamlessLoginFragment {
             return GotoSeamlessLoginFragment()
