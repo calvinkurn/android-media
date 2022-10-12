@@ -672,7 +672,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickShareProductSgcRecommEvent(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -683,7 +683,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         else
             analyticsTracker.sendClickShareSgcImageBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -811,7 +811,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 if (userSession.isLoggedIn) {
                     context?.let {
                         reportBottomSheet = ReportBottomSheet.newInstance(
-                            feedXCard.id.toIntOrZero(),
                             context = object : ReportBottomSheet.OnReportOptionsClick {
                                 override fun onReportAction(
                                     reasonType: String,
@@ -1366,7 +1365,6 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         }
     }
 
-
     private fun onGoToLink(link: String) {
         context?.let {
             if (!TextUtils.isEmpty(link)) {
@@ -1390,7 +1388,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         if (item.postType == TYPE_FEED_X_CARD_POST && !item.isFollowed && item.mediaType == TYPE_IMAGE)
             analyticsTracker.sendClickThreeDotsSgcRecomm(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -1402,7 +1400,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
         else
             analyticsTracker.sendClickThreeDotsSgcImageEventForBottomSheet(
                 ContentDetailPageAnalyticsDataModel(
-                    activityId = item.postId.toString(),
+                    activityId = item.postId,
                     shopId = item.shopId,
                     isFollowed = item.isFollowed,
                     type = item.postType,
@@ -1421,7 +1419,7 @@ class ContentDetailFragment : BaseDaggerFragment() , ContentDetailPostViewHolder
                 )
             )
         val finalID =
-            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
+            if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)

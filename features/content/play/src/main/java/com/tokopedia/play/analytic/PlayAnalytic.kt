@@ -175,40 +175,37 @@ class PlayAnalytic(
         )
     }
 
-    fun impressBottomSheetProducts(products: List<Pair<PlayProductUiModel.Product, Int>>, sectionInfo: ProductSectionUiModel.Section) {
-        if (products.isEmpty()) return
-
-        val firstProduct = products.first().first
-
-        val (eventAction, eventLabel) = when(sectionInfo.config.type){
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = firstProduct, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${firstProduct.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${firstProduct.isPinned}")
+    fun impressBottomSheetProduct(
+        product: PlayProductUiModel.Product,
+        sectionInfo: ProductSectionUiModel.Section,
+        position: Int,
+    ) {
+        val (eventAction, eventLabel) = when(sectionInfo.config.type) {
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
+            else -> Pair("view product", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned}")
         }
         trackingQueue.putEETracking(
-                event = EventModel(
-                        "productView",
-                        KEY_TRACK_GROUP_CHAT_ROOM,
-                        eventAction,
-                        eventLabel
-                ),
-                enhanceECommerceMap = hashMapOf(
-                        "ecommerce" to hashMapOf(
-                                "currencyCode" to "IDR",
-                                "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                                    products.forEach {
-                                        add(convertProductToHashMapWithList(it.first, it.second, "bottom sheet"))
-                                    }
-                                }
-                        )
-                ),
-                customDimension =
-                    hashMapOf(
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                    )
+            event = EventModel(
+                "productView",
+                KEY_TRACK_GROUP_CHAT_ROOM,
+                eventAction,
+                eventLabel
+            ),
+            enhanceECommerceMap = hashMapOf(
+                "ecommerce" to hashMapOf(
+                    "currencyCode" to "IDR",
+                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
+                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
+                    }
+                )
+            ),
+            customDimension = hashMapOf(
+                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_USER_ID to userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
+            ),
         )
     }
 
@@ -333,7 +330,7 @@ class PlayAnalytic(
 
     fun trackVideoBuffering(
             bufferCount: Int,
-            bufferDurationInSecond: Int
+            bufferDurationInSecond: Long
     ) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(

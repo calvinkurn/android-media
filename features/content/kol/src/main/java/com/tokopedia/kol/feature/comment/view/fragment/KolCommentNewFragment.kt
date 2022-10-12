@@ -38,7 +38,7 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.comment.di.DaggerKolCommentComponent
 import com.tokopedia.kol.feature.comment.di.KolCommentModule
 import com.tokopedia.kol.feature.comment.domain.model.SendKolCommentDomain
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.comment.view.adapter.KolCommentAdapter
 import com.tokopedia.kol.feature.comment.view.adapter.typefactory.KolCommentTypeFactory
 import com.tokopedia.kol.feature.comment.view.listener.KolComment
@@ -55,6 +55,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSession
@@ -160,7 +161,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         removeLoading()
         showError(false) {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(ARGS_ID)
+                requireArguments().getLong(ARGS_ID)
             )
         }
     }
@@ -202,7 +203,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                             postType
                         )
                     adapter?.clearList()
-                    presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+                    presenter.getCommentFirstTime(arguments?.getLong(ARGS_ID) ?: 0)
                     toBeDeleted = false
                 }
 
@@ -252,7 +253,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         if (::reportBottomSheet.isInitialized)
             reportBottomSheet.setFinalView()
 
-        presenter.sendReport(id.toInt(), reasonType, reasonDesc, "comment")
+        presenter.sendReport(id.toIntOrZero(), reasonType, reasonDesc, "comment")
         if (isFromContentDetailPage)
             analyticsTracker.sendClickReportOnComment(getContentDetailAnalyticsData())
         else
@@ -275,7 +276,6 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         sheet.onReport = {
             if (userSession?.isLoggedIn == true) {
                 reportBottomSheet = ReportBottomSheet.newInstance(
-                    id.toInt(),
                     context = object : ReportBottomSheet.OnReportOptionsClick {
                         override fun onReportAction(reasonType: String, reasonDesc: String) {
                             reportAction(
@@ -518,7 +518,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         globalError.visible()
         globalError.setOnClickListener {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(ARGS_ID)
+                requireArguments().getLong(ARGS_ID)
             )
         }
 
@@ -526,7 +526,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
             true
         ) {
             presenter.getCommentFirstTime(
-                requireArguments().getInt(ARGS_ID)
+                requireArguments().getLong(ARGS_ID)
             )
         }
     }
@@ -551,7 +551,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         header?.isLoading = true
         adapter?.notifyItemChanged(0)
 
-        arguments?.getInt(KolCommentActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
+        arguments?.getLong(KolCommentNewActivity.ARGS_ID)?.let { presenter.loadMoreComments(it)}
 
     }
 
@@ -632,7 +632,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
                 )
             if (userSession != null && userSession?.isLoggedIn != false) {
                 presenter.sendComment(
-                    arguments?.getInt(ARGS_ID) ?: 0,
+                    arguments?.getLong(ARGS_ID) ?: 0,
                     kolComment?.getRawText()
                 )
             } else {
@@ -651,7 +651,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        presenter.getCommentFirstTime(arguments?.getInt(ARGS_ID) ?: 0)
+        presenter.getCommentFirstTime(arguments?.getLong(ARGS_ID) ?: 0)
     }
 
     override fun shouldGetMentionableUser(keyword: String) {

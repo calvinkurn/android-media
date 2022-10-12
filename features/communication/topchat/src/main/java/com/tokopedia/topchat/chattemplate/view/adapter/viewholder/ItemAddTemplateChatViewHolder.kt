@@ -2,6 +2,7 @@ package com.tokopedia.topchat.chattemplate.view.adapter.viewholder
 
 import android.view.View
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -16,6 +17,7 @@ class ItemAddTemplateChatViewHolder(
 
     var textView: TextView? = itemView.findViewById(R.id.caption)
     var imageView: ImageView? = itemView.findViewById(R.id.setting)
+    var layout : LinearLayout? = itemView.findViewById(R.id.layout)
 
     override fun bind(element: TemplateChatUiModel) {
         if (element.size() >= TEMPLATE_COUNT_THRESHOLD) {
@@ -31,6 +33,9 @@ class ItemAddTemplateChatViewHolder(
                     com.tokopedia.unifyprinciples.R.color.Unify_N700_20
                 )
             )
+            layout?.setBackgroundResource(
+                R.drawable.bg_item_add_template_chat_settings_grey
+            )
         } else {
             imageView?.setImageDrawable(
                 MethodChecker.getDrawable(
@@ -41,8 +46,11 @@ class ItemAddTemplateChatViewHolder(
             textView?.setTextColor(
                 MethodChecker.getColor(
                     view.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_G400
+                    com.tokopedia.unifyprinciples.R.color.Unify_G500
                 )
+            )
+            layout?.setBackgroundResource(
+                R.drawable.bg_item_add_template_chat_settings_active
             )
         }
         view.setOnClickListener { viewListener.onEnter(null, adapterPosition) }

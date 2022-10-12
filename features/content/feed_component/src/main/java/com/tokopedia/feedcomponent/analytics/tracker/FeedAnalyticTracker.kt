@@ -30,7 +30,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kotlin.extensions.view.getDigits
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
@@ -678,7 +677,7 @@ class FeedAnalyticTracker
                                                             productName,
                                                             price.getDigits().toZeroIfNull(),
                                                             quantity,
-                                                            shopId.toIntOrZero(),
+                                                            shopId,
                                                             shopName,
                                                             type,
                                                             isFollowed,
@@ -2217,7 +2216,7 @@ class FeedAnalyticTracker
         productName: String,
         price: String,
         quantity: Int,
-        shopId: Int,
+        shopId: String,
         shopName: String,
     ) {
         trackGeneralEvent(
@@ -2458,7 +2457,7 @@ class FeedAnalyticTracker
      */
     fun eventImageImpressionPost(
         screenName: String, activityId: String, activityName: String, mediaType: String,
-        imageUrl: String, recomId: Int, rowNumber: Int,
+        imageUrl: String, recomId: Long, rowNumber: Int,
     ) {
         var eventCategory = ""
         var promotionsNameInitial = ""
@@ -2717,44 +2716,6 @@ class FeedAnalyticTracker
     }
 
     /**
-     * Base track addToCart
-     */
-
-    private fun eventAddToCart(
-        eventCategory: String,
-        actionField: String,
-        productId: String,
-        productName: String,
-        price: String,
-        quantity: Int,
-        shopId: Int,
-        shopName: String,
-    ) {
-        trackEnhancedEcommerceEvent(
-            Event.ADD_TO_CART,
-            eventCategory,
-            Action.CLICK_BUY,
-            productId,
-            eCommerceData = getCurrencyData() +
-                    getAddData(
-                        getActionFieldData(getListData(actionField)) +
-                                getProductsData(
-                                    listOf(
-                                        getProductData(
-                                            productId,
-                                            productName,
-                                            price.getDigits().toZeroIfNull(),
-                                            quantity,
-                                            shopId,
-                                            shopName
-                                        )
-                                    )
-                                )
-                    )
-        )
-    }
-
-    /**
      * Base tracker function
      */
     private fun trackGeneralEvent(
@@ -2928,7 +2889,7 @@ class FeedAnalyticTracker
         name: String,
         price: Int,
         quantity: Int,
-        shopId: Int,
+        shopId: String,
         shopName: String,
         type: String = "",
         isFollowed: Boolean = false,
