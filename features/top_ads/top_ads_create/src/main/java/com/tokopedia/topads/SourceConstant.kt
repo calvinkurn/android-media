@@ -7,7 +7,7 @@ import com.tokopedia.url.TokopediaUrl
  */
 object SourceConstant {
 
-    const val SOURCE_ANDROID_CREATE_GROUP_ADS = "android_topads_create_group"
-    const val SOURCE_ANDROID_SUMMARY = "android_topads_summary"
-    const val SOURCE_ANDROID_AD_CHOOSER = "android_topads_ad_chooser"
+    const val SOURCE_ANDROID_CREATE_GROUP_ADS = "android.topads_create_group"
+    const val SOURCE_ANDROID_SUMMARY = "android.topads_summary"
+    const val SOURCE_ANDROID_AD_CHOOSER = "android.topads_ad_chooser"
 }

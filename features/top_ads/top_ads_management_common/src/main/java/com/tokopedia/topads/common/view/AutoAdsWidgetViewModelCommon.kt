@@ -90,7 +90,7 @@ class AutoAdsWidgetViewModelCommon @Inject constructor(
         const val SOURCE = "source"
         const val SHOPID = "shopID"
         const val ADTYPE = "adTypes"
-        const val SOURCE_AUTO_ADS = "android_topads_autoads_common"
+        const val SOURCE_AUTO_ADS = "android.topads_autoads_common"
     }
 
 }
