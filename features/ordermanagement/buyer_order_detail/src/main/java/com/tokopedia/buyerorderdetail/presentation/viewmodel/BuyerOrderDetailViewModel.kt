@@ -9,7 +9,6 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailOrderStatusCode
-import com.tokopedia.buyerorderdetail.common.extension.combine
 import com.tokopedia.buyerorderdetail.common.utils.ResourceProvider
 import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderParams
@@ -119,9 +118,19 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
-        shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState,
-        orderInsuranceUiState, ::mapBuyerOrderDetailUiState
-    ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
+        shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState
+    ) { flows ->
+        mapBuyerOrderDetailUiState(
+            flows[0] as ActionButtonsUiState,
+            flows[1] as OrderStatusUiState,
+            flows[2] as PaymentInfoUiState,
+            flows[3] as ProductListUiState,
+            flows[4] as ShipmentInfoUiState,
+            flows[5] as PGRecommendationWidgetUiState,
+            flows[6] as OrderResolutionTicketStatusUiState,
+            flows[7] as OrderInsuranceUiState,
+        )
+    }.toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
     init {
         observeGetBuyerOrderDetailDataParams()
