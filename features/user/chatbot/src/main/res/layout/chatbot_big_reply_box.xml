@@ -24,7 +24,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nama produk Qq"
+            android:id="@+id/reply_box_text"
             android:gravity="start"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"/>

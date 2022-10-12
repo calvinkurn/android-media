@@ -242,6 +242,8 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
     private lateinit var chatbotAdapter: ChatbotAdapter
     private var isEligibleForVideoUplaod : Boolean = false
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
+    private var replyBoxBottomSheetPlaceHolder: String = ""
+    private var replyBoxBottomSheetTitle: String = ""
 
     @Inject
     lateinit var replyBubbleOnBoarding : ReplyBubbleOnBoarding
@@ -989,6 +991,21 @@ class ChatbotFragment : BaseChatFragment(), ChatbotContract.View,
 
     override fun onVideoUploadChangeView(uiModel: VideoUploadUiModel) {
         getViewState()?.onVideoUpload(uiModel)
+    }
+
+    override fun setBigReplyBoxTitle(text: String, placeholder: String) {
+        bigReplyBox?.show()
+        bigReplyBox?.setText(text)
+        replyBoxBottomSheetPlaceHolder = placeholder
+        replyBoxBottomSheetTitle = text
+    }
+
+    override fun handleSmallReplyBox(hidden: Boolean) {
+        if (hidden) {
+            smallReplyBox?.hideReplyBox()
+        } else {
+            smallReplyBox?.showReplyBox()
+        }
     }
 
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {

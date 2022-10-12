@@ -17,6 +17,7 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     private var addAttachmentMenu: ImageView? = null
     private var sendButton: ImageView? = null
     private var parentLayout: ConstraintLayout? = null
+    private var replyBoxText: com.tokopedia.unifyprinciples.Typography? = null
 
     var sendButtonListener : ChatbotSendButtonListener? = null
     var replyBoxClickListener : ReplyBoxClickListener? = null
@@ -34,6 +35,7 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
             parentLayout = findViewById(R.id.parent)
             addAttachmentMenu = findViewById(R.id.iv_chat_menu)
             sendButton = findViewById(R.id.send_but)
+            replyBoxText = findViewById(R.id.reply_box_text)
         }
     }
 
@@ -54,6 +56,10 @@ class BigReplyBox (context: Context, attributeSet: AttributeSet) :
     fun enableSendButton() {
         sendButtonListener?.enableSendButton()
         sendButton?.setImageResource(R.drawable.ic_chatbot_send)
+    }
+
+    fun setText(text: String) {
+        replyBoxText?.text = text
     }
 
     companion object {

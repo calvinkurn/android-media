@@ -50,6 +50,12 @@ object ChatbotConstant {
         const val TYPE_REPLY_BUBBLE = "28"
     }
 
+    object ReplyBoxType {
+        const val TYPE_REPLY_BOX_TOGGLE = "34"
+        const val TYPE_BIG_REPLY_BOX = 100
+        const val TYPE_SMALL_REPLY_BOX = 101
+    }
+
     object ChatbotUnification{
         const val ARTICLE_ID = "articleId"
         const val ARTICLE_TITLE = "articleTitle"

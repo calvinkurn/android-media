@@ -15,6 +15,7 @@ import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 
 class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet) {
@@ -49,6 +50,10 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
 
     fun hideReplyBox() {
         replyBox?.hide()
+    }
+
+    fun showReplyBox() {
+        replyBox?.show()
     }
 
     fun clearChatText() {

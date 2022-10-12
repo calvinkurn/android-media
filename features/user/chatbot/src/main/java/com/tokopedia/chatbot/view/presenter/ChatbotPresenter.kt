@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -55,6 +54,9 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_REPLY_BOX_TOGGLE
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_SMALL_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
@@ -82,6 +84,9 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.domain.pojo.replyBox.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.replyBox.ReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
@@ -302,6 +307,10 @@ class ChatbotPresenter @Inject constructor(
                         handleSessionChange(agentMode)
                     }
 
+                    if (attachmentType == TYPE_REPLY_BOX_TOGGLE) {
+                        handleReplyBoxWSToggle()
+                    }
+
                 } catch (e: JsonSyntaxException) { }
             }
 
@@ -397,6 +406,36 @@ class ChatbotPresenter @Inject constructor(
         }
 
     }
+
+    private fun handleReplyBoxWSToggle() {
+        val replyBoxAttribute = Gson().fromJson(chatResponse.attachment?.attributes, ReplyBoxAttribute::class.java)
+
+        when(replyBoxAttribute.contentCode) {
+            TYPE_BIG_REPLY_BOX -> {
+                val bigReplyBoxContent = Gson().fromJson(replyBoxAttribute?.dynamicContent, BigReplyBoxAttribute::class.java)
+                handleBigReplyBoxWS(bigReplyBoxContent)
+            }
+            TYPE_SMALL_REPLY_BOX -> {
+                val smallReplyBoxContent = Gson().fromJson(replyBoxAttribute?.dynamicContent, SmallReplyBoxAttribute::class.java)
+                handleSmallReplyBoxWS(smallReplyBoxContent)
+            }
+            else -> {
+                //TODO need to show fallback message
+            }
+        }
+
+    }
+
+    private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
+        if (bigReplyBoxContent.isActive) {
+            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
+        }
+    }
+
+    private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
+        view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
+    }
+
 
     private fun leaveQueue(messageId : String, dividerTime: String): () -> Unit {
         return {

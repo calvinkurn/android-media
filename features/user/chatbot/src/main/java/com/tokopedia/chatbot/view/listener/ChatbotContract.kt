@@ -75,6 +75,10 @@ interface ChatbotContract {
         fun videoUploadEligibilityHandler(state : Boolean)
 
         fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
+
+        fun setBigReplyBoxTitle(text: String, placeholder: String)
+
+        fun handleSmallReplyBox(hidden: Boolean)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
