@@ -1775,6 +1775,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 CURRENT_SITE to TOKOPEDIA_MARKET_PLACE,
                 PAGE_PATH to removedDashPageIdentifier,
                 PAGE_TYPE to pageType,
+                TRACKER_ID to "19674",
                 PAGE_DESTINATION to sourceIdentifier)
         getTracker().sendGeneralEvent(map)
     }
