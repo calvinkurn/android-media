@@ -12,7 +12,7 @@ data class VideoViewModel(
         var url: String = "",
         var canPlayVideo: Boolean = false,
         var redirectLink: String = "",
-        override var postId: Int = 0,
+        override var postId: String = "0",
         override var positionInFeed: Int = 0
 ) : ImpressHolder(), BasePostViewModel {
 }

@@ -251,7 +251,7 @@ class ReadReviewViewHolder(
         reviewMessage?.apply {
             isEnabled = enable
             this.maxLines = maxLines
-            text = message
+            text = HtmlLinkHelper(context, message).spannedString ?: ""
             show()
         }
     }

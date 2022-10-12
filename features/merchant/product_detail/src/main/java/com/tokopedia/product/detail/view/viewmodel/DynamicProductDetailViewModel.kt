@@ -1004,7 +1004,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
+    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean, recomItem: RecommendationItem) {
         _atcRecomTokonow.value = message.asSuccess()
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()

@@ -19,6 +19,7 @@ import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
@@ -67,9 +68,13 @@ interface ChatbotContract {
 
         fun sendInvoiceForArticle()
 
-        fun replyBubbleStateHandler(state: Boolean)
-
         fun visibilityReplyBubble(state: Boolean)
+
+        fun sessionChangeStateHandler(state : Boolean)
+
+        fun videoUploadEligibilityHandler(state : Boolean)
+
+        fun onVideoUploadChangeView(uiModel : VideoUploadUiModel)
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {
@@ -150,6 +155,12 @@ interface ChatbotContract {
         fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
+
+        fun sendVideoAttachment(filePath: String, startTime: String, messageId: String)
+
+        fun cancelVideoUpload(file: String, sourceId: String, onError: (Throwable) -> Unit)
+
+        fun checkUploadVideoEligibility(msgId : String)
 
         fun sendMessage(
             messageId: String, sendMessage: String,
