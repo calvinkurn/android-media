@@ -68,4 +68,21 @@ class CourierItemData(
         var shippingSubsidy: Long = 0,
         var boCampaignId: Long = 0,
         var scheduleDeliveryUiModel: ScheduleDeliveryUiModel? = null
-) : Parcelable, ShipmentOptionData
+) : Parcelable, ShipmentOptionData {
+
+    private fun isScheduleDelivery(): Boolean {
+        return scheduleDeliveryUiModel?.isSelected ?: false
+    }
+
+    fun getRealPromoCode(): String? {
+        if (isScheduleDelivery())
+            return scheduleDeliveryUiModel?.deliveryProduct?.promoCode
+        return promoCode
+    }
+
+    fun getRealShipperPrice(): Int {
+        if (isScheduleDelivery())
+            return scheduleDeliveryUiModel?.deliveryProduct?.finalPrice?.toInt() ?: 0
+        return shipperPrice
+    }
+}

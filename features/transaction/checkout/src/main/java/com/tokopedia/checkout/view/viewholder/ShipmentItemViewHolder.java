@@ -1143,7 +1143,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             }
 
             if (courierItemData != null) {
-                shippingPrice = courierItemData.getShipperPrice();
+                shippingPrice = courierItemData.getRealShipperPrice();
                 Boolean useInsurance = shipmentCartItemModel.getSelectedShipmentDetailData().getUseInsurance();
                 if (useInsurance != null && useInsurance) {
                     insurancePrice = courierItemData.getInsurancePrice();

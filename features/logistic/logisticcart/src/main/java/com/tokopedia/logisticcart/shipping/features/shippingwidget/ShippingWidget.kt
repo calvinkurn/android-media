@@ -280,7 +280,7 @@ class ShippingWidget : ConstraintLayout {
             val courierName = "${selectedCourierItemData.name} (${
                 removeDecimalSuffix(
                     convertPriceValueToIdrFormat(
-                        selectedCourierItemData.shipperPrice,
+                        selectedCourierItemData.getRealShipperPrice(),
                         false
                     )
                 )
@@ -301,7 +301,7 @@ class ShippingWidget : ConstraintLayout {
                     courierName = selectedCourierItemData.name ?: "",
                     labelPriceOrDuration = removeDecimalSuffix(
                         convertPriceValueToIdrFormat(
-                            selectedCourierItemData.shipperPrice, false
+                            selectedCourierItemData.getRealShipperPrice(), false
                         )
                     )
                 )
@@ -439,7 +439,7 @@ class ShippingWidget : ConstraintLayout {
         } else {
             val price = removeDecimalSuffix(
                 convertPriceValueToIdrFormat(
-                    selectedCourierItemData.shipperPrice,
+                    selectedCourierItemData.getRealShipperPrice(),
                     false
                 )
             )
@@ -477,7 +477,7 @@ class ShippingWidget : ConstraintLayout {
                 val titleText = "${selectedCourierItemData.estimatedTimeDelivery} (${
                     removeDecimalSuffix(
                         convertPriceValueToIdrFormat(
-                            selectedCourierItemData.shipperPrice,
+                            selectedCourierItemData.getRealShipperPrice(),
                             false
                         )
                     )

@@ -771,7 +771,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
             // Check if promo applied on current selected courier
             if (shipmentCartItemModel.getSelectedShipmentDetailData().isCourierPromoApplied() &&
-                    TextUtils.isEmpty(newCourierItemData.getPromoCode())) {
+                    TextUtils.isEmpty(newCourierItemData.getRealPromoCode())) {
                 shipmentCartItemModel.getSelectedShipmentDetailData().setCourierPromoApplied(false);
                 // If applied on current selected courier but not on new selected courier then
                 // check all item if promo still exist
@@ -788,7 +788,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 // If courier promo not exist anymore, cancel promo
                 if (!courierPromoStillExist) {
-                    shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName(), oldCourierItemData.getPromoCode());
+                    shipmentAdapterActionListener.onCourierPromoCanceled(oldCourierItemData.getName(), oldCourierItemData.getRealPromoCode());
                 }
             }
         }
@@ -928,7 +928,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     if (isTradeInPickup) {
                         if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourierTradeInDropOff() != null) {
                             shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                    .getSelectedCourierTradeInDropOff().getShipperPrice();
+                                    .getSelectedCourierTradeInDropOff().getRealShipperPrice();
                             if (useInsurance != null && useInsurance) {
                                 insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                         .getSelectedCourierTradeInDropOff().getInsurancePrice();
@@ -947,7 +947,7 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     } else if (((ShipmentCartItemModel) shipmentData).getSelectedShipmentDetailData().getSelectedCourier() != null) {
                         shippingFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
-                                .getSelectedCourier().getShipperPrice();
+                                .getSelectedCourier().getRealShipperPrice();
                         if (useInsurance != null && useInsurance) {
                             insuranceFee += shipmentSingleAddressItem.getSelectedShipmentDetailData()
                                     .getSelectedCourier().getInsurancePrice();

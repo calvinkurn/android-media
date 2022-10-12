@@ -112,7 +112,7 @@ public class ShipmentDataRequestConverter {
                 );
                 shippingInfoCheckoutRequest.setChecksum(courierItemData.getChecksum());
                 shippingInfoCheckoutRequest.setUt(courierItemData.getUt());
-                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(courierItemData.getShipperPrice()));
+                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(courierItemData.getRealShipperPrice()));
                 shippingInfoCheckoutRequest.setRatesFeature(ratesFeature);
 
                 ShopProductCheckoutRequest shopProductCheckout = new ShopProductCheckoutRequest();
@@ -212,7 +212,7 @@ public class ShipmentDataRequestConverter {
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
             courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperProductId());
             serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getServiceId());
-            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperPrice());
+            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getRealShipperPrice());
         }
 
         ProductDataCheckoutRequest productDataCheckoutRequest = new ProductDataCheckoutRequest();

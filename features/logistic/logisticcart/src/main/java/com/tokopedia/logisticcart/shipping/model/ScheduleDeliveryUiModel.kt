@@ -32,12 +32,14 @@ data class ScheduleDeliveryUiModel(
             getSelectedDeliveryServices(scheduleDate, timeslotId) { recommendScheduleDate, recommendDeliveryProduct ->
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
+                recommendDeliveryProduct.scheduleDate = scheduleDate
                 this.deliveryProduct = recommendDeliveryProduct
             }
         } else {
             getSelectedDeliveryServicesRecommend { recommendScheduleDate, recommendDeliveryProduct ->
                 this.scheduleDate = recommendScheduleDate
                 this.timeslotId = recommendDeliveryProduct.id
+                recommendDeliveryProduct.scheduleDate = scheduleDate
                 this.deliveryProduct = recommendDeliveryProduct
             }
         }
