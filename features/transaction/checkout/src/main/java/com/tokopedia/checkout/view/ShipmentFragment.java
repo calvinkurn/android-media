@@ -666,15 +666,18 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     @Override
                     public void onNext(Long aLong) {
                         if (!isUnsubscribed()) {
-                            RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(shipmentAdapter.getUploadPrescriptionPosition());
-                            if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                                CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, "Pesanan obat kerasmu butuh resep", "Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~", CoachMark2.POSITION_TOP);
-                                ArrayList<CoachMark2Item> list = new ArrayList<>();
-                                list.add(item);
-                                CoachMark2 coachMark = new CoachMark2(requireContext());
-                                rvShipment.scrollToPosition(shipmentAdapter.getUploadPrescriptionPosition());
-                                coachMark.showCoachMark(list, null, 0);
-                            }
+                            int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
+                            rvShipment.scrollToPosition(uploadPrescriptionPosition);
+                            rvShipment.post(() -> {
+                                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(uploadPrescriptionPosition);
+                                if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                                    CoachMark2Item item = new CoachMark2Item(viewHolder.itemView, "Pesanan obat kerasmu butuh resep", "Yuk, upload resepmu. Kalau belum punya, chat dokter buat dapetin resep digital juga bisa~", CoachMark2.POSITION_TOP);
+                                    ArrayList<CoachMark2Item> list = new ArrayList<>();
+                                    list.add(item);
+                                    CoachMark2 coachMark = new CoachMark2(requireContext());
+                                    coachMark.showCoachMark(list, null, 0);
+                                }
+                            });
                         }
                     }
                 });

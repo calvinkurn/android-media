@@ -4,10 +4,12 @@ import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.animation.CycleInterpolator
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -17,7 +19,7 @@ class UploadPrescriptionViewHolder(
     val listener: UploadPrescriptionListener
 ) : RecyclerView.ViewHolder(view) {
 
-    private val uploadPrescriptionLayout: LinearLayout =
+    private val uploadPrescriptionLayout: FrameLayout =
         view.findViewById(R.id.upload_prescription_layout)
     private val uploadPrescriptionText: Typography =
         view.findViewById(R.id.upload_prescription_text)
@@ -31,18 +33,19 @@ class UploadPrescriptionViewHolder(
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
-        const val EPharmacyCountImageUrl = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
+        const val EPharmacyCountImageUrl =
+            "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f
     }
 
-    fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
+    fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
         uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if(uploadPrescriptionUiModel.uploadedImageCount == 0){
+        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
             uploadDescriptionText.hide()
-        }else {
+        } else {
             uploadDescriptionText.show()
             uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
@@ -50,7 +53,7 @@ class UploadPrescriptionViewHolder(
             listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
 
-        if(uploadPrescriptionUiModel.isError){
+        if (uploadPrescriptionUiModel.isError) {
             containerUploadPrescription.setBackgroundResource(R.drawable.pp_bg_rounded_red)
             containerUploadPrescription.animate()
                 .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
@@ -66,7 +69,7 @@ class UploadPrescriptionViewHolder(
                     override fun onAnimationRepeat(animator: Animator) {}
                 })
                 .start()
-        }else {
+        } else {
             containerUploadPrescription.setBackgroundResource(R.drawable.pp_bg_rounded_grey)
         }
     }
