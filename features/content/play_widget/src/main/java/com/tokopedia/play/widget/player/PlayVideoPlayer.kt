@@ -12,6 +12,7 @@ import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.source.dash.DashMediaSource
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.source.smoothstreaming.SsMediaSource
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.upstream.cache.CacheDataSourceFactory
 import com.google.android.exoplayer2.util.Util
@@ -23,7 +24,14 @@ import com.tokopedia.play_common.util.PlayConnectionCommon
  */
 open class PlayVideoPlayer(val context: Context) {
 
-    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context).build()
+    private val trackSelector = DefaultTrackSelector(context).apply {
+        parameters = DefaultTrackSelector.ParametersBuilder(context).setForceLowestBitrate(true).build()
+    }
+
+    private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
+        .setTrackSelector(trackSelector)
+        .build()
+
     private var autoStopTimer: CountDownTimer? = null
 
     var listener: VideoPlayerListener? = null
