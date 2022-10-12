@@ -53,6 +53,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -80,6 +81,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     companion object {
         private const val SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE = "SAVED_GET_BUYER_ORDER_DETAIL_DATA_REQUEST_STATE"
+        private const val FLOW_TIMEOUT_MILLIS = 5000L
     }
 
     private val _finishOrderResult: MutableLiveData<Result<FinishOrderResponse.Data.FinishOrderBuyer>> = MutableLiveData()
@@ -99,48 +101,54 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private val getBuyerOrderDetailDataRequestState: MutableStateFlow<GetBuyerOrderDetailDataRequestState> = MutableStateFlow(GetBuyerOrderDetailDataRequestState.Idle)
     private val actionButtonsUiState = getBuyerOrderDetailDataRequestState.mapLatest(
         ::mapActionButtonsUiState
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = ActionButtonsUiState.Loading
-    )
+    ).toStateFlow(ActionButtonsUiState.Loading)
     private val orderStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(
         ::mapOrderStatusUiState
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = OrderStatusUiState.Loading
+    ).toStateFlow(OrderStatusUiState.Loading)
+    private val paymentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(
+        ::mapPaymentInfoUiState
     )
-    private val paymentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapPaymentInfoUiState)
     private val productListUiState = combine(
         getBuyerOrderDetailDataRequestState, singleAtcRequestStates, ::mapProductListUiState
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = ProductListUiState.Loading
+    ).toStateFlow(ProductListUiState.Loading)
+    private val shipmentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(
+        ::mapShipmentInfoUiState
     )
-    private val shipmentInfoUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapShipmentInfoUiState)
-    private val pGRecommendationWidgetUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapPGRecommendationWidgetUiState)
-    private val orderResolutionTicketStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapOrderResolutionTicketStatusUiState)
-    private val orderInsuranceUiState = getBuyerOrderDetailDataRequestState.mapLatest(::mapOrderInsuranceUiState)
+    private val pGRecommendationWidgetUiState = getBuyerOrderDetailDataRequestState.mapLatest(
+        ::mapPGRecommendationWidgetUiState
+    )
+    private val orderResolutionTicketStatusUiState = getBuyerOrderDetailDataRequestState.mapLatest(
+        ::mapOrderResolutionTicketStatusUiState
+    )
+    private val orderInsuranceUiState = getBuyerOrderDetailDataRequestState.mapLatest(
+        ::mapOrderInsuranceUiState
+    )
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
         shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState,
         orderInsuranceUiState, ::mapBuyerOrderDetailUiState
-    ).stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000L),
-        initialValue = BuyerOrderDetailUiState.FullscreenLoading
-    )
+    ).toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 
     init {
+        observeGetBuyerOrderDetailDataParams()
+    }
+
+    private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
+        initialValue = initialValue
+    )
+
+    private fun observeGetBuyerOrderDetailDataParams() {
         viewModelScope.launch {
-            getBuyerOrderDetailDataRequestParams.collectLatest { params ->
-                getBuyerOrderDetailDataUseCase.get().getBuyerOrderDetailData(params).collect { requestState ->
-                    getBuyerOrderDetailDataRequestState.value = requestState
-                }
-            }
+            getBuyerOrderDetailDataRequestParams.collectLatest(::doGetBuyerOrderDetailData)
+        }
+    }
+
+    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams) {
+        getBuyerOrderDetailDataUseCase.get().getBuyerOrderDetailData(params).collect { requestState ->
+            getBuyerOrderDetailDataRequestState.value = requestState
         }
     }
 
