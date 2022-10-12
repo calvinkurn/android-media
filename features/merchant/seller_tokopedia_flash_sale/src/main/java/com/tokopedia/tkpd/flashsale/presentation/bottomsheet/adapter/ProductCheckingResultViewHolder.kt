@@ -118,7 +118,7 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             tfSubsidy.text = MethodChecker.fromHtml(subsidyText)
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
             tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
-            tfSoldCount.isVisible = !item.isMultiloc
+            tfSoldCount.isVisible = !item.isMultiloc && item.soldCount != null
         }
         setupPrice(binding, item)
         setupStock(binding, item)

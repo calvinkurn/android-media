@@ -55,6 +55,7 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 labelStatus.setTextAndCheckShow(item.checkingDetailResult.statusText)
                 labelStatus.setLabelType(item.checkingDetailResult.statusLabelType)
                 tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
+                tfSoldCount.isVisible = item.soldCount != null
             }
         }
     }

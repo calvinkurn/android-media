@@ -146,7 +146,7 @@ class CampaignDetailViewModel @Inject constructor(
         )
     }
 
-    fun getSubmittedProductVariant(campaignId: Long, productId: Long) {
+    fun getSubmittedProductVariant(campaignId: Long, productId: Long, displayProductSold: Boolean) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -159,7 +159,7 @@ class CampaignDetailViewModel @Inject constructor(
                     )
                 )
                 _submittedProductVariant.postValue(
-                    ProductCheckingResultMapper.map(result.productList))
+                    ProductCheckingResultMapper.map(result.productList, displayProductSold))
             },
             onError = { error ->
                 _error.postValue(error)

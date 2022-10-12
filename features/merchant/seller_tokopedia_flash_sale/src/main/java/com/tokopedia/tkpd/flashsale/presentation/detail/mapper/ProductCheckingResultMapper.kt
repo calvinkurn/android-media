@@ -10,7 +10,6 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.Ong
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.unifycomponents.Label
 
 object ProductCheckingResultMapper {
@@ -26,14 +25,14 @@ object ProductCheckingResultMapper {
         split(PRODUCT_NAME_DELIMITER_REMOTE).lastOrNull().orEmpty().replace(
             VARIANT_NAME_DELIMITER_REMOTE, VARIANT_NAME_DELIMITER_LOCAL)
 
-    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult() = map {
+    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult(displayProductSold: Boolean) = map {
         val originalPrice = it.price.toLong()
         val discountPercent = it.discountSetup?.discount.orZero()
         val discountedPrice = it.discountSetup?.price.orZero().toLong()
         ProductCheckingResult.LocationCheckingResult(
             warehouseId = it.warehouseId.toString(),
             cityName = it.name,
-            soldCount = it.soldCount,
+            soldCount = if (displayProductSold) it.soldCount else null,
             checkingDetailResult = ProductCheckingResult.CheckingDetailResult(
                 discountedPrice = discountedPrice,
                 originalPrice = originalPrice,
@@ -58,13 +57,19 @@ object ProductCheckingResultMapper {
         }
     }
 
-    fun map (item: List<SubmittedProduct>) = item.map {
-        mapItem(it)
+    fun map (
+        item: List<SubmittedProduct>,
+        displayProductSold: Boolean = false
+    ) = item.map {
+        mapItem(it, displayProductSold)
     }
 
-    fun mapItem (item: SubmittedProduct): ProductCheckingResult {
+    fun mapItem (
+        item: SubmittedProduct,
+        displayProductSold: Boolean = false
+    ): ProductCheckingResult {
         val productName = item.name.getVariantName()
-        val warehouses = item.warehouses.mapToCheckingResult()
+        val warehouses = item.warehouses.mapToCheckingResult(displayProductSold)
         return ProductCheckingResult (
             productId = item.productId.toString(),
             name = productName,
@@ -73,17 +78,20 @@ object ProductCheckingResultMapper {
             checkingDetailResult = warehouses.firstOrNull()?.checkingDetailResult
                 ?: ProductCheckingResult.CheckingDetailResult(),
             locationCheckingResult = warehouses,
-            soldCount = item.soldCount
+            soldCount = if (displayProductSold) item.soldCount else null,
         )
     }
 
-    fun mapFromWarehouses (selectedProduct: DelegateAdapterItem): ProductCheckingResult {
+    fun mapFromWarehouses(
+        selectedProduct: DelegateAdapterItem,
+        displayProductSold: Boolean
+    ): ProductCheckingResult {
         val warehouses = getWarehouses(selectedProduct)
         return ProductCheckingResult (
             productId = getProductId(selectedProduct),
             imageUrl = getImageUrl(selectedProduct),
             isMultiloc = true,
-            locationCheckingResult = warehouses.mapToCheckingResult()
+            locationCheckingResult = warehouses.mapToCheckingResult(displayProductSold)
         )
     }
 

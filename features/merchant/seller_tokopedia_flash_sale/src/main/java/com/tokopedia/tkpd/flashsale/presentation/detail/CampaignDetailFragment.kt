@@ -1417,9 +1417,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         checkProductBottomSheet.setProductName(productName)
 
         if (isVariantProduct) {
-            viewModel.getSubmittedProductVariant(flashSaleId, selectedProductId.orZero())
+            viewModel.getSubmittedProductVariant(flashSaleId, selectedProductId.orZero(), displayProductSold)
         } else if (isMultiloc) {
-            val productCheckingResult = ProductCheckingResultMapper.mapFromWarehouses(selectedProduct)
+            val productCheckingResult = ProductCheckingResultMapper.mapFromWarehouses(selectedProduct, displayProductSold)
             checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
         }
     }
