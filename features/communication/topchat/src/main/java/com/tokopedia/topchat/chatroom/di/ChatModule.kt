@@ -36,8 +36,6 @@ import com.tokopedia.topchat.common.websocket.DefaultTopChatWebSocket.Companion.
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.websocket.DEFAULT_PING
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import dagger.Module
@@ -149,18 +147,6 @@ class ChatModule {
         return retrofitBuilder.baseUrl(ChatUrl.TOPCHAT)
                 .client(okHttpClient)
                 .build()
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideAddWishListUseCase(@TopchatContext context: Context): AddWishListUseCase {
-        return AddWishListUseCase(context)
-    }
-
-    @ChatScope
-    @Provides
-    internal fun provideRemoveWishListUseCase(@TopchatContext context: Context): RemoveWishListUseCase {
-        return RemoveWishListUseCase(context)
     }
 
     @ChatScope

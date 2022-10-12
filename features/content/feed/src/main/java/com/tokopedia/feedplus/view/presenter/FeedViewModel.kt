@@ -29,6 +29,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -43,8 +44,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -73,7 +72,6 @@ class FeedViewModel @Inject constructor(
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
@@ -129,12 +127,12 @@ class FeedViewModel @Inject constructor(
 
     fun sendReport(
         positionInFeed: Int,
-        contentId: Int,
+        contentId: String,
         reasonType: String,
         reasonMessage: String,
         contentType: String
     ) {
-        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
+        sendReportUseCase.createRequestParams(contentId.toIntOrZero(), reasonType, reasonMessage, contentType)
         sendReportUseCase.execute(
             {
                 val deleteModel = DeletePostViewModel(
@@ -341,7 +339,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doLikeKol(id: Int, rowNumber: Int) {
+    fun doLikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
@@ -352,7 +350,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun doUnlikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
@@ -385,7 +383,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doDeletePost(id: Int, rowNumber: Int) {
+    fun doDeletePost(id: String, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 deletePost(id, rowNumber)
@@ -460,37 +458,6 @@ class FeedViewModel @Inject constructor(
         }, onError = {
             _playWidgetModel.value = Fail(it)
         })
-    }
-
-    fun addWishlist(
-        activityId: String,
-        productId: String,
-        shopId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean) -> Unit,
-        context: Context
-    ) {
-        addWishListUseCase.createObservable(
-            productId, userSession.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    if (productId != null) {
-                        onSuccess.invoke(activityId, shopId, type, isFollowed)
-                    }
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-
-            })
     }
 
     fun addWishlistV2(
@@ -616,7 +583,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -630,7 +597,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun unlikeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -695,12 +662,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
+    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
         try {
             val data = DeletePostViewModel()
             data.id = id
             data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id.toString())
+            val params = DeletePostUseCase.createRequestParams(id)
             val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data

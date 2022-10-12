@@ -58,7 +58,7 @@ class DetailInvoiceMapper(val thanksPageData: ThanksPageData) {
         thanksPageData.feeDetailList?.forEach {
             fee += it.amount
             val formattedAmountStr = CurrencyFormatUtil.convertPriceValueToIdrFormat(it.amount, false)
-            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr))
+            totalFee.feeDetailList.add(FeeDetail(it.name, formattedAmountStr,it.showTooltip,it.tooltipTitle,it.tooltipDesc))
         }
         if (thanksPageData.combinedAmount > 0) {
             getPreviousVAOrderAmount(fee)?.let {

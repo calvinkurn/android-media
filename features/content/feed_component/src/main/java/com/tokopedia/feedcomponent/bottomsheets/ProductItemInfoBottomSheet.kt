@@ -23,12 +23,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private lateinit var listProducts: List<FeedXProduct>
     private var listener: Listener? = null
+    private var postId: String = "0"
     private val adapter by lazy {
         listener?.let {
             ProductInfoBottomSheetAdapter(it)
         }
     }
-    private var postId: Int = 0
     private var positionInFeed: Int = 0
     private var shopId: String = "0"
     private var shopName: String = ""

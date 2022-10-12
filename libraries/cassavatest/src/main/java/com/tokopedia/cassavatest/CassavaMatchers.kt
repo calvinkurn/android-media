@@ -1,7 +1,7 @@
 package com.tokopedia.cassavatest
 
 import com.tokopedia.analyticsdebugger.cassava.core.*
-import com.tokopedia.analyticsdebugger.database.GtmLogDB
+import com.tokopedia.analyticsdebugger.cassava.database.GtmLogDB
 import org.hamcrest.Description
 import org.hamcrest.Matcher
 import org.hamcrest.TypeSafeMatcher

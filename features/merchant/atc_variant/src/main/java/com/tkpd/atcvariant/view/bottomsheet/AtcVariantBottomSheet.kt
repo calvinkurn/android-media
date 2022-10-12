@@ -81,7 +81,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -232,7 +231,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         observeCart()
         observeDeleteCart()
         observeUpdateCart()
-        observeWishlist()
         observeRestrictionData()
         observeToggleFavorite()
         observeStockCopy()
@@ -421,25 +419,6 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         })
     }
 
-    private fun observeWishlist() {
-        viewModel.addWishlistResult.observe(viewLifecycleOwner) {
-            if (it is Success) {
-                if (it.data) {
-                    //success add wishlist
-
-                    showToasterSuccess(
-                        message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
-                        ctaText = getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                        ctaListener = { goToWishlist() }
-                    )
-                }
-            } else if (it is Fail) {
-                showToasterError(getErrorMessage(it.throwable))
-                logException(it.throwable)
-            }
-        }
-    }
-
     private fun showToasterError(message: String, ctaBtn: String = "", ctaListener: () -> Unit = {}) {
         viewContent?.rootView.showToasterError(message, ctaText = ctaBtn, heightOffset = R.dimen.space_toaster_offsite_atc_variant) {
             ctaListener.invoke()
@@ -499,7 +478,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
         if (sharedViewModel.aggregatorParams.value?.showQtyEditor == true ||
                 sharedViewModel.aggregatorParams.value?.isTokoNow == true) {
-            onSuccessAtcTokoNow(result.errorMessage.firstOrNull())
+            onSuccessAtcTokoNow(result.errorMessage.firstOrNull(), cartId)
             return
         }
         when (buttonActionType) {
@@ -513,7 +492,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 ProductCartHelper.goToCartCheckout(getAtcActivity(), cartId)
             }
             ProductDetailCommonConstant.ATC_BUTTON -> {
-                onSuccessAtc(result.errorMessage.firstOrNull())
+                onSuccessAtc(result.errorMessage.firstOrNull(), cartId)
             }
         }
     }
@@ -588,17 +567,20 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
         return context as AtcVariantActivity
     }
 
-    private fun onSuccessAtcTokoNow(successMessage: String?) {
+    private fun onSuccessAtcTokoNow(successMessage: String?, cartId: String) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty()) it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default) else
                 successMessage
-            viewModel.updateActivityResult(atcSuccessMessage = message)
+            viewModel.updateActivityResult(
+                    atcSuccessMessage = message,
+                    cartId = cartId
+            )
             showToasterSuccess(message, getString(R.string.atc_variant_oke_label)) {
             }
         }
     }
 
-    private fun onSuccessAtc(successMessage: String?) {
+    private fun onSuccessAtc(successMessage: String?, cartId: String) {
         context?.let {
             val message = if (successMessage == null || successMessage.isEmpty())
                 it.getString(com.tokopedia.product.detail.common.R.string.merchant_product_detail_success_atc_default)
@@ -617,7 +599,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             }
             viewModel.updateActivityResult(
                     atcSuccessMessage = message,
-                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT)
+                    requestCode = ProductDetailCommonConstant.REQUEST_CODE_CHECKOUT,
+                    cartId = cartId
+            )
         }
     }
 
@@ -779,10 +763,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
             if (buttonActionType == ProductDetailCommonConstant.REMIND_ME_BUTTON) {
                 ProductTrackingCommon.onRemindMeClicked(productId, pageSource)
                 //The possibilities this method being fire is when the user first open the bottom sheet with product not buyable
-                context?.let {
-                    if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) doAddWishlistV2(productId)
-                    else viewModel.addWishlist(productId, userSessionInterface.userId)
-                }
+                doAddWishlistV2(productId)
                 return@let
             }
 
@@ -823,7 +804,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 val errorMsg = ErrorHandler.getErrorMessage(context, throwable)
-                view?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
+                viewContent?.rootView?.let { AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, it) }
             }
 
             override fun onSuccessAddWishlist(
@@ -831,7 +812,7 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 productId: String
             ) {
                 context?.let { context ->
-                    view?.let { v ->
+                    viewContent?.rootView?.let { v ->
                         AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
                     }
                 }
