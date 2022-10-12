@@ -24,7 +24,6 @@ import com.tokopedia.deals.pdp.ui.activity.DealsPDPActivity
 import com.tokopedia.deals.pdp.ui.adapter.DealsDetailAllLocationAdapter
 import com.tokopedia.deals.pdp.ui.viewmodel.DealsPDPAllLocationViewModel
 import com.tokopedia.header.HeaderUnify
-import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -124,8 +123,7 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
 
     private fun setupRecycleView(outlets: List<Outlet>) {
         context?.let { context ->
-            val adapter = DealsDetailAllLocationAdapter(object :
-                DealsDetailAllLocationAdapter.LocationCallBack {
+            val adapter = DealsDetailAllLocationAdapter(object : DealsDetailAllLocationAdapter.LocationCallBack {
                 override fun onClickLocation(latLang: String) {
                     openGoogleMaps(context, latLang)
                 }
@@ -146,7 +144,7 @@ class DealsPDPAllLocationFragment : BaseDaggerFragment() {
     }
 
     private fun openGoogleMaps(context: Context, latLng: String) {
-        val gmmIntentUri = Uri.parse("$URI_MAPS$latLng")
+        val gmmIntentUri = Uri.parse("${URI_MAPS}$latLng")
         val mapIntent = Intent(Intent.ACTION_VIEW, gmmIntentUri)
         mapIntent.setPackage(PACKAGE_MAPS)
         if (mapIntent.resolveActivity(context.packageManager) != null) {
