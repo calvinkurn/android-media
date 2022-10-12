@@ -714,6 +714,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
         feedVODViewHolder.updateLikedText {
             likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
                 bold {
                     append(it, VIEWS_START_VALUE,it.length)
                 }
