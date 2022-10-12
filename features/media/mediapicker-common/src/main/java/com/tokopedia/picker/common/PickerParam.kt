@@ -27,6 +27,7 @@ data class PickerParam(
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<File> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
+    @SerializedName("previewActionText") private var previewActionText: String = ""
 ) : Parcelable {
 
     // getter
@@ -54,6 +55,7 @@ data class PickerParam(
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
     fun isEditorEnabled() = withEditor
+    fun previewActionText() = previewActionText
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
