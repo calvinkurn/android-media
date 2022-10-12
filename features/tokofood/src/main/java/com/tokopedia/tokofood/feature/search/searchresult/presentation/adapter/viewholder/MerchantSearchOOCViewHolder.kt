@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchOocBinding
@@ -20,7 +19,7 @@ class MerchantSearchOOCViewHolder(
     private val binding: ItemTokofoodSearchOocBinding? by viewBinding()
 
     init {
-        setManualFontSize()
+        setEmptyStateManualFontSize()
     }
 
     override fun bind(element: MerchantSearchOOCUiModel) {
@@ -127,7 +126,7 @@ class MerchantSearchOOCViewHolder(
         }
     }
 
-    private fun setManualFontSize() {
+    private fun setEmptyStateManualFontSize() {
         binding?.emptyStateSearchOoc?.emptyStateCTAID?.buttonSize = UnifyButton.Size.MEDIUM
     }
 
