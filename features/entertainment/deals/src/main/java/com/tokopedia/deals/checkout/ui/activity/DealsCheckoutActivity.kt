@@ -8,8 +8,8 @@ import com.tokopedia.deals.checkout.di.DaggerDealsCheckoutComponent
 import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
 import com.tokopedia.deals.checkout.ui.DealsCheckoutCallbacks
 import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutFragment
+import com.tokopedia.deals.checkout.ui.fragment.DealsCheckoutLocationsFragment
 import com.tokopedia.deals.pdp.data.Outlet
-import com.tokopedia.deals.pdp.ui.fragment.DealsPDPAllLocationFragment
 import com.tokopedia.deals.R.anim as animDeals
 import com.tokopedia.abstraction.R.id as idAbstraction
 
@@ -36,7 +36,7 @@ class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutCom
             animDeals.deals_slide_out_down,
             animDeals.deals_slide_out_up
         )
-        transaction.add(idAbstraction.parent_view, DealsPDPAllLocationFragment.createInstance(outlets, false))
+        transaction.add(idAbstraction.parent_view, DealsCheckoutLocationsFragment.createInstance(outlets))
         transaction.addToBackStack(null)
         transaction.commit()
     }
