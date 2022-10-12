@@ -224,5 +224,6 @@
     <string name="content_coach_mark_nav_home_stock_reminder_title">Dapatkan notifikasi terkait stokmu</string>
     <string name="content_coach_mark_nav_home_stock_reminder_desc">Kamu akan menerima notifikasi saat stok produk menipis lewat ikon lonceng di Home. Selain itu, kamu juga akan diingatkan lewat email.</string>
     <string name="product_stock_reminder_label_variant">Varian</string>
+    <string name="product_manage_shop_moderated_title">Fitur tidak dapat diakses karena toko sedang ditangguhkan</string>
 
 </resources>

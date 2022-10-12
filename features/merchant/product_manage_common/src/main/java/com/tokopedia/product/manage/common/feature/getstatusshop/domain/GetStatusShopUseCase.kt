@@ -7,6 +7,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.ShopInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.response.ShopStatusResponse
 import com.tokopedia.usecase.RequestParams
@@ -16,11 +17,11 @@ import javax.inject.Inject
 @GqlQuery("GetShopStatusGqlQuery", GetStatusShopUseCase.QUERY)
 class GetStatusShopUseCase @Inject constructor(
     private val gqlRepository: GraphqlRepository
-) : UseCase<StatusInfo>() {
+) : UseCase<ShopInfo>() {
 
     var params: RequestParams = RequestParams.EMPTY
 
-    override suspend fun executeOnBackground(): StatusInfo {
+    override suspend fun executeOnBackground(): ShopInfo {
 
         val gqlRequest = GraphqlRequest(
             GetShopStatusGqlQuery(),
@@ -32,16 +33,16 @@ class GetStatusShopUseCase @Inject constructor(
             .Builder(CacheType.CACHE_FIRST)
             .setExpiryTime(GraphqlConstant.ExpiryTimes.MINUTE_30.`val`()).build()
 
-        val gqlResponse = gqlRepository.response(listOf(gqlRequest), cacheStrategy)
+        val gqlResponse = gqlRepository.response(listOf(gqlRequest))
 
         val gqlErrors = gqlResponse.getError(ShopStatusResponse::class.java)
         if (gqlErrors.isNullOrEmpty()) {
             val data =
                 gqlResponse.getData<ShopStatusResponse>(ShopStatusResponse::class.java)
-            val statusInfo: StatusInfo? =
-                data?.shopInfoById?.result?.firstOrNull()?.statusInfo
-            if (statusInfo != null) {
-                return statusInfo
+            val shopInfo: ShopInfo? =
+                data?.shopInfoById?.result?.firstOrNull()
+            if (shopInfo != null) {
+                return shopInfo
             } else {
                 throw RuntimeException()
             }

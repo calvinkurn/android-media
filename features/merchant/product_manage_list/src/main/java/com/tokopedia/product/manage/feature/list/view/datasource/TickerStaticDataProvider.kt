@@ -1,5 +1,7 @@
 package com.tokopedia.product.manage.feature.list.view.datasource
 
+import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.ShopInfo
+import com.tokopedia.product.manage.feature.list.view.model.ShopStatusUIModel
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import javax.inject.Inject
@@ -35,4 +37,13 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             addMultiLocationTicker(multiLocationSeller)
         }.filter { it.description.isNotBlank() }
     }
+
+    fun getTickerShopModerate() = listOf(
+        TickerData(
+            title = resourceProvider.getTickerShopModeratedTitle(),
+            description = resourceProvider.getTickerShopModeratedDescription(),
+            type = Ticker.TYPE_WARNING,
+            isFromHtml = true
+        )
+    )
 }
