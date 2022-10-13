@@ -9,6 +9,8 @@ import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
@@ -27,6 +29,15 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
         bindValue(element)
         setState(element)
         setDivider(element.divider)
+        setSelected(element)
+    }
+
+    private fun setSelected(element: ChooseTimeUiModel) {
+        if (element.isSelected) {
+            iconCheck.show()
+        } else {
+            iconCheck.gone()
+        }
     }
 
     private fun setView(element: ChooseTimeUiModel) {
