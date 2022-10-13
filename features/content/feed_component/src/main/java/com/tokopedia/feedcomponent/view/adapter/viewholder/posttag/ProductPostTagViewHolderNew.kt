@@ -30,27 +30,27 @@ class ProductPostTagViewHolderNew(
     val listener: ProductItemInfoBottomSheet.Listener
 ) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
 
-    private var productLayout: FrameLayout
-    private var productImage: ImageUnify
-    private var productPrice: Typography
-    private var productName: Typography
-    private var discountlayout: LinearLayout
-    private var addToWishlistBtn: FrameLayout
-    private var addToCartBtn: UnifyButton
-    private var stockProgressBar: ProgressBarUnify
-    private var productTag: Typography
-    private var productNameSection: LinearLayout
-    private var rating: Typography
-    private var label: Label
-    private var soldInfo: Typography
-    private var freeShipping: ImageView
-    private var divider: View
-    private var stockBarLayout: View
-    private var stockText: Typography
-    private var star: IconUnify
-    private var menuBtn: IconUnify
-    private var card: CardUnify
-    private var addToWishlistBtnIcon: IconUnify
+    private val productLayout: FrameLayout
+    private val productImage: ImageUnify
+    private val productPrice: Typography
+    private val productName: Typography
+    private val discountlayout: LinearLayout
+    private val addToWishlistBtn: FrameLayout
+    private val addToCartBtn: UnifyButton
+    private val stockProgressBar: ProgressBarUnify
+    private val productTag: Typography
+    private val productNameSection: LinearLayout
+    private val rating: Typography
+    private val label: Label
+    private val soldInfo: Typography
+    private val freeShipping: ImageView
+    private val divider: View
+    private val stockBarLayout: View
+    private val stockText: Typography
+    private val star: IconUnify
+    private val menuBtn: IconUnify
+    private val card: CardUnify
+    private val addToWishlistBtnIcon: IconUnify
 
     init {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -59,7 +59,6 @@ class ProductPostTagViewHolderNew(
         discountlayout = itemView.findViewById(R.id.discount_layout)
         productTag = itemView.findViewById(R.id.productTag)
         productNameSection = itemView.findViewById(R.id.productNameSection)
-        productName = itemView.findViewById(R.id.productName)
         productName = itemView.findViewById(R.id.productName)
         rating = itemView.findViewById(R.id.rating)
         stockText = itemView.findViewById(R.id.stock_text)
