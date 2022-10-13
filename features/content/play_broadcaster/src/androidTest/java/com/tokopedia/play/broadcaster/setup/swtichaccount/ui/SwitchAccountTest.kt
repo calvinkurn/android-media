@@ -60,21 +60,21 @@ class SwitchAccountTest {
     }
 
     @Test
-    fun test_entryPointWhenAccountBanned() {
+    fun test_entryPointWhenBothAccountBanned() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
         } returns buildConfigurationUiModel(streamAllowed = false)
 
-        createRobot().entryPointWhenAccountBanned()
+        createRobot().entryPointWhenBothAccountBanned()
     }
 
     @Test
-    fun test_entryPointWhenAccountLive() {
+    fun test_entryPointWhenBothAccountLive() {
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
         } returns buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
 
-        createRobot().entryPointWhenAccountLive()
+        createRobot().entryPointWhenBothAccountLive()
     }
 
     @Test
@@ -106,12 +106,12 @@ class SwitchAccountTest {
     }
 
     @Test
-    fun test_switchAccountShopHaveDraft() {
+    fun test_switchAccountSellerHaveDraft() {
         coEvery {
             mockDataStore.getSetupDataStore().getTitle()
         } returns PlayTitleUiModel.HasTitle("Title")
 
-        createRobot().switchAccountShopHaveDraft()
+        createRobot().switchAccountSellerHaveDraft()
     }
 
     @Test

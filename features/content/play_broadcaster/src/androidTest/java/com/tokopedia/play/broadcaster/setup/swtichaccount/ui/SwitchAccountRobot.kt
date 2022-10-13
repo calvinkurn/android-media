@@ -189,14 +189,14 @@ class SwitchAccountRobot(
         delay()
     }
 
-    fun entryPointWhenAccountBanned() = chainable {
+    fun entryPointWhenBothAccountBanned() = chainable {
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_account_banned_title))))
 
         delay()
     }
 
-    fun entryPointWhenAccountLive() = chainable {
+    fun entryPointWhenBothAccountLive() = chainable {
         Espresso.onView(withId(contentR.id.tv_warning_title))
             .check(matches(withText(context.getString(contentR.string.ugc_warning_both_account_live_title))))
 
@@ -291,7 +291,7 @@ class SwitchAccountRobot(
         delay()
     }
 
-    fun switchAccountShopHaveDraft() = chainable {
+    fun switchAccountSellerHaveDraft() = chainable {
         Espresso.onView(withId(contentR.id.text_com_toolbar_subtitle))
             .check(matches(withText("Shop")))
             .perform(click())
