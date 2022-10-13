@@ -17,9 +17,12 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
+/**
+ * Use this usecase after migrating both image & video uploader
+ */
 @GqlQuery(SubmitPostUseCaseNew.QUERY_NAME, SubmitPostUseCaseNew.QUERY)
 open class SubmitPostUseCaseNew @Inject constructor(
-    private val uploadMultipleImageUseCase: UploadMultipleImageUsecaseNew,
+    private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCaseNew,
     graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
 
@@ -45,10 +48,10 @@ open class SubmitPostUseCaseNew @Inject constructor(
         mediaWidth: Int,
         mediaHeight: Int
     ): SubmitPostData {
-        uploadMultipleImageUseCase.postUpdateProgressManager = postUpdateProgressManager
+        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         /** Upload All Media */
-        val newMediumList = uploadMultipleImageUseCase.executeOnBackground(getMediumList(media, mediaList))
+        val newMediumList = uploadMultipleMediaUseCase.executeOnBackground(getMediumList(media, mediaList))
 
         /** Rearrange Media */
         val arrangedMedia = rearrangeMedia(newMediumList)

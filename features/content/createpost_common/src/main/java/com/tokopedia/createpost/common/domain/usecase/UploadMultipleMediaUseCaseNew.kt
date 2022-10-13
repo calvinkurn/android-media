@@ -15,7 +15,10 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-class UploadMultipleImageUsecaseNew @Inject constructor(
+/**
+ * Use this usecase after migrating both image & video uploader
+ */
+class UploadMultipleMediaUseCaseNew @Inject constructor(
     @ActivityContext private val context: Context,
     private val uploaderUseCase: UploaderUseCase,
     graphqlRepository: GraphqlRepository,
