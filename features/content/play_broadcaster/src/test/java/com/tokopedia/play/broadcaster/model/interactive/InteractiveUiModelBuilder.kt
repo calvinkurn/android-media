@@ -18,19 +18,6 @@ class InteractiveUiModelBuilder {
        list : List<LeaderboardGameUiModel>
     ) = list
 
-    fun buildLeaderboardWinnerList(
-        size: Int,
-        winnerSize: Int,
-    ) = List(size) {
-        PlayLeaderboardUiModel(
-            title = "Giveaway $it",
-            winners = buildWinnerList(winnerSize),
-            otherParticipantText = "",
-            otherParticipant = 0,
-            id = "1"
-        )
-    }
-
     fun buildWinnerList(
         size: Int
     ) = List(size) {

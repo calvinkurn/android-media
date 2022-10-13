@@ -12,7 +12,8 @@ import javax.inject.Inject
  * Created by jegul on 02/07/21
  */
 class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtml: HtmlTextTransformer) {
-    @ExperimentalStdlibApi
+
+    @OptIn(ExperimentalStdlibApi::class)
     fun mapNewPlayLeaderboard(
         response: GetLeaderboardSlotResponse,
         isChatAllowed: () -> Boolean

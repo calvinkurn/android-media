@@ -19,8 +19,6 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -61,11 +59,11 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             return@withContext interactiveMapper.mapInteractive(response.data)
         }
 
-    //TODO setup mapper
     override suspend fun getInteractiveLeaderboard(
         channelId: String,
         isChatAllowed: () -> Boolean
     ): List<LeaderboardGameUiModel> {
+        //TODO DO
         return emptyList()
     }
 

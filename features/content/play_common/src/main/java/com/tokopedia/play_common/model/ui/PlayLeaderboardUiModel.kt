@@ -37,32 +37,6 @@ sealed class LeaderboardGameUiModel {
     ) : LeaderboardGameUiModel()
 }
 
-/**
- * Fetching from network
- */
-data class PlayLeaderboardInfoUiModel(
-    val leaderboardWinners: List<PlayLeaderboardUiModel> = emptyList(),
-    val totalParticipant: String = "",
-    val config: PlayLeaderboardConfigUiModel = PlayLeaderboardConfigUiModel(),
-)
-
-/***
- * For leaderboard view type
- */
-data class PlayLeaderboardUiModel(
-    val title: String,
-    val winners: List<PlayWinnerUiModel>,
-    val choices: List<QuizChoicesUiModel> = emptyList(), //opt = not empty when QUIZ, soon Polling
-    val otherParticipantText: String,
-    val otherParticipant: Long,
-    val emptyLeaderBoardCopyText: String = "",
-    val reward: String = "",
-    val endsIn: Int = 0,
-    val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
-    val id: String,
-    val impressHolder: ImpressHolder = ImpressHolder(),
-)
-
 /***
  * For inside leaderboard view type; winner
  */

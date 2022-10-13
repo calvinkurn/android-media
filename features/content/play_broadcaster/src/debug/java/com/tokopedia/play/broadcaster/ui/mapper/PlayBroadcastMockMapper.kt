@@ -41,9 +41,6 @@ import kotlin.random.Random
  * Created by jegul on 21/09/20
  */
 class PlayBroadcastMockMapper : PlayBroadcastMapper {
-
-    //TODO change mock return
-
     @Suppress("MagicNumber")
     override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> {
         return List(6) {
