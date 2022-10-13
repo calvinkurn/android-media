@@ -1467,6 +1467,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onAdminRedirection() {
         context?.let {
+            dismissLoadingLogin()
             RouteManager.route(it, ApplinkConstInternalMarketplace.ADMIN_INVITATION)
         }
     }
