@@ -3071,7 +3071,9 @@ open class ProductManageFragment :
             } else {
                 optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
                 optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
-                    onOptionsItemSelected(menuItem)
+                    menuItem.actionView.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
                 }
             }
         }
