@@ -129,4 +129,12 @@
 
     </FrameLayout>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/share_progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
