@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 
+@Suppress("EqualsOrHashCode")
 class ConnectionDividerUiModel(
     messageId: String = "",
     fromUid: String = "",
@@ -27,9 +28,5 @@ class ConnectionDividerUiModel(
 
     override fun equals(other: Any?): Boolean {
         return other is ConnectionDividerUiModel
-    }
-
-    override fun hashCode(): Int {
-        return replyTime.hashCode()
     }
 }
