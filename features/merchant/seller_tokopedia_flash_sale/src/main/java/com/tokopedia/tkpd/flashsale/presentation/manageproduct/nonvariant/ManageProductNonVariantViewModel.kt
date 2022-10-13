@@ -64,4 +64,8 @@ class ManageProductNonVariantViewModel @Inject constructor(
     fun setProduct(product: ReservedProduct.Product) {
         _product.value = product
     }
+
+    fun filterTokopediaServedProducts(updateAdapter: () -> Unit) {
+
+    }
 }
