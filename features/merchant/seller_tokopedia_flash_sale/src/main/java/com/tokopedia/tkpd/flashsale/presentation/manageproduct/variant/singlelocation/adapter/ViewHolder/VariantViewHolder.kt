@@ -3,6 +3,8 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelo
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantItemBinding
+import com.tokopedia.campaign.utils.extension.disable
+import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -49,6 +51,20 @@ class VariantViewHolder(
                     )
                 }
             }
+            if (selectedChildProduct.isDisabled) {
+                switcherToggleParent.disable()
+                groupVariantNotEligibleErrorMessage.visible()
+            } else {
+                switcherToggleParent.enable()
+                groupVariantNotEligibleErrorMessage.gone()
+            }
+            textCheckDetail.setOnClickListener {
+                listener?.onIneligibleProductWithSingleWarehouseClicked(
+                    absoluteAdapterPosition,
+                    selectedChildProduct,
+                    product.productCriteria
+                )
+            }
             binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
             binding.containerLayoutProductInformation.apply {
                 periodSection.gone()
@@ -90,7 +106,7 @@ class VariantViewHolder(
                     listener?.onDiscountChange(
                         adapterPosition,
                         it.digitsOnly(),
-                        discountPercent.toInt()
+                        discountPercent.toIntOrZero()
                     )
                     triggerListener(product, discount)
                 }

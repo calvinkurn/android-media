@@ -4,16 +4,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductVariantTracker
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
 class ManageProductVariantViewModel @Inject constructor(
-    dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers,
     private val errorMessageHelper: ErrorMessageHelper,
+    private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
     private val tracker: ManageProductVariantTracker
 ) : BaseViewModel(dispatchers.main) {
 
@@ -26,6 +30,14 @@ class ManageProductVariantViewModel @Inject constructor(
     val isInputPageValid: LiveData<Boolean>
         get() = _isInputPageValid
 
+    private val _criteriaCheckingResult = MutableLiveData<List<CriteriaCheckingResult>>()
+    val criteriaCheckingResult: LiveData<List<CriteriaCheckingResult>> get() = _criteriaCheckingResult
+
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable> get() = _error
+
+    private var campaignId = 0L
+
     fun validateInput(
         criteria: ReservedProduct.Product.ProductCriteria,
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
@@ -36,6 +48,26 @@ class ManageProductVariantViewModel @Inject constructor(
             isStockError = discountSetup.stock !in criteria.minCustomStock..criteria.maxCustomStock,
             priceMessage = errorMessageHelper.getPriceMessage(criteria, discountSetup),
             pricePercentMessage = errorMessageHelper.getDiscountMessage(criteria, discountSetup)
+        )
+    }
+
+    fun checkCriteria(
+        item: ReservedProduct.Product.ChildProduct,
+        productCriteria: ReservedProduct.Product.ProductCriteria
+    ) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getFlashSaleProductCriteriaCheckingUseCase.execute(
+                    productId = item.productId,
+                    campaignId = campaignId,
+                    productCriteriaId = productCriteria.criteriaId
+                )
+                _criteriaCheckingResult.postValue(result)
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
         )
     }
 
@@ -70,6 +102,10 @@ class ManageProductVariantViewModel @Inject constructor(
         selectedItem.warehouses.map { warehouse ->
             warehouse.discountSetup.stock = stockValue
         }
+    }
+
+    fun setCampaignId(campaignId: String) {
+        this.campaignId = campaignId.toLong()
     }
 
     fun validateInputPage(
