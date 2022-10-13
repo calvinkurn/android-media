@@ -310,6 +310,8 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var onViewReadyAction: (() -> Unit)? = null
 
+    private var affiliateListener: ((userType: String) -> Unit)? = null
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setupBottomSheetChildView(inflater, container)
@@ -433,6 +435,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         } else if (isShowAffiliateRegister(generateAffiliateLinkEligibility)) {
             showAffiliateRegister(generateAffiliateLinkEligibility)
         }
+        affiliateListener?.invoke(isAffiliateUser)
     }
 
     private fun isShowAffiliateComission(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility): Boolean {
@@ -489,9 +492,16 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 affiliateRegisterTitle?.text = Html.fromHtml(banner.title)
                 affiliateRegisterMsg?.text = Html.fromHtml(banner.message)
             }
+
+            isAffiliateUser = KEY_GENERAL_USER
         }
         affiliateQueryData = null
     }
+
+    fun setOnGetAffiliateData(callback: (userType: String) -> Unit) {
+        affiliateListener = callback
+    }
+
 
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment){
         parentFragmentContainer = fragment
@@ -1037,6 +1047,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun dismiss() {
         try {
             onViewReadyAction = null
+            affiliateListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {
@@ -1054,6 +1065,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     override fun onDismiss(dialog: DialogInterface) {
         try {
             onViewReadyAction = null
+            affiliateListener = null
             clearData()
             removeLifecycleObserverAndSavedImage()
             if(gqlCallJob?.isActive == true) {

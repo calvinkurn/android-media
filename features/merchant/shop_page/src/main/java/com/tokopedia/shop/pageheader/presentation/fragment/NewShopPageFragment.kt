@@ -302,6 +302,9 @@ class NewShopPageFragment :
 
         private const val DELAY_MINI_CART_RESUME = 1000L
 
+        private const val USER_GENERAL = "general"
+        private const val USER_AFFILIATE = "affiliate"
+
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
@@ -705,10 +708,6 @@ class NewShopPageFragment :
                 if(isUsingNewShareBottomSheet(requireContext())){
                     isGeneralShareBottomSheet = true
                     showUniversalShareBottomSheet()
-                    shopPageTracking?.onImpressionShareBottomSheet(
-                            customDimensionShopPage,
-                            userId
-                    )
                 } else {
                     shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
                         init(this@NewShopPageFragment)
@@ -2890,7 +2889,8 @@ class NewShopPageFragment :
                             shopPageTracking?.clickShareBottomSheetOption(
                                     shareModel.channel.orEmpty(),
                                     customDimensionShopPage,
-                                    userId
+                                    userId,
+                                    UniversalShareBottomSheet.getUserType()
                             )
                             if(!isMyShop) {
                                 shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
@@ -2966,6 +2966,15 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
+
+        universalShareBottomSheet?.setOnGetAffiliateData {
+            shopPageTracking?.onImpressionShareBottomSheet(
+                customDimensionShopPage,
+                userId,
+                UniversalShareBottomSheet.getUserType()
+            )
+        }
+
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
             val inputShare = AffiliatePDPInput().apply {
                 pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
