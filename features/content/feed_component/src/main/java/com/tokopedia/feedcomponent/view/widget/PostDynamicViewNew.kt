@@ -987,7 +987,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
             setSpan(what, start, end, flags)
         }
         catch (throwable: Throwable) {
-            throwable.printStackTrace()
         }
     }
 
