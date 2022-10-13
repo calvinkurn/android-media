@@ -1169,6 +1169,19 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
+        observeIsCreateAffiliateCookieAtcDirectPurchase()
+    }
+
+    private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
+        viewModel.isCreateAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
+            if (it == true) {
+                createAffiliateCookieAtcDirectPurchase()
+            }
+        }
+    }
+
+    private fun createAffiliateCookieAtcDirectPurchase() {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
     }
 
     private fun observeShopAtcTrackerLiveData() {

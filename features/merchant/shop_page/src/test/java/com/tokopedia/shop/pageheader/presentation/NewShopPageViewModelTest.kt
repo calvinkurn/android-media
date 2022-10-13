@@ -7,7 +7,6 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.*
@@ -715,14 +714,14 @@ class NewShopPageViewModelTest {
     }
 
     @Test
-    fun `check when call initAffiliateCookie is success`() {
+    fun `check when call shopLandingPageInitAffiliateCookie is success`() {
         val mockAffiliateUUId = "123"
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } returns Unit
-        shopPageViewModel.initAffiliateCookie(
+        shopPageViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,
@@ -732,14 +731,14 @@ class NewShopPageViewModelTest {
     }
 
     @Test
-    fun `when when call initAffiliateCookie is not success`() {
+    fun `when when call shopLandingPageInitAffiliateCookie is not success`() {
         val mockAffiliateUUId = "123"
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } throws Exception()
-        shopPageViewModel.initAffiliateCookie(
+        shopPageViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,

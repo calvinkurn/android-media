@@ -952,7 +952,12 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onAddToCartSuccess() {
+        createAffiliateCookieAtcDirectPurchase()
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun createAffiliateCookieAtcDirectPurchase() {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {

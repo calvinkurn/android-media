@@ -201,6 +201,10 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
+    val isCreateAffiliateCookieAtcDirectPurchase: LiveData<Boolean>
+        get() = _isCreateAffiliateCookieAtcDirectPurchase
+    private val _isCreateAffiliateCookieAtcDirectPurchase = MutableLiveData<Boolean>()
+
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
     val isLogin: Boolean
@@ -944,6 +948,7 @@ class ShopHomeViewModel @Inject constructor(
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            val atcType = ShopPageAtcTracker.AtcType.ADD
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
@@ -951,9 +956,10 @@ class ShopHomeViewModel @Inject constructor(
                 shopHomeProductUiModel.displayedPrice,
                 shopHomeProductUiModel.isVariant,
                 it.data.quantity,
-                ShopPageAtcTracker.AtcType.ADD,
+                atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -994,10 +1000,22 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
+    }
+
+    private fun checkShouldCreateAffiliateCookieDirectPurchase(atcType: ShopPageAtcTracker.AtcType) {
+        when (atcType) {
+            ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                _isCreateAffiliateCookieAtcDirectPurchase.postValue(true)
+            }
+            else -> {
+                _isCreateAffiliateCookieAtcDirectPurchase.postValue(false)
+            }
+        }
     }
 
     private fun removeItemCart(

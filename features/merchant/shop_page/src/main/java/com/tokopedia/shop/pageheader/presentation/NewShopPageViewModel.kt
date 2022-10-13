@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -18,6 +19,7 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -97,6 +99,7 @@ class NewShopPageViewModel @Inject constructor(
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
+        private val sharedPreferences: SharedPreferences,
         private val dispatcherProvider: CoroutineDispatchers
 )
     : BaseViewModel(dispatcherProvider.main) {
@@ -617,7 +620,7 @@ class NewShopPageViewModel @Inject constructor(
         return useCase.executeOnBackground()
     }
 
-    fun initAffiliateCookie(
+    fun shopLandingPageInitAffiliateCookie(
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateUUId: String,
         affiliateChannel: String,
@@ -631,5 +634,30 @@ class NewShopPageViewModel @Inject constructor(
             )
         }) {
         }
+    }
+
+    fun createAffiliateCookieShopAtcDirectPurchase(
+        affiliateCookieHelper: AffiliateCookieHelper,
+        affiliateChannel: String,
+        shopId: String
+    ) {
+        launchCatchError(dispatcherProvider.io, block = {
+            affiliateCookieHelper.initCookie(
+                "",
+                affiliateChannel,
+                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
+                isATC = true
+            )
+        }) {
+        }
+    }
+
+    fun saveAffiliateChannel(affiliateChannel: String) {
+        launchCatchError(dispatcherProvider.io, block = {
+            sharedPreferences.edit().putString(
+                SHARED_PREF_AFFILIATE_CHANNEL,
+                affiliateChannel
+            ).apply()
+        }) {}
     }
 }

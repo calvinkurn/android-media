@@ -211,4 +211,9 @@ class ShopPageActivity : BaseSimpleActivity(),
     override fun createPdpAffiliateLink(basePdpAppLink: String): String {
         return (fragment as? NewShopPageFragment)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
+
+    override fun createAffiliateCookieAtcDirectPurchase() {
+        (fragment as? NewShopPageFragment)?.createAffiliateCookieAtcDirectPurchase()
+    }
+
 }

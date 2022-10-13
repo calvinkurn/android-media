@@ -861,6 +861,19 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
         observeShopAtcTrackerLiveData()
+        observeIsCreateAffiliateCookieAtcDirectPurchase()
+    }
+
+    private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
+        viewModel?.isCreateAffiliateCookieAtcDirectPurchase?.observe(viewLifecycleOwner) {
+            if (it == true) {
+                createAffiliateCookieAtcDirectPurchase()
+            }
+        }
+    }
+
+    private fun createAffiliateCookieAtcDirectPurchase() {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
     }
 
     private fun observeShopAtcTrackerLiveData() {
@@ -868,6 +881,7 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             when (it.atcType) {
                 ShopPageAtcTracker.AtcType.ADD -> {
                     sendClickAddToCartTracker(it)
+
                 }
                 ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
                     sendUpdateCartProductQuantityTracker(it)
