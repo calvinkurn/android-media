@@ -385,6 +385,7 @@ class PlayLiveInitialInteractiveTest {
             }
         }
     }
+
     @Test
     fun `given has finished channel quiz, whether user is winner or not show coachmark`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(

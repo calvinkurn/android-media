@@ -660,7 +660,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -724,7 +723,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -793,7 +791,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 
@@ -857,7 +854,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu"
         )
 
         val err = MessageErrorException("Error gk bs jawab y")
@@ -918,7 +914,6 @@ class PlayViewModelWebSocketTest {
                     type = PlayQuizOptionState.Default('c')
                 )
             ),
-            reward = "Ikan Hiu",
             status = InteractiveUiModel.Quiz.Status.Ongoing(500L.millisFromNow())
         )
 

@@ -279,7 +279,6 @@ class PlayQuizInteractiveTest {
         }
     }
 
-
     @Test
     fun `given quiz is finish and has no reward, only show leaderboard`() {
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
