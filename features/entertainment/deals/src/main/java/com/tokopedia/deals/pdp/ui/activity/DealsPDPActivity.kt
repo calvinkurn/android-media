@@ -40,6 +40,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
         }
         super.onCreate(savedInstanceState)
         binding = ActivityBaseDealsDetailBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
         supportActionBar?.hide()
     }
 
