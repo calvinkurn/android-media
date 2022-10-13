@@ -4,20 +4,11 @@ import android.app.NotificationManager
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
-import com.tokopedia.createpost.common.data.pojo.uploadimage.UploadImageResponse
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
-import com.tokopedia.imageuploader.di.ImageUploaderModule
-import com.tokopedia.imageuploader.di.qualifier.ImageUploaderQualifier
-import com.tokopedia.imageuploader.domain.GenerateHostRepository
-import com.tokopedia.imageuploader.domain.UploadImageRepository
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.utils.ImageUploaderUtils
 import com.tokopedia.twitter_share.TwitterManager
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -33,7 +24,7 @@ import dagger.Provides
 /**
  * @author by milhamj on 9/26/18.
  */
-@Module
+@Module(includes = [VideoUploaderModule::class])
 class CreatePostCommonModule(private val context: Context) {
 
     @Provides
@@ -63,6 +54,16 @@ class CreatePostCommonModule(private val context: Context) {
     @CreatePostScope
     fun provideNotificationManager(@ApplicationContext context: Context): NotificationManager {
         return context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+    }
+
+    @Provides
+    @CreatePostScope
+    fun provideUploadVideoUseCase(
+        @VideoUploaderQualifier uploadVideoApi: UploadVideoApi,
+        @VideoUploaderQualifier gson: Gson,
+        generateVideoTokenUseCase: GenerateVideoTokenUseCase):
+        UploadVideoUseCase<DefaultUploadVideoResponse> {
+        return UploadVideoUseCase(uploadVideoApi, gson, DefaultUploadVideoResponse::class.java, generateVideoTokenUseCase)
     }
 
     @Provides

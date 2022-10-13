@@ -125,6 +125,7 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
             intent.putExtra(BundleData.TITLE, getString(com.tokopedia.feedcomponent.R.string.feed_post_sebagai))
             intent.putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            startActivity(intent)
         }
     }
 

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
+import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -19,13 +20,13 @@ import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
+import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
@@ -66,6 +67,11 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         initInjector()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        scope.cancel()
+    }
+
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = SaveInstanceCacheManager(baseContext, id)
@@ -85,7 +91,45 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         submitPostUseCase.postUpdateProgressManager = postUpdateProgressManager
 
         scope.launchCatchError(block = {
-            val result = submitPostUseCase.executeOnBackground(
+            submitPostUseCase.state.collectLatest { state ->
+                when(state) {
+                    is SubmitPostResult.Success -> {
+                        val result = state.data
+                        Log.d("<LOG>", "result submitPost : $result")
+                        if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+                            postUpdateProgressManager?.onFailedPost(
+                                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                                    this@SubmitPostServiceNew,
+                                    RuntimeException()
+                                )
+                            )
+                            return@collectLatest
+                        } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
+                            postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+                            return@collectLatest
+                        }
+
+
+                        postUpdateProgressManager?.onSuccessPost()
+                        sendBroadcast()
+                        postContentToOtherService(result.feedContentSubmit.meta.content)
+                        addFlagOnCreatePostSuccess()
+                    }
+                }
+            }
+        }) {
+            postUpdateProgressManager?.onFailedPost(
+                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                    this@SubmitPostServiceNew,
+                    it,
+                )
+            )
+
+            scope.cancel()
+        }
+
+        scope.launch {
+            submitPostUseCase.execute(
                 viewModel.postId,
                 viewModel.authorType,
                 viewModel.token,
@@ -100,33 +144,52 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
             )
-
-            if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-                postUpdateProgressManager?.onFailedPost(
-                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                        this@SubmitPostServiceNew,
-                        RuntimeException()
-                    )
-                )
-                return@launchCatchError
-            } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
-                postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
-                return@launchCatchError
-            }
-
-
-            postUpdateProgressManager?.onSuccessPost()
-            sendBroadcast()
-            postContentToOtherService(result.feedContentSubmit.meta.content)
-            addFlagOnCreatePostSuccess()
-        }) {
-            postUpdateProgressManager?.onFailedPost(
-                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                    this@SubmitPostServiceNew,
-                    it,
-                )
-            )
         }
+
+
+//        scope.launchCatchError(block = {
+//            val result = submitPostUseCase.executeOnBackground(
+//                viewModel.postId,
+//                viewModel.authorType,
+//                viewModel.token,
+//                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
+//                else userSession.shopId,
+//                viewModel.caption,
+//                viewModel.completeImageList.map {
+//                    getFileAbsolutePath(it.path)!! to it.type
+//                },
+//                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
+//                else viewModel.productIdList, viewModel.completeImageList,
+//                viewModel.mediaWidth,
+//                viewModel.mediaHeight
+//            )
+//
+//            if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
+//                postUpdateProgressManager?.onFailedPost(
+//                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+//                        this@SubmitPostServiceNew,
+//                        RuntimeException()
+//                    )
+//                )
+//                return@launchCatchError
+//            } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
+//                postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+//                return@launchCatchError
+//            }
+//
+//
+//            postUpdateProgressManager?.onSuccessPost()
+//            sendBroadcast()
+//            postContentToOtherService(result.feedContentSubmit.meta.content)
+//            addFlagOnCreatePostSuccess()
+//        }) {
+//            postUpdateProgressManager?.onFailedPost(
+//                com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+//                    this@SubmitPostServiceNew,
+//                    it,
+//                )
+//            )
+//        }
 
 //        submitPostUseCase.execute(
 //            SubmitPostUseCaseNew.createRequestParams(

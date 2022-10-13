@@ -1,5 +1,6 @@
 package com.tokopedia.createpost.common.domain.usecase
 
+import android.util.Log
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
@@ -8,11 +9,14 @@ import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.RelatedProductItem
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
+import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
+import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import kotlinx.coroutines.flow.*
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -34,6 +38,68 @@ open class SubmitPostUseCaseNew @Inject constructor(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
         setTypeClass(SubmitPostData::class.java)
+    }
+
+    private val _state = MutableStateFlow<SubmitPostResult>(SubmitPostResult.Unknown)
+    val state: Flow<SubmitPostResult>
+        get() = _state
+
+    suspend fun execute(
+        id: String?,
+        type: String,
+        token: String,
+        authorId: String,
+        caption: String,
+        media: List<Pair<String, String>>,
+        relatedIdList: List<String>,
+        mediaList: List<MediaModel>,
+        mediaWidth: Int,
+        mediaHeight: Int
+    ) {
+        uploadMultipleMediaUseCase.postUpdateProgressManager = postUpdateProgressManager
+
+        val mediumList = getMediumList(media, mediaList)
+
+        uploadMultipleMediaUseCase.execute(mediumList)
+
+        uploadMultipleMediaUseCase.state.collectLatest {
+            Log.d("<LOG>", "state changed : $it")
+            if(it.images is UploadMediaDataModel.Media.Success && it.videos is UploadMediaDataModel.Media.Success) {
+                val newMedia = it.images.mediumList + it.videos.mediumList
+
+                if(mediumList.size == newMedia.size) {
+                    Log.d("<LOG>", "rearrangeMedia")
+                    /** Rearrange Media */
+                    val arrangedMedia = rearrangeMedia(newMedia)
+
+                    /** Submit Post */
+                    postUpdateProgressManager?.onSubmitPost()
+
+                    setRequestParams(
+                        mapOf(
+                            PARAM_INPUT to mapOf(
+                                PARAM_ACTION to if(id.isNullOrEmpty()) ACTION_CREATE else ACTION_UPDATE,
+                                PARAM_ID to if(id.isNullOrEmpty()) null else id,
+                                PARAM_AD_ID to null,
+                                PARAM_TYPE to getInputType(type),
+                                PARAM_TOKEN to token,
+                                PARAM_AUTHOR_ID to authorId,
+                                PARAM_AUTHOR_TYPE to type,
+                                PARAM_CAPTION to caption,
+                                PARAM_MEDIA_WIDTH to mediaWidth,
+                                PARAM_MEDIA_HEIGHT to mediaHeight,
+                                PARAM_MEDIA to arrangedMedia,
+                            )
+                        )
+                    )
+
+                    val result = super.executeOnBackground()
+
+                    Log.d("<LOG>", "submitPost : $result")
+                    _state.update { SubmitPostResult.Success(result) }
+                }
+            }
+        }
     }
 
     suspend fun executeOnBackground(
