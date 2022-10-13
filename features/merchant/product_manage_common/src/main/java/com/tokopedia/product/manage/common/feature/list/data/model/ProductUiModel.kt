@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.common.feature.list.data.model
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.product.manage.common.feature.list.view.adapter.factory.ProductManageAdapterFactory
 import com.tokopedia.shop.common.data.source.cloud.model.productlist.ProductCampaignType
@@ -27,10 +28,11 @@ data class ProductUiModel(
     val campaignTypeList: List<ProductCampaignType>?,
     val isProductBundling: Boolean,
     val suspendLevel: Int,
-    val hasStockAlert:Boolean,
+    val hasStockAlert: Boolean,
     val stockAlertActive: Boolean,
-    val stockAlertCount:Int,
-    val maxStock: Int?
+    val stockAlertCount: Int,
+    val maxStock: Int?,
+    val isShopModerate: Boolean
 ) : Visitable<ProductManageAdapterFactory> {
     override fun type(typeFactory: ProductManageAdapterFactory): Int {
         return typeFactory.type(this)

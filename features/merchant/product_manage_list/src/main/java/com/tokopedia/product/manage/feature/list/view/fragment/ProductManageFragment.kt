@@ -8,6 +8,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.graphics.Typeface
 import android.net.Uri
 import android.os.Build
@@ -181,11 +182,13 @@ import java.util.concurrent.TimeoutException
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import android.text.TextPaint
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.product.manage.common.feature.uploadstatus.constant.UploadStatusType
 import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant.HAS_STOCK_ALERT_STATUS
@@ -304,9 +307,9 @@ open class ProductManageFragment :
                             productManageLayoutManager?.findViewByPosition(Int.ZERO)
                                 ?.findViewById<IconUnify>(R.id.btnMoreOptions)
                         if (coachMarkMoreOption?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
-                                    (currentMoreOptionButton != null && getVisiblePercent(
-                                        currentMoreOptionButton
-                                    ) == -1))
+                                (currentMoreOptionButton != null && getVisiblePercent(
+                                    currentMoreOptionButton
+                                ) == -1))
                         ) {
                             coachMarkMoreOption?.dismissCoachMark()
 
@@ -324,9 +327,9 @@ open class ProductManageFragment :
                             layoutManager.findViewByPosition(currentPositionStockReminderCoachMark)
                                 ?.findViewById<IconUnify>(R.id.imageStockReminder)
                         if (coachMarkStockReminder?.isDismissed == false && (currentPositionStockReminderCoachMark !in firstVisibleIndex..lastVisibleIndex ||
-                                    (currentProductStockReminder != null && getVisiblePercent(
-                                        currentProductStockReminder
-                                    ) == -1))
+                                (currentProductStockReminder != null && getVisiblePercent(
+                                    currentProductStockReminder
+                                ) == -1))
                         ) {
                             coachMarkStockReminder?.dismissCoachMark()
 
@@ -412,6 +415,7 @@ open class ProductManageFragment :
 
     private var progressDialog: ProgressDialog? = null
     private var optionsMenu: Menu? = null
+
 
     private var tickerPagerAdapter: TickerPagerAdapter? = null
 
@@ -588,6 +592,8 @@ open class ProductManageFragment :
         observeDeleteProductDialog()
         observeOptionsMenu()
 
+        observeShopStatus()
+
         getProductManageAccess()
         setupDialogFeaturedProduct()
 
@@ -625,11 +631,7 @@ open class ProductManageFragment :
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         optionsMenu = menu
 
-        val menuViewId = if (GlobalConfig.isSellerApp()) {
-            R.menu.menu_product_manage
-        } else {
-            R.menu.menu_product_manage_dark
-        }
+        val menuViewId = R.menu.menu_product_manage
 
         menu.clear()
         inflater.inflate(menuViewId, menu)
@@ -641,7 +643,6 @@ open class ProductManageFragment :
                 }
             }
         }
-
         showHideOptionsMenu()
         super.onCreateOptionsMenu(menu, inflater)
     }
@@ -1195,7 +1196,7 @@ open class ProductManageFragment :
         }
 
         btnMultiEdit?.setOnClickListener {
-            multiEditBottomSheet?.show()
+            multiEditBottomSheet?.show(viewModel.shopStatus.value?.isOnModerationMode().orFalse())
             ProductManageTracking.eventBulkSettings()
         }
     }
@@ -2296,7 +2297,11 @@ open class ProductManageFragment :
      * This function is temporary for testing to avoid router and applink
      * For Dynamic Feature Support
      */
-    private fun goToPDP(productId: String?, showTopAdsSheet: Boolean = false) {
+    private fun goToPDP(
+        productId: String?,
+        showTopAdsSheet: Boolean = false,
+        isModerateShop: Boolean = false
+    ) {
         if (productId != null) {
             val uri = Uri.parse(ApplinkConstInternalMarketplace.PRODUCT_DETAIL).buildUpon()
 
@@ -2998,7 +3003,6 @@ open class ProductManageFragment :
             when (it) {
                 is Success -> {
                     val access = it.data
-
                     if (access.productList) {
                         loadInitialData()
 
@@ -3041,6 +3045,39 @@ open class ProductManageFragment :
         }
     }
 // endregion
+
+    private fun observeShopStatus() {
+        observe(viewModel.shopStatus) { statusInfo ->
+            if (statusInfo.isOnModerationMode()) {
+                val layoutMenuAddProduct =
+                    optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
+                val iconMenuAddProduct =
+                    layoutMenuAddProduct.findViewById<IconUnify>(R.id.ivAddProduct)
+                iconMenuAddProduct.isEnabled = false
+                context?.let { context ->
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifycomponents.R.color.Unify_NN300
+                    )
+                }?.let { color ->
+                    iconMenuAddProduct.setColorFilter(
+                        color, PorterDuff.Mode.SRC_ATOP
+                    )
+                }
+
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
+                optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
+
+            } else {
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
+                optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
+                    menuItem.actionView.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
+                }
+            }
+        }
+    }
 
     private fun renderStockLocationBottomSheet() {
         val multiLocationShop = userSession.isMultiLocationShop
@@ -3309,6 +3346,7 @@ open class ProductManageFragment :
             it.hasStockAlert == HAS_STOCK_ALERT_STATUS && it.stockAlertActive != STOCK_ALERT_ACTIVE
         }
     }
+
 
     companion object {
         private const val BOTTOM_SHEET_TAG = "BottomSheetTag"
