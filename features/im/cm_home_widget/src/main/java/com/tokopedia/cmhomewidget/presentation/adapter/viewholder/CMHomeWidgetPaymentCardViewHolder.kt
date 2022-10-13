@@ -8,7 +8,7 @@ import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetPaymentCardBindi
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetPaymentData
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
-import java.util.*
+import java.util.Calendar
 
 
 class CMHomeWidgetPaymentCardViewHolder(

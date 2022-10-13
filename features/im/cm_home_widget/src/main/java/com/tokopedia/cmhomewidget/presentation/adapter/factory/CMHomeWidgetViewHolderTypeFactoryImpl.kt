@@ -17,7 +17,7 @@ import javax.inject.Inject
 class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
     private val cmHomeWidgetProductCardListener: CMHomeWidgetProductCardListener,
     private val cmHomeWidgetViewAllCardListener: CMHomeWidgetViewAllCardListener,
-    private val cmHomeWidgetPaymentCardListener: CMHomeWidgetPaymentCardListener
+    private val cmHomeWidgetPaymentCardListener: CMHomeWidgetPaymentCardListener,
     ) : CMHomeWidgetViewHolderTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(cmHomeWidgetProductCardData: CMHomeWidgetProductCardData): Int {
