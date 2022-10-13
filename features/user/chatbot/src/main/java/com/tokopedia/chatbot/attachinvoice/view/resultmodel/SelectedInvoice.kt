@@ -3,7 +3,6 @@ package com.tokopedia.chatbot.attachinvoice.view.resultmodel
 import android.os.Parcel
 import android.os.Parcelable
 
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
 import com.tokopedia.chatbot.attachinvoice.view.model.TransactionInvoiceUiModel
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 
@@ -41,21 +40,6 @@ class SelectedInvoice() : Parcelable {
         this.invoiceUrl = invoiceUrl
         this.status = status
         this.statusId = statusId
-    }
-
-    constructor(viewModel: InvoiceViewModel) : this() {
-        this.invoiceId = viewModel.invoiceId
-        this.invoiceNo = viewModel.invoiceNumber
-        this.invoiceTypeStr = viewModel.invoiceTypeStr
-        this.invoiceType = viewModel.invoiceType
-        this.topProductName = viewModel.productTopName
-        this.topProductImage = viewModel.productTopImage
-        this.description = viewModel.description
-        this.amount = viewModel.total
-        this.date = viewModel.date
-        this.invoiceUrl = viewModel.invoiceUrl
-        this.status = viewModel.status
-        this.statusId = viewModel.statusId
     }
 
     constructor(viewModel: TransactionInvoiceUiModel) : this() {
