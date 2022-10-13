@@ -17,7 +17,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object DealsCheckoutMapper {
 
-    const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
+    private const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
 
     fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneral {

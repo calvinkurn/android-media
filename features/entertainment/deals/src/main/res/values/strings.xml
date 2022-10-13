@@ -112,4 +112,5 @@
     <string name="deals_checkout_number_of_locations">%d Lokasi</string>
     <string name="deals_checkout_all_indonesia">Seluruh Indonesia</string>
     <string name="deals_checkout_number_of_vouchers">%d x Vouchers</string>
+    <string name="deals_checkout_error_toaster">Ok</string>
 </resources>

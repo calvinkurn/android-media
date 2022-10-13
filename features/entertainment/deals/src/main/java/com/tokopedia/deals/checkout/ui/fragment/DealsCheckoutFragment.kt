@@ -12,11 +12,17 @@ import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
+import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
+import com.tokopedia.common.payment.PaymentConstant.PAYMENT_SUCCESS
+import com.tokopedia.common.payment.model.PaymentPassData
 import com.tokopedia.common_entertainment.data.DealsGeneral
 import com.tokopedia.common_entertainment.data.DealsInstant
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
@@ -30,6 +36,7 @@ import com.tokopedia.deals.checkout.ui.mapper.DealsCheckoutMapper
 import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
+import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
@@ -37,14 +44,19 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class DealsCheckoutFragment : BaseDaggerFragment() {
@@ -58,9 +70,9 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<FragmentDealsCheckoutBinding>()
     private val viewModel by viewModels<DealsCheckoutViewModel> { viewModelFactory }
     private var dealsCheckoutCallbacks: DealsCheckoutCallbacks? = null
-    private var dealsDetail: ProductDetailData? = null
-    private var dealsVerify: EventVerifyResponse? = null
-    private var dealsItemMap: ItemMapResponse? = null
+    private var dealsDetail: ProductDetailData = ProductDetailData()
+    private var dealsVerify: EventVerifyResponse = EventVerifyResponse()
+    private var dealsItemMap: ItemMapResponse = ItemMapResponse()
     private var promoCode = ""
     private var voucherCode = ""
     private var couponCode = ""
@@ -95,9 +107,9 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            dealsDetail = it.getParcelable(EXTRA_DEAL_DETAIL)
-            dealsVerify = it.getParcelable(EXTRA_DEAL_VERIFY)
-            dealsItemMap = dealsVerify?.metadata?.itemMap?.first()
+            dealsDetail = it.getParcelable(EXTRA_DEAL_DETAIL) ?: ProductDetailData()
+            dealsVerify = it.getParcelable(EXTRA_DEAL_VERIFY) ?: EventVerifyResponse()
+            dealsItemMap = dealsVerify.metadata.itemMap.firstOrNull() ?: ItemMapResponse()
         }
     }
 
@@ -119,6 +131,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
         showUI()
+        observeFlowData()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,7 +139,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
         if (requestCode == LOYALTY_ACTIVITY_REQUEST_CODE) {
             hideProgressBar()
-            when (resultCode){
+            when (resultCode) {
                 VOUCHER_RESULT_CODE -> {
                     val code = data?.extras?.getString(VOUCHER_CODE) ?: ""
                     val message = data?.extras?.getString(VOUCHER_MESSAGE) ?: ""
@@ -145,6 +158,118 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                     couponCode = code
                     promoCode = code
                     showPromoSuccess(code, message, amount.toLong(), isCancel)
+                }
+            }
+        }
+    }
+
+    private fun observeFlowData() {
+        observeCheckoutGeneral()
+        observeCheckoutGeneralInstant()
+    }
+
+    private fun observeCheckoutGeneral() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowCheckoutGeneral.collect {
+                when (it) {
+                    is Success -> {
+                        context?.let { context ->
+                            hideProgressBar()
+                            if (it.data.checkout.data.success == 0) {
+                                view?.let { view ->
+                                    Toaster.build(
+                                        view,
+                                        it.data.checkout.data.message,
+                                        Snackbar.LENGTH_LONG,
+                                        Toaster.TYPE_ERROR,
+                                        view.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
+                                    ).show()
+                                }
+                            } else {
+                                val paymentData = it.data.checkout.data.data.queryString
+                                val paymentURL: String = it.data.checkout.data.data.redirectUrl
+
+                                if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
+
+                                    val checkoutResultData = PaymentPassData()
+                                    checkoutResultData.queryString = paymentData
+                                    checkoutResultData.redirectUrl = paymentURL
+                                    checkoutResultData.callbackSuccessUrl = ORDER_LIST_DEALS
+
+                                    val paymentCheckoutString =
+                                        ApplinkConstInternalPayment.PAYMENT_CHECKOUT
+                                    val intent =
+                                        RouteManager.getIntent(context, paymentCheckoutString)
+                                    intent.putExtra(
+                                        EXTRA_PARAMETER_TOP_PAY_DATA,
+                                        checkoutResultData
+                                    )
+                                    startActivityForResult(intent, PAYMENT_SUCCESS)
+
+                                } else {
+                                    view?.let { view ->
+                                        Toaster.build(
+                                            view,
+                                            it.data.checkout.data.error,
+                                            Snackbar.LENGTH_LONG,
+                                            Toaster.TYPE_ERROR,
+                                            context.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
+                                        ).show()
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    is Fail -> {
+                        view?.let { view ->
+                            hideProgressBar()
+                            Toaster.build(
+                                view,
+                                ErrorHandler.getErrorMessage(context, it.throwable),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
+                                    ?: ""
+                            ).show()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeCheckoutGeneralInstant() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowCheckoutGeneralInstant.collect {
+                when (it) {
+                    is Success -> {
+                        context?.let { context ->
+                            hideProgressBar()
+                            if (it.data.checkout.data.success == 0) {
+                                view?.let { view ->
+                                    Toaster.build(view, it.data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                                        context.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)).show()
+                                }
+                            } else {
+                                RouteManager.route(context, it.data.checkout.data.data.redirectUrl)
+                            }
+                        }
+                    }
+
+                    is Fail -> {
+                        view?.let { view ->
+                            hideProgressBar()
+                            Toaster.build(
+                                view,
+                                ErrorHandler.getErrorMessage(context, it.throwable),
+                                Snackbar.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
+                                    ?: ""
+                            ).show()
+                        }
+                    }
                 }
             }
         }
@@ -170,106 +295,112 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
             clPromoDiscount = binding?.clPromo
             tgPromoDiscount = binding?.tgPromoDiscount
             progressBar = binding?.progressBarLayout
+            btnPayment = binding?.btnSelectPaymentMethod
         }
     }
 
     private fun showUI() {
-        dealsDetail?.let {
-            imgBrand?.loadImage(it.imageApp)
-            tgBrandName?.text = it.brand.title
-            tgTitle?.text = it.displayName
-            tgExpiredDate?.text = String.format(
-                getString(
-                    com.tokopedia.deals.R.string.deals_pdp_valid_through,
-                    DealsUtils.convertEpochToString(
-                        it.saleEndDate.toIntSafely()
-                    )
+        imgBrand?.loadImage(dealsDetail.imageApp)
+        tgBrandName?.text = dealsDetail.brand.title
+        tgTitle?.text = dealsDetail.displayName
+        tgExpiredDate?.text = String.format(
+            getString(
+                com.tokopedia.deals.R.string.deals_pdp_valid_through,
+                DealsUtils.convertEpochToString(
+                    dealsDetail.saleEndDate.toIntSafely()
                 )
             )
+        )
 
-            if (it.outlets.isNullOrEmpty()) {
-                tgAllLocation?.text = context?.resources?.getString(
-                    com.tokopedia.deals.R.string.deals_checkout_all_indonesia
+        if (dealsDetail.outlets.isNullOrEmpty()) {
+            tgAllLocation?.text = context?.resources?.getString(
+                com.tokopedia.deals.R.string.deals_checkout_all_indonesia
+            )
+        }
+
+        if (!dealsDetail.outlets.isNullOrEmpty()) {
+            tgNumbersLocation?.text = String.format(
+                getString(
+                    com.tokopedia.deals.R.string.deals_checkout_number_of_locations,
+                    dealsDetail.outlets.size
                 )
+            )
+            tgNumbersLocation?.setOnClickListener { _ ->
+                dealsCheckoutCallbacks?.onShowAllLocation(dealsDetail.outlets)
             }
+        }
 
-            if (!it.outlets.isNullOrEmpty()) {
-                tgNumbersLocation?.text = String.format(
-                    getString(
-                        com.tokopedia.deals.R.string.deals_checkout_number_of_locations,
-                        it.outlets.size
-                    )
-                )
-                tgNumbersLocation?.setOnClickListener { _ ->
-                    dealsCheckoutCallbacks?.onShowAllLocation(it.outlets)
+        etEmail?.textFieldInput?.setText(userSession.email)
+        etEmail?.textFieldInput?.setKeyListener(null)
+
+        if (dealsDetail.mrp.toIntSafely() != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
+            tgMrpPerQuantity?.apply {
+                show()
+                text = DealsUtils.convertToCurrencyString(dealsDetail.mrp.toIntSafely().toLong())
+                paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            }
+        } else {
+            tgMrpPerQuantity?.hide()
+        }
+
+        tgSalesPricePerQty?.text = DealsUtils.convertToCurrencyString(dealsItemMap.price)
+        tgSalesPriceAllQty?.text =
+            DealsUtils.convertToCurrencyString(dealsItemMap.price * dealsItemMap.quantity)
+
+        if (dealsItemMap.commission <= 0) {
+            tgServiceFee?.gone()
+            tgServiceFeeAmount?.gone()
+        } else {
+            tgServiceFeeAmount?.text =
+                DealsUtils.convertToCurrencyString(dealsItemMap.commission.toLong())
+        }
+
+        tgTotalAmount?.text =
+            DealsUtils.convertToCurrencyString(dealsItemMap.price.toLong() * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong())
+        tgNumberVoucher?.text = context?.resources?.getString(
+            com.tokopedia.deals.R.string.deals_checkout_number_of_vouchers,
+            dealsItemMap.quantity
+        )
+
+        tickerPromoCode?.apply {
+            enableView()
+            actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
+
+                override fun onClickUsePromo() {
+                    goToPromoListDealsActivity()
+                }
+
+                override fun onResetPromoDiscount() {
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    showPromoSuccess("", "", 0, true)
+                    promoApplied = false
+                    promoCode = ""
+                }
+
+                override fun onClickDetailPromo() {
+                    if (!couponCode.isNullOrEmpty()) {
+                        goToPromoDetailDeals()
+                    } else if (!voucherCode.isNullOrEmpty()) {
+                        goToPromoListDealsWithVoucher()
+                    }
+                }
+
+                override fun onDisablePromoDiscount() {
+                    setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
+                    showPromoSuccess("", "", 0, true)
+                    promoApplied = false
+                    promoCode = ""
                 }
             }
+        }
 
-            etEmail?.textFieldInput?.setText(userSession.email)
-            etEmail?.textFieldInput?.setKeyListener(null)
-
-            if (it.mrp.toIntSafely() != 0 && it.mrp != it.salesPrice) {
-                tgMrpPerQuantity?.apply {
-                    show()
-                    text = DealsUtils.convertToCurrencyString(it.mrp.toIntSafely().toLong())
-                    paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                }
+        btnPayment?.setOnClickListener {
+            if (dealsVerify.gatewayCode.isNullOrEmpty()) {
+                viewModel.checkoutGeneral(validatePromoCodesCheckoutGeneral(listOf(promoCode)))
             } else {
-                tgMrpPerQuantity?.hide()
+                viewModel.checkoutGeneralInstant(validatePromoCodesCheckoutInstant(listOf(promoCode)))
             }
-
-            dealsItemMap?.let { itemMap ->
-                tgSalesPricePerQty?.text = DealsUtils.convertToCurrencyString(itemMap.price)
-                tgSalesPriceAllQty?.text =
-                    DealsUtils.convertToCurrencyString(itemMap.price * itemMap.quantity)
-
-                if (itemMap.commission <= 0) {
-                    tgServiceFee?.gone()
-                    tgServiceFeeAmount?.gone()
-                } else {
-                    tgServiceFeeAmount?.text =
-                        DealsUtils.convertToCurrencyString(itemMap.commission.toLong())
-                }
-
-                tgTotalAmount?.text =
-                    DealsUtils.convertToCurrencyString(itemMap.price.toLong() * itemMap.quantity.toLong() + itemMap.commission.toLong())
-                tgNumberVoucher?.text = context?.resources?.getString(
-                    com.tokopedia.deals.R.string.deals_checkout_number_of_vouchers,
-                    itemMap.quantity
-                )
-            }
-
-            tickerPromoCode?.apply {
-                enableView()
-                actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
-
-                    override fun onClickUsePromo() {
-                        goToPromoListDealsActivity()
-                    }
-
-                    override fun onResetPromoDiscount() {
-                        setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
-                        showPromoSuccess("", "", 0, true)
-                        promoApplied = false
-                        promoCode = ""
-                    }
-
-                    override fun onClickDetailPromo() {
-                        if (!couponCode.isNullOrEmpty()) {
-                            goToPromoDetailDeals()
-                        } else if (!voucherCode.isNullOrEmpty()) {
-                            goToPromoListDealsWithVoucher()
-                        }
-                    }
-
-                    override fun onDisablePromoDiscount() {
-                        setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
-                        showPromoSuccess("", "", 0, true)
-                        promoApplied = false
-                        promoCode = ""
-                    }
-                }
-            }
+            showProgressBar()
         }
     }
 
@@ -314,68 +445,68 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun updateAmount(discountAmount: Long) {
-        dealsItemMap?.let {
-            tgTotalAmount?.text =
-                DealsUtils.convertToCurrencyString(it.price.toLong() * it.quantity.toLong() + it.commission.toLong() - discountAmount)
-        }
+        tgTotalAmount?.text =
+            DealsUtils.convertToCurrencyString(dealsItemMap.price.toLong() * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong() - discountAmount)
     }
 
     private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral {
-        return if (promoCodes.isNotEmpty()){
-            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify, listOf(promoCode))
+        return if (promoCodes.isNotEmpty()) {
+            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(
+                dealsDetail,
+                dealsVerify,
+                listOf(promoCode)
+            )
             else DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
-        } else{
+        } else {
             DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
         }
     }
 
     private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
-        return if (promoCodes.isNotEmpty()){
-            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify, listOf(promoCode))
+        return if (promoCodes.isNotEmpty()) {
+            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(
+                dealsDetail,
+                dealsVerify,
+                listOf(promoCode)
+            )
             else DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
-        } else{
+        } else {
             DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
         }
     }
 
     private fun goToPromoListDealsActivity() {
-        dealsVerify?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-            intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(it))
-            intent.putExtra(EXTRA_CATEGORY_NAME, it.metadata.categoryName)
-            intent.putExtra(EXTRA_GRAND_TOTAL, it.metadata.totalPrice)
-            intent.putExtra(
-                EXTRA_CATEGORYID,
-                dealsDetail?.catalog?.digitalCategoryId?.toIntSafely()
-            )
-            intent.putExtra(EXTRA_PRODUCTID, dealsItemMap?.productId)
-            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
+        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
+        intent.putExtra(
+            EXTRA_CATEGORYID,
+            dealsDetail.catalog.digitalCategoryId.toIntSafely()
+        )
+        intent.putExtra(EXTRA_PRODUCTID, dealsItemMap.productId)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
 
     private fun goToPromoDetailDeals() {
-        dealsVerify?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
-            intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(it))
-            intent.putExtra(EXTRA_CATEGORY_NAME, it.metadata.categoryName)
-            intent.putExtra(EXTRA_GRAND_TOTAL, it.metadata.totalPrice)
-            intent.putExtra(COUPON_EXTRA_IS_USE, true)
-            intent.putExtra(EXTRA_KUPON_CODE, couponCode)
-            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
-        }
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
+        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
+        intent.putExtra(COUPON_EXTRA_IS_USE, true)
+        intent.putExtra(EXTRA_KUPON_CODE, couponCode)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
 
-    private fun goToPromoListDealsWithVoucher(){
-        dealsVerify?.let {
-            val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-            intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(it))
-            intent.putExtra(EXTRA_CATEGORY_NAME, it.metadata.categoryName)
-            intent.putExtra(EXTRA_GRAND_TOTAL, it.metadata.totalPrice)
-            intent.putExtra(EXTRA_CATEGORYID, dealsDetail?.catalog?.digitalCategoryId?.toIntSafely())
-            intent.putExtra(EXTRA_PRODUCTID, dealsItemMap?.productId)
-            intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
-            startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
-        }
+    private fun goToPromoListDealsWithVoucher() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
+        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
+        intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
+        intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntSafely())
+        intent.putExtra(EXTRA_PRODUCTID, dealsItemMap.productId)
+        intent.putExtra(EXTRA_PROMO_CODE, voucherCode)
+        startActivityForResult(intent, LOYALTY_ACTIVITY_REQUEST_CODE)
     }
 
     private fun showProgressBar() {
@@ -387,6 +518,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     }
 
     companion object {
+        private const val ORDER_LIST_DEALS = "/order-list"
         private const val EXTRA_META_DATA = "EXTRA_META_DATA"
         private const val EXTRA_PRODUCTID = "EXTRA_PRODUCTID"
         private const val EXTRA_CATEGORYID = "EXTRA_CATEGORYID"
