@@ -293,8 +293,10 @@ class MainNavFragment : BaseDaggerFragment(), MainNavListener {
 
     private fun validateHomeWishlistPage(homeNavMenuDataModel: HomeNavMenuDataModel) =
         homeNavMenuDataModel.id == ID_WISHLIST_MENU &&
-            (pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
-                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2)
+            (
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2
+            )
 
     private fun hitClickTrackingBasedOnId(homeNavMenuDataModel: HomeNavMenuDataModel) {
         when(homeNavMenuDataModel.id) {

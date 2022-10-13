@@ -153,18 +153,25 @@ class TestMainNavViewModel {
         val clientMenuGenerator = mockk<ClientMenuGenerator>()
         val pageSource = ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
         every { clientMenuGenerator.getMenu(menuId = any(), notifCount = any(), sectionId = any()) }
-            .answers { HomeNavMenuDataModel(id = firstArg(), notifCount = secondArg(), sectionId = thirdArg()) }
+            .answers {
+                HomeNavMenuDataModel(
+                    id = firstArg(),
+                    notifCount = secondArg(),
+                    sectionId = thirdArg()
+                )
+            }
         every { clientMenuGenerator.getTicker(menuId = any()) }
             .answers { HomeNavTickerDataModel() }
         every { clientMenuGenerator.getSectionTitle(identifier = any()) }
-            .answers {(HomeNavTitleDataModel(identifier = firstArg()))}
+            .answers { (HomeNavTitleDataModel(identifier = firstArg())) }
 
         viewModel = createViewModel(clientMenuGenerator = clientMenuGenerator)
         viewModel.setPageSource(pageSource)
         Assert.assertEquals(pageSource, viewModel.getPageSource())
 
-        val visitableList = viewModel.mainNavLiveData.value?.dataList?: listOf()
-        val backToHomeMenu = visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel?
+        val visitableList = viewModel.mainNavLiveData.value?.dataList ?: listOf()
+        val backToHomeMenu =
+            visitableList.find { it is HomeNavMenuDataModel && it.id == ClientMenuGenerator.ID_HOME } as HomeNavMenuDataModel
 
         Assert.assertNull(backToHomeMenu)
     }
