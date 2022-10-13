@@ -71,6 +71,7 @@ import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
@@ -439,7 +440,7 @@ class MainNavViewModel @Inject constructor(
 
                 accountHeaderModel.apply {
                     adminData?.let { adminData ->
-                        setAdminData(adminData)
+                        setAdminData(adminData.data, adminData.shopId)
                     }
                 }.let {
                     it.state = NAV_PROFILE_STATE_SUCCESS
@@ -876,7 +877,7 @@ class MainNavViewModel @Inject constructor(
                         val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
                         val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
-                        setAdminData(adminData)
+                        setAdminData(adminData?.data, adminData?.shopId.orEmpty())
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
@@ -1007,7 +1008,7 @@ class MainNavViewModel @Inject constructor(
      * @return  Triple of admin role text (if is admin), boolean to determine if seller can go to
      *          account page, and boolean if shop is active
      */
-    private suspend fun getAdminData(): AdminData? {
+    private suspend fun getAdminData(): AdminDataResponse? {
         val (adminDataResponse, refreshedShopData) =
                 if (userSession.get().isShopOwner) {
                     Pair(null, null)
@@ -1033,7 +1034,7 @@ class MainNavViewModel @Inject constructor(
             userSession.get().refreshUserSessionShopData(it.copy(shopId = shopId))
         }
 
-        return adminDataResponse?.data
+        return adminDataResponse
     }
 
     fun findComplainModelPosition(): Int {

@@ -12,6 +12,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.homenav.R
 import com.tokopedia.homenav.databinding.HomeNavItemSellerBinding
 import com.tokopedia.homenav.mainnav.view.analytics.TrackingProfileSection
+import com.tokopedia.homenav.mainnav.view.datamodel.account.AccountHeaderDataModel
 import com.tokopedia.homenav.mainnav.view.datamodel.account.ProfileSellerDataModel
 import com.tokopedia.homenav.mainnav.view.interactor.MainNavListener
 import com.tokopedia.kotlin.extensions.view.gone
