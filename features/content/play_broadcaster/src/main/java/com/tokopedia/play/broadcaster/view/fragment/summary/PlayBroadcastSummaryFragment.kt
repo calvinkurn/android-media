@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayBroadcastSummaryBinding
 import com.tokopedia.play.broadcaster.setup.product.viewmodel.ViewModelFactoryProvider
+import com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity
 import com.tokopedia.play.broadcaster.view.fragment.base.PlayBaseBroadcastFragment
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastSummaryViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
@@ -86,6 +87,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupInsets()
         setupView()
+        (activity as PlayBroadcastActivity).isChannelEnded = true
     }
 
     override fun onAttachFragment(childFragment: Fragment) {

@@ -107,6 +107,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private var isRecreated = false
     private var isResultAfterAskPermission = false
     private var channelType = ChannelStatus.Unknown
+    var isChannelEnded = false
 
     private var toasterBottomMargin = 0
 
@@ -151,7 +152,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
-        getConfiguration()
+        if (!isChannelEnded) getConfiguration()
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
@@ -196,6 +197,7 @@ class PlayBroadcastActivity : BaseActivity(),
         try {
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
+            outState.putBoolean(IS_CHANNEL_ENDED, isChannelEnded)
         } catch (e: Throwable) {}
         super.onSaveInstanceState(outState)
     }
@@ -297,6 +299,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
+        isChannelEnded = savedInstanceState.getBoolean(IS_CHANNEL_ENDED)
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelStatus.getByValue(it)
@@ -715,6 +718,7 @@ class PlayBroadcastActivity : BaseActivity(),
     companion object {
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_TYPE = "channel_type"
+        private const val IS_CHANNEL_ENDED = "is_channel_ended"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
 
