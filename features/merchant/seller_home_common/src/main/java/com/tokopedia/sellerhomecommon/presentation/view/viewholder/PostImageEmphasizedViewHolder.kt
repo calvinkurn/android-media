@@ -19,6 +19,7 @@ import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import timber.log.Timber
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -32,6 +33,7 @@ class PostImageEmphasizedViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_item_post_image_emphasized
+        private const val FIVE_CONST = 5L
     }
 
     private var alreadySetTimer = false
@@ -96,13 +98,16 @@ class PostImageEmphasizedViewHolder(
         binding.run {
             val deadLine = element.countdownDate
             if (deadLine != null && deadLine.time >= Date().time && !alreadySetTimer) {
-                val timerBackground = root.context.getResColor(
-                    com.tokopedia.unifyprinciples.R.color.Unify_T100
-                )
-                timerShcPostItemTimer.visible()
+                val fiveDaysMillis = TimeUnit.DAYS.toMillis(FIVE_CONST)
+                val isLessThenFiveDays = element.countdownDate.time < fiveDaysMillis
+                val timerBackground = if (isLessThenFiveDays) {
+                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_R500)
+                } else {
+                    root.context.getResColor(com.tokopedia.unifyprinciples.R.color.Unify_Y400)
+                }
                 timerShcPostItemTimer.setBackgroundColor(timerBackground)
-                timerShcPostItemTimer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
-                timerShcPostItemTimer.timerFormat = TimerUnifySingle.FORMAT_DAY
+                timerShcPostItemTimer.visible()
+                timerShcPostItemTimer.timerFormat = TimerUnifySingle.FORMAT_AUTO
                 timerShcPostItemTimer.targetDate = Calendar.getInstance().apply {
                     time = element.countdownDate
                 }
