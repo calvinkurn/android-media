@@ -152,6 +152,44 @@
     <string name="driver_call_disabled_desc_bottomsheet">Sesi kamu untuk telpon driver sudah habis.</string>
     <string name="error_message_hit_driver_phone_number">Oops, ada gangguan yang perlu kami bereskan. Balik lagi nanti, ya.</string>
 
+    <!-- Home - Search -->
+    <string name="search_hint_searchbar_gofood">Cari di GoFood</string>
+
+    <!-- Search - Initial State -->
+    <string name="initial_state_see_more_button">Lebih lebih banyak</string>
+
+    <!-- Search - Result Page -->
+    <string name="search_srp_other_branch">Lihat Cabang Lain</string>
+    <string name="search_srp_sort_title">Urutkan</string>
+    <string name="search_srp_filter_chip_title">Filter</string>
+    <string name="search_srp_empty_with_filter_title">Nggak ada restoran yang sesuai dari filter ini</string>
+    <string name="search_srp_empty_with_filter_description">Coba kurangi filter yang lagi aktif atau reset filter.</string>
+    <string name="search_srp_empty_without_filter_title">Oops, restorannya nggak ketemu</string>
+    <string name="search_srp_empty_without_filter_description">\"%s\" kayaknya belum ada di GoFood.</string>
+    <string name="search_srp_reset_filter">Reset Filter</string>
+    <string name="search_srp_find_in_tokopedia">Cari di Tokopedia</string>
+    <string name="search_srp_check_keyword">Periksa Kata Kunci</string>
+    <string name="search_srp_filter_apply">Terapkan</string>
+    <string name="search_srp_quick_sort_title">Urutkan restoran</string>
+    <string name="search_srp_quick_price_range_button">Tampilkan</string>
+    <string name="search_srp_quick_price_reset">Reset</string>
+    <string name="search_srp_ooc_no_address_title">Kamu belum atur alamat pengiriman, nih</string>
+    <string name="search_srp_ooc_no_address_subtitle">Biar pengalaman belanjamu lebih baik, masukkan alamat pengiriman dengan lengkap, ya.</string>
+    <string name="search_srp_ooc_no_address_button">Atur Alamat</string>
+    <string name="search_srp_ooc_no_pinpoint_title">Kamu belum atur pinpoint lokasi</string>
+    <string name="search_srp_ooc_no_pinpoint_subtitle">Biar pengalaman belanjamu lebih baik, atur pinpoint lokasi alamatmu dulu, ya.</string>
+    <string name="search_srp_ooc_no_pinpoint_button">Atur Pinpoint</string>
+    <string name="search_srp_ooc_out_of_coverage_title">Yaah, saat ini GoFood belum bisa antar ke tempatmu</string>
+    <string name="search_srp_ooc_out_of_coverage_subtitle">Tunggu GoFood di daerahmu, ya!</string>
+    <string name="search_srp_ooc_out_of_coverage_button">Ubah Alamat</string>
+    <string name="search_srp_ooc_out_of_coverage_secondary_button">Kembali ke Home</string>
+    <string name="search_srp_ooc_success_change_address">Berhasil mengubah alamat</string>
+    <string name="search_srp_ooc_failed_edit_pinpoint">Gagal mengubah pinpoint alamat</string>
+    <string name="search_srp_ooc_okay">Oke</string>
+
+    <!-- Search - Common -->
+    <string name="search_common_to_homepage">Ke Homepage</string>
+
     <!-- id -->
     <item name="product_ui_model" type="id" />
     <item name="custom_order_detail" type="id" />

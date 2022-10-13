@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.domain.pojo
 import com.google.gson.JsonObject
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.tickerreminder.TickerReminderPojo
 import com.tokopedia.chat_common.util.IdentifierUtil
 
 /**
@@ -65,7 +66,10 @@ data class ChatSocketPojo(
     val fraudStatus: Int = 0,
 
     @SerializedName("reply_time_nano")
-    val replyTime: String = ""
+    val replyTime: String = "",
+
+    @SerializedName("reminder_ticker")
+    var tickerReminder: TickerReminderPojo? = null
 ) {
 
     fun generateLocalIdIfNotExist() {

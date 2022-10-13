@@ -3,6 +3,7 @@ package com.tokopedia.review.feature.credibility.presentation.widget
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.databinding.PartialReviewCredibilityAchievementBinding
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityAchievementBoxUiModel
@@ -21,11 +22,7 @@ class PartialReviewCredibilityAchievement(
         if (data == null) {
             hide()
         } else {
-            binding.ivReviewCredibilityAchievementAvatarBorder.setImageDrawable(
-                ContextCompat.getDrawable(
-                    binding.root.context, R.drawable.border_review_credibility_achievement_avatar
-                )
-            )
+            binding.ivReviewCredibilityAchievementAvatarBorder.loadImage(R.drawable.border_review_credibility_achievement_avatar)
             binding.ivReviewCredibilityAchievementAvatar.urlSrc = data.avatar
             binding.tvReviewCredibilityAchievementName.text = data.name
             binding.tvReviewCredibilityAchievementCounter.text = data.counter

@@ -36,6 +36,8 @@ class ChatAppWidgetViewModelTest {
 
     private lateinit var mViewModel: ChatAppWidgetViewModel
 
+    private val testShopId = "123"
+
     @Before
     fun setup() {
         MockKAnnotations.init(this)
@@ -46,7 +48,7 @@ class ChatAppWidgetViewModelTest {
 
     @Test
     fun `returns success result and notify the UI when get chat list`() = coroutineTestRule.runBlockingTest {
-        getChatUseCase.params = GetChatUseCase.creteParams()
+        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
         val chatModel = ChatUiModel()
 
@@ -54,7 +56,7 @@ class ChatAppWidgetViewModelTest {
             getChatUseCase.executeOnBackground()
         } returns chatModel
 
-        mViewModel.getChatList()
+        mViewModel.getChatList(testShopId)
 
         coVerify {
             getChatUseCase.executeOnBackground()
@@ -72,13 +74,13 @@ class ChatAppWidgetViewModelTest {
     @Test
     fun `throw Exception and notify the UI when failed to get chat list`() = coroutineTestRule.runBlockingTest {
         val throwable = RuntimeException("")
-        getChatUseCase.params = GetChatUseCase.creteParams()
+        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
         coEvery {
             getChatUseCase.executeOnBackground()
         } throws throwable
 
-        mViewModel.getChatList()
+        mViewModel.getChatList(testShopId)
 
         coVerify {
             getChatUseCase.executeOnBackground()

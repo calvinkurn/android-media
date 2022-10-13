@@ -27,7 +27,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kotlin.extensions.view.getDigits
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils.*
@@ -623,7 +622,7 @@ class FeedAnalyticTracker
                                                             productName,
                                                             price.getDigits().toZeroIfNull(),
                                                             quantity,
-                                                            shopId.toIntOrZero(),
+                                                            shopId,
                                                             shopName,
                                                             type,
                                                             isFollowed,
@@ -742,11 +741,12 @@ class FeedAnalyticTracker
         productId: String,
         products: List<FeedXProduct>,
         shopId: String,
+        isFollowed: Boolean
     ) {
         val type = if (productId == TYPE_FEED_X_CARD_PRODUCT_TOPADS) {
             TOPADS
         } else {
-            ASGC
+            if (!isFollowed) ASGC_RECOM else ASGC
         }
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
@@ -2078,7 +2078,7 @@ class FeedAnalyticTracker
         productName: String,
         price: String,
         quantity: Int,
-        shopId: Int,
+        shopId: String,
         shopName: String,
     ) {
         trackGeneralEvent(
@@ -2319,7 +2319,7 @@ class FeedAnalyticTracker
      */
     fun eventImageImpressionPost(
         screenName: String, activityId: String, activityName: String, mediaType: String,
-        imageUrl: String, recomId: Int, rowNumber: Int,
+        imageUrl: String, recomId: Long, rowNumber: Int,
     ) {
         var eventCategory = ""
         var promotionsNameInitial = ""
@@ -2520,106 +2520,6 @@ class FeedAnalyticTracker
     }
 
     /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=53652256
-     *
-     * @param productId - id of the product
-     * @param productName - name of the product
-     * @param price - price of the product
-     * @param quantity - quantity of the product (usually 1)
-     * @param shopId - id of the shop owner
-     * @param shopName - name of the shop owner (usually "")
-     */
-    fun eventProfileAddToCart(
-        productId: String,
-        productName: String,
-        price: String,
-        quantity: Int,
-        shopId: Int,
-        shopName: String,
-    ) {
-
-        eventAddToCart(
-            Category.USER_PROFILE_SOCIALCOMMERCE,
-            Action.Field.List.USER_PROFILE_PAGE_POSTED_PRODUCT,
-            productId,
-            productName,
-            price,
-            quantity,
-            shopId,
-            shopName
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
-     *
-     * @param productId - id of the product
-     * @param productName - name of the product
-     * @param price - price of the product
-     * @param quantity - quantity of the product (usually 1)
-     * @param shopId - id of the shop owner
-     * @param shopName - name of the shop owner (usually "")
-     * @param author - type of the post author (usually user or shop)
-     */
-    fun eventFeedAddToCart(
-        productId: String,
-        productName: String,
-        price: String,
-        quantity: Int,
-        shopId: Int,
-        shopName: String,
-        author: String,
-    ) {
-
-        eventAddToCart(
-            Category.CONTENT_FEED_TIMELINE,
-            "${Action.Field.List.FEED_POSTED_PRODUCT} - $author",
-            productId,
-            productName,
-            price,
-            quantity,
-            shopId,
-            shopName
-        )
-    }
-
-    /**
-     *
-     * docs: https://docs.google.com/spreadsheets/d/1-rVN6kBgubg1Q9tY8HMiUK58rs2-T0Hkq13GPObaJtU/edit#gid=818371047
-     *
-     * @param productId - id of the product
-     * @param productName - name of the product
-     * @param price - price of the product
-     * @param quantity - quantity of the product (usually 1)
-     * @param shopId - id of the shop owner
-     * @param shopName - name of the shop owner (usually "")
-     * @param author - type of the post author (usually user or shop)
-     */
-    fun eventContentDetailAddToCart(
-        productId: String,
-        productName: String,
-        price: String,
-        quantity: Int,
-        shopId: Int,
-        shopName: String,
-        author: String,
-    ) {
-
-        eventAddToCart(
-            Category.CONTENT_DETAIL,
-            "${Action.Field.List.USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT} - $author",
-            productId,
-            productName,
-            price,
-            quantity,
-            shopId,
-            shopName
-        )
-    }
-
-    /**
      * Send all pending analytics in trackingQueue
      */
     fun sendPendingAnalytics() {
@@ -2674,44 +2574,6 @@ class FeedAnalyticTracker
             eventCategory = eventCategory,
             eventAction = "${Action.CLICK_HASHTAG} - $activityName - $mediaType",
             eventLabel = "$activityId - $hashtag"
-        )
-    }
-
-    /**
-     * Base track addToCart
-     */
-
-    private fun eventAddToCart(
-        eventCategory: String,
-        actionField: String,
-        productId: String,
-        productName: String,
-        price: String,
-        quantity: Int,
-        shopId: Int,
-        shopName: String,
-    ) {
-        trackEnhancedEcommerceEvent(
-            Event.ADD_TO_CART,
-            eventCategory,
-            Action.CLICK_BUY,
-            productId,
-            eCommerceData = getCurrencyData() +
-                    getAddData(
-                        getActionFieldData(getListData(actionField)) +
-                                getProductsData(
-                                    listOf(
-                                        getProductData(
-                                            productId,
-                                            productName,
-                                            price.getDigits().toZeroIfNull(),
-                                            quantity,
-                                            shopId,
-                                            shopName
-                                        )
-                                    )
-                                )
-                    )
         )
     }
 
@@ -2880,7 +2742,7 @@ class FeedAnalyticTracker
         name: String,
         price: Int,
         quantity: Int,
-        shopId: Int,
+        shopId: String,
         shopName: String,
         type: String = "",
         isFollowed: Boolean = false,

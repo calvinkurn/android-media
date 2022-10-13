@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         app:typographyType="heading_4"
         android:layout_marginTop="12dp"
+        android:textColor="@color/Unify_NN950"
         tools:text="Bundling Hemat"
         android:layout_marginStart="16dp" />
 

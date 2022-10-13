@@ -4,6 +4,7 @@ object BuyerOrderDetailTrackerConstant {
     // keys
     const val EVENT_KEY_BUSINESS_UNIT = "businessUnit"
     const val EVENT_KEY_CURRENT_SITE = "currentSite"
+    const val EVENT_KEY_TRACKER_ID = "trackerId"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCTS_ITEMS = "items"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_CATEGORY_ID = "category_id"
     const val EVENT_KEY_ENHANCED_ECOMMERCE_PRODUCT_DIMENSION_40 = "dimension40"
@@ -77,6 +78,12 @@ object BuyerOrderDetailTrackerConstant {
     const val BUTTON_NAME_FINISH_ORDER_CONFIRMATION_REQUEST_COMPLAINT = "ajukan komplain"
     const val BUTTON_NAME_REVIEW_ORDER = "beri ulasan"
     const val BUTTON_NAME_SEE_POD = "lihat bukti pengiriman"
+    const val BUTTON_NAME_RE_UPLOAD_PRESCRIPTION = "upload foto resep"
+    const val BUTTON_NAME_CHECK_PRESCRIPTION = "cek resep"
+
+    // tracker ID
+    const val TRACKER_ID_RE_UPLOAD_PRESCRIPTION = "32743"
+    const val TRACKER_ID_CHECK_PRESCRIPTION = "32744"
 
     // others
     const val MARKER_ORDER_LIST_DETAIL_MARKETPLACE = "/order list detail - marketplace"

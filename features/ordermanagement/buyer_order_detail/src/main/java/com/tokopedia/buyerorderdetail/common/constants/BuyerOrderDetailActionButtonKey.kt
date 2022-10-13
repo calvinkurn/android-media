@@ -15,4 +15,6 @@ object BuyerOrderDetailActionButtonKey {
     const val VIEW_COMPLAINT = "view_complaint"
     const val RESPONSE_EXTEND_ORDER = "response_extend_order"
     const val SEE_POD = "pod_details"
+    const val RE_UPLOAD_PRESCRIPTION = "epharmacy_reupload_prescription"
+    const val CHECK_PRESCRIPTION = "epharmacy_check_prescription"
 }

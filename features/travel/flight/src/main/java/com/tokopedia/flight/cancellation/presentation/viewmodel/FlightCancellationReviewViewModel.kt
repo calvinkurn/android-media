@@ -10,6 +10,7 @@ import com.tokopedia.flight.cancellation.domain.FlightCancellationRequestCancelU
 import com.tokopedia.flight.cancellation.presentation.model.FlightCancellationWrapperModel
 import com.tokopedia.flight.common.util.FlightAnalytics
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -68,7 +69,7 @@ class FlightCancellationReviewViewModel @Inject constructor(
                             invoiceId,
                             userSession.userId,
                             cancellationWrapperModel.cancellationList,
-                            cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId.toInt()
+                            cancellationWrapperModel.cancellationReasonAndAttachmentModel.reasonId.toIntSafely()
                     )
             )
 

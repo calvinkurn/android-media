@@ -24,14 +24,6 @@ import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.feedplus.view.viewmodel.onboarding.OnboardingViewModel
-import com.tokopedia.interest_pick_common.data.DataItem
-import com.tokopedia.interest_pick_common.data.FeedUserOnboardingInterests
-import com.tokopedia.interest_pick_common.data.OnboardingData
-import com.tokopedia.interest_pick_common.domain.usecase.GetInterestPickUseCase
-import com.tokopedia.interest_pick_common.domain.usecase.SubmitInterestPickUseCase
-import com.tokopedia.interest_pick_common.view.viewmodel.InterestPickDataViewModel
-import com.tokopedia.interest_pick_common.view.viewmodel.SubmitInterestResponseViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -40,6 +32,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -51,8 +44,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.withContext
 import com.tokopedia.network.utils.ErrorHandler
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -69,8 +60,6 @@ private const val DEFAULT_VALUE_SRC = "fav_shop"
 class FeedViewModel @Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val getInterestPickUseCase: GetInterestPickUseCase,
-    private val submitInterestPickUseCase: SubmitInterestPickUseCase,
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
@@ -82,7 +71,6 @@ class FeedViewModel @Inject constructor(
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
-    private val addWishListUseCase: AddWishListUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
     private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
@@ -100,8 +88,6 @@ class FeedViewModel @Inject constructor(
     private val userId: String
         get() = if (userSession.isLoggedIn) userSession.userId else NON_LOGIN_USER_ID
 
-    val onboardingResp = MutableLiveData<Result<OnboardingViewModel>>()
-    val submitInterestPickResp = MutableLiveData<Result<SubmitInterestResponseViewModel>>()
     val getFeedFirstPageResp = MutableLiveData<Result<DynamicFeedFirstPageDomainModel>>()
     val getFeedNextPageResp = MutableLiveData<Result<DynamicFeedDomainModel>>()
     val doFavoriteShopResp = MutableLiveData<Result<FeedPromotedShopViewModel>>()
@@ -124,25 +110,14 @@ class FeedViewModel @Inject constructor(
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
 
-    fun getOnboardingData(source: String) {
-        getInterestPickUseCase.apply {
-            clearRequest()
-            addRequestWithParam(source)
-        }.execute({
-            onboardingResp.value = Success(it.convertToViewModel())
-        }, {
-            onboardingResp.value = Fail(it)
-        })
-    }
-
     fun sendReport(
         positionInFeed: Int,
-        contentId: Int,
+        contentId: String,
         reasonType: String,
         reasonMessage: String,
         contentType: String
     ) {
-        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
+        sendReportUseCase.createRequestParams(contentId.toIntOrZero(), reasonType, reasonMessage, contentType)
         sendReportUseCase.execute(
             {
                 val deleteModel = DeletePostViewModel(
@@ -163,27 +138,6 @@ class FeedViewModel @Inject constructor(
         )
     }
 
-    fun submitInterestPickData(
-        dataList: List<InterestPickDataViewModel>,
-        source: String,
-        requestInt: Int
-    ) {
-        val idList = dataList.map { it.id }
-        submitInterestPickUseCase.apply {
-            clearRequest()
-            addRequestWithParam(idList)
-        }.execute({
-            val resultData = SubmitInterestResponseViewModel()
-            resultData.source = source
-            resultData.requestInt = requestInt
-            resultData.idList = idList
-            resultData.success = it.feedInterestUserUpdate.success
-            resultData.error = it.feedInterestUserUpdate.error
-            submitInterestPickResp.value = Success(resultData)
-        }, {
-            submitInterestPickResp.value = Fail(it)
-        })
-    }
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
 
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
@@ -295,7 +249,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doLikeKol(id: Int, rowNumber: Int) {
+    fun doLikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
@@ -306,7 +260,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun doUnlikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
@@ -339,7 +293,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doDeletePost(id: Int, rowNumber: Int) {
+    fun doDeletePost(id: String, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 deletePost(id, rowNumber)
@@ -416,37 +370,6 @@ class FeedViewModel @Inject constructor(
         })
     }
 
-    fun addWishlist(
-        activityId: String,
-        productId: String,
-        shopId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean) -> Unit,
-        context: Context
-    ) {
-        addWishListUseCase.createObservable(
-            productId, userSession.userId,
-            object : WishListActionListener {
-                override fun onErrorAddWishList(errorMessage: String?, productId: String?) {
-                    onFail.invoke(errorMessage ?: ERROR_CUSTOM_MESSAGE)
-                }
-
-                override fun onSuccessAddWishlist(productId: String?) {
-                    if (productId != null) {
-                        onSuccess.invoke(activityId, shopId, type, isFollowed)
-                    }
-                }
-
-                override fun onErrorRemoveWishlist(errorMessage: String?, productId: String?) {}
-
-                override fun onSuccessRemoveWishlist(productId: String?) {}
-
-            })
-    }
-
     fun addWishlistV2(
         activityId: String,
         productId: String,
@@ -468,37 +391,6 @@ class FeedViewModel @Inject constructor(
                 onFail.invoke(errorMessage)
             }
         }
-    }
-
-    private fun OnboardingData.convertToViewModel(): OnboardingViewModel =
-        mappingOnboardingData(feedUserOnboardingInterests)
-
-    private fun mappingOnboardingData(pojo: FeedUserOnboardingInterests): OnboardingViewModel {
-        return OnboardingViewModel(
-            pojo.meta.isEnabled,
-            pojo.meta.minPicked,
-            pojo.meta.source,
-            pojo.meta.assets.titleIntro,
-            pojo.meta.assets.titleFull,
-            pojo.meta.assets.instruction,
-            pojo.meta.assets.buttonCta,
-            mappingOnboardingListData(pojo.data)
-        )
-    }
-
-    private fun mappingOnboardingListData(pojoList: List<DataItem>): MutableList<InterestPickDataViewModel> {
-        val dataList: MutableList<InterestPickDataViewModel> = mutableListOf()
-        for (pojo in pojoList) {
-            dataList.add(
-                InterestPickDataViewModel(
-                    pojo.id,
-                    pojo.name,
-                    pojo.image,
-                    pojo.isSelected
-                )
-            )
-        }
-        return dataList
     }
 
     private suspend fun getFeedFirstDataResult(): DynamicFeedFirstPageDomainModel {
@@ -592,7 +484,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -606,7 +498,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun unlikeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -671,12 +563,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
+    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
         try {
             val data = DeletePostViewModel()
             data.id = id
             data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id.toString())
+            val params = DeletePostUseCase.createRequestParams(id)
             val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data

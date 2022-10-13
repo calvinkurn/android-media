@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -23,8 +24,12 @@ import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_M
 import com.tokopedia.chat_common.data.WebsocketEvent.Event.EVENT_TOPCHAT_TYPING
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_API
 import com.tokopedia.chat_common.data.WebsocketEvent.Mode.MODE_WEBSOCKET
+import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
+import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -45,38 +50,49 @@ import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
+import com.tokopedia.chatbot.ChatbotConstant.MODE_AGENT
+import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
+import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsViewModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
+import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
 import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttributes
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
+import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
+import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitChatCsatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.ChipSubmitHelpfullQuestionsSubscriber
-import com.tokopedia.chatbot.domain.subscriber.GetExistingChatSubscriber
 import com.tokopedia.chatbot.domain.subscriber.LeaveQueueSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -90,6 +106,9 @@ import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
+import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
+import com.tokopedia.chatbot.util.ChatbotVideoUploadResult
+import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -98,6 +117,7 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -106,6 +126,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -115,7 +137,13 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -134,25 +162,31 @@ import kotlin.coroutines.CoroutineContext
 /**
  * @author by nisie on 05/12/18.
  */
+
+typealias MediaUploadJobMap = Map<String, Job>
+typealias MediaUploadResultMap = Map<String, ChatbotVideoUploadResult>
 class ChatbotPresenter @Inject constructor(
-        var getExistingChatUseCase: GetExistingChatUseCase,
-        override var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor,
-        private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
-        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase,
-        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
-        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
-        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
-        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase
+    var getExistingChatUseCase: GetExistingChatUseCase,
+    override var userSession: UserSessionInterface,
+    private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val fingerprintInterceptor: FingerprintInterceptor,
+    private val sendChatRatingUseCase: SendChatRatingUseCase,
+    private val sendRatingReasonUseCase: SendRatingReasonUseCase,
+    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+    private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
+    private val leaveQueueUseCase: LeaveQueueUseCase,
+    private val getTickerDataUseCase: GetTickerDataUseCase,
+    private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+    private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+    private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
+    private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+    private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+    private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+    private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+    private val uploaderUseCase : UploaderUseCase,
+    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
+    private val getExistingChatMapper: ChatbotGetExistingChatMapper
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -166,9 +200,9 @@ class ChatbotPresenter @Inject constructor(
         const val QUERY_SORCE_TYPE = "Apps"
     }
 
-    override fun submitCsatRating(inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
+    override fun submitCsatRating(messageId: String, inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
         submitCsatRatingUseCase.execute(SubmitCsatRatingUseCase.generateParam(inputItem
-        ), SubmitCsatRatingSubscriber(onError, onSuccess))
+        ), SubmitCsatRatingSubscriber(messageId, onError, onSuccess))
     }
 
     override fun clearText() {
@@ -186,9 +220,15 @@ class ChatbotPresenter @Inject constructor(
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
 
+    private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
+    var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
+    private val shouldResetFailedUploadStatus = MutableStateFlow(false)
+    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+
     init {
         mSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        observeMediaUrisForUpload()
     }
 
     override val coroutineContext: CoroutineContext
@@ -241,7 +281,7 @@ class ChatbotPresenter @Inject constructor(
 
                     if (attachmentType== UPDATE_TOOLBAR){
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
-                        view.updateToolbar(tool.profileName,tool.profileImage, tool.badgeImage)
+                        updateToolbar(tool)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
@@ -252,12 +292,17 @@ class ChatbotPresenter @Inject constructor(
 
                     }
                     if(attachmentType == LIVE_CHAT_DIVIDER){
-                        mappingQueueDivider(liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
+                        mappingQueueDivider(messageId, liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
+                    }
+                    if(attachmentType == SESSION_CHANGE) {
+                        val agentMode: SessionChangeAttributes = Gson().fromJson(
+                            chatResponse.attachment?.attributes,
+                            SessionChangeAttributes::class.java
+                        )
+                        handleSessionChange(agentMode)
                     }
 
-                } catch (e: JsonSyntaxException) {
-                    e.printStackTrace()
-                }
+                } catch (e: JsonSyntaxException) { }
             }
 
             override fun onMessage(byteString: ByteString) {
@@ -295,6 +340,34 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
+    private fun updateToolbar(tool: ToolbarAttributes?) {
+
+        var profileImage = ""
+
+        tool?.profileImage?.let {
+            profileImage = it
+        }
+
+        if (view.isInDarkMode()) {
+            tool?.profileImageDark?.let {
+                profileImage = it
+            }
+        }
+
+        view.updateToolbar(tool?.profileName,profileImage, tool?.badgeImage)
+
+    }
+
+    private fun handleSessionChange(agentMode: SessionChangeAttributes) {
+        if (agentMode!=null){
+            if (agentMode.sessionChange.mode==MODE_AGENT){
+                view.sessionChangeStateHandler(true)
+            }else if (agentMode.sessionChange.mode==MODE_BOT){
+                view.sessionChangeStateHandler(false)
+            }
+        }
+    }
+
     private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
         val quickReplyListPojo = GsonBuilder().create()
                 .fromJson<QuickReplyAttachmentAttributes>(chatResponse.attachment?.attributes,
@@ -310,7 +383,7 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun mappingQueueDivider(liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
+    private fun mappingQueueDivider(messageId: String, liveChatDividerAttribute: LiveChatDividerAttributes, dividerTime: String) {
         if (!isErrorOnLeaveQueue) {
             val agentQueue = liveChatDividerAttribute.agentQueue
             if (agentQueue?.type.equals(SHOW_TEXT)) {
@@ -319,15 +392,15 @@ class ChatbotPresenter @Inject constructor(
                 view.isBackAllowed(true)
             }
             val model = ConnectionDividerViewModel(dividerMessage = agentQueue?.label, isShowButton = true,
-                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue(dividerTime))
+                    type = agentQueue?.type ?: SHOW_TEXT, leaveQueue = leaveQueue(messageId, dividerTime))
             view.onReceiveConnectionEvent(model, getLiveChatQuickReply())
         }
 
     }
 
-    private fun leaveQueue(dividerTime: String): () -> Unit {
+    private fun leaveQueue(messageId : String, dividerTime: String): () -> Unit {
         return {
-            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess(dividerTime)))
+            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(messageId, onError(), onSuccess(dividerTime)))
         }
     }
 
@@ -374,7 +447,7 @@ class ChatbotPresenter @Inject constructor(
                             onError: (Throwable) -> Unit,
                             onSuccess: (SendRatingPojo) -> Unit) {
         sendChatRatingUseCase.execute(SendChatRatingUseCase.generateParam(
-                messageId, rating, timestamp), SendRatingSubscriber(onError, onSuccess))
+                messageId, rating, timestamp), SendRatingSubscriber(messageId, onError, onSuccess))
     }
 
     override fun sendReasonRating(messageId: String, reason: String, timestamp: String,
@@ -382,7 +455,7 @@ class ChatbotPresenter @Inject constructor(
                                   onSuccess: (String) -> Unit) {
         sendRatingReasonUseCase.execute(SendRatingReasonUseCase.generateParam(
                 messageId, reason, timestamp
-        ), SendRatingReasonSubscriber(onError, onSuccess))
+        ), SendRatingReasonSubscriber(messageId, onError, onSuccess))
     }
 
     override fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
@@ -395,26 +468,6 @@ class ChatbotPresenter @Inject constructor(
     override fun destroyWebSocket() {
         mSubscription.clear()
         mSubscription.unsubscribe()
-    }
-
-    override fun getExistingChat(messageId: String,
-                                 onError: (Throwable) -> Unit,
-                                 onSuccess: (ChatroomViewModel) -> Unit,
-                                 onGetChatRatingListMessageError: (String) -> Unit) {
-        if (messageId.isNotEmpty()) {
-            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParamFirstTime(messageId),
-                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
-        }
-    }
-
-    override fun loadPrevious(messageId: String, page: Int,
-                              onError: (Throwable) -> Unit,
-                              onSuccess: (ChatroomViewModel) -> Unit,
-                              onGetChatRatingListMessageError: (String) -> Unit) {
-        if (messageId.isNotEmpty()) {
-            getExistingChatUseCase.execute(GetExistingChatUseCase.generateParam(messageId, page),
-                    GetExistingChatSubscriber(onError, onSuccess, chipGetChatRatingListUseCase, onGetChatRatingListMessageError))
-        }
     }
 
     override fun mappingEvent(webSocketResponse: WebSocketResponse, messageId: String) {
@@ -486,6 +539,7 @@ class ChatbotPresenter @Inject constructor(
                 startTime, opponentId),
                 listInterceptor)
     }
+
 
     override fun generateInvoice(
         invoiceLinkPojo: InvoiceLinkPojo, senderId: String
@@ -570,6 +624,12 @@ class ChatbotPresenter @Inject constructor(
             chatBotSecureImageUploadUseCase.execute(object : Subscriber<Map<Type?, RestResponse?>?>() {
                 override fun onCompleted() {}
                 override fun onError(e: Throwable) {
+                    ChatbotNewRelicLogger.logNewRelic(
+                        false,
+                        messageId,
+                        KEY_SECURE_UPLOAD,
+                        e
+                    )
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
 
@@ -598,7 +658,7 @@ class ChatbotPresenter @Inject constructor(
             typeString = "",
             type = 0,
             code = hashMap[CODE] ?: "",
-            createdTime = SendableUiModel.generateStartTime(),
+            createdTime = hashMap[CREATE_TIME] ?: "",
             description = hashMap[DESCRIPTION] ?: "",
             url = hashMap[IMAGE_URL] ?: "",
             id = hashMap.get(ID)!!.toLongOrZero(),
@@ -606,7 +666,8 @@ class ChatbotPresenter @Inject constructor(
             status = hashMap[STATUS] ?: "",
             statusId = hashMap[STATUS_ID]!!.toIntOrZero(),
             title = hashMap[TITLE] ?: "",
-            amount = hashMap[TOTAL_AMOUNT] ?: ""
+            amount = hashMap[TOTAL_AMOUNT] ?: "",
+            color = hashMap[STATUS_COLOR] ?: ""
         )
     }
 
@@ -629,6 +690,34 @@ class ChatbotPresenter @Inject constructor(
             USED_BY to getQueryParam(uri, USED_BY)
         )
 
+    }
+
+    override fun sendMessage(
+        messageId: String,
+        sendMessage: String,
+        startTime: String,
+        opponentId: String,
+        parentReply: ParentReply?,
+        onSendingMessage: () -> Unit
+    ) {
+        if(isValidReply(sendMessage)) {
+            onSendingMessage()
+            if (parentReply == null) {
+                RxWebSocket.send(
+                    ChatbotSendWebsocketParam.generateParamSendMessage(
+                        messageId, sendMessage,
+                        startTime, opponentId
+                    ),
+                    listInterceptor
+                )
+            } else {
+                RxWebSocket.send(
+                    ChatbotSendWebsocketParam.generateParamSendMessageWithReplyBubble(
+                        messageId, sendMessage, startTime, parentReply
+                    ), listInterceptor
+                )
+            }
+        }
     }
 
     private fun getQueryParam(uri: Uri, key: String): String {
@@ -661,11 +750,7 @@ class ChatbotPresenter @Inject constructor(
         val imageHeight = options.outHeight
         val imageWidth = options.outWidth
 
-        val fileSize = try {
-            Integer.parseInt((file.length() / DEFAULT_ONE_MEGABYTE).toString())
-        } catch (e: NumberFormatException) {
-            0
-        }
+        val fileSize = (file.length() / DEFAULT_ONE_MEGABYTE).toString().toIntOrZero()
 
         return if (imageHeight < MINIMUM_HEIGHT || imageWidth < MINIMUM_WIDTH) {
             view.onUploadUndersizedImage()
@@ -678,13 +763,13 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    fun OnClickLeaveQueue() {
-        leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(onError(), onSuccess()))
+    fun OnClickLeaveQueue(messageId : String) {
+        leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(messageId, onError(), onSuccess()))
     }
 
-    override fun hitGqlforOptionList(selectedValue: Int, model: HelpFullQuestionsViewModel?) {
+    override fun hitGqlforOptionList(messageId: String, selectedValue: Int, model: HelpFullQuestionsViewModel?) {
         val input = genrateInput(selectedValue, model)
-        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(onSubmitError))
+        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(messageId, onSubmitError))
     }
 
     private val onSubmitError: (Throwable) -> Unit = {
@@ -703,14 +788,16 @@ class ChatbotPresenter @Inject constructor(
         return input
     }
 
-    override fun submitChatCsat(input: ChipSubmitChatCsatInput,
+    override fun submitChatCsat(messageId : String,
+                                input: ChipSubmitChatCsatInput,
                                 onsubmitingChatCsatSuccess: (String) -> Unit,
                                 onError: (Throwable) -> Unit) {
         chipSubmitChatCsatUseCase.execute(chipSubmitChatCsatUseCase.generateParam(input),
-                ChipSubmitChatCsatSubscriber(onsubmitingChatCsatSuccess, onError))
+                ChipSubmitChatCsatSubscriber(messageId, onsubmitingChatCsatSuccess, onError))
     }
 
-    override fun checkLinkForRedirection(invoiceRefNum: String,
+    override fun checkLinkForRedirection(messageId: String,
+                                         invoiceRefNum: String,
                                          onGetSuccessResponse: (String) -> Unit,
                                          setStickyButtonStatus: (Boolean) -> Unit,
                                          onError: (Throwable) -> Unit) {
@@ -728,9 +815,16 @@ class ChatbotPresenter @Inject constructor(
                     }
                     val link = orderList?.dynamicLink ?: ""
                     onGetSuccessResponse(getEnvResoLink(link))
+
                 },
                 onError = {
                     onError(it)
+                    ChatbotNewRelicLogger.logNewRelic(
+                        false,
+                        messageId,
+                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_LINK_FOR_REDIRECTION,
+                        it
+                    )
                 }
         )
 
@@ -746,21 +840,20 @@ class ChatbotPresenter @Inject constructor(
 
     override fun detachView() {
         destroyWebSocket()
-        getExistingChatUseCase.unsubscribe()
         sendChatRatingUseCase.unsubscribe()
         sendRatingReasonUseCase.unsubscribe()
         submitCsatRatingUseCase.unsubscribe()
         leaveQueueUseCase.unsubscribe()
         getTickerDataUseCase.unsubscribe()
-        chipGetChatRatingListUseCase.unsubscribe()
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
 
-    override fun showTickerData(onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
-        getTickerDataUseCase.execute(TickerDataSubscriber(onError,onSuccesGetTickerData))
+    override fun showTickerData(messageId: String, onError: (Throwable) -> Unit, onSuccesGetTickerData: (TickerData) -> Unit) {
+        getTickerDataUseCase.execute(TickerDataSubscriber(messageId, onError,onSuccesGetTickerData))
     }
 
     override fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel {
@@ -784,6 +877,12 @@ class ChatbotPresenter @Inject constructor(
             onError = {
                 view.loadChatHistory()
                 view.enableTyping()
+                ChatbotNewRelicLogger.logNewRelic(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_NEW_SESSION,
+                    it
+                )
             }
         )
     }
@@ -805,8 +904,343 @@ class ChatbotPresenter @Inject constructor(
                 if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(data)
             },
             onError = {
+                ChatbotNewRelicLogger.logNewRelic(
+                    false,
+                    messageId,
+                    KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY,
+                    it
+                )
                 view.loadChatHistory()
                 view.enableTyping()
+            }
+        )
+    }
+
+    fun filterMediaUploadJobs(originalPaths: List<String>) {
+        mediaUploadJobs.value.filterKeys(originalPaths::contains)
+    }
+
+    fun updateMediaUris(paths : List<VideoUploadData>) {
+        mediaUris.value = paths
+    }
+
+    private fun updateMediaUploadJobs(uri: String, newUploadJob: Job) {
+        mediaUploadJobs.value = mutableMapOf<String, Job>().apply {
+            putAll(mediaUploadJobs.value)
+            put(uri, newUploadJob)
+        }
+    }
+
+    private fun observeMediaUrisForUpload() {
+        launch {
+            combine(
+                shouldResetFailedUploadStatus,
+                mediaUris
+            ) { shouldResetFailedUploadStatus, uris ->
+                shouldResetFailedUploadStatus to uris
+            }.collectLatest(::tryUploadMedia)
+        }
+    }
+
+    private suspend fun tryUploadMedia(data: Pair<Boolean, List<VideoUploadData>>) {
+        val (shouldResetFailedUploadStatus, videoData) = data
+        if (shouldResetFailedUploadStatus) {
+            mediaUploadResults.value = mediaUploadResults.value.filterValues { uploadResult ->
+                uploadResult is ChatbotVideoUploadResult.Success
+            }
+            this@ChatbotPresenter.shouldResetFailedUploadStatus.value = false
+        } else {
+            videoData.forEach {
+
+                val currentUri = it.videoPath ?: ""
+                val hasActiveUploadJob = mediaUploadJobs.value[currentUri]?.isActive == true
+                val needToStartNewJob = !hasActiveUploadJob
+                if (needToStartNewJob) {
+                    updateMediaUploadJobs(
+                        currentUri,
+                        startNewUploadMediaJob(
+                            currentUri,
+                            it.messageId,
+                            it.startTime
+                        )
+                    )
+                    mediaUploadJobs.value.values.joinAll()
+                }
+            }
+        }
+    }
+
+    fun startNewUploadMediaJob(
+        uri: String,
+        messageId: String,
+        startTime: String,
+    ): Job {
+
+        return launchCatchError(block = {
+            val filePath = File(uri)
+            val params = uploaderUseCase.createParams(
+                sourceId = ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD,
+                filePath = filePath,
+                withTranscode = false
+            )
+            val uploadMediaResult = uploaderUseCase(params).let {
+                when (it) {
+                    is UploadResult.Success -> {
+                        sendVideoAttachment(it.videoUrl,startTime,messageId)
+                        ChatbotVideoUploadResult.Success(it.uploadId, it.videoUrl)
+                    }
+                    is UploadResult.Error -> {
+                        ChatbotVideoUploadResult.Error(it.message)
+                    }
+                }
+            }
+            updateMediaUploadResults(uri, uploadMediaResult)
+        }, onError = {
+            updateMediaUploadResults(uri, ChatbotVideoUploadResult.Error(it.message.orEmpty()))
+        })
+    }
+
+    fun updateMediaUploadResults(
+        uri: String,
+        uploadMediaResult: ChatbotVideoUploadResult
+    ) {
+        mediaUploadResults.value = mutableMapOf<String, ChatbotVideoUploadResult>().apply {
+            putAll(mediaUploadResults.value)
+            put(uri, uploadMediaResult)
+        }
+    }
+
+    override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                filePath, startTime, messageId
+            ), listInterceptor
+        )
+    }
+
+    override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
+        launchCatchError(
+            block = {
+                uploaderUseCase.abortUpload(
+                    filePath = file,
+                    sourceId = sourceId
+            )
+                mediaUploadJobs.value.get(file)?.cancel()
+            },
+            onError = {
+                onErrorVideoUpload(it)
+            }
+        )
+    }
+
+    override fun checkUploadVideoEligibility(msgId: String) {
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
+        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
+            ::onSuccessVideoUploadEligibility,
+            ::onFailureVideoUploadEligibility,
+            msgId
+        )
+    }
+
+    private fun onSuccessVideoUploadEligibility(response : ChatbotUploadVideoEligibilityResponse) {
+        view.videoUploadEligibilityHandler(response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible)
+    }
+
+    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
+        //Add new Relic Here
+    }
+
+    override fun clearGetChatUseCase() {
+        getExistingChatUseCase.reset()
+    }
+
+    override fun setBeforeReplyTime(createTime : String) {
+        getExistingChatUseCase.updateMinReplyTime(createTime)
+    }
+
+    override fun getExistingChat(messageId: String,
+                                 onError: (Throwable) -> Unit,
+                                 onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+                                 onGetChatRatingListMessageError: (String) -> Unit) {
+
+        if(messageId.isNotEmpty()) {
+            launchCatchError(
+                block = {
+                    val response = getExistingChatUseCase.getFirstPageChat(messageId)
+                    val mappedResponse =  getExistingChatMapper.map(response)
+                    val chatReplies = response.chatReplies
+                    val inputList = getChatRatingData(mappedResponse)
+                    if (!inputList.list.isNullOrEmpty()) {
+                        getChatRatingList(inputList, messageId,
+                            onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                        )
+                    } else {
+                        onSuccessGetChat(mappedResponse,chatReplies)
+                    }
+
+                },
+                onError = {
+                    onError.invoke(it)
+
+                    ChatbotNewRelicLogger.logNewRelic(
+                        false,
+                        messageId,
+                        ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_FIRST_TIME,
+                        it
+                    )
+                }
+            )
+        }
+
+    }
+
+    fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
+        val input = ChipGetChatRatingListInput()
+        for (message in mappedPojo.listChat) {
+            if (message is HelpFullQuestionsViewModel) {
+                input.list.add(ChipGetChatRatingListInput.ChatRating(ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero(),message.helpfulQuestion?.caseChatId ?: "" ))
+            }else if (message is CsatOptionsViewModel) {
+                input.list.add(ChipGetChatRatingListInput.ChatRating(ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero(),message.csat?.caseChatId ?: "" ))
+            }
+        }
+        return input
+    }
+
+    fun getChatRatingList(
+        inputList: ChipGetChatRatingListInput,
+        messageId: String,
+        onSuccessGetRatingList: (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit
+    ) {
+        val input = inputList
+        launchCatchError(
+            block = {
+                val gqlResponse =  chipGetChatRatingListUseCase.getChatRatingList(chipGetChatRatingListUseCase.generateParam(input))
+                val response = gqlResponse.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
+
+                onSuccessGetRatingList(response.chipGetChatRatingList)
+            },
+            onError = {
+                onGetChatRatingListError(it)
+                ChatbotNewRelicLogger.logNewRelic(
+                    true,
+                    messageId,
+                    KEY_CHATBOT_GET_CHATLIST_RATING,
+                    it
+                )
+            }
+        )
+    }
+
+    private fun onChatRatingListSuccess(
+        mappedPojo: ChatroomViewModel,
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        chatReplies: ChatReplies,
+        onGetChatRatingListMessageError: (String) -> Unit
+    )
+            : (ChipGetChatRatingListResponse.ChipGetChatRatingList?) -> Unit = { ratings ->
+        updateMappedPojo(mappedPojo, ratings,onGetChatRatingListMessageError)
+        onSuccessGetChat(mappedPojo,chatReplies)
+    }
+
+    private val onGetChatRatingListError: (Throwable) -> Unit = {
+        it.printStackTrace()
+    }
+
+    fun updateMappedPojo(
+        mappedPojo: ChatroomViewModel,
+        ratings: ChipGetChatRatingListResponse.ChipGetChatRatingList?,
+        onGetChatRatingListMessageError: (String) -> Unit
+    ) {
+        if (ratings?.ratingListData?.isSuccess == 1) {
+            for (rate in ratings.ratingListData.list ?: listOf()) {
+                val rateListMsgs = mappedPojo.listChat.filter { msg ->
+                    when {
+                        msg is HelpFullQuestionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero()
+                        -> (msg.helpfulQuestion?.caseChatId == rate.caseChatID)
+                        msg is CsatOptionsViewModel && rate.attachmentType == ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero()
+                        -> (msg.csat?.caseChatId == rate.caseChatID)
+                        else -> false
+                    }
+                }
+                rateListMsgs.forEach {
+                    if (it is HelpFullQuestionsViewModel) {
+                        it.isSubmited = rate.isSubmitted ?: true
+                    }else if (it is CsatOptionsViewModel){
+                        it.isSubmited = rate.isSubmitted ?: true
+                    }
+                }
+
+            }
+        } else if (!ratings?.messageError.isNullOrEmpty()) {
+            onGetChatRatingListMessageError(ratings?.messageError?.get(0) ?: "")
+        }
+
+    }
+
+    override fun getTopChat(
+        messageId: String,
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: (Throwable) -> Unit,
+        onGetChatRatingListMessageError: (String) -> Unit
+    ) {
+        launchCatchError(
+            block = {
+                val gqlResponse = getExistingChatUseCase.getTopChat(messageId)
+                val chatReplies = gqlResponse.chatReplies
+                val mappedResponse = getExistingChatMapper.map(gqlResponse)
+                val inputList = getChatRatingData(mappedResponse)
+                if (!inputList.list.isNullOrEmpty()) {
+                    getChatRatingList(inputList, messageId,
+                        onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                    )
+                } else {
+                    onSuccessGetChat(mappedResponse,chatReplies)
+                }
+            },
+            onError = {
+                onError.invoke(it)
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_TOP,
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
+                )
+            }
+        )
+    }
+
+    override fun getBottomChat(
+        messageId: String,
+        onSuccessGetChat: (ChatroomViewModel, ChatReplies) -> Unit,
+        onError: (Throwable) -> Unit,
+        onGetChatRatingListMessageError: (String) -> Unit
+    ) {
+        launchCatchError(
+            block = {
+                val gqlResponse = getExistingChatUseCase.getBottomChat(messageId)
+                val chatReplies = gqlResponse.chatReplies
+                val mappedResponse = getExistingChatMapper.map(gqlResponse)
+                val inputList = getChatRatingData(mappedResponse)
+                if (!inputList.list.isNullOrEmpty()) {
+                    getChatRatingList(inputList, messageId,
+                        onChatRatingListSuccess(mappedResponse,onSuccessGetChat,chatReplies, onGetChatRatingListMessageError)
+                    )
+                } else {
+                    onSuccessGetChat(mappedResponse,chatReplies)
+                }
+            },
+            onError = {
+                onError.invoke(it)
+                ChatbotNewRelicLogger.logNewRelicForGetChatReplies(
+                    false,
+                    messageId,
+                    ChatbotConstant.NewRelic.KEY_CHATBOT_GET_EXISTING_CHAT_BOTTOM,
+                    it,
+                    getExistingChatUseCase.minReplyTime,
+                    getExistingChatUseCase.maxReplyTime
+                )
             }
         )
     }

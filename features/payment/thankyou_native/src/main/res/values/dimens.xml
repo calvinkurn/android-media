@@ -7,6 +7,7 @@
     <dimen name="thank_dp_20">20dp</dimen>
     <dimen name="thank_dp_10">10dp</dimen>
     <dimen name="thank_dp_1">1dp</dimen>
+    <dimen name="thank_dp_16">16dp</dimen>
     <dimen name="thank_dp_200">200dp</dimen>
     <dimen name="thank_dp_300">300dp</dimen>
     <dimen name="thank_dp_148">148dp</dimen>

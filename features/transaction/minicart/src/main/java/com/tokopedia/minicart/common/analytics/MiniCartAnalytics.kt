@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductUiModel
+import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTracker
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -801,29 +802,31 @@ class MiniCartAnalytics @Inject constructor(val userSession: UserSessionInterfac
         bundleType: String,
         bundlePosition: Int,
         priceCut: String,
-        cartId: String,
-        quantity: String
+        atcItems: List<ProductBundleRecomAtcItemTracker>
     ) {
-        val items = arrayListOf(
-            Bundle().apply {
-                putString(KEY_CATEGORY_ID, "")
-                putString(DIMENSION_117, bundleType)
-                putString(DIMENSION_118, bundleId)
-                putString(DIMENSION_40, VALUE_DIMENSION_40)
-                putString(DIMENSION_45, cartId)
-                putString(DIMENSION_87, VALUE_DIMENSION_87)
-                putString(ITEM_BRAND, "")
-                putString(ITEM_CATEGORY,"")
-                putString(ITEM_ID, bundleId)
-                putString(ITEM_NAME, bundleName)
-                putString(ITEM_VARIANT, "")
-                putString(PRICE, priceCut.getDigits().toZeroIfNull().toString())
-                putString(QUANTITY, quantity)
-                putString(SHOP_ID, shopId)
-                putString(SHOP_NAME, VALUE_SHOP_NAME_TOKOPEDIA_NOW)
-                putString(SHOP_TYPE, VALUE_SHOP_TYPE_TOKOPEDIA_NOW)
-            }
-        )
+        val items = arrayListOf<Bundle>()
+        atcItems.forEach {
+            items.add(
+                Bundle().apply {
+                    putString(KEY_CATEGORY_ID, "")
+                    putString(DIMENSION_117, bundleType)
+                    putString(DIMENSION_118, bundleId)
+                    putString(DIMENSION_40, VALUE_DIMENSION_40)
+                    putString(DIMENSION_45, it.cartId)
+                    putString(DIMENSION_87, VALUE_DIMENSION_87)
+                    putString(ITEM_BRAND, "")
+                    putString(ITEM_CATEGORY,"")
+                    putString(ITEM_ID, it.id)
+                    putString(ITEM_NAME, it.name)
+                    putString(ITEM_VARIANT, "")
+                    putString(PRICE, priceCut.getDigits().toZeroIfNull().toString())
+                    putString(QUANTITY, it.quantity.toString())
+                    putString(SHOP_ID, shopId)
+                    putString(SHOP_NAME, VALUE_SHOP_NAME_TOKOPEDIA_NOW)
+                    putString(SHOP_TYPE, VALUE_SHOP_TYPE_TOKOPEDIA_NOW)
+                }
+            )
+        }
 
         val dataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT, EVENT_NAME_ADD_TO_CART)

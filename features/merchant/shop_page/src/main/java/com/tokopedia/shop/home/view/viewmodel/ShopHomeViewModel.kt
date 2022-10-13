@@ -400,6 +400,7 @@ class ShopHomeViewModel @Inject constructor(
                     userCityId = widgetUserAddressLocalData.city_id
                     userLat = widgetUserAddressLocalData.lat
                     userLong = widgetUserAddressLocalData.long
+                    extraParam = shopProductFilterParameter.getExtraParam()
                 }
         )
         val productListResponse = getShopProductUseCase.executeOnBackground()
@@ -431,7 +432,8 @@ class ShopHomeViewModel @Inject constructor(
         return GetShopHomeProductUiModel(
                 isHasNextPage,
                 productListUiModelData,
-                totalProductListData
+                totalProductListData,
+                page
         ).apply {
             updateProductCardQuantity(listShopProductUiModel.toMutableList())
         }
@@ -656,7 +658,8 @@ class ShopHomeViewModel @Inject constructor(
                 widgetUserAddressLocalData.district_id,
                 widgetUserAddressLocalData.city_id,
                 widgetUserAddressLocalData.lat,
-                widgetUserAddressLocalData.long
+                widgetUserAddressLocalData.long,
+                tempShopProductFilterParameter.getExtraParam()
         )
         getShopFilterProductCountUseCase.params = GetShopFilterProductCountUseCase.createParams(
                 shopId,
