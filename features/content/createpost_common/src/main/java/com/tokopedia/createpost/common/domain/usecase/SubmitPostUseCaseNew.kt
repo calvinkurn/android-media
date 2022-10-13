@@ -1,6 +1,5 @@
 package com.tokopedia.createpost.common.domain.usecase
 
-import android.util.Log
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.MediaTag
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
@@ -17,7 +16,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import kotlinx.coroutines.flow.*
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -63,12 +61,11 @@ open class SubmitPostUseCaseNew @Inject constructor(
         uploadMultipleMediaUseCase.execute(mediumList)
 
         uploadMultipleMediaUseCase.state.collectLatest {
-            Log.d("<LOG>", "state changed : $it")
             if(it.images is UploadMediaDataModel.Media.Success && it.videos is UploadMediaDataModel.Media.Success) {
                 val newMedia = it.images.mediumList + it.videos.mediumList
 
+                /** If all media is alr processed */
                 if(mediumList.size == newMedia.size) {
-                    Log.d("<LOG>", "rearrangeMedia")
                     /** Rearrange Media */
                     val arrangedMedia = rearrangeMedia(newMedia)
 
@@ -95,13 +92,16 @@ open class SubmitPostUseCaseNew @Inject constructor(
 
                     val result = super.executeOnBackground()
 
-                    Log.d("<LOG>", "submitPost : $result")
                     _state.update { SubmitPostResult.Success(result) }
                 }
             }
         }
     }
 
+    /**
+     * The code below will be used when we have migrated
+     * both image & video uploader to uploadpedia
+     */
     suspend fun executeOnBackground(
         id: String?,
         type: String,

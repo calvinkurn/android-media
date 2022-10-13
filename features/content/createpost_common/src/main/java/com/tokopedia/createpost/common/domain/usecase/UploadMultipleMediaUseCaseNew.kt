@@ -3,7 +3,6 @@ package com.tokopedia.createpost.common.domain.usecase
 import android.content.ContentResolver
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.createpost.common.di.ActivityContext
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
@@ -25,8 +24,6 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
 import rx.schedulers.Schedulers
 import java.io.File
-import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -96,7 +93,6 @@ class UploadMultipleMediaUseCaseNew @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { newMediumList ->
-                Log.d("<LOG>", "upload video subscribe")
                 _videos.update {
                     UploadMediaDataModel.Media.Success(newMediumList)
                 }
@@ -120,6 +116,10 @@ class UploadMultipleMediaUseCaseNew @Inject constructor(
         }
     }
 
+    /**
+     * The code below will be used when we have migrated
+     * both image & video uploader to uploadpedia
+     */
     suspend fun executeOnBackground(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
         return mediaList.map {
             uploadMedia(it).also {

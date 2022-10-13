@@ -5,10 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
@@ -67,6 +65,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         initInjector()
     }
 
+
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = SaveInstanceCacheManager(baseContext, id)
@@ -90,7 +89,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 when(state) {
                     is SubmitPostResult.Success -> {
                         val result = state.data
-                        Log.d("<LOG>", "result submitPost : $result")
+
                         if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
                             postUpdateProgressManager?.onFailedPost(
                                 com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
@@ -98,9 +97,13 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                                     RuntimeException()
                                 )
                             )
+                            stopService()
+
                             return@collectLatest
                         } else if (!TextUtils.isEmpty(result.feedContentSubmit.error)) {
                             postUpdateProgressManager?.onFailedPost(result.feedContentSubmit.error)
+                            stopService()
+
                             return@collectLatest
                         }
 
@@ -109,6 +112,8 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                         sendBroadcast()
                         postContentToOtherService(result.feedContentSubmit.meta.content)
                         addFlagOnCreatePostSuccess()
+
+                        stopService()
                     }
                 }
             }
@@ -120,9 +125,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 )
             )
 
-            scope.cancel()
-        }.invokeOnCompletion {
-            Log.d("<LOG>", "collectLatest complete $it")
+            stopService()
         }
 
         scope.launch {
@@ -141,11 +144,13 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
             )
-        }.invokeOnCompletion {
-            Log.d("<LOG>", "execute complete $it")
         }
 
 
+        /**
+         * The code below will be used when we have migrated
+         * both image & video uploader to uploadpedia
+         */
 //        scope.launchCatchError(block = {
 //            val result = submitPostUseCase.executeOnBackground(
 //                viewModel.postId,
@@ -189,23 +194,11 @@ class SubmitPostServiceNew : JobIntentServiceX() {
 //                )
 //            )
 //        }
+    }
 
-//        submitPostUseCase.execute(
-//            SubmitPostUseCaseNew.createRequestParams(
-//                viewModel.postId,
-//                viewModel.authorType,
-//                viewModel.token,
-//                if (isTypeAffiliate(viewModel.authorType) || isTypeBuyer(viewModel.authorType)) userSession.userId
-//                else userSession.shopId,
-//                viewModel.caption,
-//                viewModel.completeImageList.map {
-//                    getFileAbsolutePath(it.path)!! to it.type
-//                },
-//                if (isTypeAffiliate(viewModel.authorType)) viewModel.adIdList
-//                else viewModel.productIdList, viewModel.completeImageList,
-//                 viewModel.mediaWidth,
-//                 viewModel.mediaHeight
-//            ), getSubscriber())
+    private fun stopService() {
+        stopSelf()
+        scope.cancel()
     }
 
     private fun getFileAbsolutePath(path: String): String? {
