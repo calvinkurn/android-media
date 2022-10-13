@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.campaign_list
+package com.tkpd.macrobenchmark.test.campaignlist
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
 @LargeTest
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(AndroidJUnit4::class)
-class CampaignListComposeFrameTimingBenchmark: BaseFrameTimingBenchmark() {
+class CampaignListFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     @Before
     fun setupEnvironment() {
         MacroDevOps.setupEnvironment(MacroIntent.CampaignList.getCampaignListFrameTimingIntent())
