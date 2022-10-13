@@ -1847,7 +1847,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun handleQuizEnded() {
         viewModelScope.launchCatchError(dispatchers.computation, block = {
-            _interactive.updateAndGet {
+            _interactive.update {
                 if (it.interactive !is InteractiveUiModel.Quiz) error("Error")
                 val newInteractive = it.interactive.copy(
                     status = InteractiveUiModel.Quiz.Status.Finished

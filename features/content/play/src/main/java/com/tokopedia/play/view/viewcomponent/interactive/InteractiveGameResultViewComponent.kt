@@ -46,7 +46,7 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
                     )
                 )
             )
-            delay(GAME_LOSER_COACHMARK_DELAY)
+            delay(GIVEAWAY_LOSER_COACHMARK_DELAY)
             hideCoachMark()
         }
     }
@@ -67,6 +67,6 @@ class InteractiveGameResultViewComponent (container: ViewGroup,
     }
 
     companion object {
-        private const val GAME_LOSER_COACHMARK_DELAY = 5000L
+        private const val GIVEAWAY_LOSER_COACHMARK_DELAY = 5000L
     }
 }
