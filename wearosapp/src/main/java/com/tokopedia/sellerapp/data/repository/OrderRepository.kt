@@ -21,8 +21,8 @@ class OrderRepository @Inject constructor(
         return orderRoomDatasource.getOrderCount(params)
     }
 
-    override suspend fun <T> sendMessagesToNodes(action: Action, data: T) {
-        clientMessageDatasource.sendMessagesToNodes(action, data)
+    override suspend fun sendMessagesToNodes(action: Action) {
+        clientMessageDatasource.sendMessagesToNodes(action)
     }
 
     override fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> {

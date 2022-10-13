@@ -13,6 +13,6 @@ interface BaseRepository<T> {
 
     fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> = flowOf()
 
-    suspend fun <T> sendMessagesToNodes(action: Action, data: T) { }
+    suspend fun sendMessagesToNodes(action: Action) { }
 
 }

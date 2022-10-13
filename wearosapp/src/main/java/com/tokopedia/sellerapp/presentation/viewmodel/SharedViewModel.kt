@@ -1,23 +1,19 @@
 package com.tokopedia.sellerapp.presentation.viewmodel
 
-import android.widget.Toast
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.compose.runtime.State
+import androidx.lifecycle.viewModelScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
-import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
-import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
-import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.STATUS_NEW_ORDER
+import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
@@ -25,16 +21,14 @@ import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
-import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.guava.await
-import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -57,6 +51,9 @@ class SharedViewModel @Inject constructor(
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
             clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
+            //            newOrderUseCase.getAcceptBulkOrder().collectLatest {
+//                _acceptBulkOrder.value = UiState.Success(data = it)
+//            }
         }
     }
 
@@ -96,18 +93,13 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _action: MutableStateFlow<UiState<Boolean>> = MutableStateFlow(UiState.Idle())
+    val action: StateFlow<UiState<Boolean>>
+        get() = _action
 
-    init {
-//        launch {
-//            newOrderUseCase.getAcceptBulkOrder().collectLatest {
-//                _acceptBulkOrder.value = UiState.Success(data = it)
-//            }
-//        }
-    }
     private var _acceptBulkOrder= MutableStateFlow<UiState<AcceptBulkOrderModel>>(UiState.Idle())
     val acceptBulkOrder: StateFlow<UiState<AcceptBulkOrderModel>> = _acceptBulkOrder
 
-    fun sendRequest(action: Action, listIds: List<String>) {
     fun checkPhoneState() {
         viewModelScope.launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
@@ -146,10 +138,15 @@ class SharedViewModel @Inject constructor(
 
     fun sendRequest() {
         launchCatchError(block = {
-            newOrderUseCase.sendRequest(action, listIds)
+            _action.value = UiState.Loading()
+
+            // call usecase method
+
+            _action.value = UiState.Success()
         }, onError = { throwable ->
-            throwable
-            println(throwable)
+            _action.value = UiState.Fail(
+                throwable = throwable
+            )
         })
     }
 

@@ -44,12 +44,12 @@ open class ClientMessageDatasource @Inject constructor(
         activityMessageListener?.onMessageReceived(messageEvent)
     }
 
-    suspend fun <T> sendMessagesToNodes(action: Action, data: T) {
+    suspend fun sendMessagesToNodes(action: Action) {
         val nodes = nodeClient.connectedNodes.await()
 
         nodes.map { node ->
-            val path = action.getPath()
-            messageClient.sendMessage(node.id, path, Gson().toJson(data).toByteArray()).await()
+            val message = action.getPath()
+            messageClient.sendMessage(node.id, message, byteArrayOf()).await()
         }
     }
 
