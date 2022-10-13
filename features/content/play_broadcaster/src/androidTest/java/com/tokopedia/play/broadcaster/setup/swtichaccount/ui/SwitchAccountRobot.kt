@@ -41,7 +41,7 @@ import com.tokopedia.play.broadcaster.view.fragment.PlayBroadcastPreparationFrag
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.delay
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.content.common.R as contentR
@@ -186,7 +186,7 @@ class SwitchAccountRobot(
 
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
-        delay()
+        delay(1000L)
     }
 
     fun entryPointWhenBothAccountBanned() = chainable {
