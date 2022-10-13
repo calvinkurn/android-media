@@ -54,7 +54,7 @@
         android:layout_marginEnd="16dp"
         android:maxLines="1"
         android:visibility="gone"
-        app:labelType="general_light_grey"
+        app:labelType="highlight_light_grey"
         app:layout_constraintBottom_toBottomOf="@id/shop_credibility_name"
         app:layout_constraintLeft_toRightOf="@id/shop_credibility_name"
         app:layout_constraintRight_toRightOf="parent"
