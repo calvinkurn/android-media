@@ -1,6 +1,7 @@
 package com.tokopedia.report.view.fragment
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,18 +25,20 @@ fun ProductReportScreen(
 ) {
     val uiState = viewModel.uiState.collectAsState()
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Background),
-        topBar = {
-            AppBar(title = stringResource(id = R.string.product_report)) {
-                viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
+    MaterialTheme {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Background),
+            topBar = {
+                AppBar(title = stringResource(id = R.string.product_report)) {
+                    viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
+                }
             }
+        ) {
+            ProductReportComposeContent(
+                uiState = uiState.value,
+                onEvent = viewModel::onEvent
+            )
         }
-    ) {
-        ProductReportComposeContent(
-            uiState = uiState.value,
-            onEvent = viewModel::onEvent
-        )
     }
 }
