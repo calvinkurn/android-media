@@ -58,7 +58,7 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
     @Test
     fun `when user starts livestreaming, get interactive config and interactive config is inactive, it should emit interactive state forbidden`() {
 
-        coEvery { mockRepo.getInteractiveConfig() } returns mockInteractiveConfigInactiveResponse
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigInactiveResponse
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,

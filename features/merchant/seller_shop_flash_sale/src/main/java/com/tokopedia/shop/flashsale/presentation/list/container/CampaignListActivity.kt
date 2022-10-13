@@ -68,7 +68,7 @@ class CampaignListActivity : BaseSimpleActivity() {
     private fun handleDisplayToaster(intent: Intent?) {
         val container = fragment as? CampaignListContainerFragment ?: return
         val pageMode = intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) ?: PageMode.CREATE
-        if (pageMode == PageMode.UPDATE) {
+        if (pageMode == PageMode.UPDATE || pageMode == PageMode.DRAFT) {
             container.showEditCampaignSuccessInActiveTab()
         } else {
             container.showSaveDraftSuccessInActiveTab()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
-        <color android:color="@color/chatbot_chat_background"/>
+        <color android:color="@color/Unify_N50"/>
     </item>
     <item android:drawable="@drawable/chatbot_background"/>
 </layer-list>

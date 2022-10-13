@@ -61,6 +61,8 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
 import javax.inject.Inject
@@ -345,7 +347,6 @@ class PlayBroadcastActivity : BaseActivity(),
 
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         this.channelType = config.channelStatus
-        if (channelType == ChannelStatus.Live) analytic.viewDialogViolation(config.channelId)
         if (isRequiredPermissionGranted()) configureChannelType(channelType)
         else requestPermission()
     }
@@ -567,9 +568,19 @@ class PlayBroadcastActivity : BaseActivity(),
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            broadcaster.create(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize)
         }
         else showPermissionPage()
+    }
+
+    private fun initBroadcasterWithDelay(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+    ) {
+        lifecycleScope.launch(dispatcher.main) {
+            delay(INIT_BROADCASTER_DELAY)
+            broadcaster.create(holder, surfaceSize)
+        }
     }
 
     private fun releaseBroadcaster() {
@@ -631,5 +642,8 @@ class PlayBroadcastActivity : BaseActivity(),
         private const val CHANNEL_TYPE = "channel_type"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
+
+        private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
+        private const val INIT_BROADCASTER_DELAY = 500L
     }
 }

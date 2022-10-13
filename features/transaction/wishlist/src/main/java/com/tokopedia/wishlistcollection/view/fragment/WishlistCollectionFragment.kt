@@ -1,7 +1,6 @@
 package com.tokopedia.wishlistcollection.view.fragment
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -10,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.RelativeLayout
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
@@ -72,6 +73,7 @@ import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionViewMod
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+@Keep
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
     BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
@@ -514,13 +516,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    private fun showToaster(message: String, actionText: String, type: Int) {
-        val toasterSuccess = Toaster
-        view?.let { v ->
-            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, actionText).show()
-        }
-    }
-
     private fun finishRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
@@ -575,9 +570,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onCollectionItemClicked(id: String) {
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=$id"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, id)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
 
@@ -597,9 +590,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onSuccessCreateNewCollection(dataCreate: CreateWishlistCollectionResponse.CreateWishlistCollection.DataCreate, newCollectionName: String) {
-        val detailCollection =
-            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL}?${ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID}=${dataCreate.id}"
-        val intentCollectionDetail = RouteManager.getIntent(context, detailCollection)
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, dataCreate.id)
         intentCollectionDetail.putExtra(EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL, dataCreate.message)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
@@ -696,7 +687,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL && resultCode == Activity.RESULT_OK) {
+        if (requestCode == REQUEST_CODE_COLLECTION_DETAIL) {
             getWishlistCollections()
             binding?.run { rvWishlistCollection.scrollToPosition(0) }
 
@@ -750,13 +741,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             )
         }
         activity?.let {
-            if (recommendationItem.appUrl.isNotEmpty()) {
-                RouteManager.route(it, recommendationItem.appUrl)
+            val intent = if (recommendationItem.appUrl.isNotEmpty()) {
+                RouteManager.getIntent(it, recommendationItem.appUrl)
             } else {
-                val intent = RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
                     recommendationItem.productId.toString())
-                startActivity(intent)
             }
+            startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
         }
     }
 

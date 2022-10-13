@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
+import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
@@ -24,6 +26,7 @@ class ShopPageSettingViewModel @Inject constructor(
         private val userSessionInterface: UserSessionInterface,
         private val getShopInfoUseCase: GQLGetShopInfoUseCase,
         private val authorizeAccessUseCase: Provider<AuthorizeAccessUseCase>,
+        private val shopMultiLocationWhitelistUseCase: ShopMultilocWhitelistUseCase,
         private val dispatcherProvider: CoroutineDispatchers
 ) : BaseViewModel(dispatcherProvider.main) {
 
@@ -32,6 +35,10 @@ class ShopPageSettingViewModel @Inject constructor(
     private val mShopSettingAccessLiveData = MutableLiveData<Result<ShopSettingAccess>>()
     val shopSettingAccessLiveData: LiveData<Result<ShopSettingAccess>>
         get() = mShopSettingAccessLiveData
+
+    private val _shopMultiLocationEligibility = MutableLiveData<Result<Int>>()
+    val shopMultiLocationEligibility: LiveData<Result<Int>>
+        get() = _shopMultiLocationEligibility
 
     fun isMyShop(shopId: String) = userSessionInterface.shopId == shopId
 
@@ -100,6 +107,20 @@ class ShopPageSettingViewModel @Inject constructor(
         }) {
             shopInfoResp.value = Fail(it)
         }
+    }
+
+    fun getMultiLocationEligibility(shopId: String?) {
+        launchCatchError(block = {
+            val shopLocWhitelist = getShopMultiLocationEligibility(shopId)
+            val isEligibleForMultiLocation = shopLocWhitelist.data.eligibilityState
+            _shopMultiLocationEligibility.postValue(Success(isEligibleForMultiLocation))
+        }) {
+            _shopMultiLocationEligibility.postValue(Fail(it))
+        }
+    }
+
+    private suspend fun getShopMultiLocationEligibility(shopId: String?): ShopLocWhitelist {
+        return shopMultiLocationWhitelistUseCase.invoke(shopId.toLongOrZero()).shopLocWhitelist
     }
 
     private suspend fun getShopInfo(shopId: Int, shopDomain: String?, isRefresh: Boolean): ShopInfo {

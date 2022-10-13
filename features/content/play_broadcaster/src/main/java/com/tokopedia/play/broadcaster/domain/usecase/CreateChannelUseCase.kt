@@ -7,6 +7,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType.VALUE_TYPE_ID_US
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play_common.domain.model.ChannelId
 import com.tokopedia.play.broadcaster.domain.model.CreateChannelBroadcastResponse
 import com.tokopedia.play_common.types.PlayChannelStatusType
@@ -69,7 +70,7 @@ class CreateChannelUseCase @Inject constructor(
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
             },
-            PARAMS_STATUS to status.value.toInt()
+            PARAMS_STATUS to status.value.toIntOrZero()
         )
     }
 

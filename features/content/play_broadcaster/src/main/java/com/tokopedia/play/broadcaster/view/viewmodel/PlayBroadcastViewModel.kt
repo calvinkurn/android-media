@@ -201,7 +201,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = _accountListState.value.size > 1
+        get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -403,10 +403,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 if (isFirstOpen && isAllowChangeAccount) {
                     isFirstOpen = false
                     handleSwitchAccount(false)
-                }
-                else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
+                } else _observableConfigInfo.value = NetworkResult.Success(configUiModel)
                 return@launchCatchError
             }
+
+            isFirstOpen = false
 
             // create channel when there are no channel exist
             if (configUiModel.channelStatus == ChannelStatus.Unknown) createChannel()
@@ -491,7 +492,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                     channel.basic.coverUrl
                 )
             )
-            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp))
+            setBroadcastSchedule(playBroadcastMapper.mapChannelSchedule(channel.basic.timestamp, channel.basic.status))
 
             generateShareLink(playBroadcastMapper.mapShareInfo(channel))
             null
@@ -1416,10 +1417,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 } else {
                     _uiEvent.emit(PlayBroadcastEvent.BroadcastReady(channelInfo.ingestUrl))
                 }
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 doResumeBroadcaster(shouldContinue)
@@ -1430,15 +1428,11 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private fun handleBroadcasterRecovered() {
         viewModelScope.launchCatchError(block = {
             val channelInfo = getChannelInfo()
-            if (channelInfo.status == ChannelStatus.Pause
-                || channelInfo.status == ChannelStatus.Live) {
-                updateChannelStatus(PlayChannelStatusType.Live)
+            if (channelInfo.status.isPause || channelInfo.status.isLive) {
+                    if (channelInfo.status.isPause) updateChannelStatus(PlayChannelStatusType.Live)
                 _uiEvent.emit(PlayBroadcastEvent.BroadcastRecovered)
                 updateCurrentInteractiveStatus()
-            } else {
-                stopTimer()
-                _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
-            }
+            } else _uiEvent.emit(PlayBroadcastEvent.ShowLiveEndedDialog)
         }) {
             _uiEvent.emit(PlayBroadcastEvent.ShowError(it) {
                 handleBroadcasterRecovered()
@@ -1513,8 +1507,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             else if (nonSellerAccount != null) {
                 if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) nonSellerAccount
                 else sellerAccount
-            }
-            else sellerAccount
+            } else sellerAccount
         } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 
@@ -1539,18 +1532,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         selectedAccount: ContentAccountUiModel,
     ): Boolean {
         return when {
-            !configUiModel.streamAllowed -> {
-                if (isFirstOpen && isAllowChangeAccount) return false
-                warningInfoType = WarningType.BANNED
-                _accountStateInfo.update { AccountStateInfo() }
-                _accountStateInfo.update {
-                    AccountStateInfo(
-                        type = AccountStateInfoType.Banned,
-                        selectedAccount = selectedAccount,
-                    )
-                }
-                false
-            }
             configUiModel.channelStatus == ChannelStatus.Live -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 warningInfoType = WarningType.LIVE
@@ -1574,7 +1555,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            !selectedAccount.hasAcceptTnc -> {
+            (selectedAccount.isShop && !configUiModel.streamAllowed) || !selectedAccount.hasAcceptTnc -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {

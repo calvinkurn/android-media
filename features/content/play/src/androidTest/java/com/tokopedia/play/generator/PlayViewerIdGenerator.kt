@@ -18,10 +18,10 @@ import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
-import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.play.test.factory.TestFragmentFactory
-import com.tokopedia.play.test.factory.TestViewModelFactory
-import com.tokopedia.play.test.util.isSiblingWith
+import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.content.test.factory.TestFragmentFactory
+import com.tokopedia.content.test.factory.TestViewModelFactory
+import com.tokopedia.content.test.util.isSiblingWith
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment

@@ -67,7 +67,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.withdraw)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.searchbar)
@@ -77,7 +76,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.promoCheckout)
     implementation projectOrAar(rootProject.ext.features.loyaltyCommon)
     implementation projectOrAar(rootProject.ext.features.promoCheckoutCommon)
-    implementation projectOrAar(rootProject.ext.features.userIdentificationCommon)
     implementation projectOrAar(rootProject.ext.features.gallery)
     implementation projectOrAar(rootProject.ext.features.categoryCommon)
     implementation projectOrAar(rootProject.ext.features.officialStore)
@@ -156,6 +154,7 @@ dependencies {
 
     //Dependency used for DF module
     implementation projectOrAar(rootProject.ext.features.commonTravel)
+    implementation projectOrAar(rootProject.ext.features.commonEntertainment)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
@@ -244,8 +243,10 @@ dependencies {
     }
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)
@@ -379,7 +380,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

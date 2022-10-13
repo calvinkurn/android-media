@@ -13,8 +13,8 @@ import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
-import com.tokopedia.play.test.cassava.containsEventAction
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.cassava.containsEventAction
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.OriginalPrice

@@ -24,6 +24,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.state.*
 import com.tokopedia.filter.common.helper.toMapParam
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

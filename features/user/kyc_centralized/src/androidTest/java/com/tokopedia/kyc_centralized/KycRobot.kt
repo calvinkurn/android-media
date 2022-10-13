@@ -9,6 +9,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.intent.matcher.IntentMatchers.hasData
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.kyc_centralized.util.waitOnView
 import com.tokopedia.kyc_centralized.view.activity.UserIdentificationCameraActivity
 
 class KycRobot {
@@ -55,7 +56,7 @@ class KycRobot {
 class KycResultRobot {
 
     fun shouldShowPendingPage() {
-        onView(withText(R.string.kyc_pending_title)).check(matches(isDisplayed()))
+        waitOnView(withText(R.string.kyc_pending_title)).check(matches(isDisplayed()))
     }
 
     fun hasCameraIntent(count: Int = 1) {
