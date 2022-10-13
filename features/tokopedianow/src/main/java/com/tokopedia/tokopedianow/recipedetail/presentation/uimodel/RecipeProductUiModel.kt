@@ -16,7 +16,7 @@ data class RecipeProductUiModel(
     val minOrder: Int,
     val maxOrder: Int,
     val priceFmt: String,
-    val weight: String,
+    val weight: String = "",
     val imageUrl: String,
     val slashedPrice: String = "",
     val discountPercentage: String = "",

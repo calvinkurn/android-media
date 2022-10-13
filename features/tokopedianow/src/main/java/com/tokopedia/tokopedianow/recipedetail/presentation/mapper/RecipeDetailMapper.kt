@@ -196,7 +196,6 @@ object RecipeDetailMapper {
             minOrder = detail.minOrder,
             maxOrder = detail.maxOrder,
             priceFmt = detail.fmtPrice,
-            weight = "500 g", // to do: waiting BE to provide weight response
             imageUrl = detail.imageUrl,
             slashedPrice = detail.slashedPrice,
             discountPercentage = formatFloatToString(detail.discountPercentage),
