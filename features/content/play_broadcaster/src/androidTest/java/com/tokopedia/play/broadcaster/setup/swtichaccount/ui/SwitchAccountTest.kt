@@ -97,12 +97,12 @@ class SwitchAccountTest {
     }
 
     @Test
-    fun test_switchAccountBuyerToSellerAndNotAcceptTnc() {
+    fun test_switchAccountBuyerToSellerAndNotAllowed() {
         coEvery {
             mockRepo.getAccountList()
         } returns accountListResponse(shopEligible = false).reversed()
 
-        createRobot().switchAccountBuyerToSellerAndNotAcceptTnc()
+        createRobot().switchAccountBuyerToSellerAndNotAllowed()
     }
 
     @Test
