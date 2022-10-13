@@ -67,11 +67,6 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         initInjector()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        scope.cancel()
-    }
-
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return
         val cacheManager = SaveInstanceCacheManager(baseContext, id)
@@ -126,6 +121,8 @@ class SubmitPostServiceNew : JobIntentServiceX() {
             )
 
             scope.cancel()
+        }.invokeOnCompletion {
+            Log.d("<LOG>", "collectLatest complete $it")
         }
 
         scope.launch {
@@ -144,6 +141,8 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                 viewModel.mediaWidth,
                 viewModel.mediaHeight
             )
+        }.invokeOnCompletion {
+            Log.d("<LOG>", "execute complete $it")
         }
 
 

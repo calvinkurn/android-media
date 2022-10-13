@@ -26,6 +26,7 @@ import rx.functions.Func1
 import rx.schedulers.Schedulers
 import java.io.File
 import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -89,37 +90,16 @@ class UploadMultipleMediaUseCaseNew @Inject constructor(
         Observable.from(mediumList)
             .flatMap { medium ->
                 uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(setTempFilePath(medium)))
-                    .map(mapToUrlVideo(medium))insta
+                    .map(mapToUrlVideo(medium))
             }
+            .toList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { newMedium ->
-                Log.d("<LOG>", "currentThread : ${Thread.currentThread().name}")
-
-                when(val state = _videos.value) {
-                    is UploadMediaDataModel.Media.Success -> {
-                        Log.d("<LOG>", "update success video with prev vids")
-                        _videos.update {
-                            UploadMediaDataModel.Media.Success(state.mediumList.toMutableList().apply { add(newMedium) })
-                        }
-                    }
-                    is UploadMediaDataModel.Media.Unknown -> {
-                        Log.d("<LOG>", "update success video")
-                        _videos.update {
-                            UploadMediaDataModel.Media.Success(listOf(newMedium))
-                        }
-                    }
+            .subscribe { newMediumList ->
+                Log.d("<LOG>", "upload video subscribe")
+                _videos.update {
+                    UploadMediaDataModel.Media.Success(newMediumList)
                 }
-//                _videos.update { state ->
-//                    return@update when(state) {
-//                        is UploadMediaDataModel.Media.Success -> {
-//                            UploadMediaDataModel.Media.Success(state.mediumList.toMutableList().apply { add(it) })
-//                        }
-//                        is UploadMediaDataModel.Media.Unknown -> {
-//                            UploadMediaDataModel.Media.Success(listOf(it))
-//                        }
-//                    }
-//                }
             }
     }
 
@@ -135,6 +115,7 @@ class UploadMultipleMediaUseCaseNew @Inject constructor(
             deleteCacheFile()
             medium.videoID = videoId
             medium.mediaURL = videoUrl
+
             medium
         }
     }
