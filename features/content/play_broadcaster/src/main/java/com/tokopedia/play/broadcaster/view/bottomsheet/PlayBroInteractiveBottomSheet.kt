@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.updateScrollingChild
@@ -42,6 +42,8 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         get() = arguments?.getString(ARG_TYPE) ?: Type.UNKNOWN.sheetType
     private val sheetSize
         get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.tag
+    private val channelId
+        get() = arguments?.getString(ARG_CHANNEL_ID).orEmpty()
 
     private val leaderboardSheetView by viewComponent {
         PlayInteractiveLeaderboardViewComponent(
@@ -61,7 +63,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     private val binding: BottomSheetPlayBroQuizDetailBinding
         get() = _binding!!
 
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(requireActivity())
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,10 +74,6 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         setChild(binding.root)
         showHeader = false
         clearContentPadding = true
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity())
-        )[PlayBroadcastViewModel::class.java]
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,12 +119,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
     private fun setupLeaderBoard() {
         leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
-        parentViewModel.getLeaderboardWithSlots()
+        parentViewModel.getLeaderboardWithSlots(channelIdValue = channelId)
     }
 
     private fun setupReport() {
         leaderboardSheetView.setTitle(getString(commonR.string.play_interactive_leaderboard_title))
-        parentViewModel.getLeaderboardWithSlots(true)
+        parentViewModel.getLeaderboardWithSlots(true, channelIdValue = channelId)
     }
 
     override fun onDestroyView() {
@@ -345,6 +345,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
 
         private const val ARG_TYPE = "ARG_TYPE"
         private const val ARG_SIZE = "ARG_SIZE"
+        private const val ARG_CHANNEL_ID = "ARG_CHANNEL_ID"
         private const val ADDITIONAL_ARG = "&source=tx_ask_buyer"
 
         private const val TAG = "PlayQuizDetailBottomSheet"
@@ -353,6 +354,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
             classLoader: ClassLoader,
             type: Type,
             size: Size,
+            channelId: String = ""
         ): PlayBroInteractiveBottomSheet {
             val oldInstance =
                 fragmentManager.findFragmentByTag(TAG) as? PlayBroInteractiveBottomSheet
@@ -363,6 +365,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
                 arguments = Bundle().apply {
                     putString(ARG_TYPE, type.sheetType)
                     putString(ARG_SIZE, size.tag)
+                    putString(ARG_CHANNEL_ID, channelId)
                 }
             }
         }
@@ -384,8 +387,9 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         fun setupReportLeaderboard(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-        ): PlayBroInteractiveBottomSheet {
-            return getFragment(fragmentManager, classLoader, Type.REPORT, Size.FULL)
+            channelId: String,
+            ): PlayBroInteractiveBottomSheet {
+            return getFragment(fragmentManager, classLoader, Type.REPORT, Size.FULL, channelId)
         }
     }
 
