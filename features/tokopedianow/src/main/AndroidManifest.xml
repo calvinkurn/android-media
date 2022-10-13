@@ -172,7 +172,8 @@
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.WhiteUnify">
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -315,7 +316,8 @@
             android:exported="false"
             android:label="@string/title_tokopedia_now"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Translucent">
+            android:theme="@style/Theme.AppCompat.Translucent"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 

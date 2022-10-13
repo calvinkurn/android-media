@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.recipedetail.analytics.ProductAnalytics
@@ -47,6 +49,11 @@ class TokoNowRecipeProductBottomSheet : BottomSheetUnify() {
                 productAnalytics = productAnalytics
             )
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onCreateView(
