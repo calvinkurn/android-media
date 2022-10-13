@@ -1,7 +1,6 @@
 package com.tokopedia.deals.pdp.ui.activity
 
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.view.Menu
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -22,6 +21,8 @@ import com.tokopedia.deals.pdp.ui.fragment.DealsPDPSelectDealsQuantityFragment
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.deals.R.anim as animDeals
+import com.tokopedia.deals.R.layout as layoutDeals
+import com.tokopedia.deals.R.id as idDeals
 
 class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, DealsPDPCallbacks {
 
@@ -59,15 +60,15 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
     }
 
     override fun getLayoutRes(): Int {
-        return com.tokopedia.deals.R.layout.activity_base_deals_detail
+        return layoutDeals.activity_base_deals_detail
     }
 
     override fun getToolbarResourceID(): Int {
-        return com.tokopedia.deals.R.id.toolbar_base_deals_detail
+        return idDeals.toolbar_base_deals_detail
     }
 
     override fun getParentViewResourceID(): Int {
-        return com.tokopedia.deals.R.id.deals_detail_parent_view
+        return idDeals.deals_detail_parent_view
     }
 
     override fun onBackPressed() {
@@ -88,7 +89,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             animDeals.deals_slide_out_down,
             animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPDescFragment.createInstance(title, text))
+        transaction.add(idDeals.deals_detail_parent_view, DealsPDPDescFragment.createInstance(title, text))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -101,7 +102,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             animDeals.deals_slide_out_down,
             animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
+        transaction.add(idDeals.deals_detail_parent_view, DealsPDPAllLocationFragment.createInstance(outlets))
         transaction.addToBackStack(null)
         transaction.commit()
     }
@@ -114,7 +115,7 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             animDeals.deals_slide_out_down,
             animDeals.deals_slide_out_up
         )
-        transaction.add(com.tokopedia.deals.R.id.deals_detail_parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
+        transaction.add(idDeals.deals_detail_parent_view, DealsPDPSelectDealsQuantityFragment.createInstance(data))
         transaction.addToBackStack(null)
         transaction.commit()
     }
