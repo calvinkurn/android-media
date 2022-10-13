@@ -396,4 +396,22 @@ ext {
             imageGallery    : "com.tokopedia.unify.compositions:image_gallery:${unifyImageGalleryVersion}@aar",
             viewAllCard     : "com.tokopedia.unify.compositions:view_all_card:${unifyViewAllCardVersion}"
     ]
+
+    composeCompiler = "1.1.0-beta03"
+    composeVersion = "1.1.0-beta03"
+    composeActivity = "1.5.1"
+    composeConstraint = "1.0.1"
+
+    composeDependencies = [
+            composeCompiler     : "androidx.compose.compiler:compiler:$composeCompiler",
+            composeUi           : "androidx.compose.ui:ui:$composeVersion",
+            composeMaterial     : "androidx.compose.material:material:$composeVersion",
+            composeUiTooling    : "androidx.compose.ui:ui-tooling:$composeVersion",
+            composePreview      : "androidx.compose.ui:ui-tooling-preview:$composeVersion",
+            composeFoundation   : "androidx.compose.foundation:foundation:$composeVersion",
+            composeRuntime      : "androidx.compose.runtime:runtime:$composeVersion",
+            composeActivity     : "androidx.activity:activity-compose:$composeActivity",
+            composeConstraint   : "androidx.constraintlayout:constraintlayout-compose:$composeConstraint",
+            composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion"
+    ]
 }
