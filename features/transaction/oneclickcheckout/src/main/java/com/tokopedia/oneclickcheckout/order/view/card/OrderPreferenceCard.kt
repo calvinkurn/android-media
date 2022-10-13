@@ -261,9 +261,6 @@ class OrderPreferenceCard(val binding: CardOrderPreferenceBinding, private val l
     @SuppressLint("SetTextI18n")
     private fun renderNormalShippingWithoutChooseCourierCard(shipping: OrderShipment) {
         binding.apply {
-            // todo need to adjust format wording in instan
-            // instan (durasi)
-            // price
             tvShippingCourier.text = root.context.getString(
                 R.string.lbl_shipping_with_name_and_price,
                 "${shipping.serviceName}",
