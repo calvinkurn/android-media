@@ -11,6 +11,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippi
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ScheduleDelivery
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Shop
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.TradeInInfo
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.Upsell
@@ -28,6 +29,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop
 import com.tokopedia.checkout.domain.model.cartshipmentform.PreorderData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData
+import com.tokopedia.checkout.domain.model.cartshipmentform.ScheduleDeliveryData
 import com.tokopedia.checkout.domain.model.cartshipmentform.TradeInInfoData
 import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData
 import com.tokopedia.checkout.view.uimodel.CrossSellBottomSheetModel
@@ -212,8 +214,7 @@ class ShipmentMapper @Inject constructor() {
                         autoCourierSelection = it.autoCourierSelection
                         boMetadata = it.boMetadata
                         courierSelectionErrorData = CourierSelectionErrorData(it.courierSelectionError.title, it.courierSelectionError.description)
-                        scheduleDate = it.scheduledDates
-                        timeslotId = it.timeslotId
+                        scheduleDelivery = mapScheduleDelivery(it.scheduledDelivery)
                     }
             )
         }
@@ -1021,6 +1022,14 @@ class ShipmentMapper @Inject constructor() {
                 upsell.description,
                 upsell.appLink,
                 upsell.image
+        )
+    }
+
+    private fun mapScheduleDelivery(scheduleDelivery: ScheduleDelivery): ScheduleDeliveryData {
+        return ScheduleDeliveryData(
+            scheduleDelivery.timeslotId,
+            scheduleDelivery.scheduleDate,
+            scheduleDelivery.validationMetadata
         )
     }
 

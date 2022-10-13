@@ -293,8 +293,9 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setAddOnWordingModel(convertFromAddOnWordingData(addOnWording));
         shipmentCartItemModel.setAddOnDefaultFrom(username);
 
-        shipmentCartItemModel.setTimeslotId(groupShop.getTimeslotId());
-        shipmentCartItemModel.setScheduleDate(groupShop.getScheduleDate());
+        shipmentCartItemModel.setTimeslotId(groupShop.getScheduleDelivery().getTimeslotId());
+        shipmentCartItemModel.setScheduleDate(groupShop.getScheduleDelivery().getScheduleDate());
+        shipmentCartItemModel.setValidationMetadata(groupShop.getScheduleDelivery().getValidationMetadata());
 
         String receiverName = "";
         if (userAddress.getStatus() == ACTIVE_ADDRESS) {

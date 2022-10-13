@@ -57,8 +57,6 @@ data class GroupShop(
         val boMetadata: BoMetadata = BoMetadata(),
         @SerializedName("courier_selection_error")
         val courierSelectionError: CourierSelectionError = CourierSelectionError(),
-        @SerializedName("scheduled_dates")
-        val scheduledDates: String = "",
-        @SerializedName("timeslot_id")
-        val timeslotId: Long = 0L,
+        @SerializedName("scheduled_delivery")
+        val scheduledDelivery: ScheduleDelivery = ScheduleDelivery()
 )

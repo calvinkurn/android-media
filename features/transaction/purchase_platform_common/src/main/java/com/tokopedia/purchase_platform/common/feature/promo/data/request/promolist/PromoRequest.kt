@@ -3,7 +3,6 @@ package com.tokopedia.purchase_platform.common.feature.promo.data.request.promol
 import android.annotation.SuppressLint
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.purchase_platform.common.feature.promo.data.request.common.ScheduledDelivery
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -51,8 +50,8 @@ data class Order(
         var isInsurancePrice: Int = 0,
     @SerializedName("free_shipping_metadata")
         var freeShippingMetadata: String = "",
-    @SerializedName("scheduled_delivery")
-        var scheduledDelivery: ScheduledDelivery = ScheduledDelivery(),
+    @SerializedName("validation_metadata")
+        var validationMetadata: String = "",
     @Transient
         var boType: Int = 0,
 ) : Parcelable
