@@ -41,6 +41,7 @@ interface InteractiveBuilder {
     ): LeaderboardGameUiModel.Winner
 
     fun buildFooter(
+        id: String = "1",
         totalParticipant: Long = 0L,
         leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
         otherParticipantText: String,

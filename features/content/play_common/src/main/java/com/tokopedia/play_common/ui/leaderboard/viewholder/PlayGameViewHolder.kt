@@ -60,6 +60,7 @@ class PlayGameViewHolder {
         private fun hideTimer() {
             binding.tvEndsIn.hide()
             binding.timerEndsIn.hide()
+            binding.timerEndsIn.pause()
         }
 
         private fun setTargetTime(targetTime: Calendar, onFinished: () -> Unit = {}) {

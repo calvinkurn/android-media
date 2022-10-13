@@ -50,6 +50,7 @@ class PlayInteractiveLeaderboardMapper @Inject constructor(private val decodeHtm
                         leaderBoardType = getLeaderboardType(it),
                         totalParticipant = it.winner.size.toLong(),
                         emptyLeaderBoardCopyText = it.emptyLeaderboardCopyText,
+                        id = it.interactiveId,
                     )
                 )
         }

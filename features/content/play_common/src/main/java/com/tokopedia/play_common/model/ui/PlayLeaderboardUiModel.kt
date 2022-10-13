@@ -28,14 +28,13 @@ sealed class LeaderboardGameUiModel {
 
     data class QuizOption(val option: QuizChoicesUiModel) : LeaderboardGameUiModel()
     data class Footer(
+        val id: String,
         val totalParticipant: Long = 0L,
         val leaderBoardType: LeadeboardType = LeadeboardType.Unknown,
         val otherParticipantText: String,
         val otherParticipant: Long,
         val emptyLeaderBoardCopyText: String = "",
     ) : LeaderboardGameUiModel()
-
-    //TODO Add detail perhaps
 }
 
 /**

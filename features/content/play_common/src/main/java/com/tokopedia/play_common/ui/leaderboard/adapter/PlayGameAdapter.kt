@@ -26,7 +26,16 @@ class PlayGameAdapter internal constructor(
         oldItem: LeaderboardGameUiModel,
         newItem: LeaderboardGameUiModel
     ): Boolean {
-        return oldItem == newItem
+        return if (oldItem is LeaderboardGameUiModel.Header && newItem is LeaderboardGameUiModel.Header) {
+            oldItem.id == newItem.id
+        } else if (oldItem is LeaderboardGameUiModel.Footer && newItem is LeaderboardGameUiModel.Footer) {
+            oldItem.id == newItem.id
+        } else if (oldItem is LeaderboardGameUiModel.Winner && newItem is LeaderboardGameUiModel.Winner) {
+            oldItem.id == newItem.id
+        } else if (oldItem is LeaderboardGameUiModel.QuizOption && newItem is LeaderboardGameUiModel.QuizOption) {
+            oldItem.option.id == newItem.option.id
+        }
+        else oldItem == newItem
     }
 
     override fun areContentsTheSame(

@@ -569,6 +569,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                         leaderBoardType = getLeaderboardType(it.type),
                         totalParticipant = it.winner.size.toLong(),
                         emptyLeaderBoardCopyText = it.otherParticipantCountText,
+                        id = it.interactiveId,
                     )
                 )
             }
