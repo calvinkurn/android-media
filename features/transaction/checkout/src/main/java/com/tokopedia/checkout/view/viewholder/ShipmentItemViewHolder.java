@@ -769,12 +769,12 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private LinearLayout createProductInfoTextWithIcon(CartItemModel cartItemModel )  {
         LinearLayout propertyLayoutWithIcon = new LinearLayout(itemView.getContext());
         propertyLayoutWithIcon.setOrientation(LinearLayout.HORIZONTAL);
-        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(R.layout.item_addon_checkout_identifier,null);
-        ImageUnify propertyIcon = propertiesBinding.findViewById(R.id.checkout_iv_identifier);
+        View propertiesBinding = LayoutInflater.from(itemView.getContext()).inflate(com.tokopedia.purchase_platform.common.R.layout.item_product_info_add_on,null);
+        ImageUnify propertyIcon = propertiesBinding.findViewById(com.tokopedia.purchase_platform.common.R.id.pp_iv_product_info_add_on);
         if(propertyIcon != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getIconUrl())){
             ImageHandler.loadImageWithoutPlaceholderAndError(propertyIcon, cartItemModel.getEthicalDrugDataModel().getIconUrl());
         }
-        Typography propertyText = propertiesBinding.findViewById(R.id.checkout_label_identifier);
+        Typography propertyText = propertiesBinding.findViewById(com.tokopedia.purchase_platform.common.R.id.pp_label_product_info_add_on);
         if(propertyText != null && !TextUtils.isEmpty(cartItemModel.getEthicalDrugDataModel().getText())){
             propertyText.setText(cartItemModel.getEthicalDrugDataModel().getText());
         }

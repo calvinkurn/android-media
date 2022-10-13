@@ -3,10 +3,14 @@ package com.tokopedia.oneclickcheckout.order.view.card
 import android.graphics.Paint
 import android.text.Editable
 import android.text.InputType
+import android.text.TextUtils
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,6 +22,8 @@ import com.tokopedia.oneclickcheckout.databinding.CardOrderProductBinding
 import com.tokopedia.oneclickcheckout.order.analytics.OrderSummaryAnalytics
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProduct
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShop
+import com.tokopedia.purchase_platform.common.databinding.ItemProductInfoAddOnBinding
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.view.ButtonGiftingAddOnView
@@ -179,7 +185,27 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                     flexboxOrderProductInfo.addView(textView, 0)
                 }
             }
+            if (!product.isError && product.ethicalDrug.needPrescription) {
+                flexboxOrderProductInfo.addView(renderEthicalDrugMessage(product.ethicalDrug))
+            }
         }
+    }
+
+    private fun renderEthicalDrugMessage(ethicalDrugDataModel: EthicalDrugDataModel): LinearLayout {
+        val propertyLayoutWithIcon = LinearLayout(itemView.context)
+        propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
+        val itemProductInfoBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), propertyLayoutWithIcon, false)
+        if (!TextUtils.isEmpty(ethicalDrugDataModel.iconUrl)) {
+            ImageHandler.loadImageWithoutPlaceholderAndError(
+                itemProductInfoBinding.ppIvProductInfoAddOn,
+                ethicalDrugDataModel.iconUrl
+            )
+        }
+        if (!TextUtils.isEmpty(ethicalDrugDataModel.text)) {
+            itemProductInfoBinding.ppLabelProductInfoAddOn.text = ethicalDrugDataModel.text
+        }
+        propertyLayoutWithIcon.addView(itemProductInfoBinding.root)
+        return propertyLayoutWithIcon
     }
 
     private fun renderProductAlert() {

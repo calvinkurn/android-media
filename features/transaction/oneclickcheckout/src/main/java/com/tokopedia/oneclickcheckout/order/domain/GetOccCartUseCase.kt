@@ -226,6 +226,11 @@ class GetOccCartUseCase @Inject constructor(@ApplicationContext private val grap
             slash_price_label
             product_finsurance
             warehouse_id
+            ethical_drug {
+              need_prescription
+              icon_url
+              text
+            }
             free_shipping {
               eligible
             }
