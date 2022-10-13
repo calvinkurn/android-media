@@ -1156,16 +1156,10 @@ class ChatbotFragment :
         }
     }
 
-    private fun processImagePathToUpload(data: Intent): ImageUploadUiModel? {
-        val imagePathList = ImagePickerResultExtractor.extract(data).imageUrlOrPathList
-        if (imagePathList.size <= 0) {
-            return null
-        }
-        val imagePath = imagePathList[0]
-
-        if (!TextUtils.isEmpty(imagePath)) {
-            val temp = generateChatViewModelWithImage(imagePath)
-            return temp
+    private fun processImagePathToUpload(path: String): ImageUploadUiModel? {
+        if (!TextUtils.isEmpty(path)) {
+            val imageUiModel = generateChatViewModelWithImage(path)
+            return imageUiModel
         }
         return null
     }
