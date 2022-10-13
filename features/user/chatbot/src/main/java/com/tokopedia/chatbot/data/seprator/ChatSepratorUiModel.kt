@@ -26,4 +26,8 @@ class ChatSepratorUiModel(
     override fun equals(other: Any?): Boolean {
         return other is ChatSepratorUiModel
     }
+
+    override fun hashCode(): Int {
+        return replyTime.hashCode()
+    }
 }

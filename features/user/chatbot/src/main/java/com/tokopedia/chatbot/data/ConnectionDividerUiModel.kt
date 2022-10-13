@@ -28,4 +28,8 @@ class ConnectionDividerUiModel(
     override fun equals(other: Any?): Boolean {
         return other is ConnectionDividerUiModel
     }
+
+    override fun hashCode(): Int {
+        return replyTime.hashCode()
+    }
 }
