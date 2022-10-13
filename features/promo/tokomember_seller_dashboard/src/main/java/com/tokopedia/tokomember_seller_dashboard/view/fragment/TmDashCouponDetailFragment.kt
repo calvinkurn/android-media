@@ -405,7 +405,8 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
            usedQuotaTv?.text = it?.data?.merchantPromotionGetMVDataByID?.data?.confirmedGlobalQuota.toString()
             totalQuotaTv?.text = "/${it?.data?.merchantPromotionGetMVDataByID?.data?.voucherQuota.toString()}"
             if(totalQuota!=0){
-                progressBar?.setValue((usedQuota*1.0/totalQuota).toInt(),true)
+                val progress = (usedQuota*1.0/totalQuota)*100
+                progressBar?.setValue(progress.toInt(),true)
             }
             else progressBar?.setValue(0)
         }
@@ -607,3 +608,4 @@ class TmDashCouponDetailFragment:BaseDaggerFragment(),TmCouponListRefreshCallbac
         tmCouponDetailVm.getCouponDetails(voucherId)
     }
 }
+
