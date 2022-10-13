@@ -29,7 +29,7 @@ import javax.inject.Inject
 /**
  * Use this usecase after migrating both image & video uploader
  */
-class UploadMultipleMediaUseCaseNew @Inject constructor(
+class UploadMultipleMediaUseCase @Inject constructor(
     @ActivityContext private val context: Context,
     private val uploaderUseCase: UploaderUseCase,
     /** Will be removed after video uploader migration is done soon */

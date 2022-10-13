@@ -1,7 +1,6 @@
 package com.tokopedia.createpost.view.activity
 
 import android.app.Activity
-import android.app.Application
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
@@ -20,7 +19,7 @@ import com.tokopedia.createpost.common.USER_ID_PARAM
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaModel
 import com.tokopedia.createpost.common.view.viewmodel.MediaType
@@ -296,7 +295,7 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
-        SubmitPostServiceNew.startService(applicationContext, cacheManager.id!!)
+        SubmitPostService.startService(applicationContext, cacheManager.id!!)
 
         when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()

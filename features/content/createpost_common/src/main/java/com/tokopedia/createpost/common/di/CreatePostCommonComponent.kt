@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.common.di
 
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import dagger.Component
 
@@ -11,5 +11,5 @@ import dagger.Component
 ])
 interface CreatePostCommonComponent {
 
-    fun inject(service: SubmitPostServiceNew)
+    fun inject(service: SubmitPostService)
 }

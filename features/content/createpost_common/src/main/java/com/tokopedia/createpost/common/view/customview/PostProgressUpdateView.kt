@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 import com.tokopedia.createpost.common.R
-import com.tokopedia.createpost.common.view.service.SubmitPostServiceNew
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -92,7 +92,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             CreatePostViewModel.TAG,
             viewModel, TimeUnit.DAYS.toMillis(7)
         )
-        cacheManager.id?.let { it1 -> SubmitPostServiceNew.startService(this.context, it1) }
+        cacheManager.id?.let { it1 -> SubmitPostService.startService(this.context, it1) }
 //        cacheManager.id?.let { it1 -> service?.start(this.context, it1) }
         retryText?.gone()
 

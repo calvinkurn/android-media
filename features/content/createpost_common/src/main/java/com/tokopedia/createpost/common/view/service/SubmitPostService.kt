@@ -19,7 +19,7 @@ import com.tokopedia.createpost.common.TYPE_CONTENT_USER
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
-import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCaseNew
+import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,10 +29,10 @@ import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
-class SubmitPostServiceNew : JobIntentServiceX() {
+class SubmitPostService : JobIntentServiceX() {
 
     @Inject
-    lateinit var submitPostUseCase: SubmitPostUseCaseNew
+    lateinit var submitPostUseCase: SubmitPostUseCase
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -53,10 +53,10 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         private const val JOB_ID = 13131314
 
         fun startService(context: Context, draftId: String) {
-            val work = Intent(context, SubmitPostServiceNew::class.java).apply {
+            val work = Intent(context, SubmitPostService::class.java).apply {
                 putExtra(DRAFT_ID, draftId)
             }
-            enqueueWork(context, SubmitPostServiceNew::class.java, JOB_ID, work)
+            enqueueWork(context, SubmitPostService::class.java, JOB_ID, work)
         }
     }
 
@@ -93,7 +93,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                         if (result == null || result.feedContentSubmit.success != SubmitPostData.SUCCESS) {
                             postUpdateProgressManager?.onFailedPost(
                                 com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                                    this@SubmitPostServiceNew,
+                                    this@SubmitPostService,
                                     RuntimeException()
                                 )
                             )
@@ -120,7 +120,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
         }) {
             postUpdateProgressManager?.onFailedPost(
                 com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                    this@SubmitPostServiceNew,
+                    this@SubmitPostService,
                     it,
                 )
             )
@@ -240,7 +240,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
                     || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
                     postUpdateProgressManager?.onFailedPost(
                         com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                            this@SubmitPostServiceNew,
+                            this@SubmitPostService,
                             RuntimeException()
                         )
                     )
@@ -261,7 +261,7 @@ class SubmitPostServiceNew : JobIntentServiceX() {
             override fun onError(e: Throwable?) {
                 postUpdateProgressManager?.onFailedPost(
                     com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                        this@SubmitPostServiceNew,
+                        this@SubmitPostService,
                         e
                     )
                 )

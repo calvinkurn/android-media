@@ -22,16 +22,16 @@ import kotlin.collections.ArrayList
 /**
  * Use this usecase after migrating both image & video uploader
  */
-@GqlQuery(SubmitPostUseCaseNew.QUERY_NAME, SubmitPostUseCaseNew.QUERY)
-open class SubmitPostUseCaseNew @Inject constructor(
-    private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCaseNew,
+@GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
+open class SubmitPostUseCase @Inject constructor(
+    private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
     graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<SubmitPostData>(graphqlRepository) {
 
     var postUpdateProgressManager: PostUpdateProgressManager? = null
 
     init {
-        setGraphqlQuery(SubmitPostUseCaseNewQuery())
+        setGraphqlQuery(SubmitPostUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
@@ -202,7 +202,7 @@ open class SubmitPostUseCaseNew @Inject constructor(
         private const val ACTION_UPDATE = "update"
 
 
-        const val QUERY_NAME = "SubmitPostUseCaseNewQuery"
+        const val QUERY_NAME = "SubmitPostUseCaseQuery"
         const val QUERY = """          
             mutation SubmitPost(${'$'}input:ContentSubmitInput!) {
               feed_content_submit(
