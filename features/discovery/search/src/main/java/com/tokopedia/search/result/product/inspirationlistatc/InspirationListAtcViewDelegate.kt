@@ -122,4 +122,15 @@ class InspirationListAtcViewDelegate @Inject constructor(
             SearchConstant.TopAdsComponent.ORGANIC_ADS
         )
     }
+
+    override fun trackAdsImpress(product: InspirationCarouselDataView.Option.Product) {
+        topAdsUrlHitter.hitImpressionUrl(
+            className,
+            product.topAdsViewUrl,
+            product.id,
+            product.name,
+            product.imgUrl,
+            SearchConstant.TopAdsComponent.ORGANIC_ADS
+        )
+    }
 }
