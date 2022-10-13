@@ -277,6 +277,9 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
     }
 
     private fun getCouponList() {
+        if(isFilterApplied()){
+            tmCouponAdapter.vouchersItemList.clear()
+        }
         if(selectedType.toIntOrZero() == 0){
             tmCouponViewModel.getCouponList(voucherStatus, null, page = currentPage, perPage = perPage)
         }
@@ -321,21 +324,11 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     else {
                         filter_error.hide()
                         viewFlipperCoupon.displayedChild = 1
-                        if(isFilterApplied()){
-                            tmCouponAdapter.vouchersItemList.clear()
-                            val list = arrayListOf<CouponItem>()
-                            it.data?.merchantPromotionGetMVList?.data?.vouchers?.forEach {
-                                it?.let { it1 -> CouponItem(it1) }?.let { it2 -> list.add(it2) }
-                            }
-                            tmCouponAdapter.vouchersItemList.addAll(list)
+                        val list = arrayListOf<CouponItem>()
+                        it.data?.merchantPromotionGetMVList?.data?.vouchers?.forEach {
+                            it?.let { it1 -> CouponItem(it1) }?.let { it2 -> list.add(it2) }
                         }
-                        else{
-                            val list = arrayListOf<CouponItem>()
-                            it.data?.merchantPromotionGetMVList?.data?.vouchers?.forEach {
-                                it?.let { it1 -> CouponItem(it1) }?.let { it2 -> list.add(it2) }
-                            }
-                            tmCouponAdapter.vouchersItemList.addAll(list)
-                        }
+                        tmCouponAdapter.vouchersItemList.addAll(list)
                         tmCouponAdapter.notifyDataSetChanged()
                     }
                 }
