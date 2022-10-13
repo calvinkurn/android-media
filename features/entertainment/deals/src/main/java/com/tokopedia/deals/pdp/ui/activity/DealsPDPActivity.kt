@@ -38,16 +38,8 @@ class DealsPDPActivity : BaseSimpleActivity(), HasComponent<DealsPDPComponent>, 
             productId = intent.getStringExtra(EXTRA_PRODUCT_ID)
         }
         super.onCreate(savedInstanceState)
-        supportActionBar?.hide()
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
         binding = ActivityBaseDealsDetailBinding.inflate(layoutInflater)
-        binding?.let {
-            setContentView(it.root)
-        }
-
+        supportActionBar?.hide()
     }
 
     override fun getNewFragment(): Fragment {
