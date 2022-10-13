@@ -1,7 +1,9 @@
 package com.tokopedia.tokopedianow.common.view
 
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.header.HeaderUnify
@@ -9,6 +11,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.applyIconUnifyColor
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.unifycomponents.toPx
 
 class ToolbarHeaderView(
     private val header: HeaderUnify?,
@@ -16,14 +19,17 @@ class ToolbarHeaderView(
     private val findSwitchThemePosition: ((recyclerView: RecyclerView, dx: Int, dy: Int) -> Float)? = null
 ) {
 
+    companion object {
+        private const val ICON_SIZE = 24
+        private const val ICON_MARGIN = 8
+    }
+
     var title: String = ""
-    var rightIcons: List<Int> = listOf()
+    var rightIcons: List<RightIcon> = listOf()
         set(value) {
             field = value
             removeRightIcons()
-            value.forEach {
-                header?.addRightIcon(it)
-            }
+            addRightIcons()
         }
     var scrollListener: RecyclerView.OnScrollListener? = null
     var onSwitchToTransparent: (() -> Unit)? = null
@@ -55,7 +61,7 @@ class ToolbarHeaderView(
 
     fun getActionItem(pos: Int): ImageView? = header?.rightIcons?.get(pos)
 
-    fun getRightIcon(pos: Int): Int? = rightIcons.getOrNull(pos)
+    fun getRightIcon(pos: Int): Int? = rightIcons.getOrNull(pos)?.iconId
 
     fun setRightIconsColor(@ColorRes colorId: Int) {
         header?.rightIcons?.forEach {
@@ -81,6 +87,25 @@ class ToolbarHeaderView(
         }
         setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         setRightIconsColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+    }
+
+    private fun addRightIcons() {
+        rightIcons.forEach { rightIcon ->
+            header?.apply {
+                val icon = ContextCompat.getDrawable(context, rightIcon.iconId)
+                icon?.setTint(ContextCompat.getColor(context, rightIcon.colorId))
+
+                val mImageView = ImageView(context)
+                val param = LinearLayout.LayoutParams(ICON_SIZE.toPx(), ICON_SIZE.toPx()).apply {
+                    setMargins(ICON_MARGIN.toPx(), 0, 0, 0)
+                }
+
+                mImageView.layoutParams = param
+                mImageView.setImageDrawable(icon)
+                rightContentView.addView(mImageView)
+                rightIcons?.add(mImageView)
+            }
+        }
     }
 
     private fun setTransparentTheme() {
@@ -128,4 +153,9 @@ class ToolbarHeaderView(
     private fun resetScrollListener() {
         scrollListener = null
     }
+    
+    data class RightIcon(
+        @DrawableRes val iconId: Int,
+        @ColorRes val colorId: Int
+    )
 }

@@ -1,16 +1,14 @@
 package com.tokopedia.tokopedianow.recipedetail.presentation.viewholders
 
 import android.graphics.Paint
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
@@ -33,8 +31,6 @@ class RecipeProductViewHolder(
     private val context by lazy { itemView.context }
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
-
-    private var qtyEditorListener: TextWatcher? = null
 
     override fun bind(product: RecipeProductUiModel) {
         addImpressionListener(product)
@@ -111,9 +107,6 @@ class RecipeProductViewHolder(
             val stock = product.stock
             val quantity = product.quantity
 
-            removeTextChangeListener(qtyEditorListener)
-            qtyEditorListener = qtyEditorListener(product)
-
             if (stock > 0 && quantity > 0) {
                 btnDeleteCart.show()
                 btnProductCta.hide()
@@ -121,14 +114,20 @@ class RecipeProductViewHolder(
                 quantityEditor.minValue = product.minOrder
                 quantityEditor.maxValue = product.maxOrder
                 quantityEditor.setValue(quantity)
-                addTextChangeListener(qtyEditorListener)
 
                 quantityEditor.setAddClickListener {
+                    onQuantityChanged(product)
                     analytics?.trackClickIncreaseQuantity()
                 }
 
                 quantityEditor.setSubstractListener {
+                    onQuantityChanged(product)
                     analytics?.trackClickDecreaseQuantity()
+                }
+
+                quantityEditor.editText.setOnEditorActionListener { _, _, _ ->
+                    onEditorAction(product)
+                    true
                 }
             } else {
                 btnDeleteCart.hide()
@@ -136,16 +135,6 @@ class RecipeProductViewHolder(
                 quantityEditor.hide()
             }
         }
-    }
-
-    private fun addTextChangeListener(qtyEditorListener: TextWatcher?) {
-        binding?.quantityEditor?.editText
-            ?.addTextChangedListener(qtyEditorListener)
-    }
-
-    private fun removeTextChangeListener(qtyEditorListener: TextWatcher?) {
-        binding?.quantityEditor?.editText
-            ?.removeTextChangedListener(qtyEditorListener)
     }
 
     private fun renderSimilarProductBtn(product: RecipeProductUiModel) {
@@ -217,27 +206,17 @@ class RecipeProductViewHolder(
         context.startActivity(intent)
     }
 
-    private fun qtyEditorListener(product: RecipeProductUiModel): TextWatcher {
-        return object : TextWatcher {
-            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+    private fun onQuantityChanged(product: RecipeProductUiModel) {
+        val input = binding?.quantityEditor?.getValue().orZero()
+        listener?.onQuantityChanged(product.id, product.shopId, input)
+    }
 
-            }
-
-            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
-            }
-
-            override fun afterTextChanged(p0: Editable?) {
-                val input = p0?.toString()
-
-                if(input?.isNotEmpty() == true) {
-                    listener?.onQuantityChanged(
-                        productId = product.id,
-                        shopId = product.shopId,
-                        quantity = input.toIntOrZero()
-                    )
-                }
-            }
+    private fun onEditorAction(product: RecipeProductUiModel) {
+        binding?.quantityEditor?.apply {
+            val input = getValue()
+            addButton.isEnabled = input < product.maxOrder
+            subtractButton.isEnabled = input > product.minOrder
+            onQuantityChanged(product)
         }
     }
 

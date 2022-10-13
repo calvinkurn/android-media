@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareOptionRequest
 import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView
+import com.tokopedia.tokopedianow.common.view.ToolbarHeaderView.RightIcon
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRecipeDetailBinding
 import com.tokopedia.tokopedianow.recipebookmark.persentation.viewholder.TagViewHolder.TagListener
@@ -216,9 +217,11 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             header = binding?.toolbarHeader,
             statusBar = binding?.statusBar
         ) { rv, _, _ -> findStartSwitchThemePosition(rv) }.apply {
+            val bookmarkIcon = com.tokopedia.iconunify.R.drawable.iconunify_bookmark
+            val shareIcon = com.tokopedia.iconunify.R.drawable.iconunify_share_mobile
             rightIcons = listOf(
-                R.drawable.tokopedianow_ic_recipe_bookmark_dark,
-                R.drawable.tokopedianow_ic_recipe_share_dark
+                RightIcon(bookmarkIcon, com.tokopedia.unifyprinciples.R.color.Unify_NN950),
+                RightIcon(shareIcon, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             )
             setBackButtonColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950)
             onSwitchToNormal = {
@@ -550,9 +553,10 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             } else {
                 com.tokopedia.iconunify.R.drawable.iconunify_bookmark
             }
+            val shareIcon = com.tokopedia.iconunify.R.drawable.iconunify_share_mobile
             rightIcons = listOf(
-                bookmarkIcon,
-                com.tokopedia.iconunify.R.drawable.iconunify_share_mobile
+                RightIcon(bookmarkIcon, com.tokopedia.unifyprinciples.R.color.Unify_NN0),
+                RightIcon(shareIcon, com.tokopedia.unifyprinciples.R.color.Unify_NN0)
             )
             setToolbarClickListener()
         }
