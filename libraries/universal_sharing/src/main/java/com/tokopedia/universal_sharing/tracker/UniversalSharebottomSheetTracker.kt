@@ -37,8 +37,8 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
-    fun onClickRegisterTicker(isAffiliate: Boolean, productId: String, page: String) {
-        val data = generateDefaultTracker(VALUE_EVENT_CLICK, VALUE_ACTION_CLICK_AFFILIATE, isAffiliate, productId, getCategory(page))
+    fun onClickRegisterTicker(isAffiliate: Boolean, id: String, page: String) {
+        val data = generateDefaultTracker(VALUE_EVENT_CLICK, VALUE_ACTION_CLICK_AFFILIATE, isAffiliate, id, getCategory(page))
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 

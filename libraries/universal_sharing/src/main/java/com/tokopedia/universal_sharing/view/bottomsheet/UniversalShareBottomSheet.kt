@@ -465,14 +465,17 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun showAffiliateRegister(generateAffiliateLinkEligibility: GenerateAffiliateLinkEligibility) {
-        affiliateRegisterContainer?.visible()
         generateAffiliateLinkEligibility.banner?.let { banner ->
             if (banner.title.isBlank() && banner.message.isBlank()) return
 
             affiliateRegisterContainer?.visible()
             tracker.viewOnAffiliateRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
+
+            val id = affiliateQueryData?.getIdFactory() ?: ""
+            val page = affiliateQueryData?.pageType ?: ""
+
             affiliateRegisterContainer?.setOnClickListener { _ ->
-                tracker.onClickRegisterTicker(false, affiliateQueryData?.getIdFactory() ?: "", affiliateQueryData?.pageType ?: "")
+                tracker.onClickRegisterTicker(false, id, page)
                 dismiss()
                 RouteManager.route(context, ApplinkConst.AFFILIATE)
             }
