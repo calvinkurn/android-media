@@ -23,12 +23,12 @@ class GetTokoChatRoomTickerUseCase @Inject constructor(
     """.trimIndent()
 
     override suspend fun execute(params: String): TokochatRoomTickerResponse {
-        return repository.request(graphqlQuery(), mapOf(PARAM_SERVICE_TYPE to PARAM_TOKOFOOD))
+        return repository.request(graphqlQuery(), mapOf(PARAM_SERVICE_TYPE to params))
     }
 
     companion object {
         private const val PARAM_SERVICE_TYPE = "serviceType"
-        private const val PARAM_TOKOFOOD = "tokofood"
+        const val PARAM_TOKOFOOD = "tokofood"
     }
 
 }

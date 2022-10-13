@@ -10,7 +10,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
@@ -25,7 +24,6 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ZERO_DP
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.unifycomponents.toDp
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.unifyprinciples.Typography
 import java.text.NumberFormat
 import java.util.*

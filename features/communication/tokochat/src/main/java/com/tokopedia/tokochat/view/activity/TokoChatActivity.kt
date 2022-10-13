@@ -101,8 +101,10 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     private fun getFragmentBundle(): Bundle {
+        val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK)?: ""
         return Bundle().apply {
+            putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
             putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
         }
     }

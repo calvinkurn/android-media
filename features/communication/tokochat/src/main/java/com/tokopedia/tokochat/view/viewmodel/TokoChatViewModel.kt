@@ -237,10 +237,10 @@ class TokoChatViewModel @Inject constructor(
         })
     }
 
-    fun loadChatRoomTicker(messageId: String) {
+    fun loadChatRoomTicker() {
         launchCatchError(block = {
 //            TODO: Change after BE side ready
-//            val result = getTokoChatRoomTickerUseCase(messageId)
+//            val result = getTokoChatRoomTickerUseCase(GetTokoChatRoomTickerUseCase.PARAM_TOKOFOOD)
             val result = TokochatRoomTickerResponse().apply {
                 this.tokochatRoomTicker.message = "Resto sudah terima pesananmu, jadi nggak bisa dibatalin. Driver hanya jemput & antar pesanan ke kamu."
                 this.tokochatRoomTicker.tickerType = 0

@@ -7,6 +7,11 @@ object TokoChatValueUtil {
     const val DRIVER = "driver"
 
     /**
+     * SOURCE
+     */
+    const val TOKOFOOD = "tokofood"
+
+    /**
      * Message status
      */
     const val PENDING_VALUE = 0
@@ -25,6 +30,6 @@ object TokoChatValueUtil {
     /**
      * Compose Message
      */
-    const val MAX_DISPLAYED_OFFSET = 10_000
-    const val MAX_DISPLAYED_STRING = "10.000+"
+    const val MAX_DISPLAYED_OFFSET = 1_000
+    const val MAX_DISPLAYED_STRING = "1000+"
 }

@@ -21,7 +21,7 @@ class TokoFoodOrderLiveTrackingFragment(
     private val viewModel: TokoFoodOrderTrackingViewModel,
     private val orderTrackingAdapter: OrderTrackingAdapter,
     private val toolbarHandler: OrderTrackingToolbarHandler?
-) : LifecycleObserver {
+): LifecycleObserver {
 
     private var lifecycleOwner: LifecycleOwner? = null
 
@@ -60,6 +60,7 @@ class TokoFoodOrderLiveTrackingFragment(
             orderTrackingAdapter.updateEtaLiveTracking(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(estimationUiModel)
             orderTrackingAdapter.updateLiveTrackingItem(invoiceOrderNumberUiModel)
+            orderTrackingAdapter.updateLiveTrackingItem(driverSectionUiModel)
         }
     }
 

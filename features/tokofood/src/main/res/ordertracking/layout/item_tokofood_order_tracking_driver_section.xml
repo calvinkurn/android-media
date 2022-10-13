@@ -49,10 +49,20 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/icDriverChat"
         app:layout_constraintTop_toTopOf="@id/tvOrderTrackingDriverName"
         app:layout_constraintBottom_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"
         app:icon_name="CALL"/>
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icDriverChat"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tvOrderTrackingDriverName"
+        app:layout_constraintBottom_toBottomOf="@id/tvOrderTrackingDriverPlatNumber"
+        app:icon_name="CHAT"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvDriverInformation"

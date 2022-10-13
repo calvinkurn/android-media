@@ -24,13 +24,16 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
+import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
-import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
@@ -55,6 +58,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var channelId = ""
+    private var source: String = ""
     private var firstTimeOpen = true
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
@@ -71,6 +75,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     override fun initViews(view: View, savedInstanceState: Bundle?) {
         super.initViews(view, savedInstanceState)
+        setDataFromArguments()
         setupBackground()
         setupReplySection(
             true,
@@ -94,6 +99,10 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         if (channelId.isNotEmpty()) {
             viewModel.deRegisterActiveChannel(channelId)
         }
+    }
+
+    private fun setDataFromArguments() {
+        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
     }
 
     private fun renderBackground(url: String) {
@@ -266,11 +275,28 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             imageUrl.setImageUrl(headerUiModel.imageUrl)
             imageUrl.show()
 
+            val sourceLogoUrl = getSourceLogoUrl(source)
+
+            if (sourceLogoUrl.isNotBlank()) {
+                val sourceLogo = findViewById<ImageUnify>(R.id.tokochat_iv_source_logo)
+                sourceLogo.setImageUrl(sourceLogoUrl)
+            }
+
             callMenu.run {
                 setImage(IconUnify.CALL)
-                setOnClickListener { }
+
+                setOnClickListener {
+                    if (headerUiModel.phoneNumber.isNotEmpty()) {
+                        showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
+                    }
+                }
             }
         }
+    }
+
+    private fun showMaskingPhoneNumberBottomSheet(driverPhoneNumber: String) {
+        val bottomSheetMaskingPhoneNumber = MaskingPhoneNumberBottomSheet.newInstance(driverPhoneNumber)
+        bottomSheetMaskingPhoneNumber.show(childFragmentManager)
     }
 
     private fun setupReplySection(isShowReplySection: Boolean, expiredMessage: String) {
@@ -281,6 +307,13 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
         baseBinding?.tokochatExpiredInfo?.shouldShowWithAction(!isShowReplySection) {
             baseBinding?.tokochatExpiredInfo?.setExpiredInfoDesc(expiredMessage)
+        }
+    }
+
+    private fun getSourceLogoUrl(source: String?): String {
+        return when (source) {
+            TOKOFOOD -> IC_TOKOFOOD_SOURCE
+            else -> ""
         }
     }
 
@@ -334,7 +367,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             // First time get Chat History
             if (firstTimeOpen) {
                 firstTimeOpen = false
-                viewModel.loadChatRoomTicker(channelId)
+                viewModel.loadChatRoomTicker()
             }
 
             // Map conversation message into ui model

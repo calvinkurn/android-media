@@ -12,6 +12,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.hide
@@ -186,6 +189,18 @@ class BaseTokoFoodOrderTrackingFragment :
         tracking.clickCallDriverIcon(orderId, viewModel.getMerchantData()?.merchantId.orEmpty())
         showLoaderDriverCall()
         viewModel.fetchDriverPhoneNumber(orderId)
+    }
+
+    override fun onClickDriverChat(goFoodOrderNumber: String) {
+        val tokoChatParams = mapOf(
+            ApplinkConst.TokoChat.PARAM_SOURCE to TOKOFOOD_SOURCE,
+            ApplinkConst.TokoChat.ORDER_ID_TKPD to orderId,
+            ApplinkConst.TokoChat.ORDER_ID_GOJEK to goFoodOrderNumber
+        )
+        val tokoChatAppLink = UriUtil.buildUriAppendParam(ApplinkConst.TOKO_CHAT, tokoChatParams)
+        context?.let {
+            RouteManager.route(it, tokoChatAppLink)
+        }
     }
 
     override fun onErrorActionClicked() {
@@ -497,6 +512,7 @@ class BaseTokoFoodOrderTrackingFragment :
     companion object {
 
         const val TWO_SECONDS = 2000L
+        const val TOKOFOOD_SOURCE = "tokofood"
 
         fun newInstance(bundle: Bundle?): BaseTokoFoodOrderTrackingFragment {
             return if (bundle == null) {
