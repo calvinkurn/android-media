@@ -12,6 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.principles.nest_text.NestText
+import com.tokopedia.common_compose.principles.nest_text.NestTextType
+import com.tokopedia.common_compose.principles.nest_text.NestTextWeight
 
 /**
  * Created by yovi.putra on 05/10/22"
@@ -26,7 +29,7 @@ fun AppBar(
 ) {
     TopAppBar(
         title = {
-            CTypography(text = title, type = TextUnifyType.Heading3, weight = TextUnifyWeight.Bold)
+            NestText(text = title, type = NestTextType.Heading3, weight = NestTextWeight.Bold)
         },
         modifier = modifier,
         backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN0),

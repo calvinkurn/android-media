@@ -3,17 +3,18 @@ package com.tokopedia.report.view.fragment.components
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import com.tokopedia.common_compose.principles.getString
+import com.tokopedia.common_compose.principles.nest_text.NestText
+import com.tokopedia.common_compose.principles.nest_text.NestTextType
 import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
-import com.tokopedia.report.view.fragment.unify_components.AppBar
-import com.tokopedia.report.view.fragment.unify_components.getString
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -27,39 +28,42 @@ fun ProductReportComposeContent(
 ) {
     Column {
         if (uiState.error.isNullOrBlank().not()) {
-            Text(
+            NestText(
                 text = "error: ${uiState.error.orEmpty()}",
-                color = MaterialTheme.colors.error
+                type = NestTextType.Body3,
+                textStyle = TextStyle(
+                    color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_RN500)
+                )
             )
-        }
+        } else {
+            LazyColumn {
+                item {
+                    ProductReportReasonHeader(
+                        text = uiState.title.getString().orEmpty()
+                    )
+                }
 
-        LazyColumn {
-            item {
-                ProductReportReasonHeader(
-                    text = uiState.title.getString().orEmpty()
-                )
-            }
+                items(
+                    items = uiState.data,
+                    key = { it.value }
+                ) { item ->
+                    ProductReportReasonItem(
+                        reason = item,
+                        subtitleVisible = uiState.isSubtitleVisible(reason = item),
+                        onClick = {
+                            onEvent.invoke(ProductReportUiEvent.OnItemClicked(it))
+                        }
+                    )
+                }
 
-            items(
-                items = uiState.data,
-                key = { it.value }
-            ) { item ->
-                ProductReportReasonItem(
-                    reason = item,
-                    subtitleVisible = uiState.isSubtitleVisible(reason = item),
-                    onClick = {
-                        onEvent.invoke(ProductReportUiEvent.OnItemClicked(it))
-                    }
-                )
-            }
-
-            item {
-                ProductReportReasonFooter(
-                    text = stringResource(id = R.string.product_report_see_all_types),
-                    onClick = {
-                        onEvent.invoke(ProductReportUiEvent.OnFooterClicked(it))
-                    }
-                )
+                item {
+                    ProductReportReasonFooter(
+                        text = stringResource(id = R.string.product_report_see_all_types),
+                        onClick = {
+                            onEvent.invoke(ProductReportUiEvent.OnFooterClicked(it))
+                        }
+                    )
+                }
             }
         }
     }

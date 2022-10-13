@@ -9,8 +9,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.tokopedia.report.view.fragment.unify_components.CTypography
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
+import com.tokopedia.common_compose.principles.nest_text.NestText
+import com.tokopedia.common_compose.principles.nest_text.NestTextType
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifyprinciples.Typography
 
@@ -25,28 +25,13 @@ fun ProductReportReasonFooter(
     text: String,
     onClick: (String) -> Unit
 ) {
-    CTypography(
+    NestText(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp),
         text = text,
-        type = TextUnifyType.Body3,
+        type = NestTextType.Body3,
     )
-    /*TextUnify(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        type = TextUnifyType.Body3,
-        weight = TextUnifyWeight.Regular,
-        update = { context ->
-            val color = ContextCompat.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-            )
-            setTextColor(color)
-            composeSpannable(typography = this, text = text, onClick = onClick)
-        }
-    )*/
 }
 
 private fun composeSpannable(

@@ -20,10 +20,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.tokopedia.common_compose.principles.nest_text.NestText
+import com.tokopedia.common_compose.principles.nest_text.NestTextType
+import com.tokopedia.common_compose.principles.nest_text.NestTextWeight
 import com.tokopedia.report.data.model.ProductReportReason
-import com.tokopedia.report.view.fragment.unify_components.CTypography
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyType
-import com.tokopedia.report.view.fragment.unify_components.TextUnifyWeight
 
 /**
  * Created by yovi.putra on 07/09/22"
@@ -55,51 +55,21 @@ fun ProductReportReasonItem(
                     .weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                CTypography(
+                NestText(
                     text = reason.value,
-                    type = TextUnifyType.Body2,
-                    weight = TextUnifyWeight.Bold
+                    type = NestTextType.Body2,
+                    weight = NestTextWeight.Bold
                 )
 
                 if (subtitleVisible) {
-                    CTypography(
+                    NestText(
                         text = reason.detail,
-                        type = TextUnifyType.Body3,
-                        weight = TextUnifyWeight.Bold,
+                        type = NestTextType.Body3,
+                        weight = NestTextWeight.Bold,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                /*TextUnify(
-                    modifier = Modifier,
-                    type = TextUnifyType.Body2,
-                    weight = TextUnifyWeight.Bold,
-                    update = { context ->
-                        val color = ContextCompat.getColor(
-                            context,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
-                        )
-                        setTextColor(color)
-                        text = reason.value
-                    }
-                )
-
-                if (subtitleVisible) {
-                    TextUnify(
-                        modifier = Modifier,
-                        type = TextUnifyType.Body3,
-                        update = { context ->
-                            val color = ContextCompat.getColor(
-                                context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_N700_68
-                            )
-                            setTextColor(color)
-                            text = reason.detail
-                            maxLines = 2
-                            ellipsize = TextUtils.TruncateAt.END
-                        }
-                    )
-                }*/
             }
 
             Spacer(modifier = Modifier.width(4.dp))

@@ -5,6 +5,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import com.tokopedia.report.R
 import com.tokopedia.report.view.fragment.components.ProductReportComposeContent
@@ -25,6 +26,7 @@ fun ProductReportScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
+        backgroundColor = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_Background),
         topBar = {
             AppBar(title = stringResource(id = R.string.product_report)) {
                 viewModel.onEvent(ProductReportUiEvent.OnBackPressed)
