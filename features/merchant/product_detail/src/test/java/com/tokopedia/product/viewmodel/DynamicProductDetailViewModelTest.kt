@@ -41,6 +41,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -51,6 +52,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteD
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
@@ -87,6 +89,7 @@ import io.mockk.every
 import io.mockk.invoke
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import java.util.concurrent.TimeoutException
@@ -1442,6 +1445,40 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     }
 
     @Test
+    fun `determine variant return value`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        val expectedVariantCategory = VariantCategory()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns expectedVariantCategory
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+    }
+
+    @Test
+    fun `determine variant return null`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns null
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == null)
+    }
+
+    @Test
     fun `variant clicked not partial`() {
         val partialySelect = false
         val imageVariant = "image"
@@ -1808,7 +1845,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `test add to cart non variant then return success cart data`() = runBlockingTest {
         val recomItem = RecommendationItem(productId = 12345, shopId = 123)
         val quantity = 1
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345"), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, cartId = "12345", message = arrayListOf("halo")), status = "OK")
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         } returns atcResponseSuccess
@@ -1818,6 +1855,8 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             addToCartUseCase.createObservable(any()).toBlocking().single()
         }
         Assert.assertTrue(!atcResponseSuccess.isStatusError())
+        Assert.assertTrue(viewModel.atcRecomTokonowSendTracker.value is Success)
+        Assert.assertEquals(Success(recomItem), viewModel.atcRecomTokonowSendTracker.value)
     }
 
     @Test
@@ -2450,6 +2489,74 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertEquals("Invalid social proof text", expectedSocialProofText, actualSocialProofText)
     }
     // endregion Review Section
+
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 0 to 1`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { addToCartUseCase.createObservable(any()) }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed with quantity changed from 1 to 2`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 2
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { updateCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed delete item`() {
+        val recommItem = RecommendationItem(quantity = 1)
+        val quantity = 0
+        val miniCartItemProduct = MiniCartItem.MiniCartItemProduct()
+        val mapMiniCartItem = mutableMapOf(recommItem.productId.toString() to miniCartItemProduct)
+
+        every {
+            spykViewModel.p2Data.value?.miniCart
+        } returns mapMiniCartItem
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        spykViewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        coVerify { deleteCartUseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `atc recom non variant quantity changed not logged in`() {
+        val recommItem = RecommendationItem()
+        val quantity = 1
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns false
+
+        viewModel.onAtcRecomNonVariantQuantityChanged(recommItem, quantity)
+
+        Assert.assertEquals(recommItem, viewModel.atcRecomTokonowNonLogin.value)
+    }
 
     private fun getUserLocationCache(): LocalCacheModel {
         return LocalCacheModel("123", "123", "123", "123")

@@ -118,4 +118,6 @@
     <string name="prefix_resource_id">#0x</string>
     <string name="prefix_resource_name">Resource name: </string>
 
+    <string name="enable_developer_options_on_notification">Enable Developer Options on Notification</string>
+
 </resources>

@@ -13,6 +13,7 @@ interface SearchEventTracking {
             const val PRODUCT_VIEW = "productView"
             const val PRODUCT_CLICK = "productClick"
             const val CLICK_SEARCH = "clickSearch"
+            const val ADD_TO_CART = "addToCart"
         }
     }
 
@@ -43,9 +44,7 @@ interface SearchEventTracking {
             const val MODULE = "module"
             const val LOGIN = "login"
             const val NON_LOGIN = "nonlogin"
-            const val IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY = "impression - banned product ticker - empty"
             const val CLICK_BANNED_PRODUCT_TICKER_EMPTY = "click - banned product ticker - empty"
-            const val IMPRESSION_BANNED_PRODUCT_TICKER_RELATED = "impression - banned product ticker - related"
             const val GENERAL_SEARCH = "general search"
             const val IMPRESSION_SHOP = "impression - shop"
             const val IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative"

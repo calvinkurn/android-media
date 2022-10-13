@@ -42,17 +42,17 @@ data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
 object RemindToLikeEvent : PlayViewerNewUiEvent()
 sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
 
-    abstract val count: Int
+    abstract val count: Long
     abstract val reduceOpacity: Boolean
 
     data class Single(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()
 
     data class Burst(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()

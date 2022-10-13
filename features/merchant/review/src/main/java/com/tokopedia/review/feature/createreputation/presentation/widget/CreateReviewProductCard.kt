@@ -23,10 +23,6 @@ class CreateReviewProductCard @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewProductCardBinding>(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
-
     private val transitionHandler = TransitionHandler()
 
     override val binding = WidgetCreateReviewProductCardBinding.inflate(LayoutInflater.from(context), this, true)
@@ -78,7 +74,7 @@ class CreateReviewProductCard @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutProductCard.root)
                 addTarget(binding.layoutProductCardLoading.root)
                 interpolator = AccelerateInterpolator()

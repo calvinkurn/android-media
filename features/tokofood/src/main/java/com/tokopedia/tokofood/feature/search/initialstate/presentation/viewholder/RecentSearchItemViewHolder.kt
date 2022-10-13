@@ -21,7 +21,7 @@ class RecentSearchItemViewHolder(view: View,
     private val binding = RecentSearchItemInitialStateBinding.bind(itemView)
 
     override fun bind(element: RecentSearchItemUiModel) {
-        bindImpressionRecentSearchListener(element, adapterPosition)
+        bindImpressionRecentSearchListener(element, bindingAdapterPosition)
         setRecentSearchItem(element.title)
         setRecentSearchLabel(element.title)
         setRecentSearchImageUrl(element.imageUrl)
@@ -42,6 +42,7 @@ class RecentSearchItemViewHolder(view: View,
                 if (oldItem != newItem) {
                     setRecentSearchAction(newItem)
                 }
+                bindImpressionRecentSearchListener(newItem, bindingAdapterPosition)
             }
         }
     }
@@ -62,7 +63,7 @@ class RecentSearchItemViewHolder(view: View,
         with(binding) {
             ivDeleteRecentSearch.setImageUrl(element.imageActionUrl)
             ivDeleteRecentSearch.setOnClickListener {
-                actionListener.onDeleteRecentSearchClicked(element.itemId, adapterPosition)
+                actionListener.onDeleteRecentSearchClicked(element.itemId, bindingAdapterPosition)
             }
         }
     }
@@ -77,20 +78,8 @@ class RecentSearchItemViewHolder(view: View,
         item: RecentSearchItemUiModel,
         position: Int
     ) {
-        binding.root.addOnImpressionListener(
-            item,
-            createViewHintListener(item, position)
-        )
-    }
-
-    private fun createViewHintListener(
-        item: RecentSearchItemUiModel,
-        position: Int
-    ): ViewHintListener {
-        return object : ViewHintListener {
-            override fun onViewHint() {
-                actionListener.onImpressionRecentSearch(item, position)
-            }
+        binding.root.addOnImpressionListener(item) {
+            actionListener.onImpressionRecentSearch(item, position)
         }
     }
 
