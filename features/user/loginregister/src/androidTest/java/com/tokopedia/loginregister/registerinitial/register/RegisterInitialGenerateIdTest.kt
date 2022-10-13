@@ -11,7 +11,7 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test
 
 @UiTest
-class RegisterInitialGenerateIdTest : RegisterInitialBase(){
+class RegisterInitialGenerateIdTest : RegisterInitialBase() {
 
     @Test
     fun generate_view_id_file_root() {
