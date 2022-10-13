@@ -7,7 +7,7 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test
 
 @UiTest
-class RegisterEmailGenerateIdTest: RegisterEmailBase()  {
+class RegisterEmailGenerateIdTest : RegisterEmailBase() {
 
     @Test
     fun generate_view_id_file() {
