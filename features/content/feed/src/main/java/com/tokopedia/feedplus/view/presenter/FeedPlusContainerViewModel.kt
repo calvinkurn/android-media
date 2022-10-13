@@ -4,35 +4,23 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentForm
-import com.tokopedia.createpost.common.data.pojo.getcontentform.FeedContentResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
-import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.graphql.data.model.CacheType
-import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
-import rx.Subscriber
 import javax.inject.Inject
 
 class FeedPlusContainerViewModel @Inject constructor(
-    private val baseDispatcher: CoroutineDispatchers,
-    private val useCase: GraphqlUseCase<FeedTabs.Response>,
-    private val getWhitelistUseCase: GetWhitelistNewUseCase,
-    private val getContentFormForFeedUseCase: GetContentFormForFeedUseCase
-) : BaseViewModel(baseDispatcher.main) {
+    dispatcher: CoroutineDispatchers,
+    private val repo: FeedPlusRepository
+) : BaseViewModel(dispatcher.main) {
 
     val tabResp = MutableLiveData<Result<FeedTabs>>()
     val whitelistResp = MutableLiveData<Result<WhitelistDomain>>()
-    var feedContentForm = FeedContentForm()
 
     val isShowPostButton: Boolean
         get() = when (val whitelist = whitelistResp.value) {
@@ -40,50 +28,25 @@ class FeedPlusContainerViewModel @Inject constructor(
             else -> false
         }
 
-    init {
-        useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.CACHE_FIRST).build())
-    }
-
     fun getDynamicTabs() {
         launchCatchError(block = {
-            val feedTabs: FeedTabs = useCase.executeOnBackground().feedTabs
+            val feedTabs: FeedTabs = repo.getDynamicTabs()
             if (feedTabs.feedData.isNotEmpty()) {
                 tabResp.value = Success(feedTabs)
             } else {
                 tabResp.value = Fail(RuntimeException())
-                useCase.clearCache()
+                repo.clearDynamicTabCache()
             }
         }) {
             tabResp.value = Fail(it)
-            useCase.clearCache()
+            repo.clearDynamicTabCache()
         }
     }
 
-    @Deprecated("No longer in use")
-    fun getContentForm() {
-        getContentFormForFeedUseCase.clearRequest()
-        getContentFormForFeedUseCase.execute(GetContentFormForFeedUseCase.createRequestParams(
-            mutableListOf(), "", ""
-        ),
-            object : Subscriber<GraphqlResponse>() {
-                override fun onNext(t: GraphqlResponse) {
-                    val query = t.getData<FeedContentResponse>(FeedContentResponse::class.java)
-                    feedContentForm = query.feedContentForm
-                }
 
-                override fun onCompleted() {
-                }
-
-                override fun onError(e: Throwable) {
-                }
-            })
-
-    }
-
-    fun getWhitelist(authorListEmpty: Boolean) {
-        viewModelScope.launchCatchError(context = baseDispatcher.io, block = {
-            getWhitelistUseCase.createRequestParams(WHITELIST_ENTRY_POINT)
-            val response = getWhitelistUseCase.executeOnBackground()
+    fun getWhitelist() {
+        viewModelScope.launchCatchError(block = {
+            val response = repo.getWhitelist()
             whitelistResp.value = Success(getWhitelistDomain(response))
         }) {
             whitelistResp.value = Fail(it)

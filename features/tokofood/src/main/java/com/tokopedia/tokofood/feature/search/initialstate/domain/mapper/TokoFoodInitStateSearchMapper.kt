@@ -55,6 +55,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         } else {
             section.items
         }
+
         add(HeaderRecentSearchUiModel(section.header, section.labelText, section.labelAction))
         addAll(
             recentSearchLimit.map { item ->
@@ -68,8 +69,10 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
                 )
             }
         )
-        if (recentSearchSize > ALL_LIMIT_ITEM) {
-            val recentSearchSeeMore = section.items.subList(THREE_INDEX, ALL_LIMIT_ITEM)
+        if (recentSearchSize > INIT_LIMIT_ITEM) {
+            val limitItem = if (recentSearchSize >= ALL_LIMIT_ITEM) ALL_LIMIT_ITEM else recentSearchSize
+
+            val recentSearchSeeMore = section.items.subList(THREE_POSITION, limitItem)
             val recentSearchSeeMoreList = recentSearchSeeMore.map {
                 RecentSearchItemUiModel(
                     sectionId = section.id,
@@ -115,7 +118,7 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
             }
         )
         if (section.items.size > INIT_LIMIT_ITEM) {
-            val cuisineListSeeMore = section.items.subList(THREE_INDEX, cuisineListSize)
+            val cuisineListSeeMore = section.items.subList(THREE_POSITION, cuisineListSize)
             val cuisineListSeeMoreList = cuisineListSeeMore.map {
                 CuisineItemUiModel(
                     sectionId = section.id,
@@ -136,6 +139,6 @@ class TokoFoodInitStateSearchMapper @Inject constructor() {
         const val CUISINE_LIST = "cuisine_list"
         const val INIT_LIMIT_ITEM = 3
         const val ALL_LIMIT_ITEM = 5
-        const val THREE_INDEX = 3
+        const val THREE_POSITION = 3
     }
 }

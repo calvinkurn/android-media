@@ -80,11 +80,7 @@ class FeedViewModel @Inject constructor(
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
-        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
-        const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
-        const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
-        private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
     }
 
     private val userId: String
@@ -114,13 +110,13 @@ class FeedViewModel @Inject constructor(
 
     fun sendReport(
         positionInFeed: Int,
-        contentId: Int,
+        contentId: String,
         reasonType: String,
         reasonMessage: String
     ) {
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             sendReportUseCase.setRequestParams(
-                SubmitReportContentUseCase.createParam(contentId = contentId.toString(), reasonType = reasonType, reasonMessage = reasonMessage)
+                SubmitReportContentUseCase.createParam(contentId = contentId, reasonType = reasonType, reasonMessage = reasonMessage)
             )
             val response = sendReportUseCase.executeOnBackground()
             if (response.content.errorMessage.isEmpty())
@@ -236,18 +232,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnfollowKol(id: Int, rowNumber: Int) {
-        launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                unfollowKol(id, rowNumber)
-            }
-            followKolResp.value = Success(results)
-        }) {
-            followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
-        }
-    }
-
-    fun doLikeKol(id: Int, rowNumber: Int) {
+    fun doLikeKol(id: Long, rowNumber: Int) {
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_LIKE))
             val isSuccess = likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
@@ -259,7 +244,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun doUnlikeKol(id: Long, rowNumber: Int) {
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             likeKolPostUseCase.setRequestParams(SubmitLikeContentUseCase.createParam(contentId = id.toString(), action = SubmitLikeContentUseCase.ACTION_UNLIKE))
             val isSuccess = likeKolPostUseCase.executeOnBackground().doLikeKolPost.data.success == SubmitLikeContentUseCase.SUCCESS
@@ -293,7 +278,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doDeletePost(id: Int, rowNumber: Int) {
+    fun doDeletePost(id: String, rowNumber: Int) {
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             deletePostUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(contentId = id.toString()))
             val isSuccess = deletePostUseCase.executeOnBackground().content.success == SubmitPostData.SUCCESS

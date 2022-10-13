@@ -15,8 +15,6 @@ import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailItemModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.Exception
-import java.util.*
 import javax.inject.Inject
 
 private const val MAX_RATING = 100
@@ -119,5 +117,4 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
     private fun getRating(rating: Float): Double {
         return rating.toDouble() / MAX_RATING * NUM_STARS
     }
-
 }

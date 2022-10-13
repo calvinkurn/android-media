@@ -51,19 +51,4 @@
 
     </com.tokopedia.play_common.view.RoundedLinearLayout>
 
-    <include
-        android:id="@+id/view_quiz_reward"
-        layout="@layout/view_quiz_reward"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/play_dp_12"
-        android:layout_marginTop="@dimen/play_dp_12"
-        android:layout_marginEnd="@dimen/play_dp_12"
-        android:visibility="gone"
-        app:layout_constrainedWidth="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ll_quiz_content"
-        tools:visibility="visible" />
-
 </merge>
