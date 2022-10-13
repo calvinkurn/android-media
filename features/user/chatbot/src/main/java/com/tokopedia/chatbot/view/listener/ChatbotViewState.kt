@@ -8,7 +8,6 @@ import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.view.listener.BaseChatViewState
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
@@ -49,8 +48,6 @@ interface ChatbotViewState : BaseChatViewState {
     fun onVideoUpload(it: VideoUploadUiModel)
 
     fun scrollToBottom()
-
-    fun showDividerViewOnConnection(connectionDividerUiModel: ConnectionDividerUiModel)
 
     fun showLiveChatSeprator(chatSepratorUiModel: ChatSepratorUiModel)
 

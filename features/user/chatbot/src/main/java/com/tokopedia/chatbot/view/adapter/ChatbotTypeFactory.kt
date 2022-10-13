@@ -5,7 +5,6 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.AdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chat_common.data.AttachInvoiceSentUiModel
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
@@ -37,8 +36,6 @@ interface ChatbotTypeFactory : AdapterTypeFactory {
     fun type(chatRating: ChatRatingUiModel): Int
 
     fun type(chatBubble: ChatActionSelectionBubbleUiModel): Int
-
-    fun type(connectionDividerUiModel: ConnectionDividerUiModel): Int
 
     fun type(chatSepratorUiModel: ChatSepratorUiModel): Int
 

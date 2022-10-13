@@ -84,7 +84,6 @@ import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheet
 import com.tokopedia.chatbot.attachinvoice.view.TransactionInvoiceBottomSheetListener
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
@@ -1389,11 +1388,6 @@ class ChatbotFragment :
         view?.let { mView -> Toaster.showErrorWithAction(mView, it.message.toString(), Snackbar.LENGTH_LONG, SNACK_BAR_TEXT_OK, View.OnClickListener { }) }
     }
 
-    override fun onReceiveConnectionEvent(connectionDividerUiModel: ConnectionDividerUiModel, quickReplyList: List<QuickReplyUiModel>) {
-        getViewState()?.showDividerViewOnConnection(connectionDividerUiModel)
-        getViewState()?.showLiveChatQuickReply(quickReplyList)
-    }
-
     override fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>) {
         getViewState()?.showLiveChatSeprator(chatSepratorUiModel)
         getViewState()?.showLiveChatQuickReply(quickReplyList)
@@ -1489,8 +1483,7 @@ class ChatbotFragment :
         element.isRetry = false
         getViewState()?.onVideoUpload(element)
         presenter.updateMediaUris(listOf(VideoUploadData(element.videoUrl, messageId, SendableUiModel.generateStartTime())))
- //       presenter.uploadVideo(element, SOURCE_ID_FOR_VIDEO_UPLOAD, SendableUiModel.generateStartTime(), messageId, onErrorVideoUpload())
-    }
+ }
 
     private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)

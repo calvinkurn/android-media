@@ -16,7 +16,6 @@ import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandle
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageAnnouncementListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ImageUploadListener
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ProductAttachmentListener
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
@@ -47,7 +46,6 @@ import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatActionListBubb
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatRatingListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
-import com.tokopedia.chatbot.view.adapter.viewholder.listener.ConnectionDividerViewHolder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.CsatOptionListListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.VideoUploadListener
@@ -141,10 +139,6 @@ open class ChatbotTypeFactoryImpl(
         return ChatbotLiveChatSeparatorViewHolder.LAYOUT
     }
 
-    override fun type(connectionDividerUiModel: ConnectionDividerUiModel): Int {
-        return ConnectionDividerViewHolder.LAYOUT
-    }
-
     override fun type(helpFullQuestionsUiModel: HelpFullQuestionsUiModel): Int {
         return ChatHelpfullQuestionViewHolder.LAYOUT
     }
@@ -190,7 +184,6 @@ open class ChatbotTypeFactoryImpl(
         return when (type) {
             ChatBotTypingChatViewHolder.LAYOUT -> ChatBotTypingChatViewHolder(parent)
             RightChatMessageUnifyViewHolder.LAYOUT -> RightChatMessageUnifyViewHolder(parent, chatLinkHandlerListener, replyBubbleListener, userSession)
-            ConnectionDividerViewHolder.LAYOUT -> ConnectionDividerViewHolder(parent)
             ChatbotLiveChatSeparatorViewHolder.LAYOUT -> ChatbotLiveChatSeparatorViewHolder(parent)
             AttachedInvoiceSentViewHolder.LAYOUT -> AttachedInvoiceSentViewHolder(parent)
             AttachedInvoiceSelectionViewHolder.LAYOUT -> AttachedInvoiceSelectionViewHolder(parent, attachedInvoiceSelectionListener)

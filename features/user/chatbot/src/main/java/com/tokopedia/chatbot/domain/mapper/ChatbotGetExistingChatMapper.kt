@@ -14,7 +14,6 @@ import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UP
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
@@ -29,8 +28,6 @@ import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonPojo
 import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.data.uploadsecure.ChatbotVideoUploadAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_AGENT_QUEUE
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CHAT_SEPRATOR
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_VIEW
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST
@@ -52,7 +49,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
     object Companion {
         const val SHOW_TEXT = "show"
         const val TYPE_CHAT_SEPRATOR = "15"
-        const val TYPE_AGENT_QUEUE = "16"
         const val TYPE_OPTION_LIST = "22"
         const val TYPE_CSAT_OPTIONS = "23"
         const val TYPE_STICKY_BUTTON = "25"
@@ -69,7 +65,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_CHAT_BALLOON_ACTION -> convertToBalloonAction(chatItemPojoByDateByTime)
             TYPE_INVOICES_SELECTION -> convertToInvoicesSelection(chatItemPojoByDateByTime)
             TYPE_CHAT_SEPRATOR -> convertToChatSeprator(chatItemPojoByDateByTime)
-            TYPE_AGENT_QUEUE -> convertToChatDivider(chatItemPojoByDateByTime)
             TYPE_OPTION_LIST -> convertToHelpQuestionViewModel(chatItemPojoByDateByTime)
             TYPE_CSAT_OPTIONS -> convertToCsatOptionsViewModel(chatItemPojoByDateByTime)
             TYPE_STICKY_BUTTON -> convertToStickyButtonActionsViewModel(chatItemPojoByDateByTime)
@@ -204,23 +199,6 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             pojo.msg,
             pojo.source,
             pojo.status
-        )
-    }
-
-    // ///////// CHAT DIVIDER
-
-    private fun convertToChatDivider(pojo: Reply): ConnectionDividerUiModel {
-        val chatDividerPojo = GsonBuilder().create().fromJson<ChatDividerResponse>(
-            pojo
-                .attachment?.attributes,
-            ChatDividerResponse::class.java
-        )
-        return ConnectionDividerUiModel(
-            replyTime = pojo.replyTime,
-            dividerMessage = chatDividerPojo?.divider?.label,
-            isShowButton = false,
-            type = SHOW_TEXT,
-            leaveQueue = null
         )
     }
 

@@ -11,7 +11,6 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
@@ -40,8 +39,6 @@ interface ChatbotContract {
         fun clearChatText()
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
-
-        fun onReceiveConnectionEvent(connectionDividerUiModel: ConnectionDividerUiModel, quickReplyList: List<QuickReplyUiModel>)
 
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 

@@ -1,15 +1,9 @@
 package com.tokopedia.chatbot.data.seprator
 
-import android.annotation.SuppressLint
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactory
 
-/**
-We don't need to implement hashCode or equals method as the comparison is only done for the object
-not it's content
-*/
-@SuppressLint("EqualsOrHashCode")
 class ChatSepratorUiModel(
     messageId: String = "",
     fromUid: String = "",
@@ -27,9 +21,5 @@ class ChatSepratorUiModel(
 
     override fun type(typeFactory: ChatbotTypeFactory): Int {
         return typeFactory.type(this)
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is ChatSepratorUiModel
     }
 }

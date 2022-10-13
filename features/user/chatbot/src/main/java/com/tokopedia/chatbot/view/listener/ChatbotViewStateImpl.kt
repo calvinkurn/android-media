@@ -25,7 +25,6 @@ import com.tokopedia.chat_common.util.IdentifierUtil
 import com.tokopedia.chat_common.view.BaseChatViewStateImpl
 import com.tokopedia.chat_common.view.listener.TypingListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.ConnectionDividerUiModel
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionSelectionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
@@ -35,7 +34,6 @@ import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
-import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper.Companion.SHOW_TEXT
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.QuickReplyAdapter
@@ -324,19 +322,6 @@ class ChatbotViewStateImpl(
      * ELSE
      * ADDING A NEW ELEMENT
      */
-
-    override fun showDividerViewOnConnection(connectionDividerUiModel: ConnectionDividerUiModel) {
-        if (connectionDividerUiModel.type.equals(SHOW_TEXT, true)) {
-            if (getAdapter().list[0] is ConnectionDividerUiModel) {
-                getAdapter().setElement(0, connectionDividerUiModel)
-            } else {
-                getAdapter().addElement(0, connectionDividerUiModel)
-            }
-            getAdapter().removeTyping()
-        } else {
-            getAdapter().removeElement(connectionDividerUiModel)
-        }
-    }
 
     override fun showLiveChatSeprator(chatSepratorUiModel: ChatSepratorUiModel) {
         getAdapter().addElement(0, chatSepratorUiModel)
