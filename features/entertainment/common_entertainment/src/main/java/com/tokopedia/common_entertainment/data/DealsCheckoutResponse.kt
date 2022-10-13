@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.data
+package com.tokopedia.common_entertainment.data
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose

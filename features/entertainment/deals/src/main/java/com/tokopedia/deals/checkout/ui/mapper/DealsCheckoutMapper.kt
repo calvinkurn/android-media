@@ -1,14 +1,73 @@
 package com.tokopedia.deals.checkout.ui.mapper
 
 import com.google.gson.Gson
+import com.tokopedia.common_entertainment.data.CartInfo
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneral
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstant
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstantNoPromo
+import com.tokopedia.common_entertainment.data.DealCheckoutGeneralNoPromo
+import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.DealsMetaDataCheckout
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapCheckout
 import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.common_entertainment.data.MetaDataResponse
+import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object DealsCheckoutMapper {
+
+    const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
+
+    fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
+        DealCheckoutGeneral {
+        val checkoutGeneral = DealCheckoutGeneral()
+        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
+            else dealsDetail.checkoutDataType
+        )
+        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.promoCodes = promoCodes
+        return checkoutGeneral
+    }
+
+    fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
+        val checkoutGeneral = DealCheckoutGeneralNoPromo()
+        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
+            else dealsDetail.checkoutDataType
+        )
+        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        return checkoutGeneral
+    }
+
+    fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
+        DealCheckoutGeneralInstant {
+        val checkoutGeneral = DealCheckoutGeneralInstant()
+        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
+            else dealsDetail.checkoutDataType
+        )
+        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.promoCodes = promoCodes
+        checkoutGeneral.gatewayCode = verify.gatewayCode
+        return checkoutGeneral
+    }
+
+    fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
+        val checkoutGeneral = DealCheckoutGeneralInstantNoPromo()
+        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
+            else dealsDetail.checkoutDataType
+        )
+        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.gatewayCode = verify.gatewayCode
+        return checkoutGeneral
+    }
 
     fun getMetaDataString(verify: EventVerifyResponse): String {
         return Gson().toJson(mapToIntMetaData(verify.metadata))

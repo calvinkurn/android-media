@@ -17,6 +17,8 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
+import com.tokopedia.common_entertainment.data.DealsGeneral
+import com.tokopedia.common_entertainment.data.DealsInstant
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.deals.checkout.di.DealsCheckoutComponent
@@ -315,6 +317,24 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         dealsItemMap?.let {
             tgTotalAmount?.text =
                 DealsUtils.convertToCurrencyString(it.price.toLong() * it.quantity.toLong() + it.commission.toLong() - discountAmount)
+        }
+    }
+
+    private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral {
+        return if (promoCodes.isNotEmpty()){
+            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify, listOf(promoCode))
+            else DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+        } else{
+            DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+        }
+    }
+
+    private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
+        return if (promoCodes.isNotEmpty()){
+            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify, listOf(promoCode))
+            else DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
+        } else{
+            DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
         }
     }
 
