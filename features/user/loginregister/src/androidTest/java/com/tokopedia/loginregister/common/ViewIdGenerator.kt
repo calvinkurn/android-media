@@ -23,7 +23,6 @@ object ViewIdGenerator {
     )
 
     fun createViewIdFile(view: View, fileNameWithExtension: String) {
-
         val hierarchyInfo = viewPrinter.printAsCSV(view = view)
 
         fileWriter.writeGeneratedViewIds(
