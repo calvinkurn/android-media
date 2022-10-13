@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.loginregister.goto_seamless.model.GetNameParam
-import com.tokopedia.loginregister.goto_seamless.model.GetNameResponse
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.model.LoginSeamlessParams
 import com.tokopedia.loginregister.goto_seamless.usecase.GetNameUseCase
@@ -36,34 +35,18 @@ class GotoSeamlessLoginViewModel @Inject constructor(
     val gojekProfileData: LiveData<Result<GojekProfileData>>
         get() = mutableGojekProfileData
 
-    private val mutableGetNameData = MutableLiveData<Result<GetNameResponse>>()
-    val getName: LiveData<Result<GetNameResponse>>
-        get() = mutableGetNameData
-
     fun getGojekData() {
         launch {
             try {
                 val result = gotoSeamlessHelper.getGojekProfile()
                 if(result.authCode.isNotEmpty()) {
+                    userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
                     val getNameResult = getNameUseCase(GetNameParam(authCode = result.authCode))
                     result.tokopediaName = getNameResult.name
                 }
                 mutableGojekProfileData.value = Success(result)
             } catch (e: Exception) {
                 mutableGojekProfileData.value = Fail(e)
-            }
-        }
-    }
-
-    fun getUserName(code: String) {
-        launch {
-            try {
-                val result = getNameUseCase(GetNameParam(
-                    authCode = code
-                ))
-                mutableGetNameData.value = Success(result)
-            } catch (e: Exception) {
-                mutableGetNameData.value = Fail(e)
             }
         }
     }

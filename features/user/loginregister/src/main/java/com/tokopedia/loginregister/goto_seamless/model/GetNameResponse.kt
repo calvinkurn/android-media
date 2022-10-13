@@ -4,5 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class GetNameResponse(
     @SerializedName("fullname")
-    var name: String = ""
+    var name: String = "",
+    @SerializedName("error")
+    var error: String = ""
 )

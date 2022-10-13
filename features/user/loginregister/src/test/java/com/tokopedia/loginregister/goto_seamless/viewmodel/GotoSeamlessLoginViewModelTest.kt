@@ -3,7 +3,6 @@ package com.tokopedia.loginregister.goto_seamless.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessHelper
 import com.tokopedia.loginregister.goto_seamless.GotoSeamlessLoginViewModel
-import com.tokopedia.loginregister.goto_seamless.model.GetNameData
 import com.tokopedia.loginregister.goto_seamless.model.GetNameResponse
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.usecase.GetNameUseCase
@@ -59,8 +58,7 @@ class GotoSeamlessLoginViewModelTest {
     fun `Get Gojek Data Success with name`() {
         val tokoName = "tokopedia name"
         val mockGojekProfile = GojekProfileData(name = "yoris", authCode = "abc123")
-        val mockGetData = GetNameData(name = tokoName, error = "")
-        val mockGetName = GetNameResponse(data = mockGetData)
+        val mockGetName = GetNameResponse(name = tokoName, error = "")
         coEvery { gotoSeamlessHelper.getGojekProfile() } returns mockGojekProfile
         coEvery { getNameUseCase(any()) } returns mockGetName
 
