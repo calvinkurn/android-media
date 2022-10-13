@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="TextValueView">
+        <attr name="textvalue_title" format="string" />
+        <attr name="textvalue_subtitle" format="string" />
+        <attr name="textvalue_value" format="string" />
+        <attr name="textvalue_icon_rating_visibility" format="boolean" />
+        <attr name="textvalue_icon_status" format="enum">
+            <enum name="NO_ICON" value="0"/>
+            <enum name="PASSED" value="1"/>
+            <enum name="WARNING" value="2"/>
+        </attr>
+    </declare-styleable>
+</resources>

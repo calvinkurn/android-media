@@ -654,6 +654,8 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isVoucherProductListApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductList(deeplink)
                 DeeplinkMapperMerchant.isVoucherProductDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForVoucherProductDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
+                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale(deeplink)
+                DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
                 else -> ""
             }
         }
