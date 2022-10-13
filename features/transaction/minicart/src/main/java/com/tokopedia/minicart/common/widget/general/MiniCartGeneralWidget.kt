@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -56,11 +57,16 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
 
     private var miniCartWidgetListener: MiniCartWidgetListener? = null
 
+    private var chevronClickListener: OnClickListener? = null
+
     private var viewModel: MiniCartGeneralViewModel? = null
     private val binding: WidgetMiniCartBinding
 
     init {
         binding = WidgetMiniCartBinding.inflate(LayoutInflater.from(context))
+        binding.miniCartContainer.setOnClickListener {
+            // prevent click event from passing through
+        }
         addView(binding.root)
 
         val application = (context as? Activity)?.application
@@ -82,10 +88,13 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             val labelText = context.getString(R.string.mini_cart_widget_label_purchase_summary)
             setLabelTitle(labelText)
             enableAmountChevron(true)
-            amountChevronView.setOnClickListener {
+            chevronClickListener = OnClickListener {
                 sendEventClickSimplifiedSummary()
                 showSimplifiedSummaryBottomSheet(fragment)
             }
+            labelTitleView.setOnClickListener(chevronClickListener)
+            amountView.setOnClickListener(chevronClickListener)
+            amountChevronView.setOnClickListener(chevronClickListener)
             amountCtaView.setOnClickListener {
                 sendEventClickCheckCart()
                 RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
@@ -103,10 +112,7 @@ class MiniCartGeneralWidget @JvmOverloads constructor(
             sendEventClickChat()
             showMiniCartChatListBottomSheet(fragment)
         }
-        binding.imageChevronUnavailable.setOnClickListener {
-            sendEventClickSimplifiedSummary()
-            showSimplifiedSummaryBottomSheet(fragment)
-        }
+        binding.imageChevronUnavailable.setOnClickListener(chevronClickListener)
         binding.chatIcon.setImageDrawable(chatIcon)
     }
 

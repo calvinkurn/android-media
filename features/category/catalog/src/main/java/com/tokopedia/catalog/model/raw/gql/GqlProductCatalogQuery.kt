@@ -12,6 +12,7 @@ const val GQL_CATALOG_QUERY: String = """query catalogGetDetailModular(${'$'}cat
       shortDescription
       url
       mobileUrl
+      productSortingStatus
       catalogImage {
         imageUrl
         isPrimary
