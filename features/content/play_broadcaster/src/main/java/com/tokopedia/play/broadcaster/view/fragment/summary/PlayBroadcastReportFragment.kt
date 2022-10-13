@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -167,8 +168,7 @@ class PlayBroadcastReportFragment @Inject constructor(
     private fun openInteractiveLeaderboardSheet() {
         val leaderboardReportBottomSheet = PlayBroInteractiveBottomSheet.setupReportLeaderboard(
             childFragmentManager,
-            requireContext().classLoader,
-            viewModel.channelId
+            requireContext().classLoader
         )
         leaderboardReportBottomSheet.show(childFragmentManager)
     }

@@ -851,11 +851,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    fun getLeaderboardWithSlots(allowChat: Boolean = false, channelIdValue: String = "") {
-        val mChannelId = if (channelIdValue.isEmpty()) channelId else channelIdValue
+    fun getLeaderboardWithSlots(allowChat: Boolean = false) {
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
-            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(mChannelId, allowChat)
+            val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat)
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
         }) {
             _quizDetailState.value =
