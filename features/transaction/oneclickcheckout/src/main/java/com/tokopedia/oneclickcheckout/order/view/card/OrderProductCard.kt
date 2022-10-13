@@ -194,7 +194,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
     private fun renderEthicalDrugMessage(ethicalDrugDataModel: EthicalDrugDataModel): LinearLayout {
         val propertyLayoutWithIcon = LinearLayout(itemView.context)
         propertyLayoutWithIcon.orientation = LinearLayout.HORIZONTAL
-        val itemProductInfoBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context))
+        val itemProductInfoBinding = ItemProductInfoAddOnBinding.inflate(LayoutInflater.from(itemView.context), propertyLayoutWithIcon, false)
         if (!TextUtils.isEmpty(ethicalDrugDataModel.iconUrl)) {
             ImageHandler.loadImageWithoutPlaceholderAndError(
                 itemProductInfoBinding.ppIvProductInfoAddOn,
