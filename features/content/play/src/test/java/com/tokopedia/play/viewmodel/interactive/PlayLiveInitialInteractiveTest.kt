@@ -224,7 +224,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
         coEvery { repo.getCurrentInteractive(any()) } returns model
@@ -284,7 +283,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Default('a')))
         )
 
@@ -360,7 +358,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(false)),
                 modelBuilder.buildQuizChoices(text = "25 June", type = PlayQuizOptionState.Other(true)),
@@ -386,136 +383,9 @@ class PlayLiveInitialInteractiveTest {
             }
         }
     }
+
     @Test
-    fun `given has finished channel quiz, has reward and user is the winner, show winning dialog`() {
-        val socketFlow = MutableStateFlow<WebSocketAction>(
-            WebSocketAction.NewMessage(
-                socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
-            )
-        )
-        every { socket.listenAsFlow() } returns socketFlow
-
-        val repo: PlayViewerRepository = mockk(relaxed = true)
-        val title = "Quiz"
-        val model = InteractiveUiModel.Quiz(
-            status = InteractiveUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
-            title = title,
-            id = "1",
-            waitingDuration = 1500L,
-            reward = "Sepeda",
-            listOfChoices = listOf(
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Other(true)
-                ),
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Other(false)
-                ),
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Answered(false)
-                )
-            )
-        )
-        coEvery { repo.getCurrentInteractive(any()) } returns model
-        coEvery { repo.getActiveInteractiveId() } returns "1"
-        coEvery { repo.hasJoined(any()) } returns true
-
-        createPlayViewModelRobot(
-            playChannelWebSocket = socket,
-            repo = repo,
-            dispatchers = testDispatcher,
-            remoteConfig = mockRemoteConfig,
-        ).use {
-            val state = it.recordState {
-                setUserId("1")
-                createPage(mockChannelData)
-                focusPage(mockChannelData)
-            }
-            val event = it.recordEvent {
-                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                socketFlow.emit(
-                    WebSocketAction.NewMessage(
-                        Gson().fromJson(
-                            PlayUserWinnerStatusSocketResponse.generateResponse(),
-                            WebSocketResponse::class.java
-                        )
-                    )
-                )
-            }
-            event.last().assertInstanceOf<ShowWinningDialogEvent>()
-        }
-    }
-    @Test
-    fun `given has finished channel quiz, has reward and user is the loser, show coachmark`() {
-        val socketFlow = MutableStateFlow<WebSocketAction>(
-            WebSocketAction.NewMessage(
-                socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
-            )
-        )
-        every { socket.listenAsFlow() } returns socketFlow
-
-        val repo: PlayViewerRepository = mockk(relaxed = true)
-        val title = "Quiz"
-        val model = InteractiveUiModel.Quiz(
-            status = InteractiveUiModel.Quiz.Status.Ongoing(5000L.millisFromNow()),
-            title = title,
-            id = "1",
-            waitingDuration = 1500L,
-            reward = "Sepeda",
-            listOfChoices = listOf(
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Other(true)
-                ),
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Other(false)
-                ),
-                modelBuilder.buildQuizChoices(
-                    text = "25 June",
-                    type = PlayQuizOptionState.Answered(false)
-                )
-            )
-        )
-        coEvery { repo.getCurrentInteractive(any()) } returns model
-        coEvery { repo.getActiveInteractiveId() } returns "1"
-        coEvery { repo.hasJoined(any()) } returns true
-
-        createPlayViewModelRobot(
-            playChannelWebSocket = socket,
-            repo = repo,
-            dispatchers = testDispatcher,
-            remoteConfig = mockRemoteConfig,
-        ).use {
-            val state = it.recordState {
-                setUserId("7")
-                createPage(mockChannelData)
-                focusPage(mockChannelData)
-            }
-            state.interactive.interactive.assertInstanceOf<InteractiveUiModel.Quiz>()
-            val event = it.recordEvent {
-                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                socketFlow.emit(
-                    WebSocketAction.NewMessage(
-                        Gson().fromJson(
-                            PlayUserWinnerStatusSocketResponse.generateResponse(),
-                            WebSocketResponse::class.java
-                        )
-                    )
-                )
-            }
-            event.last().assertEqualTo(
-                ShowCoachMarkWinnerEvent(
-                    PlayUserWinnerStatusSocketResponse.loserTitle,
-                    PlayUserWinnerStatusSocketResponse.loserText,
-                )
-            )
-        }
-    }
-    @Test
-    fun `given has finished channel quiz, has no reward just show result badge`() {
+    fun `given has finished channel quiz, show result badge`() {
         val socketFlow = MutableStateFlow<WebSocketAction>(
             WebSocketAction.NewMessage(
                 socketResponseBuilder.buildChannelInteractiveResponse(isExist = true)
@@ -530,7 +400,6 @@ class PlayLiveInitialInteractiveTest {
             title = title,
             id = "1",
             waitingDuration = 1500L,
-            reward = "",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(
                     text = "25 June",
