@@ -44,8 +44,10 @@ WaitingForSelectionItem::class.java
         init {
             binding.root.setOnClickListener { onProductItemClicked(adapterPosition) }
             binding.run{
-                checkProductItem.setOnClickListener {
-                    onCheckBoxClicked(checkProductItem.isChecked)
+                checkProductItem.apply {
+                    setOnClickListener {
+                        onCheckBoxClicked(checkProductItem.isChecked)
+                    }
                 }
             }
         }
@@ -59,6 +61,7 @@ WaitingForSelectionItem::class.java
                 tpgOriginalPrice.setPrice(item)
                 tpgVariantStockLocation.setStock(item)
                 checkProductItem.isVisible = item.isCheckBoxShown
+                checkProductItem.isChecked = item.isSelected
             }
         }
 

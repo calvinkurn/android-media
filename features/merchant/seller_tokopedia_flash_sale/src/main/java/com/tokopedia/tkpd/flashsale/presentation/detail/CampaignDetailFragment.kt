@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -107,8 +108,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private val flashSaleId by lazy {
         val appLinkData = RouteManager.getIntent(activity, activity?.intent?.data.toString()).data
-        if (appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size == APPLINK_SEGMENTS_SIZE) {
-            appLinkData.lastPathSegment?.toLong().orZero()
+        if (isOpenedFromApplink(appLinkData)) {
+            appLinkData?.lastPathSegment?.toLong().orZero()
         } else {
             arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
         }
@@ -221,6 +222,17 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     R.string.stfs_choosen_product_count_placeholder,
                     products.count()
                 )
+            binding?.apply {
+                if (products.count() > Int.ZERO && viewModel.isOnCheckBoxState()) {
+                    btnRegister.gone()
+                    btnDelete.visible()
+                    btnEdit.visible()
+                } else {
+                    btnRegister.visible()
+                    btnDelete.gone()
+                    btnEdit.gone()
+                }
+            }
         }
     }
 
@@ -391,9 +403,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
             btnSeeCriteria.setOnClickListener {
                 showBottomSheet(flashSale, DetailBottomSheetType.PRODUCT_CRITERIA)
+                viewModel.sendSeeCriteriaClickEvent(flashSaleId)
             }
             btnCheckReason.setOnClickListener {
                 navigateToChooseProductPage()
+                viewModel.sendCheckReasonClickEvent(flashSaleId)
             }
             if (!isCoachMarkShown()) {
                 showCriteriaCoachMark(this)
@@ -541,6 +555,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 text = getString(R.string.label_register)
                 setOnClickListener {
                     registerToCampaign()
+                    viewModel.sendRegisterClickEvent(flashSaleId)
                 }
             }
             imageProductEligible.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
@@ -772,7 +787,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun onShowOrHideItemCheckBox() {
         val oldItems = productAdapter.getItems().filterIsInstance<WaitingForSelectionItem>()
-        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown) }
+        val newItems = oldItems.map { it.copy(isCheckBoxShown = !it.isCheckBoxShown, isSelected = false) }
         val isShown = newItems[Int.ZERO].isCheckBoxShown
         productAdapter.submit(newItems)
         viewModel.setCheckBoxStateStatus(isShown)
@@ -808,11 +823,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     reserveProduct()
                 }
             }
-            if (isShown) {
-                btnRegister.gone()
-                btnDelete.visible()
-                btnEdit.visible()
-            } else {
+            if (!isShown) {
                 btnRegister.visible()
                 btnDelete.gone()
                 btnEdit.gone()
@@ -1444,5 +1455,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
 
     private fun setCoachMarkAlreadyShown() {
         viewModel.setSharedPrefCoachMarkAlreadyShown()
+    }
+
+    private fun isOpenedFromApplink(appLinkData: Uri?): Boolean {
+        return appLinkData?.lastPathSegment?.isNotEmpty() == true && appLinkData.pathSegments.size >= APPLINK_SEGMENTS_SIZE
     }
 }
