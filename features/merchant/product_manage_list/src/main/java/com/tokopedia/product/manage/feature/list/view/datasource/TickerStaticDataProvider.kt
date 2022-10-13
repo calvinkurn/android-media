@@ -46,4 +46,13 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             isFromHtml = true
         )
     )
+
+    fun getTickerShopModeratePermanent() = listOf(
+        TickerData(
+            title = resourceProvider.getTickerShopModeratedTitle(),
+            description = resourceProvider.getTickerShopModeratedPermanentDescription(),
+            type = Ticker.TYPE_WARNING,
+            isFromHtml = true
+        )
+    )
 }
