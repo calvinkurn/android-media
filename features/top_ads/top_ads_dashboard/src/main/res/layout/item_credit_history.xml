@@ -28,7 +28,7 @@
             android:id="@+id/txt_date"
             android:layout_width="@dimen/unify_space_0"
             android:layout_height="wrap_content"
-            android:textColor="@color/light_disabled"
+            android:textColor="@color/Unify_RN50"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_title"
             app:typographyType="small"
