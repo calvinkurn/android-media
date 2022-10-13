@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.switchaccount
+package com.tokopedia.play.broadcaster.setup.swtichaccount.casava
 
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -13,7 +13,12 @@ import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
 import com.tokopedia.play.broadcaster.domain.usecase.GetAddedChannelTagsUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.helper.containsEventAction
+import com.tokopedia.play.broadcaster.setup.accountListResponse
+import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
+import com.tokopedia.play.broadcaster.setup.channelResponse
+import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -24,8 +29,9 @@ import org.junit.runner.RunWith
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
+@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
-class SwitchAccountUGCAnalyticTest {
+class SwitchAccountAnalyticTest {
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule(sendValidationResult = false)
@@ -41,25 +47,26 @@ class SwitchAccountUGCAnalyticTest {
     private val mockAddedTag = GetAddedChannelTagsResponse()
     private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_ugc.json"
 
-    private fun createRobot() = SwitchAccountUGCRobot(
+    private fun createRobot() = SwitchAccountRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
         userSessionInterface = mockUserSession,
         dispatcher = mockDispatcher,
         repo = mockRepo,
         channelUseCase = mockGetChannelUseCase,
-        addedChannelTagsUseCase = mockGetAddedTagUseCase
+        addedChannelTagsUseCase = mockGetAddedTagUseCase,
+        sharedPreferences = mockk(relaxed = true)
     )
 
     init {
-        coEvery { mockRepo.getAccountList() } returns accountListResponse
+        coEvery { mockRepo.getAccountList() } returns accountListResponse()
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns buildConfigurationUiModel()
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns channelResponse
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
         coEvery { mockRepo.getProductTagSummarySection(any()) } returns emptyList()
-        coEvery { mockConfigStore.getAuthorId() } returns accountListResponse[0].id
+        coEvery { mockConfigStore.getAuthorId() } returns accountListResponse()[0].id
         coEvery { mockConfigStore.getAuthorTypeName() } returns ContentCommonUserType.TYPE_NAME_SELLER
-        coEvery { mockUserSession.userId } returns accountListResponse[0].id
+        coEvery { mockUserSession.userId } returns accountListResponse()[0].id
     }
 
     @Test

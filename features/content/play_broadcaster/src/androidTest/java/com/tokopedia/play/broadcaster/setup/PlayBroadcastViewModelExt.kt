@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.switchaccount
+package com.tokopedia.play.broadcaster.setup
 
 import androidx.lifecycle.SavedStateHandle
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers

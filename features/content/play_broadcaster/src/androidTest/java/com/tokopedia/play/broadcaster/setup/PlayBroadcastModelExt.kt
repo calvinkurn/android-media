@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.switchaccount
+package com.tokopedia.play.broadcaster.setup
 
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -10,26 +10,55 @@ import java.util.*
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
-val accountListResponse = listOf(
-    ContentAccountUiModel(
-        id = "12345",
-        type = ContentCommonUserType.TYPE_SHOP,
-        name = "Shop",
-        iconUrl = "icon.url.shop",
-        badge = "icon.badge",
-        hasUsername = true,
-        hasAcceptTnc = true,
-    ),
-    ContentAccountUiModel(
-        id = "67890",
-        type = ContentCommonUserType.TYPE_USER,
-        name = "Buyer",
-        iconUrl = "icon.url.buyer",
-        badge = "icon.badge",
-        hasUsername = true,
-        hasAcceptTnc = true,
-    ),
-)
+fun accountListResponse(
+    shopEligible: Boolean = true,
+    buyerHasUsername: Boolean = true,
+    buyerHasAcceptTnc: Boolean = true
+): List<ContentAccountUiModel> {
+    return if (!shopEligible) {
+        listOf(
+            ContentAccountUiModel(
+                id = "12345",
+                type = ContentCommonUserType.TYPE_SHOP,
+                name = "Shop",
+                iconUrl = "icon.url.shop",
+                badge = "icon.badge",
+                hasUsername = false,
+                hasAcceptTnc = false,
+            ),
+            ContentAccountUiModel(
+                id = "67890",
+                type = ContentCommonUserType.TYPE_USER,
+                name = "Buyer",
+                iconUrl = "icon.url.buyer",
+                badge = "icon.badge",
+                hasUsername = buyerHasUsername,
+                hasAcceptTnc = buyerHasAcceptTnc,
+            ),
+        )
+    } else {
+        listOf(
+            ContentAccountUiModel(
+                id = "12345",
+                type = ContentCommonUserType.TYPE_SHOP,
+                name = "Shop",
+                iconUrl = "icon.url.shop",
+                badge = "icon.badge",
+                hasUsername = true,
+                hasAcceptTnc = true,
+            ),
+            ContentAccountUiModel(
+                id = "67890",
+                type = ContentCommonUserType.TYPE_USER,
+                name = "Buyer",
+                iconUrl = "icon.url.buyer",
+                badge = "icon.badge",
+                hasUsername = buyerHasUsername,
+                hasAcceptTnc = buyerHasAcceptTnc,
+            ),
+        )
+    }
+}
 
 val channelResponse = GetChannelResponse.Channel(
     basic = GetChannelResponse.ChannelBasic(
