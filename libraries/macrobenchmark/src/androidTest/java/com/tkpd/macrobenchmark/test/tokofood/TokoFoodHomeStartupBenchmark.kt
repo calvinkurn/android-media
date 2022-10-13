@@ -1,4 +1,4 @@
-package com.tkpd.macrobenchmark.test.tokopedianow
+package com.tkpd.macrobenchmark.test.tokofood
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
