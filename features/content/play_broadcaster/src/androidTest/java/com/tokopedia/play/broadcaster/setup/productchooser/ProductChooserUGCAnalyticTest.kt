@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.setup.productUGCViewModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.ProductTagConfigUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -37,6 +38,7 @@ import org.junit.runner.RunWith
 /**
  * Created by kenny.hadisaputra on 16/09/22
  */
+@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class ProductChooserUGCAnalyticTest {
 

@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.setup.accountListResponse
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.setup.channelResponse
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -27,6 +28,7 @@ import org.junit.runner.RunWith
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
+@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class SwitchAccountAnalyticTest {
 

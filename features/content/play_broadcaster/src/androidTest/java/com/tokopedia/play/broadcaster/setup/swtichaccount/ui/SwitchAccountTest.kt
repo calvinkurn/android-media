@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.setup.channelResponse
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Test
@@ -24,6 +25,7 @@ import org.junit.runner.RunWith
 /**
  * Created by fachrizalmrsln on 28/09/22
  */
+@UiTest
 @RunWith(AndroidJUnit4ClassRunner::class)
 class SwitchAccountTest {
 
