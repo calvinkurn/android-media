@@ -161,6 +161,15 @@
                 />
         </LinearLayout>
 
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="productLayout,productNameSection" />
+
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu"
             android:layout_width="@dimen/unify_space_32"
