@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 class ManageProductNonVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val errorMessageHelper: ErrorMessageHelper
+    private val errorMessageHelper: ErrorMessageHelper,
 ) : BaseViewModel(dispatchers.main){
 
     private val _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()

@@ -34,6 +34,10 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
         notifyItemRangeChanged(Int.ZERO, newData.warehouses.size)
     }
 
+    fun setDataList(position: Int, warehouse: ReservedProduct.Product.Warehouse) {
+        notifyItemChanged(position, warehouse)
+    }
+
     fun getDataList() = product?.warehouses.orEmpty()
 
     fun setListener(listener: ManageProductNonVariantAdapterListener?) {
@@ -62,11 +66,16 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
                     binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
                     listener?.onDataInputChanged(adapterPosition, criteria, discount)
                 }
+                iconTkpd.isVisible = selectedWarehouse.isDilayaniTokopedia
             }
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {
+                clearListener()
                 setupInputField(criteria, discount)
                 setupListener(criteria, discount)
+                if (selectedWarehouse.isDilayaniTokopedia) {
+                    setTicker(binding.root.context)
+                }
             }
         }
     }

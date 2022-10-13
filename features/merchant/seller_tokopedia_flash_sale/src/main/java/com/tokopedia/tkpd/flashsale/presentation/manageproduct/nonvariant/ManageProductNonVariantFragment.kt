@@ -81,7 +81,7 @@ class ManageProductNonVariantFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        product?.let {
+        viewModel.product.value?.let {
             val warehouses = (adapter as ManageProductNonVariantAdapter).getWarehouses()
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)
@@ -97,6 +97,13 @@ class ManageProductNonVariantFragment :
     override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
         val originalPrice = product?.warehouses?.firstOrNull()?.price.orZero()
         return viewModel.calculatePercent(priceInput, originalPrice)
+    }
+
+    override fun validateItem(
+        criteria: ProductCriteria,
+        discountSetup: DiscountSetup
+    ): ValidationResult {
+        return viewModel.validateInput(criteria, discountSetup)
     }
 
     private fun setupObserver() {
