@@ -324,7 +324,7 @@ class ProductViewHolder(
     }
 
     private fun onClickProductItem(product: ProductUiModel) {
-        if (product.isNotViolation()) {
+        if (product.isNotViolation() || !product.isShopModerate) {
             listener.onClickProductItem(product)
         }
     }
