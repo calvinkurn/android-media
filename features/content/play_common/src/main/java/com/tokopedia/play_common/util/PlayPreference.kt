@@ -19,7 +19,6 @@ class PlayPreference @Inject constructor(
         private const val A_DAY_IN_MILLIS: Long = 86400000
         private const val BUFFER_TIME: Long = 10000
 
-        private const val FORMAT_ONE_TAP_ONBOARDING = "one_tap_onboarding_%s"
         private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
 
         private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s" //with userId
@@ -29,33 +28,8 @@ class PlayPreference @Inject constructor(
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
 
-    fun setOnboardingShown(tag: String) {
-        setSwipeOnboardingShown(tag)
-    }
-
     fun isOnboardingShown(tag: String): Boolean {
         return isSwipeOnboardingShown(tag)
-    }
-
-    /**
-     * Valid from Initial Play -> Swipe Room
-     */
-    private fun setOneTapOnboardingShown(tag: String) {
-        sharedPref.edit().putBoolean(String.format(FORMAT_ONE_TAP_ONBOARDING, tag), true).apply()
-    }
-
-    /**
-     * Valid from Initial Play -> Swipe Room
-     */
-    private fun isOneTapOnboardingShown(tag: String): Boolean {
-        return sharedPref.getBoolean(String.format(FORMAT_ONE_TAP_ONBOARDING, tag), false)
-    }
-
-    /**
-     * Valid since Swipe Room
-     */
-    private fun setSwipeOnboardingShown(tag: String) {
-        sharedPref.edit().putBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), true).apply()
     }
 
     /**
