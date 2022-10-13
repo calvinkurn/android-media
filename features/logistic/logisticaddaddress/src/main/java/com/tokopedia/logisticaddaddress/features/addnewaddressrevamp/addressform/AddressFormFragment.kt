@@ -929,7 +929,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun openContactPicker() {
         val contactPickerIntent = Intent(
-                Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+            Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
         try {
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: ActivityNotFoundException) {
@@ -1184,6 +1184,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             if (isPositiveFlow) {
                 if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1Notes = formAddress.etCourierNote.textFieldInput.text.toString()
                 } else {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
                 }
@@ -1192,6 +1193,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             } else {
                 if (formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
                     saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text} (${formAddressNegative.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1Notes = formAddressNegative.etCourierNote.textFieldInput.text.toString()
+
                 } else {
                     saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
                 }

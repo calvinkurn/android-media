@@ -9,7 +9,18 @@ import com.tokopedia.logisticCommon.data.entity.response.AutoFillResponse
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.logisticCommon.data.request.AddAddressParam
 import com.tokopedia.logisticCommon.data.request.EditAddressParam
-import com.tokopedia.logisticCommon.data.response.*
+import com.tokopedia.logisticCommon.data.response.AddAddressResponse
+import com.tokopedia.logisticCommon.data.response.AddressResponse
+import com.tokopedia.logisticCommon.data.response.AutoCompleteResponse
+import com.tokopedia.logisticCommon.data.response.GetDefaultAddressResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictBoundaryResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictDetailsResponse
+import com.tokopedia.logisticCommon.data.response.GetDistrictResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrGetDistrictCenterResponse
+import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureResponse
+import com.tokopedia.logisticCommon.data.response.KeroEditAddressResponse
+import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.data.response.PinpointValidationResponse
 import com.tokopedia.logisticCommon.data.utils.getResponse
 import javax.inject.Inject
 
@@ -105,6 +116,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             addrName = model.addressName,
             receiverName = model.receiverName,
             address1 = model.address1,
+            address1Notes = model.address1Notes,
             address2 = model.address2,
             postalCode = model.postalCode,
             phone = model.phone,
@@ -132,6 +144,7 @@ class KeroRepository @Inject constructor(@ApplicationContext private val gql: Gr
             addressName = model.addressName,
             receiverName = model.receiverName,
             address1 = model.address1,
+            address1Notes = model.address1Notes,
             address2 = model.address2,
             postalCode = model.postalCode,
             district = model.districtId.toString(),
