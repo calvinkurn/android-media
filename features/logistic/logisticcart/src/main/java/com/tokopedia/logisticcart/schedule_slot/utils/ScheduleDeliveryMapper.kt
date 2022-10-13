@@ -54,7 +54,7 @@ object ScheduleDeliveryMapper {
         selectedDateId: String
     ): List<ButtonDateUiModel> {
         val dateUiModel = mutableListOf<ButtonDateUiModel>()
-        deliveryServices.forEach { service ->
+        deliveryServices.filter { !it.hidden }.forEach { service ->
             val buttonDateUiModel = ButtonDateUiModel(
                 title = service.titleLabel,
                 // todo
@@ -86,7 +86,7 @@ object ScheduleDeliveryMapper {
         selectedTimeSlot: DeliveryProduct,
         isDateSelected: Boolean
     ): List<ChooseTimeUiModel> {
-        return timeOptions.map { time ->
+        return timeOptions.filter { !it.hidden }.map { time ->
             ChooseTimeUiModel(
                 content = generateTimeTitle(time),
                 note = time.text,
