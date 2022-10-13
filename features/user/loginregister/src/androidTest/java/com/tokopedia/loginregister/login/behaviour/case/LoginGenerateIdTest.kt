@@ -9,7 +9,7 @@ import com.tokopedia.utils.view.binding.internal.findRootView
 import org.junit.Test
 
 @UiTest
-class LoginGenerateIdTest : LoginBase()  {
+class LoginGenerateIdTest : LoginBase() {
 
     @Test
     fun generate_view_id_file() {
