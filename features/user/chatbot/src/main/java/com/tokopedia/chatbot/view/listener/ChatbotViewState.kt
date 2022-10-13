@@ -39,8 +39,6 @@ interface ChatbotViewState : BaseChatViewState {
                             chatRatingViewModel : ChatRatingViewModel,
                             activity: Activity)
 
-    fun onClickReasonRating()
-
     fun onImageUpload(it: ImageUploadUiModel)
 
     fun onVideoUpload(it: VideoUploadUiModel)
