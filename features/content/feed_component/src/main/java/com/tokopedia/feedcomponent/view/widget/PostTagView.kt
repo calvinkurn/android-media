@@ -105,7 +105,7 @@ class PostTagView @JvmOverloads constructor(
 
         if (campaign?.isUpcoming == true) {
             productViewPrice.text = product.priceMaskedFmt
-            setSlashedPriceText(product.priceOriginalFmt)
+            setSlashedPriceText(product.priceFmt)
         } else if (product.isDiscount) {
             productViewPrice.text = product.priceDiscountFmt
             setSlashedPriceText(product.priceOriginalFmt)
