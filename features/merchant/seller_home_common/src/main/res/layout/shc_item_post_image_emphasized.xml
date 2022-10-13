@@ -5,7 +5,6 @@
     android:id="@+id/parentViewShcItemPost"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:maxHeight="@dimen/shc_dimen_74dp"
     android:paddingStart="8dp"
     android:paddingTop="@dimen/shc_dimen_6dp"
     android:paddingEnd="8dp"

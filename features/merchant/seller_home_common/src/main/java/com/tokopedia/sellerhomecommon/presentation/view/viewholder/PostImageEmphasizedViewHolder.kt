@@ -32,7 +32,6 @@ class PostImageEmphasizedViewHolder(
 
     companion object {
         val RES_LAYOUT = R.layout.shc_item_post_image_emphasized
-        private const val DP_12 = 12
     }
 
     private var alreadySetTimer = false
