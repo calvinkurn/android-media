@@ -87,7 +87,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupInsets()
         setupView()
-        (activity as PlayBroadcastActivity).isChannelEnded = true
+        (activity as PlayBroadcastActivity).channelEnded = true
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
