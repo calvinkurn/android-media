@@ -30,27 +30,27 @@ class ProductPostTagViewHolderNew(
     val listener: ProductItemInfoBottomSheet.Listener
 ) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
 
-    private lateinit var productLayout: FrameLayout
-    private lateinit var productImage: ImageUnify
-    private lateinit var productPrice: Typography
-    private lateinit var productName: Typography
-    private lateinit var discountlayout: LinearLayout
-    private lateinit var addToWishlistBtn: FrameLayout
-    private lateinit var addToCartBtn: UnifyButton
-    private lateinit var stockProgressBar: ProgressBarUnify
-    private lateinit var productTag: Typography
-    private lateinit var productNameSection: LinearLayout
-    private lateinit var rating: Typography
-    private lateinit var label: Label
-    private lateinit var soldInfo: Typography
-    private lateinit var freeShipping: ImageView
-    private lateinit var divider: View
-    private lateinit var stockBarLayout: View
-    private lateinit var stockText: Typography
-    private lateinit var star: IconUnify
-    private lateinit var menuBtn: IconUnify
-    private lateinit var card: CardUnify
-    private lateinit var addToWishlistBtnIcon: IconUnify
+    private var productLayout: FrameLayout
+    private var productImage: ImageUnify
+    private var productPrice: Typography
+    private var productName: Typography
+    private var discountlayout: LinearLayout
+    private var addToWishlistBtn: FrameLayout
+    private var addToCartBtn: UnifyButton
+    private var stockProgressBar: ProgressBarUnify
+    private var productTag: Typography
+    private var productNameSection: LinearLayout
+    private var rating: Typography
+    private var label: Label
+    private var soldInfo: Typography
+    private var freeShipping: ImageView
+    private var divider: View
+    private var stockBarLayout: View
+    private var stockText: Typography
+    private var star: IconUnify
+    private var menuBtn: IconUnify
+    private var card: CardUnify
+    private var addToWishlistBtnIcon: IconUnify
 
     init {
         productLayout = itemView.findViewById(R.id.productLayout)

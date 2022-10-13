@@ -6,10 +6,10 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 
+@Suppress("LateinitUsage")
 class FeedPlusDetailActivity : BaseSimpleActivity() {
 
     private lateinit var detailId: String
