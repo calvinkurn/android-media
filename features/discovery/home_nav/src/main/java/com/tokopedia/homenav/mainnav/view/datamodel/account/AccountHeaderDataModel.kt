@@ -117,14 +117,13 @@ data class AccountHeaderDataModel(
         this.profileAffiliateDataModel.isGetAffiliateLoading = isLoading
     }
 
-    fun setAdminData(adminData: AdminData?, shopId: String) {
+    fun setAdminData(adminData: AdminData?) {
         val isLocationAdmin: Boolean = adminData?.detail?.roleType?.isLocationAdmin == true
         val adminRoleText: String? = adminData?.adminTypeText
 
         this.profileSellerDataModel.adminRoleText = adminRoleText
         this.profileSellerDataModel.isLocationAdmin = isLocationAdmin
         this.profileSellerDataModel.adminStatus = adminData?.status.orEmpty()
-        this.profileSellerDataModel.shopId = shopId
     }
 
     fun setWalletAppData(walletAppData: WalletAppData) {

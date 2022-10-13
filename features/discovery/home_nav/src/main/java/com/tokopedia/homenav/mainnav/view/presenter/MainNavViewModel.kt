@@ -440,7 +440,7 @@ class MainNavViewModel @Inject constructor(
 
                 accountHeaderModel.apply {
                     adminData?.let { adminData ->
-                        setAdminData(adminData.data, adminData.shopId)
+                        setAdminData(adminData.data)
                     }
                 }.let {
                     it.state = NAV_PROFILE_STATE_SUCCESS
@@ -877,7 +877,7 @@ class MainNavViewModel @Inject constructor(
                         val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
                         val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
-                        setAdminData(adminData?.data, adminData?.shopId.orEmpty())
+                        setAdminData(adminData?.data)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
