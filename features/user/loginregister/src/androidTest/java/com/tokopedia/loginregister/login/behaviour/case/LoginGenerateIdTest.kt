@@ -21,7 +21,6 @@ class LoginGenerateIdTest : LoginBase() {
 
     @Test
     fun generate_view_id_file_bottom_sheet_socmed() {
-
         runTest {
             LoginSocmedTestHelper.clickSocmedButton()
 
