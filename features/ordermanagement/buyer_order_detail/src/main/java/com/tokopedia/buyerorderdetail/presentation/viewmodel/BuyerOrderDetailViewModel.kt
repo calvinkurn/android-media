@@ -130,6 +130,155 @@ class BuyerOrderDetailViewModel @Inject constructor(
         observeGetBuyerOrderDetailDataParams()
     }
 
+    fun getBuyerOrderDetailData(
+        orderId: String,
+        paymentId: String,
+        cart: String,
+        shouldCheckCache: Boolean
+    ) {
+        viewModelScope.launch {
+            buyerOrderDetailDataRequestParams.emit(
+                GetBuyerOrderDetailDataParams(
+                    cart = cart,
+                    orderId = orderId,
+                    paymentId = paymentId,
+                    shouldCheckCache = shouldCheckCache
+                )
+            )
+        }
+    }
+
+    fun finishOrder() {
+        viewModelScope.launchCatchError(block = {
+            val param = FinishOrderParams(
+                orderId = getOrderId(),
+                userId = userSession.get().userId,
+                action = getFinishOrderActionStatus()
+            )
+            _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
+        }, onError = {
+            _finishOrderResult.value = (Fail(it))
+        })
+    }
+
+    fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
+        viewModelScope.launchCatchError(block = {
+            singleAtcRequestStates.update {
+                it.toMutableMap().apply {
+                    put(product.productId, AddToCartSingleRequestState.Requesting)
+                }
+            }
+            (product to atcUseCase.get().execute(
+                userSession.get().userId,
+                atcMultiQuery.get(),
+                arrayListOf(product.mapToAddToCartParam())
+            )).let { result ->
+                singleAtcRequestStates.update {
+                    it.toMutableMap().apply {
+                        put(product.productId, AddToCartSingleRequestState.Success(result))
+                    }
+                }
+                _singleAtcResult.value = result
+            }
+        }, onError = { throwable ->
+            singleAtcRequestStates.update {
+                it.toMutableMap().apply {
+                    put(product.productId, AddToCartSingleRequestState.Error(throwable))
+                }
+            }
+            _singleAtcResult.value = (product to Fail(throwable))
+        })
+    }
+
+    fun addMultipleToCart() {
+        viewModelScope.launchCatchError(block = {
+            val productListUiState = productListUiState.value
+            if (productListUiState is ProductListUiState.Showing) {
+                val params = ArrayList(productListUiState.data.productList.map {
+                    it.mapToAddToCartParam()
+                })
+                _multiAtcResult.value = mapMultiATCResult(
+                    atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params)
+                )
+            } else {
+                _multiAtcResult.value = MultiATCState.Fail(
+                    message = StringRes(resourceProvider.get().getErrorMessageNoProduct())
+                )
+            }
+        }, onError = {
+            _multiAtcResult.value = MultiATCState.Fail(throwable = it)
+        })
+    }
+
+    fun getSecondaryActionButtons(): List<ActionButtonsUiModel.ActionButton> {
+        val actionButtonsUiState = actionButtonsUiState.value
+        return if (actionButtonsUiState is ActionButtonsUiState.Showing) {
+            actionButtonsUiState.data.secondaryActionButtons
+        } else emptyList()
+    }
+
+    fun getProducts(): List<ProductListUiModel.ProductUiModel> {
+        val productListUiState = productListUiState.value
+        return if (productListUiState is ProductListUiState.Showing) {
+            productListUiState.data.productList
+        } else emptyList()
+    }
+
+    fun getOrderId(): String {
+        val orderStatusUiState = orderStatusUiState.value
+        return if (orderStatusUiState is OrderStatusUiState.Showing) {
+            orderStatusUiState.data.orderStatusHeaderUiModel.orderId
+        } else "0"
+    }
+
+    fun getShopId(): String {
+        val productListUiState = productListUiState.value
+        return if (productListUiState is ProductListUiState.Showing) {
+            productListUiState.data.productListHeaderUiModel.shopId
+        } else "0"
+    }
+
+    fun getShopName(): String {
+        val productListUiState = productListUiState.value
+        return if (productListUiState is ProductListUiState.Showing) {
+            productListUiState.data.productListHeaderUiModel.shopName
+        } else ""
+    }
+
+    fun getShopType(): Int {
+        val productListUiState = productListUiState.value
+        return if (productListUiState is ProductListUiState.Showing) {
+            productListUiState.data.productListHeaderUiModel.shopType
+        } else 0
+    }
+
+    fun getCategoryId(): List<Int> {
+        val categoryIdMap = HashSet<Int>()
+        val productListUiState = productListUiState.value
+        return if (productListUiState is ProductListUiState.Showing) {
+            productListUiState.data.productList.map {
+                categoryIdMap.add(it.categoryId.toIntOrZero())
+            }
+            productListUiState.data.productBundlingList.forEach { bundle ->
+                bundle.bundleItemList.forEach {
+                    categoryIdMap.add(it.categoryId.toIntOrZero())
+                }
+            }
+            categoryIdMap.toList()
+        } else emptyList()
+    }
+
+    fun getUserId(): String {
+        return userSession.get().userId
+    }
+
+    fun getOrderStatusId(): String {
+        val orderStatusUiState = orderStatusUiState.value
+        return if (orderStatusUiState is OrderStatusUiState.Showing) {
+            orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId
+        } else "0"
+    }
+
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
@@ -235,159 +384,10 @@ class BuyerOrderDetailViewModel @Inject constructor(
         )
     }
 
-    fun getBuyerOrderDetailData(
-        orderId: String,
-        paymentId: String,
-        cart: String,
-        shouldCheckCache: Boolean
-    ) {
-        viewModelScope.launch {
-            buyerOrderDetailDataRequestParams.emit(
-                GetBuyerOrderDetailDataParams(
-                    cart = cart,
-                    orderId = orderId,
-                    paymentId = paymentId,
-                    shouldCheckCache = shouldCheckCache
-                )
-            )
-        }
-    }
-
-    fun finishOrder() {
-        viewModelScope.launchCatchError(block = {
-            val param = FinishOrderParams(
-                orderId = getOrderId(),
-                userId = userSession.get().userId,
-                action = getFinishOrderActionStatus()
-            )
-            _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
-        }, onError = {
-            _finishOrderResult.value = (Fail(it))
-        })
-    }
-
-    fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
-        viewModelScope.launchCatchError(block = {
-            singleAtcRequestStates.update {
-                it.toMutableMap().apply {
-                    put(product.productId, AddToCartSingleRequestState.Requesting)
-                }
-            }
-            (product to atcUseCase.get().execute(
-                userSession.get().userId,
-                atcMultiQuery.get(),
-                arrayListOf(product.mapToAddToCartParam())
-            )).let { result ->
-                singleAtcRequestStates.update {
-                    it.toMutableMap().apply {
-                        put(product.productId, AddToCartSingleRequestState.Success(result))
-                    }
-                }
-                _singleAtcResult.value = result
-            }
-        }, onError = { throwable ->
-            singleAtcRequestStates.update {
-                it.toMutableMap().apply {
-                    put(product.productId, AddToCartSingleRequestState.Error(throwable))
-                }
-            }
-            _singleAtcResult.value = (product to Fail(throwable))
-        })
-    }
-
-    fun addMultipleToCart() {
-        viewModelScope.launchCatchError(block = {
-            val productListUiState = productListUiState.value
-            if (productListUiState is ProductListUiState.Showing) {
-                val params = ArrayList(productListUiState.data.productList.map {
-                    it.mapToAddToCartParam()
-                })
-                _multiAtcResult.value = mapMultiATCResult(
-                    atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params)
-                )
-            } else {
-                _multiAtcResult.value = MultiATCState.Fail(
-                    message = StringRes(resourceProvider.get().getErrorMessageNoProduct())
-                )
-            }
-        }, onError = {
-            _multiAtcResult.value = MultiATCState.Fail(throwable = it)
-        })
-    }
-
     private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {
         return when (result) {
             is Success -> MultiATCState.Success(result.data)
             is Fail -> MultiATCState.Fail(throwable = result.throwable)
         }
-    }
-
-    fun getSecondaryActionButtons(): List<ActionButtonsUiModel.ActionButton> {
-        val actionButtonsUiState = actionButtonsUiState.value
-        return if (actionButtonsUiState is ActionButtonsUiState.Showing) {
-            actionButtonsUiState.data.secondaryActionButtons
-        } else emptyList()
-    }
-
-    fun getProducts(): List<ProductListUiModel.ProductUiModel> {
-        val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
-            productListUiState.data.productList
-        } else emptyList()
-    }
-
-    fun getOrderId(): String {
-        val orderStatusUiState = orderStatusUiState.value
-        return if (orderStatusUiState is OrderStatusUiState.Showing) {
-            orderStatusUiState.data.orderStatusHeaderUiModel.orderId
-        } else "0"
-    }
-
-    fun getShopId(): String {
-        val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
-            productListUiState.data.productListHeaderUiModel.shopId
-        } else "0"
-    }
-
-    fun getShopName(): String {
-        val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
-            productListUiState.data.productListHeaderUiModel.shopName
-        } else ""
-    }
-
-    fun getShopType(): Int {
-        val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
-            productListUiState.data.productListHeaderUiModel.shopType
-        } else 0
-    }
-
-    fun getCategoryId(): List<Int> {
-        val categoryIdMap = HashSet<Int>()
-        val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
-            productListUiState.data.productList.map {
-                categoryIdMap.add(it.categoryId.toIntOrZero())
-            }
-            productListUiState.data.productBundlingList.forEach { bundle ->
-                bundle.bundleItemList.forEach {
-                    categoryIdMap.add(it.categoryId.toIntOrZero())
-                }
-            }
-            categoryIdMap.toList()
-        } else emptyList()
-    }
-
-    fun getUserId(): String {
-        return userSession.get().userId
-    }
-
-    fun getOrderStatusId(): String {
-        val orderStatusUiState = orderStatusUiState.value
-        return if (orderStatusUiState is OrderStatusUiState.Showing) {
-            orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId
-        } else "0"
     }
 }

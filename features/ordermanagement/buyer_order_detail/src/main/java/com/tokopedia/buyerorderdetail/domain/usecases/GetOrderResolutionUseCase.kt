@@ -15,6 +15,15 @@ class GetOrderResolutionUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
 ) : BaseGraphqlUseCase<GetOrderResolutionParams, GetOrderResolutionRequestState>(dispatchers) {
 
+    override fun graphqlQuery() = QUERY
+
+    override suspend fun execute(params: GetOrderResolutionParams) = flow {
+        emit(GetOrderResolutionRequestState.Requesting)
+        emit(GetOrderResolutionRequestState.Success(sendRequest(params).resolutionGetTicketStatus?.data))
+    }.catch {
+        emit(GetOrderResolutionRequestState.Error(it))
+    }
+
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {
         return RequestParams.create().apply {
             putLong(PARAM_ORDER_ID, params.orderId)
@@ -29,15 +38,6 @@ class GetOrderResolutionUseCase @Inject constructor(
             createRequestParam(params),
             getCacheStrategy(params.shouldCheckCache)
         )
-    }
-
-    override fun graphqlQuery() = QUERY
-
-    override suspend fun execute(params: GetOrderResolutionParams) = flow {
-        emit(GetOrderResolutionRequestState.Requesting)
-        emit(GetOrderResolutionRequestState.Success(sendRequest(params).resolutionGetTicketStatus?.data))
-    }.catch {
-        emit(GetOrderResolutionRequestState.Error(it))
     }
 
     companion object {

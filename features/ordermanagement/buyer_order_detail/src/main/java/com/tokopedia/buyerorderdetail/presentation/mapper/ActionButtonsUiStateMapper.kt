@@ -11,6 +11,19 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ActionButtonsUiState
 
 object ActionButtonsUiStateMapper {
 
+    fun map(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): ActionButtonsUiState {
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
+            }
+            else -> {
+                mapOnGetBuyerOrderDetailIdling()
+            }
+        }
+    }
+
     private fun mapOnGetBuyerOrderDetailDataStarted(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
     ): ActionButtonsUiState {
@@ -189,18 +202,5 @@ object ActionButtonsUiStateMapper {
             uriType = popUpButton.uriType,
             uri = popUpButton.uri
         )
-    }
-
-    fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
-    ): ActionButtonsUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
     }
 }

@@ -16,6 +16,23 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.PaymentInfoUiState
 
 object PaymentInfoUiStateMapper {
 
+    fun map(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        resourceProvider: ResourceProvider
+    ): PaymentInfoUiState {
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(
+                    getBuyerOrderDetailDataRequestState,
+                    resourceProvider
+                )
+            }
+            else -> {
+                mapOnGetBuyerOrderDetailIdling()
+            }
+        }
+    }
+
     private fun mapOnGetBuyerOrderDetailDataStarted(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started,
         resourceProvider: ResourceProvider
@@ -205,22 +222,5 @@ object PaymentInfoUiStateMapper {
         @StringRes resId: Int
     ): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
         return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
-    }
-
-    fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-        resourceProvider: ResourceProvider
-    ): PaymentInfoUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(
-                    getBuyerOrderDetailDataRequestState,
-                    resourceProvider
-                )
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
     }
 }

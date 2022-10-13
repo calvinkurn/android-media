@@ -16,6 +16,8 @@ import javax.inject.Inject
 class GetP1DataUseCase @Inject constructor(
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase
 ) {
+
+    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
             emitAll(
@@ -51,6 +53,4 @@ class GetP1DataUseCase @Inject constructor(
             emit(GetP1DataRequestState.Complete(GetOrderResolutionRequestState.Error(it)))
         }
     }
-
-    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
 }
