@@ -644,15 +644,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
         } else if (shouldTriggerEpharmacyCoachmark) {
-            triggerEpharmacyCoachmark();
+            triggerEpharmacyCoachmark(shipmentCartItemModelList);
         }
     }
 
-    private void triggerEpharmacyCoachmark() {
-        delayScrollToCoachmarkEpharmacySubscription = Observable.timer(1000, TimeUnit.MILLISECONDS)
+    private void triggerEpharmacyCoachmark(List<ShipmentCartItemModel> shipmentCartItemModelList) {
+        delayScrollToCoachmarkEpharmacySubscription = Observable.just(shipmentCartItemModelList)
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Long>() {
+                .map(shipmentCartItemModelList1 -> {
+                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList1) {
+                        if (shipmentCartItemModel.getSupportMiniConsul()) {
+                            return true;
+                        }
+                    }
+                    return false;
+                })
+                .subscribe(new Subscriber<Boolean>() {
                     @Override
                     public void onCompleted() {
 
@@ -664,8 +673,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
 
                     @Override
-                    public void onNext(Long aLong) {
-                        if (!isUnsubscribed()) {
+                    public void onNext(Boolean needToShowCoachmark) {
+                        if (!isUnsubscribed() && needToShowCoachmark) {
                             int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
                             rvShipment.scrollToPosition(uploadPrescriptionPosition);
                             rvShipment.post(() -> {
