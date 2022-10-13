@@ -2,7 +2,6 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -29,8 +28,8 @@ import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
-import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -102,13 +101,11 @@ import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
-import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
-import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
@@ -179,7 +176,6 @@ class ChatbotPresenter @Inject constructor(
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER = "15"
-        const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
     }
 
@@ -200,7 +196,6 @@ class ChatbotPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var listInterceptor: ArrayList<Interceptor> =
         arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
-    private var isErrorOnLeaveQueue = false
     private lateinit var chatResponse: ChatSocketPojo
     private val job = SupervisorJob()
     private var autoRetryJob: Job? = null
@@ -228,7 +223,9 @@ class ChatbotPresenter @Inject constructor(
                     }
             },
             onError = {
-
+                ChatbotNewRelicLogger.logNewRelicForSocket(
+                    it
+                )
             }
         )
     }
@@ -259,6 +256,9 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleNewMessage(message: ChatWebSocketResponse, messageId: String) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            Timber.d("Socket Message: $message")
+        }
         handleAttachmentTypes(message, messageId)
     }
 
@@ -296,8 +296,11 @@ class ChatbotPresenter @Inject constructor(
             },
             onError = {
                 if (GlobalConfig.isAllowDebuggingTools()) {
-                    Timber.d("Socket ConnectionReconnecting")
+                    Timber.d("Socket Reconnecting")
                 }
+                ChatbotNewRelicLogger.logNewRelicForSocket(
+                    it
+                )
             }
         )
     }
@@ -337,6 +340,9 @@ class ChatbotPresenter @Inject constructor(
                 }
             }
         } catch (e: JsonSyntaxException) {
+            ChatbotNewRelicLogger.logNewRelicForSocket(
+                e
+            )
         }
     }
 
