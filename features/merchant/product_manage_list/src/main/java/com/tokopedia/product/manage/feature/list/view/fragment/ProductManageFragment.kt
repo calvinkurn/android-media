@@ -2299,8 +2299,7 @@ open class ProductManageFragment :
      */
     private fun goToPDP(
         productId: String?,
-        showTopAdsSheet: Boolean = false,
-        isModerateShop: Boolean = false
+        showTopAdsSheet: Boolean = false
     ) {
         if (productId != null) {
             val uri = Uri.parse(ApplinkConstInternalMarketplace.PRODUCT_DETAIL).buildUpon()
