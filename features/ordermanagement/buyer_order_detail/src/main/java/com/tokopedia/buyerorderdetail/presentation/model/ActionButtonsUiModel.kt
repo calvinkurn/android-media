@@ -1,11 +1,9 @@
 package com.tokopedia.buyerorderdetail.presentation.model
 
-import java.io.Serializable
-
 data class ActionButtonsUiModel(
     val primaryActionButton: ActionButton,
     val secondaryActionButtons: List<ActionButton>
-) : Serializable {
+) {
     data class ActionButton(
         val key: String,
         val label: String,
@@ -13,12 +11,12 @@ data class ActionButtonsUiModel(
         val variant: String,
         val type: String,
         val url: String
-    ) : Serializable {
+    ) {
         data class PopUp(
             val actionButton: List<PopUpButton> = listOf(),
             val body: String,
             val title: String
-        ) : Serializable {
+        ) {
             data class PopUpButton(
                 val key: String,
                 val displayName: String,
@@ -26,7 +24,7 @@ data class ActionButtonsUiModel(
                 val type: String,
                 val uriType: String,
                 val uri: String
-            ) : Serializable
+            )
         }
     }
 }

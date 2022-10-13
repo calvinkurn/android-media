@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.kotlin.extensions.orFalse
@@ -68,7 +68,7 @@ object OrderResolutionTicketStatusUiStateMapper {
     }
 
     private fun mapOnDataReady(
-        orderResolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+        orderResolutionData: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
     ): OrderResolutionTicketStatusUiState {
         return OrderResolutionTicketStatusUiState.Showing(
             mapOrderResolutionTicketStatus(orderResolutionData)
@@ -80,7 +80,7 @@ object OrderResolutionTicketStatusUiStateMapper {
     }
 
     private fun mapOrderResolutionTicketStatus(
-        resolutionData: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData?
+        resolutionData: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
     ): OrderResolutionUIModel {
         return OrderResolutionUIModel(
             title = resolutionData?.cardTitle.orEmpty(),

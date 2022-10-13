@@ -14,7 +14,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
@@ -142,7 +142,7 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun createSuccessGetBuyerOrderDetailDataResult(
         getBuyerOrderDetailResult: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail = mockk(relaxed = true),
-        getOrderResolutionResult: GetResolutionTicketStatusResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true)
+        getOrderResolutionResult: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData = mockk(relaxed = true)
     ) {
         coEvery {
             getBuyerOrderDetailDataUseCase(any())

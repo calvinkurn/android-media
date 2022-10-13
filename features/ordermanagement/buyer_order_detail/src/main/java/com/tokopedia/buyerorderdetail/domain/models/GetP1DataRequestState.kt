@@ -1,17 +1,12 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-import java.io.Serializable
+sealed interface GetP1DataRequestState {
 
-sealed interface GetP1DataRequestState : Serializable {
-
-    val type: String
     val getOrderResolutionRequestState: GetOrderResolutionRequestState
 
     data class Requesting(
         override val getOrderResolutionRequestState: GetOrderResolutionRequestState = GetOrderResolutionRequestState.Requesting
-    ) : GetP1DataRequestState {
-        override val type: String = Requesting::class.java.simpleName
-    }
+    ) : GetP1DataRequestState
 
     data class Complete(
         override val getOrderResolutionRequestState: GetOrderResolutionRequestState
@@ -21,7 +16,5 @@ sealed interface GetP1DataRequestState : Serializable {
                 getOrderResolutionRequestState.throwable
             } else Throwable()
         }
-
-        override val type: String = Complete::class.java.simpleName
     }
 }

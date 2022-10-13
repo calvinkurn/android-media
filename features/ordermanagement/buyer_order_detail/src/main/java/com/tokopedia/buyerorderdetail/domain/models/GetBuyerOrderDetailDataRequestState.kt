@@ -1,10 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-import java.io.Serializable
-
-sealed class GetBuyerOrderDetailDataRequestState : Serializable {
-
-    abstract val type: String
+sealed class GetBuyerOrderDetailDataRequestState {
 
     interface CompleteState
     interface Started {
@@ -12,23 +8,15 @@ sealed class GetBuyerOrderDetailDataRequestState : Serializable {
         val getP1DataRequestState: GetP1DataRequestState
     }
 
-    object Idle : GetBuyerOrderDetailDataRequestState() {
-        override val type: String = Idle::class.java.simpleName
-    }
-
     data class Requesting(
         override val getP0DataRequestState: GetP0DataRequestState,
         override val getP1DataRequestState: GetP1DataRequestState,
-    ) : GetBuyerOrderDetailDataRequestState(), Started {
-        override val type: String = Requesting::class.java.simpleName
-    }
+    ) : GetBuyerOrderDetailDataRequestState(), Started
 
     data class Success(
         override val getP0DataRequestState: GetP0DataRequestState,
         override val getP1DataRequestState: GetP1DataRequestState,
-    ) : GetBuyerOrderDetailDataRequestState(), CompleteState, Started {
-        override val type: String = Success::class.java.simpleName
-    }
+    ) : GetBuyerOrderDetailDataRequestState(), CompleteState, Started
 
     data class Error(
         override val getP0DataRequestState: GetP0DataRequestState,
@@ -39,8 +27,6 @@ sealed class GetBuyerOrderDetailDataRequestState : Serializable {
                 getP0DataRequestState.getThrowable()
             } else Throwable()
         }
-
-        override val type: String = Error::class.java.simpleName
     }
 }
 

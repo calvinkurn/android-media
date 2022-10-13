@@ -4,7 +4,6 @@ import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
-import java.io.Serializable
 
 data class PaymentInfoUiModel(
     val headerUiModel: PlainHeaderUiModel,
@@ -12,7 +11,7 @@ data class PaymentInfoUiModel(
     val paymentInfoItems: List<PaymentInfoItemUiModel>,
     val paymentMethodInfoItem: PaymentInfoItemUiModel,
     val ticker: TickerUiModel
-) : Serializable {
+) {
     data class PaymentInfoItemUiModel(
         val label: String,
         val value: String

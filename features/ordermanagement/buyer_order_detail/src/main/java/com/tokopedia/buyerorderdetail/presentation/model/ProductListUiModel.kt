@@ -5,14 +5,13 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
-import java.io.Serializable
 
 data class ProductListUiModel(
     val productList: List<ProductUiModel>,
     val productBundlingList: List<ProductBundlingUiModel>,
     val productListHeaderUiModel: ProductListHeaderUiModel,
     val addonsListUiModel: AddonsListUiModel?
-) : Serializable {
+) {
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
         val shopId: String,
@@ -72,7 +71,7 @@ data class ProductListUiModel(
         val totalPrice: Double,
         val totalPriceText: String,
         val bundleItemList: List<ProductUiModel>
-    ) : Visitable<BuyerOrderDetailTypeFactory>, Serializable {
+    ) : Visitable<BuyerOrderDetailTypeFactory> {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory): Int {
             return typeFactory.type(this)
         }

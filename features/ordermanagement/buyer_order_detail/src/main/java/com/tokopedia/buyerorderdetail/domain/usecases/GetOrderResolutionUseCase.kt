@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.domain.usecases
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionParams
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetResolutionTicketStatusResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
@@ -23,7 +23,7 @@ class GetOrderResolutionUseCase @Inject constructor(
 
     private suspend fun sendRequest(
         params: GetOrderResolutionParams
-    ): GetResolutionTicketStatusResponse {
+    ): GetOrderResolutionResponse {
         return repository.request(
             graphqlQuery(),
             createRequestParam(params),

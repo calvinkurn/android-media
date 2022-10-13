@@ -2,7 +2,7 @@ package com.tokopedia.buyerorderdetail.domain.models
 
 import com.google.gson.annotations.SerializedName
 
-data class GetResolutionTicketStatusResponse(
+data class GetOrderResolutionResponse(
     @SerializedName("resolutionGetTicketStatus")
     val resolutionGetTicketStatus: ResolutionGetTicketStatus? = ResolutionGetTicketStatus()
 ) {
