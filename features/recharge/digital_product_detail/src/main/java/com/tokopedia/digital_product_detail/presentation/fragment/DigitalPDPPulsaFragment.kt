@@ -25,6 +25,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoOperator
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity.Companion.EXTRA_CALLBACK_CLIENT_NUMBER
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.AutoCompleteModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.FavoriteChipModel
 import com.tokopedia.common.topupbills.favoritepdp.domain.model.MenuDetailModel
@@ -623,7 +624,8 @@ class DigitalPDPPulsaFragment : BaseDaggerFragment(),
                 arrayListOf(),
                 categoryName,
                 isSwitchChecked,
-                loyaltyStatus
+                loyaltyStatus,
+                FavoriteNumberPageConfig.TELCO,
             )
 
             val requestCode = REQUEST_CODE_DIGITAL_SAVED_NUMBER

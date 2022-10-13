@@ -27,6 +27,7 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -123,6 +124,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private var searchParameter: HashMap<String, String>? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
     private var localCacheModel: LocalCacheModel? = null
+    private var currentSortFilterValue: String = String.EMPTY
 
     private var keyword: String = ""
 
@@ -210,7 +212,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant,
-            sortValue = viewModel.getCurrentSortValue(),
+            sortFilterValue = currentSortFilterValue,
             index = position
         )
     }
@@ -220,7 +222,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             destinationId = getDestinationId(),
             keyword = keyword,
             merchant = merchant,
-            sortValue = viewModel.getCurrentSortValue(),
+            sortFilterValue = currentSortFilterValue,
             index = position
         )
         goToMerchantPage(merchant.applink)
@@ -386,6 +388,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.searchParameterMap.collect {
                 searchParameter = it
+                currentSortFilterValue = getCurrentSortFilterValue()
                 if (it != null) {
                     viewModel.loadQuickSortFilter(it)
                     viewModel.getInitialMerchantSearchResult(it)
@@ -835,6 +838,11 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         return localCacheModel?.district_id.orEmpty()
     }
 
+    private fun getCurrentSortFilterValue(): String {
+        return searchParameter?.entries?.filter { it.key != SearchApiConst.Q }
+            ?.joinToString(AND_SEPARATOR) { it.toString() }.orEmpty()
+    }
+
     private fun getOkayMessage(): String = context?.getString(com.tokopedia.tokofood.R.string.search_srp_ooc_okay).orEmpty()
 
     private fun logErrorException(
@@ -866,6 +874,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
         private const val TOTO_LATITUDE = "-6.2216771"
         private const val TOTO_LONGITUDE = "106.8184023"
+
+        private const val AND_SEPARATOR = "&"
     }
 
 }

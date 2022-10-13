@@ -15,7 +15,6 @@ import androidx.viewpager.widget.PagerAdapter;
 
 import com.tokopedia.explore.view.fragment.ContentExploreFragment;
 import com.tokopedia.feedplus.data.pojo.FeedTabs;
-import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment;
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment;
 import com.tokopedia.videoTabComponent.view.VideoTabFragment;
 
@@ -46,8 +45,6 @@ public class FeedPlusTabAdapter extends FragmentStatePagerAdapter {
             return FeedPlusFragment.Companion.newInstance(bundle);
         } else if (data.getType().equals(FeedTabs.TYPE_EXPLORE)){
             return ContentExploreFragment.newInstance(bundle);
-        } else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(KEY_TRENDING)) {
-            return DynamicFeedFragment.Companion.newInstance(data.getKey());
         }  else if (data.getType().equals(TYPE_CUSTOM) && data.getKey().equals(FeedTabs.TYPE_VIDEO)) {
             return VideoTabFragment.newInstance(bundle);
         } else {

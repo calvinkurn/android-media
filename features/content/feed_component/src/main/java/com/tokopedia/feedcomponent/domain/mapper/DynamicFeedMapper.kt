@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.domain.mapper
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.data.pojo.FeedQuery
 import com.tokopedia.feedcomponent.data.pojo.TemplateData
-import com.tokopedia.feedcomponent.data.pojo.feed.CardHighlight
 import com.tokopedia.feedcomponent.data.pojo.feed.Cardpost
 import com.tokopedia.feedcomponent.data.pojo.feed.Feed
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Media
@@ -15,7 +14,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.TrackingBannerModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -147,7 +145,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
         val bannerList: MutableList<BannerItemViewModel> = ArrayList()
 
         feed.content.cardbanner.body.media.forEachIndexed { index, media ->
-            val id: Int = media.id.toIntOrNull() ?: 0
+            val id = media.id
             val trackBannerModel = TrackingBannerModel(
                     feed.type,
                     feed.activity,
@@ -396,7 +394,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
 
         for (item in media.mediaItems) {
             val percentageNumber = try {
-                item.percentage.toInt()
+                item.percentage.toIntOrZero()
             } catch (e: NumberFormatException) {
                 0
             }
@@ -469,38 +467,6 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
             ))
         }
         return trackingList
-    }
-
-    private fun shouldAddHighlightSection(contentList: MutableList<HighlightCardViewModel>): Boolean {
-        return contentList.isNotEmpty()
-    }
-
-    private fun mapHighlightContent(cardHighlight: CardHighlight, template: Template): MutableList<HighlightCardViewModel> {
-        val list: MutableList<HighlightCardViewModel> = ArrayList()
-        for (item in cardHighlight.items) {
-            if (item.media.isNotEmpty()) {
-                val media = item.media[0]
-                list.add(HighlightCardViewModel(
-                        media.id.toIntOrZero(),
-                        0,
-                        media.thumbnail,
-                        media.appLink,
-                        media.type,
-                        item.header,
-                        item.footer,
-                        template,
-                        mapTrackingData(convertTempTrackingToList(item.tracking)),
-                        media.videoList.firstOrNull()?.durationFmt ?: ""
-                ))
-            }
-        }
-        return list
-    }
-
-    private fun convertTempTrackingToList(tracking: Tracking): List<Tracking> {
-        val list: MutableList<Tracking> = ArrayList()
-        list.add(tracking)
-        return list
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
