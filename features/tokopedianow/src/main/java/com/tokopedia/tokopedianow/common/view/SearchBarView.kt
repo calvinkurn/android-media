@@ -28,7 +28,7 @@ class SearchBarView (
         const val SOFT_INPUT_FLAG = 0
     }
 
-    lateinit var onTextSubmitListener: (String) -> Unit
+    var onTextSubmitListener: ((String) -> Unit)? = null
 
     private val layout: ConstraintLayout? by lazy { binding?.layout }
     private val editText: EditText? by lazy { binding?.editText }
@@ -160,8 +160,8 @@ class SearchBarView (
     private fun submitText(
         text: String
     ) {
-        if (this::onTextSubmitListener.isInitialized && text.isNotBlank()) {
-            onTextSubmitListener(text)
+        if (text.isNotBlank()) {
+            onTextSubmitListener?.invoke(text)
         }
     }
 

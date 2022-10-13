@@ -15,6 +15,7 @@ import com.tokopedia.linker.requests.LinkerShareRequest
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import java.util.*
 
 object TokoNowUniversalShareUtil {
     private fun linkerDataMapper(shareTokoNowData: ShareTokonow?): LinkerShareData {
@@ -43,7 +44,7 @@ object TokoNowUniversalShareUtil {
                 if (linkerShareData.url != null) {
                     shareData(
                         context = context,
-                        shareTxt = String.format("%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
+                        shareTxt = String.format(Locale.getDefault(), "%s %s", shareHomeTokonow?.sharingText, linkerShareData.shareUri),
                         pageUri = linkerShareData.url
                     )
                 }

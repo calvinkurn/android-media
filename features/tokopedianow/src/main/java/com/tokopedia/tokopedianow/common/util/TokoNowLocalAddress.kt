@@ -7,6 +7,7 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import java.util.*
 import javax.inject.Inject
 
 class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val context: Context) {
@@ -30,7 +31,7 @@ class TokoNowLocalAddress @Inject constructor(@ApplicationContext private val co
                 districtId = data.districtId.toString(),
                 lat = data.latitude,
                 long = data.longitude,
-                label = String.format("%s %s", data.addressName, data.receiverName),
+                label = String.format(Locale.getDefault(), "%s %s", data.addressName, data.receiverName),
                 postalCode = data.postalCode,
                 warehouseId = tokonow.warehouseId.toString(),
                 shopId = tokonow.shopId.toString(),
