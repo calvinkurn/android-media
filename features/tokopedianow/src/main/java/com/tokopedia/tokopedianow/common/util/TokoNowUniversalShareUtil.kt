@@ -81,7 +81,7 @@ object TokoNowUniversalShareUtil {
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                    val shareString = String.format("%s %s", shareTokoNowData?.sharingText, linkerShareData?.shareUri)
+                    val shareString = String.format(Locale.getDefault(), "%s %s", shareTokoNowData?.sharingText, linkerShareData?.shareUri)
                     SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareString)
                     onSuccess.invoke()
                 }
