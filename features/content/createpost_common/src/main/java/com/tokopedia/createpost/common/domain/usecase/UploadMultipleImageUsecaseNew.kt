@@ -27,7 +27,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
     suspend fun executeOnBackground(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
         return mediaList.map {
             uploadMedia(it).also {
-                updateNotification()
+                updateProgress()
             }
         }
     }
@@ -73,7 +73,7 @@ class UploadMultipleImageUsecaseNew @Inject constructor(
         return !isVideo(medium)
     }
 
-    private fun updateNotification() {
+    private fun updateProgress() {
         postUpdateProgressManager?.addProgress()
         postUpdateProgressManager?.onAddProgress()
     }
