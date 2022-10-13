@@ -136,7 +136,6 @@ class DealsPDPFragment : BaseDaggerFragment() {
     private var tgRecommendation: Typography? = null
     private var rvRecommendation: RecyclerView? = null
     private var globalError: GlobalError? = null
-    private var shareProgressBar: LoaderUnify? = null
     private var productDetailData: ProductDetailData = ProductDetailData()
 
     override fun onAttach(activity: Activity) {
@@ -216,7 +215,6 @@ class DealsPDPFragment : BaseDaggerFragment() {
             tgRecommendation = binding?.subView?.tgRecommendedDeals
             rvRecommendation = binding?.subView?.recyclerView
             globalError = binding?.globalError
-            shareProgressBar = binding?.shareProgressBar
             updateCollapsingToolbar()
         }
     }
@@ -832,11 +830,11 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun hideShareLoading() {
-        shareProgressBar?.hide()
+        dealsPDPCallbacks?.onHideShareLoader()
     }
 
     private fun showShareLoading() {
-        shareProgressBar?.show()
+        dealsPDPCallbacks?.onShowShareLoader()
     }
 
     companion object {
