@@ -1,6 +1,6 @@
 package com.tokopedia.sellerapp.navigation
 
-import NewOrderSummaryScreen
+import OrderSummaryScreen
 import SplashScreen
 import androidx.compose.runtime.mutableStateOf
 import androidx.navigation.NavGraphBuilder
@@ -10,9 +10,9 @@ import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
 import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH_PARAM
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_DETAIL_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_LIST_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_SUMMARY_SCREEN
 
 fun NavGraphBuilder.splashComposable(
     navigateToHomeScreen: () -> Unit,
@@ -37,27 +37,27 @@ fun NavGraphBuilder.homeComposable(
     }
 }
 
-fun NavGraphBuilder.newOrderListComposable(
+fun NavGraphBuilder.orderListComposable(
     screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel,
 ) {
     composable(
-        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_LIST_SCREEN, DATAKEY_ARGS)
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(ORDER_LIST_SCREEN, DATAKEY_ARGS)
     ) { backStackEntry ->
-        NewOrderListScreen(
+        OrderListScreen(
             screenNavigation = screenNavigation,
             sharedViewModel = sharedViewModel,
-            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+            orderType = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
         )
     }
 }
 
-fun NavGraphBuilder.newOrderDetailComposable(
+fun NavGraphBuilder.orderDetailComposable(
     screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel,
 ) {
     composable(
-        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_DETAIL_SCREEN, DATAKEY_ARGS)
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(ORDER_DETAIL_SCREEN, DATAKEY_ARGS)
     ) { backStackEntry ->
         NewOrderDetailScreen(
             screenNavigation = screenNavigation,
@@ -67,15 +67,17 @@ fun NavGraphBuilder.newOrderDetailComposable(
     }
 }
 
-fun NavGraphBuilder.newOrderSummaryScreenComposable(
-    navigateToNewOrderList: (dataKey: String) -> Unit
+fun NavGraphBuilder.orderSummaryScreenComposable(
+    navigateToNewOrderList: (dataKey: String) -> Unit,
+    sharedViewModel: SharedViewModel
 ) {
     composable(
-        route = FORMAT_NAVIGATION_PATH_PARAM.format(NEW_ORDER_SUMMARY_SCREEN, DATAKEY_ARGS)
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(ORDER_SUMMARY_SCREEN, DATAKEY_ARGS)
     ) { backStackEntry ->
-        NewOrderSummaryScreen(
+        OrderSummaryScreen(
             navigateToNewOrderList = navigateToNewOrderList,
-            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty()
+            dataKey = backStackEntry.arguments?.getString(DATAKEY_ARGS).orEmpty(),
+            sharedViewModel = sharedViewModel
         )
     }
 }

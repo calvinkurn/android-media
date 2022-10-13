@@ -1,8 +1,6 @@
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
-import com.google.android.gms.wearable.MessageClient
-import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.sellerapp.navigation.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
@@ -26,14 +24,15 @@ fun SetupNavigation(
             screenNavigation = nav,
             sharedViewModel = sharedViewModel
         )
-        newOrderSummaryScreenComposable(
-            navigateToNewOrderList = nav.toNewOrderListScreen
+        orderSummaryScreenComposable(
+            navigateToNewOrderList = nav.toOrderListScreen,
+            sharedViewModel = sharedViewModel
         )
-        newOrderListComposable(
+        orderListComposable(
             screenNavigation = nav,
             sharedViewModel = sharedViewModel,
         )
-        newOrderDetailComposable(
+        orderDetailComposable(
             screenNavigation = nav,
             sharedViewModel = sharedViewModel
         )

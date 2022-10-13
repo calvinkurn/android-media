@@ -53,6 +53,8 @@ import com.tokopedia.sellerapp.presentation.theme.SP_20
 import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
 import com.tokopedia.sellerapp.presentation.theme.TextYellowColor
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
+import com.tokopedia.sellerapp.util.MenuHelper
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
 import com.tokopedia.sellerapp.util.NumberConstant.ANIMATION_SHIMMERING_DURATION
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_400
 import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_500
@@ -60,8 +62,7 @@ import com.tokopedia.sellerapp.util.NumberConstant.FONT_WEIGHT_700
 import com.tokopedia.sellerapp.util.NumberConstant.MAX_LINES_1
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_DROP_OFF
 import com.tokopedia.sellerapp.util.NumberConstant.SHIMMERING_TILT
-import com.tokopedia.sellerapp.util.OrderModelHelper.getOrderType
-import com.tokopedia.sellerapp.util.OrderType
+import com.tokopedia.sellerapp.util.MenuHelper.getDataKeyByOrderStatus
 import com.tokopedia.tkpd.R
 
 @Composable
@@ -73,7 +74,7 @@ fun NewOrderDetailScreen(
     getNewOrderDetailData(sharedViewModel, orderId)
     val orderDetail by sharedViewModel.orderDetail.collectAsState()
     orderDetail.data?.let { orderDetailData ->
-        val orderType = listOf(orderDetailData).getOrderType()
+        val orderType = listOf(orderDetailData).getDataKeyByOrderStatus()
         LazyColumn(
             contentPadding = PaddingValues(vertical = 20.dp)
         ) {
@@ -124,7 +125,7 @@ fun NewOrderDetailHeader(orderType: String) {
         )
         NewOrderDetailText(
             fontSize = NEST_FONT_SIZE_LVL3,
-            text = stringResource(id = getOrderDetailTitle(orderType)),
+            text = MenuHelper.getTitleByDataKey(orderType),
             color = NestLightNN0,
             lineHeight = SP_18,
             weight = FONT_WEIGHT_500,
@@ -134,16 +135,8 @@ fun NewOrderDetailHeader(orderType: String) {
     }
 }
 
-private fun getOrderDetailTitle(orderType: String): Int {
-    return if (orderType == OrderType.NEW_ORDER_TYPE) {
-        R.string.new_order_detail_header_title
-    } else {
-        R.string.ready_to_shop_order_detail_header_title
-    }
-}
-
 private fun getDueDateStringRes(orderType: String): Int {
-    return if (orderType == OrderType.NEW_ORDER_TYPE) {
+    return if (orderType == DATAKEY_NEW_ORDER) {
         R.string.new_order_list_text_due_response
     } else {
         R.string.ready_to_shop_order_list_text_due_response
@@ -321,7 +314,7 @@ fun NewOrderDetailFooter(orderDetailData: OrderModel, orderType: String) {
         lineHeight = SP_18,
         weight = FONT_WEIGHT_700,
     )
-    if(orderType == OrderType.NEW_ORDER_TYPE) {
+    if(orderType == DATAKEY_NEW_ORDER) {
         NewOrderDetailActionButton(
             text = stringResource(id = R.string.new_order_detail_accept_order)
         )
