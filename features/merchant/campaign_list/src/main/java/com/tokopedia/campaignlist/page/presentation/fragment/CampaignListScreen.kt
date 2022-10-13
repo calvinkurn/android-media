@@ -33,20 +33,20 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyButton
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyImage
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyLabel
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyLabelType
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifySearchBar
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifySortFilter
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyTicker
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyTypography
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestButton
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestImage
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabel
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabelType
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestSearchBar
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestSortFilter
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestTicker
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
-import com.tokopedia.campaignlist.page.presentation.ui.components.UnifyToolbar
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestToolbar
 
 @Composable
 fun CampaignListScreen(
@@ -112,7 +112,7 @@ private fun SearchBar(
     onSearchBarKeywordSubmit: (String) -> Unit,
     onSearchbarCleared: () -> Unit
 ) {
-    UnifySearchBar(
+    NestSearchBar(
         modifier = modifier.fillMaxWidth(),
         placeholderText = stringResource(id = R.string.search_active_campaign),
         onSearchBarCleared = onSearchbarCleared,
@@ -126,7 +126,7 @@ private fun Toolbar(
     title: String,
     onToolbarBackIconPressed: () -> Unit
 ) {
-    UnifyToolbar(
+    NestToolbar(
         modifier = modifier,
         title = title,
         onToolbarBackIconPressed = onToolbarBackIconPressed
@@ -158,7 +158,7 @@ private fun SortFilter(
 
     val sortFilterItems = arrayListOf(campaignStatus, campaignType)
 
-    UnifySortFilter(
+    NestSortFilter(
         modifier = modifier.fillMaxWidth(),
         items = sortFilterItems,
         onClearFilter = onClearFilter,
@@ -168,7 +168,7 @@ private fun SortFilter(
 
 @Composable
 private fun CampaignTicker(modifier: Modifier = Modifier, onDismissed : () -> Unit) {
-    UnifyTicker(
+    NestTicker(
         modifier = modifier.fillMaxWidth(),
         text = stringResource(id = R.string.another_campaign_type_wording),
         onDismissed = onDismissed
@@ -220,7 +220,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     }
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.campaignType,
                 modifier = Modifier.constrainAs(campaignType) {
                     top.linkTo(statusImage.top)
@@ -243,7 +243,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 campaignStatusId = campaign.campaignStatusId.toIntOrZero()
             )
 
-            UnifyImage(
+            NestImage(
                 modifier = Modifier
                     .size(62.dp)
                     .clip(RoundedCornerShape(8.dp))
@@ -254,7 +254,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 imageUrl = campaign.campaignPictureUrl
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.campaignName,
                 modifier = Modifier.constrainAs(campaignName) {
                     top.linkTo(campaignImage.top)
@@ -263,7 +263,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display2.copy(fontWeight = FontWeight.Bold, color = LocalColors.current.NN950)
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = stringResource(id = R.string.campaign_list_product_quantity_label, campaign.productQty),
                 modifier = Modifier.constrainAs(productQty) {
                     top.linkTo(campaignName.bottom, margin = 12.dp)
@@ -272,7 +272,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display3
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.startDate,
                 modifier = Modifier.constrainAs(campaignStartDate) {
                     top.linkTo(productQty.bottom, margin = 12.dp)
@@ -282,7 +282,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
             )
 
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.startTime,
                 modifier = Modifier.constrainAs(campaignStartTime) {
                     top.linkTo(campaignStartDate.bottom)
@@ -291,7 +291,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = "-",
                 modifier = Modifier.constrainAs(separator) {
                     top.linkTo(campaignStartDate.top)
@@ -301,7 +301,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.endDate,
                 modifier = Modifier.constrainAs(campaignEndDate) {
                     top.linkTo(campaignStartDate.top)
@@ -311,7 +311,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
             )
 
-            UnifyTypography(
+            NestTypography(
                 text = campaign.endTime,
                 modifier = Modifier.constrainAs(campaignEndTime) {
                     top.linkTo(campaignStartTime.top)
@@ -321,7 +321,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                 textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
             )
 
-            UnifyButton(
+            NestButton(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(12.dp)
@@ -360,11 +360,11 @@ fun CampaignItemPreview() {
 
 @Composable
 fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: Int) {
-    val unifyLabelType = when (campaignStatusId) {
-        ONGOING_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_GREEN
-        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE
-        AVAILABLE_STATUS_ID.toIntOrZero() -> UnifyLabelType.HIGHLIGHT_LIGHT_GREY
-        else -> UnifyLabelType.HIGHLIGHT_LIGHT_RED
+    val nestLabelType = when (campaignStatusId) {
+        ONGOING_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREEN
+        UPCOMING_STATUS_ID.toIntOrZero(), UPCOMING_IN_NEAR_TIME_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_ORANGE
+        AVAILABLE_STATUS_ID.toIntOrZero() -> NestLabelType.HIGHLIGHT_LIGHT_GREY
+        else -> NestLabelType.HIGHLIGHT_LIGHT_RED
     }
-    UnifyLabel(modifier = modifier, labelText = campaignStatus, unifyLabelType = unifyLabelType)
+    NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
 }

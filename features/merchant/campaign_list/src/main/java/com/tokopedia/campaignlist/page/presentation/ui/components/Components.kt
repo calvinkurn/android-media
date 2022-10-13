@@ -21,10 +21,8 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
-import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.LocalContentAlpha
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
@@ -33,7 +31,6 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,12 +54,12 @@ import coil.compose.rememberImagePainter
 import com.tokopedia.campaignlist.R
 import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
-import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
+import com.tokopedia.campaignlist.page.presentation.ui.theme.NestTheme
 
 data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
 
 @Composable
-fun UnifySortFilter(
+fun NestSortFilter(
     modifier: Modifier = Modifier,
     items: ArrayList<SortFilter>,
     onClearFilter: () -> Unit,
@@ -71,7 +68,7 @@ fun UnifySortFilter(
     //Implementation are specifically to cater filterRelationship = SortFilter.RELATIONSHIP_AND filterType = SortFilter.TYPE_QUICK only
     LazyRow(modifier = modifier) {
         if (showClearFilterIcon) item { ClearSortFilterItem(onClearFilter) }
-        items(items) { UnifySortFilterItem(it) }
+        items(items) { NestSortFilterItem(it) }
     }
 }
 
@@ -100,7 +97,7 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
 }
 
 @Composable
-private fun UnifySortFilterItem(sortFilter: SortFilter) {
+private fun NestSortFilterItem(sortFilter: SortFilter) {
     //Implementation are specifically to cater SELECTED and NORMAL type chips only
     val textColorSelected = LocalColors.current.GN500
     val textColorDefault = LocalColors.current.NN600
@@ -149,7 +146,7 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            UnifyTypography(text = sortFilter.title, textStyle = LocalTypography.current.display2.copy(color = textColor))
+            NestTypography(text = sortFilter.title, textStyle = LocalTypography.current.display2.copy(color = textColor))
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
                 painter = painterResource(id = R.drawable.ic_chevron_down),
@@ -161,7 +158,7 @@ private fun UnifySortFilterItem(sortFilter: SortFilter) {
 }
 
 @Composable
-fun UnifySearchBar(
+fun NestSearchBar(
     modifier: Modifier = Modifier,
     placeholderText: String,
     onTextChanged: (String) -> Unit = { _ -> },
@@ -205,7 +202,7 @@ fun UnifySearchBar(
                 Box(Modifier.weight(1f)) {
 
                     if (text.isEmpty()) {
-                        UnifyTypography(
+                        NestTypography(
                             text = placeholderText,
                             textStyle = LocalTypography.current.display2.copy(color = LocalColors.current.NN600)
                         )
@@ -233,7 +230,7 @@ fun UnifySearchBar(
 }
 
 @Composable
-fun UnifyTicker(
+fun NestTicker(
     modifier: Modifier = Modifier,
     text: CharSequence,
     onDismissed: () -> Unit = {}
@@ -253,7 +250,7 @@ fun UnifyTicker(
         Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
             Icon(imageVector = Icons.Outlined.Info, contentDescription = "Information Icon", tint = iconColor)
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
-            UnifyTypography(
+            NestTypography(
                 text = text.toString(),
                 modifier = Modifier.width(250.dp),
                 textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
@@ -272,23 +269,23 @@ fun UnifyTicker(
 
 
 @Composable
-fun UnifyLabel(
+fun NestLabel(
     modifier: Modifier = Modifier,
     labelText: CharSequence,
-    unifyLabelType: UnifyLabelType
+    nestLabelType: NestLabelType
 ) {
-    val backgroundColor = when (unifyLabelType) {
-        UnifyLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN100
-        UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN100
-        UnifyLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN100
-        UnifyLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN100
+    val backgroundColor = when (nestLabelType) {
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN100
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN100
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN100
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN100
     }
 
-    val textColor = when (unifyLabelType) {
-        UnifyLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN500
-        UnifyLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN500
-        UnifyLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN600
-        UnifyLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN500
+    val textColor = when (nestLabelType) {
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> LocalColors.current.GN500
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> LocalColors.current.YN500
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> LocalColors.current.NN600
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> LocalColors.current.RN500
     }
 
     Surface(
@@ -309,7 +306,7 @@ fun UnifyLabel(
 
 
 @Composable
-fun UnifyToolbar(
+fun NestToolbar(
     modifier: Modifier = Modifier,
     title: String,
     onToolbarBackIconPressed: () -> Unit
@@ -340,7 +337,7 @@ fun UnifyToolbar(
                 )
             }
             Spacer(modifier = Modifier.width(16.dp))
-            UnifyTypography(
+            NestTypography(
                 text = title,
                 textStyle = LocalTypography.current.display1.copy(
                     fontWeight = FontWeight.Bold,
@@ -354,7 +351,7 @@ fun UnifyToolbar(
 
 
 @Composable
-fun UnifyButton(
+fun NestButton(
     modifier: Modifier = Modifier,
     text: String,
     onClick: () -> Unit
@@ -382,7 +379,7 @@ fun UnifyButton(
 }
 
 @Composable
-fun UnifyTypography(
+fun NestTypography(
     text: String,
     modifier: Modifier = Modifier,
     textStyle: TextStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
@@ -396,7 +393,7 @@ fun UnifyTypography(
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
+fun NestImage(modifier: Modifier = Modifier, imageUrl : String) {
     val painter = rememberImagePainter(data = imageUrl)
     Image(
         painter = painter,
@@ -408,47 +405,47 @@ fun UnifyImage(modifier: Modifier = Modifier, imageUrl : String) {
 
 @Preview(name = "Sort Filter")
 @Composable
-fun UnifySortFilterPreview() {
+fun NestSortFilterPreview() {
     val items = arrayListOf(
         SortFilter("Lokasi", true, onClick = {}),
         SortFilter("Status", false, onClick = {})
     )
-    UnifySortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
+    NestSortFilter(modifier = Modifier, items = items, onClearFilter = {}, showClearFilterIcon = true)
 }
 
 @Preview(name = "Toolbar")
 @Composable
-fun UnifyToolbarPreview() {
-    UnifyTheme(darkTheme = false) {
-        UnifyToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
+fun NestToolbarPreview() {
+    NestTheme(darkTheme = false) {
+        NestToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
     }
 }
 
 @Preview(name = "Toolbar (Dark)")
 @Composable
-fun UnifyToolbarDarkPreview() {
-    UnifyTheme(darkTheme = true) {
-        UnifyToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
+fun NestToolbarDarkPreview() {
+    NestTheme(darkTheme = true) {
+        NestToolbar(title = "Tokopedia", onToolbarBackIconPressed = {})
     }
 }
 
 
 @Preview(name = "Sort Filter Item (Selected)")
 @Composable
-fun UnifySortFilterItemSelectedPreview() {
-    UnifySortFilterItem(SortFilter("Lokasi", true, {}))
+fun NestSortFilterItemSelectedPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", true, {}))
 }
 
 @Preview(name = "Sort Filter Item (Default)")
 @Composable
-fun UnifySortFilterItemPreview() {
-    UnifySortFilterItem(SortFilter("Lokasi", false, {}))
+fun NestSortFilterItemPreview() {
+    NestSortFilterItem(SortFilter("Lokasi", false, {}))
 }
 
 @Preview(name = "Searchbar")
 @Composable
-fun UnifySearchBarPreview() {
-    UnifySearchBar(
+fun NestSearchBarPreview() {
+    NestSearchBar(
         Modifier,
         "Cari sesuatu..",
         onTextChanged = {},
@@ -459,8 +456,8 @@ fun UnifySearchBarPreview() {
 
 @Preview(name = "Ticker")
 @Composable
-fun UnifyTickerPreview() {
-    UnifyTicker(
+fun NestTickerPreview() {
+    NestTicker(
         Modifier,
         text = "Sedang ada perbaikan hari ini. Cek lagi besok ya",
         onDismissed = {},
@@ -469,29 +466,29 @@ fun UnifyTickerPreview() {
 
 @Preview(name = "Label (Green)")
 @Composable
-fun UnifyLabelPreview() {
-    UnifyLabel(
+fun NestLabelPreview() {
+    NestLabel(
         Modifier,
         labelText = "Berlangsung",
-        unifyLabelType = UnifyLabelType.HIGHLIGHT_LIGHT_GREEN
+        nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_GREEN
     )
 }
 
 
 @Preview(name = "Label (Red)")
 @Composable
-fun UnifyLabelRedPreview() {
-    UnifyLabel(
+fun NestLabelRedPreview() {
+    NestLabel(
         Modifier,
         labelText = "Dibatalkan",
-        unifyLabelType = UnifyLabelType.HIGHLIGHT_LIGHT_RED
+        nestLabelType = NestLabelType.HIGHLIGHT_LIGHT_RED
     )
 }
 
 @Preview(name = "Button")
 @Composable
-fun UnifyButtonPreview() {
-    UnifyButton(
+fun NestButtonPreview() {
+    NestButton(
         Modifier,
         text = "Bagikan",
         onClick = {}
@@ -500,8 +497,8 @@ fun UnifyButtonPreview() {
 
 @Preview(name = "Typography")
 @Composable
-fun UnifyTypographyPreview() {
-    UnifyTypography(
+fun NestTypographyPreview() {
+    NestTypography(
         text = "Flash Sale",
         Modifier
     )
@@ -509,8 +506,8 @@ fun UnifyTypographyPreview() {
 
 @Preview(name = "Typography (Bold)")
 @Composable
-fun UnifyTypographyBoldPreview() {
-    UnifyTypography(
+fun NestTypographyBoldPreview() {
+    NestTypography(
         text = "Flash Sale",
         Modifier,
         textStyle = LocalTypography.current.display3.copy(fontWeight = FontWeight.Bold)

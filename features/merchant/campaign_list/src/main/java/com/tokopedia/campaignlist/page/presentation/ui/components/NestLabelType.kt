@@ -1,6 +1,6 @@
 package com.tokopedia.campaignlist.page.presentation.ui.components
 
-enum class UnifyLabelType {
+enum class NestLabelType {
     HIGHLIGHT_LIGHT_GREEN,
     HIGHLIGHT_LIGHT_ORANGE,
     HIGHLIGHT_LIGHT_GREY,

@@ -27,7 +27,7 @@ import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.LocalElevations
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
-import com.tokopedia.campaignlist.page.presentation.ui.font.UnifyTypography
+import com.tokopedia.campaignlist.page.presentation.ui.font.NestTypography
 
 
 private val UnifyThemeLight = lightColors(
@@ -50,7 +50,7 @@ private val DarkElevation = Elevations(card = 1.dp)
 
 
 @Composable
-fun UnifyTheme(
+fun NestTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
@@ -68,7 +68,7 @@ fun UnifyTheme(
     CompositionLocalProvider(
         LocalElevations provides elevation,
         LocalColors provides colors,
-        LocalTypography provides UnifyTypography()
+        LocalTypography provides NestTypography()
     ) {
         MaterialTheme(
             colors = themeColors,

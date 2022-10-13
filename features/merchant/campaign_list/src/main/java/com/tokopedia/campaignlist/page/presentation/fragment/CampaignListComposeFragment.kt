@@ -25,7 +25,7 @@ import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignStatusBo
 import com.tokopedia.campaignlist.page.presentation.bottomsheet.CampaignTypeBottomSheet
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
-import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
+import com.tokopedia.campaignlist.page.presentation.ui.theme.NestTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
@@ -101,7 +101,7 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
 
-                UnifyTheme {
+                NestTheme {
                     CampaignListScreen(
                         uiState = viewModel.uiState.collectAsState(),
                         onTapCampaignStatusFilter = { campaignStatuses -> showCampaignStatusBottomSheet(campaignStatuses) },
@@ -126,9 +126,6 @@ class CampaignListComposeFragment : BaseDaggerFragment(), ShareBottomsheetListen
                         onToolbarBackIconPressed = { activity?.finish() }
                     )
                 }
-
-
-
 
                 val uiEffect = viewModel.uiEffect.collectAsState(initial = CampaignListViewModel.UiEffect.None)
                 when (uiEffect.value) {
