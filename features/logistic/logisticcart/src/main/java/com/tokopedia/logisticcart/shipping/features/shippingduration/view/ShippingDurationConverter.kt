@@ -110,7 +110,8 @@ class ShippingDurationConverter @Inject constructor() {
                             available = true,
                             hidden = false,
                             recommend = true,
-                            promoCode = ""
+                            promoCode = "",
+                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014123,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}"
                         ),
                         DeliveryProduct(
                             title = "Tiba 16:00 - 18:00",
@@ -126,7 +127,8 @@ class ShippingDurationConverter @Inject constructor() {
                             available = true,
                             hidden = false,
                             recommend = false,
-                            promoText = "Kuota gratis ongkirmu habis"
+                            promoText = "Kuota gratis ongkirmu habis",
+                            validationMetadata = "{\\\"validation_metadata\\\":{\\\"timeslot_id\\\":2022092014124,\\\"schedule_date\\\":\\\"2022-09-20T00:00:00Z\\\"}}"
                         )
                     )
                 )

@@ -1733,7 +1733,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             List<DataCheckoutRequest> dataCheckoutRequests = shipmentPresenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerShippingData(
                     shipmentCartItemModel.getCartString(),
                     String.valueOf(selectedCourier.getServiceId()),
-                    String.valueOf(selectedCourier.getRealShipperPrice()),
+                    String.valueOf(selectedCourier.getSelectedShipper().getShipperPrice()),
                     String.valueOf(shipmentCartItemModel.getSpId())
             );
             shipmentPresenter.setDataCheckoutRequestList(dataCheckoutRequests);
@@ -2187,7 +2187,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     shipmentAdapter.setSelectedCourier(cartItemPosition, recommendedCourier, true);
                     shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
                     shipmentAdapter.setShippingCourierViewModels(shippingCourierUiModels, recommendedCourier, cartItemPosition);
-                    if (!TextUtils.isEmpty(recommendedCourier.getRealPromoCode()) && isDurationClick) {
+                    if (!TextUtils.isEmpty(recommendedCourier.getPromoCode()) && isDurationClick) {
                         checkCourierPromo(recommendedCourier, cartItemPosition);
                     }
                 }
@@ -2196,8 +2196,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void checkCourierPromo(CourierItemData courierItemData, int itemPosition) {
-        if (!TextUtils.isEmpty(courierItemData.getRealPromoCode())) {
-            String promoCode = courierItemData.getRealPromoCode();
+        if (!TextUtils.isEmpty(courierItemData.getSelectedShipper().getPromoCode())) {
+            String promoCode = courierItemData.getSelectedShipper().getPromoCode();
             shipmentPresenter.processCheckPromoCheckoutCodeFromSelectedCourier(promoCode, itemPosition, false);
         }
     }
@@ -3609,10 +3609,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (scheduleDeliveryUiModel.isSelected()) {
                 shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
                 shipmentCartItemModel.setTimeslotId(scheduleDeliveryUiModel.getTimeslotId());
+                if (scheduleDeliveryUiModel.getDeliveryProduct() != null) {
+                    shipmentCartItemModel.setValidationMetadata(scheduleDeliveryUiModel.getDeliveryProduct().getValidationMetadata());
+                }
             }
             else {
                 shipmentCartItemModel.setScheduleDate("");
                 shipmentCartItemModel.setTimeslotId(0);
+                shipmentCartItemModel.setValidationMetadata("");
             }
             shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateCheckoutButtonData(null);

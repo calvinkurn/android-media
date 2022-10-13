@@ -24,6 +24,6 @@ data class ShipmentStateShopProductData(
         var isOrderPriority: Int = 0,
         @SerializedName("product_data")
         var productDataList: List<ShipmentStateProductData>? = null,
-        @SerializedName("scheduled_delivery")
-        var scheduledDelivery: ShipmentStateScheduledDelivery = ShipmentStateScheduledDelivery()
+        @SerializedName("validation_metadata")
+        var validationMetadata: String = "",
 )

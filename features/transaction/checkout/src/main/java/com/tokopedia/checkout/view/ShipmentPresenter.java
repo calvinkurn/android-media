@@ -35,7 +35,6 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateProductPreorder;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
-import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateScheduledDelivery;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
@@ -1768,13 +1767,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             shipmentStateShopProductData.setDropshipData(shipmentStateDropshipData);
             shipmentStateShopProductData.setShippingInfoData(shipmentStateShippingInfoData);
             shipmentStateShopProductData.setProductDataList(shipmentStateProductDataList);
-
-            ShipmentStateScheduledDelivery scheduledDelivery = new ShipmentStateScheduledDelivery();
-            // TODO: 10/10/22 add is scheduled delivery radio button checked validation and
-            //  get timeslotid and scheduledate from selected courier if necessary
-            scheduledDelivery.setTimeslotId(shipmentCartItemModel.getTimeslotId());
-            scheduledDelivery.setScheduledDates(shipmentCartItemModel.getScheduleDate());
-            shipmentStateShopProductData.setScheduledDelivery(scheduledDelivery);
+            shipmentStateShopProductData.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
 
             shipmentStateShopProductDataList.add(shipmentStateShopProductData);
         }

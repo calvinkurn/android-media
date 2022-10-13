@@ -118,7 +118,8 @@ class ShipmentCartItemModel(
         // Scheduled Delivery
         var isShowScheduleDelivery : Boolean = false,
         var scheduleDate: String = "",
-        var timeslotId: Long = 0L
+        var timeslotId: Long = 0L,
+        var validationMetadata: String = "",
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
