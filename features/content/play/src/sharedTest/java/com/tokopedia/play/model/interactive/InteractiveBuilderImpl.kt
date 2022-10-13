@@ -49,12 +49,12 @@ class InteractiveBuilderImpl : InteractiveBuilder {
     )
 
     override fun buildFooter(
+        id: String,
         totalParticipant: Long,
         leaderBoardType: LeadeboardType,
         otherParticipantText: String,
         otherParticipant: Long,
         emptyLeaderBoardCopyText: String,
-        id: String,
     ): LeaderboardGameUiModel.Footer = LeaderboardGameUiModel.Footer(id, totalParticipant, leaderBoardType, otherParticipantText, otherParticipant, emptyLeaderBoardCopyText)
 
     override fun buildQuizChoices(

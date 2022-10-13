@@ -531,10 +531,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         return broadcastTimer.remainingDuration > duration + delayGqlDuration
     }
 
-    fun getLeaderboardData(channelId: String) {
-        viewModelScope.launch { getLeaderboardInfo(channelId) }
-    }
-
     private fun getInteractiveConfig() {
         viewModelScope.launchCatchError(block = {
             val gameConfig = repo.getInteractiveConfig()
@@ -595,20 +591,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         when (quiz.status) {
             InteractiveUiModel.Quiz.Status.Finished -> displayGameResultWidgetIfHasLeaderBoard()
             InteractiveUiModel.Quiz.Status.Unknown -> stopInteractive()
-        }
-    }
-
-    private suspend fun getLeaderboardInfo(channelId: String): Throwable? {
-        _observableLeaderboardInfo.value = NetworkResult.Loading
-        return try {
-            val leaderboard = repo.getInteractiveLeaderboard(channelId) {
-                mIsBroadcastStopped
-            }
-            _observableLeaderboardInfo.value = NetworkResult.Success(leaderboard)
-            null
-        } catch (err: Throwable) {
-            _observableLeaderboardInfo.value = NetworkResult.Fail(err)
-            err
         }
     }
 

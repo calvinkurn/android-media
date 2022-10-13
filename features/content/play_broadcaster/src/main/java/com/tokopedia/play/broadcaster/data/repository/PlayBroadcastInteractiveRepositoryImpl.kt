@@ -14,9 +14,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSessionUiModel
 import com.tokopedia.play_common.domain.usecase.interactive.GetCurrentInteractiveUseCase
-import com.tokopedia.play_common.domain.usecase.interactive.GetInteractiveLeaderboardUseCase
 import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
-import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -29,7 +27,6 @@ import javax.inject.Inject
 class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val getInteractiveConfigUseCase: GetInteractiveConfigUseCase,
     private val getCurrentInteractiveUseCase: GetCurrentInteractiveUseCase,
-    private val getInteractiveLeaderboardUseCase: GetInteractiveLeaderboardUseCase,
     private val getSellerLeaderboardUseCase: GetSellerLeaderboardUseCase,
     private val getInteractiveQuizDetailsUseCase: GetInteractiveQuizDetailsUseCase,
     private val getInteractiveQuizChoiceDetailsUseCase: GetInteractiveQuizChoiceDetailsUseCase,
@@ -38,7 +35,6 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val mapper: PlayBroadcastMapper,
     private val interactiveMapper: PlayInteractiveMapper,
-    private val interactiveLeaderboardMapper: PlayInteractiveLeaderboardMapper,
     private val dispatchers: CoroutineDispatchers,
 ) : PlayBroadcastInteractiveRepository {
 
@@ -58,14 +54,6 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
             }.executeOnBackground()
             return@withContext interactiveMapper.mapInteractive(response.data)
         }
-
-    override suspend fun getInteractiveLeaderboard(
-        channelId: String,
-        isChatAllowed: () -> Boolean
-    ): List<LeaderboardGameUiModel> {
-        //TODO DO
-        return emptyList()
-    }
 
     override suspend fun createGiveaway(
         channelId: String,
