@@ -130,7 +130,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
 
@@ -168,7 +167,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(choice)
         )
         val err = MessageErrorException("Error gk bs jawab y")
@@ -208,7 +206,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 selectedChoice,
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Default('b')),
@@ -252,7 +249,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Sepeda",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
@@ -282,46 +278,8 @@ class PlayQuizInteractiveTest {
         }
     }
 
-
     @Test
-    fun `given quiz is finish and has no reward, only show leaderboard`() {
-        coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
-            id = interactiveId,
-            title = title,
-            waitingDuration = waitingDuration,
-            status = InteractiveUiModel.Quiz.Status.Ongoing(
-                endTime = duration,
-            ),
-            reward = "", // no reward
-            listOfChoices = listOf(
-                modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
-                modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
-                modelBuilder.buildQuizChoices(id = "32", text = "25 Juky", type = PlayQuizOptionState.Other(true)),
-            )
-        )
-
-        coEvery { mockAnswerQuizUseCase.executeOnBackground() } returns AnswerQuizResponse(data = AnswerQuizResponse.Data(correctAnswerID = "31"))
-
-        createPlayViewModelRobot (
-            playChannelWebSocket = socket,
-            repo = mockRepo,
-            dispatchers = testDispatcher,
-            remoteConfig = mockRemoteConfig,
-        ).use {
-            val eventAndState = it.recordStateAndEvent {
-                createPage(mockChannelData)
-                focusPage(mockChannelData)
-                setLoggedIn(true)
-                setUserId("1")
-
-                viewModel.submitAction(PlayViewerNewAction.QuizEnded)
-            }
-            eventAndState.first.winnerBadge.shouldShow.assertTrue()
-        }
-    }
-
-    @Test
-    fun `given quiz is finish and not received any socket userwinner, only show leaderboard`() {
+    fun `given quiz is finish, show leaderboard`() {
         coEvery { mockMapper.mapInteractive(any<GetCurrentInteractiveResponse.Data>()) } returns InteractiveUiModel.Quiz(
             id = interactiveId,
             title = title,
@@ -329,7 +287,6 @@ class PlayQuizInteractiveTest {
             status = InteractiveUiModel.Quiz.Status.Ongoing(
                 endTime = duration,
             ),
-            reward = "Ikan Koi",
             listOfChoices = listOf(
                 modelBuilder.buildQuizChoices(id = "3", text = "25 June", type = PlayQuizOptionState.Answered(false)),
                 modelBuilder.buildQuizChoices(id = "31", text = "25 Juky", type = PlayQuizOptionState.Other(true)),

@@ -642,4 +642,8 @@
         <key>android_enable_blocking_touch_pdp_navbar</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>android_robust_tester</key>
+        <value></value>
+    </entry>
 </defaultsMap>

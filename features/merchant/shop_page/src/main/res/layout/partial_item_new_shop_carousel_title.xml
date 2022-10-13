@@ -43,21 +43,21 @@
         app:layout_constraintVertical_bias="0.5"
         tools:visibility="visible" />
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvSeeAll"
         android:contentDescription="@string/content_desc_tvSeeAll"
-        style="@style/TextView.Title.Green"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="?android:attr/selectableItemBackground"
         android:clickable="true"
         android:focusable="true"
         android:gravity="center_horizontal"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
+        app:typographyType="body_3"
+        app:typographyWeight="bold"
         android:text="@string/label_see_all"
-        android:textSize="14sp"
         android:visibility="gone"
+        android:textColor="@color/Unify_G500"
         app:layout_constraintBottom_toBottomOf="@id/tv_title"
         app:layout_constraintHorizontal_bias="2"
         app:layout_constraintRight_toRightOf="parent"

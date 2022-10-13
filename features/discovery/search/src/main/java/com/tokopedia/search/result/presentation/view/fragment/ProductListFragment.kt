@@ -1,6 +1,5 @@
 package com.tokopedia.search.result.presentation.view.fragment
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -23,7 +22,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.manager.AdultManager
@@ -33,7 +31,6 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
-import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.discovery.common.utils.URLParser
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
@@ -67,6 +64,7 @@ import com.tokopedia.search.analytics.RecommendationTracking
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.module.SearchContextModule
+import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.BroadMatchItemDataView
@@ -100,6 +98,7 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
@@ -132,6 +131,7 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import org.json.JSONArray
 import javax.inject.Inject
 import com.tokopedia.wishlist_common.R as Rwishlist
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcActivityResult
 
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
@@ -211,6 +211,14 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject @Suppress("LateinitUsage")
     lateinit var changeView: ChangeView
 
+    @Inject
+    lateinit var recycledViewPool: RecyclerView.RecycledViewPool
+
+    @Inject
+    lateinit var inspirationListAtcListenerDelegate: InspirationListAtcListenerDelegate
+
+    @Inject lateinit var inspirationListAtcActivityResult: InspirationListAtcActivityResult
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -230,7 +238,6 @@ class ProductListFragment: BaseDaggerFragment(),
         )
     }
 
-    override val carouselRecycledViewPool = RecyclerView.RecycledViewPool()
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
@@ -284,6 +291,7 @@ class ProductListFragment: BaseDaggerFragment(),
             .searchContextModule(SearchContextModule(activity))
             .performanceMonitoringModule(PerformanceMonitoringModule(performanceMonitoring))
             .productListFragmentModule(ProductListFragmentModule(this))
+            .searchNavigationListenerModule(SearchNavigationListenerModule(searchNavigationListener))
             .build()
             .inject(this)
     }
@@ -385,9 +393,12 @@ class ProductListFragment: BaseDaggerFragment(),
         recyclerViewUpdater.initialize(
             rootView.findViewById(R.id.recyclerview),
             staggeredGridLayoutManager,
-            staggeredGridLayoutLoadMoreTriggerListener,
-            onBoardingListenerDelegate.createScrollListener(),
+            listOf(
+                staggeredGridLayoutLoadMoreTriggerListener,
+                onBoardingListenerDelegate.createScrollListener(),
+            ),
             createProductListTypeFactory(),
+            viewLifecycleOwner,
         )
 
         recyclerViewUpdater.recyclerView?.let {
@@ -452,9 +463,11 @@ class ProductListFragment: BaseDaggerFragment(),
                 trackingQueue,
                 this,
             ),
+            inspirationListAtcListener = inspirationListAtcListenerDelegate,
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
             sameSessionRecommendationListener = sameSessionRecommendationListener,
+            recycledViewPool = recycledViewPool
         )
     }
 
@@ -485,12 +498,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun getSearchParameter(): SearchParameter? {
         return searchParameter
     }
-
-    private fun getDimension90(): String =
-        Dimension90Utils.getDimension90(getSearchParameterMap())
-
-    private fun getSearchParameterMap(): Map<String, Any> =
-        searchParameter?.getSearchParameterMap() ?: mapOf()
     //endregion
 
     //region onAttach
@@ -548,10 +555,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun addRecommendationList(list: List<Visitable<*>>) {
         recyclerViewUpdater.appendItems(list)
-    }
-
-    override fun setBannedProductsErrorMessage(bannedProductsErrorMessageAsList: List<Visitable<*>>) {
-        recyclerViewUpdater.appendItems(bannedProductsErrorMessageAsList)
     }
 
     override fun addLoading() {
@@ -650,6 +653,8 @@ class ProductListFragment: BaseDaggerFragment(),
                         }
                     }
             )
+
+            inspirationListAtcActivityResult.handleOnActivityResult(it, requestCode, data)
         }
     }
 
@@ -747,18 +752,18 @@ class ProductListFragment: BaseDaggerFragment(),
         product.priceFormat = item.price
         product.category = Category(item.categoryID)
         product.freeOngkir = createTopAdsProductFreeOngkirForTracking(item)
-        product.categoryBreadcrumb = item.categoryBreadcrumb
+        product.categoryBreadcrumb = item.categoryBreadcrumb ?: ""
 
         return product
     }
 
-    private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir? {
+    private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir {
         return if (item?.freeOngkirDataView != null) {
             FreeOngkir(
                     item.freeOngkirDataView.isActive,
                     item.freeOngkirDataView.imageUrl
             )
-        } else null
+        } else FreeOngkir()
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
@@ -1042,15 +1047,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun setSortFilterIndicatorCounter() {
         val searchParameter = searchParameter ?: return
         searchSortFilter?.indicatorCounter = getSortFilterCount(searchParameter.getSearchParameterMap())
-    }
-    //endregion
-
-    //region banned products
-    override fun trackEventImpressionBannedProducts(isEmptySearch: Boolean) {
-        if (isEmptySearch)
-            SearchTracking.trackEventImpressionBannedProductsEmptySearch(queryKey)
-        else
-            SearchTracking.trackEventImpressionBannedProductsWithResult(queryKey)
     }
     //endregion
 

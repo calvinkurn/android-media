@@ -33,17 +33,17 @@ public class GetKolCommentsUseCase extends UseCase<KolComments> {
         return kolCommentSource.getComments(requestParams);
     }
 
-    public static RequestParams getFirstTimeParam(int postId) {
+    public static RequestParams getFirstTimeParam(long postId) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_ID, postId);
+        params.putLong(PARAM_ID, postId);
         params.putString(PARAM_CURSOR, FIRST_CURSOR);
         params.putInt(PARAM_LIMIT, DEFAULT_LIMIT);
         return params;
     }
 
-    public static RequestParams getParam(int postId, String cursor) {
+    public static RequestParams getParam(long postId, String cursor) {
         RequestParams params = RequestParams.create();
-        params.putInt(PARAM_ID, postId);
+        params.putLong(PARAM_ID, postId);
         params.putString(PARAM_CURSOR, cursor);
         params.putInt(PARAM_LIMIT, DEFAULT_LIMIT);
         return params;

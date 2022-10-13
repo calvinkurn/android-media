@@ -142,11 +142,11 @@ class SearchActivity : BaseActivity(),
 
     private fun initInjector() {
         DaggerSearchViewComponent
-                .builder()
-                .baseAppComponent(component)
-                .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
-                .build()
-                .inject(this)
+            .builder()
+            .baseAppComponent(component)
+            .searchShopViewModelFactoryModule(SearchShopViewModelFactoryModule(searchParameter.getSearchParameterMap()))
+            .build()
+            .inject(this)
     }
 
     private fun proceed() {
@@ -483,6 +483,10 @@ class SearchActivity : BaseActivity(),
         this.searchParameter = searchParameter
 
         updateKeyword()
+    }
+
+    override fun updateSearchBarNotification() {
+        searchNavigationToolbar?.updateNotification()
     }
 
     private fun updateKeyword() {

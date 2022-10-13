@@ -21,6 +21,7 @@ class InspirationCarouselProductDataViewMapper {
         carouselTitle: String,
         dimension90: String,
         externalReference: String,
+        trackingOption: Int = 0,
     ): List<InspirationCarouselDataView.Option.Product> {
 
         return inspirationCarouselProduct.mapIndexed { index, product ->
@@ -46,6 +47,7 @@ class InspirationCarouselProductDataViewMapper {
                 product.discountPercentage,
                 index + 1,
                 optionTitle,
+                product.shop.id,
                 product.shop.city,
                 product.shop.name,
                 convertInspirationCarouselProductBadgeToBadgesItemList(product.badgeList),
@@ -62,6 +64,9 @@ class InspirationCarouselProductDataViewMapper {
                 discount = product.discount,
                 label = product.label,
                 bundleId = product.bundleId,
+                parentId = product.parentId,
+                minOrder = product.minOrder,
+                trackingOption = trackingOption
             )
         }
     }
