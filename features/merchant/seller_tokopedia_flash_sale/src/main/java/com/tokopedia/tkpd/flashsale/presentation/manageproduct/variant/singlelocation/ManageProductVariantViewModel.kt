@@ -8,13 +8,18 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductVariantTracker
 import javax.inject.Inject
 
 class ManageProductVariantViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val errorMessageHelper: ErrorMessageHelper
+    private val errorMessageHelper: ErrorMessageHelper,
+    private val tracker: ManageProductVariantTracker
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val LOCATION_TYPE = "single loc"
+    }
     private lateinit var productData: ReservedProduct.Product
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
@@ -98,5 +103,30 @@ class ManageProductVariantViewModel @Inject constructor(
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
         return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
+    }
+
+    fun sendManageAllClickEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickManageAllEvent(trackerLabel)
+    }
+
+    fun sendAdjustToggleVariantEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendAdjustToggleVariantEvent(trackerLabel)
+    }
+
+    fun sendFillInColumnPriceEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickFillInCampaignPriceEvent(trackerLabel)
+    }
+
+    fun sendFillInDiscountPercentageEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickFillInDiscountPercentageEvent(trackerLabel)
+    }
+
+    fun sendSaveClickEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickSaveEvent(trackerLabel)
     }
 }

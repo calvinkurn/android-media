@@ -27,6 +27,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.CampaignDetailBottomSheetModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.uimodel.TimelineStepModel
+import com.tokopedia.tkpd.flashsale.util.tracker.CampaignDetailPageTracker
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -43,7 +44,8 @@ class CampaignDetailViewModel @Inject constructor(
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
     private val userSession: UserSessionInterface,
-    private val sharedPreferences: SharedPreferences
+    private val sharedPreferences: SharedPreferences,
+    private val tracker: CampaignDetailPageTracker
 ) : BaseViewModel(dispatchers.main) {
 
     private var _campaign = MutableLiveData<Result<FlashSale>>()
@@ -489,5 +491,17 @@ class CampaignDetailViewModel @Inject constructor(
         sharedPreferences.edit()
             .putBoolean(ValueConstant.SHARED_PREF_CAMPAIGN_DETAIL_COACH_MARK, true)
             .apply()
+    }
+
+    fun sendSeeCriteriaClickEvent(campaignId: Long) {
+        tracker.sendClickSeeCriteriaEvent(campaignId.toString())
+    }
+
+    fun sendRegisterClickEvent(campaignId: Long) {
+        tracker.sendClickRegisterEvent(campaignId.toString())
+    }
+
+    fun sendCheckReasonClickEvent(campaignId: Long) {
+        tracker.sendClickCheckReasonEvent(campaignId.toString())
     }
 }

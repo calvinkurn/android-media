@@ -403,9 +403,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             }
             btnSeeCriteria.setOnClickListener {
                 showBottomSheet(flashSale, DetailBottomSheetType.PRODUCT_CRITERIA)
+                viewModel.sendSeeCriteriaClickEvent(flashSaleId)
             }
             btnCheckReason.setOnClickListener {
                 navigateToChooseProductPage()
+                viewModel.sendCheckReasonClickEvent(flashSaleId)
             }
             if (!isCoachMarkShown()) {
                 showCriteriaCoachMark(this)
@@ -553,6 +555,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 text = getString(R.string.label_register)
                 setOnClickListener {
                     registerToCampaign()
+                    viewModel.sendRegisterClickEvent(flashSaleId)
                 }
             }
             imageProductEligible.loadImage(IMAGE_PRODUCT_ELIGIBLE_URL)
