@@ -8,6 +8,8 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.utils.date.DateUtil
+import java.util.*
 
 interface TagItemBuilder {
 
@@ -58,12 +60,7 @@ interface TagItemBuilder {
 
     fun buildProductSection(
         productList: List<PlayProductUiModel.Product> = emptyList(),
-        config: ProductSectionUiModel.Section.ConfigUiModel = ProductSectionUiModel.Section.ConfigUiModel(
-            type = ProductSectionType.Unknown,
-            title = "", timerInfo = "", serverTime = "", startTime = "", endTime = "",
-            background = ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
-            reminder = PlayUpcomingBellStatus.On(DEFAULT_CAMPAIGN_ID)
-        ),
+        config: ProductSectionUiModel.Section.ConfigUiModel = buildSectionConfig(),
         id: String = "",
     ): ProductSectionUiModel.Section
 
@@ -71,9 +68,10 @@ interface TagItemBuilder {
         type: ProductSectionType = ProductSectionType.Unknown,
         title: String = "",
         timerInfo: String = "",
-        serverTime: String = "",
-        startTime: String = "",
-        endTime: String = "",
+        controlTime: Date = DateUtil.getCurrentDate(),
+        serverTime: Date? = null,
+        startTime: Date? = null,
+        endTime: Date? = null,
         background: ProductSectionUiModel.Section.BackgroundUiModel =
             ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
         reminderStatus: PlayUpcomingBellStatus = PlayUpcomingBellStatus.Unknown,

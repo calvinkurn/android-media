@@ -1,15 +1,13 @@
 package com.tkpd.atcvariant.view.viewholder.item
 
 import android.content.Context
-import android.graphics.Rect
 import android.view.View
 import android.widget.TextView
-import androidx.annotation.DimenRes
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
+import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tkpd.atcvariant.R
@@ -19,13 +17,17 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.common.view.AtcVariantListener
 import com.tokopedia.product.detail.common.view.AtcVariantOptionAdapter
-import java.util.*
+import java.util.Locale
 
 
 /**
  * Created by mzennis on 2020-03-11.
  */
 class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) : RecyclerView.ViewHolder(view), AtcVariantListener by listener {
+
+    companion object {
+        private const val NUMBER_OF_VARIANT_THRESHOLD = 25
+    }
 
     private val variantOptionAdapter = AtcVariantOptionAdapter(this)
     private val layoutManager = LinearLayoutManager(view.context, RecyclerView.HORIZONTAL, false)
@@ -47,25 +49,14 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
     fun bind(data: VariantCategory, isOptionChanged: Boolean) {
         if (isOptionChanged) {
             setSelectedOptionText(data)
-
-            rvVariant.layoutManager = FlexboxLayoutManager(context).apply {
-                alignItems = AlignItems.FLEX_START
-            }
-            if (rvVariant.itemDecorationCount == 0) {
-                val itemDecoration = FlexboxItemDecoration(context).apply {
-                    setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
-                    setOrientation(FlexboxItemDecoration.HORIZONTAL)
-                }
-
-                rvVariant.addItemDecoration(itemDecoration)
-            }
+            setupFlexBox(data.variantOptions.size)
             variantOptionAdapter.setData(data.variantOptions)
         }
     }
 
     fun bind(data: VariantCategory) {
         setSelectedOptionText(data)
-
+        setupFlexBox(data.variantOptions.size)
         if (data.variantGuideline.isNotEmpty() && !listener.onVariantGuideLineHide()) {
             txtVariantGuideline.show()
             txtVariantGuideline.setOnClickListener {
@@ -76,6 +67,34 @@ class ItemContainerViewHolder(val view: View, val listener: AtcVariantListener) 
         }
 
         variantOptionAdapter.setData(data.variantOptions)
+    }
+
+    /**
+     * Data size is for one level options, we want to use this to treshold flexbox to be column or row
+     * This approach is to fix flexbox issue child disappear when it wrap with scrollview
+     * https://github.com/google/flexbox-layout/issues/420
+     */
+    private fun setupFlexBox(dataSize: Int) {
+        val flexboxManager = FlexboxLayoutManager(context).apply {
+            alignItems = AlignItems.FLEX_START
+        }
+
+        if (dataSize > NUMBER_OF_VARIANT_THRESHOLD) {
+            flexboxManager.flexDirection = FlexDirection.COLUMN
+        } else {
+            flexboxManager.flexDirection = FlexDirection.ROW
+        }
+
+        rvVariant.layoutManager = flexboxManager
+
+        if (rvVariant.itemDecorationCount == 0) {
+            val itemDecoration = FlexboxItemDecoration(context).apply {
+                setDrawable(ContextCompat.getDrawable(context, R.drawable.bg_atc_chip_divider))
+                setOrientation(FlexboxItemDecoration.HORIZONTAL)
+            }
+
+            rvVariant.addItemDecoration(itemDecoration)
+        }
     }
 
     override fun onSelectionChanged(view: View, position: Int) {

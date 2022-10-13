@@ -26,15 +26,11 @@ import com.tokopedia.product.detail.imagepreview.view.viewmodel.ImagePreviewPdpV
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
-import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
-import org.xml.sax.ErrorHandler
 import java.util.*
 import javax.inject.Inject
 
@@ -121,14 +117,10 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
     private fun initListener() {
         binding?.btnAddToWishlist?.setOnClickListener {
             if (userSession.isLoggedIn) {
-                var isWishlistUsingV2 = false
-                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(this)) isWishlistUsingV2 = true
                 if (isWishlisted) {
-                    if (isWishlistUsingV2) removeWishlistV2(this)
-                    else removeWishlist()
+                    removeWishlistV2(this)
                 } else {
-                    if (isWishlistUsingV2) addWishlistV2(this)
-                    else addWishlist()
+                    addWishlistV2(this)
                 }
             } else {
                 gotoLogin()
@@ -173,7 +165,7 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
         when (requestCode) {
             REQUEST_CODE_LOGIN -> {
                 if (userSession.isLoggedIn) {
-                    addWishlist()
+                    addWishlistV2(applicationContext)
                     startActivity(RouteManager.getIntent(applicationContext, ApplinkConst.WISHLIST))
                     finish()
                 }
@@ -183,29 +175,6 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
 
     private fun isProductIdValid(productId: String): Boolean {
         return productId.isNotEmpty() && productId.matches(Regex(ImagePreviewPdpViewModel.PATTERN_REGEX))
-    }
-
-    override fun addWishlist() {
-        if (isProductIdValid(productId)) {
-            showLoading()
-            viewModel.addWishList(
-                productId,
-                onSuccessAddWishlist = {
-                    hideLoading()
-                    onSuccessAddWishlist()
-                    updateView()
-                    imagePreviewTracking.onSuccessAdd()
-                },
-                onErrorAddWishList = {
-                    hideLoading()
-                    it?.let {
-                        onErrorAddWishlist(Throwable(it))
-                    }
-                }
-            )
-        } else {
-            onErrorAddWishlist(Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
-        }
     }
 
     override fun addWishlistV2(context: Context) {
@@ -237,27 +206,6 @@ class ImagePreviewPdpActivity : ImagePreviewActivity(), ImagePreviewPdpView {
             val errorMsg = com.tokopedia.network.utils.ErrorHandler.getErrorMessage(context,
                 Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
             AddRemoveWishlistV2Handler.showWishlistV2ErrorToaster(errorMsg, rootView)
-        }
-    }
-
-    override fun removeWishlist() {
-        if (isProductIdValid(productId)) {
-            showLoading()
-            viewModel.removeWishList(
-                productId,
-                onSuccessRemoveWishlist = {
-                    hideLoading()
-                    onSuccessRemoveWishlist()
-                    updateView()
-                    imagePreviewTracking.onSuccessRemove()
-                },
-                onErrorRemoveWishList = {
-                    hideLoading()
-                    onErrorRemoveWishlist(Throwable(it))
-                }
-            )
-        } else {
-            onErrorRemoveWishlist(Throwable(resources.getString(com.tokopedia.wishlist_common.R.string.add_to_wishlist_invalid)))
         }
     }
 

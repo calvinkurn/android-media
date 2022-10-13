@@ -25,6 +25,8 @@ class EventShare (private val activity: WeakReference<Activity>) {
 
     companion object {
         private const val TYPE = "text/plain"
+        private const val ENT_WEB_LINK = "events/detail/"
+        private const val ENT_APP_LINK = "tokopedia://events/"
     }
 
     fun shareEvent(data: ProductDetailData, titleShare: String, context: Context, loadShare: () -> Unit, doneLoadShare: () -> Unit) {
@@ -59,8 +61,8 @@ class EventShare (private val activity: WeakReference<Activity>) {
                         }
                     }))
         }else{
-            openIntentShare(data.title, titleShare, TkpdBaseURL.WEB_DOMAIN +
-                    context.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl), context)
+            openIntentShare(data.title, titleShare, TkpdBaseURL.WEB_DOMAIN + ENT_WEB_LINK +
+                data.seoUrl, context)
             doneLoadShare()
         }
     }
@@ -74,9 +76,11 @@ class EventShare (private val activity: WeakReference<Activity>) {
                 ogUrl = null
                 type = LinkerData.ENTERTAINMENT_TYPE
                 imgUri = data.thumbnailApp
-                uri = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl)
-                deepLink = context.resources.getString(R.string.ent_pdp_share_app_link, data.seoUrl)
-                desktopUrl = TkpdBaseURL.WEB_DOMAIN + context.resources.getString(R.string.ent_pdp_share_web_link, data.seoUrl)
+                uri = TkpdBaseURL.WEB_DOMAIN + ENT_WEB_LINK +
+                    data.seoUrl
+                deepLink = ENT_APP_LINK + data.seoUrl
+                desktopUrl = TkpdBaseURL.WEB_DOMAIN + ENT_WEB_LINK +
+                    data.seoUrl
             }
         }
     }

@@ -51,7 +51,6 @@ import com.tokopedia.user.session.datastore.DataStorePreference
 import com.tokopedia.user.session.datastore.UserSessionDataStore
 import com.tokopedia.user.session.datastore.workmanager.DataStoreMigrationWorker
 import com.tokopedia.user.session.util.EncoderDecoder
-import kotlinx.android.synthetic.main.activity_logout.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -296,11 +295,11 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
     }
 
     private fun showLoading() {
-        logoutLoading?.visibility = View.VISIBLE
+        findViewById<View>(R.id.logoutLoading)?.visibility = View.VISIBLE
     }
 
     private fun hideLoading() {
-        logoutLoading?.visibility = View.GONE
+        findViewById<View>(R.id.logoutLoading)?.visibility = View.GONE
     }
 
     private fun clearTemporaryTokenForSeamless() {

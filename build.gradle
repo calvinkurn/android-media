@@ -32,9 +32,6 @@ buildscript {
         classpath ('com.android.tools.build:gradle:7.0.4') {
             exclude module: 'proguard-gradle'
         }
-//        classpath ('com.android.tools.build:gradle:4.2.1') {
-//            exclude module: 'proguard-gradle'
-//        }
         classpath "org.jacoco:org.jacoco.core:$jacocoVersion"
         classpath('net.sf.proguard:proguard-gradle:6.0.3') {
             force = true
@@ -69,12 +66,6 @@ if (hasProperty('buildScan')) {
 apply from: 'buildproj.gradle'
 
 apply from: "$rootDir/tools/set_debug_tools.gradle"
-
-//subprojects{
-//    plugins.withType(com.android.build.gradle.BasePlugin) {
-//        project.apply plugin: "org.gradle.android.cache-fix"
-//    }
-//}
 
 //Installing Git Hooks
 task installGitHooks {

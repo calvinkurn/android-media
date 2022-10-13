@@ -6,8 +6,6 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 
 interface InspirationCarouselListener {
 
-    val carouselRecycledViewPool: RecyclerView.RecycledViewPool?
-
     fun onInspirationCarouselListProductImpressed(product: InspirationCarouselDataView.Option.Product)
 
     fun onInspirationCarouselListProductClicked(product: InspirationCarouselDataView.Option.Product)
