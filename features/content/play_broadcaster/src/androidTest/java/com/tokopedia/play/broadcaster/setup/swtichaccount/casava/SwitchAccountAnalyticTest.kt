@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.helper.containsEventAction
 import com.tokopedia.play.broadcaster.setup.accountListResponse
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.setup.channelResponse
+import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,14 +47,15 @@ class SwitchAccountAnalyticTest {
     private val mockAddedTag = GetAddedChannelTagsResponse()
     private val analyticFile = "tracker/content/playbroadcaster/play_broadcaster_ugc.json"
 
-    private fun createRobot() = SwitchAccountAnalyticRobot(
+    private fun createRobot() = SwitchAccountRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
         userSessionInterface = mockUserSession,
         dispatcher = mockDispatcher,
         repo = mockRepo,
         channelUseCase = mockGetChannelUseCase,
-        addedChannelTagsUseCase = mockGetAddedTagUseCase
+        addedChannelTagsUseCase = mockGetAddedTagUseCase,
+        sharedPreferences = mockk(relaxed = true)
     )
 
     init {

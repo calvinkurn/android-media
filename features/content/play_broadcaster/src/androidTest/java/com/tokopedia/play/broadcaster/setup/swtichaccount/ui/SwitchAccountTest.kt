@@ -13,6 +13,7 @@ import com.tokopedia.play.broadcaster.domain.usecase.GetChannelUseCase
 import com.tokopedia.play.broadcaster.setup.accountListResponse
 import com.tokopedia.play.broadcaster.setup.buildConfigurationUiModel
 import com.tokopedia.play.broadcaster.setup.channelResponse
+import com.tokopedia.play.broadcaster.setup.swtichaccount.SwitchAccountRobot
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -42,6 +43,7 @@ class SwitchAccountTest {
     private fun createRobot() = SwitchAccountRobot(
         dataStore = mockDataStore,
         hydraConfigStore = mockConfigStore,
+        userSessionInterface = mockk(relaxed = true),
         dispatcher = mockDispatcher,
         repo = mockRepo,
         channelUseCase = mockGetChannelUseCase,
@@ -60,12 +62,13 @@ class SwitchAccountTest {
     }
 
     @Test
-    fun test_entryPointWhenBothAccountBanned() {
+    fun test_entryPointWhenShopAccountBanned() {
+        coEvery { mockRepo.getAccountList() } returns accountListResponse().filter { it.isShop }
         coEvery {
             mockRepo.getChannelConfiguration(any(), any())
         } returns buildConfigurationUiModel(streamAllowed = false)
 
-        createRobot().entryPointWhenBothAccountBanned()
+        createRobot().entryPointWhenShopAccountBanned()
     }
 
     @Test

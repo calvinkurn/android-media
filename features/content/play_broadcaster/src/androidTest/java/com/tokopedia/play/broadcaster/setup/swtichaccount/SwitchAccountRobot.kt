@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.setup.swtichaccount.ui
+package com.tokopedia.play.broadcaster.setup.swtichaccount
 
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.testing.launchFragmentInContainer
@@ -9,9 +9,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import androidx.savedstate.SavedStateRegistryOwner
 import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.RecyclerViewActions
+import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -42,6 +44,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastPrepareViewMod
 import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.content.test.espresso.delay
+import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.mockk
 import kotlin.LazyThreadSafetyMode.NONE
 import com.tokopedia.content.common.R as contentR
@@ -52,6 +55,7 @@ import com.tokopedia.content.common.R as contentR
 class SwitchAccountRobot(
     dataStore: PlayBroadcastDataStore,
     hydraConfigStore: HydraConfigStore,
+    userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers,
     repo: PlayBroadcastRepository,
     channelUseCase: GetChannelUseCase,
@@ -64,6 +68,7 @@ class SwitchAccountRobot(
         parentBroViewModel(
             dataStore = dataStore,
             hydraConfigStore = hydraConfigStore,
+            userSession = userSessionInterface,
             dispatcher = dispatcher,
             repo = repo,
             getChannelUseCase = channelUseCase,
@@ -189,9 +194,9 @@ class SwitchAccountRobot(
         delay(1000L)
     }
 
-    fun entryPointWhenBothAccountBanned() = chainable {
-        Espresso.onView(withId(contentR.id.tv_warning_title))
-            .check(matches(withText(context.getString(contentR.string.ugc_warning_account_banned_title))))
+    fun entryPointWhenShopAccountBanned() = chainable {
+        Espresso.onView(withId(contentR.id.rv_tnc_benefit))
+            .check(matches(isCompletelyDisplayed()))
 
         delay()
     }
@@ -327,6 +332,41 @@ class SwitchAccountRobot(
         delay()
         Espresso.onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary))
             .check(matches(isCompletelyDisplayed()))
+    }
+
+    fun onClickDropDownAccount() = chainable {
+        Espresso.onView(
+            withId(com.tokopedia.content.common.R.id.img_content_creator_expand)
+        ).perform(click())
+        delay(500L)
+    }
+
+    fun onClickAccountFromBottomSheet() = chainable {
+        Espresso.onView(
+            withId(com.tokopedia.content.common.R.id.rv_feed_account)
+        ).perform(
+            RecyclerViewActions.actionOnItemAtPosition<RecyclerView.ViewHolder>(
+                1, click()
+            )
+        )
+    }
+
+    fun onSwitchAccountConfirmationDialogShown() = chainable {
+        delay()
+        Espresso.onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary))
+            .check(matches(isCompletelyDisplayed()))
+    }
+
+    fun onClickCancelSwitchWhenHavingDraft() = chainable {
+        delay(500L)
+        Espresso.onView(withId(com.tokopedia.dialog.R.id.dialog_btn_primary))
+            .perform(click())
+    }
+
+    fun onClickConfirmSwitchWhenHavingDraft() = chainable {
+        delay(500L)
+        Espresso.onView(withId(com.tokopedia.dialog.R.id.dialog_btn_secondary_long))
+            .perform(click())
     }
 
     private fun chainable(fn: () -> Unit): SwitchAccountRobot {
