@@ -25,7 +25,8 @@ class LoginGenerateIdTest : LoginBase() {
             LoginSocmedTestHelper.clickSocmedButton()
 
             val tagSocmedBottomSheet = activityTestRule.activity.getString(R.string.bottom_sheet_show)
-            val rootView = activityTestRule.activity.supportFragmentManager.findFragmentByTag(tagSocmedBottomSheet)?.requireView()
+            val rootView = activityTestRule.activity.supportFragmentManager
+                .findFragmentByTag(tagSocmedBottomSheet)?.requireView()
             rootView?.let {
                 ViewIdGenerator.createViewIdFile(rootView, "login_socmed.csv")
             }
