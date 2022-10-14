@@ -9,16 +9,15 @@ import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.listShouldBe
 import com.tokopedia.search.result.complete
 import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatch
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchItemDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchProduct
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.product.broadmatch.DynamicCarouselOption
 import com.tokopedia.search.result.product.broadmatch.DynamicCarouselProduct
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.shop.presentation.viewmodel.shouldBeInstanceOf
 import com.tokopedia.search.shouldBe
@@ -28,9 +27,6 @@ import io.mockk.just
 import io.mockk.runs
 import io.mockk.slot
 import io.mockk.verifyOrder
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.junit.Test
 import rx.Subscriber
 
