@@ -8,7 +8,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
@@ -19,88 +18,45 @@ object ProductListUiStateMapper {
 
     fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(
-                    getBuyerOrderDetailDataRequestState,
-                    singleAtcRequestStates
-                )
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailDataStarted(
-        buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        val p1DataRequestState = buyerOrderDetailDataRequestState.getP1DataRequestState
-        return when (val p0DataRequestState = buyerOrderDetailDataRequestState.getP0DataRequestState) {
-            is GetP0DataRequestState.Requesting -> {
-                mapOnP0Requesting(p0DataRequestState, p1DataRequestState, singleAtcRequestStates)
-            }
-            is GetP0DataRequestState.Success -> {
-                mapOnP0Success(p0DataRequestState, p1DataRequestState, singleAtcRequestStates)
-            }
-            is GetP0DataRequestState.Error -> {
-                mapOnP0Error(p0DataRequestState)
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailIdling(): ProductListUiState {
-        return mapOnLoading()
-    }
-
-    private fun mapOnP0Requesting(
-        p0DataRequestState: GetP0DataRequestState.Requesting,
-        p1DataRequestState: GetP1DataRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return when (
-            val getBuyerOrderDetailRequestState = p0DataRequestState.getBuyerOrderDetailRequestState
-        ) {
+        val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
+        val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
+            .getP0DataRequestState
+            .getBuyerOrderDetailRequestState
+        return when (getBuyerOrderDetailRequestState) {
             is GetBuyerOrderDetailRequestState.Requesting -> {
-                mapOnLoading()
-            }
-            is GetBuyerOrderDetailRequestState.Success -> {
-                mapOnGetBuyerOrderDetailIsSuccess(
-                    getBuyerOrderDetailRequestState,
-                    p1DataRequestState,
-                    singleAtcRequestStates
-                )
+                mapOnGetBuyerOrderDetailRequesting(currentState)
             }
             is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnError(getBuyerOrderDetailRequestState.throwable)
+                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState)
+            }
+            is GetBuyerOrderDetailRequestState.Success -> {
+                mapOnGetBuyerOrderDetailSuccess(
+                    getBuyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState,
+                    singleAtcRequestStates
+                )
             }
         }
     }
 
-    private fun mapOnP0Success(
-        p0DataRequestState: GetP0DataRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+    private fun mapOnGetBuyerOrderDetailRequesting(
+        currentState: ProductListUiState
     ): ProductListUiState {
-        return mapOnGetBuyerOrderDetailIsSuccess(
-            p0DataRequestState.getBuyerOrderDetailRequestState,
-            p1DataRequestState,
-            singleAtcRequestStates
-        )
+        return if (currentState is ProductListUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
     }
 
-    private fun mapOnP0Error(
-        p0DataRequestState: GetP0DataRequestState.Error
-    ): ProductListUiState {
-        return mapOnError(p0DataRequestState.getThrowable())
-    }
-
-    private fun mapOnGetBuyerOrderDetailIsSuccess(
+    private fun mapOnGetBuyerOrderDetailSuccess(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
         p1DataRequestState: GetP1DataRequestState,
+        currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return when (p1DataRequestState) {
@@ -108,6 +64,7 @@ object ProductListUiStateMapper {
                 mapOnP1Requesting(
                     buyerOrderDetailRequestState,
                     p1DataRequestState,
+                    currentState,
                     singleAtcRequestStates
                 )
             }
@@ -121,21 +78,29 @@ object ProductListUiStateMapper {
         }
     }
 
+    private fun mapOnGetBuyerOrderDetailError(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Error
+    ): ProductListUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
+    }
+
     private fun mapOnP1Requesting(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
         p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
-                mapOnLoading()
-            }
-            else -> {
-                mapOnDataReady(
-                    buyerOrderDetailRequestState.result,
+                mapOnOrderResolutionRequesting(
+                    currentState,
+                    buyerOrderDetailRequestState,
                     p1DataRequestState.getInsuranceDetailRequestState,
                     singleAtcRequestStates
                 )
+            }
+            else -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState, singleAtcRequestStates)
             }
         }
     }
@@ -145,15 +110,37 @@ object ProductListUiStateMapper {
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        return mapOnDataReady(
-            buyerOrderDetailRequestState.result,
-            insuranceDetailRequestState,
-            singleAtcRequestStates
-        )
+        return mapOnDataReady(buyerOrderDetailRequestState.result, singleAtcRequestStates)
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: ProductListUiState,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+    ): ProductListUiState {
+        return if (currentState is ProductListUiState.HasData) {
+            mapOnDataReady(buyerOrderDetailRequestState.result, singleAtcRequestStates)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        insuranceDetailRequestState,
+            singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+    ): ProductListUiState {
+        return mapOnDataReady(buyerOrderDetailRequestState.result, singleAtcRequestStates)
     }
 
     private fun mapOnLoading(): ProductListUiState {
         return ProductListUiState.Loading
+    }
+
+    private fun mapOnReloading(
+        currentState: ProductListUiState.HasData
+    ): ProductListUiState {
+        return ProductListUiState.HasData.Reloading(currentState.data)
     }
 
     private fun mapOnDataReady(
@@ -166,7 +153,7 @@ object ProductListUiStateMapper {
                 it.result
             } else null
         }
-        return ProductListUiState.Showing(
+        return ProductListUiState.HasData.Showing(
             mapProductListUiModel(
                 buyerOrderDetailData.details,
                 buyerOrderDetailData.details?.bundleIcon.orEmpty(),
@@ -181,7 +168,7 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnError(
-        throwable: Throwable
+        throwable: Throwable?
     ): ProductListUiState {
         return ProductListUiState.Error(throwable)
     }
@@ -244,15 +231,13 @@ object ProductListUiStateMapper {
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): List<ProductListUiModel.ProductBundlingUiModel> {
         return bundleDetail?.map { bundle ->
-            ProductListUiModel.ProductBundlingUiModel(
-                bundleName = bundle.bundleName,
+            ProductListUiModel.ProductBundlingUiModel(bundleName = bundle.bundleName,
                 bundleIconUrl = bundleIcon,
                 totalPrice = bundle.bundleSubtotalPrice,
                 totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                 bundleItemList = bundle.orderDetail.map { bundleDetail ->
                     mapProductBundleItem(bundleDetail, orderId, orderStatusId, bundle.bundleId, insuranceDetailData, singleAtcResultFlow)
-                }
-            )
+                })
         }.orEmpty()
     }
 
@@ -396,7 +381,9 @@ object ProductListUiStateMapper {
         )
     }
 
-    private fun mapActionButton(button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button?): ActionButtonsUiModel.ActionButton {
+    private fun mapActionButton(
+        button: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button?
+    ): ActionButtonsUiModel.ActionButton {
         return ActionButtonsUiModel.ActionButton(
             key = button?.key.orEmpty(),
             label = button?.displayName.orEmpty(),
@@ -407,7 +394,9 @@ object ProductListUiStateMapper {
         )
     }
 
-    private fun mapPopUp(popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup?): ActionButtonsUiModel.ActionButton.PopUp {
+    private fun mapPopUp(
+        popup: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup?
+    ): ActionButtonsUiModel.ActionButton.PopUp {
         return ActionButtonsUiModel.ActionButton.PopUp(
             actionButton = mapPopUpButtons(popup?.actionButton.orEmpty()),
             body = popup?.body.orEmpty(),
@@ -415,13 +404,17 @@ object ProductListUiStateMapper {
         )
     }
 
-    private fun mapPopUpButtons(popUpButtons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton>): List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton> {
+    private fun mapPopUpButtons(
+        popUpButtons: List<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton>
+    ): List<ActionButtonsUiModel.ActionButton.PopUp.PopUpButton> {
         return popUpButtons.map {
             mapPopUpButton(it)
         }
     }
 
-    private fun mapPopUpButton(popUpButton: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton {
+    private fun mapPopUpButton(
+        popUpButton: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Button.Popup.PopUpButton
+    ): ActionButtonsUiModel.ActionButton.PopUp.PopUpButton {
         return ActionButtonsUiModel.ActionButton.PopUp.PopUpButton(
             key = popUpButton.key,
             displayName = popUpButton.displayName,

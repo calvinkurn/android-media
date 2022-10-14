@@ -14,9 +14,9 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.buyerorderdetail.domain.usecases.FinishOrderUseCase
 import com.tokopedia.buyerorderdetail.domain.usecases.GetBuyerOrderDetailDataUseCase
 import com.tokopedia.buyerorderdetail.presentation.mapper.ActionButtonsUiStateMapper
@@ -160,8 +160,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 )
             )
             emit(
-                GetBuyerOrderDetailDataRequestState.Success(
-                    GetP0DataRequestState.Success(
+                GetBuyerOrderDetailDataRequestState.Complete(
+                    GetP0DataRequestState.Complete(
                         GetBuyerOrderDetailRequestState.Success(getBuyerOrderDetailResult)
                     ),
                     GetP1DataRequestState.Complete(
@@ -189,8 +189,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 )
             )
             emit(
-                GetBuyerOrderDetailDataRequestState.Success(
-                    GetP0DataRequestState.Error(
+                GetBuyerOrderDetailDataRequestState.Complete(
+                    GetP0DataRequestState.Complete(
                         GetBuyerOrderDetailRequestState.Error(throwable)
                     ),
                     GetP1DataRequestState.Complete(
@@ -228,7 +228,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun mockOrderStatusUiStateMapper(
         loadingState: OrderStatusUiState.Loading = mockk(relaxed = true),
-        showingState: OrderStatusUiState.Showing = mockk(relaxed = true),
+        reloadingState: OrderStatusUiState.HasData.Reloading = mockk(relaxed = true),
+        showingState: OrderStatusUiState.HasData.Showing = mockk(relaxed = true),
         errorState: OrderStatusUiState.Error = mockk(relaxed = true),
         block: () -> Unit
     ) {
@@ -236,6 +237,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every {
                 OrderStatusUiStateMapper["mapOnLoading"]()
             } returns loadingState
+            every {
+                OrderStatusUiStateMapper["mapOnReloading"](
+                    any<OrderStatusUiState.HasData>()
+                )
+            } returns reloadingState
             every {
                 OrderStatusUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>()
@@ -250,7 +256,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun mockProductListUiStateMapper(
         loadingState: ProductListUiState.Loading = mockk(relaxed = true),
-        showingState: ProductListUiState.Showing = mockk(relaxed = true),
+        reloadingState: ProductListUiState.HasData.Reloading = mockk(relaxed = true),
+        showingState: ProductListUiState.HasData.Showing = mockk(relaxed = true),
         errorState: ProductListUiState.Error = mockk(relaxed = true),
         block: () -> Unit
     ) {
@@ -258,6 +265,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every {
                 ProductListUiStateMapper["mapOnLoading"]()
             } returns loadingState
+            every {
+                ProductListUiStateMapper["mapOnReloading"](
+                    any<ProductListUiState.HasData>()
+                )
+            } returns reloadingState
             every {
                 ProductListUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>(),
@@ -274,7 +286,8 @@ abstract class BuyerOrderDetailViewModelTestFixture {
 
     fun mockActionButtonsUiStateMapper(
         loadingState: ActionButtonsUiState.Loading = mockk(relaxed = true),
-        showingState: ActionButtonsUiState.Showing = mockk(relaxed = true),
+        reloadingState: ActionButtonsUiState.HasData.Reloading = mockk(relaxed = true),
+        showingState: ActionButtonsUiState.HasData.Showing = mockk(relaxed = true),
         errorState: ActionButtonsUiState.Error = mockk(relaxed = true),
         block: () -> Unit
     ) {
@@ -282,6 +295,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             every {
                 ActionButtonsUiStateMapper["mapOnLoading"]()
             } returns loadingState
+            every {
+                ActionButtonsUiStateMapper["mapOnReloading"](
+                    any<ActionButtonsUiState.HasData>()
+                )
+            } returns reloadingState
             every {
                 ActionButtonsUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>()

@@ -8,5 +8,5 @@ sealed class GetBuyerOrderDetailRequestState {
         val result: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
     ) : GetBuyerOrderDetailRequestState()
 
-    data class Error(val throwable: Throwable) : GetBuyerOrderDetailRequestState()
+    data class Error(val throwable: Throwable?) : GetBuyerOrderDetailRequestState()
 }

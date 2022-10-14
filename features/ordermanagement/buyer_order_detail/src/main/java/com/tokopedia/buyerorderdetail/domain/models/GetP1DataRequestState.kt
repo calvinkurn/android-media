@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
 sealed interface GetP1DataRequestState {
-
     val getOrderResolutionRequestState: GetOrderResolutionRequestState
     val getInsuranceDetailRequestState: GetInsuranceDetailRequestState
 
@@ -14,12 +13,12 @@ sealed interface GetP1DataRequestState {
         override val getOrderResolutionRequestState: GetOrderResolutionRequestState,
         override val getInsuranceDetailRequestState: GetInsuranceDetailRequestState,
     ) : GetP1DataRequestState {
-        fun getThrowable(): Throwable {
+        fun getThrowable(): Throwable? {
             return if (getOrderResolutionRequestState is GetOrderResolutionRequestState.Error) {
                 getOrderResolutionRequestState.throwable
             } else if (getInsuranceDetailRequestState is GetInsuranceDetailRequestState.Error) {
                 getInsuranceDetailRequestState.throwable
-            } else Throwable()
+            } else null
         }
     }
 }

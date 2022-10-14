@@ -2,14 +2,22 @@ package com.tokopedia.buyerorderdetail.presentation.uistate
 
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 
-sealed class ActionButtonsUiState {
-    object Loading : ActionButtonsUiState()
+sealed interface ActionButtonsUiState {
+    object Loading : ActionButtonsUiState
 
-    data class Showing(
+    sealed interface HasData : ActionButtonsUiState {
         val data: ActionButtonsUiModel
-    ) : ActionButtonsUiState()
+
+        data class Reloading(
+            override val data: ActionButtonsUiModel
+        ) : HasData
+
+        data class Showing(
+            override val data: ActionButtonsUiModel
+        ) : HasData
+    }
 
     data class Error(
-        val throwable: Throwable
-    ) : ActionButtonsUiState()
+        val throwable: Throwable?
+    ) : ActionButtonsUiState
 }

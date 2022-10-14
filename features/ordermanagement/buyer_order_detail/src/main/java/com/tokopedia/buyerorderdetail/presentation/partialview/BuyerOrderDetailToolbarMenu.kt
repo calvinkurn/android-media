@@ -34,7 +34,7 @@ class BuyerOrderDetailToolbarMenu @JvmOverloads constructor(
     private fun setClickListeners() {
         chatIcon?.setOnClickListener {
             viewModel?.buyerOrderDetailUiState?.value?.let { uiState ->
-                if (uiState is BuyerOrderDetailUiState.Showing) {
+                if (uiState is BuyerOrderDetailUiState.HasData) {
                     navigator?.goToAskSeller(
                         orderStatusUiModel = uiState.orderStatusUiState.data,
                         productListUiModel = uiState.productListUiState.data,

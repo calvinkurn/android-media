@@ -32,7 +32,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
 
     private fun setupNewItems(
         context: Context?,
-        uiState: BuyerOrderDetailUiState.Showing
+        uiState: BuyerOrderDetailUiState.HasData
     ): List<Visitable<BuyerOrderDetailTypeFactory>> {
         return mutableListOf<Visitable<BuyerOrderDetailTypeFactory>>().apply {
             setupOrderStatusSection(context, uiState.orderStatusUiState.data)
@@ -71,7 +71,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderResolutionSection(
         context: Context?, orderResolutionUiState: OrderResolutionTicketStatusUiState
     ) {
-        if (orderResolutionUiState is OrderResolutionTicketStatusUiState.Showing) {
+        if (orderResolutionUiState is OrderResolutionTicketStatusUiState.HasData) {
             if (orderResolutionUiState.data.shouldShow(context)) {
                 addThickDividerSection()
                 add(orderResolutionUiState.data)
@@ -309,7 +309,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         }
     }
 
-    fun updateItems(context: Context?, uiState: BuyerOrderDetailUiState.Showing) {
+    fun updateItems(context: Context?, uiState: BuyerOrderDetailUiState.HasData) {
         val newItems = setupNewItems(context, uiState)
         val diffCallback = BuyerOrderDetailDiffUtilCallback(
             visitables as List<Visitable<BuyerOrderDetailTypeFactory>>,
