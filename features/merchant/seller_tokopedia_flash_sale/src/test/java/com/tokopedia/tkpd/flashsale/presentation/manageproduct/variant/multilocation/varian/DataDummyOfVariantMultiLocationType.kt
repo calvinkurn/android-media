@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 
 object DataDummyOfVariantMultiLocationType {
@@ -61,14 +62,14 @@ object DataDummyOfVariantMultiLocationType {
                 sku = "SKU-$child",
                 stock = 80,
                 url = "",
-                warehouses = createWarehouseDummy(isWarehouseToggleOn)
+                warehouses = createWarehousesDummy(isWarehouseToggleOn)
             )
             childsProduct.add(childProduct)
         }
         return childsProduct
     }
 
-    fun createWarehouseDummy(isWarehouseToggleOn : Boolean): List<ReservedProduct.Product.Warehouse> {
+    fun createWarehousesDummy(isWarehouseToggleOn : Boolean): List<ReservedProduct.Product.Warehouse> {
         val listWarehouse = arrayListOf<ReservedProduct.Product.Warehouse>()
         for (child in 1 until 6) {
             val warehouse = ReservedProduct.Product.Warehouse(
@@ -89,6 +90,24 @@ object DataDummyOfVariantMultiLocationType {
             listWarehouse.add(warehouse)
         }
         return listWarehouse
+    }
+
+    fun createWarehouseDummy(stock: Long, price: Long): ReservedProduct.Product.Warehouse {
+        return ReservedProduct.Product.Warehouse(
+            warehouseId = 1,
+            name = "Jakarta",
+            stock = stock,
+            price = price,
+            discountSetup = ReservedProduct.Product.Warehouse.DiscountSetup(
+                discount = 10,
+                price = 5000,
+                stock = 500
+            ),
+            isDilayaniTokopedia = false,
+            isToggleOn = true,
+            isDisabled = false,
+            disabledReason = ""
+        )
     }
 
     fun createDummyOfProductCriteria(): ReservedProduct.Product.ProductCriteria {
@@ -132,5 +151,51 @@ object DataDummyOfVariantMultiLocationType {
             listWarehouse.add(warehouse)
         }
         return listWarehouse
+    }
+
+    fun createDummyOfListCriteria(nameList : ArrayList<String>) : List<CriteriaCheckingResult> {
+        val list = arrayListOf<CriteriaCheckingResult>()
+        nameList.forEach { name ->
+            list.add(createDummyOfCriteria(name))
+        }
+        return list
+    }
+
+    private fun createDummyOfCriteria(name : String) : CriteriaCheckingResult {
+        return CriteriaCheckingResult(name = name, locationResult =  createListOfCriteriaLocationResult())
+    }
+
+    fun createDummyOfListCriteriaWithEmptyLocation(nameList : ArrayList<String>) : List<CriteriaCheckingResult> {
+        val list = arrayListOf<CriteriaCheckingResult>()
+        nameList.forEach { name ->
+            list.add(createDummyOfCriteriaWithEmptyLocation(name))
+        }
+        return list
+    }
+
+    private fun createDummyOfCriteriaWithEmptyLocation(name : String) : CriteriaCheckingResult {
+        return CriteriaCheckingResult(name = name)
+    }
+
+    private fun createListOfCriteriaLocationResult() : List<CriteriaCheckingResult.LocationCheckingResult>{
+        val list = arrayListOf<CriteriaCheckingResult.LocationCheckingResult>()
+        for(child in 1 until 6){
+            list.add(createCriteriaLocationResult("Warehouse - $child", true, child))
+        }
+        return list
+    }
+
+    private fun createCriteriaLocationResult(cityName : String, isDilayaniTokopedia : Boolean, index : Int) : CriteriaCheckingResult.LocationCheckingResult {
+        return CriteriaCheckingResult.LocationCheckingResult(
+            cityName, isDilayaniTokopedia, createPricerCriteria(true, index), createStockCriteria(true, index)
+        )
+    }
+
+    private fun createPricerCriteria(isEligible : Boolean, index : Int) : CriteriaCheckingResult.PriceCheckingResult {
+        return CriteriaCheckingResult.PriceCheckingResult(isEligible, min = 5L * index, max = 10L * index)
+    }
+
+    private fun createStockCriteria(isEligible : Boolean, index : Int) : CriteriaCheckingResult.StockCheckingResult {
+        return CriteriaCheckingResult.StockCheckingResult(isEligible, min = 5L * index, max = 10L * index)
     }
 }

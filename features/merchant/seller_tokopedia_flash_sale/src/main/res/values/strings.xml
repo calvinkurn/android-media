@@ -282,4 +282,6 @@
     <string name="stfs_toaster_valid">Info produk sudah diubah.</string>
     <string name="stfs_toaster_ok">Oke</string>
 
+    <string name="stfs_warning_location_not_in_criteria">Lokasi ini belum memenuhi kriteria.</string>
+
 </resources>

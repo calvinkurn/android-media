@@ -58,7 +58,6 @@ class ManageProductVariantMultiLocationAdapter :
             val discount = selectedWarehouse.discountSetup
             val criteria = product.productCriteria
             binding.containerLayoutProductParent.apply {
-                textParentErrorMessage.gone()
                 imageParentError.gone()
                 textParentTitle.text = selectedWarehouse.name
                 textParentOriginalPrice.text = selectedWarehouse.price.getCurrencyFormatted()
@@ -66,11 +65,12 @@ class ManageProductVariantMultiLocationAdapter :
                     R.string.manageproductnonvar_stock_total_format,
                     selectedWarehouse.stock
                 )
-                switcherToggleParent.isChecked = selectedWarehouse.isToggleOn
+                setIsVariantOnCriteria(selectedWarehouse)
                 switcherToggleParent.setOnClickListener {
                     selectedWarehouse.isToggleOn = switcherToggleParent.isChecked
                     binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
-                    listener?.onDataInputChanged(adapterPosition, criteria, discount)
+                    listener?.onDataInputChanged(absoluteAdapterPosition, criteria, discount)
+                    listener?.trackOnToggle()
                 }
                 iconTkpd.isVisible = selectedWarehouse.isDilayaniTokopedia
             }

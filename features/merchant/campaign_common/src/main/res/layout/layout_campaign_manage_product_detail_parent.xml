@@ -6,17 +6,16 @@
     android:layout_height="wrap_content"
     tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/icon_tkpd"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:visibility="gone"
+        app:icon_name="DILAYANI_TOKOPEDIA_FILLED"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_goneMarginBottom="20dp"
-        app:srcCompat="@drawable/ic_campaign_common_dilayani_tokopedia"
-        app:unify_image_corner_radius="0"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_parent_title"
@@ -85,6 +84,7 @@
         android:id="@+id/text_parent_error_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:layout_marginBottom="8dp"
         android:textColor="@color/Unify_RN500"
         android:visibility="gone"
@@ -106,5 +106,18 @@
         app:srcCompat="@drawable/ic_campaign_common_warning"
         app:unify_image_corner_radius="0"
         tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvCheckDetail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/label_cek_detail"
+        android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/text_parent_error_message"
+        app:layout_constraintTop_toBottomOf="@+id/text_parent_error_message"
+        app:typographyType="paragraph_3"
+        app:typographyWeight="bold"
+        tools:visibility="visible"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

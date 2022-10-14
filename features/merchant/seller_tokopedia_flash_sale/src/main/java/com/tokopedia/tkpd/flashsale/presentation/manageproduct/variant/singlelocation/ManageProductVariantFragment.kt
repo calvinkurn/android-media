@@ -250,7 +250,8 @@ class ManageProductVariantFragment :
         val intent = ManageProductMultiLocationVariantActivity.start(
             context ?: return,
             viewModel.getProductData(),
-            adapterPosition
+            adapterPosition,
+            campaignId
         )
         startActivityForResult(intent, REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION)
     }

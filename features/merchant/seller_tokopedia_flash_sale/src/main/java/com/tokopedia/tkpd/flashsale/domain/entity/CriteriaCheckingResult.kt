@@ -54,7 +54,8 @@ data class CriteriaCheckingResult(
 
     data class StockCheckingResult (
         val isEligible: Boolean = false,
-        val min: Long = 0
+        val min: Long = 0,
+        val max: Long= 0
     )
 
     data class ScoreCheckingResult (
