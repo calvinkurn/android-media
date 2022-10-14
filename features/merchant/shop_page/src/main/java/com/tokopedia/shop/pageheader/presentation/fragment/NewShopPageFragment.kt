@@ -302,9 +302,6 @@ class NewShopPageFragment :
 
         private const val DELAY_MINI_CART_RESUME = 1000L
 
-        private const val USER_GENERAL = "general"
-        private const val USER_AFFILIATE = "affiliate"
-
         @JvmStatic
         fun createInstance() = NewShopPageFragment()
     }
