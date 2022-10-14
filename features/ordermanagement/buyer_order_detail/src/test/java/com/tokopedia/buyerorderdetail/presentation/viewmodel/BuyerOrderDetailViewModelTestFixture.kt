@@ -243,6 +243,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
                 )
             } returns reloadingState
             every {
+                OrderStatusUiStateMapper["mapOnReloading"](
+                    any<OrderStatusUiState.HasData>()
+                )
+            } returns reloadingState
+            every {
                 OrderStatusUiStateMapper["mapOnDataReady"](
                     any<GetBuyerOrderDetailResponse.Data.BuyerOrderDetail>()
                 )
