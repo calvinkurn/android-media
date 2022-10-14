@@ -5,7 +5,6 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
-import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
@@ -26,8 +25,8 @@ import com.tokopedia.campaignlist.page.presentation.ui.color.getColor
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.Elevations
 import com.tokopedia.campaignlist.page.presentation.ui.elevation.LocalElevations
 import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
-import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
 import com.tokopedia.campaignlist.page.presentation.ui.font.NestTypography
+import com.tokopedia.campaignlist.page.presentation.ui.font.OpenSauceTypography
 
 
 private val UnifyThemeLight = lightColors(
@@ -95,42 +94,25 @@ private fun AdaptiveStatusBarColor(
 }
 
 
-object UnifyTheme {
-
-    /**
-     * Proxy to [MaterialTheme]
-     */
-    val themeColor: Colors
+object NestTheme {
+    val colors: TokopediaColor
         @Composable
         @ReadOnlyComposable
-        get() = MaterialTheme.colors
+        get() = LocalColors.current
 
-    /**
-     * Proxy to [MaterialTheme]
-     */
-    val typography: Typography
+    val typography: NestTypography
         @Composable
         @ReadOnlyComposable
-        get() = MaterialTheme.typography
+        get() = LocalTypography.current
 
-    /**
-     * Proxy to [MaterialTheme]
-     */
+
     val shapes: Shapes
         @Composable
         @ReadOnlyComposable
         get() = MaterialTheme.shapes
 
-    /**
-     * Retrieves the current [Elevations] at the call site's position in the hierarchy.
-     */
     val elevations: Elevations
         @Composable
         @ReadOnlyComposable
         get() = LocalElevations.current
-
-    val colors: TokopediaColor
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalColors.current
 }

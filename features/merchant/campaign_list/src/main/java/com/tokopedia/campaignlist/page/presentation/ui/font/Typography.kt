@@ -1,6 +1,7 @@
 package com.tokopedia.campaignlist.page.presentation.ui.font
 
 import androidx.compose.material.Typography
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font

@@ -32,7 +32,6 @@ import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.UPCOMIN
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
-import com.tokopedia.campaignlist.page.presentation.ui.color.LocalColors
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestButton
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestImage
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabel
@@ -40,13 +39,12 @@ import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabelType
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestSearchBar
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestSortFilter
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestTicker
+import com.tokopedia.campaignlist.page.presentation.ui.components.NestToolbar
 import com.tokopedia.campaignlist.page.presentation.ui.components.NestTypography
-import com.tokopedia.campaignlist.page.presentation.ui.font.LocalTypography
-import com.tokopedia.campaignlist.page.presentation.ui.theme.UnifyTheme
+import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
+import com.tokopedia.campaignlist.page.presentation.ui.theme.NestTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestToolbar
 
 @Composable
 fun CampaignListScreen(
@@ -227,8 +225,8 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(statusImage.bottom)
                     start.linkTo(statusImage.end, margin = 4.dp)
                 },
-                textStyle = LocalTypography.current.display3.copy(
-                    color = UnifyTheme.colors.GN500,
+                textStyle = NestTheme.typography.display3.copy(
+                    color = NestTheme.colors.GN500,
                     fontWeight = FontWeight.Bold
                 )
             )
@@ -260,7 +258,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignImage.top)
                     start.linkTo(campaignImage.end, margin = 12.dp)
                 },
-                textStyle = LocalTypography.current.display2.copy(fontWeight = FontWeight.Bold, color = LocalColors.current.NN950)
+                textStyle = NestTheme.typography.display2.copy(fontWeight = FontWeight.Bold, color = NestTheme.colors.NN950)
             )
 
             NestTypography(
@@ -269,7 +267,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignName.bottom, margin = 12.dp)
                     start.linkTo(campaignName.start)
                 },
-                textStyle = LocalTypography.current.display3
+                textStyle = NestTheme.typography.display3
             )
 
             NestTypography(
@@ -278,7 +276,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(productQty.bottom, margin = 12.dp)
                     start.linkTo(productQty.start)
                 },
-                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN950)
             )
 
 
@@ -288,7 +286,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     top.linkTo(campaignStartDate.bottom)
                     start.linkTo(campaignStartDate.start)
                 },
-                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600)
             )
 
             NestTypography(
@@ -298,7 +296,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(campaignStartDate.end, margin = 12.dp)
                 },
-                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600)
             )
 
             NestTypography(
@@ -308,7 +306,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartDate.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN950)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN950)
             )
 
             NestTypography(
@@ -318,7 +316,7 @@ fun CampaignItem(campaign: ActiveCampaign, onTapShareButton : (ActiveCampaign) -
                     bottom.linkTo(campaignStartTime.bottom)
                     start.linkTo(separator.end, margin = 12.dp)
                 },
-                textStyle = LocalTypography.current.display3.copy(color = LocalColors.current.NN600)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600)
             )
 
             NestButton(
