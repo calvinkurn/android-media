@@ -166,4 +166,14 @@ class ManageProductVariantViewModel @Inject constructor(
         val trackerLabel = "$campaignId - $LOCATION_TYPE"
         tracker.sendClickSaveEvent(trackerLabel)
     }
+
+    fun sendCheckDetailClickEvent(campaignId: String, productId: Long) {
+        val trackerLabel = "$campaignId - $productId - $LOCATION_TYPE"
+        tracker.sendClickCheckDetailEvent(trackerLabel)
+    }
+
+    fun sendManageAllLocationClickEvent(campaignId: String, productId: Long) {
+        val trackerLabel = "$campaignId - $productId - $LOCATION_TYPE"
+        tracker.sendClickManageAllLocationEvent(trackerLabel)
+    }
 }

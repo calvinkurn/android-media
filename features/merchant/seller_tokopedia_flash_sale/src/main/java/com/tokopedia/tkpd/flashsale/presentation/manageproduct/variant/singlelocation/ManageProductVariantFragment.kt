@@ -37,7 +37,10 @@ class ManageProductVariantFragment :
     ManageProductVariantListener {
 
     companion object {
-        fun newInstance(product: ReservedProduct.Product?, campaignId: String): ManageProductVariantFragment {
+        fun newInstance(
+            product: ReservedProduct.Product?,
+            campaignId: String
+        ): ManageProductVariantFragment {
             val fragment = ManageProductVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
@@ -173,8 +176,16 @@ class ManageProductVariantFragment :
             } != null
         } != null
 
-        if (isValid) ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_valid), TYPE_NORMAL)
-        else ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
+        if (isValid) ToasterHelper.showToaster(
+            buttonSubmit,
+            getString(R.string.stfs_toaster_valid),
+            TYPE_NORMAL
+        )
+        else ToasterHelper.showToaster(
+            buttonSubmit,
+            getString(R.string.stfs_toaster_error),
+            TYPE_ERROR
+        )
     }
 
     private fun setWidgetBulkApplyState() {
@@ -259,7 +270,11 @@ class ManageProductVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
-    override fun onMultiWarehouseClicked(adapterPosition: Int) {
+    override fun onMultiWarehouseClicked(
+        adapterPosition: Int,
+        selectedProduct: ReservedProduct.Product.ChildProduct
+    ) {
+        viewModel.sendManageAllLocationClickEvent(campaignId, selectedProduct.productId)
         val intent = ManageProductMultiLocationVariantActivity.start(
             context ?: return,
             viewModel.getProductData(),
@@ -278,6 +293,7 @@ class ManageProductVariantFragment :
             selectedProduct.picture
         )
         viewModel.checkCriteria(selectedProduct, productCriteria)
+        viewModel.sendCheckDetailClickEvent(campaignId, selectedProduct.productId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

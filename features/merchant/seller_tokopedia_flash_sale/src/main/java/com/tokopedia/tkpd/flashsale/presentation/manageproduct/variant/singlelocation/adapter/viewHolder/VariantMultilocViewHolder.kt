@@ -71,7 +71,7 @@ class VariantMultilocViewHolder(
                 )
             }
             container.setOnClickListener {
-                listener?.onMultiWarehouseClicked(adapterPosition)
+                listener?.onMultiWarehouseClicked(adapterPosition, selectedChildProduct)
             }
         }
         triggerListener(product, selectedChildProduct, discount)
