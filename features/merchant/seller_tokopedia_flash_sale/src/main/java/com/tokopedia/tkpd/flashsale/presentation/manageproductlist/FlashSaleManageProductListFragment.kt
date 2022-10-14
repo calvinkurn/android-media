@@ -531,7 +531,7 @@ class FlashSaleManageProductListFragment :
 
     private fun redirectToManageProductVariantPage(productData: ReservedProduct.Product) {
         context?.let {
-            ManageProductVariantActivity.createIntent(it, productData).apply {
+            ManageProductVariantActivity.createIntent(it, productData, campaignId).apply {
                 startActivityForResult(
                     this,
                     REQUEST_CODE_MANAGE_PRODUCT_VARIANT

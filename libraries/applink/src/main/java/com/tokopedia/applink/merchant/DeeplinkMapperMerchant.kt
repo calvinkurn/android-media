@@ -38,6 +38,7 @@ object DeeplinkMapperMerchant {
     private const val PARAM_SELLER_CAMPAIGN_ID = "campaign_id"
     private const val FLASH_SALE_TOKOPEDIA_LIST_SEGMENT_SIZE = 1
     private const val FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE = 2
+    private const val CAMPAIGN_DETAIL_SEGMENT = "campaign-detail"
 
     private const val PARAM_URL = "url"
 
@@ -382,14 +383,7 @@ object DeeplinkMapperMerchant {
 
     fun isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink: String): Boolean {
         val appLink = Uri.parse(deeplink)
-        val path = appLink.path.orEmpty()
-        val pathSegmentSize = appLink.pathSegments.size
-        val removedPathLink = if (path.isEmpty()) {
-            deeplink // already removed
-        } else {
-            deeplink.split(path).firstOrNull()
-        }
-        return removedPathLink == ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE && pathSegmentSize == FLASH_SALE_TOKOPEDIA_DETAIL_SEGMENT_SIZE
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL, appLink) != null
     }
 
     fun getRegisteredNavigationForVoucherProductList(deeplink: String): String {
