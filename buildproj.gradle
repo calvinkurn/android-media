@@ -37,7 +37,7 @@ allprojects {
         }
         maven { url 'https://maven-hansel.tokopedia.com/maven' }
         maven {
-            name = "Courier-Client"
+            name = "courier-client"
             url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
 
             credentials {
