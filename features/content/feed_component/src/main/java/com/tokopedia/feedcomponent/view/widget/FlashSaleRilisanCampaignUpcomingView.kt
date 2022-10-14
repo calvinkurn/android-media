@@ -30,11 +30,11 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
-    private val fstTimer : TimerUnifySingle
-    private val postImageLayout : ConstraintLayout
-    private val fstSaleProductTitle : Typography
-    private val fstReminderBtn : UnifyButton
-    private var mListener : FeedCampaignListener? = null
+    private val fstTimer: TimerUnifySingle
+    private val postImageLayout: ConstraintLayout
+    private val fstSaleProductTitle: Typography
+    private val fstReminderBtn: UnifyButton
+    private var mListener: FeedCampaignListener? = null
     var isReminderSet = false
     private var mPostionInFeed: Int = 0
     private var mFeedXCard: FeedXCard? = null
