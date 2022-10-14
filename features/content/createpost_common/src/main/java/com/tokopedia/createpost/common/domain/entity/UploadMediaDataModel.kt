@@ -20,6 +20,6 @@ data class UploadMediaDataModel(
     sealed interface Media {
         object Unknown : Media
         data class Success(val mediumList : List<SubmitPostMedium>) : Media
-        object Fail : Media
+        data class Fail(val throwable: Throwable) : Media
     }
 }

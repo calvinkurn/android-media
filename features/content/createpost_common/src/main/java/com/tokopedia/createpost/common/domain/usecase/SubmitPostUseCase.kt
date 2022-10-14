@@ -58,9 +58,9 @@ open class SubmitPostUseCase @Inject constructor(
 
         uploadMultipleMediaUseCase.execute(mediumList)
 
-        uploadMultipleMediaUseCase.state.collectLatest {
-            if(it.images is UploadMediaDataModel.Media.Success && it.videos is UploadMediaDataModel.Media.Success) {
-                val newMedia = it.images.mediumList + it.videos.mediumList
+        uploadMultipleMediaUseCase.state.collectLatest { state ->
+            if(state.images is UploadMediaDataModel.Media.Success && state.videos is UploadMediaDataModel.Media.Success) {
+                val newMedia = state.images.mediumList + state.videos.mediumList
 
                 /** If all media is alr processed */
                 if(mediumList.size == newMedia.size) {
@@ -92,6 +92,12 @@ open class SubmitPostUseCase @Inject constructor(
 
                     _state.update { SubmitPostResult.Success(result) }
                 }
+            }
+            else if (state.images is UploadMediaDataModel.Media.Fail) {
+                _state.update { SubmitPostResult.Fail(state.images.throwable) }
+            }
+            else if (state.videos is UploadMediaDataModel.Media.Fail) {
+                _state.update { SubmitPostResult.Fail(state.videos.throwable) }
             }
         }
     }

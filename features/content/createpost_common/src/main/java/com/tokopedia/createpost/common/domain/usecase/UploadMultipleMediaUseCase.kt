@@ -11,6 +11,7 @@ import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
@@ -21,6 +22,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
@@ -54,11 +56,18 @@ class UploadMultipleMediaUseCase @Inject constructor(
     }
 
     suspend fun execute(mediaList: List<SubmitPostMedium>) {
-        val images = mediaList.filter { !isVideo(it) }
-        val videos = mediaList.filter { isVideo(it) }
+        scope.launch {
+            val images = mediaList.filter { !isVideo(it) }
+            val videos = mediaList.filter { isVideo(it) }
 
-        uploadImages(images)
-        uploadVideos(videos)
+            launchCatchError(block = { uploadImages(images) }) { throwable ->
+                _images.update { UploadMediaDataModel.Media.Fail(throwable) }
+            }
+
+            launchCatchError(block = { uploadVideos(videos) }) { throwable ->
+                _videos.update { UploadMediaDataModel.Media.Fail(throwable) }
+            }
+        }
     }
 
     private suspend fun uploadImages(mediumList: List<SubmitPostMedium>) {

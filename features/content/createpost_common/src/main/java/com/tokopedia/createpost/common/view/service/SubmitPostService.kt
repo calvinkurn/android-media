@@ -93,6 +93,15 @@ class SubmitPostService : JobIntentServiceX() {
         scope.launchCatchError(block = {
             submitPostUseCase.state.collectLatest { state ->
                 when(state) {
+                    is SubmitPostResult.Fail -> {
+                        postUpdateProgressManager?.onFailedPost(
+                            com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
+                                this@SubmitPostService,
+                                state.throwable,
+                            )
+                        )
+                        stopService()
+                    }
                     is SubmitPostResult.Success -> {
                         val result = state.data
 

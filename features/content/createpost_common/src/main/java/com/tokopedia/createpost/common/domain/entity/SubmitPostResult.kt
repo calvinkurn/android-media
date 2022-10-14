@@ -8,4 +8,5 @@ import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostDat
 sealed interface SubmitPostResult {
     object Unknown : SubmitPostResult
     data class Success(val data: SubmitPostData?) : SubmitPostResult
+    data class Fail(val throwable: Throwable) : SubmitPostResult
 }
