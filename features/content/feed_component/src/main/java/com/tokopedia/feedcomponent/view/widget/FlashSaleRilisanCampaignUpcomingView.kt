@@ -39,7 +39,6 @@ class FlashSaleRilisanCampaignUpcomingView @JvmOverloads constructor(
     private var mPostionInFeed: Int = 0
     private var mFeedXCard: FeedXCard? = null
 
-
     init {
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
         LayoutInflater.from(context).inflate(R.layout.item_flash_sale_rs_upcoming_card, this, true)
