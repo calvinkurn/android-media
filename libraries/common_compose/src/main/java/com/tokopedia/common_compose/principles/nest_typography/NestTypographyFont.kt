@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.nest_text
+package com.tokopedia.common_compose.principles.nest_typography
 
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily

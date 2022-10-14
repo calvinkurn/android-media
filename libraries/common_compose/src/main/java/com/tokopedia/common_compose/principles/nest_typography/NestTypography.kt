@@ -1,4 +1,4 @@
-package com.tokopedia.common_compose.principles.nest_text
+package com.tokopedia.common_compose.principles.nest_typography
 
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -17,10 +17,10 @@ import androidx.compose.ui.text.style.TextOverflow
 
 /**
  * NestText Compose Version
- * This class is NestText especially compose with Unify [NestText] behaviour
+ * This class is NestText especially compose with Unify [NestTypography] behaviour
  * @param text the text value with String Type
- * @param type the FontType refer to [NestTextType]
- * @param weight the FontWeight refer to [NestTextWeight]
+ * @param type the FontType refer to [NestTypographyType]
+ * @param weight the FontWeight refer to [NestTypographyWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -31,11 +31,11 @@ import androidx.compose.ui.text.style.TextOverflow
  * For example, to draw selection around the text.
  **/
 @Composable
-fun NestText(
+fun NestTypography(
     modifier: Modifier = Modifier,
     text: String,
-    type: NestTextType,
-    weight: NestTextWeight = NestTextWeight.Regular,
+    type: NestTypographyType,
+    weight: NestTypographyWeight = NestTypographyWeight.Regular,
     textStyle: TextStyle = TextStyle(
         fontFamily = fontOpenSourceOneRegular,
         color = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN950)
@@ -78,10 +78,10 @@ fun NestText(
 
 /**
  * NestText Compose Version
- * This class is NestText especially compose with Unify [NestText] behaviour
+ * This class is NestText especially compose with Unify [NestTypography] behaviour
  * @param text the text value with AnnotationString Type
- * @param type the FontType refer to [NestTextType]
- * @param weight the FontWeight refer to [NestTextWeight]
+ * @param type the FontType refer to [NestTypographyType]
+ * @param weight the FontWeight refer to [NestTypographyWeight]
  * @param textStyle - the Style configuration for the text such as color, font, line height etc.
  * @param overflow - How visual overflow should be handled
  * @param isFontTypeOpenSauceOne - unify font new type if true
@@ -92,11 +92,11 @@ fun NestText(
  * For example, to draw selection around the text.
  **/
 @Composable
-fun NestText(
+fun NestTypography(
     modifier: Modifier = Modifier,
     text: AnnotatedString,
-    type: NestTextType,
-    weight: NestTextWeight = NestTextWeight.Regular,
+    type: NestTypographyType,
+    weight: NestTypographyWeight = NestTypographyWeight.Regular,
     textStyle: TextStyle = LocalTextStyle.current,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Clip,

@@ -34,16 +34,12 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
 
     // Compose lib
-    implementation rootProject.ext.composeDependencies.composeCompiler
-    implementation rootProject.ext.composeDependencies.composeUi
-    implementation rootProject.ext.composeDependencies.composeMaterial
-    implementation rootProject.ext.composeDependencies.composeUiTooling
-    implementation rootProject.ext.composeDependencies.composePreview
-    implementation rootProject.ext.composeDependencies.composeFoundation
-    implementation rootProject.ext.composeDependencies.composeRuntime
+    api rootProject.ext.composeDependencies.composeUi
+    api rootProject.ext.composeDependencies.composeMaterial
+    api rootProject.ext.composeDependencies.composeUiTooling
+    api rootProject.ext.composeDependencies.composePreview
+    // cause using HtmlCompat in NestTypography
     implementation rootProject.ext.composeDependencies.composeActivity
-    implementation rootProject.ext.composeDependencies.composeConstraint
-    implementation rootProject.ext.composeDependencies.composeLiveData
 }
 
 project.ext {
