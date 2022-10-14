@@ -15,6 +15,7 @@ import com.tokopedia.linker.requests.LinkerShareRequest
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import java.net.URLEncoder
 import java.util.*
 
 object TokoNowUniversalShareUtil {
@@ -72,7 +73,7 @@ object TokoNowUniversalShareUtil {
         linkerShareData.linkerData.apply {
             feature = shareModel.feature
             channel = shareModel.channel
-            campaign = shareModel.campaign
+            campaign = URLEncoder.encode(shareModel.campaign, "UTF-8").replace("+", "%20")
             isThrowOnError = false
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
                 ogImageUrl = shareModel.ogImgUrl
