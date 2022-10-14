@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
+import com.tokopedia.campaign.utils.extension.doOnDelayFinished
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.gone
@@ -18,6 +19,7 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
@@ -33,20 +35,26 @@ class ManageProductVariantFragment :
     ManageProductVariantListener {
 
     companion object {
-        fun newInstance(product: ReservedProduct.Product?): ManageProductVariantFragment {
+        fun newInstance(product: ReservedProduct.Product?, campaignId: String): ManageProductVariantFragment {
             val fragment = ManageProductVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
+            bundle.putString(BundleConstant.BUNDLE_FLASH_SALE_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
 
         private const val MINIMUM_VARIANT_TO_BULK_APPLY = 2
+        private const val DELAY = 1000L
     }
 
     //argument
     private val product by lazy {
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+    }
+
+    private val campaignId by lazy {
+        arguments?.getString(BundleConstant.BUNDLE_FLASH_SALE_ID).orEmpty()
     }
 
     //viewModel
@@ -118,6 +126,7 @@ class ManageProductVariantFragment :
     }
 
     override fun onSubmitButtonClicked() {
+        viewModel.sendSaveClickEvent(campaignId)
         val bundle = Bundle()
         val intent = Intent()
         bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.getProductData())
@@ -136,6 +145,7 @@ class ManageProductVariantFragment :
             displayToaster(appliedProduct)
         }
         bSheet.show(childFragmentManager, "")
+        viewModel.sendManageAllClickEvent(campaignId)
     }
 
     override fun createAdapterInstance(): ManageProductVariantAdapter {
@@ -209,10 +219,15 @@ class ManageProductVariantFragment :
     override fun onToggleSwitch(index: Int, isChecked: Boolean) {
         viewModel.setItemToggleValue(index, isChecked)
         setWidgetBulkApplyState()
+        viewModel.sendAdjustToggleVariantEvent(campaignId)
     }
 
     override fun onDiscountChange(index: Int, priceValue: Long, discountValue: Int) {
         viewModel.setDiscountValue(index, priceValue, discountValue)
+        doOnDelayFinished(DELAY) {
+            viewModel.sendFillInDiscountPercentageEvent(campaignId)
+            viewModel.sendFillInColumnPriceEvent(campaignId)
+        }
     }
 
     override fun onStockChange(index: Int, stockValue: Long) {

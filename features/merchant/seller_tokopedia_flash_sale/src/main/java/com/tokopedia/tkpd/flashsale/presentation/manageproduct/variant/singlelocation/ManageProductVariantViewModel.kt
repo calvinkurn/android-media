@@ -8,13 +8,18 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductVariantTracker
 import javax.inject.Inject
 
 class ManageProductVariantViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers,
-    private val errorMessageHelper: ErrorMessageHelper
+    private val errorMessageHelper: ErrorMessageHelper,
+    private val tracker: ManageProductVariantTracker
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val LOCATION_TYPE = "single loc"
+    }
     private lateinit var productData: ReservedProduct.Product
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
@@ -45,8 +50,10 @@ class ManageProductVariantViewModel @Inject constructor(
     fun setItemToggleValue(itemPosition: Int, value: Boolean) {
         val selectedItem = productData.childProducts[itemPosition]
         selectedItem.isToggleOn = value
-        selectedItem.warehouses.map {
-            it.isToggleOn = value
+        if (!selectedItem.isMultiwarehouse) {
+            selectedItem.warehouses.map {
+                it.isToggleOn = value
+            }
         }
     }
 
@@ -56,8 +63,6 @@ class ManageProductVariantViewModel @Inject constructor(
             warehouse.discountSetup.price = priceValue
             warehouse.discountSetup.discount = discountValue
         }
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.price = priceValue
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.discount = discountValue
     }
 
     fun setStockValue(itemPosition: Int, stockValue: Long) {
@@ -65,7 +70,6 @@ class ManageProductVariantViewModel @Inject constructor(
         selectedItem.warehouses.map { warehouse ->
             warehouse.discountSetup.stock = stockValue
         }
-//        selectedItem.warehouses.firstOrNull()?.discountSetup?.stock = stockValue
     }
 
     fun validateInputPage(
@@ -75,14 +79,18 @@ class ManageProductVariantViewModel @Inject constructor(
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
                 .all { childProduct ->
-                    childProduct.warehouses
-                        .filter { warehouse ->  warehouse.isToggleOn }
-                        .all { warehouse ->
-                            validateInput(
-                                criteria,
-                                warehouse.discountSetup
-                            ).isAllFieldValid()
-                        }
+                    if (childProduct.warehouses.any { it.isToggleOn }) {
+                        childProduct.warehouses
+                            .filter { warehouse -> warehouse.isToggleOn }
+                            .all { warehouse ->
+                                validateInput(
+                                    criteria,
+                                    warehouse.discountSetup
+                                ).isAllFieldValid()
+                            }
+                    } else {
+                        false
+                    }
                 }
         } else {
             _isInputPageValid.value = false
@@ -95,5 +103,30 @@ class ManageProductVariantViewModel @Inject constructor(
 
     fun calculatePercent(priceInput: Long, originalPrice: Long): String {
         return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
+    }
+
+    fun sendManageAllClickEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickManageAllEvent(trackerLabel)
+    }
+
+    fun sendAdjustToggleVariantEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendAdjustToggleVariantEvent(trackerLabel)
+    }
+
+    fun sendFillInColumnPriceEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickFillInCampaignPriceEvent(trackerLabel)
+    }
+
+    fun sendFillInDiscountPercentageEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickFillInDiscountPercentageEvent(trackerLabel)
+    }
+
+    fun sendSaveClickEvent(campaignId: String) {
+        val trackerLabel = "$campaignId - $LOCATION_TYPE"
+        tracker.sendClickSaveEvent(trackerLabel)
     }
 }

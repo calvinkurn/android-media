@@ -12,10 +12,11 @@ class ManageProductVariantActivity : BaseSimpleActivity() {
 
     companion object {
         @JvmStatic
-        fun createIntent(context: Context, product: ReservedProduct.Product): Intent {
+        fun createIntent(context: Context, product: ReservedProduct.Product, flashSaleId: String): Intent {
             return Intent(context, ManageProductVariantActivity::class.java).apply {
                 val bundle = Bundle()
                 bundle.putParcelable(BundleConstant.BUNDLE_KEY_PRODUCT, product)
+                bundle.putString(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
                 putExtras(bundle)
             }
         }
@@ -24,8 +25,13 @@ class ManageProductVariantActivity : BaseSimpleActivity() {
     private val product by lazy {
         intent?.extras?.getParcelable<ReservedProduct.Product>(BundleConstant.BUNDLE_KEY_PRODUCT)
     }
+
+    private val campaignId by lazy {
+        intent.extras?.getString(BundleConstant.BUNDLE_FLASH_SALE_ID).orEmpty()
+    }
+
     override fun getLayoutRes() = R.layout.stfs_activity_manage_product_variant
-    override fun getNewFragment() = ManageProductVariantFragment.newInstance(product)
+    override fun getNewFragment() = ManageProductVariantFragment.newInstance(product, campaignId)
     override fun getParentViewResourceID() = R.id.container
 
     override fun onCreate(savedInstanceState: Bundle?) {
