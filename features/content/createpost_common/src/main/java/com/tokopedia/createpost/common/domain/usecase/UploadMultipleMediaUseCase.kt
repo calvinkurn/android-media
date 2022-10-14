@@ -132,6 +132,10 @@ class UploadMultipleMediaUseCase @Inject constructor(
     /**
      * The code below will be used when we have migrated
      * both image & video uploader to uploadpedia
+     *
+     * TODO IMPORTANT: still need to handle:
+     * 1. async upload
+     * 2. error handling if one of the media is failed upload
      */
     suspend fun executeOnBackground(mediaList: List<SubmitPostMedium>): List<SubmitPostMedium> {
         return mediaList.map {
