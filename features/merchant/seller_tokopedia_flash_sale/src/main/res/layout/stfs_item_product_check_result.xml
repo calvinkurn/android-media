@@ -86,6 +86,18 @@
         app:typographyType="small"
         tool:text="Terjual: 888" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfRefused"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toEndOf="@+id/imgProduct"
+        app:layout_constraintTop_toBottomOf="@+id/tfSoldCount"
+        app:typographyType="small"
+        tool:text="Ditolak" />
+
     <com.tokopedia.unifycomponents.Label
         android:id="@+id/labelDiscount"
         android:layout_width="wrap_content"
@@ -114,7 +126,7 @@
         android:layout_marginTop="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tfCampaignStock"
-        app:layout_constraintTop_toBottomOf="@+id/tfSoldCount" />
+        app:layout_constraintTop_toBottomOf="@+id/tfRefused" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:layout_width="match_parent"

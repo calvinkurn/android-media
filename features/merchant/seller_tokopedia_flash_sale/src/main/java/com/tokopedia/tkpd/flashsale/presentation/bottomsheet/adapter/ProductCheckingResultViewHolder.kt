@@ -107,6 +107,8 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
         val soldCountText = context.getString(R.string.commonbs_product_sold_count_format,
             item.soldCount)
+        val refusedText = context.getString(R.string.stfs_rejection_reason_placeholder,
+            item.checkingDetailResult.rejectionReason)
 
         binding.apply {
             imgProduct.loadImage(item.imageUrl)
@@ -119,6 +121,8 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
             tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
             tfSoldCount.isVisible = !item.isMultiloc && item.soldCount != null
+            tfRefused.text = MethodChecker.fromHtml(refusedText)
+            tfRefused.isVisible = !item.isMultiloc && item.checkingDetailResult.rejectionReason.isNotEmpty()
         }
         setupPrice(binding, item)
         setupStock(binding, item)
