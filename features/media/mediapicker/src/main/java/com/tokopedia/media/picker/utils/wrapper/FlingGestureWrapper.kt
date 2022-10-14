@@ -8,15 +8,15 @@ class FlingGestureWrapper(
     private val swipeLeftToRight: () -> Unit,
     private val swipeRightToLeft: () -> Unit,
 ) : GestureDetector.OnGestureListener {
-    override fun onDown(e: MotionEvent?) = true
+    override fun onDown(e: MotionEvent) = true
 
-    override fun onSingleTapUp(e: MotionEvent?) = true
+    override fun onSingleTapUp(e: MotionEvent) = true
 
-    override fun onShowPress(e: MotionEvent?) {}
+    override fun onShowPress(e: MotionEvent) {}
 
-    override fun onLongPress(e: MotionEvent?) {}
+    override fun onLongPress(e: MotionEvent) {}
 
-    override fun onScroll(e1: MotionEvent?, e2: MotionEvent?, dX: Float, dY: Float) = false
+    override fun onScroll(e1: MotionEvent, e2: MotionEvent, dX: Float, dY: Float) = false
 
     override fun onFling(
         start: MotionEvent,

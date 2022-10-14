@@ -43,7 +43,7 @@ class CarouselImageViewHolder(
     private val postGestureDetector = GestureDetector(
         itemView.context,
         object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 listener.onImageClicked(this@CarouselImageViewHolder)
 
                 animateLihatProduct(
@@ -54,7 +54,7 @@ class CarouselImageViewHolder(
                 return true
             }
 
-            override fun onDoubleTap(e: MotionEvent?): Boolean {
+            override fun onDoubleTap(e: MotionEvent): Boolean {
                 onPostTagViews {
                     it.hideExpandedViewIfShown()
                 }
@@ -69,11 +69,11 @@ class CarouselImageViewHolder(
                 return true
             }
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 return true
             }
 
-            override fun onLongPress(e: MotionEvent?) {
+            override fun onLongPress(e: MotionEvent) {
                 listener.onImageLongClicked(this@CarouselImageViewHolder)
             }
         }
@@ -114,10 +114,10 @@ class CarouselImageViewHolder(
         })
 
         itemView.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View?) {
+            override fun onViewAttachedToWindow(v: View) {
             }
 
-            override fun onViewDetachedFromWindow(v: View?) {
+            override fun onViewDetachedFromWindow(v: View) {
                 removeAllPendingCallbacks()
             }
         })
