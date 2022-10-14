@@ -9,6 +9,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -21,6 +22,7 @@ const val TYPE_FEED_X_CARD_PLAY: String = "FeedXCardPlay"
 private const val TYPE_TOPADS_HEADLINE = "topads_headline"
 const val TYPE_TOPADS_HEADLINE_NEW = "topads_headline_new"
 private const val TYPE_CARD_PLAY_CAROUSEL = "play_carousel"
+private const val TYPE_CARD_SHOP_RECOMMENDATION = "shop_recommendation"
 const val TYPE_LONG_VIDEO: String = "long-video"
 const val TYPE_VIDEO: String = "video"
 const val TYPE_IMAGE = "image"
@@ -38,6 +40,8 @@ object DynamicFeedNewMapper {
                         mapCardHeadline(posts, shouldShowNewTopadsOnly)
                     } else if (it.type == TYPE_CARD_PLAY_CAROUSEL && cursor.isEmpty()) {
                         mapCardCarousel(posts)
+                    } else if (it.type == TYPE_CARD_SHOP_RECOMMENDATION) {
+                        mapShopRecommendation(posts)
                     }
                 }
                 TYPE_FEED_X_CARD_BANNERS -> {
@@ -85,6 +89,10 @@ object DynamicFeedNewMapper {
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
         posts.add(CarouselPlayCardViewModel())
+    }
+
+    private fun mapShopRecommendation(posts: MutableList<Visitable<*>>) {
+        posts.add(ShopRecomWidgetViewModel())
     }
 
     private fun mapCardBanner(posts: MutableList<Visitable<*>>, items: List<FeedXCardDataItem>) {
