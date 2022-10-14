@@ -8,21 +8,16 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseTimeUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.DividerType
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.logisticcart.databinding.ViewholderChooseTimeBinding
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.toPx
-import com.tokopedia.unifyprinciples.Typography
 
-class ChooseTimeViewHolder(private val view: View, private val listener: ScheduleSlotListener) : AbstractViewHolder<ChooseTimeUiModel>(view) {
-
-    private val title: Typography = view.findViewById(com.tokopedia.logisticcart.R.id.tv_title)
-    private val description: Typography = view.findViewById(com.tokopedia.logisticcart.R.id.tv_description)
-    private val note: Typography = view.findViewById(com.tokopedia.logisticcart.R.id.tv_note)
-    private val divider: DividerUnify = view.findViewById(com.tokopedia.logisticcart.R.id.divider)
-    private val iconCheck: IconUnify = view.findViewById(com.tokopedia.logisticcart.R.id.icon_check)
+class ChooseTimeViewHolder(
+    private val viewBinding: ViewholderChooseTimeBinding,
+    private val listener: ScheduleSlotListener
+) : AbstractViewHolder<ChooseTimeUiModel>(viewBinding.root) {
 
     override fun bind(element: ChooseTimeUiModel) {
         setView(element)
@@ -34,27 +29,27 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
 
     private fun setSelected(element: ChooseTimeUiModel) {
         if (element.isSelected) {
-            iconCheck.show()
+            viewBinding.iconCheck.show()
         } else {
-            iconCheck.gone()
+            viewBinding.iconCheck.gone()
         }
     }
 
     private fun setView(element: ChooseTimeUiModel) {
         /* set visibility */
-        title.visibility = if (element.title.isEmpty()) {
+        viewBinding.tvTitle.visibility = if (element.title.isEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
         }
 
-        description.visibility = if (element.content.isEmpty()) {
+        viewBinding.tvDescription.visibility = if (element.content.isEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
         }
 
-        note.visibility = if (element.note.isEmpty()) {
+        viewBinding.tvNote.visibility = if (element.note.isEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
@@ -62,22 +57,23 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
 
         /* set dynamic margin */
         if (element.note.isEmpty()) {
-            val params = description.layoutParams as ViewGroup.MarginLayoutParams
-            description.layoutParams = params.apply {
+            val params = viewBinding.tvDescription.layoutParams as ViewGroup.MarginLayoutParams
+            viewBinding.tvDescription.layoutParams = params.apply {
                 topMargin = 22.toPx()
             }
         } else {
-            val params = description.layoutParams as ViewGroup.MarginLayoutParams
-            description.layoutParams = params.apply {
+            val params = viewBinding.tvDescription.layoutParams as ViewGroup.MarginLayoutParams
+            viewBinding.tvDescription.layoutParams = params.apply {
                 topMargin = 12.toPx()
             }
         }
     }
 
     private fun bindValue(element: ChooseTimeUiModel) {
-        title.text = element.title
-        description.text = HtmlLinkHelper(itemView.context, element.content).spannedString
-        note.text = element.note
+        viewBinding.tvTitle.text = element.title
+        viewBinding.tvDescription.text =
+            HtmlLinkHelper(itemView.context, element.content).spannedString
+        viewBinding.tvNote.text = element.note
     }
 
     /** set state of view either enabled or disabled
@@ -86,35 +82,55 @@ class ChooseTimeViewHolder(private val view: View, private val listener: Schedul
      */
     private fun setState(element: ChooseTimeUiModel) {
         if (element.isEnabled) {
-            description.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.logisticcart.R.color.Unify_NN950))
+            viewBinding.tvDescription.setTextColor(
+                ContextCompat.getColor(
+                    viewBinding.root.context,
+                    com.tokopedia.logisticcart.R.color.Unify_NN950
+                )
+            )
 
-            view.setOnClickListener {
-                iconCheck.visibility = View.VISIBLE
+            viewBinding.root.setOnClickListener {
+                viewBinding.iconCheck.visibility = View.VISIBLE
                 listener.onClickTimeListener(element)
             }
         } else {
-            description.setTextColor(ContextCompat.getColor(view.context, com.tokopedia.logisticcart.R.color.Unify_NN400))
+            viewBinding.tvDescription.setTextColor(
+                ContextCompat.getColor(
+                    viewBinding.root.context,
+                    com.tokopedia.logisticcart.R.color.Unify_NN400
+                )
+            )
         }
     }
 
     private fun setDivider(dividerType: DividerType) {
         when (dividerType) {
             DividerType.THIN -> {
-                divider.visibility = View.VISIBLE
-                val params = divider.layoutParams
+                viewBinding.divider.visibility = View.VISIBLE
+                val params = viewBinding.divider.layoutParams
                 params.height = 3
-                (params as ViewGroup.MarginLayoutParams).setMargins(16.toPx(), params.topMargin, 16.toPx(), params.bottomMargin)
-                divider.layoutParams = params
+                (params as ViewGroup.MarginLayoutParams).setMargins(
+                    16.toPx(),
+                    params.topMargin,
+                    16.toPx(),
+                    params.bottomMargin
+                )
+                viewBinding.divider.layoutParams = params
             }
             DividerType.THICK -> {
-                divider.visibility = View.VISIBLE
-                val params = divider.layoutParams
+                viewBinding.divider.visibility = View.VISIBLE
+                val params = viewBinding.divider.layoutParams
                 params.height = 16
-                (params as ViewGroup.MarginLayoutParams).setMargins(0, params.topMargin, 0, params.bottomMargin)
-                divider.layoutParams = params
+                (params as ViewGroup.MarginLayoutParams).setMargins(
+                    0,
+                    params.topMargin,
+                    0,
+                    params.bottomMargin
+                )
+                viewBinding.divider.layoutParams = params
             }
             else -> {
-                divider.visibility = View.GONE
+                viewBinding.divider.visibility = View.GONE
             }
         }
     }

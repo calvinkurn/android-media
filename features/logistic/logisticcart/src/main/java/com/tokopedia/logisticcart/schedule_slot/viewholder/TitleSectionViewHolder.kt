@@ -3,40 +3,38 @@ package com.tokopedia.logisticcart.schedule_slot.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.logisticcart.databinding.ViewholderTitleSectionBinding
 import com.tokopedia.logisticcart.schedule_slot.uimodel.TitleSectionUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
-import com.tokopedia.unifyprinciples.Typography
 
-class TitleSectionViewHolder(private val view: View, private val listener: ScheduleSlotListener) : AbstractViewHolder<TitleSectionUiModel>(view) {
-
-    val icon = view.findViewById<IconUnify>(com.tokopedia.logisticcart.R.id.icon_title)
-    val title = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_title)
-    val description = view.findViewById<Typography>(com.tokopedia.logisticcart.R.id.tv_description)
+class TitleSectionViewHolder(
+    private val viewBinding: ViewholderTitleSectionBinding,
+    private val listener: ScheduleSlotListener
+) : AbstractViewHolder<TitleSectionUiModel>(viewBinding.root) {
 
     override fun bind(element: TitleSectionUiModel) {
         if (element.title.isNotEmpty()) {
-            title.text = element.title
-            title.visibility = View.VISIBLE
+            viewBinding.tvTitle.text = element.title
+            viewBinding.tvTitle.visibility = View.VISIBLE
         } else {
-            title.visibility = View.GONE
+            viewBinding.tvTitle.visibility = View.GONE
         }
 
         if (element.content.isNotEmpty()) {
-            description.text = element.content
-            description.visibility = View.VISIBLE
+            viewBinding.tvDescription.text = element.content
+            viewBinding.tvDescription.visibility = View.VISIBLE
         } else {
-            description.visibility = View.GONE
+            viewBinding.tvDescription.visibility = View.GONE
         }
 
         if (element.icon != NO_ICON) {
-            icon.setImage(element.icon)
-            icon.setOnClickListener {
+            viewBinding.iconTitle.setImage(element.icon)
+            viewBinding.iconTitle.setOnClickListener {
                 listener.onClickInfoListener()
             }
-            icon.visibility = View.VISIBLE
+            viewBinding.iconTitle.visibility = View.VISIBLE
         } else {
-            icon.visibility = View.GONE
+            viewBinding.iconTitle.visibility = View.GONE
         }
     }
 
