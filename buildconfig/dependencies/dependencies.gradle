@@ -401,6 +401,7 @@ ext {
     composeVersion = "1.1.0-beta03"
     composeActivity = "1.5.1"
     composeConstraint = "1.0.1"
+    composeCoil = "1.3.2"
 
     composeDependencies = [
             composeCompiler     : "androidx.compose.compiler:compiler:$composeCompiler",
@@ -412,6 +413,7 @@ ext {
             composeRuntime      : "androidx.compose.runtime:runtime:$composeVersion",
             composeActivity     : "androidx.activity:activity-compose:$composeActivity",
             composeConstraint   : "androidx.constraintlayout:constraintlayout-compose:$composeConstraint",
-            composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion"
+            composeLiveData     : "androidx.compose.runtime:runtime-livedata:$composeVersion",
+            composeCoil         : "io.coil-kt:coil-compose:$composeCoil"
     ]
 }
