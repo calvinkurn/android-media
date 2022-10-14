@@ -11,9 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.PAGE_ZERO
-import com.tokopedia.affiliate.TRAFFIC_TYPE
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
@@ -22,6 +20,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.model.response.AffiliateCommissionDetailsData
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet.Companion.TYPE_WITHDRAWAL
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate.viewmodel.AffiliateTransactionDetailViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
@@ -190,7 +189,9 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
         view?.findViewById<Typography>(R.id.shop_name)?.text =
             commissionData?.data?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
-            commissionData?.data?.createdAtFormatted
+            commissionData?.data?.createdAt.let {
+                DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it.toString())
+            }
         view?.findViewById<Typography>(R.id.promotion_link)?.text =
            when(commissionData?.data?.pageType?.uppercase()){
                PAGE_PDP -> "Produk"
