@@ -28,6 +28,7 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
 import rx.schedulers.Schedulers
 import java.io.File
+import java.lang.Exception
 import javax.inject.Inject
 
 
@@ -110,8 +111,8 @@ class UploadMultipleMediaUseCase @Inject constructor(
     }
 
     private fun mapToUrlVideo(
-        medium: SubmitPostMedium): Func1<VideoUploadDomainModel<DefaultUploadVideoResponse>,
-        SubmitPostMedium> {
+        medium: SubmitPostMedium
+    ): Func1<VideoUploadDomainModel<DefaultUploadVideoResponse>, SubmitPostMedium> {
         return Func1 { uploadDomainModel ->
             val videoId: String = uploadDomainModel?.dataResultVideoUpload?.videoId ?: ""
             val videoUrl: String = uploadDomainModel?.dataResultVideoUpload?.playbackList?.get(0)?.url
@@ -160,6 +161,9 @@ class UploadMultipleMediaUseCase @Inject constructor(
                 }
 
                 deleteCacheFile()
+            }
+            is UploadResult.Error -> {
+                throw Exception(result.message)
             }
         }
 
