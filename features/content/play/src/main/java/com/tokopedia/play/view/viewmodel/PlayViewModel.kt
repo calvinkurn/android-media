@@ -1296,14 +1296,13 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleOnboarding(videoMetaInfo: PlayVideoMetaInfoUiModel) {
         val isShown = playPreference.isCoachMark(userId = userId)
         playAnalytic.screenWithSwipeCoachMark(isShown = isShown, channelId = channelId, channelType = channelType, isLoggedIn = userSession.isLoggedIn, userId = userId)
+        coachmarkJob?.cancel()
         if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
             coachmarkJob?.cancel()
             coachmarkJob = viewModelScope.launch(dispatchers.main) {
                 delay(ONBOARDING_DELAY)
                 _observableOnboarding.value = Event(Unit)
             }
-        } else {
-            coachmarkJob?.cancel()
         }
     }
 
