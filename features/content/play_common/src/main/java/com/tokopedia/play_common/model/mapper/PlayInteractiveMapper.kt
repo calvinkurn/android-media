@@ -75,7 +75,6 @@ class PlayInteractiveMapper @Inject constructor(private val decodeHtml : HtmlTex
                     }
                 )
             },
-            reward = decodeHtml.transform(data.prize),
             waitingDuration = waitingDurationInMillis,
         )
     }
