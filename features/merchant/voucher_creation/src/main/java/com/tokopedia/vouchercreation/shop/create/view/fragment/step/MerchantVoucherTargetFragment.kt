@@ -186,7 +186,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                     VoucherTargetCardType.PRIVATE -> R.string.mvc_create_private_voucher_display_title
                 }
                 voucherDisplayBottomSheetFragment.setTitle(
-                        resources.getString(bottomSheetTitleRes).toBlankOrString()
+                        context?.resources?.getString(bottomSheetTitleRes).toBlankOrString()
                 )
             }
             else -> {}
