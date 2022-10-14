@@ -46,6 +46,18 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
     private val progressBar: ProgressBarUnify
     private val stockProgressBarLayout: View
     private val stockText: Typography
+    private val progressBarColor by lazy {
+        intArrayOf(
+            MethodChecker.getColor(
+                itemView.context,
+                feedComponentR.color.feed_dms_asgc_progress_0_color
+            ),
+            MethodChecker.getColor(
+                itemView.context,
+                feedComponentR.color.feed_dms_asgc_progress_100_color
+            )
+        )
+    }
 
     init {
         itemView.run {
@@ -147,20 +159,12 @@ class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDet
         if (payloads.firstOrNull() is Int && (payloads.firstOrNull() as Int == PAYLOAD_CLICK_WISHLIST)) {
             element?.isWishlisted = true
             setWishlistIconStateColor(true)
+        } else {
+            super.bind(element, payloads)
         }
     }
 
     private fun setGradientColorForProgressBar(item: FeedDetailProductModel, itemView: View) {
-        val progressBarColor: IntArray = intArrayOf(
-            MethodChecker.getColor(
-                itemView.context,
-                feedComponentR.color.feed_dms_asgc_progress_0_color
-            ),
-            MethodChecker.getColor(
-                itemView.context,
-                feedComponentR.color.feed_dms_asgc_progress_100_color
-            )
-        )
         itemView.run {
             progressBar.progressBarColor = progressBarColor
             val value = (item.product.stockSoldPercentage).roundToInt()
