@@ -7,4 +7,6 @@ interface DealsPDPCallbacks {
     fun onShowMoreDesc(title: String, text: String)
     fun onShowAllLocation(outlets: List<Outlet>)
     fun onSelectQuantityProduct(data: ProductDetailData)
+    fun onShowShareLoader()
+    fun onHideShareLoader()
 }
