@@ -38,9 +38,17 @@ class PlayLeaderBoardItemDecoration(context: Context) : RecyclerView.ItemDecorat
     ) {
         val index = parent.getChildAdapterPosition(view)
         when (parent.findViewHolderForAdapterPosition(index)) {
-            is PlayGameViewHolder.Quiz -> outRect.top = topOffset
+            is PlayGameViewHolder.Quiz -> {
+                outRect.top = topOffset
+                outRect.left = defaultOffset
+                outRect.right = defaultOffset
+            }
             is PlayGameViewHolder.Winner -> outRect.top = topOffset
-            is PlayGameViewHolder.Header -> outRect.top = defaultOffset
+            is PlayGameViewHolder.Header -> {
+                outRect.top = defaultOffset
+                outRect.left = defaultOffset
+                outRect.right = defaultOffset
+            }
             else -> super.getItemOffsets(outRect, view, parent, state)
         }
     }
