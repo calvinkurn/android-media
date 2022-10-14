@@ -40,10 +40,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -114,6 +111,7 @@ private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
 private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
 
 private const val FOCUS_CTA_DELAY = 2000L
+private const val VIEWS_START_VALUE = 14
 
 
 /**
@@ -1331,7 +1329,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             })
         }
         feedVODViewHolder.updateLikedText {
-            likedText.text = it
+            likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
+                bold {
+                    append(it, VIEWS_START_VALUE, it.length)
+                }
+            }
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute

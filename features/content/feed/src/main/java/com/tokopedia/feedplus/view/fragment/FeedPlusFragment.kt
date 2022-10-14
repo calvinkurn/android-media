@@ -3451,7 +3451,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isNewVariant: Boolean
     ) {
         if (!isNewVariant) {
-            RouteManager.route(context, applink)
+            applink?.let { RouteManager.route(context, it) }
         } else {
             sendTopadsUrlClick(getAdClickUrl(position))
         }
