@@ -29,6 +29,8 @@ import com.tokopedia.oneclickcheckout.order.view.model.OccPrompt.Companion.TYPE_
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.lastapply.LastApplyVoucherOrdersItemUiModel
+import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.PromoUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateuse.ValidateUsePromoRevampUiModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 import io.mockk.coEvery
@@ -352,7 +354,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -410,7 +412,7 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
             )
         }
         every { ratesUseCase.execute(any()) } returns Observable.just(shippingRecommendationData)
-        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel()
+        coEvery { validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground() } returns ValidateUsePromoRevampUiModel(status = "OK", errorCode = "200")
 
         // When
         orderSummaryPageViewModel.getOccCart("")
@@ -1712,8 +1714,52 @@ class OrderSummaryPageViewModelCartTest : BaseOrderSummaryPageViewModelTest() {
         orderSummaryPageViewModel.updateAddOn(saveAddOnStateResult)
 
         // Then
-        assertEquals(2000L, orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
-                ?: 0)
+        assertEquals(
+            2000L,
+            orderSummaryPageViewModel.orderShop.value.addOn.addOnsDataItemModelList.firstOrNull()?.addOnPrice
+                ?: 0
+        )
     }
 
+    @Test
+    fun `Get Occ return last apply with BO`() {
+        // Given
+        val boCode = "BOCODE"
+        val response = helper.orderData.copy(
+            promo = OrderPromo(
+                lastApply = LastApplyUiModel(
+                    voucherOrders = listOf(
+                        LastApplyVoucherOrdersItemUiModel(
+                            boCode,
+                            helper.orderData.cart.cartString,
+                            shippingId = 1,
+                            spId = 1,
+                            type = "logistic"
+                        )
+                    )
+                )
+            )
+        )
+        every { getOccCartUseCase.createRequestParams(any(), any(), any()) } returns emptyMap()
+        coEvery { getOccCartUseCase.executeSuspend(any()) } returns response
+        coEvery { ratesUseCase.execute(any()) } returns Observable.just(helper.shippingRecommendationData)
+        val promoResponse = ValidateUsePromoRevampUiModel(
+            status = "OK", errorCode = "200", promoUiModel = PromoUiModel()
+        )
+        coEvery {
+            validateUsePromoRevampUseCase.get().setParam(any()).executeOnBackground()
+        } returns promoResponse
+
+        // When
+        orderSummaryPageViewModel.getOccCart("")
+
+        // Then
+        assertEquals(
+            OrderPromo(
+                lastApply = LastApplyUiModel(),
+                state = OccButtonState.NORMAL,
+                isDisabled = false
+            ), orderSummaryPageViewModel.orderPromo.value
+        )
+    }
 }

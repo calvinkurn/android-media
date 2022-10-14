@@ -45,6 +45,9 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
@@ -52,6 +55,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.minicartwidget.view.TokoFoodMiniCartWidget
 import com.tokopedia.tokofood.common.presentation.UiEvent
 import com.tokopedia.tokofood.common.presentation.listener.HasViewModel
@@ -66,13 +70,12 @@ import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomePageLoadTimeMon
 import com.tokopedia.tokofood.feature.home.di.DaggerTokoFoodHomeComponent
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.USPResponse
 import com.tokopedia.tokofood.feature.home.presentation.adapter.CustomLinearLayoutManager
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdapter
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
-import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
@@ -90,6 +93,7 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
+import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -475,6 +479,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
+                setToolbarSearchHint()
             }
         }
     }
@@ -486,6 +491,36 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 .addIcon(IconList.ID_LIST_TRANSACTION, onClick = ::onClickListTransactionButton)
                 .addIcon(IconList.ID_NAV_GLOBAL, onClick = {})
         navToolbar?.setIcon(icons)
+    }
+
+    private fun setToolbarSearchHint() {
+        if (isGoToSearchPage()) {
+            navToolbar?.setupSearchbar(
+                hints = listOf(
+                    HintData(
+                        placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
+                    )
+                ),
+                searchbarClickCallback = { onSearchBarClick() }
+            )
+        }
+    }
+
+    private fun isGoToSearchPage(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_GOFOOD_SEARCH, ""
+            ) == RollenceKey.KEY_GOFOOD_SEARCH
+        } catch (e: Exception) {
+            true
+        }
+    }
+
+    private fun onSearchBarClick() {
+        analytics.clickSearchBar(userSession.userId, localCacheModel?.district_id)
+        context?.let {
+            TokofoodRouteManager.routePrioritizeInternal(it, ApplinkConst.TokoFood.SEARCH)
+        }
     }
 
     private fun onClickShareButton() {

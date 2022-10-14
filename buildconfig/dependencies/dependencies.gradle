@@ -117,7 +117,7 @@ ext {
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
     unifyPrinciplesVersion = '1.4.1.2'
-    unifyComponentsVersion = '1.2.15.1'
+    unifyComponentsVersion = '1.2.18'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
     unifyBannerVersion = '1.0.6.2'
@@ -298,6 +298,8 @@ ext {
             newRelic              : "com.newrelic.agent.android:android-agent:$newRelicVersion",
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             dataStore             : "androidx.datastore:datastore:$dataStoreVersion",
+            dataStoreCore         : "androidx.datastore:datastore-core:$dataStoreVersion",
+            dataStorePreferences  : "androidx.datastore:datastore-preferences:$dataStoreVersion",
             googleTink            : "com.google.crypto.tink:tink-android:$googleTinkVersion",
             protobufLite          : "com.google.protobuf:protobuf-javalite:$protobufLiteVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",

@@ -4,6 +4,7 @@ object TokoFoodAnalytics {
 
     const val KEY_DIMENSION_45 = "dimension45"
     const val KEY_DIMENSION_49 = "dimension49"
+    const val KEY_DIMENSION_61 = "dimension61"
     const val KEY_DIMENSION_79 = "dimension79"
     const val KEY_CHECKOUT_OPTION = "checkout_option"
     const val KEY_CHECKOUT_STEP = "checkout_step"

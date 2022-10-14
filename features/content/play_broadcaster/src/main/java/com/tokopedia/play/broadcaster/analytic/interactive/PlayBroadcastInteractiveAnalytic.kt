@@ -45,10 +45,6 @@ interface PlayBroadcastInteractiveAnalytic {
 
     fun onClickContinueQuiz(channelId: String, channelTitle: String)
 
-    fun onClickQuizGift(channelId: String, channelTitle: String)
-
-    fun onClickCloseQuizGift(channelId: String, channelTitle: String)
-
     fun onClickStartQuiz(channelId: String, channelTitle: String)
 
     fun onClickBackQuizDuration(channelId: String, channelTitle: String)

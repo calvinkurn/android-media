@@ -2,6 +2,7 @@ package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.carouselproductcard.CarouselViewAllCardData
@@ -21,7 +22,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
         itemView: View,
-        private val broadMatchListener: BroadMatchListener
+        private val broadMatchListener: BroadMatchListener,
+        private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : AbstractViewHolder<BroadMatchDataView>(itemView) {
 
     companion object {
@@ -81,7 +83,7 @@ class BroadMatchViewHolder(
         }
 
         binding?.searchBroadMatchList?.bindCarouselProductCardViewGrid(
-            recyclerViewPool = broadMatchListener.carouselRecycledViewPool,
+            recyclerViewPool = recycledViewPool,
             productCardModelList = products.map {
                 ProductCardModel(
                     productName = it.name,

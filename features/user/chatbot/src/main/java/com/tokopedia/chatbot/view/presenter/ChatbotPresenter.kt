@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
@@ -28,6 +29,7 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.presenter.BaseChatPresenter
 import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.SESSION_CHANGE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_ID
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.ARTICLE_TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.CODE
@@ -64,9 +66,10 @@ import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
 import com.tokopedia.chatbot.domain.ChatbotSendWebsocketParam
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
@@ -89,6 +92,7 @@ import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SubmitCsatRatingSubscriber
 import com.tokopedia.chatbot.domain.subscriber.TickerDataSubscriber
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -103,6 +107,8 @@ import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
+import com.tokopedia.chatbot.util.ChatbotVideoUploadResult
+import com.tokopedia.chatbot.util.VideoUploadData
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
@@ -110,8 +116,8 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.ERROR_COD
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.LIVE_CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.SESSION_CHANGE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
@@ -120,6 +126,8 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.url.TokopediaUrl
@@ -129,7 +137,13 @@ import com.tokopedia.websocket.WebSocketResponse
 import com.tokopedia.websocket.WebSocketSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -148,26 +162,31 @@ import kotlin.coroutines.CoroutineContext
 /**
  * @author by nisie on 05/12/18.
  */
+
+typealias MediaUploadJobMap = Map<String, Job>
+typealias MediaUploadResultMap = Map<String, ChatbotVideoUploadResult>
 class ChatbotPresenter @Inject constructor(
-        var getExistingChatUseCase: GetExistingChatUseCase,
-        override var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor,
-        private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
-        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase,
-        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
-        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
-        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
-        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
-        private val getExistingChatMapper: ChatbotGetExistingChatMapper
+    var getExistingChatUseCase: GetExistingChatUseCase,
+    override var userSession: UserSessionInterface,
+    private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val fingerprintInterceptor: FingerprintInterceptor,
+    private val sendChatRatingUseCase: SendChatRatingUseCase,
+    private val sendRatingReasonUseCase: SendRatingReasonUseCase,
+    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+    private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
+    private val leaveQueueUseCase: LeaveQueueUseCase,
+    private val getTickerDataUseCase: GetTickerDataUseCase,
+    private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+    private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+    private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
+    private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+    private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+    private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+    private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+    private val uploaderUseCase : UploaderUseCase,
+    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
+    private val getExistingChatMapper: ChatbotGetExistingChatMapper
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
 
@@ -179,7 +198,6 @@ class ChatbotPresenter @Inject constructor(
         const val CHAT_DIVIDER_DEBUGGING = "15"
         const val LIVE_CHAT_DIVIDER = "16"
         const val QUERY_SORCE_TYPE = "Apps"
-        const val SESSION_CHANGE = "31"
     }
 
     override fun submitCsatRating(messageId: String, inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
@@ -202,9 +220,15 @@ class ChatbotPresenter @Inject constructor(
     private lateinit var chatResponse:ChatSocketPojo
     private val job= SupervisorJob()
 
+    private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
+    var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
+    private val shouldResetFailedUploadStatus = MutableStateFlow(false)
+    val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
+
     init {
         mSubscription = CompositeSubscription()
         listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
+        observeMediaUrisForUpload()
     }
 
     override val coroutineContext: CoroutineContext
@@ -257,7 +281,7 @@ class ChatbotPresenter @Inject constructor(
 
                     if (attachmentType== UPDATE_TOOLBAR){
                         val tool = Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
-                        view.updateToolbar(tool.profileName,tool.profileImage, tool.badgeImage)
+                        updateToolbar(tool)
                     }
 
                     val liveChatDividerAttribute = Gson().fromJson(chatResponse.attachment?.attributes, LiveChatDividerAttributes::class.java)
@@ -270,13 +294,12 @@ class ChatbotPresenter @Inject constructor(
                     if(attachmentType == LIVE_CHAT_DIVIDER){
                         mappingQueueDivider(messageId, liveChatDividerAttribute, chatResponse.message.timeStampUnixNano)
                     }
-
                     if(attachmentType == SESSION_CHANGE) {
-                        val agentMode: ReplyBubbleAttributes = Gson().fromJson(
+                        val agentMode: SessionChangeAttributes = Gson().fromJson(
                             chatResponse.attachment?.attributes,
-                            ReplyBubbleAttributes::class.java
+                            SessionChangeAttributes::class.java
                         )
-                        handleReplyBubble(agentMode)
+                        handleSessionChange(agentMode)
                     }
 
                 } catch (e: JsonSyntaxException) { }
@@ -317,12 +340,30 @@ class ChatbotPresenter @Inject constructor(
         mSubscription.add(subscription)
     }
 
-    private fun handleReplyBubble(agentMode: ReplyBubbleAttributes) {
+    private fun updateToolbar(tool: ToolbarAttributes?) {
+
+        var profileImage = ""
+
+        tool?.profileImage?.let {
+            profileImage = it
+        }
+
+        if (view.isInDarkMode()) {
+            tool?.profileImageDark?.let {
+                profileImage = it
+            }
+        }
+
+        view.updateToolbar(tool?.profileName,profileImage, tool?.badgeImage)
+
+    }
+
+    private fun handleSessionChange(agentMode: SessionChangeAttributes) {
         if (agentMode!=null){
             if (agentMode.sessionChange.mode==MODE_AGENT){
-                view.replyBubbleStateHandler(true)
+                view.sessionChangeStateHandler(true)
             }else if (agentMode.sessionChange.mode==MODE_BOT){
-                view.replyBubbleStateHandler(false)
+                view.sessionChangeStateHandler(false)
             }
         }
     }
@@ -807,6 +848,7 @@ class ChatbotPresenter @Inject constructor(
         chipSubmitHelpfulQuestionsUseCase.unsubscribe()
         chipSubmitChatCsatUseCase.unsubscribe()
         job.cancel()
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
         super.detachView()
     }
 
@@ -872,6 +914,140 @@ class ChatbotPresenter @Inject constructor(
                 view.enableTyping()
             }
         )
+    }
+
+    fun filterMediaUploadJobs(originalPaths: List<String>) {
+        mediaUploadJobs.value.filterKeys(originalPaths::contains)
+    }
+
+    fun updateMediaUris(paths : List<VideoUploadData>) {
+        mediaUris.value = paths
+    }
+
+    private fun updateMediaUploadJobs(uri: String, newUploadJob: Job) {
+        mediaUploadJobs.value = mutableMapOf<String, Job>().apply {
+            putAll(mediaUploadJobs.value)
+            put(uri, newUploadJob)
+        }
+    }
+
+    private fun observeMediaUrisForUpload() {
+        launch {
+            combine(
+                shouldResetFailedUploadStatus,
+                mediaUris
+            ) { shouldResetFailedUploadStatus, uris ->
+                shouldResetFailedUploadStatus to uris
+            }.collectLatest(::tryUploadMedia)
+        }
+    }
+
+    private suspend fun tryUploadMedia(data: Pair<Boolean, List<VideoUploadData>>) {
+        val (shouldResetFailedUploadStatus, videoData) = data
+        if (shouldResetFailedUploadStatus) {
+            mediaUploadResults.value = mediaUploadResults.value.filterValues { uploadResult ->
+                uploadResult is ChatbotVideoUploadResult.Success
+            }
+            this@ChatbotPresenter.shouldResetFailedUploadStatus.value = false
+        } else {
+            videoData.forEach {
+
+                val currentUri = it.videoPath ?: ""
+                val hasActiveUploadJob = mediaUploadJobs.value[currentUri]?.isActive == true
+                val needToStartNewJob = !hasActiveUploadJob
+                if (needToStartNewJob) {
+                    updateMediaUploadJobs(
+                        currentUri,
+                        startNewUploadMediaJob(
+                            currentUri,
+                            it.messageId,
+                            it.startTime
+                        )
+                    )
+                    mediaUploadJobs.value.values.joinAll()
+                }
+            }
+        }
+    }
+
+    fun startNewUploadMediaJob(
+        uri: String,
+        messageId: String,
+        startTime: String,
+    ): Job {
+
+        return launchCatchError(block = {
+            val filePath = File(uri)
+            val params = uploaderUseCase.createParams(
+                sourceId = ChatbotConstant.VideoUpload.SOURCE_ID_FOR_VIDEO_UPLOAD,
+                filePath = filePath,
+                withTranscode = false
+            )
+            val uploadMediaResult = uploaderUseCase(params).let {
+                when (it) {
+                    is UploadResult.Success -> {
+                        sendVideoAttachment(it.videoUrl,startTime,messageId)
+                        ChatbotVideoUploadResult.Success(it.uploadId, it.videoUrl)
+                    }
+                    is UploadResult.Error -> {
+                        ChatbotVideoUploadResult.Error(it.message)
+                    }
+                }
+            }
+            updateMediaUploadResults(uri, uploadMediaResult)
+        }, onError = {
+            updateMediaUploadResults(uri, ChatbotVideoUploadResult.Error(it.message.orEmpty()))
+        })
+    }
+
+    fun updateMediaUploadResults(
+        uri: String,
+        uploadMediaResult: ChatbotVideoUploadResult
+    ) {
+        mediaUploadResults.value = mutableMapOf<String, ChatbotVideoUploadResult>().apply {
+            putAll(mediaUploadResults.value)
+            put(uri, uploadMediaResult)
+        }
+    }
+
+    override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
+        RxWebSocket.send(
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                filePath, startTime, messageId
+            ), listInterceptor
+        )
+    }
+
+    override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
+        launchCatchError(
+            block = {
+                uploaderUseCase.abortUpload(
+                    filePath = file,
+                    sourceId = sourceId
+            )
+                mediaUploadJobs.value.get(file)?.cancel()
+            },
+            onError = {
+                onErrorVideoUpload(it)
+            }
+        )
+    }
+
+    override fun checkUploadVideoEligibility(msgId: String) {
+        chatbotVideoUploadVideoEligibilityUseCase.cancelJobs()
+        chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
+            ::onSuccessVideoUploadEligibility,
+            ::onFailureVideoUploadEligibility,
+            msgId
+        )
+    }
+
+    private fun onSuccessVideoUploadEligibility(response : ChatbotUploadVideoEligibilityResponse) {
+        view.videoUploadEligibilityHandler(response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible)
+    }
+
+    private fun onFailureVideoUploadEligibility(throwable: Throwable) {
+        //Add new Relic Here
     }
 
     override fun clearGetChatUseCase() {

@@ -50,5 +50,12 @@ object OtpConstant {
         const val INACTIVE_PHONE_VERIFY_EMAIL = 160
         const val INACTIVE_PHONE_VERIFY_PIN = 161
         const val INACTIVE_PHONE_VERIFY_NEW_PHONE = 162
+
+        /* OTP Type: 168
+        * This is actually OTP with phone number
+        * this OTP type used when user register with email, and need OTP phone
+        * this OTP type was implemented in Redefine Register Email
+        * */
+        const val PHONE_REGISTER_MANDATORY = 168
     }
 }
