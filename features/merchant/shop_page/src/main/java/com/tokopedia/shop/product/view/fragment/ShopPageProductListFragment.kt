@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -179,19 +177,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     override val isOwner: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isMyShop(shopId)
-        } else false
+        get() = viewModel.isMyShop(shopId)
 
     private val isLogin: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isLogin
-        } else false
-
-    lateinit var viewModel: ShopPageProductListViewModel
+        get() = viewModel.isLogin
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: ShopPageProductListViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
+    }
+
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private var lastQuestId: Int = 0
     private var attribution: String = ""
@@ -202,17 +198,11 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             shopProductFilterParameter?.setSortId(value)
         }
     private val sortName
-        get() = if (::viewModel.isInitialized) {
-            viewModel.getSortNameById(sortId)
-        } else {
-            ""
-        }
+        get() = viewModel.getSortNameById(sortId)
+
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else {
-            ""
-        }
+        get() = viewModel.userId
+
     private var urlNeedTobBeProceed: String? = null
     private var shopId: String = ""
     private var shopName: String = ""
@@ -811,21 +801,10 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingWishlistV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingWishlistV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg))
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
         }
     }
 
@@ -837,14 +816,6 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             shopProductAdapter.updateWishListStatus(productCardOptionsModel.productId, true)
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg), productCardOptionsModel.productId)
         }
     }
 
@@ -1089,16 +1060,17 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
             startMonitoringPltCustomMetric(SHOP_TRACE_PRODUCT_PREPARE)
         }
         super.onCreate(savedInstanceState)
-        context?.let { shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it)) }
+        context?.let {
+            shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
+            staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(it.resources.getInteger(R.integer.span_count_small_grid), StaggeredGridLayoutManager.VERTICAL)
+        }
         remoteConfig = FirebaseRemoteConfigImpl(context)
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
         shopProductFilterParameterSharedViewModel = ViewModelProviders.of(requireActivity()).get(ShopProductFilterParameterSharedViewModel::class.java)
         shopChangeProductGridSharedViewModel = ViewModelProvider(requireActivity()).get(ShopChangeProductGridSharedViewModel::class.java)
         shopPageMiniCartSharedViewModel = ViewModelProviders.of(requireActivity()).get(
             ShopPageMiniCartSharedViewModel::class.java
         )
         attribution = arguments?.getString(SHOP_ATTRIBUTION, "") ?: ""
-        staggeredGridLayoutManager = StaggeredGridLayoutManagerWrapper(resources.getInteger(R.integer.span_count_small_grid), StaggeredGridLayoutManager.VERTICAL)
     }
 
     private fun startMonitoringPltRenderPage() {
@@ -1677,8 +1649,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     fun clearCache() {
-        if(::viewModel.isInitialized)
-            viewModel.clearCache()
+        viewModel.clearCache()
     }
 
     private fun redirectToShopSortPickerPage() {

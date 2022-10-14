@@ -669,14 +669,14 @@ class FeedShopPresenterTest: KolPostLikeListener {
             likeKolPostUseCase.execute(any(), any())
         } answers {}
 
-        presenter.likeKol(anyInt(), anyInt(), this)
+        presenter.likeKol(anyLong(), anyInt(), this)
 
         verify {
             likeKolPostUseCase.execute(any(), any())
         }
 
         presenter.attachView(null)
-        presenter.likeKol(anyInt(), anyInt(), this)
+        presenter.likeKol(anyLong(), anyInt(), this)
     }
 
     @Test
@@ -685,14 +685,14 @@ class FeedShopPresenterTest: KolPostLikeListener {
             likeKolPostUseCase.execute(any(), any())
         } answers {}
 
-        presenter.unlikeKol(anyInt(), anyInt(), this)
+        presenter.unlikeKol(anyLong(), anyInt(), this)
 
         verify {
             likeKolPostUseCase.execute(any(), any())
         }
 
         presenter.attachView(null)
-        presenter.unlikeKol(anyInt(), anyInt(), this)
+        presenter.unlikeKol(anyLong(), anyInt(), this)
     }
 
     @Test
@@ -704,7 +704,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(true)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -721,7 +721,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(false)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -740,7 +740,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
             secondArg<Subscriber<Boolean>>().onNext(null)
         }
 
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
 
         verify {
             deletePostUseCase.execute(any(), any())
@@ -759,7 +759,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         }
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns true
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())
@@ -767,7 +767,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns false
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())
@@ -784,7 +784,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns false
         presenter.detachView()
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
         }
@@ -802,7 +802,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         }
         mockkStatic(GlobalConfig::class)
         every { GlobalConfig.isAllowDebuggingTools() } returns true
-        presenter.deletePost(anyInt(), anyInt())
+        presenter.deletePost(anyString(), anyInt())
         verify {
             deletePostUseCase.execute(any(), any())
             view.onErrorDeletePost(any(), any(), any())

@@ -29,8 +29,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
     packagingOptions {
         exclude 'META-INF/**'
@@ -66,7 +66,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
     implementation projectOrAar(rootProject.ext.features.nps)
     implementation projectOrAar(rootProject.ext.features.withdraw)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.searchbar)
@@ -99,6 +98,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.collapsingTabLayout)
     implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.websocket)
+    implementation projectOrAar(rootProject.ext.libraries.tokopatch)
     implementation projectOrAar(rootProject.ext.libraries.baseAdapter)
     implementation projectOrAar(rootProject.ext.features.csat_rating)
     implementation projectOrAar(rootProject.ext.features.resourcesCommon)
@@ -154,6 +154,7 @@ dependencies {
 
     //Dependency used for DF module
     implementation projectOrAar(rootProject.ext.features.commonTravel)
+    implementation projectOrAar(rootProject.ext.features.commonEntertainment)
     implementation projectOrAar(rootProject.ext.features.payment)
     implementation projectOrAar(rootProject.ext.features.thankYouNative)
     implementation projectOrAar(rootProject.ext.features.pdpPaylaterWidget)
@@ -242,8 +243,10 @@ dependencies {
     }
     if (rootProject.ext.debugToolsEnabled) {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebugger)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassava
     } else {
         implementation projectOrAar(rootProject.ext.libraries.analyticsDebuggerNoop)
+        implementation rootProject.ext.tkpdInternalLibDependencies.cassavaNoOp
     }
 
     implementation projectOrAar(rootProject.ext.libraries.pageInfoPusher)

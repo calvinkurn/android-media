@@ -256,8 +256,11 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
-        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank() || ChannelStatus.getByValue(status.id) == ChannelStatus.Live) BroadcastScheduleUiModel.NoSchedule
         else {
             val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
             BroadcastScheduleUiModel.Scheduled(
@@ -361,11 +364,9 @@ class PlayBroadcastUiMapper @Inject constructor(
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
-                maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
                 maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
-                showPrizeCoachMark = true,
             ),
         )
     }
