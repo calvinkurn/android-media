@@ -205,7 +205,7 @@ class LoginEmailPhoneViewModel @Inject constructor(
             showLocationAdminPopUp = {
                 mutableShowLocationAdminPopUp.value = Success(true)
             },
-            onAdminRedirection = {
+            onLocationAdminRedirection = {
                 mutableAdminRedirection.value = Success(true)
             },
             showErrorGetAdminType = {

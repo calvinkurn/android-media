@@ -18,7 +18,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                            val onErrorGetProfile: (e: Throwable) -> Unit,
                            val getAdminTypeUseCase: GetAdminTypeUseCase? = null,
                            val showLocationAdminPopUp: (() -> Unit)? = null,
-                           val onAdminRedirection: (() -> Unit)? = null,
+                           val onLocationAdminRedirection: (() -> Unit)? = null,
                            val showErrorGetAdminType: ((e: Throwable) -> Unit)? = null,
                            val onFinished: () -> Unit? = {}) :
         Subscriber<GraphqlResponse>() {
@@ -88,7 +88,7 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                 showLocationAdminPopUp?.invoke()
             } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
                 saveProfileData(userProfile)
-                onAdminRedirection?.invoke()
+                onLocationAdminRedirection?.invoke()
             } else {
                 saveProfileData(userProfile)
                 onSuccessGetProfile(userProfile)
