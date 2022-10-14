@@ -8,6 +8,7 @@
     xmlns:tool="http://schemas.android.com/tools">
 
     <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginEnd="16dp"
@@ -22,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/tfCityName" />
 
-    8<com.tokopedia.unifyprinciples.Typography
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfCityName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

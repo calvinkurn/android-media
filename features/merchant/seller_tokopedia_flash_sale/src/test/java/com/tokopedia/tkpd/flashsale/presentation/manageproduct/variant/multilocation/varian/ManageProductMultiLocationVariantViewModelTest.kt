@@ -2,29 +2,33 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multiloc
 
 import android.content.Context
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyOfDiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyOfProductCriteria
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.MockKAnnotations
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyChildsProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyOfListCriteria
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyOfListCriteriaWithEmptyLocation
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createDummyProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehouseDummy
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehousesDummy
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.DataDummyOfVariantMultiLocationType.createWarehousesDilayaniTokopedia
+import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
-import io.mockk.every
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.test.runBlockingTest
-import org.junit.Assert
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
+import org.junit.*
 
 
 @ExperimentalCoroutinesApi
+@FlowPreview
 class ManageProductMultiLocationVariantViewModelTest {
 
     companion object {
@@ -36,11 +40,16 @@ class ManageProductMultiLocationVariantViewModelTest {
     @RelaxedMockK
     lateinit var context: Context
 
+    @RelaxedMockK
+    lateinit var getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase
+
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
 
     @get:Rule
     val coroutineTestRule = CoroutineTestRule()
+
+    private var dispatcher = CoroutineTestDispatchersProvider
 
     private lateinit var viewModel: ManageProductMultiLocationVariantViewModel
 
@@ -48,17 +57,25 @@ class ManageProductMultiLocationVariantViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         viewModel = ManageProductMultiLocationVariantViewModel(
-            coroutineTestRule.dispatchers,
-            ErrorMessageHelper(context)
+            dispatcher,
+            ErrorMessageHelper(context),
+            getFlashSaleProductCriteriaCheckingUseCase
         )
+    }
+
+    @After
+    fun after() {
+        unmockkAll()
     }
 
     @Test
     fun `set Product and variant into viewModel`() {
         val dummyData = createDummyProduct()
-        val target = DataDummyOfVariantMultiLocationType.createDummyChildsProduct(false)
+        val target = createDummyChildsProduct(false)
         val positionTarget = 0
-        viewModel.setProduct(dummyData, positionTarget)
+        val flashSaleId = "0"
+        coEveryGetCriteria()
+        viewModel.setProduct(dummyData, positionTarget, flashSaleId)
         val dataProductInViewModel = viewModel.product.value
         Assert.assertEquals(dummyData, dataProductInViewModel)
         Assert.assertEquals(
@@ -66,6 +83,78 @@ class ManageProductMultiLocationVariantViewModelTest {
             target[positionTarget]
         )
     }
+
+    @Test
+    fun `Not Correct Criteria because product child wrong name`() {
+        runBlockingTest {
+            val dummyData = createDummyProduct()
+            val dummyOfWarehouse = createWarehousesDummy(true)[0]
+            val positionTarget = 0
+            val flashSaleId = "0"
+            coEveryGetNotCriteriaBecauseWrongName()
+            viewModel.setProduct(dummyData, positionTarget, flashSaleId)
+            val actualResutl = viewModel.getCriteriaOn(dummyOfWarehouse)
+            Assert.assertNull(actualResutl)
+        }
+    }
+
+    @Test
+    fun `Correct Criteria`() {
+        runBlockingTest {
+            val dummyData = createDummyProduct()
+            val dummyOfWarehouse = createWarehousesDummy(true)[0]
+            val positionTarget = 0
+            val flashSaleId = "0"
+            coEveryGetCriteria()
+            viewModel.setProduct(dummyData, positionTarget, flashSaleId)
+            val actualResult = viewModel.getCriteriaOn(dummyOfWarehouse)
+            Assert.assertTrue(actualResult?.cityName == "Warehouse - 1")
+        }
+    }
+
+    @Test
+    fun `Criteria null because false city name`() {
+        runBlockingTest {
+            val dummyData = createDummyProduct()
+            val dummyOfWarehouse = createWarehousesDummy(true)[1].copy(name = "A")
+            val positionTarget = 0
+            val flashSaleId = "0"
+            coEveryGetCriteria()
+            viewModel.setProduct(dummyData, positionTarget, flashSaleId)
+            val actualResult = viewModel.getCriteriaOn(dummyOfWarehouse)
+            Assert.assertNull(actualResult)
+        }
+    }
+
+    @Test
+    fun `Criteria null because empty location`() {
+        runBlockingTest {
+            val dummyData = createDummyProduct()
+            val dummyOfWarehouse = createWarehousesDummy(true)[0]
+            val positionTarget = 0
+            val flashSaleId = "0"
+            coEveryGetCriteriaWithNoChildProductMatch()
+            viewModel.setProduct(dummyData, positionTarget, flashSaleId)
+            val actualResult = viewModel.getCriteriaOn(dummyOfWarehouse)
+            Assert.assertNull(actualResult)
+        }
+    }
+
+    @Test
+    fun `Criteria throw exception`() {
+        runBlockingTest {
+            val dummyData = createDummyProduct()
+            val dummyOfWarehouse = createWarehousesDummy(true)[0]
+            val positionTarget = 0
+            val flashSaleId = "0"
+            coEveryGetCriteriaReturnException()
+            viewModel.setProduct(dummyData, positionTarget, flashSaleId)
+            val actualResult = viewModel.getCriteriaOn(dummyOfWarehouse)
+            Assert.assertNull(actualResult)
+            Assert.assertNotNull(viewModel.error)
+        }
+    }
+
 
     @Test
     fun `test calculation of percent to nominal 50 percent`() {
@@ -266,8 +355,10 @@ class ManageProductMultiLocationVariantViewModelTest {
     fun `isInputPageValid test when toggle is on and all valid`() {
         val dummyProduct = setDummyChild(0, 2, 2000, 30, 50)
         val targetPositionOfProduct = 0
-        viewModel.setProduct(dummyProduct, targetPositionOfProduct)
-        val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
+        val flashSaleId = "0"
+        coEveryGetCriteria()
+        viewModel.setProduct(dummyProduct, targetPositionOfProduct, flashSaleId)
+        val actualResult = viewModel.isInputPageNotValid.getOrAwaitValue(500)
         Assert.assertFalse(actualResult)
     }
 
@@ -275,14 +366,16 @@ class ManageProductMultiLocationVariantViewModelTest {
     fun `isInputPageValid test when toggle is on and all invalid`() {
         val dummyProduct = setDummyChild(0, 2, 20000, 30, 50)
         val targetPositionOfProduct = 0
-        viewModel.setProduct(dummyProduct, targetPositionOfProduct)
-        val actualResult = viewModel.isInputPageValid.getOrAwaitValue(500)
+        val flashSaleId = "0"
+        coEveryGetCriteria()
+        viewModel.setProduct(dummyProduct, targetPositionOfProduct, flashSaleId)
+        val actualResult = viewModel.isInputPageNotValid.getOrAwaitValue(500)
         Assert.assertTrue(actualResult)
     }
 
     @Test
     fun `find Position of Product Served By Tokopedia To Register but the result is null`() {
-        val dummyProduct = createWarehouseDummy(false)
+        val dummyProduct = createWarehousesDummy(false)
         val actualResult = viewModel.findPositionOfProductServedByTokopediaToRegister(dummyProduct)
         Assert.assertNull(actualResult)
     }
@@ -304,7 +397,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `value Adjustment of Served By Tokopedia Warehouse ToRegister all toggle on`() {
-        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle All On`()
+        val (sample, target) = `create Sample And Target Served By Tokopedia When Toggle All On`()
 
         val actualResult =
             viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
@@ -313,7 +406,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `value Adjustment of Served By Tokopedia Warehouse ToRegister all toggle of`() {
-        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle All Off`()
+        val (sample, target) = `create Sample And Target Served By Tokopedia When Toggle All Off`()
 
         val actualResult =
             viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
@@ -322,7 +415,7 @@ class ManageProductMultiLocationVariantViewModelTest {
 
     @Test
     fun `value Adjustment of Served By Tokopedia Warehouse ToRegister toggle on and off`() {
-        val(sample, target) = `create Sample And Target Served By Tokopedia When Toggle mix On Off`()
+        val (sample, target) = `create Sample And Target Served By Tokopedia When Toggle mix On Off`()
         val actualResult =
             viewModel.valueAdjustmentOfServedByTokopediaWarehouseToRegister(sample, 1)
         Assert.assertEquals(target, actualResult)
@@ -333,8 +426,8 @@ class ManageProductMultiLocationVariantViewModelTest {
     }
 
     private fun `create Sample And Target Served By Tokopedia When Toggle All On`():
-            Pair<List<ReservedProduct.Product.Warehouse>,
-                    List<ReservedProduct.Product.Warehouse>> {
+        Pair<List<ReservedProduct.Product.Warehouse>,
+            List<ReservedProduct.Product.Warehouse>> {
         val dummyProductTestSample = createWarehousesDilayaniTokopedia(isToogleOn = true)
         dummyProductTestSample[1].apply {
             discountSetup.price = 4000
@@ -356,8 +449,8 @@ class ManageProductMultiLocationVariantViewModelTest {
     }
 
     private fun `create Sample And Target Served By Tokopedia When Toggle All Off`():
-            Pair<List<ReservedProduct.Product.Warehouse>,
-                    List<ReservedProduct.Product.Warehouse>> {
+        Pair<List<ReservedProduct.Product.Warehouse>,
+            List<ReservedProduct.Product.Warehouse>> {
         val dummyProductTestSample = createWarehousesDilayaniTokopedia(isToogleOn = false)
         dummyProductTestSample[1].apply {
             discountSetup.price = 4000
@@ -374,8 +467,8 @@ class ManageProductMultiLocationVariantViewModelTest {
     }
 
     private fun `create Sample And Target Served By Tokopedia When Toggle mix On Off`():
-            Pair<List<ReservedProduct.Product.Warehouse>,
-                    List<ReservedProduct.Product.Warehouse>> {
+        Pair<List<ReservedProduct.Product.Warehouse>,
+            List<ReservedProduct.Product.Warehouse>> {
         val dummyProductTestSample = createWarehousesDilayaniTokopedia()
         dummyProductTestSample[1].apply {
             isToggleOn = true
@@ -487,6 +580,99 @@ class ManageProductMultiLocationVariantViewModelTest {
         Assert.assertEquals(5, actualResult.size)
     }
 
+    @Test
+    fun `test is stock is on criteria`() {
+        Assert.assertTrue(viewModel.isValidCriteriaOnStock(10, 10))
+    }
+
+    @Test
+    fun `test is stock is not on criteria`() {
+        Assert.assertFalse(viewModel.isValidCriteriaOnStock(1, 10))
+    }
+
+    @Test
+    fun `test is price is on criteria`() {
+        val priceInput = 500L
+        val priceMin = 100L
+        val priceMaximum = 1000L
+        Assert.assertTrue(viewModel.isValidCriteriaOnPrice(priceInput, priceMin, priceMaximum))
+    }
+
+    @Test
+    fun `test is price is lower on criteria`() {
+        val priceInput = 1L
+        val priceMin = 100L
+        val priceMaximum = 1000L
+        Assert.assertFalse(viewModel.isValidCriteriaOnPrice(priceInput, priceMin, priceMaximum))
+    }
+
+    @Test
+    fun `test is price is higher on criteria`() {
+        val priceInput = 2000L
+        val priceMin = 100L
+        val priceMaximum = 1000L
+        Assert.assertFalse(viewModel.isValidCriteriaOnPrice(priceInput, priceMin, priceMaximum))
+    }
+
+    @Test
+    fun `test is warehouse eligible`() {
+        val stock = 20L
+        val price = 2000L
+        val dummyWarehouse = createWarehouseDummy(stock, price)
+        Assert.assertTrue(viewModel.isEligibleItem(dummyWarehouse, createDummyOfProductCriteria()))
+    }
+
+    @Test
+    fun `test is warehouse not eligible because stock`() {
+        val stock = 1L
+        val price = 2000L
+        val dummyWarehouse = createWarehouseDummy(stock, price)
+        Assert.assertFalse(viewModel.isEligibleItem(dummyWarehouse, createDummyOfProductCriteria()))
+    }
+
+    @Test
+    fun `test is warehouse not eligible because price is lower`() {
+        val stock = 20L
+        val price = 2L
+        val dummyWarehouse = createWarehouseDummy(stock, price)
+        Assert.assertFalse(viewModel.isEligibleItem(dummyWarehouse, createDummyOfProductCriteria()))
+    }
+
+    @Test
+    fun `test is warehouse not eligible because price is higher`() {
+        val stock = 20L
+        val price = 20000L
+        val dummyWarehouse = createWarehouseDummy(stock, price)
+        Assert.assertFalse(viewModel.isEligibleItem(dummyWarehouse, createDummyOfProductCriteria()))
+    }
+
+    @Test
+    fun `test is warehouse not eligible because price and stock`() {
+        val stock = 2L
+        val price = 20000L
+        val dummyWarehouse = createWarehouseDummy(stock, price)
+        Assert.assertFalse(viewModel.isEligibleItem(dummyWarehouse, createDummyOfProductCriteria()))
+    }
+
+    @Test
+    fun `do Nominal Discount TrackerInput`() {
+        runBlockingTest {
+            viewModel.doNominalDiscountTrackerInput(MAX_PRICE_MESSAGE)
+            val actualResult = viewModel.doTrackingNominal.getOrAwaitValue()
+            Assert.assertTrue(actualResult == MAX_PRICE_MESSAGE)
+        }
+    }
+
+    @Test
+    fun `do Percentage Discount TrackerInput`() {
+        runBlockingTest {
+            viewModel.doPercentageDiscountTrackerInput("10%")
+            val actualResult = viewModel.doTrackingPercent.getOrAwaitValue()
+            Assert.assertTrue(actualResult == "10%")
+
+        }
+    }
+
     private fun setDummyChild(
         startPosition: Int,
         endPosition: Int,
@@ -513,8 +699,10 @@ class ManageProductMultiLocationVariantViewModelTest {
     private fun setValueOfProductAndVariantAttribute(isToggleOn: Boolean = false) {
         val dummyData = createDummyProduct()
         val positionTarget = 0
+        val flashSaleId = "0"
         dummyData.childProducts[positionTarget].warehouses.forEach { it.isToggleOn = isToggleOn }
-        viewModel.setProduct(dummyData, positionTarget)
+        coEveryGetCriteria()
+        viewModel.setProduct(dummyData, positionTarget, flashSaleId)
     }
 
     private fun declareDummyReturnTextStringResource() {
@@ -536,5 +724,30 @@ class ManageProductMultiLocationVariantViewModelTest {
                 any()
             )
         } returns BETWEEN_PRICE_MESSAGE
+    }
+
+    private fun coEveryGetCriteria() {
+        coEvery {
+            getFlashSaleProductCriteriaCheckingUseCase.execute(0L, 0L, 0L)
+        } returns createDummyOfListCriteria(arrayListOf("Data | L"))
+    }
+
+    private fun coEveryGetNotCriteriaBecauseWrongName() {
+        coEvery {
+            getFlashSaleProductCriteriaCheckingUseCase.execute(0L, 0L, 0L)
+        } returns createDummyOfListCriteriaWithEmptyLocation(arrayListOf("Data"))
+    }
+
+
+    private fun coEveryGetCriteriaWithNoChildProductMatch() {
+        coEvery {
+            getFlashSaleProductCriteriaCheckingUseCase.execute(0L, 0L, 0L)
+        } returns createDummyOfListCriteriaWithEmptyLocation(arrayListOf("Data | L"))
+    }
+
+    private fun coEveryGetCriteriaReturnException() {
+        coEvery {
+            getFlashSaleProductCriteriaCheckingUseCase.execute(0L, 0L, 0L)
+        } throws MessageErrorException("")
     }
 }
