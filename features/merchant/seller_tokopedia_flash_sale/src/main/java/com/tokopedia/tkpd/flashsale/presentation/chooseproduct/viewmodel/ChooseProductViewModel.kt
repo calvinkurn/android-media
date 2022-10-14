@@ -79,6 +79,7 @@ class ChooseProductViewModel @Inject constructor(
     var filterCategory: List<Long> = emptyList()
     var campaignId: Long = 0
     var tabName: String = ""
+    var selectedProductIds: List<Long> = emptyList()
 
     fun getProductList(page: Int, perPage: Int, keyword: String) {
         launchCatchError(
@@ -95,6 +96,8 @@ class ChooseProductViewModel @Inject constructor(
                 val result = getFlashSaleProductListToReserveUseCase.execute(param)
                 remoteProductList.postValue(result.productList)
                 if (_selectedProductCount.value == null) _selectedProductCount.postValue(result.selectedProductCount)
+                selectedProductIds = result.selectedProductIds
+
             },
             onError = { error ->
                 _error.postValue(error)
@@ -115,20 +118,26 @@ class ChooseProductViewModel @Inject constructor(
         )
     }
 
-    fun updateCriteriaList(item: ChooseProductItem) {
-        _criteriaList.value = ChooseProductUiMapper.chooseCriteria(_criteriaList.value, item)
+    fun isPreselectedProduct(product: ChooseProductItem): Boolean {
+        val productId = product.productId.toLongOrZero()
+        return selectedProductIds.any { it == productId }
     }
 
-    fun setSelectedProduct(item: ChooseProductItem) {
-        val isSelected = item.isSelected
+    fun updateCriteriaList(product: ChooseProductItem) {
+        if (isPreselectedProduct(product)) return
+        _criteriaList.value = ChooseProductUiMapper.chooseCriteria(_criteriaList.value, product)
+    }
+
+    fun setSelectedProduct(product: ChooseProductItem) {
+        val isSelected = product.isSelected
         if (isSelected) {
-            selectedProductList.value = selectedProductList.value.orEmpty() + listOf(item)
-            _selectedProductCount.value = _selectedProductCount.value?.inc()
+            selectedProductList.value = selectedProductList.value.orEmpty() + listOf(product)
+            if (!isPreselectedProduct(product)) _selectedProductCount.value = _selectedProductCount.value?.inc()
         } else {
             selectedProductList.value = selectedProductList.value.orEmpty().filter {
-                it.productId != item.productId
+                it.productId != product.productId
             }
-            _selectedProductCount.value = _selectedProductCount.value?.dec()
+            if (!isPreselectedProduct(product)) _selectedProductCount.value = _selectedProductCount.value?.dec()
         }
     }
 

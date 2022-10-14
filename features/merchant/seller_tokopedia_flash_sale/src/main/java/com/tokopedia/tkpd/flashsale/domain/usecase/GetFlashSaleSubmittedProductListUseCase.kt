@@ -68,6 +68,7 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                               status_id
                               status_text
                               rejection_reason
+                              sold_count
                               subsidy {
                                 has_subsidy
                                 subsidy_amount

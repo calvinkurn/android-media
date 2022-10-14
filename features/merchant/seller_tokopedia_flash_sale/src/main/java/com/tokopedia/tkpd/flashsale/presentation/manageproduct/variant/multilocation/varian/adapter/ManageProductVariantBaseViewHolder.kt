@@ -6,6 +6,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
+import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
 import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.view.*
@@ -19,24 +20,31 @@ import java.text.NumberFormat
 open class ManageProductVariantBaseViewHolder(
     view: View,
     private val listener: ManageProductVariantAdapterListener?
-): RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(view) {
 
     companion object {
         const val NUMBER_PATTERN = "#,###,###"
     }
 
-    var listenerOfEditTextDiscountNominal : TextWatcher? = null
-    var listenerOfEditTextDiscountPercent : TextWatcher? = null
-    var listenerQty : TextWatcher? = null
-    var listenerNumberFormatDiscountNominal : TextWatcher? = null
-    var listenerNumberFormatDiscountPercent : TextWatcher? = null
+    private var listenerOfEditTextDiscountNominal: TextWatcher? = null
+    private var listenerOfEditTextDiscountPercent: TextWatcher? = null
+    private var listenerQty: TextWatcher? = null
+    private var listenerNumberFormatDiscountNominal: TextWatcher? = null
+    private var listenerNumberFormatDiscountPercent: TextWatcher? = null
 
-    private fun Number?.toStringOrEmpty() =
-        if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
+    //For Tracker Purpose
+    private var listenerTrackerOfNominalDiscount: TextWatcher? = null
+    private var listenerTrackerOfPercentDiscount: TextWatcher? = null
 
-    private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
+    private fun TextFieldUnify2.setTextIfNotFocus(
+        removeTracker: () -> Unit,
+        text: String,
+        addTracker: () -> Unit
+    ) {
         if (!editText.isFocused) {
+            removeTracker()
             editText.setText(text)
+            addTracker()
         }
     }
 
@@ -45,12 +53,17 @@ open class ManageProductVariantBaseViewHolder(
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?
     ) {
         discount?.let {
-            val validationResult = listener?.onDataInputChanged(adapterPosition, criteria, it)
+            val validationResult = listener?.onDataInputChanged(absoluteAdapterPosition, criteria, it)
             val isPriceError = validationResult?.isPriceError == true
             val isPricePercentError = validationResult?.isPricePercentError == true
             this.textFieldPriceDiscountNominal.isInputError = isPriceError
             this.textFieldPriceDiscountPercentage.isInputError = isPricePercentError
-            this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
+            this.textQuantityEditorSubTitle.setTextColor(
+                setColorText(
+                    root.context,
+                    validationResult?.isStockError == true
+                )
+            )
             this.textFieldPriceDiscountNominal.setMessage(validationResult?.priceMessage.orEmpty())
             this.textFieldPriceDiscountPercentage.setMessage(validationResult?.pricePercentMessage.orEmpty())
             this.tickerPriceError.setTypeOfTicker(isPriceError || isPricePercentError)
@@ -60,17 +73,25 @@ open class ManageProductVariantBaseViewHolder(
     private fun LayoutCampaignManageProductDetailInformationBinding.setupInitialFieldMessage(
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
-        this.textQuantityEditorSubTitle.text = root.context.getString(R.string.manageproductnonvar_stock_subtitle, criteria.minCustomStock, criteria.maxCustomStock)
-        this.textFieldPriceDiscountNominal.setMessage(root.context.getString(
-            R.string.manageproductnonvar_range_message_format,
-            criteria.minFinalPrice.getCurrencyFormatted(),
-            criteria.maxFinalPrice.getCurrencyFormatted()
-        ))
-        this.textFieldPriceDiscountPercentage.setMessage(root.context.getString(
-            R.string.manageproductnonvar_range_message_format,
-            criteria.minDiscount.getPercentFormatted(),
-            criteria.maxDiscount.getPercentFormatted()
-        ))
+        this.textQuantityEditorSubTitle.text = root.context.getString(
+            R.string.manageproductnonvar_stock_subtitle,
+            criteria.minCustomStock,
+            criteria.maxCustomStock
+        )
+        this.textFieldPriceDiscountNominal.setMessage(
+            root.context.getString(
+                R.string.manageproductnonvar_range_message_format,
+                criteria.minFinalPrice.getCurrencyFormatted(),
+                criteria.maxFinalPrice.getCurrencyFormatted()
+            )
+        )
+        this.textFieldPriceDiscountPercentage.setMessage(
+            root.context.getString(
+                R.string.manageproductnonvar_range_message_format,
+                criteria.minDiscount.getPercentFormatted(),
+                criteria.maxDiscount.getPercentFormatted()
+            )
+        )
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setupListener(
@@ -78,30 +99,48 @@ open class ManageProductVariantBaseViewHolder(
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?,
     ) {
 
-        listenerNumberFormatDiscountNominal = setNumberTextChangeListener(textFieldPriceDiscountNominal)
-        listenerNumberFormatDiscountPercent = setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+        initialListerForTracker()
+        setupListenerForTracker()
 
-        listenerOfEditTextDiscountNominal = EditTextWatcher{
+        listenerNumberFormatDiscountNominal =
+            setNumberTextChangeListener(textFieldPriceDiscountNominal)
+        listenerNumberFormatDiscountPercent =
+            setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+
+        listenerOfEditTextDiscountNominal = EditTextWatcher {
             discount?.price = it.digitsOnly()
             this.textFieldPriceDiscountPercentage.setTextIfNotFocus(
-                listener?.calculatePercent(it.digitsOnly(), adapterPosition).orEmpty()
+                removeTracker = { removeTrackerListenerPercent() },
+                text = listener?.calculatePercent(it.digitsOnly(), absoluteAdapterPosition).orEmpty(),
+                addTracker = { addTrackerListenerPercent() }
             )
             triggerListener(criteria, discount)
         }
-        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerOfEditTextDiscountNominal)
-        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
+        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(
+            listenerOfEditTextDiscountNominal
+        )
+        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(
+            listenerNumberFormatDiscountNominal
+        )
 
-        listenerOfEditTextDiscountPercent = EditTextWatcher{
+        listenerOfEditTextDiscountPercent = EditTextWatcher {
             discount?.discount = it.digitsOnly().toInt()
             this.textFieldPriceDiscountNominal.setTextIfNotFocus(
-                listener?.calculatePrice(it.digitsOnly(), adapterPosition).toLongOrZero().getNumberFormatted()
+                removeTracker = { removeTrackerListenerNominal() },
+                text = listener?.calculatePrice(it.digitsOnly(), absoluteAdapterPosition).toLongOrZero()
+                    .getNumberFormatted(),
+                addTracker = { this.addTrackerListenerNominal() }
             )
             triggerListener(criteria, discount)
         }
-        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerOfEditTextDiscountPercent)
-        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
+        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(
+            listenerOfEditTextDiscountPercent
+        )
+        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(
+            listenerNumberFormatDiscountPercent
+        )
 
-        listenerQty = EditTextWatcher{
+        listenerQty = EditTextWatcher {
             discount?.stock = it.digitsOnly()
             triggerListener(criteria, discount)
         }
@@ -109,10 +148,25 @@ open class ManageProductVariantBaseViewHolder(
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.clearListener() {
-        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerOfEditTextDiscountNominal)
-        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerOfEditTextDiscountPercent)
-        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
-        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
+        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(
+            listenerOfEditTextDiscountNominal
+        )
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(
+            listenerOfEditTextDiscountPercent
+        )
+        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(
+            listenerNumberFormatDiscountNominal
+        )
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(
+            listenerNumberFormatDiscountPercent
+        )
+
+        removeTrackerListenerNominal()
+        removeTrackerListenerPercent()
+
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(
+            listenerTrackerOfPercentDiscount
+        )
         this.quantityEditor.editText.removeTextChangedListener(listenerQty)
     }
 
@@ -122,22 +176,55 @@ open class ManageProductVariantBaseViewHolder(
     ) {
         this.periodSection.gone()
         this.tickerPriceError.gone()
-        this.textFieldPriceDiscountNominal.editText.setText(discount?.price.orZero().getNumberFormatted())
-        this.textFieldPriceDiscountPercentage.editText.setText(discount?.discount.orZero().toString())
-        this.quantityEditor.minValue = criteria.minCustomStock
-        this.quantityEditor.maxValue = criteria.maxCustomStock
+        this.textFieldPriceDiscountNominal.editText.setText(
+            discount?.price.orZero().getNumberFormatted()
+        )
+        this.textFieldPriceDiscountPercentage.editText.setText(
+            discount?.discount.orZero().toString()
+        )
         this.quantityEditor.editText.setText(discount?.stock?.orZero().toString())
-        this.textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
+        this.textQuantityEditorTitle.text =
+            root.context.getString(R.string.manageproductnonvar_stock_title)
         val validationResult =
             discount?.let { listener?.validationItem(criteria, it) }
         val isPriceError = validationResult?.isPriceError == true
         val isPricePercentError = validationResult?.isPricePercentError == true
         this.textFieldPriceDiscountNominal.isInputError = isPriceError
         this.textFieldPriceDiscountPercentage.isInputError = isPricePercentError
-        this.textQuantityEditorSubTitle.setTextColor(setColorText(root.context, validationResult?.isStockError == true))
+        this.textQuantityEditorSubTitle.setTextColor(
+            setColorText(
+                root.context,
+                validationResult?.isStockError == true
+            )
+        )
         this.tickerPriceError.setTypeOfTicker(isPriceError || isPricePercentError)
 
         setupInitialFieldMessage(criteria)
+    }
+
+    protected fun LayoutCampaignManageProductDetailParentBinding.setIsVariantOnCriteria(
+        selectedWarehouse: ReservedProduct.Product.Warehouse,
+    ) {
+
+        val isVariantIneligible = selectedWarehouse.isDisabled
+
+        if (isVariantIneligible) {
+            this.textParentErrorMessage.visible()
+            this.textParentErrorMessage.text =
+                root.context.getString(R.string.stfs_warning_location_not_in_criteria)
+            this.tvCheckDetail.visible()
+            this.tvCheckDetail.setOnClickListener {
+                listener?.showDetailCriteria(
+                    selectedWarehouse
+                )
+            }
+            selectedWarehouse.isToggleOn = false
+            this.switcherToggleParent.isEnabled = false
+        }
+
+        switcherToggleParent.isChecked =
+            if (isVariantIneligible) false else selectedWarehouse.isToggleOn
+
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setTicker(context: Context) {
@@ -151,10 +238,11 @@ open class ManageProductVariantBaseViewHolder(
         )
     }
 
-    private fun setColorText(context : Context, isError : Boolean) : Int{
+    private fun setColorText(context: Context, isError: Boolean): Int {
         val errorColorRes = com.tokopedia.unifyprinciples.R.color.Unify_RN500
         val normalColorRes = com.tokopedia.unifyprinciples.R.color.Unify_NN600
-        return MethodChecker.getColor(context,
+        return MethodChecker.getColor(
+            context,
             if (isError) {
                 errorColorRes
             } else {
@@ -163,12 +251,12 @@ open class ManageProductVariantBaseViewHolder(
         )
     }
 
-    private fun Ticker.setTypeOfTicker(isFieldError : Boolean){
-        this.tickerType = if(isFieldError) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
+    private fun Ticker.setTypeOfTicker(isFieldError: Boolean) {
+        this.tickerType = if (isFieldError) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
 
     }
 
-    private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
+    private fun setNumberTextChangeListener(editText: TextFieldUnify2): TextWatcher {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
         numberFormatter.applyPattern(NUMBER_PATTERN)
         return NumberThousandSeparatorTextWatcher(
@@ -180,4 +268,44 @@ open class ManageProductVariantBaseViewHolder(
             )
         }
     }
+
+    private fun initialListerForTracker() {
+        listenerTrackerOfNominalDiscount = EditTextWatcher {
+            listener?.trackOnClickPrice(it)
+        }
+
+        listenerTrackerOfPercentDiscount = EditTextWatcher {
+            listener?.trackOnClickPercent(it)
+        }
+    }
+
+    private fun LayoutCampaignManageProductDetailInformationBinding.setupListenerForTracker() {
+        addTrackerListenerNominal()
+        addTrackerListenerPercent()
+    }
+
+    private fun LayoutCampaignManageProductDetailInformationBinding.addTrackerListenerNominal() {
+        this.textFieldPriceDiscountNominal.editText.addTextChangedListener(
+            listenerTrackerOfNominalDiscount
+        )
+    }
+
+    private fun LayoutCampaignManageProductDetailInformationBinding.addTrackerListenerPercent() {
+        this.textFieldPriceDiscountPercentage.editText.addTextChangedListener(
+            listenerTrackerOfPercentDiscount
+        )
+    }
+
+    private fun LayoutCampaignManageProductDetailInformationBinding.removeTrackerListenerNominal() {
+        this.textFieldPriceDiscountNominal.editText.removeTextChangedListener(
+            listenerTrackerOfNominalDiscount
+        )
+    }
+
+    private fun LayoutCampaignManageProductDetailInformationBinding.removeTrackerListenerPercent() {
+        this.textFieldPriceDiscountPercentage.editText.removeTextChangedListener(
+            listenerTrackerOfPercentDiscount
+        )
+    }
+
 }

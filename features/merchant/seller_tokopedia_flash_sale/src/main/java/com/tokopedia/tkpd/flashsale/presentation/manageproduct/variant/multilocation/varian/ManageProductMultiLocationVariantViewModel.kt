@@ -1,26 +1,35 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class ManageProductMultiLocationVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
-    private val errorMessageHelper: ErrorMessageHelper
+    private val errorMessageHelper: ErrorMessageHelper,
+    private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
         const val MINIMUM_TO_SET_BULK = 2
         const val DEFAULT_SIZE_TO_BULK = 0
+        const val DEBOUNCE_DELAY_MILLIS = 1000L
     }
 
     private var _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()
@@ -30,8 +39,12 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     private val _productVariant: MutableLiveData<ReservedProduct.Product.ChildProduct> =
         MutableLiveData()
 
-    private var _variantPositionOnProduct : Int = 0
+    private val _error = MutableLiveData<Throwable>()
+    val error: LiveData<Throwable>
+        get() = _error
 
+    private var _variantPositionOnProduct: Int = 0
+    private var criteria : CriteriaCheckingResult? = null
 
     val enableBulkApply = Transformations.map(_productVariant) {
         var sizeOfToggleOn = DEFAULT_SIZE_TO_BULK
@@ -43,17 +56,32 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         errorMessageHelper.getBulkApplyCaption(it.warehouses)
     }
 
-    val isInputPageValid = Transformations.map(_product) {
+    val isInputPageNotValid = Transformations.map(_product) {
         val criteria = it.productCriteria
         val listOfSelectedProductVariant = it.childProducts[_variantPositionOnProduct].warehouses
             .filter { warehouse -> warehouse.isToggleOn }
 
-        return@map listOfSelectedProductVariant.any { warehouse ->
-            return@map !validateInput(
+        val statusValidation = listOfSelectedProductVariant.any { warehouse ->
+            return@any !validateInput(
                 criteria,
                 warehouse.discountSetup
             ).isAllFieldValid()
         }
+
+        return@map statusValidation
+    }
+
+
+    //for tracking purpose
+    private val _nominalDiscountInputTracker = MutableLiveData<String>()
+    val doTrackingNominal = MutableLiveData<String>()
+
+    private val _percentDiscountInputTracker = MutableLiveData<String>()
+    val doTrackingPercent = MutableLiveData<String>()
+
+    init{
+        initNominalFlow()
+        initPercentageFlow()
     }
 
     fun validateInput(
@@ -136,10 +164,11 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
         return DiscountUtil.calculatePercent(priceInput, originalPrice).toString()
     }
 
-    fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int) {
+    fun setProduct(product: ReservedProduct.Product, positionOfVariant: Int, flashSaleId: String) {
         _product.value = product
         _variantPositionOnProduct = positionOfVariant
         _productVariant.value = product.childProducts[positionOfVariant]
+        checkCriteria(product, flashSaleId.toLong())
     }
 
     fun valueAdjustmentOfServedByTokopediaWarehouseToRegister(
@@ -173,16 +202,105 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
             null
     }
 
-    fun setToggleOnOrOf(product : ReservedProduct.Product?, positionOfVariant : Int) : ReservedProduct.Product? {
-        return if(product != null) {
+    fun setToggleOnOrOf(
+        product: ReservedProduct.Product?,
+        positionOfVariant: Int
+    ): ReservedProduct.Product? {
+        return if (product != null) {
             val variant = product.childProducts[positionOfVariant]
             val isToggleOn = findToggleOnInWarehouse(variant).size.isMoreThanZero()
             variant.isToggleOn = isToggleOn
-             product
+            product
         } else null
     }
 
-    fun findToggleOnInWarehouse(variant : ReservedProduct.Product.ChildProduct) : List<ReservedProduct.Product.Warehouse>{
+    fun findToggleOnInWarehouse(variant: ReservedProduct.Product.ChildProduct): List<ReservedProduct.Product.Warehouse> {
         return variant.warehouses.filter { it.isToggleOn }
     }
+
+    fun isValidCriteriaOnStock(
+        stock: Long,
+        minStockCriteria: Long
+    ): Boolean {
+        return minStockCriteria <= stock
+    }
+
+    fun isValidCriteriaOnPrice(
+        price: Long,
+        minPriceCriteria: Long,
+        maxPriceCriteria: Long
+    ): Boolean {
+        return price in minPriceCriteria until maxPriceCriteria
+    }
+
+    fun isEligibleItem(
+        warehouses: ReservedProduct.Product.Warehouse,
+        criteria: ReservedProduct.Product.ProductCriteria,
+    ): Boolean {
+        val isValidCriteriaOnStock = isValidCriteriaOnStock(
+            warehouses.stock,
+            criteria.minCustomStock.toLong()
+        )
+
+        val isValidCriteriaOnPrice = isValidCriteriaOnPrice(
+            warehouses.price,
+            criteria.minFinalPrice,
+            criteria.maxFinalPrice
+        )
+
+        return isValidCriteriaOnStock && isValidCriteriaOnPrice
+    }
+
+    private fun checkCriteria(product: ReservedProduct.Product, flashSaleId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getFlashSaleProductCriteriaCheckingUseCase.execute(
+                    productId = product.productId,
+                    campaignId = flashSaleId,
+                    productCriteriaId = product.productCriteria.criteriaId,
+                )
+                criteria =
+                    result.firstOrNull { it.name == product.childProducts[_variantPositionOnProduct].name }
+            },
+            onError = { error ->
+                _error.postValue(error)
+            }
+        )
+    }
+
+    fun doNominalDiscountTrackerInput(nominalInput: String) {
+        _nominalDiscountInputTracker.value = nominalInput
+    }
+
+    private fun initNominalFlow() {
+        viewModelScope.launch {
+            _nominalDiscountInputTracker.asFlow()
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .flowOn(dispatchers.io)
+                .collect {
+                    doTrackingNominal.value = it
+                }
+        }
+    }
+
+    fun doPercentageDiscountTrackerInput(percentInput: String) {
+        _percentDiscountInputTracker.value = percentInput
+    }
+
+    private fun initPercentageFlow() {
+        viewModelScope.launch {
+            _percentDiscountInputTracker.asFlow()
+                .debounce(DEBOUNCE_DELAY_MILLIS)
+                .flowOn(dispatchers.io)
+                .collect {
+                    doTrackingPercent.postValue(it)
+                }
+        }
+    }
+
+    fun getCriteriaOn(selectedWarehouse: ReservedProduct.Product.Warehouse): CriteriaCheckingResult.LocationCheckingResult? {
+        return criteria?.locationResult.orEmpty().firstOrNull { selectedWarehouse.name == it.cityName }
+    }
+
 }

@@ -13,7 +13,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.LocationCriteriaCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
@@ -21,10 +23,15 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyM
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantMultiLocationAdapter
+import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleVariantMultiLocationPageTracker
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
+@FlowPreview
 class ManageProductMultiLocationVariantFragment :
     BaseCampaignManageProductDetailFragment<ManageProductVariantMultiLocationAdapter>(),
     ManageProductVariantAdapterListener {
@@ -32,15 +39,19 @@ class ManageProductMultiLocationVariantFragment :
     companion object {
         fun newInstance(
             product: ReservedProduct.Product?,
-            variantPositionOnProduct: Int
+            variantPositionOnProduct: Int,
+            flashSaleId : String
         ): ManageProductMultiLocationVariantFragment {
             val fragment = ManageProductMultiLocationVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
             bundle.putInt(BundleConstant.VARIANT_POSITION, variantPositionOnProduct)
+            bundle.putString(BundleConstant.BUNDLE_FLASH_SALE_ID, flashSaleId)
             fragment.arguments = bundle
             return fragment
         }
+
+        const val TRACKER_LOCATION_TYPE = "multilocation"
     }
 
     //argument
@@ -50,15 +61,21 @@ class ManageProductMultiLocationVariantFragment :
 
     private val variantPositionOnProduct by lazy {
         arguments?.getInt(BundleConstant.VARIANT_POSITION).toZeroIfNull()
-
     }
+
+    private val flashSaleId by lazy {
+        arguments?.getString(BundleConstant.BUNDLE_FLASH_SALE_ID).orEmpty()
+    }
+
+    @Inject
+    lateinit var tracker: FlashSaleVariantMultiLocationPageTracker
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductMultiLocationVariantViewModel::class.java) }
 
-    var inputAdapter = ManageProductVariantMultiLocationAdapter()
+    private var inputAdapter = ManageProductVariantMultiLocationAdapter()
 
     override fun getScreenName(): String =
         ManageProductMultiLocationVariantFragment::class.java.canonicalName.orEmpty()
@@ -79,9 +96,23 @@ class ManageProductMultiLocationVariantFragment :
     }
 
     private fun setupProductInput() {
-        product?.let {
-            viewModel.setProduct(it, variantPositionOnProduct)
+        product?.let { product ->
+            val productValidation = validationOnEligibilityWarehouse(product)
+            viewModel.setProduct(productValidation, variantPositionOnProduct, flashSaleId)
         }
+    }
+
+    private fun validationOnEligibilityWarehouse(product: ReservedProduct.Product): ReservedProduct.Product {
+        val criteria = product.productCriteria
+        product.childProducts[variantPositionOnProduct].warehouses.forEach { warehouse ->
+            warehouse.isToggleOn = if (viewModel.isEligibleItem(
+                    warehouse,
+                    criteria
+                )
+            ) warehouse.isToggleOn else false
+        }
+
+        return product
     }
 
     private fun setupPage() {
@@ -122,6 +153,7 @@ class ManageProductMultiLocationVariantFragment :
 
     override fun onSubmitButtonClicked() {
         activity?.let {
+            tracker.sendEditCampaignSimpanDiscountEvent(createTrackerLabel())
             (it as ManageProductMultiLocationVariantActivity).sendResultToRequester()
         }
     }
@@ -139,7 +171,7 @@ class ManageProductMultiLocationVariantFragment :
     }
 
     private fun setupObservers() {
-        viewModel.isInputPageValid.observe(viewLifecycleOwner) {
+        viewModel.isInputPageNotValid.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = !it
         }
         viewModel.enableBulkApply.observe(viewLifecycleOwner) {
@@ -147,6 +179,14 @@ class ManageProductMultiLocationVariantFragment :
         }
         viewModel.bulkApplyCaption.observe(viewLifecycleOwner) {
             setWidgetBulkApplyText(it)
+        }
+
+        viewModel.doTrackingNominal.observe(viewLifecycleOwner) {
+            doTrackOnClickPrice()
+        }
+
+        viewModel.doTrackingPercent.observe(viewLifecycleOwner) {
+            doTrackOnClickPercent()
         }
     }
 
@@ -163,9 +203,10 @@ class ManageProductMultiLocationVariantFragment :
             viewModel.setProduct(
                 product = it,
                 positionOfVariant = variantPositionOnProduct,
+                flashSaleId
             )
 
-            if(variant.warehouses[index].isDilayaniTokopedia) {
+            if (variant.warehouses[index].isDilayaniTokopedia) {
                 val listServedByTokopedia =
                     viewModel.findPositionOfProductServedByTokopediaToRegister(warehouses)
                 listServedByTokopedia?.forEach { warehouse ->
@@ -198,11 +239,42 @@ class ManageProductMultiLocationVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
+    override fun showDetailCriteria(selectedWarehouse: ReservedProduct.Product.Warehouse) {
+        tracker.sendDetailPartialIneligibleDiscountEvent(createTrackerLabel())
+        showLocationDetailCriteria(viewModel.getCriteriaOn(selectedWarehouse)?:return)
+    }
+
+    override fun trackOnClickPrice(nominalInput: String) {
+        viewModel.doNominalDiscountTrackerInput(nominalInput)
+    }
+
+    override fun trackOnClickPercent(nominalInput : String) {
+        viewModel.doPercentageDiscountTrackerInput(nominalInput)
+    }
+
+    private fun doTrackOnClickPrice() {
+        tracker.sendFillinCampaignPriceEvent(createTrackerLabel())
+    }
+
+    private fun doTrackOnClickPercent() {
+        tracker.sendFillinCampaignDiscountEvent(createTrackerLabel())
+    }
+
+    override fun trackOnToggle() {
+        tracker.sendAdjustToggleLokasiEvent(createTrackerLabel())
+    }
+
+    private fun showLocationDetailCriteria(criteria: CriteriaCheckingResult.LocationCheckingResult) {
+        val bottomSheetLocation = LocationCriteriaCheckBottomSheet()
+        bottomSheetLocation.show(listOf(criteria), childFragmentManager, "")
+    }
+
     override fun onWidgetBulkApplyClicked() {
         val product = viewModel.product.value
         val param = BulkApplyMapper.mapProductToBulkParam(context ?: return, product ?: return)
         val bSheet = ProductBulkApplyBottomSheet.newInstance(param)
         bSheet.setOnApplyClickListener {
+            tracker.sendClickAturSekaligusEvent(createTrackerLabel())
             val appliedProduct = BulkApplyMapper.mapBulkResultToProduct(product, it)
             inputAdapter = ManageProductVariantMultiLocationAdapter().apply {
                 setDataList(appliedProduct.childProducts[variantPositionOnProduct])
@@ -210,9 +282,13 @@ class ManageProductMultiLocationVariantFragment :
             }
             showMessageToaster(appliedProduct)
             rvManageProductDetail?.adapter = inputAdapter
-            viewModel.setProduct(appliedProduct, variantPositionOnProduct)
+            viewModel.setProduct(appliedProduct, variantPositionOnProduct, flashSaleId)
         }
         bSheet.show(childFragmentManager, "")
+    }
+
+    private fun createTrackerLabel() : String {
+        return "$flashSaleId - ${product?.productId.orZero()} - $TRACKER_LOCATION_TYPE"
     }
 
     private fun showMessageToaster(product: ReservedProduct.Product) {
@@ -221,7 +297,11 @@ class ManageProductMultiLocationVariantFragment :
         warehouseToRegister.forEach { warehouse ->
             val isValid = viewModel.validateInput(product.productCriteria, warehouse.discountSetup)
             if (!isValid.isAllFieldValid()) {
-                ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
+                ToasterHelper.showToaster(
+                    buttonSubmit,
+                    getString(R.string.stfs_toaster_error),
+                    TYPE_ERROR
+                )
                 return
             }
         }

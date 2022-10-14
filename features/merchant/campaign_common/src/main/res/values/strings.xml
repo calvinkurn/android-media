@@ -33,4 +33,7 @@
     <string name="default_rbac_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
     <string name="default_rbac_description">Hubungi pemilik toko terlebih dulu untuk melanjutkan aktivitas, ya.</string>
     <string name="default_rbac_button_title">Baca Artikel</string>
+
+    <string name="label_cek_detail">Cek Detail</string>
+
 </resources>

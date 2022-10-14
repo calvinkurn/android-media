@@ -18,4 +18,12 @@ interface ManageProductVariantAdapterListener {
     fun calculatePrice(percentInput: Long, adapterPosition: Int): String
 
     fun calculatePercent(priceInput: Long, adapterPosition: Int): String
+
+    fun showDetailCriteria(selectedWarehouse: ReservedProduct.Product.Warehouse)
+
+    fun trackOnClickPrice(nominalInput : String)
+
+    fun trackOnClickPercent(nominalInput : String)
+
+    fun trackOnToggle()
 }

@@ -50,7 +50,8 @@ data class SubmittedProduct(
         val stock: Int,
         val discountSetup: DiscountSetup?,
         val subsidy: Subsidy,
-        val warehouseId: Long
+        val warehouseId: Long,
+        val soldCount: Int
     )
 
     data class DiscountSetup(
