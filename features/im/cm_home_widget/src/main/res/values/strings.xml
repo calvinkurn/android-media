@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cm_widget_countdown_format" formatted="false">%02d:%02d:%02d</string>
     <string name="total_pembayaran">Total Pembayaran</string>
     <string name="sisa_waktu">Sisa Waktu</string>
 </resources>

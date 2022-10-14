@@ -85,6 +85,7 @@ class CMHomeWidget @JvmOverloads constructor(
             .build().inject(this)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initRecyclerView() {
         binding.rvCmHomeWidget.apply {
             layoutManager = LinearLayoutManager(
