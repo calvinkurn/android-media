@@ -5,18 +5,28 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.RemoteInput;
 
+import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel;
+import com.tokopedia.bubbles.data.model.BubbleNotificationModel;
+import com.tokopedia.bubbles.factory.BubblesFactory;
+import com.tokopedia.bubbles.factory.BubblesFactoryImpl;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.pushnotif.ApplinkNotificationHelper;
 import com.tokopedia.pushnotif.data.constant.Constant;
+import com.tokopedia.pushnotif.data.db.model.HistoryNotification;
 import com.tokopedia.pushnotif.data.model.ApplinkNotificationModel;
+import com.tokopedia.pushnotif.data.repository.HistoryRepository;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
 import com.tokopedia.remoteconfig.RemoteConfig;
 import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.user.session.UserSession;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author ricoharisin .
@@ -33,10 +43,16 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private static String USER_ID = "user_id";
 
     private RemoteConfig remoteConfig;
+    private BubblesFactory bubblesFactory;
+
+    private List<HistoryNotification> listHistoryNotification;
 
     public ChatNotificationFactory(Context context) {
         super(context);
         remoteConfig = new FirebaseRemoteConfigImpl(context);
+        if (isEnableBubble()) {
+            bubblesFactory = new BubblesFactoryImpl(context);
+        }
     }
 
     @Override
@@ -66,6 +82,10 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 builder.setShowWhen(true);
                 builder.addAction(replyAction(applinkNotificationModel.getApplinks(), notificationId));
             }
+        }
+
+        if (isEnableBubble()) {
+            setupBubble(builder, applinkNotificationModel, notificationType, notificationId);
         }
 
         return builder.build();
@@ -111,4 +131,61 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     private Boolean isEnableReplyChatNotification() {
         return remoteConfig.getBoolean(RemoteConfigKey.ENABLE_PUSH_NOTIFICATION_CHAT_SELLER, false);
     }
+
+    private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        updateBubblesShortcuts(notificationType, notificationId, applinkNotificationModel);
+        updateBubblesBuilder(builder, applinkNotificationModel, notificationType, notificationId);
+    }
+
+    private void updateBubblesShortcuts(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
+        listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
+        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+        List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
+        bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
+    }
+
+    private void updateBubblesBuilder(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+        bubblesFactory.setupBubble(builder, bubbleNotificationModel);
+    }
+
+    private List<BubbleHistoryItemModel> getBubbleHistoryItems(List<HistoryNotification> historyNotificationList) {
+        List<BubbleHistoryItemModel> mappedResult = new ArrayList<>();
+        for(HistoryNotification item: historyNotificationList) {
+            String applink = item.getAppLink() == null ? "" : item.getAppLink();
+            String senderName = item.getSenderName() == null ? "" : item.getSenderName();
+            String avatarUrl = item.getAvatarUrl() == null ? "" : item.getAvatarUrl();
+            String shortcutId = getMessageId(item.getAppLink());
+            BubbleHistoryItemModel historyItemModel = new BubbleHistoryItemModel(
+                    shortcutId,
+                    applink,
+                    senderName,
+                    avatarUrl
+            );
+            mappedResult.add(historyItemModel);
+        }
+        return mappedResult;
+    }
+
+    private BubbleNotificationModel getBubbleNotificationModel(ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
+        String shortcutId = getMessageId(applinkNotificationModel.getApplinks());
+        return new BubbleNotificationModel(
+                notificationType,
+                notificationId,
+                shortcutId,
+                applinkNotificationModel.getApplinks(),
+                applinkNotificationModel.getFullName(),
+                applinkNotificationModel.getThumbnail(),
+                applinkNotificationModel.getSummary(),
+                applinkNotificationModel.getSentTime()
+        );
+    }
+
+    private boolean isEnableBubble() {
+        boolean isEnableBubble =
+                GlobalConfig.isSellerApp() &&
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.R;
+        return isEnableBubble;
+    }
+
 }
