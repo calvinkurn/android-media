@@ -1,5 +1,6 @@
 package com.tokopedia.buyerorderdetail.presentation.adapter.viewholder
 
+import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
@@ -26,6 +27,33 @@ class OrderInsuranceViewHolder(
             binding?.bindTitle(element.title)
             binding?.bindSubtitle(element.subtitle)
             bindListener(element.appLink)
+        }
+    }
+
+    override fun bind(element: OrderInsuranceUiModel?, payloads: MutableList<Any>) {
+        binding?.run {
+            payloads.firstOrNull()?.let {
+                if (it is Pair<*, *>) {
+                    val (oldItem, newItem) = it
+                    if (oldItem is OrderInsuranceUiModel && newItem is OrderInsuranceUiModel) {
+                        root.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
+                        if (oldItem.logoUrl != newItem.logoUrl) {
+                            bindLogo(newItem.logoUrl)
+                        }
+                        if (oldItem.title != newItem.title) {
+                            bindTitle(newItem.title)
+                        }
+                        if (oldItem.subtitle != newItem.subtitle) {
+                            bindSubtitle(newItem.subtitle)
+                        }
+                        if (oldItem.appLink != newItem.appLink) {
+                            bindListener(newItem.appLink)
+                        }
+                        root.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
+                        return
+                    }
+                }
+            }
         }
     }
 
