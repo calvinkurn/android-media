@@ -364,11 +364,9 @@ class PlayBroadcastUiMapper @Inject constructor(
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
-                maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
                 maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
-                showPrizeCoachMark = true,
             ),
         )
     }

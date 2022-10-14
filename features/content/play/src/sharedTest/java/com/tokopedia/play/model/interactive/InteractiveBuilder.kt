@@ -76,6 +76,5 @@ interface InteractiveBuilder {
         waitingDuration: Long = 200L,
         status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = "",
     ): InteractiveUiModel.Quiz
 }

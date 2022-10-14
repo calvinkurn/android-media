@@ -93,13 +93,11 @@ class InteractiveBuilderImpl : InteractiveBuilder {
         waitingDuration: Long,
         status: InteractiveUiModel.Quiz.Status,
         listOfChoices: List<QuizChoicesUiModel>,
-        reward: String,
     ) = InteractiveUiModel.Quiz(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
         status = status,
         listOfChoices = listOfChoices,
-        reward = reward,
     )
 }

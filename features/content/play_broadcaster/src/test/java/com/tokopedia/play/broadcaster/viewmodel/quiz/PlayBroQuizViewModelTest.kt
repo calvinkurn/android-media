@@ -49,11 +49,7 @@ class PlayBroQuizViewModelTest {
         channelId = "123"
     )
 
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
-            showPrizeCoachMark = false,
-        )
-    )
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
     private val mockException = uiModelBuilder.buildException()
 
@@ -88,7 +84,6 @@ class PlayBroQuizViewModelTest {
                 any(),
                 any(),
                 any(),
-                any()
             )
         }
         coEvery { mockRepo.getCurrentInteractive(any()) } returns mockQuizUiModel
@@ -348,25 +343,6 @@ class PlayBroQuizViewModelTest {
                 getViewModel().submitAction(PlayBroadcastAction.ClickGameOption(GameType.Giveaway))
             }
             Assertions.assertThat(state.interactiveSetup.type).isEqualTo(GameType.Giveaway)
-        }
-    }
-
-    @Test
-    fun `when user fill input gift state form must changed`(){
-        val reward = "hadiah"
-
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-        )
-
-        robot.use {
-            val state = it.recordState {
-                getConfig()
-                getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
-            }
-            Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
         }
     }
 
