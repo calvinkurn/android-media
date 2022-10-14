@@ -126,5 +126,10 @@
     <string name="label_device_id">Device ID: %1$s</string>
 
     <string name="enable_developer_options_on_notification">Enable Developer Options on Notification</string>
+    <string name="label_patch_name">Patch Name:</string>
+    <string name="label_patch_id">Patch ID:</string>
+    <string name="label_function_id">Function ID:</string>
+    <string name="label_function_name">Function Name:</string>
+    <string name="label_counter">Counter:</string>
 
 </resources>

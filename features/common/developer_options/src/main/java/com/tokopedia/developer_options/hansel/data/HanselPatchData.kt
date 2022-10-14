@@ -20,7 +20,13 @@ data class HanselPatchData(
     }
 
     fun toHanselUiModel(counter: Int): HanselUiModel {
-        return HanselUiModel(patchId ?: 0, funcDef?.functionId ?: 0, funcDef?.unpFunctionName?: "", counter)
+        return HanselUiModel(
+            patchId ?: 0,
+            funcDef?.functionId ?: 0,
+            funcDef?.unpFunctionName?: "",
+            patchName ?: "",
+            counter
+        )
     }
 }
 

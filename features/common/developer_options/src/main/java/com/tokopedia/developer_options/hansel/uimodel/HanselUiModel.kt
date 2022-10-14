@@ -4,7 +4,9 @@ data class HanselUiModel (
     val patchId: Long = 0,
     val functionId: Long = 0,
     val functionName: String = "",
-    val counter: Int = 0) {
+    val patchName: String = "",
+    val counter: Int = 0
+) {
     override fun equals(other: Any?): Boolean {
         return patchId == (other as HanselUiModel?)?.patchId
     }

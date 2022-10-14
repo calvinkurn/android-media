@@ -26,6 +26,7 @@ class HanselAdapter(private val data: List<HanselUiModel>) : RecyclerView.Adapte
         holder.counter.text = hansel.counter.toString()
         holder.functionId.text = hansel.functionId.toString()
         holder.patchId.text = hansel.patchId.toString()
+        holder.patchName.text = hansel.patchName
     }
 
     override fun getItemCount(): Int {
@@ -37,6 +38,7 @@ class HanselAdapter(private val data: List<HanselUiModel>) : RecyclerView.Adapte
         val counter = view.findViewById<Typography>(com.tokopedia.developer_options.R.id.tv_counter)
         val functionId = view.findViewById<Typography>(com.tokopedia.developer_options.R.id.tv_function_id)
         val patchId = view.findViewById<Typography>(com.tokopedia.developer_options.R.id.tv_patch_id)
+        val patchName = view.findViewById<Typography>(com.tokopedia.developer_options.R.id.tv_patch_name)
     }
 
     override fun getFilter(): Filter {
