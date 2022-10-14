@@ -18,7 +18,8 @@ import com.tokopedia.sellerhomecommon.utils.clearUnifyDrawableEnd
 import com.tokopedia.sellerhomecommon.utils.setUnifyDrawableEnd
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import timber.log.Timber
-import java.util.*
+import java.util.Date
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 
 /**
