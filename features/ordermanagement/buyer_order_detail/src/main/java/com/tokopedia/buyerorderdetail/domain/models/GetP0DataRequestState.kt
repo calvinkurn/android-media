@@ -1,24 +1,19 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-sealed class GetP0DataRequestState {
-
-    interface CompleteState
+sealed interface GetP0DataRequestState {
+    val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState
 
     data class Requesting(
-        val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState = GetBuyerOrderDetailRequestState.Requesting
-    ) : GetP0DataRequestState()
+        override val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState = GetBuyerOrderDetailRequestState.Requesting
+    ) : GetP0DataRequestState
 
-    data class Success(
-        val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
-    ) : GetP0DataRequestState(), CompleteState
-
-    data class Error(
-        val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState,
-    ) : GetP0DataRequestState(), CompleteState {
-        fun getThrowable(): Throwable {
-            return if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Error) {
+    data class Complete(
+        override val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState
+    ) : GetP0DataRequestState {
+        fun getThrowable(): Throwable? {
+            return if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Error) {
                 getBuyerOrderDetailRequestState.throwable
-            } else Throwable()
+            } else null
         }
     }
 }

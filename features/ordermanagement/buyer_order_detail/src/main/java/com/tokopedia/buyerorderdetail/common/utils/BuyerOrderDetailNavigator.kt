@@ -108,7 +108,7 @@ class BuyerOrderDetailNavigator(
         button: ActionButtonsUiModel.ActionButton,
         cacheManager: SaveInstanceCacheManager
     ) {
-        if (uiState is BuyerOrderDetailUiState.Showing) {
+        if (uiState is BuyerOrderDetailUiState.HasData) {
             val orderStatusUiModel = uiState.orderStatusUiState.data
             val productListUiModel = uiState.productListUiState.data
             val intent = RouteManager.getIntent(activity, ApplinkConstInternalOrder.INTERNAL_ORDER_BUYER_CANCELLATION_REQUEST_PAGE)

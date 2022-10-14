@@ -4,7 +4,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.TickerUiModel
@@ -13,84 +12,50 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 object OrderStatusUiStateMapper {
 
     fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        currentState: OrderStatusUiState
     ): OrderStatusUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailDataStarted(
-        buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
-    ): OrderStatusUiState {
-        val p1DataRequestState = buyerOrderDetailDataRequestState.getP1DataRequestState
-        return when (val p0DataRequestState = buyerOrderDetailDataRequestState.getP0DataRequestState) {
-            is GetP0DataRequestState.Requesting -> {
-                mapOnP0Requesting(p0DataRequestState, p1DataRequestState)
-            }
-            is GetP0DataRequestState.Success -> {
-                mapOnP0Success(p0DataRequestState, p1DataRequestState)
-            }
-            is GetP0DataRequestState.Error -> {
-                mapOnP0Error(p0DataRequestState)
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailIdling(): OrderStatusUiState {
-        return mapOnLoading()
-    }
-
-    private fun mapOnP0Requesting(
-        p0DataRequestState: GetP0DataRequestState.Requesting,
-        p1DataRequestState: GetP1DataRequestState
-    ): OrderStatusUiState {
-        return when (
-            val getBuyerOrderDetailRequestState = p0DataRequestState.getBuyerOrderDetailRequestState
-        ) {
+        val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
+        val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
+            .getP0DataRequestState
+            .getBuyerOrderDetailRequestState
+        return when (getBuyerOrderDetailRequestState) {
             is GetBuyerOrderDetailRequestState.Requesting -> {
-                mapOnLoading()
+                mapOnGetBuyerOrderDetailRequesting(currentState)
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
-                mapOnGetBuyerOrderDetailIsSuccess(
+            is GetBuyerOrderDetailRequestState.Complete.Error -> {
+                mapOnGetBuyerOrderDetailError(
                     getBuyerOrderDetailRequestState,
-                    p1DataRequestState
+                    p1DataRequestState,
+                    currentState
                 )
             }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnError(getBuyerOrderDetailRequestState.throwable)
+            is GetBuyerOrderDetailRequestState.Complete.Success -> {
+                mapOnGetBuyerOrderDetailSuccess(
+                    getBuyerOrderDetailRequestState, p1DataRequestState, currentState
+                )
             }
         }
     }
 
-    private fun mapOnP0Success(
-        p0DataRequestState: GetP0DataRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState
+    private fun mapOnGetBuyerOrderDetailRequesting(
+        currentState: OrderStatusUiState
     ): OrderStatusUiState {
-        return mapOnGetBuyerOrderDetailIsSuccess(
-            p0DataRequestState.getBuyerOrderDetailRequestState,
-            p1DataRequestState
-        )
+        return if (currentState is OrderStatusUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
     }
 
-    private fun mapOnP0Error(
-        p0DataRequestState: GetP0DataRequestState.Error
-    ): OrderStatusUiState {
-        return mapOnError(p0DataRequestState.getThrowable())
-    }
-
-    private fun mapOnGetBuyerOrderDetailIsSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState
+    private fun mapOnGetBuyerOrderDetailSuccess(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: OrderStatusUiState
     ): OrderStatusUiState {
         return when (p1DataRequestState) {
             is GetP1DataRequestState.Requesting -> {
-                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState)
+                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState, currentState)
             }
             is GetP1DataRequestState.Complete -> {
                 mapOnP1Complete(buyerOrderDetailRequestState)
@@ -98,34 +63,125 @@ object OrderStatusUiStateMapper {
         }
     }
 
+    private fun mapOnGetBuyerOrderDetailError(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: OrderStatusUiState
+    ): OrderStatusUiState {
+        return when (p1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnError(buyerOrderDetailRequestState.throwable)
+            }
+        }
+    }
+
     private fun mapOnP1Requesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState.Requesting
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: OrderStatusUiState
     ): OrderStatusUiState {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
-                mapOnLoading()
+                mapOnOrderResolutionRequesting(currentState, buyerOrderDetailRequestState)
             }
-            else -> {
-                mapOnDataReady(buyerOrderDetailRequestState.result)
+            is GetOrderResolutionRequestState.Complete -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
+            }
+        }
+    }
+
+    private fun mapOnP1Requesting(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: OrderStatusUiState
+    ): OrderStatusUiState {
+        return when (p1DataRequestState.getOrderResolutionRequestState) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnOrderResolutionRequesting(currentState)
+            }
+            is GetOrderResolutionRequestState.Complete -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
             }
         }
     }
 
     private fun mapOnP1Complete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): OrderStatusUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: OrderStatusUiState,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
+    ): OrderStatusUiState {
+        return if (currentState is OrderStatusUiState.HasData) {
+            mapOnReloading(buyerOrderDetailRequestState.result)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: OrderStatusUiState
+    ): OrderStatusUiState {
+        return if (currentState is OrderStatusUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
+    ): OrderStatusUiState {
+        return mapOnDataReady(buyerOrderDetailRequestState.result)
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+    ): OrderStatusUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
     }
 
     private fun mapOnLoading(): OrderStatusUiState {
         return OrderStatusUiState.Loading
     }
 
+    private fun mapOnReloading(
+        currentState: OrderStatusUiState.HasData
+    ): OrderStatusUiState {
+        return OrderStatusUiState.HasData.Reloading(currentState.data)
+    }
+
+    private fun mapOnReloading(
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
+    ): OrderStatusUiState {
+        return OrderStatusUiState.HasData.Reloading(
+            mapOrderStatusUiModel(
+                buyerOrderDetailData.orderStatus,
+                buyerOrderDetailData.tickerInfo,
+                buyerOrderDetailData.preOrder,
+                buyerOrderDetailData.invoice,
+                buyerOrderDetailData.invoiceUrl,
+                buyerOrderDetailData.deadline,
+                buyerOrderDetailData.paymentDate,
+                buyerOrderDetailData.orderId
+            )
+        )
+    }
+
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
     ): OrderStatusUiState {
-        return OrderStatusUiState.Showing(
+        return OrderStatusUiState.HasData.Showing(
             mapOrderStatusUiModel(
                 buyerOrderDetailData.orderStatus,
                 buyerOrderDetailData.tickerInfo,
@@ -140,7 +196,7 @@ object OrderStatusUiStateMapper {
     }
 
     private fun mapOnError(
-        throwable: Throwable
+        throwable: Throwable?
     ): OrderStatusUiState {
         return OrderStatusUiState.Error(throwable)
     }
@@ -158,12 +214,7 @@ object OrderStatusUiStateMapper {
         return OrderStatusUiModel(
             orderStatusHeaderUiModel = mapOrderStatusHeaderUiModel(orderStatus, preOrder, orderId),
             orderStatusInfoUiModel = mapOrderStatusInfoUiModel(
-                invoice,
-                invoiceUrl,
-                deadline,
-                paymentDate,
-                orderStatus.id,
-                orderId
+                invoice, invoiceUrl, deadline, paymentDate, orderStatus.id, orderId
             ),
             ticker = mapTicker(tickerInfo)
         )
@@ -204,9 +255,7 @@ object OrderStatusUiStateMapper {
         preOrder: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.PreOrder
     ): OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel {
         return OrderStatusUiModel.OrderStatusHeaderUiModel.PreOrderUiModel(
-            isPreOrder = preOrder.isPreOrder,
-            label = preOrder.label,
-            value = preOrder.value
+            isPreOrder = preOrder.isPreOrder, label = preOrder.label, value = preOrder.value
         )
     }
 
@@ -214,19 +263,15 @@ object OrderStatusUiStateMapper {
         deadline: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Deadline
     ): OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel {
         return OrderStatusUiModel.OrderStatusInfoUiModel.DeadlineUiModel(
-            color = deadline.color,
-            label = deadline.label,
-            value = deadline.value
+            color = deadline.color, label = deadline.label, value = deadline.value
         )
     }
 
     private fun mapInvoiceUiModel(
-        invoice: String,
-        invoiceUrl: String
+        invoice: String, invoiceUrl: String
     ): OrderStatusUiModel.OrderStatusInfoUiModel.InvoiceUiModel {
         return OrderStatusUiModel.OrderStatusInfoUiModel.InvoiceUiModel(
-            invoice = invoice,
-            url = invoiceUrl
+            invoice = invoice, url = invoiceUrl
         )
     }
 

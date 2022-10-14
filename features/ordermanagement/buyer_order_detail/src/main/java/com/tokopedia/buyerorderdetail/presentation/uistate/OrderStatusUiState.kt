@@ -2,14 +2,22 @@ package com.tokopedia.buyerorderdetail.presentation.uistate
 
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 
-sealed class OrderStatusUiState {
-    object Loading : OrderStatusUiState()
+sealed interface OrderStatusUiState {
+    object Loading : OrderStatusUiState
 
-    data class Showing(
+    sealed interface HasData : OrderStatusUiState {
         val data: OrderStatusUiModel
-    ) : OrderStatusUiState()
+
+        data class Reloading(
+            override val data: OrderStatusUiModel
+        ) : HasData
+
+        data class Showing(
+            override val data: OrderStatusUiModel
+        ) : HasData
+    }
 
     data class Error(
-        val throwable: Throwable
-    ) : OrderStatusUiState()
+        val throwable: Throwable?
+    ) : OrderStatusUiState
 }

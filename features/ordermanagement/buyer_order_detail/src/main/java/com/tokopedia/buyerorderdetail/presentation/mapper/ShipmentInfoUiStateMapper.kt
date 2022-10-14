@@ -7,7 +7,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
@@ -19,93 +18,56 @@ object ShipmentInfoUiStateMapper {
 
     fun map(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        currentState: ShipmentInfoUiState,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(
-                    getBuyerOrderDetailDataRequestState,
-                    resourceProvider
-                )
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailDataStarted(
-        buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started,
-        resourceProvider: ResourceProvider
-    ): ShipmentInfoUiState {
-        val p1DataRequestState = buyerOrderDetailDataRequestState.getP1DataRequestState
-        return when (val p0DataRequestState = buyerOrderDetailDataRequestState.getP0DataRequestState) {
-            is GetP0DataRequestState.Requesting -> {
-                mapOnP0Requesting(p0DataRequestState, p1DataRequestState, resourceProvider)
-            }
-            is GetP0DataRequestState.Success -> {
-                mapOnP0Success(p0DataRequestState, p1DataRequestState, resourceProvider)
-            }
-            is GetP0DataRequestState.Error -> {
-                mapOnP0Error(p0DataRequestState)
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailIdling(): ShipmentInfoUiState {
-        return mapOnLoading()
-    }
-
-    private fun mapOnP0Requesting(
-        p0DataRequestState: GetP0DataRequestState.Requesting,
-        p1DataRequestState: GetP1DataRequestState,
-        resourceProvider: ResourceProvider
-    ): ShipmentInfoUiState {
-        return when (
-            val getBuyerOrderDetailRequestState = p0DataRequestState.getBuyerOrderDetailRequestState
-        ) {
+        val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
+        val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
+            .getP0DataRequestState
+            .getBuyerOrderDetailRequestState
+        return when (getBuyerOrderDetailRequestState) {
             is GetBuyerOrderDetailRequestState.Requesting -> {
-                mapOnLoading()
+                mapOnGetBuyerOrderDetailRequesting(currentState)
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
-                mapOnGetBuyerOrderDetailIsSuccess(
+            is GetBuyerOrderDetailRequestState.Complete.Error -> {
+                mapOnGetBuyerOrderDetailError(
                     getBuyerOrderDetailRequestState,
                     p1DataRequestState,
-                    resourceProvider
+                    currentState
                 )
             }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnError(getBuyerOrderDetailRequestState.throwable)
+            is GetBuyerOrderDetailRequestState.Complete.Success -> {
+                mapOnGetBuyerOrderDetailSuccess(
+                    getBuyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState,
+                    resourceProvider
+                )
             }
         }
     }
 
-    private fun mapOnP0Success(
-        p0DataRequestState: GetP0DataRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState,
-        resourceProvider: ResourceProvider
+    private fun mapOnGetBuyerOrderDetailRequesting(
+        currentState: ShipmentInfoUiState
     ): ShipmentInfoUiState {
-        return mapOnGetBuyerOrderDetailIsSuccess(
-            p0DataRequestState.getBuyerOrderDetailRequestState,
-            p1DataRequestState,
-            resourceProvider
-        )
+        return if (currentState is ShipmentInfoUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
     }
 
-    private fun mapOnP0Error(
-        p0DataRequestState: GetP0DataRequestState.Error
-    ): ShipmentInfoUiState {
-        return mapOnError(p0DataRequestState.getThrowable())
-    }
-
-    private fun mapOnGetBuyerOrderDetailIsSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+    private fun mapOnGetBuyerOrderDetailSuccess(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState,
+        currentState: ShipmentInfoUiState,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {
         return when (p1DataRequestState) {
             is GetP1DataRequestState.Requesting -> {
-                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState, resourceProvider)
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState, p1DataRequestState, currentState, resourceProvider
+                )
             }
             is GetP1DataRequestState.Complete -> {
                 mapOnP1Complete(buyerOrderDetailRequestState, resourceProvider)
@@ -113,37 +75,136 @@ object ShipmentInfoUiStateMapper {
         }
     }
 
+    private fun mapOnGetBuyerOrderDetailError(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: ShipmentInfoUiState,
+    ): ShipmentInfoUiState {
+        return when (p1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnError(buyerOrderDetailRequestState.throwable)
+            }
+        }
+    }
+
     private fun mapOnP1Requesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: ShipmentInfoUiState,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
-                mapOnLoading()
+                mapOnOrderResolutionRequesting(
+                    currentState,
+                    buyerOrderDetailRequestState,
+                    resourceProvider
+                )
             }
             else -> {
-                mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState, resourceProvider)
+            }
+        }
+    }
+
+    private fun mapOnP1Requesting(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: ShipmentInfoUiState
+    ): ShipmentInfoUiState {
+        return when (p1DataRequestState.getOrderResolutionRequestState) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnOrderResolutionRequesting(
+                    currentState
+                )
+            }
+            else -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
             }
         }
     }
 
     private fun mapOnP1Complete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: ShipmentInfoUiState,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        resourceProvider: ResourceProvider
+    ): ShipmentInfoUiState {
+        return if (currentState is ShipmentInfoUiState.HasData) {
+            mapOnReloading(buyerOrderDetailRequestState.result, resourceProvider)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: ShipmentInfoUiState
+    ): ShipmentInfoUiState {
+        return if (currentState is ShipmentInfoUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        resourceProvider: ResourceProvider
+    ): ShipmentInfoUiState {
+        return mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+    ): ShipmentInfoUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
     }
 
     private fun mapOnLoading(): ShipmentInfoUiState {
         return ShipmentInfoUiState.Loading
     }
 
+    private fun mapOnReloading(
+        currentState: ShipmentInfoUiState.HasData
+    ): ShipmentInfoUiState {
+        return ShipmentInfoUiState.HasData.Reloading(currentState.data)
+    }
+
+    private fun mapOnReloading(
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
+        resourceProvider: ResourceProvider
+    ): ShipmentInfoUiState {
+        return ShipmentInfoUiState.HasData.Reloading(
+            mapShipmentInfoUiModel(
+                buyerOrderDetailData.shipment,
+                buyerOrderDetailData.meta,
+                buyerOrderDetailData.orderId,
+                buyerOrderDetailData.orderStatus.id,
+                buyerOrderDetailData.dropship,
+                buyerOrderDetailData.getDriverTippingInfo(),
+                resourceProvider
+            )
+        )
+    }
+
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         resourceProvider: ResourceProvider
     ): ShipmentInfoUiState {
-        return ShipmentInfoUiState.Showing(
+        return ShipmentInfoUiState.HasData.Showing(
             mapShipmentInfoUiModel(
                 buyerOrderDetailData.shipment,
                 buyerOrderDetailData.meta,
@@ -157,7 +218,7 @@ object ShipmentInfoUiStateMapper {
     }
 
     private fun mapOnError(
-        throwable: Throwable
+        throwable: Throwable?
     ): ShipmentInfoUiState {
         return ShipmentInfoUiState.Error(throwable)
     }
@@ -173,26 +234,20 @@ object ShipmentInfoUiStateMapper {
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             awbInfoUiModel = mapAwbInfoUiModel(
-                shipment.shippingRefNum,
-                orderStatusId,
-                orderId,
-                resourceProvider
+                shipment.shippingRefNum, orderStatusId, orderId, resourceProvider
             ),
             courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(
-                driverTippingInfo,
-                resourceProvider
+                driverTippingInfo, resourceProvider
             ),
             courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship, resourceProvider),
             headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(
-                shipment.receiver,
-                resourceProvider
+                shipment.receiver, resourceProvider
             ),
             ticker = mapTicker(
-                shipment.shippingInfo,
-                BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
+                shipment.shippingInfo, BuyerOrderDetailMiscConstant.TICKER_KEY_SHIPPING_INFO
             )
         )
     }
@@ -213,7 +268,9 @@ object ShipmentInfoUiStateMapper {
         )
     }
 
-    private fun mapCourierDriverInfoUiModel(driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver): ShipmentInfoUiModel.CourierDriverInfoUiModel {
+    private fun mapCourierDriverInfoUiModel(
+        driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver
+    ): ShipmentInfoUiModel.CourierDriverInfoUiModel {
         return ShipmentInfoUiModel.CourierDriverInfoUiModel(
             name = driver.name,
             phoneNumber = driver.phone,
@@ -259,7 +316,9 @@ object ShipmentInfoUiStateMapper {
         )
     }
 
-    private fun mapPlainHeader(@StringRes headerStringResId: Int): PlainHeaderUiModel {
+    private fun mapPlainHeader(
+        @StringRes headerStringResId: Int
+    ): PlainHeaderUiModel {
         return PlainHeaderUiModel(
             header = mapStringRes(headerStringResId)
         )
@@ -308,7 +367,9 @@ object ShipmentInfoUiStateMapper {
         return resourceProvider.composeReceiverAddressValue(receiver)
     }
 
-    private fun mapStringRes(@StringRes resId: Int): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
+    private fun mapStringRes(
+        @StringRes resId: Int
+    ): com.tokopedia.buyerorderdetail.presentation.model.StringRes {
         return com.tokopedia.buyerorderdetail.presentation.model.StringRes(resId)
     }
 }

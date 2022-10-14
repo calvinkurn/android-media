@@ -53,7 +53,7 @@ class BuyerOrderDetailStickyActionButton @JvmOverloads constructor(
     private fun createPrimaryActionButtonClickListener(): OnClickListener {
         return OnClickListener {
             viewModel?.buyerOrderDetailUiState?.value?.let { uiState ->
-                if (uiState is BuyerOrderDetailUiState.Showing) {
+                if (uiState is BuyerOrderDetailUiState.HasData) {
                     startPrimaryActionButtonLoading()
                     stickyActionButtonHandler?.onActionButtonClicked(
                         true,

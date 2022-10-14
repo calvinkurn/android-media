@@ -2,14 +2,22 @@ package com.tokopedia.buyerorderdetail.presentation.uistate
 
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 
-sealed class PaymentInfoUiState {
-    object Loading : PaymentInfoUiState()
+sealed interface PaymentInfoUiState {
+    object Loading : PaymentInfoUiState
 
-    data class Showing(
+    sealed interface HasData : PaymentInfoUiState {
         val data: PaymentInfoUiModel
-    ) : PaymentInfoUiState()
+
+        data class Reloading(
+            override val data: PaymentInfoUiModel
+        ) : HasData
+
+        data class Showing(
+            override val data: PaymentInfoUiModel
+        ) : HasData
+    }
 
     data class Error(
-        val throwable: Throwable
-    ) : PaymentInfoUiState()
+        val throwable: Throwable?
+    ) : PaymentInfoUiState
 }

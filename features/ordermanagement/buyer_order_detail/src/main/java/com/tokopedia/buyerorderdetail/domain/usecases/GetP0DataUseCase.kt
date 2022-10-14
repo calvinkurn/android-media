@@ -6,7 +6,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetP0DataParams
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
@@ -23,11 +23,8 @@ class GetP0DataUseCase @Inject constructor(
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 emit(GetP0DataRequestState.Requesting(getBuyerOrderDetailRequestState))
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
-                emit(GetP0DataRequestState.Success(getBuyerOrderDetailRequestState))
-            }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                emit(GetP0DataRequestState.Error(getBuyerOrderDetailRequestState))
+            is GetBuyerOrderDetailRequestState.Complete -> {
+                emit(GetP0DataRequestState.Complete(getBuyerOrderDetailRequestState))
             }
         }
     }
@@ -36,7 +33,7 @@ class GetP0DataUseCase @Inject constructor(
         GetBuyerOrderDetailParams(
             params.cart, params.orderId, params.paymentId, params.shouldCheckCache
         )
-    ).flatMapLatest(::mapToGetP0DataRequestState).catch {
-        emit(GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(it)))
+    ).flatMapConcat(::mapToGetP0DataRequestState).catch {
+        emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)))
     }
 }

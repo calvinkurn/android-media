@@ -364,10 +364,10 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         collectLatestWhenResumed(viewModel.buyerOrderDetailUiState) { uiState ->
             suspendCoroutine { continuation ->
                 when (uiState) {
-                    is BuyerOrderDetailUiState.Showing -> onSuccessGetBuyerOrderDetail(uiState, continuation)
+                    is BuyerOrderDetailUiState.HasData.Showing -> onSuccessGetBuyerOrderDetail(uiState, continuation)
                     is BuyerOrderDetailUiState.Error -> onFailedGetBuyerOrderDetail(uiState.throwable, continuation)
                     is BuyerOrderDetailUiState.FullscreenLoading -> onFullscreenLoadingBuyerOrderDetail(continuation)
-                    is BuyerOrderDetailUiState.PullRefreshLoading -> onPullRefreshLoadingBuyerOrderDetail(continuation)
+                    is BuyerOrderDetailUiState.HasData.PullRefreshLoading -> onPullRefreshLoadingBuyerOrderDetail(uiState, continuation)
                 }
             }
         }
@@ -408,24 +408,43 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessGetBuyerOrderDetail(
-        uiState: BuyerOrderDetailUiState.Showing,
+        uiState: BuyerOrderDetailUiState.HasData.Showing,
         continuation: Continuation<Unit>
     ) {
         buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
+        updateToolbarMenu(uiState)
+        updateContent(uiState, continuation)
+        updateStickyButtons(uiState)
+        swipeRefreshBuyerOrderDetail?.isRefreshing = false
+        stopLoadTimeMonitoring()
+    }
+
+    private fun updateToolbarMenu(uiState: BuyerOrderDetailUiState.HasData) {
         val orderId = viewModel.getOrderId()
+        setupToolbarMenu(
+            !containsAskSellerButton(uiState.actionButtonsUiState.data) &&
+                orderId.isNotBlank() &&
+                orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID
+        )
+    }
+
+    private fun updateContent(
+        uiState: BuyerOrderDetailUiState.HasData,
+        continuation: Continuation<Unit>
+    ) {
+        setupRecyclerView()
+        adapter.updateItems(context, uiState)
+        contentVisibilityAnimator.animateToShowContent(containsActionButtons(uiState.actionButtonsUiState.data)) {
+            coachMarkManager?.notifyUpdatedAdapter()
+            continuation.resumeSafely(Unit)
+        }
+    }
+
+    private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
         stickyActionButton?.setupActionButtons(
             actionButtonsUiModel = uiState.actionButtonsUiState.data,
             animateChanges = containerBuyerOrderDetail?.isStickyActionButtonsShowed().orFalse()
         )
-        setupRecyclerView()
-        setupToolbarMenu(!containsAskSellerButton(uiState.actionButtonsUiState.data) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
-        adapter.updateItems(context, uiState)
-        contentVisibilityAnimator.animateToShowContent(containsActionButtons(uiState.actionButtonsUiState.data)) {
-            coachMarkManager?.notifyUpdatedAdapter()
-            continuation.resume(Unit)
-        }
-        swipeRefreshBuyerOrderDetail?.isRefreshing = false
-        stopLoadTimeMonitoring()
     }
 
     private fun setupToolbarMenu(showChatIcon: Boolean) {
@@ -486,7 +505,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedGetBuyerOrderDetail(throwable: Throwable, continuation: Continuation<Unit>) {
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable?, continuation: Continuation<Unit>) {
         buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
         val errorType = when (throwable) {
             is MessageErrorException -> null
@@ -499,7 +518,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         } else {
             globalErrorBuyerOrderDetail?.apply {
                 setType(errorType)
-                contentVisibilityAnimator.animateToErrorState { continuation.resume(Unit) }
+                contentVisibilityAnimator.animateToErrorState { continuation.resumeSafely(Unit) }
             }
         }
         toolbarMenuAnimator?.transitionToEmpty()
@@ -508,25 +527,29 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun onFullscreenLoadingBuyerOrderDetail(continuation: Continuation<Unit>) {
-        contentVisibilityAnimator.animateToLoadingState { continuation.resume(Unit) }
+        contentVisibilityAnimator.animateToLoadingState { continuation.resumeSafely(Unit) }
         toolbarMenuAnimator?.transitionToEmpty()
     }
 
-    private fun onPullRefreshLoadingBuyerOrderDetail(continuation: Continuation<Unit>) {
+    private fun onPullRefreshLoadingBuyerOrderDetail(
+        uiState: BuyerOrderDetailUiState.HasData.PullRefreshLoading,
+        continuation: Continuation<Unit>
+    ) {
         swipeRefreshBuyerOrderDetail?.isRefreshing = true
-        continuation.resume(Unit)
+        updateToolbarMenu(uiState)
+        updateContent(uiState, continuation)
+        updateStickyButtons(uiState)
     }
 
     private fun EmptyStateUnify.showMessageExceptionError(
-        throwable: Throwable,
+        throwable: Throwable?,
         continuation: Continuation<Unit>
     ) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
-            .orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         setDescription(errorMessage)
-        contentVisibilityAnimator.animateToEmptyStateError { continuation.resume(Unit) }
+        contentVisibilityAnimator.animateToEmptyStateError { continuation.resumeSafely(Unit) }
     }
 
     private fun setupToolbarMenuIcon() {
@@ -723,5 +746,9 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    private fun <T> Continuation<T>.resumeSafely(any: T) {
+        try { resume(any) } catch (_: Throwable) { }
     }
 }

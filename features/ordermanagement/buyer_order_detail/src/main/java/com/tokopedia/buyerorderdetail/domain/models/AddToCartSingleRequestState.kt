@@ -12,5 +12,5 @@ sealed class AddToCartSingleRequestState {
         val result: Pair<ProductListUiModel.ProductUiModel, Result<AtcMultiData>>
     ) : AddToCartSingleRequestState()
 
-    data class Error(val throwable: Throwable) : AddToCartSingleRequestState()
+    data class Error(val throwable: Throwable?) : AddToCartSingleRequestState()
 }

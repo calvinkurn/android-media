@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -19,9 +20,10 @@ class GetOrderResolutionUseCase @Inject constructor(
 
     override suspend fun execute(params: GetOrderResolutionParams) = flow {
         emit(GetOrderResolutionRequestState.Requesting)
-        emit(GetOrderResolutionRequestState.Success(sendRequest(params).resolutionGetTicketStatus?.data))
+        delay(5000L)
+        emit(GetOrderResolutionRequestState.Complete.Success(sendRequest(params).resolutionGetTicketStatus?.data))
     }.catch {
-        emit(GetOrderResolutionRequestState.Error(it))
+        emit(GetOrderResolutionRequestState.Complete.Error(it))
     }
 
     private fun createRequestParam(params: GetOrderResolutionParams): Map<String, Any> {

@@ -26,7 +26,7 @@ class GetP1DataUseCase @Inject constructor(
                 )
             )
         } else {
-            emit(GetOrderResolutionRequestState.Success(null))
+            emit(GetOrderResolutionRequestState.Complete.Success(null))
         }
     }
 
@@ -50,7 +50,11 @@ class GetP1DataUseCase @Inject constructor(
         ) { (orderResolutionRequestState) ->
             mapP1UseCasesRequestState(orderResolutionRequestState)
         }.catch {
-            emit(GetP1DataRequestState.Complete(GetOrderResolutionRequestState.Error(it)))
+            emit(
+                GetP1DataRequestState.Complete(
+                    GetOrderResolutionRequestState.Complete.Error(it)
+                )
+            )
         }
     }
 }

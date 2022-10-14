@@ -97,19 +97,19 @@ class BuyerOrderDetailViewModel @Inject constructor(
     ).toStateFlow(OrderStatusUiState.Loading)
     private val paymentInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapPaymentInfoUiState
-    )
+    ).toStateFlow(PaymentInfoUiState.Loading)
     private val productListUiState = combine(
         buyerOrderDetailDataRequestState, singleAtcRequestStates, ::mapProductListUiState
     ).toStateFlow(ProductListUiState.Loading)
     private val shipmentInfoUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapShipmentInfoUiState
-    )
+    ).toStateFlow(ShipmentInfoUiState.Loading)
     private val pGRecommendationWidgetUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapPGRecommendationWidgetUiState
-    )
+    ).toStateFlow(PGRecommendationWidgetUiState.Loading)
     private val orderResolutionTicketStatusUiState = buyerOrderDetailDataRequestState.mapLatest(
         ::mapOrderResolutionTicketStatusUiState
-    )
+    ).toStateFlow(OrderResolutionTicketStatusUiState.Loading)
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
@@ -193,7 +193,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun addMultipleToCart() {
         viewModelScope.launchCatchError(block = {
             val productListUiState = productListUiState.value
-            if (productListUiState is ProductListUiState.Showing) {
+            if (productListUiState is ProductListUiState.HasData) {
                 val params = ArrayList(productListUiState.data.productList.map {
                     it.mapToAddToCartParam()
                 })
@@ -212,42 +212,42 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun getSecondaryActionButtons(): List<ActionButtonsUiModel.ActionButton> {
         val actionButtonsUiState = actionButtonsUiState.value
-        return if (actionButtonsUiState is ActionButtonsUiState.Showing) {
+        return if (actionButtonsUiState is ActionButtonsUiState.HasData) {
             actionButtonsUiState.data.secondaryActionButtons
         } else emptyList()
     }
 
     fun getProducts(): List<ProductListUiModel.ProductUiModel> {
         val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
+        return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productList
         } else emptyList()
     }
 
     fun getOrderId(): String {
         val orderStatusUiState = orderStatusUiState.value
-        return if (orderStatusUiState is OrderStatusUiState.Showing) {
+        return if (orderStatusUiState is OrderStatusUiState.HasData) {
             orderStatusUiState.data.orderStatusHeaderUiModel.orderId
         } else "0"
     }
 
     fun getShopId(): String {
         val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
+        return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopId
         } else "0"
     }
 
     fun getShopName(): String {
         val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
+        return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopName
         } else ""
     }
 
     fun getShopType(): Int {
         val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
+        return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopType
         } else 0
     }
@@ -255,7 +255,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     fun getCategoryId(): List<Int> {
         val categoryIdMap = HashSet<Int>()
         val productListUiState = productListUiState.value
-        return if (productListUiState is ProductListUiState.Showing) {
+        return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productList.map {
                 categoryIdMap.add(it.categoryId.toIntOrZero())
             }
@@ -274,7 +274,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     fun getOrderStatusId(): String {
         val orderStatusUiState = orderStatusUiState.value
-        return if (orderStatusUiState is OrderStatusUiState.Showing) {
+        return if (orderStatusUiState is OrderStatusUiState.HasData) {
             orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId
         } else "0"
     }
@@ -298,20 +298,28 @@ class BuyerOrderDetailViewModel @Inject constructor(
     private fun mapActionButtonsUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): ActionButtonsUiState {
-        return ActionButtonsUiStateMapper.map(getBuyerOrderDetailDataRequestState)
+        return ActionButtonsUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            actionButtonsUiState.value
+        )
     }
 
     private fun mapOrderStatusUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): OrderStatusUiState {
-        return OrderStatusUiStateMapper.map(getBuyerOrderDetailDataRequestState)
+        return OrderStatusUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            orderStatusUiState.value
+        )
     }
 
     private fun mapPaymentInfoUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): PaymentInfoUiState {
         return PaymentInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, resourceProvider.get()
+            getBuyerOrderDetailDataRequestState,
+            paymentInfoUiState.value,
+            resourceProvider.get()
         )
     }
 
@@ -320,7 +328,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return ProductListUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, singleAtcRequestStates
+            getBuyerOrderDetailDataRequestState,
+            productListUiState.value,
+            singleAtcRequestStates
         )
     }
 
@@ -328,20 +338,28 @@ class BuyerOrderDetailViewModel @Inject constructor(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): ShipmentInfoUiState {
         return ShipmentInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, resourceProvider.get()
+            getBuyerOrderDetailDataRequestState,
+            shipmentInfoUiState.value,
+            resourceProvider.get()
         )
     }
 
     private fun mapPGRecommendationWidgetUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): PGRecommendationWidgetUiState {
-        return PGRecommendationWidgetUiStateMapper.map(getBuyerOrderDetailDataRequestState)
+        return PGRecommendationWidgetUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            pGRecommendationWidgetUiState.value
+        )
     }
 
     private fun mapOrderResolutionTicketStatusUiState(
         getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
     ): OrderResolutionTicketStatusUiState {
-        return OrderResolutionTicketStatusUiStateMapper.map(getBuyerOrderDetailDataRequestState)
+        return OrderResolutionTicketStatusUiStateMapper.map(
+            getBuyerOrderDetailDataRequestState,
+            orderResolutionTicketStatusUiState.value
+        )
     }
 
     private fun mapBuyerOrderDetailUiState(
@@ -360,8 +378,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
             productListUiState,
             shipmentInfoUiState,
             pgRecommendationWidgetUiState,
-            orderResolutionTicketStatusUiState,
-            buyerOrderDetailUiState.value
+            orderResolutionTicketStatusUiState
         )
     }
 
