@@ -41,9 +41,11 @@ class MerchantVoucherCarouselViewModel(
     fun fetchCouponData() {
         launchCatchError(block = {
             merchantVoucherUseCase.loadFirstPageComponents(components.id, components.pageEndPoint)
+            components.shouldRefreshComponent = null
             setVoucherList()
         }, onError = {
             components.noOfPagesLoaded = 1
+            components.shouldRefreshComponent = null
             _loadError.value = true
         })
     }

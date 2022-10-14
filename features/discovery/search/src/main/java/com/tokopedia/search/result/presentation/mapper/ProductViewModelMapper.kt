@@ -98,6 +98,7 @@ class ProductViewModelMapper {
             searchProductModel.searchInspirationCarousel,
             dimension90,
             externalReference,
+            keyword,
         )
         productDataView.inspirationWidgetDataView = InspirationWidgetVisitable.create(
             searchProductModel.searchInspirationWidget,
@@ -379,6 +380,7 @@ class ProductViewModelMapper {
             searchInspirationCarousel: SearchInspirationCarousel,
             dimension90: String,
             externalReference: String,
+            keyword: String,
     ): List<InspirationCarouselDataView> {
         return searchInspirationCarousel.data.map { data ->
             InspirationCarouselDataView(
@@ -387,7 +389,12 @@ class ProductViewModelMapper {
                 data.position,
                 data.layout,
                 data.trackingOption.toIntOrZero(),
-                convertToInspirationCarouselOptionViewModel(data, dimension90, externalReference),
+                convertToInspirationCarouselOptionViewModel(
+                    data,
+                    dimension90,
+                    externalReference,
+                    keyword,
+                ),
             )
         }
     }
@@ -396,6 +403,7 @@ class ProductViewModelMapper {
             data: InspirationCarouselData,
             dimension90: String,
             externalReference: String,
+            keyword: String,
     ): List<InspirationCarouselDataView.Option> {
         val mapper = InspirationCarouselProductDataViewMapper()
 
@@ -421,6 +429,7 @@ class ProductViewModelMapper {
                         data.title,
                         dimension90,
                         externalReference,
+                        data.trackingOption.toIntOrZero()
                     ),
                     data.type,
                     data.layout,
@@ -435,6 +444,7 @@ class ProductViewModelMapper {
                     dimension90,
                     createInspirationCarouselCardButtonViewModel(opt),
                     InspirationCarouselDataView.Bundle.create(opt),
+                    keyword,
             )
         }
     }

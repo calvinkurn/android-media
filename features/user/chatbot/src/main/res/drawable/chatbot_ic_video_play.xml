@@ -1,0 +1,15 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="@dimen/dp_chatbot_62"
+    android:height="@dimen/dp_chatbot_62"
+    android:viewportWidth="62"
+    android:viewportHeight="62">
+  <path
+      android:pathData="M31,31m-30,0a30,30 0,1 1,60 0a30,30 0,1 1,-60 0"
+      android:strokeWidth="2"
+      android:fillColor="#000000"
+      android:fillAlpha="0.5"
+      android:strokeColor="#ffffff"/>
+  <path
+      android:pathData="M41.133,28.05L26.367,16.7C25.874,16.321 25.285,16.087 24.666,16.025C24.047,15.963 23.423,16.075 22.865,16.349C22.307,16.623 21.836,17.048 21.507,17.575C21.177,18.102 21.001,18.711 21,19.333V42.05C20.999,42.675 21.173,43.287 21.503,43.818C21.833,44.348 22.306,44.775 22.867,45.05C23.324,45.271 23.825,45.385 24.333,45.383C25.068,45.386 25.783,45.146 26.367,44.7L41.133,33.333C41.538,33.022 41.866,32.622 42.091,32.164C42.317,31.706 42.434,31.202 42.434,30.692C42.434,30.181 42.317,29.677 42.091,29.219C41.866,28.761 41.538,28.361 41.133,28.05Z"
+      android:fillColor="#ffffff"/>
+</vector>

@@ -173,7 +173,7 @@ public class FeedEnhancedTracking {
     }
 
     public static Map<String, Object> getClickTracking(List<Promotion> listPromotion,
-                                                       int userId) {
+                                                       long userId) {
         return DataLayer.mapOf(
                 EVENT, PROMO_CLICK,
                 KEY_USER_ID, String.valueOf(userId),
