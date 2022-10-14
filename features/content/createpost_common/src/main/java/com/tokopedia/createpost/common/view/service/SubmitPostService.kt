@@ -7,6 +7,7 @@ import android.net.Uri
 import android.text.TextUtils
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
@@ -16,6 +17,7 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
+import com.tokopedia.createpost.common.di.CreatePostCommonDispatchers
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
@@ -43,11 +45,15 @@ class SubmitPostService : JobIntentServiceX() {
     @Inject
     lateinit var sellerAppReviewHelper: com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 
+    @Inject
+    @CreatePostCommonDispatchers
+    lateinit var dispatchers: CoroutineDispatchers
+
     private var postUpdateProgressManager: com.tokopedia.createpost.common.view.util.PostUpdateProgressManager? = null
 
-    /** TODO: bind with job */
-    /** TODO: change this with injection */
-    private val scope = CoroutineScope(CoroutineDispatchersProvider.io)
+    private val scope by lazy(LazyThreadSafetyMode.NONE) {
+        CoroutineScope(dispatchers.io)
+    }
 
     companion object {
         private const val JOB_ID = 13131314
@@ -61,8 +67,8 @@ class SubmitPostService : JobIntentServiceX() {
     }
 
     override fun onCreate() {
-        super.onCreate()
         initInjector()
+        super.onCreate()
     }
 
 
@@ -108,12 +114,14 @@ class SubmitPostService : JobIntentServiceX() {
                         }
 
 
-                        postUpdateProgressManager?.onSuccessPost()
-                        sendBroadcast()
-                        postContentToOtherService(result.feedContentSubmit.meta.content)
-                        addFlagOnCreatePostSuccess()
+                        withContext(dispatchers.main) {
+                            postUpdateProgressManager?.onSuccessPost()
+                            sendBroadcast()
+                            postContentToOtherService(result.feedContentSubmit.meta.content)
+                            addFlagOnCreatePostSuccess()
 
-                        stopService()
+                            stopService()
+                        }
                     }
                 }
             }

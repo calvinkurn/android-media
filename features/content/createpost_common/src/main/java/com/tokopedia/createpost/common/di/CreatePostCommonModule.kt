@@ -4,6 +4,8 @@ import android.app.NotificationManager
 import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.analytics.AffiliateAnalytics
 import com.tokopedia.createpost.common.analyics.CreatePostAnalytics
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -90,8 +92,9 @@ class CreatePostCommonModule(private val context: Context) {
         return UserSession(context)
     }
 
-//    @Provides
-//    fun provideCoroutineDispatchers(): CoroutineDispatchers {
-//        return CoroutineDispatchersProvider
-//    }
+    @Provides
+    @CreatePostCommonDispatchers
+    fun provideCoroutineDispatchers(): CoroutineDispatchers {
+        return CoroutineDispatchersProvider
+    }
 }
