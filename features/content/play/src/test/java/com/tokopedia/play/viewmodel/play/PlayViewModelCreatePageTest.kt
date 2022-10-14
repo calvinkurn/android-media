@@ -95,13 +95,6 @@ class PlayViewModelCreatePageTest {
         }
     }
 
-    //Add ui test instead
-    //experiment once everyday less than one day
-    //experiment once every day more than one day
-
-    //experiment everytime enter the room
-    //experiment swipe to another room
-
     @Test
     fun `default - given channel data is set, when page is created first channel show coachmark`() {
         coroutineTestRule.runBlockingTest {
