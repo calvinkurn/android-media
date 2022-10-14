@@ -596,8 +596,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         onSuccessFetchStatusCampaignReminderButton(it.data)
                     }
                 }
-            })
-
+            }
+            )
 
             viewTrackResponse.observe(lifecycleOwner, Observer {
                 when (it) {
