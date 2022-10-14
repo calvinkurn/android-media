@@ -56,6 +56,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderShopName(cartShopHolderData)
         renderShopBadge(cartShopHolderData)
         renderIconPin(cartShopHolderData)
+        renderShopEnabler(cartShopHolderData)
         renderCartItems(cartShopHolderData)
         renderAccordion(cartShopHolderData)
         renderCheckBox(cartShopHolderData)
@@ -99,6 +100,15 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 putBoolean(KEY_HAS_SHOWN_ICON_PIN_ONBOARDING, true)
                 applyEditor()
             }
+        }
+    }
+
+    private fun renderShopEnabler(cartShopHolderData: CartShopHolderData) {
+        if (cartShopHolderData.enablerLabel.isNotBlank()) {
+            binding.labelEpharmacy.text = cartShopHolderData.enablerLabel
+            binding.labelEpharmacy.visible()
+        } else {
+            binding.labelEpharmacy.gone()
         }
     }
 

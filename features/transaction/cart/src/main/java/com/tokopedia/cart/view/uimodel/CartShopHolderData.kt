@@ -49,6 +49,7 @@ data class CartShopHolderData(
     var isPo: Boolean = false,
     var poDuration: String = "",
     var boCode: String = "",
+    var enablerLabel: String = ""
 ) {
     val shouldValidateWeight: Boolean
         get() = maximumShippingWeight > 0.0 && maximumWeightWording.isNotEmpty()

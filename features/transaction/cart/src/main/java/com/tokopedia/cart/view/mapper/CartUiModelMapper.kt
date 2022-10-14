@@ -34,7 +34,7 @@ import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfo
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
 import com.tokopedia.purchase_platform.common.feature.promo.domain.model.UsageSummaries
@@ -190,6 +190,8 @@ object CartUiModelMapper {
                         it.uniqueId == cartString && it.shippingId > 0 &&
                             it.spId > 0 && it.type == "logistic"
                     }?.code ?: ""
+                enablerLabel =
+                    if (availableGroup.shop.enabler.showLabel) availableGroup.shop.enabler.labelName else ""
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -199,7 +201,7 @@ object CartUiModelMapper {
 
     private fun CartShopHolderData.mapAddOnData(
         giftingAddOn: GiftingAddOn,
-        epharmacyConsultationInfo: EpharmacyConsultationInfo
+        epharmacyConsultationInfo: EpharmacyConsultationInfoResponse
     ) {
         if (epharmacyConsultationInfo.tickerText.isNotBlank()) {
             addOnText = epharmacyConsultationInfo.tickerText

@@ -3,7 +3,7 @@ package com.tokopedia.cart.data.model.response.shopgroupsimplified
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.bometadata.BoMetadata
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfo
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyConsultationInfoResponse
 
 data class AvailableGroup(
     @SuppressLint("Invalid Data Type")
@@ -18,7 +18,7 @@ data class AvailableGroup(
     @SerializedName("add_on")
     val giftingAddOn: GiftingAddOn = GiftingAddOn(),
     @SerializedName("epharmacy_consultation")
-    val epharmacyConsultationInfo: EpharmacyConsultationInfo = EpharmacyConsultationInfo(),
+    val epharmacyConsultationInfo: EpharmacyConsultationInfoResponse = EpharmacyConsultationInfoResponse(),
     @SerializedName("shop")
     val shop: Shop = Shop(),
     @SerializedName("is_fulfillment_service")

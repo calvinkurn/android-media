@@ -1,6 +1,7 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
 
 data class Shop(
         @SerializedName("shop_alert_message")
@@ -50,5 +51,7 @@ data class Shop(
         @SerializedName("is_tokonow")
         val isTokoNow: Boolean = false,
         @SerializedName("shop_shipments")
-        val shopShipments: List<ShopShipment> = emptyList()
+        val shopShipments: List<ShopShipment> = emptyList(),
+        @SerializedName("")
+        val enabler: EpharmacyEnablerResponse = EpharmacyEnablerResponse()
 )
