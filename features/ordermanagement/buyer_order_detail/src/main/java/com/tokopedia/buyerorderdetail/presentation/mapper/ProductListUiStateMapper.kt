@@ -33,14 +33,12 @@ object ProductListUiStateMapper {
             }
             is GetBuyerOrderDetailRequestState.Complete.Error -> {
                 mapOnGetBuyerOrderDetailError(
-                    getBuyerOrderDetailRequestState,
-                    p1DataRequestState,
-                    currentState
+                    getBuyerOrderDetailRequestState.throwable, p1DataRequestState, currentState
                 )
             }
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
-                    getBuyerOrderDetailRequestState,
+                    getBuyerOrderDetailRequestState.result,
                     p1DataRequestState,
                     currentState,
                     singleAtcRequestStates
@@ -60,7 +58,7 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        throwable: Throwable?,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState
     ): ProductListUiState {
@@ -71,16 +69,14 @@ object ProductListUiStateMapper {
             }
             is GetOrderResolutionRequestState.Complete -> {
                 mapOnGetOrderResolutionComplete(
-                    buyerOrderDetailRequestState,
-                    insuranceDetailRequestState,
-                    currentState
+                    throwable, insuranceDetailRequestState, currentState
                 )
             }
         }
     }
 
     private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
@@ -89,7 +85,7 @@ object ProductListUiStateMapper {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
                 mapOnGetOrderResolutionRequesting(
-                    buyerOrderDetailRequestState,
+                    buyerOrderDetailData,
                     insuranceDetailRequestState,
                     currentState,
                     singleAtcRequestStates
@@ -97,7 +93,7 @@ object ProductListUiStateMapper {
             }
             is GetOrderResolutionRequestState.Complete -> {
                 mapOnGetOrderResolutionComplete(
-                    buyerOrderDetailRequestState,
+                    buyerOrderDetailData,
                     insuranceDetailRequestState,
                     currentState,
                     singleAtcRequestStates
@@ -117,14 +113,14 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetOrderResolutionRequesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
-                buyerOrderDetailRequestState.result,
+                buyerOrderDetailData,
                 insuranceDetailRequestState,
                 currentState,
                 singleAtcRequestStates
@@ -135,25 +131,22 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        throwable: Throwable?,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         currentState: ProductListUiState
     ): ProductListUiState {
         return when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
-                mapOnGetInsuranceDetailRequesting(
-                    buyerOrderDetailRequestState,
-                    currentState
-                )
+                mapOnGetInsuranceDetailRequesting(throwable, currentState)
             }
             is GetInsuranceDetailRequestState.Complete -> {
-                mapOnGetInsuranceDetailComplete(buyerOrderDetailRequestState)
+                mapOnGetInsuranceDetailComplete(throwable)
             }
         }
     }
 
     private fun mapOnGetOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
@@ -161,7 +154,7 @@ object ProductListUiStateMapper {
         return when (insuranceDetailRequestState) {
             is GetInsuranceDetailRequestState.Requesting -> {
                 mapOnGetInsuranceDetailRequesting(
-                    buyerOrderDetailRequestState,
+                    buyerOrderDetailData,
                     insuranceDetailRequestState,
                     currentState,
                     singleAtcRequestStates
@@ -169,62 +162,56 @@ object ProductListUiStateMapper {
             }
             is GetInsuranceDetailRequestState.Complete -> {
                 mapOnGetInsuranceDetailComplete(
-                    buyerOrderDetailRequestState,
-                    insuranceDetailRequestState,
-                    singleAtcRequestStates
+                    buyerOrderDetailData, insuranceDetailRequestState, singleAtcRequestStates
                 )
             }
         }
     }
 
     private fun mapOnGetInsuranceDetailRequesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        throwable: Throwable?,
         currentState: ProductListUiState
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(currentState)
         } else {
-            mapOnError(buyerOrderDetailRequestState.throwable)
+            mapOnError(throwable)
         }
     }
 
     private fun mapOnGetInsuranceDetailRequesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState.Requesting,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
             mapOnReloading(
-                buyerOrderDetailRequestState.result,
+                buyerOrderDetailData,
                 insuranceDetailRequestState,
                 currentState,
                 singleAtcRequestStates
             )
         } else {
             mapOnDataReady(
-                buyerOrderDetailRequestState.result,
-                insuranceDetailRequestState,
-                singleAtcRequestStates
+                buyerOrderDetailData, insuranceDetailRequestState, singleAtcRequestStates
             )
         }
     }
 
     private fun mapOnGetInsuranceDetailComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+        throwable: Throwable?
     ): ProductListUiState {
-        return mapOnError(buyerOrderDetailRequestState.throwable)
+        return mapOnError(throwable)
     }
 
     private fun mapOnGetInsuranceDetailComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         insuranceDetailRequestState: GetInsuranceDetailRequestState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return mapOnDataReady(
-            buyerOrderDetailRequestState.result,
-            insuranceDetailRequestState,
-            singleAtcRequestStates
+            buyerOrderDetailData, insuranceDetailRequestState, singleAtcRequestStates
         )
     }
 
