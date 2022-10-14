@@ -59,7 +59,6 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
     private var tmTracker: TmTracker? = null
     private var shopId = 0
     private var isShowBs = false
-
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
     private val tokomemberDashHomeViewmodel: TokomemberDashHomeViewmodel by lazy(LazyThreadSafetyMode.NONE) {
@@ -103,6 +102,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
         tmTracker?.viewHomeTabsSection(shopId.toString())
 
         if(isShowBs){
+            tmTracker?.viewBottomSheetHome(shopId.toString())
             val bundle = Bundle()
             val tmIntroBottomsheetModel = TmIntroBottomsheetModel(
                 TM_PREVIEW_BS_TITLE, TM_PREVIEW_BS_DESC,
@@ -112,6 +112,7 @@ class TokomemberDashHomeFragment : BaseDaggerFragment() {
             val bottomsheet = TokomemberBottomsheet.createInstance(bundle)
             bottomsheet.setUpBottomSheetListener(object : BottomSheetClickListener{
                 override fun onButtonClick(errorCount: Int) {
+                    tmTracker?.clickDismissBottomSheetHome(shopId.toString())
                     bottomsheet.dismiss()
                 }
             })
