@@ -6,7 +6,6 @@ import com.tokopedia.dilayanitokopedia.common.model.DtChooseAddressWidgetUiModel
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
 import timber.log.Timber
 
-
 class DtHomeAdapter(
         typeFactory: DtHomeAdapterTypeFactory,
         differ: HomeListDiffer
