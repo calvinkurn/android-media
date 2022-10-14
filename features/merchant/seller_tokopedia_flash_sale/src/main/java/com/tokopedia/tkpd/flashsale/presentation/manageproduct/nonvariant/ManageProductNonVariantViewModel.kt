@@ -25,9 +25,6 @@ class ManageProductNonVariantViewModel @Inject constructor(
     private val _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()
     val product: LiveData<ReservedProduct.Product> get() = _product
 
-//    private val _criteriaCheckingResult = MutableLiveData<List<CriteriaCheckingResult>>()
-//    val criteriaCheckingResult: LiveData<List<CriteriaCheckingResult>> get() = _criteriaCheckingResult
-
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable>
         get() = _error
