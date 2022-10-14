@@ -69,10 +69,14 @@ class ScheduleSlotBottomSheet(private val data: BottomSheetUiModel)
     }
 
     override fun onClickTimeListener(data: ChooseTimeUiModel) {
-        Handler().postDelayed({
-            dismiss()
-            listener?.onChooseTimeListener(data.timeId, data.dateId)
-        }, 1000)
+        this.data.date.content.forEach {
+            it.availableTime.forEach {  time ->
+                time.isSelected = data.dateId == time.dateId && data.timeId == time.timeId
+            }
+        }
+        adapterScheduleSlot.setData(this.data)
+        listener?.onChooseTimeListener(data.timeId, data.dateId)
+        dismiss()
     }
 
     override fun dismiss() {
