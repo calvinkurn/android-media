@@ -14,7 +14,9 @@
         android:layout_height="@dimen/mvc_dimen_12dp"
         android:tint="@color/Neutral_N0"
         app:srcCompat="@drawable/ic_mvc_download"
-        tools:src="@drawable/ic_mvc_download" />
+        tools:src="@drawable/ic_mvc_download"
+        android:contentDescription="@string/image_download_icon_content_description"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"
