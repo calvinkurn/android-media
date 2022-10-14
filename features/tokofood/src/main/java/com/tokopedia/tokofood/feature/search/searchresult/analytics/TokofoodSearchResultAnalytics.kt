@@ -208,7 +208,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
         destinationId: String,
         keyword: String,
         merchant: Merchant,
-        sortValue: String,
+        sortFilterValue: String,
         index: Int
     ) {
         val dataLayer = Bundle().apply {
@@ -218,7 +218,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
                 eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE,
                 eventLabel = keyword
             )
-            putPromotions(merchant, sortValue, index)
+            putPromotions(merchant, sortFilterValue, index)
             setAdditionalInfo()
             putTrackerId(TokoFoodAnalyticsConstants.TRACKER_ID_36854)
             putDestinationId(destinationId)
@@ -235,7 +235,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
         destinationId: String,
         keyword: String,
         merchant: Merchant,
-        sortValue: String,
+        sortFilterValue: String,
         index: Int
     ) {
         val dataLayer = Bundle().apply {
@@ -245,7 +245,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
                 eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RESULT_PAGE,
                 eventLabel = keyword
             )
-            putPromotions(merchant, sortValue, index)
+            putPromotions(merchant, sortFilterValue, index)
             setAdditionalInfo()
             putTrackerId(TokoFoodAnalyticsConstants.TRACKER_ID_35787)
             putDestinationId(destinationId)
@@ -356,7 +356,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
         putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, itemBundles)
     }
 
-    private fun Bundle.putPromotions(merchant: Merchant, sortValue: String, index: Int) {
+    private fun Bundle.putPromotions(merchant: Merchant, sortFilterValue: String, index: Int) {
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.add(
             Bundle().apply {
@@ -365,7 +365,7 @@ class TokofoodSearchResultAnalytics @Inject constructor(private val userSession:
                     TokoFoodAnalyticsConstants.NULL
                 )
                 putInt(TokoFoodAnalyticsConstants.KEY_EE_CREATIVE_SLOT, index)
-                putString(TokoFoodAnalytics.KEY_DIMENSION_61, sortValue)
+                putString(TokoFoodAnalytics.KEY_DIMENSION_61, sortFilterValue)
                 putString(
                     TokoFoodAnalyticsConstants.KEY_EE_ITEM_ID,
                     "${merchant.id} - ${merchant.name}"
