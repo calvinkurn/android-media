@@ -29,14 +29,6 @@ allprojects {
             allowInsecureProtocol = true
         }
         maven {
-            url "https://jitpack.io"
-            credentials { username authToken }
-        }
-        flatDir {
-            dirs rootProject.file('aars')
-        }
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
-        maven {
             name = "Courier-Client"
             url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
 
@@ -45,6 +37,15 @@ allprojects {
                 password = properties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
             }
         }
+        maven {
+            url "https://jitpack.io"
+            credentials { username authToken }
+        }
+        flatDir {
+            dirs rootProject.file('aars')
+        }
+        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+
     }
 }
 
