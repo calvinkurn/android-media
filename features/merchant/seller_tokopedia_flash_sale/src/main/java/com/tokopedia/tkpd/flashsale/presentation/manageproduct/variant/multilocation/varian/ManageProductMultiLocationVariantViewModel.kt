@@ -75,6 +75,7 @@ class ManageProductMultiLocationVariantViewModel @Inject constructor(
     //for tracking purpose
     private val _nominalDiscountInputTracker = MutableLiveData<String>()
     val doTrackingNominal = MutableLiveData<String>()
+
     private val _percentDiscountInputTracker = MutableLiveData<String>()
     val doTrackingPercent = MutableLiveData<String>()
 
