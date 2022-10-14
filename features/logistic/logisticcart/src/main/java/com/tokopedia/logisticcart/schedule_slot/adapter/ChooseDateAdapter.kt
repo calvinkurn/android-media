@@ -60,9 +60,9 @@ class ChooseDateAdapter(
 
         private fun setCardState(buttonDateUiModel: ButtonDateUiModel) {
             binding.containerDateItem.cardType = when {
+                !buttonDateUiModel.isEnabled -> CardUnify2.TYPE_BORDER_DISABLED
                 buttonDateUiModel.isSelected -> CardUnify2.TYPE_BORDER_ACTIVE
-                buttonDateUiModel.isEnabled -> CardUnify2.TYPE_BORDER
-                else -> CardUnify2.TYPE_BORDER_DISABLED
+                else -> CardUnify2.TYPE_BORDER
             }
         }
     }

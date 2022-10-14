@@ -100,8 +100,10 @@ object ScheduleDeliveryMapper {
 
     private fun generateTimeTitle(time: DeliveryProduct): String {
         val timeTitle = time.title
-        // check price
-        return if (time.finalPrice == time.realPrice) {
+        return if (!time.available) {
+            "<b>$timeTitle</b>"
+        } else if (time.finalPrice == time.realPrice) {
+            // check price
             "<b>" + timeTitle + " (${time.textFinalPrice})</b>"
         } else {
             "<b>" + timeTitle + " (${time.textFinalPrice}</b> <s>${time.textRealPrice}</s><b>)</b>"

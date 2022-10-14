@@ -1,28 +1,34 @@
 package com.tokopedia.logisticcart.schedule_slot.viewholder
 
-import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticcart.databinding.ViewholderChooseDateBinding
 import com.tokopedia.logisticcart.schedule_slot.adapter.ChooseDateAdapter
 import com.tokopedia.logisticcart.schedule_slot.uimodel.ChooseDateUiModel
 import com.tokopedia.logisticcart.schedule_slot.utils.ScheduleSlotListener
-import com.tokopedia.unifyprinciples.Typography
 
-class ChooseDateViewHolder(private val view: View, private val listener: ScheduleSlotListener) : AbstractViewHolder<ChooseDateUiModel>(view) {
+class ChooseDateViewHolder(
+    private val viewBinding: ViewholderChooseDateBinding,
+    private val listener: ScheduleSlotListener
+) : AbstractViewHolder<ChooseDateUiModel>(viewBinding.root) {
 
-    private val title: Typography = view.findViewById(com.tokopedia.logisticcart.R.id.tv_title)
-    private val recyclerView: RecyclerView = view.findViewById(com.tokopedia.logisticcart.R.id.rv_choose_date)
     override fun bind(element: ChooseDateUiModel) {
-        if (element.title.isNotEmpty()) {
-            title.text = element.title
-            title.visibility = View.VISIBLE
-        } else {
-            title.visibility = View.GONE
+        viewBinding.tvTitle.run {
+            if (element.title.isNotEmpty()) {
+                text = element.title
+                visible()
+            } else {
+                gone()
+            }
         }
-        recyclerView.layoutManager = LinearLayoutManager(view.context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.adapter = ChooseDateAdapter(element.content, listener)
+        viewBinding.rvChooseDate.run {
+            layoutManager =
+                LinearLayoutManager(viewBinding.root.context, LinearLayoutManager.HORIZONTAL, false)
+            adapter = ChooseDateAdapter(element.content, listener)
+        }
     }
 
     companion object {
