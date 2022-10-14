@@ -2,7 +2,6 @@ package com.tokopedia.play.viewmodel.play
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.helper.NoValueException
 import com.tokopedia.play.helper.getOrAwaitValue
 import com.tokopedia.play.model.*
 import com.tokopedia.play.robot.andThen
@@ -11,7 +10,6 @@ import com.tokopedia.play.robot.play.createPlayViewModelRobot
 import com.tokopedia.play.robot.play.givenPlayViewModelRobot
 import com.tokopedia.play.robot.thenVerify
 import com.tokopedia.play.util.isEqualTo
-import com.tokopedia.play.util.throwsException
 import com.tokopedia.play.view.type.VideoOrientation
 import com.tokopedia.play_common.util.PlayPreference
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -116,111 +114,6 @@ class PlayViewModelCreatePageTest {
             } thenVerify {
                 viewModel.observableOnboarding.getOrAwaitValue().peekContent()
                     .isEqualTo(Unit)
-            }
-        }
-    }
-
-//    @Test
-//    fun `given channel data is set, when page is created and has not shown onboarding before, should show one tap onboarding after 5s`() {
-//        coroutineTestRule.runBlockingTest {
-//            val playPreference: PlayPreference = mockk(relaxed = true)
-//            every { playPreference.isOnboardingShown(any()) } returns false
-//
-//            val channelData = channelDataBuilder.buildChannelData(
-//                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-//                    videoPlayer = videoModelBuilder.buildCompleteGeneralVideoPlayer()
-//                )
-//            )
-//
-//            val expectedResult = Unit
-//
-//            givenPlayViewModelRobot(
-//                playPreference = playPreference
-//            ) andWhen {
-//                createPage(channelData = channelData)
-//            } andThen {
-//                advanceTimeBy(5000)
-//            } thenVerify {
-//                viewModel.observableOnboarding.getOrAwaitValue().peekContent()
-//                    .isEqualTo(expectedResult)
-//            }
-//        }
-//    }
-
-    @Test
-    fun `given channel data is set, when page is created and has shown onboarding before, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns true
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildCompleteGeneralVideoPlayer()
-                )
-            )
-
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `given channel data is set, when page is created and has not shown onboarding but video player type is youtube, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns false
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildYouTubeVideoPlayer()
-                )
-            )
-
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `given channel data is set, when page is created and has shown onboarding but video player type is youtube, should not show one tap onboarding after 5s`() {
-        coroutineTestRule.runBlockingTest {
-            val playPreference: PlayPreference = mockk(relaxed = true)
-            every { playPreference.isOnboardingShown(any()) } returns true
-
-            val channelData = channelDataBuilder.buildChannelData(
-                videoMetaInfo = videoModelBuilder.buildVideoMeta(
-                    videoPlayer = videoModelBuilder.buildYouTubeVideoPlayer()
-                )
-            )
-
-            givenPlayViewModelRobot(
-                playPreference = playPreference
-            ) andWhen {
-                createPage(channelData = channelData)
-            } andThen {
-                advanceTimeBy(5000)
-            } thenVerify {
-                throwsException<NoValueException> {
-                    viewModel.observableOnboarding.getOrAwaitValue()
-                }
             }
         }
     }

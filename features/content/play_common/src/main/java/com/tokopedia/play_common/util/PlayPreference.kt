@@ -19,25 +19,12 @@ class PlayPreference @Inject constructor(
         private const val A_DAY_IN_MILLIS: Long = 86400000
         private const val BUFFER_TIME: Long = 10000
 
-        private const val FORMAT_SWIPE_ONBOARDING = "swipe_onboarding_%s"
-
         private const val SWIPE_ONBOARDING = "new_swipe_onboarding_%s" //with userId
         private const val SWIPE_LIVE_ROOM_VARIANT = "sc_once_everyday"
         private const val SWIPE_LIVE_ROOM_DEFAULT = "swipe_onboarding_first_%s" //with userId
     }
 
     private val sharedPref = context.getSharedPreferences(PLAY_PREFERENCE, Context.MODE_PRIVATE)
-
-    fun isOnboardingShown(tag: String): Boolean {
-        return isSwipeOnboardingShown(tag)
-    }
-
-    /**
-     * Valid since Swipe Room
-     */
-    private fun isSwipeOnboardingShown(tag: String): Boolean {
-        return sharedPref.getBoolean(String.format(FORMAT_SWIPE_ONBOARDING, tag), false)
-    }
 
     /**
      * check last visit
