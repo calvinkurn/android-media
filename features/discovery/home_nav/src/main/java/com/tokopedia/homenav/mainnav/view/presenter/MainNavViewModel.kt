@@ -206,7 +206,8 @@ class MainNavViewModel @Inject constructor(
     private fun isLaunchedFromHome(): Boolean {
         return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
                 pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
-                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2 ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
     }
 
     fun getPageSource(): String {
