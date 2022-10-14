@@ -90,7 +90,6 @@ class ChooseTimeViewHolder(
             )
 
             viewBinding.root.setOnClickListener {
-                viewBinding.iconCheck.visibility = View.VISIBLE
                 listener.onClickTimeListener(element)
             }
         } else {
