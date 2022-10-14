@@ -38,6 +38,7 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -122,12 +123,12 @@ class FeedViewModel @Inject constructor(
 
     fun sendReport(
         positionInFeed: Int,
-        contentId: Int,
+        contentId: String,
         reasonType: String,
         reasonMessage: String,
         contentType: String
     ) {
-        sendReportUseCase.createRequestParams(contentId, reasonType, reasonMessage, contentType)
+        sendReportUseCase.createRequestParams(contentId.toIntOrZero(), reasonType, reasonMessage, contentType)
         sendReportUseCase.execute(
             {
                 val deleteModel = DeletePostViewModel(
@@ -265,7 +266,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doLikeKol(id: Int, rowNumber: Int) {
+    fun doLikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 likeKol(id, rowNumber)
@@ -276,7 +277,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doUnlikeKol(id: Int, rowNumber: Int) {
+    fun doUnlikeKol(id: Long, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 unlikeKol(id, rowNumber)
@@ -309,7 +310,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doDeletePost(id: Int, rowNumber: Int) {
+    fun doDeletePost(id: String, rowNumber: Int) {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
                 deletePost(id, rowNumber)
@@ -500,7 +501,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun likeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -514,7 +515,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun unlikeKol(id: Int, rowNumber: Int): LikeKolViewModel {
+    private fun unlikeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
             data.id = id
@@ -579,12 +580,12 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: Int, rowNumber: Int): DeletePostViewModel {
+    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
         try {
             val data = DeletePostViewModel()
             data.id = id
             data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id.toString())
+            val params = DeletePostUseCase.createRequestParams(id)
             val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
             return data
