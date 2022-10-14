@@ -6,6 +6,7 @@ import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.core.content.ContextCompat
+import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.FileUtil
 import java.io.File
@@ -29,7 +30,7 @@ object SaveImageProcessor {
         val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
 
         var resultFile: File? = null
-        val fileName = fileName(file.nameWithoutExtension)
+        val fileName = fileName(file)
 
         val contentValues = ContentValues()
         contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
@@ -102,7 +103,10 @@ object SaveImageProcessor {
         }
     }
 
-    private fun fileName(name: String): String {
-        return "${FILE_NAME_PREFIX}_$name"
+    private fun fileName(file: PickerFile): String {
+        val fileName = "${FILE_NAME_PREFIX}_${file.nameWithoutExtension}"
+        val extension = file.extension
+
+        return "$fileName.$extension"
     }
 }

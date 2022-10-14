@@ -9,6 +9,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
+import com.tokopedia.topads.sdk.viewmodel.TopAdsHeadlineViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
@@ -46,6 +47,10 @@ class InboxPresenterTest {
     lateinit var deleteWishlistV2UseCase: DeleteWishlistV2UseCase
 
     @RelaxedMockK
+    lateinit var topAdsHeadlineViewModel: TopAdsHeadlineViewModel
+
+
+    @RelaxedMockK
     lateinit var inboxView: InboxView
 
     private val inboxPresenter by lazy {
@@ -55,7 +60,8 @@ class InboxPresenterTest {
                 userSessionInterface,
                 addToWishlistV2UseCase,
                 deleteWishlistV2UseCase,
-                topAdsWishListedUseCase
+                topAdsWishListedUseCase,
+                topAdsHeadlineViewModel
         )
     }
 
