@@ -319,7 +319,8 @@ ext {
             timerPingSender       : "com.gojek.courier:timer-pingsender:$gojekCourierVersion",
             courierMessageAdapter : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
             courierStreamAdapter  : "com.gojek.courier:courier-stream-adapter-rxjava:$gojekCourierVersion",
-            courierAuth           : "com.gojek.courier:courier-auth-http:$gojekCourierVersion"
+            courierAuth           : "com.gojek.courier:courier-auth-http:$gojekCourierVersion",
+            courierClient         : "com.gojek.courier:courier-client:0.0.4.1@aar"
     ]
 
     testDependencies = [
