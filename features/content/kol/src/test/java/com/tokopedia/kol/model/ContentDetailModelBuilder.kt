@@ -65,5 +65,4 @@ class ContentDetailModelBuilder {
             rowNumber = rowNumber,
             reminderStatus = reminderStatus
             )
-        )
 }

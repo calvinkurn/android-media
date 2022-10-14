@@ -11,7 +11,6 @@
     android:focusable="true"
     app:cardCornerRadius="8dp">
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -161,6 +160,13 @@
                 />
         </LinearLayout>
 
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="productLayout,productNameSection" />
+
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/menu"
             android:layout_width="@dimen/unify_space_32"
@@ -181,7 +187,7 @@
             layout="@layout/item_sale_atc_wishlist_layout"
             app:layout_constraintStart_toStartOf="@id/productLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/productNameSection"
+            app:layout_constraintTop_toBottomOf="@id/barrier_layout"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

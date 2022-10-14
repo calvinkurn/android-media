@@ -30,27 +30,27 @@ class ProductPostTagViewHolderNew(
     val listener: ProductItemInfoBottomSheet.Listener
 ) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
 
-    private lateinit var productLayout: FrameLayout
-    private lateinit var productImage: ImageUnify
-    private lateinit var productPrice: Typography
-    private lateinit var productName: Typography
-    private lateinit var discountlayout: LinearLayout
-    private lateinit var addToWishlistBtn: FrameLayout
-    private lateinit var addToCartBtn: UnifyButton
-    private lateinit var stockProgressBar: ProgressBarUnify
-    private lateinit var productTag: Typography
-    private lateinit var productNameSection: LinearLayout
-    private lateinit var rating: Typography
-    private lateinit var label: Label
-    private lateinit var soldInfo: Typography
-    private lateinit var freeShipping: ImageView
-    private lateinit var divider: View
-    private lateinit var stockBarLayout: View
-    private lateinit var stockText: Typography
-    private lateinit var star: IconUnify
-    private lateinit var menuBtn: IconUnify
-    private lateinit var card: CardUnify
-    private lateinit var addToWishlistBtnIcon: IconUnify
+    private val productLayout: FrameLayout
+    private val productImage: ImageUnify
+    private val productPrice: Typography
+    private val productName: Typography
+    private val discountlayout: LinearLayout
+    private val addToWishlistBtn: FrameLayout
+    private val addToCartBtn: UnifyButton
+    private val stockProgressBar: ProgressBarUnify
+    private val productTag: Typography
+    private val productNameSection: LinearLayout
+    private val rating: Typography
+    private val label: Label
+    private val soldInfo: Typography
+    private val freeShipping: ImageView
+    private val divider: View
+    private val stockBarLayout: View
+    private val stockText: Typography
+    private val star: IconUnify
+    private val menuBtn: IconUnify
+    private val card: CardUnify
+    private val addToWishlistBtnIcon: IconUnify
 
     init {
         productLayout = itemView.findViewById(R.id.productLayout)
@@ -59,7 +59,6 @@ class ProductPostTagViewHolderNew(
         discountlayout = itemView.findViewById(R.id.discount_layout)
         productTag = itemView.findViewById(R.id.productTag)
         productNameSection = itemView.findViewById(R.id.productNameSection)
-        productName = itemView.findViewById(R.id.productName)
         productName = itemView.findViewById(R.id.productName)
         rating = itemView.findViewById(R.id.rating)
         stockText = itemView.findViewById(R.id.stock_text)
@@ -85,7 +84,7 @@ class ProductPostTagViewHolderNew(
             productPrice.text = item.product.priceMaskedFmt
             productTag.apply {
                 paintFlags = paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-                text = item.originalPriceFmt
+                text = item.priceFmt
             }
         } else {
             if (item.isDiscount) {

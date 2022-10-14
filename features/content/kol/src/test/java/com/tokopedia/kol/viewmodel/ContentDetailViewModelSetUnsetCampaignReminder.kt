@@ -40,7 +40,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
     fun `when user click asgc upcoming campaign widget to set reminder, given response success, check if action is of reminder set, it returns FeedAsgcCampaignResponseModel`() {
         val rowNumber = 0
         val isSuccess = true
-        val reminderStatus = FeedASGCUpcomingReminderStatus.Off(campaignId)
+        val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
         val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatus)
 
         coEvery {
