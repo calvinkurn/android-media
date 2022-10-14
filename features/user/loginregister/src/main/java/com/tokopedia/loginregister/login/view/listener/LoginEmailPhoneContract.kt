@@ -120,6 +120,6 @@ interface LoginEmailPhoneContract {
 
         fun showGetAdminTypeError(throwable: Throwable)
 
-        fun onAdminRedirection()
+        fun onLocationAdminRedirection()
     }
 }

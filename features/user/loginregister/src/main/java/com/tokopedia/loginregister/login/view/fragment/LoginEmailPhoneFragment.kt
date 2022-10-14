@@ -575,7 +575,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         viewModel.adminRedirection.observe(viewLifecycleOwner) {
             when (it) {
-                is Success -> onAdminRedirection()
+                is Success -> onLocationAdminRedirection()
             }
         }
 
@@ -1465,7 +1465,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }.show()
     }
 
-    override fun onAdminRedirection() {
+    override fun onLocationAdminRedirection() {
         context?.let {
             dismissLoadingLogin()
             RouteManager.route(it, ApplinkConstInternalMarketplace.ADMIN_INVITATION)

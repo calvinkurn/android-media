@@ -82,18 +82,16 @@ class GetProfileSubscriber(val userSession: UserSessionInterface,
                 profile
             }
 
-            val isAdminInvitation = it.data.isAdminInvitation()
+            val isAdminRedirection = it.data.isAdminInvitation()
 
             if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminActive) {
                 showLocationAdminPopUp?.invoke()
+            } else if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminRedirection) {
+                saveProfileData(userProfile)
+                onAdminRedirection?.invoke()
             } else {
                 saveProfileData(userProfile)
-
                 onSuccessGetProfile(userProfile)
-
-                if (GlobalConfig.isSellerApp() && isLocationAdmin && isAdminInvitation) {
-                    onAdminRedirection?.invoke()
-                }
             }
         }
     }
