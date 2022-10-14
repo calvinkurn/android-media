@@ -3,6 +3,7 @@ package com.tokopedia.universal_sharing.model
 abstract class ImageGeneratorParamModel(var platform: String = "wa")
 
 data class PdpParamModel(
+    val productId: String = "",
     val isBebasOngkir: Boolean = false,
     val bebasOngkirType: String = "",
     val productImageUrl: String = "",

@@ -1160,9 +1160,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         gqlJob = CoroutineScope(Dispatchers.IO).launchCatchError(block = {
             withContext(Dispatchers.IO) {
                 imageGeneratorUseCase = ImageGeneratorUseCase(GraphqlInteractor.getInstance().graphqlRepository)
-                val mediaImageUrl = imageGeneratorUseCase.apply {
+                val response = imageGeneratorUseCase.apply {
                     params = ImageGeneratorUseCase.createParam(sourceId, args)
                 }.executeOnBackground()
+                val mediaImageUrl = response.imageUrl
+
+                /* for A/B Testing on PDP Page */
+                if (sourceId == ImageGeneratorConstants.ImageGeneratorSourceId.PDP) {
+                    setAbTestContextual(shareModel, response.sourceId)
+                }
                 SharingUtil.saveImageFromURLToStorage(context, mediaImageUrl) {
                     imageSaved(it)
                     executeMediaImageSharingFlow(shareModel, mediaImageUrl)
@@ -1174,6 +1180,15 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         })
     }
 
+    /***
+     * @param sourceId is from result of [ImageGeneratorUseCase]
+     */
+    private fun setAbTestContextual(shareModel: ShareModel, sourceId: String) {
+        if (getImageFromMedia) {
+            shareModel.campaign?.replace(KEY_CONTEXTUAL_IMAGE, sourceId)
+        }
+    }
+
     fun getImageFromMedia(getImageFromMediaFlag: Boolean) {
         getImageFromMedia = getImageFromMediaFlag
         savedImagePath = "{media_image}"
@@ -1183,6 +1198,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam = param
     }
 
+    /* set page source id */
     fun setMediaPageSourceId(pageSourceId: String) {
         sourceId = pageSourceId
     }

@@ -597,6 +597,7 @@ object DynamicProductDetailMapper {
 
     fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
         return PdpParamModel(
+            productId = product.basic.productID,
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
             productImageUrl = product.data.getProductImageUrl() ?: "",

@@ -28,6 +28,9 @@ private fun ImagePolicyResponse.generateToPDP(
             ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
                 imagePolicy.toRequestParam(data.platform)
             }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_ID -> {
+                imagePolicy.toRequestParam(data.productId)
+            }
             else -> {
                 imagePolicy.toRequestParam("")
             }
