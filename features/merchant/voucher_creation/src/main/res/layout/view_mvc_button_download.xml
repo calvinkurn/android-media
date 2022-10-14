@@ -15,7 +15,7 @@
         android:tint="@color/Neutral_N0"
         app:srcCompat="@drawable/ic_mvc_download"
         tools:src="@drawable/ic_mvc_download"
-        android:contentDescription="@string/image_download_icon_content_description"
+        android:contentDescription="@string/image_coupon_download_content_description"
         />
 
     <com.tokopedia.unifyprinciples.Typography

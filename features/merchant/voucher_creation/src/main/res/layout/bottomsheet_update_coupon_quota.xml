@@ -46,7 +46,7 @@
 
     <ImageView
         android:id="@+id/imgTips"
-        android:contentDescription="@string/image_coupun_quota_info_content_description"
+        android:contentDescription="@string/image_coupon_quota_info_content_description"
         android:layout_width="@dimen/layout_lvl2"
         android:layout_height="@dimen/layout_lvl2"
         android:layout_marginStart="@dimen/layout_lvl2"

@@ -537,5 +537,6 @@
     <string name="image_voucher_list_no_result_content_description">Image voucher list no result</string>
     <string name="image_voucher_preview_content_description">Image voucher preview</string>
     <string name="image_copy_subinfo_content_description">Image copy</string>
-    <string name="image_coupun_quota_info_content_description">Image coupon quota</string>
+    <string name="image_coupon_quota_info_content_description">Image coupon quota</string>
+    <string name="image_coupon_download_content_description">Image download</string>
 </resources>
