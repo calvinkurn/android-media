@@ -10,31 +10,37 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing.item.Ong
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.FinishedProcessSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.OnSelectionProcessItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUtil
+import com.tokopedia.unifycomponents.Label
 
 object ProductCheckingResultMapper {
 
     private const val PRODUCT_NAME_DELIMITER_REMOTE = " - "
     private const val VARIANT_NAME_DELIMITER_REMOTE = ", "
     private const val VARIANT_NAME_DELIMITER_LOCAL = " | "
+    private const val PRODUCT_STATUS_REGISTERED = 0L
+    private const val PRODUCT_STATUS_ACCEPTED = 1L
+    private const val PRODUCT_STATUS_REFUSED = 2L
 
     private fun String.getVariantName() =
         split(PRODUCT_NAME_DELIMITER_REMOTE).lastOrNull().orEmpty().replace(
             VARIANT_NAME_DELIMITER_REMOTE, VARIANT_NAME_DELIMITER_LOCAL)
 
-    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult() = map {
-        val originalPrice = it.discountSetup?.price.orZero().toLong()
+    private fun List<SubmittedProduct.Warehouse>.mapToCheckingResult(displayProductSold: Boolean) = map {
+        val originalPrice = it.price.toLong()
         val discountPercent = it.discountSetup?.discount.orZero()
-        val discountedPrice = DiscountUtil.calculatePrice(discountPercent, originalPrice)
+        val discountedPrice = it.discountSetup?.price.orZero().toLong()
         ProductCheckingResult.LocationCheckingResult(
             warehouseId = it.warehouseId.toString(),
             cityName = it.name,
+            soldCount = if (displayProductSold) it.soldCount else null,
             checkingDetailResult = ProductCheckingResult.CheckingDetailResult(
                 discountedPrice = discountedPrice,
                 originalPrice = originalPrice,
                 discountPercent = discountPercent.toInt(),
                 stock = it.discountSetup?.stock.orZero(),
+                statusId = it.statusId,
                 statusText = it.statusText,
+                statusLabelType = it.getLabelType(),
                 isSubsidy = it.subsidy.hasSubsidy,
                 subsidyAmount = it.subsidy.subsidyAmount,
                 rejectionReason = it.rejectionReason
@@ -42,31 +48,52 @@ object ProductCheckingResultMapper {
         )
     }
 
-    fun map (item: List<SubmittedProduct>) = item.map {
-        mapItem(it)
+    private fun SubmittedProduct.Warehouse.getLabelType(): Int {
+        return when(statusId) {
+            PRODUCT_STATUS_REGISTERED -> Label.HIGHLIGHT_LIGHT_ORANGE
+            PRODUCT_STATUS_ACCEPTED -> Label.HIGHLIGHT_LIGHT_GREEN
+            PRODUCT_STATUS_REFUSED -> Label.HIGHLIGHT_LIGHT_RED
+            else -> Label.HIGHLIGHT_LIGHT_GREEN
+        }
     }
 
-    fun mapItem (item: SubmittedProduct): ProductCheckingResult {
+    fun map (
+        item: List<SubmittedProduct>,
+        displayProductSold: Boolean = false,
+        fallbackProductImage: String = ""
+    ) = item.map {
+        mapItem(it, displayProductSold, fallbackProductImage)
+    }
+
+    fun mapItem (
+        item: SubmittedProduct,
+        displayProductSold: Boolean = false,
+        fallbackProductImage: String = ""
+    ): ProductCheckingResult {
         val productName = item.name.getVariantName()
-        val warehouses = item.warehouses.mapToCheckingResult()
+        val warehouses = item.warehouses.mapToCheckingResult(displayProductSold)
         return ProductCheckingResult (
             productId = item.productId.toString(),
             name = productName,
-            imageUrl = item.picture,
+            imageUrl = item.picture.ifEmpty { fallbackProductImage },
             isMultiloc = item.isMultiwarehouse,
             checkingDetailResult = warehouses.firstOrNull()?.checkingDetailResult
                 ?: ProductCheckingResult.CheckingDetailResult(),
-            locationCheckingResult = warehouses
+            locationCheckingResult = warehouses,
+            soldCount = if (displayProductSold) item.soldCount else null,
         )
     }
 
-    fun mapFromWarehouses (selectedProduct: DelegateAdapterItem): ProductCheckingResult {
+    fun mapFromAdapterItem(
+        selectedProduct: DelegateAdapterItem,
+        displayProductSold: Boolean
+    ): ProductCheckingResult {
         val warehouses = getWarehouses(selectedProduct)
         return ProductCheckingResult (
             productId = getProductId(selectedProduct),
             imageUrl = getImageUrl(selectedProduct),
             isMultiloc = true,
-            locationCheckingResult = warehouses.mapToCheckingResult()
+            locationCheckingResult = warehouses.mapToCheckingResult(displayProductSold)
         )
     }
 
@@ -132,6 +159,17 @@ object ProductCheckingResultMapper {
             is FinishedProcessSelectionItem -> selectedProduct.picture
             is OnSelectionProcessItem -> selectedProduct.picture
             is WaitingForSelectionItem -> selectedProduct.picture
+            else -> ""
+        }.toString()
+    }
+
+    fun getProductSold(selectedProduct: DelegateAdapterItem): String {
+        return when (selectedProduct) {
+            is OngoingItem -> selectedProduct.soldCount
+            is OngoingRejectedItem -> selectedProduct.soldCount
+            is FinishedProcessSelectionItem -> ""
+            is OnSelectionProcessItem -> ""
+            is WaitingForSelectionItem -> ""
             else -> ""
         }.toString()
     }

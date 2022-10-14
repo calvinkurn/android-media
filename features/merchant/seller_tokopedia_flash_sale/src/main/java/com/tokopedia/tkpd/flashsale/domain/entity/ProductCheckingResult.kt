@@ -5,6 +5,7 @@ data class ProductCheckingResult(
     val name: String = "",
     val imageUrl: String = "",
     val isMultiloc: Boolean = false,
+    val soldCount: Int? = null,
     val checkingDetailResult: CheckingDetailResult = CheckingDetailResult(),
     val locationCheckingResult: List<LocationCheckingResult> = emptyList()
 ) {
@@ -15,6 +16,7 @@ data class ProductCheckingResult(
         val stock: Long = 0,
         val statusId: Long = 0,
         val statusText: String = "",
+        val statusLabelType: Int = 0,
         val isSubsidy: Boolean = false,
         val subsidyAmount: Long = 0,
         val rejectionReason: String = ""
@@ -23,6 +25,7 @@ data class ProductCheckingResult(
     data class LocationCheckingResult (
         val warehouseId: String = "",
         val cityName: String = "",
+        val soldCount: Int? = null,
         val checkingDetailResult: CheckingDetailResult = CheckingDetailResult()
     )
 }

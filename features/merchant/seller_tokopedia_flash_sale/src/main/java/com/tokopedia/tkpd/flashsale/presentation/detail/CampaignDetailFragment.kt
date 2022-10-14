@@ -1423,13 +1423,21 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val isVariantProduct = ProductCheckingResultMapper.isVariantProduct(selectedProduct)
         val isMultiloc = ProductCheckingResultMapper.isMultiloc(selectedProduct)
         val productName = ProductCheckingResultMapper.getProductName(selectedProduct)
+        val displayProductSold = ProductCheckingResultMapper.getProductSold(selectedProduct).isNotEmpty()
+        val imageUrl = ProductCheckingResultMapper.getImageUrl(selectedProduct)
 
         checkProductBottomSheet.setProductName(productName)
 
         if (isVariantProduct) {
-            viewModel.getSubmittedProductVariant(flashSaleId, selectedProductId.orZero())
+            viewModel.getSubmittedProductVariant(
+                flashSaleId,
+                selectedProductId.orZero(),
+                displayProductSold,
+                imageUrl)
         } else if (isMultiloc) {
-            val productCheckingResult = ProductCheckingResultMapper.mapFromWarehouses(selectedProduct)
+            val productCheckingResult = ProductCheckingResultMapper.mapFromAdapterItem(
+                selectedProduct,
+                displayProductSold)
             checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
         }
     }

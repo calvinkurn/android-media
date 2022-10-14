@@ -83,11 +83,22 @@
         android:id="@+id/tfCampaignStock"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tfSubsidiary"
         app:typographyType="small"
         tool:text="Stok Campaign: 999" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSoldCount"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfCampaignStock"
+        app:typographyType="small"
+        tool:text="Terjual: 888" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

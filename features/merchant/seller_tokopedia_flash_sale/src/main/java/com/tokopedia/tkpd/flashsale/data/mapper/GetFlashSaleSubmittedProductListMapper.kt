@@ -77,7 +77,8 @@ class GetFlashSaleSubmittedProductListMapper @Inject constructor() {
                 warehouse.stock,
                 warehouse.toDiscountSetup(),
                 warehouse.toSubsidy(),
-                warehouse.warehouseId
+                warehouse.warehouseId,
+                warehouse.soldCount
             )
         }
     }
