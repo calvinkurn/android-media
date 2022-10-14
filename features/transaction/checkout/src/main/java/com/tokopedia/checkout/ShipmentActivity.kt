@@ -1,6 +1,5 @@
 package com.tokopedia.checkout
 
-import android.app.Activity
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.checkout.view.ShipmentFragment
@@ -38,8 +37,6 @@ class ShipmentActivity : BaseCheckoutActivity(),
     override fun onBackPressed() {
         if (shipmentFragment != null) {
             shipmentFragment?.onBackPressed()
-            setResult(shipmentFragment?.resultCode ?: Activity.RESULT_CANCELED)
-            finish()
         } else {
             super.onBackPressed()
         }

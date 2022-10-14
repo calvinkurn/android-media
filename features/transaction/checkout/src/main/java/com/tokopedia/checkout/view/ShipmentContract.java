@@ -186,10 +186,13 @@ public interface ShipmentContract {
 
         int getShipmentCartItemModelAdapterPositionByUniqueId(String uniqueId);
 
-        @Nullable ShipmentCartItemModel getShipmentCartItemModel(int position);
+        @Nullable
+        ShipmentCartItemModel getShipmentCartItemModel(int position);
 
         ShipmentDetailData getShipmentDetailData(ShipmentCartItemModel shipmentCartItemModel,
-                                                        RecipientAddressModel recipientAddressModel);
+                                                 RecipientAddressModel recipientAddressModel);
+
+        void showPrescriptionReminderDialog();
     }
 
     interface AnalyticsActionListener {
@@ -417,6 +420,8 @@ public interface ShipmentContract {
         void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
 
         void hitClearAllBo();
+
+        boolean validatePrescriptionOnBackPressed();
     }
 
 }

@@ -422,12 +422,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         restoreProgressLoading();
     }
 
-    public void onBackPressed() {
+    public boolean onBackPressed() {
         checkoutAnalyticsCourierSelection.eventClickAtcCourierSelectionClickBackArrow();
         if (isTradeIn()) {
             checkoutTradeInAnalytics.eventTradeInClickBackButton(isTradeInByDropOff());
         }
-        releaseBookingIfAny();
+        boolean validatePrescriptionOnBackPressed = shipmentPresenter.validatePrescriptionOnBackPressed();
+        if (validatePrescriptionOnBackPressed) {
+            finish();
+        }
+        return validatePrescriptionOnBackPressed;
+    }
+
+    public void finish() {
+        if (getActivity() != null) {
+            releaseBookingIfAny();
+            getActivity().setResult(getResultCode());
+            getActivity().finish();
+        }
     }
 
     private void restoreProgressLoading() {
@@ -3768,5 +3780,24 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public ShipmentCartItemModel getShipmentCartItemModel(int adapterPosition) {
         return shipmentAdapter.getShipmentCartItemModelByIndex(adapterPosition);
+    }
+
+    @Override
+    public void showPrescriptionReminderDialog() {
+        DialogUnify reminderDialog = new DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE);
+        reminderDialog.setTitle(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_title));
+        reminderDialog.setDescription(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_description));
+        reminderDialog.setPrimaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_positive_button));
+        reminderDialog.setSecondaryCTAText(getString(R.string.checkout_epharmacy_reminder_prescription_dialog_negative_button));
+        reminderDialog.setPrimaryCTAClickListener(() -> {
+            reminderDialog.dismiss();
+            return Unit.INSTANCE;
+        });
+        reminderDialog.setSecondaryCTAClickListener(() -> {
+            reminderDialog.dismiss();
+            finish();
+            return Unit.INSTANCE;
+        });
+        reminderDialog.show();
     }
 }

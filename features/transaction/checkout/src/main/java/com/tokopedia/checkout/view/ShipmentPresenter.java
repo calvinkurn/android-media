@@ -2737,4 +2737,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             }
         }
     }
+
+    @Override
+    public boolean validatePrescriptionOnBackPressed() {
+        if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() && shipmentCartItemModelList != null && getView() != null) {
+            // todo: validate if prescription is available & not error
+            if (uploadPrescriptionUiModel.getPrescriptionIds().isEmpty()) {
+                getView().showPrescriptionReminderDialog();
+                return false;
+            }
+        }
+        return true;
+    }
 }
