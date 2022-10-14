@@ -50,6 +50,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -126,7 +128,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.*
 import timber.log.Timber
@@ -172,6 +173,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     FeedPlusAdapter.OnLoadListener, TopAdsBannerViewHolder.TopAdsBannerListener,
     PlayWidgetListener, TopAdsHeadlineListener,
     ShareCallback, ProductItemInfoBottomSheet.Listener,
+    ShopRecomWidgetCallback,
     FeedPlusTabParentFragment {
 
     private lateinit var recyclerView: RecyclerView
@@ -568,6 +570,13 @@ class FeedPlusFragment : BaseDaggerFragment(),
                         if (!it.data.isAutoRefresh) playWidgetImpressionValidator.invalidate()
                         adapter.updatePlayWidget(it.data)
                     }
+                }
+            })
+
+            shopRecomWidget.observe(lifecycleOwner, Observer {
+                when(it) {
+                    is Fail -> adapter.removeShopRecomWidget()
+                    is Success -> adapter.updateShopRecomWidget(it.data)
                 }
             })
 
@@ -3443,4 +3452,26 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun setContainerListener(listener: FeedPlusContainerListener) {
         this.mContainerListener = listener
     }
+
+    override fun onShopRecomCloseClicked(itemID: Long) {
+        Timber.d(itemID.toString())
+    }
+
+    override fun onShopRecomFollowClicked(itemID: Long) {
+        Timber.d(itemID.toString())
+    }
+
+    override fun onShopRecomItemClicked(
+        itemID: Long,
+        appLink: String,
+        imageUrl: String,
+        postPosition: Int
+    ) {
+        RouteManager.route(requireContext(), appLink)
+    }
+
+    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
+        Timber.d("$item $postPosition")
+    }
+
 }
