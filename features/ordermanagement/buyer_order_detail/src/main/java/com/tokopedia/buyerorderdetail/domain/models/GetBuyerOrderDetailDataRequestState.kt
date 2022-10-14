@@ -1,31 +1,40 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-sealed class GetBuyerOrderDetailDataRequestState {
-
-    interface CompleteState
-    interface Started {
-        val getP0DataRequestState: GetP0DataRequestState
-        val getP1DataRequestState: GetP1DataRequestState
-    }
+sealed interface GetBuyerOrderDetailDataRequestState {
+    val getP0DataRequestState: GetP0DataRequestState
+    val getP1DataRequestState: GetP1DataRequestState
 
     data class Requesting(
         override val getP0DataRequestState: GetP0DataRequestState,
         override val getP1DataRequestState: GetP1DataRequestState,
-    ) : GetBuyerOrderDetailDataRequestState(), Started
+    ) : GetBuyerOrderDetailDataRequestState
 
-    data class Success(
+    data class Complete(
         override val getP0DataRequestState: GetP0DataRequestState,
-        override val getP1DataRequestState: GetP1DataRequestState,
-    ) : GetBuyerOrderDetailDataRequestState(), CompleteState, Started
+        override val getP1DataRequestState: GetP1DataRequestState
+    ) : GetBuyerOrderDetailDataRequestState {
+        fun getThrowable(): Throwable? {
+            return getThrowableFromGetP0DataUseCase() ?: getThrowableFromGetP1DataUseCase()
+        }
 
-    data class Error(
-        override val getP0DataRequestState: GetP0DataRequestState,
-        override val getP1DataRequestState: GetP1DataRequestState,
-    ) : GetBuyerOrderDetailDataRequestState(), CompleteState, Started {
-        fun getThrowable(): Throwable {
-            return if (getP0DataRequestState is GetP0DataRequestState.Error) {
-                getP0DataRequestState.getThrowable()
-            } else Throwable()
+        private fun getThrowableFromGetP0DataUseCase(): Throwable? {
+            return getP0DataRequestState.let {
+                if (it is GetP0DataRequestState.Complete) {
+                    it.getThrowable()
+                } else {
+                    null
+                }
+            }
+        }
+
+        private fun getThrowableFromGetP1DataUseCase(): Throwable? {
+            return getP1DataRequestState.let {
+                if (it is GetP1DataRequestState.Complete) {
+                    it.getThrowable()
+                } else {
+                    null
+                }
+            }
         }
     }
 }

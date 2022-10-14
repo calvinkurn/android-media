@@ -4,7 +4,6 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidgetUiState
@@ -12,84 +11,46 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidge
 object PGRecommendationWidgetUiStateMapper {
 
     fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        currentState: PGRecommendationWidgetUiState
     ): PGRecommendationWidgetUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailDataStarted(
-        buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
-    ): PGRecommendationWidgetUiState {
-        val p1DataRequestState = buyerOrderDetailDataRequestState.getP1DataRequestState
-        return when (val p0DataRequestState = buyerOrderDetailDataRequestState.getP0DataRequestState) {
-            is GetP0DataRequestState.Requesting -> {
-                mapOnP0Requesting(p0DataRequestState, p1DataRequestState)
-            }
-            is GetP0DataRequestState.Success -> {
-                mapOnP0Success(p0DataRequestState, p1DataRequestState)
-            }
-            is GetP0DataRequestState.Error -> {
-                mapOnP0Error(p0DataRequestState)
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailIdling(): PGRecommendationWidgetUiState {
-        return mapOnLoading()
-    }
-
-    private fun mapOnP0Requesting(
-        p0DataRequestState: GetP0DataRequestState.Requesting,
-        p1DataRequestState: GetP1DataRequestState
-    ): PGRecommendationWidgetUiState {
-        return when (
-            val getBuyerOrderDetailRequestState = p0DataRequestState.getBuyerOrderDetailRequestState
-        ) {
+        val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
+        val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
+            .getP0DataRequestState
+            .getBuyerOrderDetailRequestState
+        return when (getBuyerOrderDetailRequestState) {
             is GetBuyerOrderDetailRequestState.Requesting -> {
-                mapOnLoading()
-            }
-            is GetBuyerOrderDetailRequestState.Success -> {
-                mapOnGetBuyerOrderDetailIsSuccess(
-                    getBuyerOrderDetailRequestState,
-                    p1DataRequestState
-                )
+                mapOnGetBuyerOrderDetailRequesting(currentState)
             }
             is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnError(getBuyerOrderDetailRequestState.throwable)
+                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState)
+            }
+            is GetBuyerOrderDetailRequestState.Success -> {
+                mapOnGetBuyerOrderDetailSuccess(
+                    getBuyerOrderDetailRequestState, p1DataRequestState, currentState
+                )
             }
         }
     }
 
-    private fun mapOnP0Success(
-        p0DataRequestState: GetP0DataRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState
+    private fun mapOnGetBuyerOrderDetailRequesting(
+        currentState: PGRecommendationWidgetUiState
     ): PGRecommendationWidgetUiState {
-        return mapOnGetBuyerOrderDetailIsSuccess(
-            p0DataRequestState.getBuyerOrderDetailRequestState,
-            p1DataRequestState
-        )
+        return if (currentState is PGRecommendationWidgetUiState.HasData) {
+            mapOnReloading(currentState)
+        } else {
+            mapOnLoading()
+        }
     }
 
-    private fun mapOnP0Error(
-        p0DataRequestState: GetP0DataRequestState.Error
-    ): PGRecommendationWidgetUiState {
-        return mapOnError(p0DataRequestState.getThrowable())
-    }
-
-    private fun mapOnGetBuyerOrderDetailIsSuccess(
+    private fun mapOnGetBuyerOrderDetailSuccess(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: PGRecommendationWidgetUiState
     ): PGRecommendationWidgetUiState {
         return when (p1DataRequestState) {
             is GetP1DataRequestState.Requesting -> {
-                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState)
+                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState, currentState)
             }
             is GetP1DataRequestState.Complete -> {
                 mapOnP1Complete(buyerOrderDetailRequestState)
@@ -97,16 +58,23 @@ object PGRecommendationWidgetUiStateMapper {
         }
     }
 
+    private fun mapOnGetBuyerOrderDetailError(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Error
+    ): PGRecommendationWidgetUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
+    }
+
     private fun mapOnP1Requesting(
         buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
-        p1DataRequestState: GetP1DataRequestState.Requesting
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: PGRecommendationWidgetUiState
     ): PGRecommendationWidgetUiState {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
-                mapOnLoading()
+                mapOnOrderResolutionRequesting(currentState, buyerOrderDetailRequestState)
             }
             else -> {
-                mapOnDataReady(buyerOrderDetailRequestState.result)
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
             }
         }
     }
@@ -117,23 +85,45 @@ object PGRecommendationWidgetUiStateMapper {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
     }
 
+    private fun mapOnOrderResolutionRequesting(
+        currentState: PGRecommendationWidgetUiState,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+    ): PGRecommendationWidgetUiState {
+        return if (currentState is PGRecommendationWidgetUiState.HasData) {
+            mapOnDataReady(buyerOrderDetailRequestState.result)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+    ): PGRecommendationWidgetUiState {
+        return mapOnDataReady(buyerOrderDetailRequestState.result)
+    }
+
     private fun mapOnLoading(): PGRecommendationWidgetUiState {
         return PGRecommendationWidgetUiState.Loading
+    }
+
+    private fun mapOnReloading(
+        currentState: PGRecommendationWidgetUiState.HasData
+    ): PGRecommendationWidgetUiState {
+        return PGRecommendationWidgetUiState.HasData.Reloading(currentState.data)
     }
 
     private fun mapOnDataReady(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
     ): PGRecommendationWidgetUiState {
-        return PGRecommendationWidgetUiState.Showing(
+        return PGRecommendationWidgetUiState.HasData.Showing(
             mapToRecommendationWidgetUiModel(
-                buyerOrderDetailData.adsPageName,
-                buyerOrderDetailData.details?.nonBundles.orEmpty()
+                buyerOrderDetailData.adsPageName, buyerOrderDetailData.details?.nonBundles.orEmpty()
             )
         )
     }
 
     private fun mapOnError(
-        throwable: Throwable
+        throwable: Throwable?
     ): PGRecommendationWidgetUiState {
         return PGRecommendationWidgetUiState.Error(throwable)
     }

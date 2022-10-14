@@ -8,5 +8,5 @@ sealed class GetOrderResolutionRequestState {
         val result: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
     ) : GetOrderResolutionRequestState()
 
-    data class Error(val throwable: Throwable) : GetOrderResolutionRequestState()
+    data class Error(val throwable: Throwable?) : GetOrderResolutionRequestState()
 }

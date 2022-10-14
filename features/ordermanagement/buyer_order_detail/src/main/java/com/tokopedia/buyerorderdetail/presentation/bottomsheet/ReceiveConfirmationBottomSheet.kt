@@ -139,7 +139,7 @@ class ReceiveConfirmationBottomSheet(
 
     private fun trackClickActionButtonFromReceiveConfirmation(buttonName: String) {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 val orderStatusUiModel = uiState.orderStatusUiState.data
                 BuyerOrderDetailTracker.eventClickActionButtonFromReceiveConfirmation(
                         buttonName = buttonName,

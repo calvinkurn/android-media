@@ -10,6 +10,7 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 import com.tokopedia.buyerorderdetail.presentation.uistate.ShipmentInfoUiState
 
 object BuyerOrderDetailUiStateMapper {
+    @Suppress("NAME_SHADOWING")
     fun map(
         actionButtonsUiState: ActionButtonsUiState,
         orderStatusUiState: OrderStatusUiState,
@@ -17,27 +18,46 @@ object BuyerOrderDetailUiStateMapper {
         productListUiState: ProductListUiState,
         shipmentInfoUiState: ShipmentInfoUiState,
         pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState,
-        currentState: BuyerOrderDetailUiState
+        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState
     ): BuyerOrderDetailUiState {
         return if (
-            actionButtonsUiState is ActionButtonsUiState.Showing &&
-            orderStatusUiState is OrderStatusUiState.Showing &&
-            paymentInfoUiState is PaymentInfoUiState.Showing &&
-            productListUiState is ProductListUiState.Showing &&
-            shipmentInfoUiState is ShipmentInfoUiState.Showing &&
-            pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.Showing &&
+            actionButtonsUiState is ActionButtonsUiState.HasData &&
+            orderStatusUiState is OrderStatusUiState.HasData &&
+            paymentInfoUiState is PaymentInfoUiState.HasData &&
+            productListUiState is ProductListUiState.HasData &&
+            shipmentInfoUiState is ShipmentInfoUiState.HasData &&
+            pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData &&
             orderResolutionTicketStatusUiState !is OrderResolutionTicketStatusUiState.Loading
         ) {
-            BuyerOrderDetailUiState.Showing(
-                actionButtonsUiState,
-                orderStatusUiState,
-                paymentInfoUiState,
-                productListUiState,
-                shipmentInfoUiState,
-                pgRecommendationWidgetUiState,
-                orderResolutionTicketStatusUiState
-            )
+            if (
+                actionButtonsUiState is ActionButtonsUiState.HasData.Reloading ||
+                orderStatusUiState is OrderStatusUiState.HasData.Reloading ||
+                paymentInfoUiState is PaymentInfoUiState.HasData.Reloading ||
+                productListUiState is ProductListUiState.HasData.Reloading ||
+                shipmentInfoUiState is ShipmentInfoUiState.HasData.Reloading ||
+                pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData.Reloading ||
+                orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading
+            ) {
+                BuyerOrderDetailUiState.HasData.PullRefreshLoading(
+                    actionButtonsUiState,
+                    orderStatusUiState,
+                    paymentInfoUiState,
+                    productListUiState,
+                    shipmentInfoUiState,
+                    pgRecommendationWidgetUiState,
+                    orderResolutionTicketStatusUiState
+                )
+            } else {
+                BuyerOrderDetailUiState.HasData.Showing(
+                    actionButtonsUiState,
+                    orderStatusUiState,
+                    paymentInfoUiState,
+                    productListUiState,
+                    shipmentInfoUiState,
+                    pgRecommendationWidgetUiState,
+                    orderResolutionTicketStatusUiState
+                )
+            }
         } else if (actionButtonsUiState is ActionButtonsUiState.Error) {
             BuyerOrderDetailUiState.Error(actionButtonsUiState.throwable)
         } else if (orderStatusUiState is OrderStatusUiState.Error) {
@@ -51,19 +71,7 @@ object BuyerOrderDetailUiStateMapper {
         } else if (pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.Error) {
             BuyerOrderDetailUiState.Error(pgRecommendationWidgetUiState.throwable)
         } else {
-            if (currentState is BuyerOrderDetailUiState.HasData) {
-                BuyerOrderDetailUiState.PullRefreshLoading(
-                    actionButtonsUiState,
-                    orderStatusUiState,
-                    paymentInfoUiState,
-                    productListUiState,
-                    shipmentInfoUiState,
-                    pgRecommendationWidgetUiState,
-                    orderResolutionTicketStatusUiState
-                )
-            } else {
-                BuyerOrderDetailUiState.FullscreenLoading
-            }
+            BuyerOrderDetailUiState.FullscreenLoading
         }
     }
 }

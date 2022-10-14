@@ -1,36 +1,38 @@
 package com.tokopedia.buyerorderdetail.presentation.uistate
 
 sealed interface BuyerOrderDetailUiState {
-    interface HasData : BuyerOrderDetailUiState {
-        val actionButtonsUiState: ActionButtonsUiState
-        val orderStatusUiState: OrderStatusUiState
-        val paymentInfoUiState: PaymentInfoUiState
-        val productListUiState: ProductListUiState
-        val shipmentInfoUiState: ShipmentInfoUiState
-        val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState
-        val orderResolutionUiState: OrderResolutionTicketStatusUiState
-    }
 
     object FullscreenLoading : BuyerOrderDetailUiState
-    data class PullRefreshLoading(
-        override val actionButtonsUiState: ActionButtonsUiState,
-        override val orderStatusUiState: OrderStatusUiState,
-        override val paymentInfoUiState: PaymentInfoUiState,
-        override val productListUiState: ProductListUiState,
-        override val shipmentInfoUiState: ShipmentInfoUiState,
-        override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        override val orderResolutionUiState: OrderResolutionTicketStatusUiState
-    ) : HasData
 
-    data class Showing(
-        override val actionButtonsUiState: ActionButtonsUiState.Showing,
-        override val orderStatusUiState: OrderStatusUiState.Showing,
-        override val paymentInfoUiState: PaymentInfoUiState.Showing,
-        override val productListUiState: ProductListUiState.Showing,
-        override val shipmentInfoUiState: ShipmentInfoUiState.Showing,
-        override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.Showing,
-        override val orderResolutionUiState: OrderResolutionTicketStatusUiState
-    ) : HasData
+    sealed interface HasData : BuyerOrderDetailUiState {
+        val actionButtonsUiState: ActionButtonsUiState.HasData
+        val orderStatusUiState: OrderStatusUiState.HasData
+        val paymentInfoUiState: PaymentInfoUiState.HasData
+        val productListUiState: ProductListUiState.HasData
+        val shipmentInfoUiState: ShipmentInfoUiState.HasData
+        val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData
+        val orderResolutionUiState: OrderResolutionTicketStatusUiState
 
-    data class Error(val throwable: Throwable) : BuyerOrderDetailUiState
+        data class PullRefreshLoading(
+            override val actionButtonsUiState: ActionButtonsUiState.HasData,
+            override val orderStatusUiState: OrderStatusUiState.HasData,
+            override val paymentInfoUiState: PaymentInfoUiState.HasData,
+            override val productListUiState: ProductListUiState.HasData,
+            override val shipmentInfoUiState: ShipmentInfoUiState.HasData,
+            override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
+            override val orderResolutionUiState: OrderResolutionTicketStatusUiState
+        ) : HasData
+
+        data class Showing(
+            override val actionButtonsUiState: ActionButtonsUiState.HasData,
+            override val orderStatusUiState: OrderStatusUiState.HasData,
+            override val paymentInfoUiState: PaymentInfoUiState.HasData,
+            override val productListUiState: ProductListUiState.HasData,
+            override val shipmentInfoUiState: ShipmentInfoUiState.HasData,
+            override val pgRecommendationWidgetUiState: PGRecommendationWidgetUiState.HasData,
+            override val orderResolutionUiState: OrderResolutionTicketStatusUiState
+        ) : HasData
+    }
+
+    data class Error(val throwable: Throwable?) : BuyerOrderDetailUiState
 }

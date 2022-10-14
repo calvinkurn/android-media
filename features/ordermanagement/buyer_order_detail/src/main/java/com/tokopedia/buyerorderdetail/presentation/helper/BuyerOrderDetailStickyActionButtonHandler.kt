@@ -124,7 +124,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onAskSellerActionButtonClicked() {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 navigator.goToAskSeller(
                     orderStatusUiModel = uiState.orderStatusUiState.data,
                     productListUiModel = uiState.productListUiState.data,
@@ -142,7 +142,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun onTrackShipmentActionButtonClicked(button: ActionButtonsUiModel.ActionButton) {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 val newUrl = button.url.substringAfter("url=", "")
                 navigator.goToTrackShipmentPage(
                     uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId, newUrl
@@ -158,7 +158,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
     private fun onViewComplaintActionButtonClicked(url: String) {
         navigator.openAppLink(url, false)
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 BuyerOrderDetailTracker.eventClickSeeComplaint(
                     uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId,
                     uiState.orderStatusUiState.data.orderStatusHeaderUiModel.orderId
@@ -193,7 +193,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
 
     private fun trackClickActionButtonSOM(fromPrimaryButton: Boolean, buttonName: String) {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 BuyerOrderDetailTracker.eventClickActionButtonSOM(
                     isPrimaryButton = fromPrimaryButton,
                     buttonName = buttonName,
@@ -208,7 +208,7 @@ class BuyerOrderDetailStickyActionButtonHandler(
         fromPrimaryButton: Boolean, buttonName: String, trackerId: String
     ) {
         viewModel.buyerOrderDetailUiState.value.let { uiState ->
-            if (uiState is BuyerOrderDetailUiState.Showing) {
+            if (uiState is BuyerOrderDetailUiState.HasData) {
                 BuyerOrderDetailTracker.eventClickActionButtonPG(
                     isPrimaryButton = fromPrimaryButton,
                     buttonName = buttonName,

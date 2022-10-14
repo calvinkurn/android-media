@@ -1,7 +1,6 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
 sealed interface GetP1DataRequestState {
-
     val getOrderResolutionRequestState: GetOrderResolutionRequestState
 
     data class Requesting(
@@ -11,10 +10,10 @@ sealed interface GetP1DataRequestState {
     data class Complete(
         override val getOrderResolutionRequestState: GetOrderResolutionRequestState
     ) : GetP1DataRequestState {
-        fun getThrowable(): Throwable {
+        fun getThrowable(): Throwable? {
             return if (getOrderResolutionRequestState is GetOrderResolutionRequestState.Error) {
                 getOrderResolutionRequestState.throwable
-            } else Throwable()
+            } else null
         }
     }
 }
