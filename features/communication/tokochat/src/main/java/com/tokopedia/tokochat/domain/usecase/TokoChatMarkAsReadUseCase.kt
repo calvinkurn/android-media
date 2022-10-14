@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.domain.usecase
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
 
-class MarkAsReadUseCase @Inject constructor(
+class TokoChatMarkAsReadUseCase @Inject constructor(
     private val repository: TokoChatRepository
 ) {
     operator fun invoke(channelUrl: String) {

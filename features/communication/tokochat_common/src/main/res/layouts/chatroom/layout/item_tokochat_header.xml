@@ -22,6 +22,8 @@
             app:unify_image_corner_radius="0"
             app:unify_image_type="circle"
             android:contentDescription="@string/tokochat_content_desc_user_avatar"
+            android:visibility="gone"
+            tools:visibility="visible"
             tools:src="@color/Unify_Y500" />
 
     </FrameLayout>
@@ -88,15 +90,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
             app:typographyType="display_3"
-            tools:text="Terakhir online 3 menit yang lalu"
-            tools:visibility="visible" />
+            tools:text="Terakhir online 3 menit yang lalu" />
 
         <include
-            android:id="@+id/tokochat_typing"
+            android:id="@+id/tokochat_layout_typing"
             layout="@layout/item_tokochat_typing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title" />
+            app:layout_constraintTop_toBottomOf="@id/tokochat_text_user_title"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

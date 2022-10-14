@@ -16,7 +16,7 @@ class TokoChatListActivity: TokoChatBaseActivity<TokoChatComponent>() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
     }
 
-    private fun initializeChatServiceComponent(): TokoChatComponent {
+    private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .tokoChatContextModule(TokoChatContextModule(this))
@@ -26,7 +26,7 @@ class TokoChatListActivity: TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getComponent(): TokoChatComponent {
-        return tokoChatComponent?: initializeChatServiceComponent()
+        return tokoChatComponent?: initializeTokoChatComponent()
     }
 
     override fun getNewFragment(): Fragment {

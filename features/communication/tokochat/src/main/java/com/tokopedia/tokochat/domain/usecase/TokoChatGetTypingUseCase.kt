@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
 import javax.inject.Inject
 
-class GetTypingUseCase@Inject constructor(
+class TokoChatGetTypingUseCase@Inject constructor(
     private val repository: TokoChatRepository
 ) {
     fun getTypingStatus(): MutableLiveData<List<String>> =

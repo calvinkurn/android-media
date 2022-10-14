@@ -18,16 +18,19 @@ import com.tokopedia.tokochat.view.activity.TokoChatListActivity
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import com.tokopedia.unifycomponents.Toaster
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
+class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>(),
+    TokochatReminderTickerListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
 
     private var channelUrl: String = ""
 
@@ -52,10 +55,14 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
 
     override fun additionalSetup() {
         AndroidThreeTen.init(context?.applicationContext)
+        val userId = viewModel.getUserId()
+        if (userId.isEmpty()) {
+            viewModel.initializeProfile()
+        }
     }
 
-    override fun initViews() {
-        super.initViews()
+    override fun initViews(view: View, savedInstanceState: Bundle?) {
+        super.initViews(view, savedInstanceState)
         binding?.goBtn?.setOnClickListener {
             viewModel.getChatHistory(channelUrl).removeObservers(viewLifecycleOwner)
             viewModel.deRegisterActiveChannel(channelUrl)
@@ -66,11 +73,12 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
         binding?.mainBtn?.setOnClickListener {
             val message = binding?.mainEdt?.text.toString()
             binding?.mainEdt?.setText("")
-            viewModel.sendMessage(message, channelUrl)
+            viewModel.sendMessage(channelUrl, message)
         }
 
         binding?.clearBtn?.setOnClickListener {
             binding?.mainTv?.text = ""
+            viewModel.deRegisterActiveChannel(channelUrl)
         }
 
         binding?.loadmoreBtn?.setOnClickListener {
@@ -103,10 +111,6 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
             }
             binding?.connectionStatusTv?.text = connectionString
         }
-
-        viewModel.getTotalUnreadCount().observe(viewLifecycleOwner) {
-            binding?.counterTv?.text = it.toString()
-        }
     }
 
     override fun onDestroy() {
@@ -122,15 +126,19 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 orderId,
                 2,
                 getGroupBookingListener(),
-                OrderChatType.Driver
+                OrderChatType.Unknown
             )
+        }
+
+        viewModel.getTotalUnreadCount().observe(viewLifecycleOwner) {
+            binding?.counterTv?.text = it.toString()
         }
     }
 
     private fun getOrderIdOrDefault(): String {
         val text = binding?.orderIdEdt?.text
         return if (text.isNullOrEmpty()) {
-            "F-176219770"
+            "F-68719488906"
         } else {
             text.toString()
         }
@@ -174,6 +182,8 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
             }
             viewModel.markChatAsRead(channelUrl)
         }
+
+
     }
 
     private fun getTextWatcherListener(): TextWatcher {
@@ -209,5 +219,20 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>() {
                 arguments = bundle
             } as TokoChatFragmentExp
         }
+    }
+
+    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+
+    }
+
+    override fun onClickLinkReminderTicker(
+        element: TokochatReminderTickerUiModel,
+        linkUrl: String
+    ) {
+
+    }
+
+    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+
     }
 }

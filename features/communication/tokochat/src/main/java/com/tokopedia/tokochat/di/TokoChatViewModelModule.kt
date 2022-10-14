@@ -21,7 +21,7 @@ abstract class TokoChatViewModelModule {
     @IntoMap
     @TokoChatScope
     @ViewModelKey(TokoChatViewModel::class)
-    internal abstract fun bindChatServiceViewModel(
+    internal abstract fun bindTokoChatViewModel(
         viewModel: TokoChatViewModel
     ): ViewModel
 }

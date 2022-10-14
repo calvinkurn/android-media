@@ -2,8 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tokochat_tv_typing"
@@ -17,9 +16,7 @@
         app:layout_constraintBottom_toBottomOf="@id/tokochat_iv_typing"
         app:typographyType="body_3"
         android:layout_marginStart="4dp"
-        android:text="@string/tokochat_is_typing"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        android:text="@string/tokochat_is_typing" />
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/tokochat_iv_typing"
@@ -28,9 +25,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/tokochat_tv_typing"
-        tools:srcCompat="@drawable/tokochat_typing_motion"
-        android:visibility="gone"
-        tools:visibility="visible" />
+        app:layout_constraintRight_toLeftOf="@id/tokochat_tv_typing" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

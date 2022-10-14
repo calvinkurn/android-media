@@ -9,17 +9,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat_common.util.TokoChatUrlUtil
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatMessageBubbleBaseUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -34,8 +28,6 @@ class TokoChatMessageChatLayout : ViewGroup {
     var message: Typography? = null
         private set
     var status: LinearLayout? = null
-        private set
-    var icon: IconUnify? = null
         private set
     var info: Typography? = null
         private set
@@ -107,7 +99,6 @@ class TokoChatMessageChatLayout : ViewGroup {
             checkMark = it.findViewById(R.id.tokochat_iv_msg_check_mark)
             hourTime = it.findViewById(R.id.tokochat_tv_msg_time)
             info = it.findViewById(R.id.tokochat_tv_msg_info)
-            icon = it.findViewById(R.id.tokochat_icon_msg)
         }
         initCheckMarkVisibility()
     }
@@ -125,22 +116,12 @@ class TokoChatMessageChatLayout : ViewGroup {
         }
     }
 
-    fun setMessage(msg: TokoChatMessageBubbleBaseUiModel, text: CharSequence?) {
-        when {
-            msg.isBanned() -> {
-                val bannedText = context.getString(R.string.tokochat_title_sender_chat_banned)
-                message?.text = bannedText
-            }
-            msg.isDeleted() -> {
-                val deletedText = context.getString(R.string.tokochat_title_chat_deleted)
-                message?.text = deletedText
-            }
-            msg.isNormal() -> message?.text = text
-        }
+    fun setMessage(text: CharSequence?) {
+        message?.text = text
     }
 
     fun setMessageTypeFace(msg: TokoChatMessageBubbleBaseUiModel) {
-        val typeface = if (msg.isDeleted() || msg.isBanned()) {
+        val typeface = if (msg.isNotSupported) {
             Typeface.ITALIC
         } else {
             Typeface.NORMAL
@@ -161,46 +142,20 @@ class TokoChatMessageChatLayout : ViewGroup {
     }
 
     fun bindInfo(msg: TokoChatMessageBubbleBaseUiModel) {
-        if (msg.isBanned()) {
-            bindInfoBanned()
-        } else if (msg.hasLabel()) {
-            bindInfoNormal(msg)
+        if (msg.label.isNotEmpty()) {
+            bindInfoText(msg)
         } else {
             info?.hide()
         }
     }
 
-    private fun bindInfoBanned() {
-        info?.text = context.getString(R.string.tokochat_title_check_tnc)
-        info?.setTextColor(MethodChecker.getColor(
-            context, com.tokopedia.unifyprinciples.R.color.Unify_G500))
-        info?.setOnClickListener {
-            RouteManager.route(context, TokoChatUrlUtil.TNC)
-        }
-        info?.show()
-    }
-
-    private fun bindInfoNormal(msg: TokoChatMessageBubbleBaseUiModel) {
+    private fun bindInfoText(msg: TokoChatMessageBubbleBaseUiModel) {
         info?.text = msg.label
         info?.show()
     }
 
-    fun bindIcon(msg: TokoChatMessageBubbleBaseUiModel) {
-        icon?.shouldShowWithAction(msg.isDeleted() || msg.isBanned()) {
-            val unifyIcon = getIconUnifyDrawable(
-                context,
-                IconUnify.BLOCK,
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN500
-                )
-            )
-            icon?.setImageDrawable(unifyIcon)
-        }
-    }
-
     fun bindTextColor(msg: TokoChatMessageBubbleBaseUiModel) {
-        val textColor = if (msg.isDeleted() || msg.isBanned()) {
+        val textColor = if (msg.isNotSupported) {
             com.tokopedia.unifyprinciples.R.color.Unify_NN600
         } else {
             com.tokopedia.unifyprinciples.R.color.Unify_NN800
@@ -231,9 +186,6 @@ class TokoChatMessageChatLayout : ViewGroup {
         measureChildWithMargins(
             status, widthMeasureSpec, 0, heightMeasureSpec, 0
         )
-        measureChildWithMargins(
-            icon, widthMeasureSpec, 0, heightMeasureSpec, 0
-        )
 
         /**
          * calculate each direct child width & height
@@ -247,26 +199,22 @@ class TokoChatMessageChatLayout : ViewGroup {
         // Status
         val statusWidth = getTotalVisibleWidth(status)
         val statusHeight = getTotalVisibleHeight(status)
-        // msg icon
-        val iconWidth = getTotalVisibleWidth(icon)
-        val iconHeight = getTotalVisibleHeight(icon)
 
         /**
          * Measure second row dimension
          */
-        val secondRowWidth = iconWidth + messageWidth + statusWidth
+        val secondRowWidth = messageWidth + statusWidth
         val secondRowWidthDiff = totalWidth - secondRowWidth
         if (secondRowWidthDiff < 0) {
             totalWidth += abs(secondRowWidthDiff)
         }
-        val secondRowHeight = maxOf(messageHeight, statusHeight, iconHeight)
+        val secondRowHeight = maxOf(messageHeight, statusHeight)
         totalHeight += secondRowHeight
         // check if icon and message is overlap
-        val messageMaxWidth = maxAvailableWidth - iconWidth
-        if (messageWidth > messageMaxWidth) {
+        if (messageWidth > maxAvailableWidth) {
             totalHeight -= messageHeight
             val messageWidthSpec = MeasureSpec.makeMeasureSpec(
-                messageMaxWidth, MeasureSpec.EXACTLY
+                maxAvailableWidth, MeasureSpec.EXACTLY
             )
             message?.measure(messageWidthSpec, heightMeasureSpec)
             messageHeight = getTotalVisibleHeight(message)
@@ -280,7 +228,7 @@ class TokoChatMessageChatLayout : ViewGroup {
         } else {
             0f
         }
-        val lastLineWidth = msgLastLineWidth + iconWidth + statusWidth - REPLY_WIDTH_OFFSET
+        val lastLineWidth = msgLastLineWidth + statusWidth - REPLY_WIDTH_OFFSET
         if (lastLineWidth > maxAvailableWidth) {
             totalHeight += statusHeight
             isOverlapped = true
@@ -325,23 +273,9 @@ class TokoChatMessageChatLayout : ViewGroup {
         var topOffset = paddingTop
 
         /**
-         * Layout icon
-         */
-        val leftIcon = paddingStart
-        val topIcon = topOffset
-        val rightIcon = leftIcon + getVisibleMeasuredWidth(icon)
-        val bottomIcon = topIcon + getVisibleMeasuredHeight(icon)
-        icon?.layout(
-            leftIcon,
-            topIcon,
-            rightIcon,
-            bottomIcon
-        )
-
-        /**
          * Layout msg
          */
-        val leftMsg = rightIcon + getVisibleEndMargin(icon)
+        val leftMsg = paddingStart
         val topMsg = topOffset
         val rightMsg = leftMsg + getVisibleMeasuredWidth(message)
         val bottomMsg = topMsg + getVisibleMeasuredHeight(message)
@@ -351,7 +285,7 @@ class TokoChatMessageChatLayout : ViewGroup {
             rightMsg,
             bottomMsg
         )
-        topOffset = maxOf(bottomIcon, bottomMsg)
+        topOffset = bottomMsg
 
         /**
          * Layout info

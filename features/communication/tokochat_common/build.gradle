@@ -27,7 +27,7 @@ android {
     sourceSets {
         main {
             res {
-                srcDirs 'src/main/res', 'src/main/res/layouts/message_bubble', 'src/main/res/layouts/chatroom', 'src/main/res/reply', 'src/main/res/layouts/reply'
+                srcDirs 'src/main/res', 'src/main/res/layouts/message_bubble', 'src/main/res/layouts/chatroom', 'src/main/res/reply', 'src/main/res/layouts/reply', 'src/main/res/layouts/mqtt'
             }
         }
     }
@@ -54,13 +54,14 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.header
 
-    implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
+
+    implementation rootProject.ext.networkDependencies.glide
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7

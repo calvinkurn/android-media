@@ -28,7 +28,7 @@ object TokoChatNetworkModule {
     private const val NET_CONNECT_TIMEOUT = 300
     private const val NET_RETRY = 3
 
-    const val RETROFIT_NAME = "retrofit_chatservice"
+    const val RETROFIT_NAME = "retrofit_tokochat"
 
     @TokoChatScope
     @Provides
