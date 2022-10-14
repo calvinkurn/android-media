@@ -21,6 +21,8 @@
     <string name="campaign_common_min_price_error">Min. %1s</string>
     <string name="campaign_common_max_price_error">Max. %1s</string>
     <string name="campaign_common_range_format">%1s - %2s</string>
+    <string name="stfs_variant_ineligible_label">Varian ini belum memenuhi kriteria.</string>
+    <string name="stfs_cek_detail_label">Cek Detail</string>
 
     <!--Bottom Sheet -->
     <string name="bottom_sheet_apply">Terapkan</string>

@@ -1,11 +1,8 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ViewHolder
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantMultilocItemBinding
-import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantListener
@@ -48,8 +45,22 @@ class VariantMultilocViewHolder(
                         )
                     }
                 }
+                isEnabled = !selectedChildProduct.isDisabled
             }
             binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
+
+            if (selectedChildProduct.isDisabled || isAllWarehouseDisabled(selectedChildProduct.warehouses)) {
+                groupVariantNotEligibleErrorMessage.visible()
+            } else {
+                groupVariantNotEligibleErrorMessage.gone()
+            }
+            textCheckDetail.setOnClickListener {
+                listener?.onIneligibleProductWithSingleWarehouseClicked(
+                    absoluteAdapterPosition,
+                    selectedChildProduct,
+                    product.productCriteria
+                )
+            }
         }
 
         binding.containerLayoutProductInformationLocation.apply {
@@ -60,7 +71,7 @@ class VariantMultilocViewHolder(
                 )
             }
             container.setOnClickListener {
-                listener?.onMultiWarehouseClicked(adapterPosition)
+                listener?.onMultiWarehouseClicked(adapterPosition, selectedChildProduct)
             }
         }
         triggerListener(product, selectedChildProduct, discount)
@@ -83,5 +94,9 @@ class VariantMultilocViewHolder(
     private fun getFilledWarehousesCount(item: ReservedProduct.Product.ChildProduct): Int {
         val filledWarehouses = item.warehouses.filter { warehouse -> warehouse.isToggleOn }
         return filledWarehouses.count()
+    }
+
+    private fun isAllWarehouseDisabled(warehouses: List<ReservedProduct.Product.Warehouse>): Boolean {
+        return !warehouses.any { !it.isDisabled }
     }
 }

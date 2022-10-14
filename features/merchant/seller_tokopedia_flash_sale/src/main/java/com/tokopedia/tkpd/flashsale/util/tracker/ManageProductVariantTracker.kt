@@ -63,20 +63,6 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendClickEditCampaignStockEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click edit campaign stock")
-            .setEventCategory("flash sale - atur varian")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37230")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE)
-            .setShopId(userSession.shopId)
-            .build()
-            .send()
-    }
-
     fun sendClickSaveEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
@@ -84,6 +70,34 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .setEventCategory("flash sale - atur varian")
             .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "37231")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE)
+            .setShopId(userSession.shopId)
+            .build()
+            .send()
+    }
+
+    fun sendClickCheckDetailEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT)
+            .setEventAction("click cek detail - partial ineligible variant")
+            .setEventCategory("flash sale - atur varian")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "37232")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE)
+            .setShopId(userSession.shopId)
+            .build()
+            .send()
+    }
+
+    fun sendClickManageAllLocationEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT)
+            .setEventAction("click atur diskon tiap lokasi")
+            .setEventCategory("flash sale - atur varian")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "37233")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)

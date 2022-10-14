@@ -7,8 +7,8 @@ import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVaria
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantMultilocItemBinding
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ViewHolder.VariantMultilocViewHolder
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ViewHolder.VariantViewHolder
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder.VariantMultilocViewHolder
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder.VariantViewHolder
 
 class ManageProductVariantAdapter(
     private val listener: ManageProductVariantListener

@@ -19,6 +19,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ManageProductVariantAdapter
 import javax.inject.Inject
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.CampaignCriteriaCheckBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
@@ -35,7 +37,10 @@ class ManageProductVariantFragment :
     ManageProductVariantListener {
 
     companion object {
-        fun newInstance(product: ReservedProduct.Product?, campaignId: String): ManageProductVariantFragment {
+        fun newInstance(
+            product: ReservedProduct.Product?,
+            campaignId: String
+        ): ManageProductVariantFragment {
             val fragment = ManageProductVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
@@ -63,6 +68,8 @@ class ManageProductVariantFragment :
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ManageProductVariantViewModel::class.java) }
 
+    private var criteriaCheckBottomSheet = CampaignCriteriaCheckBottomSheet()
+
     override fun getScreenName(): String =
         ManageProductVariantFragment::class.java.canonicalName.orEmpty()
 
@@ -75,6 +82,7 @@ class ManageProductVariantFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         product?.let { viewModel.setupInitiateProductData(it) }
+        viewModel.setCampaignId(campaignId)
         super.onViewCreated(view, savedInstanceState)
         setupPage(viewModel.getProductData())
         setupWidgetBulkApply(
@@ -105,6 +113,10 @@ class ManageProductVariantFragment :
     private fun setupObservers() {
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = it
+        }
+
+        viewModel.criteriaCheckingResult.observe(viewLifecycleOwner) {
+            showCriteriaCheckBottomSheet(it)
         }
     }
 
@@ -164,8 +176,16 @@ class ManageProductVariantFragment :
             } != null
         } != null
 
-        if (isValid) ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_valid), TYPE_NORMAL)
-        else ToasterHelper.showToaster(buttonSubmit, getString(R.string.stfs_toaster_error), TYPE_ERROR)
+        if (isValid) ToasterHelper.showToaster(
+            buttonSubmit,
+            getString(R.string.stfs_toaster_valid),
+            TYPE_NORMAL
+        )
+        else ToasterHelper.showToaster(
+            buttonSubmit,
+            getString(R.string.stfs_toaster_error),
+            TYPE_ERROR
+        )
     }
 
     private fun setWidgetBulkApplyState() {
@@ -196,6 +216,10 @@ class ManageProductVariantFragment :
         }
         rvManageProductDetail?.adapter = adapter
         viewModel.setupInitiateProductData(product)
+    }
+
+    private fun showCriteriaCheckBottomSheet(list: List<CriteriaCheckingResult>) {
+        criteriaCheckBottomSheet.show(list, childFragmentManager, "")
     }
 
     override fun onDataInputChanged(
@@ -246,7 +270,11 @@ class ManageProductVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
-    override fun onMultiWarehouseClicked(adapterPosition: Int) {
+    override fun onMultiWarehouseClicked(
+        adapterPosition: Int,
+        selectedProduct: ReservedProduct.Product.ChildProduct
+    ) {
+        viewModel.sendManageAllLocationClickEvent(campaignId, selectedProduct.productId)
         val intent = ManageProductMultiLocationVariantActivity.start(
             context ?: return,
             viewModel.getProductData(),
@@ -254,6 +282,19 @@ class ManageProductVariantFragment :
             campaignId
         )
         startActivityForResult(intent, REQUEST_CODE_MANAGE_PRODUCT_VARIANT_LOCATION)
+    }
+
+    override fun onIneligibleProductWithSingleWarehouseClicked(
+        index: Int,
+        selectedProduct: ReservedProduct.Product.ChildProduct,
+        productCriteria: ReservedProduct.Product.ProductCriteria
+    ) {
+        criteriaCheckBottomSheet.setProductPreview(
+            selectedProduct.name,
+            selectedProduct.picture
+        )
+        viewModel.checkCriteria(selectedProduct, productCriteria)
+        viewModel.sendCheckDetailClickEvent(campaignId, selectedProduct.productId)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
