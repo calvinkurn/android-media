@@ -9,10 +9,6 @@ kapt {
     useBuildCache = true
 }
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-}
-
 buildscript {
     repositories {
         google()
@@ -39,36 +35,6 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
-    }
-
-    sourceSets {
-        test {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
-        androidTest {
-            java.srcDirs += "$projectDir/src/testCommon/java"
-        }
-    }
-
-    buildTypes {
-        debug {
-            ext.enableHansel = project.hasProperty('hanselEnableDebug')
-            testCoverageEnabled (project.hasProperty('coverage'))
-        }
-        release {
-            ext.enableHansel = !project.hasProperty('hanselDisableRelease')
-            minifyEnabled false
-            consumerProguardFiles 'proguard-rules.pro'
-        }
-    }
-
-    testOptions {
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-                excludes = ['jdk.internal.*']
-            }
-        }
     }
 
     buildFeatures {
@@ -160,4 +126,3 @@ project.ext {
 
 apply from: '../../../publish_local.gradle'
 apply from: '../../../jacoco_task.gradle'
-apply from: '../../../sonar_config.gradle'
