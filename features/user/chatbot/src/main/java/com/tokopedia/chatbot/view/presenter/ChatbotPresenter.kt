@@ -196,7 +196,7 @@ class ChatbotPresenter @Inject constructor(
     private var isUploading: Boolean = false
     private var listInterceptor: ArrayList<Interceptor> =
         arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
-    private lateinit var chatResponse: ChatSocketPojo
+    private var chatResponse: ChatSocketPojo? = null
     private val job = SupervisorJob()
     private var autoRetryJob: Job? = null
     var socketJob: Job? = null
@@ -330,7 +330,7 @@ class ChatbotPresenter @Inject constructor(
 
             mappingSocketEvent(webSocketResponse, messageId)
 
-            val attachmentType = chatResponse.attachment?.type
+            val attachmentType = chatResponse?.attachment?.type
             if (attachmentType != null) {
                 when (attachmentType) {
                     OPEN_CSAT -> handleOpenCsatAttachment(webSocketResponse)
@@ -356,25 +356,26 @@ class ChatbotPresenter @Inject constructor(
 
     private fun handleUpdateToolbarAttachment() {
         val tool =
-            Gson().fromJson(chatResponse.attachment?.attributes, ToolbarAttributes::class.java)
+            Gson().fromJson(chatResponse?.attachment?.attributes, ToolbarAttributes::class.java)
         view.updateToolbar(tool.profileName, tool.profileImage, tool.badgeImage)
     }
 
     private fun handleChatDividerAttachment() {
         val liveChatDividerAttribute = Gson().fromJson(
-            chatResponse.attachment?.attributes,
+            chatResponse?.attachment?.attributes,
             LiveChatDividerAttributes::class.java
         )
         val model = ChatSepratorViewModel(
             sepratorMessage = liveChatDividerAttribute?.divider?.label,
-            dividerTiemstamp = chatResponse.message.timeStampUnixNano
+            //TODO recheck this
+            dividerTiemstamp = chatResponse?.message?.timeStampUnixNano ?: ""
         )
         view.onReceiveChatSepratorEvent(model, getLiveChatQuickReply())
     }
 
     private fun handleSessionChangeAttachment() {
         val agentMode: ReplyBubbleAttributes = Gson().fromJson(
-            chatResponse.attachment?.attributes,
+            chatResponse?.attachment?.attributes,
             ReplyBubbleAttributes::class.java
         )
         handleSessionChange(agentMode)
@@ -391,7 +392,7 @@ class ChatbotPresenter @Inject constructor(
     private fun getLiveChatQuickReply(): List<QuickReplyViewModel> {
         val quickReplyListPojo = GsonBuilder().create()
             .fromJson(
-                chatResponse.attachment?.attributes,
+                chatResponse?.attachment?.attributes,
                 QuickReplyAttachmentAttributes::class.java
             )
         val list = ArrayList<QuickReplyViewModel>()
