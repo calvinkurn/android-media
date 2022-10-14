@@ -836,10 +836,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     }
 
     private val endTimeInteractive: Calendar? get() {
-        return when (val value = _interactive.value){
-            is InteractiveUiModel.Quiz -> return when (val endTime = value.status){
+        return when (val interactive = _interactive.value){
+            is InteractiveUiModel.Quiz -> return when (val status = interactive.status){
                 is InteractiveUiModel.Quiz.Status.Ongoing -> {
-                    endTime.endTime
+                    status.endTime
                 }
                 else -> null
             }
