@@ -57,6 +57,7 @@ import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_MPC_LIFECYCLE_OBSERVER
 import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_PRODUCT_CARD_VIEWSTUB
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.R
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.ProductClickAnalyticsData
@@ -98,6 +99,7 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcActivityResult
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
@@ -105,6 +107,8 @@ import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
+import com.tokopedia.search.result.product.video.VideoAutoplayConstants.allSupportedVideoAutoplayType
+import com.tokopedia.search.result.product.video.VideoAutoplayConstants.videoCarouselSupportedVideoAutoplayType
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.FragmentProvider
@@ -130,8 +134,8 @@ import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import org.json.JSONArray
 import javax.inject.Inject
+import kotlin.reflect.KClass
 import com.tokopedia.wishlist_common.R as Rwishlist
-import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcActivityResult
 
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
@@ -241,8 +245,36 @@ class ProductListFragment: BaseDaggerFragment(),
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
 
-    private val productVideoAutoplay : VideoPlayerAutoplay by lazy {
-        VideoPlayerAutoplay(remoteConfig)
+    private val isSneakPeekEnabled: Boolean by lazy {
+        getABTestVideoSneakPeek()
+    }
+
+    private fun getABTestVideoSneakPeek(): Boolean {
+        return try {
+            val abTestVideoSneakPeekAutoPlay = abTestRemoteConfig?.getString(
+                RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY,
+                ""
+            )
+            RollenceKey.SEARCH_VIDEO_SNEAK_PEEK_AUTOPLAY_VARIANT == abTestVideoSneakPeekAutoPlay
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    private val productVideoAutoplaySupportedViewHolderType: List<KClass<out RecyclerView.ViewHolder>> by lazy {
+        if (isSneakPeekEnabled) {
+            allSupportedVideoAutoplayType
+        } else {
+            videoCarouselSupportedVideoAutoplayType
+        }
+    }
+
+    private val productVideoAutoplay: VideoPlayerAutoplay by lazy {
+        VideoPlayerAutoplay(
+            remoteConfig,
+            productVideoAutoplaySupportedViewHolderType,
+            context,
+        )
     }
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
     private lateinit var networkMonitor : DefaultNetworkMonitor

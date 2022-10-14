@@ -25,7 +25,7 @@ class DefaultNetworkMonitor(
     lifecycleOwner: LifecycleOwner?
 ) : NetworkMonitor,
     LifecycleObserver {
-    private val contextReference = WeakReference<Context?>(context)
+    private val contextReference = WeakReference<Context?>(context?.applicationContext)
     private val context: Context?
         get() = contextReference.get()
 

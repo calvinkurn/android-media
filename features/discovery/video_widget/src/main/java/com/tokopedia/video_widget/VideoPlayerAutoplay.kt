@@ -1,16 +1,21 @@
 package com.tokopedia.video_widget
 
+import android.content.Context
 import android.view.ViewTreeObserver
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.Player
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.video_widget.util.LayoutManagerUtil
 import com.tokopedia.video_widget.util.RecyclerViewUtils.getRecyclerViewLocationAndMeasurement
 import com.tokopedia.video_widget.util.RecyclerViewUtils.getViewVisibilityOnRecyclerView
+import com.tokopedia.video_widget.util.SimpleExoPlayerUtils
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -21,9 +26,12 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
+import kotlin.reflect.KClass
 
 class VideoPlayerAutoplay(
     private val remoteConfig: RemoteConfig,
+    private val supportedViewHolderType: List<KClass<out RecyclerView.ViewHolder>>,
+    private var context: Context?,
 ) : CoroutineScope, LifecycleObserver {
     companion object {
         private const val VISIBILITY_PERCENTAGE_THRESHOLD = 50f
@@ -42,8 +50,8 @@ class VideoPlayerAutoplay(
     private val hasVisibleViewHolders: Boolean
         get() {
             return isAdapterNotEmpty
-                    && firstVisibleItemIndex != -1
-                    && lastVisibleItemIndex != -1
+                && firstVisibleItemIndex != -1
+                && lastVisibleItemIndex != -1
         }
 
     private val isAutoplayProductVideoEnabled: Boolean by lazy {
@@ -65,6 +73,35 @@ class VideoPlayerAutoplay(
 
     override val coroutineContext: CoroutineContext
         get() = masterJob + Dispatchers.Main
+
+    private var mExoPlayerListener: ExoPlayerListener? = null
+
+    private val playerEventListener = object : Player.EventListener {
+        override fun onPlayerStateChanged(playWhenReady: Boolean, playbackState: Int) {
+            val exoPlayerListener = mExoPlayerListener ?: return
+            when (playbackState) {
+                Player.STATE_IDLE -> exoPlayerListener.onPlayerIdle()
+                Player.STATE_BUFFERING -> exoPlayerListener.onPlayerBuffering()
+                Player.STATE_READY -> {
+                    if (!playWhenReady) {
+                        exoPlayerListener.onPlayerPaused()
+                    } else {
+                        exoPlayerListener.onPlayerPlaying()
+                    }
+                }
+                Player.STATE_ENDED -> {
+                    exoPlayerListener.onPlayerEnded()
+                }
+            }
+        }
+
+        override fun onPlayerError(error: ExoPlaybackException) {
+            val exoPlayerListener = mExoPlayerListener ?: return
+            exoPlayerListener.onPlayerError(error.toString())
+        }
+    }
+
+    private var exoPlayer: ExoPlayer? = null
 
     private val autoPlayScrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -98,6 +135,7 @@ class VideoPlayerAutoplay(
 
     fun setUp(recyclerView: RecyclerView) {
         if (isAutoplayProductVideoEnabled) {
+            exoPlayer = SimpleExoPlayerUtils.create(context, playerEventListener)
             this.recyclerView = recyclerView
             recyclerView.addOnScrollListener(autoPlayScrollListener)
             recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
@@ -133,7 +171,8 @@ class VideoPlayerAutoplay(
         )
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
             val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
-            if (viewHolder is VideoPlayerProvider) {
+            val isSupportedViewHolder = viewHolder::class in supportedViewHolderType
+            if (viewHolder is VideoPlayerProvider && isSupportedViewHolder) {
                 val viewVisibilityPercentage = getViewVisibilityOnRecyclerView(
                     viewHolder.itemView,
                     recyclerViewPosition,
@@ -169,17 +208,20 @@ class VideoPlayerAutoplay(
         visibleItem: VideoPlayer,
         visibleItemIterator: Iterator<VideoPlayer>
     ) {
-        visibleItem.playVideo()
+        val exoPlayer = exoPlayer ?: return
+        if (visibleItem is ExoPlayerListener) mExoPlayerListener = visibleItem
+        visibleItem.playVideo(exoPlayer)
             .filter { state ->
                 state is VideoPlayerState.Ended
-                        || state is VideoPlayerState.NoVideo
-                        || state is VideoPlayerState.Error
+                    || state is VideoPlayerState.NoVideo
+                    || state is VideoPlayerState.Error
             }
             .catch { t ->
                 Timber.e(t)
                 VideoPlayerState.Error(t.message ?: "Unknown Error")
             }
             .collect {
+                mExoPlayerListener = null
                 videoPlayer = null
                 playNextVideo(visibleItemIterator)
             }
@@ -215,6 +257,8 @@ class VideoPlayerAutoplay(
         unregisterVideoAutoplayAdapterObserver()
         stopVideoAutoplay()
         masterJob.cancel()
+        context = null
+        exoPlayer = null
     }
 
     private fun unregisterVideoAutoplayAdapterObserver() {
