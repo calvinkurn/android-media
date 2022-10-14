@@ -33,8 +33,6 @@ object TimeConverter {
     private const val GMT07 = "+0700"
     private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
 
-
-
     fun generateTime(context: Context, postTime: String): String {
         return generateTime(context, postTime, DEFAULT_FEED_FORMAT)
     }
