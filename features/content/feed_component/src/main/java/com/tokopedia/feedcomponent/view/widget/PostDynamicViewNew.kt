@@ -628,8 +628,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ASGC_NEW_PRODUCTS -> context.getString(R.string.feeds_asgc_new_product_text)
                 ASGC_RESTOCK_PRODUCTS -> context.getString(R.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->   context.getString(R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL ->  context.getString(R.string.feed_asgc_rilisan_special)
+                ASGC_FLASH_SALE_TOKO -> context.getString(R.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(R.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
