@@ -947,7 +947,7 @@ class LoginEmailPhoneViewModelTest {
     fun `on Admin Redirection`() {
 
         every { getProfileUseCase.execute(any()) } answers {
-            firstArg<GetProfileSubscriber>().onAdminRedirection?.invoke()
+            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
         }
 
         viewModel.getUserInfo()
