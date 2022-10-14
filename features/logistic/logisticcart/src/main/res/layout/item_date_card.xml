@@ -19,12 +19,14 @@
             android:id="@+id/tv_label_out_of_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:labelType="general_dark_grey"
             app:labelTitle="@string/label_out_of_date"
+            app:labelType="general_dark_grey"
             app:layout_constraintBottom_toTopOf="@id/tv_title_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:visibility="visible" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title_date"

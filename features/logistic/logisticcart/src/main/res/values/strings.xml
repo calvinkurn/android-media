@@ -58,6 +58,6 @@
     <string name="occ_pinpoint_error_description">Pengiriman &amp; estimasi tiba akan tampil di sini.</string>
     <string name="occ_pinpoint_error_action">Atur</string>
 
-    <string name="label_out_of_date">Habis</string>
+    <string name="label_out_of_date">HABIS</string>
     <string name="bottomsheet_schedule_slot_title">Pilih Jadwal Pengiriman</string>
 </resources>
