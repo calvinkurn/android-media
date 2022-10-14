@@ -86,6 +86,7 @@ class UploadMultipleMediaUseCase @Inject constructor(
             .flatMap { medium ->
                 uploadVideoUseCase.createObservable(UploadVideoUseCase.createParam(setTempFilePath(medium)))
                     .map(mapToUrlVideo(medium))
+                    .subscribeOn(Schedulers.io())
             }
             .toList()
             .subscribeOn(Schedulers.io())
