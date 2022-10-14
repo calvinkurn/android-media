@@ -228,7 +228,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                     btnDelete.visible()
                     btnEdit.visible()
                 } else {
-                    btnRegister.visible()
                     btnDelete.gone()
                     btnEdit.gone()
                 }
@@ -827,6 +826,8 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 btnRegister.visible()
                 btnDelete.gone()
                 btnEdit.gone()
+            } else{
+                btnRegister.gone()
             }
         }
     }
