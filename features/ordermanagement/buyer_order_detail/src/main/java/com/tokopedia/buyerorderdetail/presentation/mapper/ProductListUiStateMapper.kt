@@ -29,14 +29,12 @@ object ProductListUiStateMapper {
             }
             is GetBuyerOrderDetailRequestState.Complete.Error -> {
                 mapOnGetBuyerOrderDetailError(
-                    getBuyerOrderDetailRequestState,
-                    p1DataRequestState,
-                    currentState
+                    getBuyerOrderDetailRequestState.throwable, p1DataRequestState, currentState
                 )
             }
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
-                    getBuyerOrderDetailRequestState,
+                    getBuyerOrderDetailRequestState.result,
                     p1DataRequestState,
                     currentState,
                     singleAtcRequestStates
@@ -56,7 +54,7 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        throwable: Throwable?,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState
     ): ProductListUiState {
@@ -65,13 +63,13 @@ object ProductListUiStateMapper {
                 mapOnGetOrderResolutionRequesting(currentState)
             }
             is GetOrderResolutionRequestState.Complete -> {
-                mapOnGetOrderResolutionComplete(buyerOrderDetailRequestState)
+                mapOnGetOrderResolutionComplete(throwable)
             }
         }
     }
 
     private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
@@ -79,16 +77,11 @@ object ProductListUiStateMapper {
         return when (p1DataRequestState.getOrderResolutionRequestState) {
             is GetOrderResolutionRequestState.Requesting -> {
                 mapOnGetOrderResolutionRequesting(
-                    buyerOrderDetailRequestState,
-                    currentState,
-                    singleAtcRequestStates
+                    buyerOrderDetailData, currentState, singleAtcRequestStates
                 )
             }
             is GetOrderResolutionRequestState.Complete -> {
-                mapOnGetOrderResolutionComplete(
-                    buyerOrderDetailRequestState,
-                    singleAtcRequestStates
-                )
+                mapOnGetOrderResolutionComplete(buyerOrderDetailData, singleAtcRequestStates)
             }
         }
     }
@@ -104,34 +97,28 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetOrderResolutionRequesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
         return if (currentState is ProductListUiState.HasData) {
-            mapOnReloading(
-                buyerOrderDetailRequestState.result,
-                singleAtcRequestStates
-            )
+            mapOnReloading(buyerOrderDetailData, singleAtcRequestStates)
         } else {
             mapOnLoading()
         }
     }
 
     private fun mapOnGetOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+        throwable: Throwable?,
     ): ProductListUiState {
-        return mapOnError(buyerOrderDetailRequestState.throwable)
+        return mapOnError(throwable)
     }
 
     private fun mapOnGetOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        return mapOnDataReady(
-            buyerOrderDetailRequestState.result,
-            singleAtcRequestStates
-        )
+        return mapOnDataReady(buyerOrderDetailData, singleAtcRequestStates)
     }
 
     private fun mapOnLoading(): ProductListUiState {
