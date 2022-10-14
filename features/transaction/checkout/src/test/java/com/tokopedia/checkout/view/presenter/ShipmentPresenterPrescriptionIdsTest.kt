@@ -1,9 +1,8 @@
 package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
-import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.checkout.domain.usecase.*
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
@@ -15,7 +14,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -119,8 +118,10 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `WHEN upload prescription then should hit upload prescription use case with checkout id`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+        )
 
         // When
         presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
@@ -160,8 +161,10 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `GIVEN error item WHEN upload prescription THEN should not hit upload prescription use case`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+        )
 
         // When
         presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
@@ -175,8 +178,10 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `CHECK upload prescription data initialization`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+        )
 
         // Then
         assert(presenter.uploadPrescriptionUiModel != null)

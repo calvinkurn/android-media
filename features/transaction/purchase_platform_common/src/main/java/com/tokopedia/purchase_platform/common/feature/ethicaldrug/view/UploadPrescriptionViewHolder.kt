@@ -1,27 +1,21 @@
-package com.tokopedia.purchase_platform.common.feature.ethicaldrug
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.view
 
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.View
 import android.view.animation.CycleInterpolator
-import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.common.R
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.purchase_platform.common.databinding.ItemUploadPrescriptionBinding
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 
 class UploadPrescriptionViewHolder(
     val view: View,
     val listener: UploadPrescriptionListener
 ) : RecyclerView.ViewHolder(view) {
 
-    private val uploadPrescriptionLayout: LinearLayout = view.findViewById(R.id.upload_prescription_layout)
-    private val uploadPrescriptionText: Typography = view.findViewById(R.id.upload_prescription_text)
-    private val uploadDescriptionText: Typography = view.findViewById(R.id.upload_description_text)
-    private val uploadPrescriptionIcon: ImageUnify = view.findViewById(R.id.upload_icon)
-    private val containerUploadPrescription: ConstraintLayout = view.findViewById(R.id.container_upload_prescription)
+    private val binding = ItemUploadPrescriptionBinding.bind(view)
 
     companion object {
         @SuppressLint("ResourcePackage")
@@ -34,22 +28,22 @@ class UploadPrescriptionViewHolder(
         private const val VIBRATION_ANIMATION_CYCLE = 4f
     }
 
-    fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel){
-        uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
-        uploadPrescriptionIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if(uploadPrescriptionUiModel.uploadedImageCount == 0){
-            uploadDescriptionText.hide()
-        }else {
-            uploadDescriptionText.show()
-            uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
+    fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
+        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
+            binding.uploadDescriptionText.hide()
+        } else {
+            binding.uploadDescriptionText.show()
+            binding.uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
-        uploadPrescriptionLayout.setOnClickListener {
+        binding.uploadPrescriptionLayout.setOnClickListener {
             listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
         }
 
-        if(uploadPrescriptionUiModel.isError){
-            containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red)
-            containerUploadPrescription.animate()
+        if (uploadPrescriptionUiModel.isError) {
+            binding.containerUploadPrescription.setBackgroundResource(R.drawable.bg_pp_rounded_red)
+            binding.containerUploadPrescription.animate()
                 .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
                 .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
@@ -63,8 +57,13 @@ class UploadPrescriptionViewHolder(
                     override fun onAnimationRepeat(animator: Animator) {}
                 })
                 .start()
-        }else {
-            containerUploadPrescription.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+        } else {
+            binding.containerUploadPrescription.setBackgroundResource(R.drawable.bg_pp_rounded_grey)
+        }
+        if (uploadPrescriptionUiModel.isOcc) {
+            binding.occDivider.visible()
+        } else {
+            binding.occDivider.gone()
         }
     }
 }

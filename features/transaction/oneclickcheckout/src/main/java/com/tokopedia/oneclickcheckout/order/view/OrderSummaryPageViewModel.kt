@@ -54,6 +54,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -109,6 +110,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
 
     val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
+
+    val imageUpload: OccMutableLiveData<ImageUploadDataModel> = OccMutableLiveData(ImageUploadDataModel())
 
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
@@ -178,6 +181,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
+            imageUpload.value = result.imageUpload
         }
     }
 

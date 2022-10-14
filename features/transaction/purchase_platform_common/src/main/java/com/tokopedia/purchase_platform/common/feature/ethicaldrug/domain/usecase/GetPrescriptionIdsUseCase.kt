@@ -1,9 +1,9 @@
-package com.tokopedia.checkout.domain.usecase
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase
 
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers

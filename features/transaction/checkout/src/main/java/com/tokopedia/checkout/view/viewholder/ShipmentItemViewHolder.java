@@ -455,9 +455,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
     private void renderShippingVibrationAnimation(ShipmentCartItemModel shipmentCartItemModel) {
         if (shipmentCartItemModel.isShippingBorderRed()) {
-            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.checkout_module_bg_rounded_red);
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_red);
         } else {
-            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.checkout_module_bg_rounded_grey);
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey);
         }
         if (shipmentCartItemModel.isTriggerShippingVibrationAnimation()) {
             containerShippingExperience.animate()
@@ -904,7 +904,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         llShippingExperienceStateLoading.setVisibility(View.GONE);
         containerShippingExperience.setVisibility(View.VISIBLE);
-        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.checkout_module_bg_rounded_grey);
+        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey);
     }
 
     private void renderSelectedCourier(ShipmentCartItemModel shipmentCartItemModel, RecipientAddressModel currentAddress, CourierItemData selectedCourierItemData) {
@@ -913,7 +913,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
 
         llShippingExperienceStateLoading.setVisibility(View.GONE);
         containerShippingExperience.setVisibility(View.VISIBLE);
-        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.checkout_module_bg_rounded_grey);
+        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey);
         if (shipmentCartItemModel.isDisableChangeCourier()) {
             // Is single shipping only
             renderSingleShippingCourier(shipmentCartItemModel, selectedCourierItemData);
@@ -1313,7 +1313,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateNoSelectedShipping.setVisibility(View.GONE);
         llShippingExperienceStateLoading.setVisibility(View.GONE);
         containerShippingExperience.setVisibility(View.VISIBLE);
-        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.checkout_module_bg_rounded_grey);
+        containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey);
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
         layoutStateHasErrorShipping.setVisibility(View.GONE);

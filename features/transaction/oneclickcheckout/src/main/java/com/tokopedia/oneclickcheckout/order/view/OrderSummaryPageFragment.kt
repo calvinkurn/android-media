@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -105,6 +106,8 @@ import com.tokopedia.purchase_platform.common.constant.AddOnConstant
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.constant.PAGE_OCC
 import com.tokopedia.purchase_platform.common.feature.bottomsheet.InsuranceBottomSheet
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.PopUpData
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
@@ -362,11 +365,25 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun initViews() {
         context?.let {
-            activity?.window?.decorView?.setBackgroundColor(ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            activity?.window?.decorView?.setBackgroundColor(
+                ContextCompat.getColor(
+                    it,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
         }
-        adapter = OrderSummaryPageAdapter(orderSummaryAnalytics, getOrderShopCardListener(), getOrderProductCardListener(), getOrderPreferenceCardListener(),
-                getOrderInsuranceCardListener(), getOrderPromoCardListener(), getOrderTotalPaymentCardListener())
-        binding.rvOrderSummaryPage.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter = OrderSummaryPageAdapter(
+            orderSummaryAnalytics,
+            getOrderShopCardListener(),
+            getOrderProductCardListener(),
+            getOrderPreferenceCardListener(),
+            getOrderInsuranceCardListener(),
+            getOrderPromoCardListener(),
+            getUploadPrescriptionListener(),
+            getOrderTotalPaymentCardListener()
+        )
+        binding.rvOrderSummaryPage.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.rvOrderSummaryPage.adapter = adapter
         binding.rvOrderSummaryPage.itemAnimator = null
     }
@@ -393,6 +410,8 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         observeGlobalEvent()
 
         observeEligibilityForAnaRevamp()
+
+        observeUploadPrescription()
 
         // first load
         if (viewModel.orderProducts.value.isEmpty()) {
@@ -460,6 +479,28 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeUploadPrescription() {
+        viewModel.imageUpload.observe(viewLifecycleOwner) {
+            UploadPrescriptionUiModel(
+                isOcc = true,
+                uploadImageText = it.text,
+                checkoutId = it.checkoutId,
+                leftIconUrl = it.leftIconUrl,
+                showImageUpload = it.showImageUpload,
+                frontEndValidation = it.frontEndValidation,
+            ).also {
+                adapter.uploadPrescription = it
+                if (binding.rvOrderSummaryPage.isComputingLayout) {
+                    binding.rvOrderSummaryPage.post {
+                        adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+                    }
+                } else {
+                    adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
+                }
+            }
+        }
+    }
+
     private fun observeOrderProducts() {
         viewModel.orderProducts.observe(viewLifecycleOwner) {
             val oldSize = adapter.products.size
@@ -467,7 +508,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             adapter.products = it
             when {
                 newSize > oldSize -> {
-                    adapter.notifyItemRangeChanged(OrderSummaryPageAdapter.productStartIndex, oldSize)
+                    adapter.notifyItemRangeChanged(
+                        OrderSummaryPageAdapter.productStartIndex,
+                        oldSize
+                    )
                     adapter.notifyItemRangeInserted(oldSize, newSize - oldSize)
                 }
                 newSize == oldSize -> {
@@ -1578,10 +1622,20 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun getUploadPrescriptionListener(): UploadPrescriptionListener {
+        return object : UploadPrescriptionListener {
+            override fun uploadPrescriptionAction(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+                Toast.makeText(context, "upload clicked", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     private fun getOrderTotalPaymentCardListener(): OrderTotalPaymentCard.OrderTotalPaymentCardListener {
         return object : OrderTotalPaymentCard.OrderTotalPaymentCardListener {
             override fun onOrderDetailClicked(orderCost: OrderCost) {
-                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(orderCost.totalPrice.toLong().toString())
+                orderSummaryAnalytics.eventClickRingkasanBelanjaOSP(
+                    orderCost.totalPrice.toLong().toString()
+                )
                 OrderPriceSummaryBottomSheet().show(this@OrderSummaryPageFragment, orderCost)
             }
 
