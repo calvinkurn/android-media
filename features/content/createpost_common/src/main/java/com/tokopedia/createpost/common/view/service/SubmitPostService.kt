@@ -241,48 +241,6 @@ class SubmitPostService : JobIntentServiceX() {
         }
     }
 
-    private fun getSubscriber(): Subscriber<SubmitPostData> {
-        return object : Subscriber<SubmitPostData>() {
-            override fun onNext(submitPostData: SubmitPostData?) {
-                if (submitPostData == null
-                    || submitPostData.feedContentSubmit.success != SubmitPostData.SUCCESS) {
-                    postUpdateProgressManager?.onFailedPost(
-                        com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                            this@SubmitPostService,
-                            RuntimeException()
-                        )
-                    )
-                    return
-                } else if (!TextUtils.isEmpty(submitPostData.feedContentSubmit.error)) {
-                    postUpdateProgressManager?.onFailedPost(submitPostData.feedContentSubmit.error)
-                    return
-                }
-                postUpdateProgressManager?.onSuccessPost()
-                sendBroadcast()
-                postContentToOtherService(submitPostData.feedContentSubmit.meta.content)
-                addFlagOnCreatePostSuccess()
-            }
-
-            override fun onCompleted() {
-            }
-
-            override fun onError(e: Throwable?) {
-                postUpdateProgressManager?.onFailedPost(
-                    com.tokopedia.abstraction.common.utils.network.ErrorHandler.getErrorMessage(
-                        this@SubmitPostService,
-                        e
-                    )
-                )
-            }
-
-            private fun sendBroadcast() {
-                val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
-                intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)
-                LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
-            }
-        }
-    }
-
     private fun sendBroadcast() {
         val intent = Intent(BROADCAST_SUBMIT_POST_NEW)
         intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)

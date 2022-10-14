@@ -26,9 +26,7 @@ import rx.schedulers.Schedulers
 import java.io.File
 import javax.inject.Inject
 
-/**
- * Use this usecase after migrating both image & video uploader
- */
+
 class UploadMultipleMediaUseCase @Inject constructor(
     @ActivityContext private val context: Context,
     private val uploaderUseCase: UploaderUseCase,

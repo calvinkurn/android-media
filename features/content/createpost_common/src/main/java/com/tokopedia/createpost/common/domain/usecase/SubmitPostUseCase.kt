@@ -19,9 +19,7 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-/**
- * Use this usecase after migrating both image & video uploader
- */
+
 @GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
