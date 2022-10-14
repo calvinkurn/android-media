@@ -116,7 +116,7 @@ class ShipmentCartItemModel(
         var isHasShownCourierError: Boolean = false,
 
         // Show schedule delivery
-        var isShowScheduleDelivery : Boolean = false
+        var isShowScheduleDelivery : Boolean = true
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
