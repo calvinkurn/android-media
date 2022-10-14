@@ -94,6 +94,15 @@ class ManageProductNonVariantMultilocFragment :
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         product?.let {
             val warehouses = inputAdapter.getDataList()
+            warehouses.onEachIndexed { indexEdited, warehouse ->
+                if (warehouse.isDilayaniTokopedia && indexEdited != index) {
+                    warehouse.discountSetup.apply {
+                        price = discountSetup.price
+                        discount = discountSetup.discount
+                    }
+                    inputAdapter.notifyItemChanged(indexEdited)
+                }
+            }
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)
         }

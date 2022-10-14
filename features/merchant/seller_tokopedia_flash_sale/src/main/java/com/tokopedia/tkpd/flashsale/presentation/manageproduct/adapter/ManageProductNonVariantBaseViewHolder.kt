@@ -1,23 +1,29 @@
 package com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter
 
 import android.content.Context
+import android.text.TextWatcher
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
+import com.tokopedia.campaign.utils.constant.LocaleConstant
+import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.digitsOnly
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.getPercentFormatted
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.setModeToNumberDelimitedInput
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantBaseViewHolder
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 open class ManageProductNonVariantBaseViewHolder(
     view: View,
@@ -25,9 +31,11 @@ open class ManageProductNonVariantBaseViewHolder(
 ): RecyclerView.ViewHolder(view) {
 
     var isEditing = false
+    var listenerNumberFormatDiscountNominal : TextWatcher? = null
+    var listenerNumberFormatDiscountPercent : TextWatcher? = null
 
     private fun Number?.toStringOrEmpty() =
-        if (this == null || this.toLong() == Int.ZERO.toLong()) "" else toString()
+        if (this == null || this.toLong() == Int.ZERO.toLong()) "" else getNumberFormatted()
 
     private fun TextFieldUnify2.setTextIfNotFocus(text: String) {
         if (!editText.isFocused) {
@@ -107,6 +115,8 @@ open class ManageProductNonVariantBaseViewHolder(
         criteria: ReservedProduct.Product.ProductCriteria,
         discount: ReservedProduct.Product.Warehouse.DiscountSetup?
     ) {
+        textFieldPriceDiscountNominal.editText.removeTextChangedListener(listenerNumberFormatDiscountNominal)
+        textFieldPriceDiscountPercentage.editText.removeTextChangedListener(listenerNumberFormatDiscountPercent)
         isEditing = true
         periodSection.gone()
         tickerPriceError.gone()
@@ -116,15 +126,31 @@ open class ManageProductNonVariantBaseViewHolder(
         quantityEditor.minValue = criteria.minCustomStock
         quantityEditor.maxValue = criteria.maxCustomStock
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
-        textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()
-        textFieldPriceDiscountPercentage.editText.setModeToNumberDelimitedInput()
         setupInitialFieldMessage(criteria)
         isEditing = false
+        listenerNumberFormatDiscountNominal = setNumberTextChangeListener(textFieldPriceDiscountNominal)
+        listenerNumberFormatDiscountPercent = setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+        textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
+        textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
     }
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setTicker(context: Context) {
         tickerPriceError.visible()
         tickerPriceError.setTextDescription(String.format(context.getString(R.string.stfs_text_ticker_warning)))
         tickerPriceError.requestLayout()
+    }
+
+    // TODO: tidy up this
+    private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
+        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
+        numberFormatter.applyPattern(ManageProductVariantBaseViewHolder.NUMBER_PATTERN)
+        return NumberThousandSeparatorTextWatcher(
+            editText.editText, numberFormatter
+        ) { _, formatNumber ->
+            editText.editText.setText(formatNumber)
+            editText.editText.setSelection(
+                editText.editText.text?.length.orZero()
+            )
+        }
     }
 }
