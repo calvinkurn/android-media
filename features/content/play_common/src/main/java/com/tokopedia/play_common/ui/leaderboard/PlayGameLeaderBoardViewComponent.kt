@@ -50,7 +50,7 @@ class PlayGameLeaderBoardViewComponent(
     }
 
     private val leaderboardAdapterObserver = object : RecyclerView.AdapterDataObserver() {
-        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
             if (itemCount > 0) rvLeaderboard.smoothScrollToPosition(0)
         }
     }
