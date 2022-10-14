@@ -47,47 +47,87 @@ class ChatAppWidgetViewModelTest {
     }
 
     @Test
-    fun `returns success result and notify the UI when get chat list`() = coroutineTestRule.runBlockingTest {
-        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+    fun `returns success result and notify the UI when get chat list`() =
+        coroutineTestRule.runBlockingTest {
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
-        val chatModel = ChatUiModel()
+            val chatModel = ChatUiModel()
 
-        coEvery {
-            getChatUseCase.executeOnBackground()
-        } returns chatModel
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } returns chatModel
 
-        mViewModel.getChatList(testShopId)
+            mViewModel.getChatList(testShopId)
 
-        coVerify {
-            getChatUseCase.executeOnBackground()
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            coVerify {
+                mView.onSuccess(chatModel)
+            }
+
+            val actualResult = getChatUseCase.executeOnBackground()
+
+            assertEquals(chatModel, actualResult)
         }
-
-        coVerify {
-            mView.onSuccess(chatModel)
-        }
-
-        val actualResult = getChatUseCase.executeOnBackground()
-
-        assertEquals(chatModel, actualResult)
-    }
 
     @Test
-    fun `throw Exception and notify the UI when failed to get chat list`() = coroutineTestRule.runBlockingTest {
-        val throwable = RuntimeException("")
-        getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+    fun `given view null value when get chat data then return success result but will not notify the UI`() =
+        coroutineTestRule.runBlockingTest {
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
-        coEvery {
-            getChatUseCase.executeOnBackground()
-        } throws throwable
+            val chatModel = ChatUiModel()
 
-        mViewModel.getChatList(testShopId)
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } returns chatModel
 
-        coVerify {
-            getChatUseCase.executeOnBackground()
+            mViewModel.unbind()
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
         }
 
-        coVerify {
-            mView.onError(any())
+    @Test
+    fun `throw Exception and notify the UI when failed to get chat list`() =
+        coroutineTestRule.runBlockingTest {
+            val throwable = RuntimeException("")
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } throws throwable
+
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
+
+            coVerify {
+                mView.onError(any())
+            }
+        }
+
+    @Test
+    fun `given view null value when get chat list then throw Exception will not notify the UI`() {
+        coroutineTestRule.runBlockingTest {
+            val throwable = RuntimeException("")
+            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+
+            coEvery {
+                getChatUseCase.executeOnBackground()
+            } throws throwable
+
+            mViewModel.unbind()
+            mViewModel.getChatList(testShopId)
+
+            coVerify {
+                getChatUseCase.executeOnBackground()
+            }
         }
     }
 }
