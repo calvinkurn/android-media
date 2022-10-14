@@ -4,13 +4,12 @@ import android.content.Context
 import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrderDetailTypeFactory
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 import com.tokopedia.kotlin.extensions.view.orZero
-import java.io.Serializable
 
 data class OrderStatusUiModel(
     val orderStatusHeaderUiModel: OrderStatusHeaderUiModel,
     val orderStatusInfoUiModel: OrderStatusInfoUiModel,
     val ticker: TickerUiModel
-) : Serializable {
+) {
     data class OrderStatusHeaderUiModel(
         val indicatorColor: String,
         val orderId: String,
@@ -26,7 +25,7 @@ data class OrderStatusUiModel(
             val isPreOrder: Boolean,
             val label: String,
             val value: String
-        ) : Serializable
+        )
 
         override fun shouldShow(context: Context?): Boolean {
             return orderStatus.isNotBlank()
@@ -51,13 +50,13 @@ data class OrderStatusUiModel(
         data class InvoiceUiModel(
             val invoice: String,
             val url: String
-        ) : Serializable
+        )
 
         data class DeadlineUiModel(
             val color: String,
             val label: String,
             val value: String
-        ) : Serializable
+        )
 
         override fun shouldShow(context: Context?): Boolean {
             return invoice.invoice.isNotBlank() || (deadline.label.isNotBlank() && deadline.value.isNotBlank()) || purchaseDate.isNotBlank()

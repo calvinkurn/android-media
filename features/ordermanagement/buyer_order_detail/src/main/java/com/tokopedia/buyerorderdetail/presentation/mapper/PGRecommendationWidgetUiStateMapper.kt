@@ -11,6 +11,19 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.PGRecommendationWidge
 
 object PGRecommendationWidgetUiStateMapper {
 
+    fun map(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): PGRecommendationWidgetUiState {
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
+            }
+            else -> {
+                mapOnGetBuyerOrderDetailIdling()
+            }
+        }
+    }
+
     private fun mapOnGetBuyerOrderDetailDataStarted(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
     ): PGRecommendationWidgetUiState {
@@ -134,18 +147,5 @@ object PGRecommendationWidgetUiStateMapper {
             productIdList.add(product.productId)
         }
         return PGRecommendationWidgetUiModel(adsPageName, productIdList)
-    }
-
-    fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
-    ): PGRecommendationWidgetUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
     }
 }

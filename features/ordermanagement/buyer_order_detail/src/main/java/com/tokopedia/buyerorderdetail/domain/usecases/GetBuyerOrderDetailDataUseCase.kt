@@ -25,6 +25,10 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     private val getP1DataUseCase: GetP1DataUseCase
 ) {
 
+    suspend operator fun invoke(
+        params: GetBuyerOrderDetailDataParams
+    ) = execute(params).flowOn(Dispatchers.IO)
+
     private fun mapGetP0DataRequestStateToGetAllDataRequestState(
         p0DataRequestState: GetP0DataRequestState,
         shouldCheckCache: Boolean
@@ -102,8 +106,4 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             )
         )
     }
-
-    suspend operator fun invoke(
-        params: GetBuyerOrderDetailDataParams
-    ) = execute(params).flowOn(Dispatchers.IO)
 }

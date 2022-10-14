@@ -14,6 +14,8 @@ import javax.inject.Inject
 class GetP0DataUseCase @Inject constructor(
     private val getBuyerOrderDetailUseCase: GetBuyerOrderDetailUseCase
 ) {
+
+    suspend operator fun invoke(params: GetP0DataParams) = execute(params).flowOn(Dispatchers.IO)
     private fun mapToGetP0DataRequestState(
         getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState
     ) = flow {
@@ -37,6 +39,4 @@ class GetP0DataUseCase @Inject constructor(
     ).flatMapLatest(::mapToGetP0DataRequestState).catch {
         emit(GetP0DataRequestState.Error(GetBuyerOrderDetailRequestState.Error(it)))
     }
-
-    suspend operator fun invoke(params: GetP0DataParams) = execute(params).flowOn(Dispatchers.IO)
 }

@@ -12,6 +12,19 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.OrderStatusUiState
 
 object OrderStatusUiStateMapper {
 
+    fun map(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
+    ): OrderStatusUiState {
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
+            }
+            else -> {
+                mapOnGetBuyerOrderDetailIdling()
+            }
+        }
+    }
+
     private fun mapOnGetBuyerOrderDetailDataStarted(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started
     ): OrderStatusUiState {
@@ -228,18 +241,5 @@ object OrderStatusUiStateMapper {
             description = tickerInfo.text,
             type = tickerInfo.type
         )
-    }
-
-    fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
-    ): OrderStatusUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(getBuyerOrderDetailDataRequestState)
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
     }
 }

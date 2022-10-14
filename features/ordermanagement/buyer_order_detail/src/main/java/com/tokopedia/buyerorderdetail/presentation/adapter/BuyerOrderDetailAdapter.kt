@@ -14,6 +14,7 @@ import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -126,6 +127,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         addPaymentInfoSection(context, paymentInfoUiModel.paymentInfoItems)
         addThinDividerSection()
         addPaymentGrandTotalSection(context, paymentInfoUiModel.paymentGrandTotal)
+        addPlatformFeeInfoSection()
         addTickerSection(context, paymentInfoUiModel.ticker)
     }
 
@@ -288,6 +290,10 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
         paymentGrandTotal: PaymentInfoUiModel.PaymentGrandTotalUiModel
     ) {
         if (paymentGrandTotal.shouldShow(context)) add(paymentGrandTotal)
+    }
+
+    private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.addPlatformFeeInfoSection() {
+        add(PlatformFeeInfoUiModel())
     }
 
     private inline fun <reified T : Any> removeRecommendationWidget() {

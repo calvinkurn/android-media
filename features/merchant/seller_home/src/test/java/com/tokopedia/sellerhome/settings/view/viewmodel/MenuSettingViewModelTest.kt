@@ -2,6 +2,8 @@ package com.tokopedia.sellerhome.settings.view.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
+import com.tokopedia.logisticCommon.data.response.shoplocation.DataWhitelist
+import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocWhitelist
 import com.tokopedia.logisticCommon.data.response.shoplocation.ShopLocationWhitelistResponse
 import com.tokopedia.logisticCommon.domain.usecase.ShopMultilocWhitelistUseCase
 import com.tokopedia.sellerhome.settings.view.uimodel.menusetting.MenuSettingAccess
@@ -102,12 +104,42 @@ class MenuSettingViewModelTest {
         }
 
     @Test
-    fun `check shop loc whitelist if response success`() =
+    fun `check shop loc whitelist if response success with data eligible`() =
         runBlocking {
             everyProviderShopLocWhitelist()
-            everyShopLocWhitelistSuccess(1313L)
+            everyShopLocWhitelistSuccess(
+                ShopLocationWhitelistResponse(
+                    ShopLocWhitelist(
+                        data = DataWhitelist(
+                            eligibilityState = 1
+                        )
+                    )
+                )
+            )
 
-            viewModel.getShopLocEligible(1313L)
+            viewModel.getShopLocEligible(424424)
+            Assert.assertEquals(
+                viewModel.shopLocEligible.value, Success(
+                    true
+                )
+            )
+        }
+
+    @Test
+    fun `check shop loc whitelist if response success with data not eligible`() =
+        runBlocking {
+            everyProviderShopLocWhitelist()
+            everyShopLocWhitelistSuccess(
+                ShopLocationWhitelistResponse(
+                    ShopLocWhitelist(
+                        data = DataWhitelist(
+                            eligibilityState = 0
+                        )
+                    )
+                )
+            )
+
+            viewModel.getShopLocEligible(424424)
             Assert.assertEquals(
                 viewModel.shopLocEligible.value, Success(
                     false
@@ -119,9 +151,9 @@ class MenuSettingViewModelTest {
     fun `check shop loc whitelist if response fail`() =
         runBlocking {
             everyProviderShopLocWhitelist()
-            everyShopLocWhitelistFail(1313L)
+            everyShopLocWhitelistFail()
 
-            viewModel.getShopLocEligible(1313L)
+            viewModel.getShopLocEligible(424424)
             assert(viewModel.shopLocEligible.value is Fail)
 
         }
@@ -142,11 +174,11 @@ class MenuSettingViewModelTest {
         coEvery { shopMultilocProvider.get() } returns shopMultilocWhitelistUseCase
     }
 
-    private fun everyShopLocWhitelistSuccess(shopId: Long) {
-        coEvery { shopMultilocWhitelistUseCase.invoke(shopId) } returns ShopLocationWhitelistResponse()
+    private fun everyShopLocWhitelistSuccess(response: ShopLocationWhitelistResponse) {
+        coEvery { shopMultilocWhitelistUseCase.invoke(424424) } returns response
     }
 
-    private fun everyShopLocWhitelistFail(shopId: Long) {
-        coEvery { shopMultilocWhitelistUseCase.invoke(shopId) } throws ResponseErrorException()
+    private fun everyShopLocWhitelistFail() {
+        coEvery { shopMultilocWhitelistUseCase.invoke(424424) } throws ResponseErrorException()
     }
 }

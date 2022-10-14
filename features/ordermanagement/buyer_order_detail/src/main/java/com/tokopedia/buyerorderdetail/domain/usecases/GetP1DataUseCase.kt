@@ -19,6 +19,8 @@ class GetP1DataUseCase @Inject constructor(
     private val getOrderResolutionUseCase: GetOrderResolutionUseCase,
     private val getInsuranceDetailUseCase: GetInsuranceDetailUseCase
 ) {
+
+    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
     private fun getOrderResolutionUseCaseRequestStates(params: GetP1DataParams) = flow {
         if (params.hasResoStatus) {
             emitAll(
@@ -81,6 +83,4 @@ class GetP1DataUseCase @Inject constructor(
             )
         }
     }
-
-    operator fun invoke(params: GetP1DataParams) = execute(params).flowOn(Dispatchers.IO)
 }

@@ -17,6 +17,23 @@ import com.tokopedia.buyerorderdetail.presentation.uistate.ProductListUiState
 
 object ProductListUiStateMapper {
 
+    fun map(
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
+    ): ProductListUiState {
+        return when (getBuyerOrderDetailDataRequestState) {
+            is GetBuyerOrderDetailDataRequestState.Started -> {
+                mapOnGetBuyerOrderDetailDataStarted(
+                    getBuyerOrderDetailDataRequestState,
+                    singleAtcRequestStates
+                )
+            }
+            else -> {
+                mapOnGetBuyerOrderDetailIdling()
+            }
+        }
+    }
+
     private fun mapOnGetBuyerOrderDetailDataStarted(
         buyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState.Started,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
@@ -413,22 +430,5 @@ object ProductListUiStateMapper {
                 )
             }.orEmpty()
         )
-    }
-
-    fun map(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return when (getBuyerOrderDetailDataRequestState) {
-            is GetBuyerOrderDetailDataRequestState.Started -> {
-                mapOnGetBuyerOrderDetailDataStarted(
-                    getBuyerOrderDetailDataRequestState,
-                    singleAtcRequestStates
-                )
-            }
-            else -> {
-                mapOnGetBuyerOrderDetailIdling()
-            }
-        }
     }
 }

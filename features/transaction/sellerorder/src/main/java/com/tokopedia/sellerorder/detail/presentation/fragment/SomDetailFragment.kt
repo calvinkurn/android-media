@@ -728,6 +728,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 setChild(dialogView)
+
+                setAcceptOrderFreeShippingDialogDismissListener()
             }
             dialogUnify.show()
         }
@@ -1294,6 +1296,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
+        }
+    }
+
+    private fun DialogUnify.setAcceptOrderFreeShippingDialogDismissListener() {
+        setOnDismissListener {
+            binding?.btnPrimary?.isLoading = false
         }
     }
 

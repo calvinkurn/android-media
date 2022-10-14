@@ -15,6 +15,15 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
     dispatchers: CoroutineDispatchers, private val repository: GraphqlRepository
 ) : BaseGraphqlUseCase<GetBuyerOrderDetailParams, GetBuyerOrderDetailRequestState>(dispatchers) {
 
+    override fun graphqlQuery() = QUERY
+
+    override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
+        emit(GetBuyerOrderDetailRequestState.Requesting)
+        emit(GetBuyerOrderDetailRequestState.Success(sendRequest(params).buyerOrderDetail))
+    }.catch {
+        emit(GetBuyerOrderDetailRequestState.Error(it))
+    }
+
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {
         return RequestParams.create().apply {
             putObject(PARAM_INPUT, params)
@@ -29,15 +38,6 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
             createRequestParam(params),
             getCacheStrategy(params.shouldCheckCache)
         )
-    }
-
-    override fun graphqlQuery() = QUERY
-
-    override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
-        emit(GetBuyerOrderDetailRequestState.Requesting)
-        emit(GetBuyerOrderDetailRequestState.Success(sendRequest(params).buyerOrderDetail))
-    }.catch {
-        emit(GetBuyerOrderDetailRequestState.Error(it))
     }
 
     companion object {
