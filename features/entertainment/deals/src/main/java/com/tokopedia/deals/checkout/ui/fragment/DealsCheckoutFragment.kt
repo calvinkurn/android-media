@@ -34,6 +34,7 @@ import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.
 import com.tokopedia.deals.checkout.ui.activity.DealsCheckoutActivity.Companion.EXTRA_DEAL_VERIFY
 import com.tokopedia.deals.checkout.ui.mapper.DealsCheckoutMapper
 import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
+import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
 import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
@@ -66,6 +67,9 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var analytics: DealsAnalytics
 
     private var binding by autoClearedNullable<FragmentDealsCheckoutBinding>()
     private val viewModel by viewModels<DealsCheckoutViewModel> { viewModelFactory }
@@ -300,6 +304,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     }
 
     private fun showUI() {
+        analytics.checkoutSendScreenName()
         imgBrand?.loadImage(dealsDetail.imageApp)
         tgBrandName?.text = dealsDetail.brand.title
         tgTitle?.text = dealsDetail.displayName
@@ -367,6 +372,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
             actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
 
                 override fun onClickUsePromo() {
+                    analytics.checkoutPromoClick(dealsDetail.brand.title, promoApplied)
                     goToPromoListDealsActivity()
                 }
 
@@ -395,6 +401,8 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         }
 
         btnPayment?.setOnClickListener {
+            analytics.checkoutProceedPaymentClick(dealsVerify.metadata.quantity, dealsDetail.categoryId,
+                dealsDetail.id, dealsDetail.displayName, dealsDetail.brand.title, promoApplied, dealsDetail.salesPrice)
             if (dealsVerify.gatewayCode.isNullOrEmpty()) {
                 viewModel.checkoutGeneral(validatePromoCodesCheckoutGeneral(listOf(promoCode)))
             } else {

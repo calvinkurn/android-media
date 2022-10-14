@@ -3,6 +3,8 @@ package com.tokopedia.deals.common.analytics
 object DealsAnalyticsConstants {
 
     object Event {
+        const val CHECKOUT_PROGRESS = "checkout_progress"
+        const val BEGIN_CHECKOUT = "begin_checkout"
         const val CLICK_DEALS = "clickDeals"
         const val PRODUCT_CLICK = "productClick"
         const val PRODUCT_VIEW = "productView"
@@ -73,6 +75,13 @@ object DealsAnalyticsConstants {
         const val CLICK_BELI = "click beli"
         const val CLICK_RECOMMENDATION = "click on deals recommendation"
         const val IMPRESS_RECOMMENDATION = "impression on deals recommendation"
+        const val CLICK_PROMO = "click promo"
+        const val CLICK_PROCEED_PAYMENT = "click proceed to payment"
+        const val CLICK_PAYMENT_OPTION = "click payment option button"
+        const val VIEW_CHECKOUT = "view checkout"
+        const val CART_PAGE_LOADED = "cart page loaded"
+        const val CHECKOUT_STEP_1 = "1"
+        const val CHECKOUT_STEP_2 = "2"
     }
 
     object Label {
@@ -154,6 +163,8 @@ object DealsAnalyticsConstants {
     const val SESSION_IRIS = "sessionIris"
     const val USER_ID = "userId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val CHECKOUT_STEP = "checkout_step"
+    const val CHECKOUT_OPTION = "checkout_option"
     const val TOKOPEDIA_DIGITAL_DEALS = "tokopediadigitaldeals"
     const val TRAVELENTERTAINMENT_BU = "travel & entertainment"
     const val CATEGORY_LABEL = "category"
@@ -176,12 +187,16 @@ object DealsAnalyticsConstants {
     const val FOOD_VOUCHER_LIST = "/deals"
     const val PRODUCT_HOME_PAGE_LIST = "/deals - product card - homepage"
     const val SCREEN_NAME_DEALS_PDP = "/digital/deals/product"
+    const val SCREEN_NAME_DEALS_CHECKOUT = "/digital/deals/checkout"
     const val ITEMS = "items"
     const val ITEM_LIST = "item_list"
     const val ITEM_ID = "item_id"
     const val CATEGORY_ID = "category_id"
     const val QUANTITY = "quantity"
     const val CART_ID = "cart_id"
+    const val SHOP_ID = "shop_id"
+    const val SHOP_NAME = "shop_name"
+    const val SHOP_TYPE = "shop_type"
     const val PRICE = "price"
     const val INDEX = "index"
     const val DIMENSION_40 = "dimension40"
