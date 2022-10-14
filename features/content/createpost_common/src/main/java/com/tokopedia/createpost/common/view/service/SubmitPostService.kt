@@ -8,7 +8,6 @@ import android.text.TextUtils
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.abstraction.base.service.JobIntentServiceX
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.affiliatecommon.BROADCAST_SUBMIT_POST_NEW
 import com.tokopedia.affiliatecommon.SUBMIT_POST_SUCCESS_NEW
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.Content
@@ -17,9 +16,10 @@ import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.TYPE_AFFILIATE
 import com.tokopedia.createpost.common.TYPE_CONTENT_USER
-import com.tokopedia.createpost.common.di.CreatePostCommonDispatchers
+import com.tokopedia.createpost.common.di.qualifier.CreatePostCommonDispatchers
 import com.tokopedia.createpost.common.di.CreatePostCommonModule
 import com.tokopedia.createpost.common.di.DaggerCreatePostCommonComponent
+import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.SubmitPostResult
 import com.tokopedia.createpost.common.domain.usecase.SubmitPostUseCase
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -27,10 +27,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
-import rx.Subscriber
 import timber.log.Timber
 import javax.inject.Inject
 
+@Suppress("LateinitUsage")
 class SubmitPostService : JobIntentServiceX() {
 
     @Inject
@@ -46,14 +46,14 @@ class SubmitPostService : JobIntentServiceX() {
     lateinit var sellerAppReviewHelper: com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 
     @Inject
+    @SubmitPostCoroutineScope
+    lateinit var scope: CoroutineScope
+
+    @Inject
     @CreatePostCommonDispatchers
     lateinit var dispatchers: CoroutineDispatchers
 
     private var postUpdateProgressManager: com.tokopedia.createpost.common.view.util.PostUpdateProgressManager? = null
-
-    private val scope by lazy(LazyThreadSafetyMode.NONE) {
-        CoroutineScope(dispatchers.io)
-    }
 
     companion object {
         private const val JOB_ID = 13131314

@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.common.di
+package com.tokopedia.createpost.common.di.qualifier
 
 import javax.inject.Qualifier
 
@@ -7,4 +7,4 @@ import javax.inject.Qualifier
  */
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
-annotation class CreatePostCommonDispatchers
+annotation class SubmitPostCoroutineScope

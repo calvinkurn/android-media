@@ -5,6 +5,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
 import com.tokopedia.createpost.common.di.ActivityContext
+import com.tokopedia.createpost.common.di.qualifier.SubmitPostCoroutineScope
 import com.tokopedia.createpost.common.domain.entity.UploadMediaDataModel
 import com.tokopedia.createpost.common.view.util.FileUtil
 import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
@@ -15,6 +16,7 @@ import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.videouploader.domain.model.VideoUploadDomainModel
 import com.tokopedia.videouploader.domain.pojo.DefaultUploadVideoResponse
 import com.tokopedia.videouploader.domain.usecase.UploadVideoUseCase
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -29,9 +31,9 @@ import javax.inject.Inject
 
 class UploadMultipleMediaUseCase @Inject constructor(
     @ActivityContext private val context: Context,
+    @SubmitPostCoroutineScope private val scope: CoroutineScope,
     private val uploaderUseCase: UploaderUseCase,
-    /** Will be removed after video uploader migration is done soon */
-    private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>,
+    private val uploadVideoUseCase: UploadVideoUseCase<DefaultUploadVideoResponse>, /** Will be removed after video uploader migration is done soon */
     graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<List<SubmitPostMedium>>(graphqlRepository) {
 
