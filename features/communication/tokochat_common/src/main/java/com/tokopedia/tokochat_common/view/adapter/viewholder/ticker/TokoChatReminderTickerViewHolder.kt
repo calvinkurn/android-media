@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat_common.view.adapter.viewholder
+package com.tokopedia.tokochat_common.view.adapter.viewholder.ticker
 
 import android.view.View
 import androidx.annotation.LayoutRes

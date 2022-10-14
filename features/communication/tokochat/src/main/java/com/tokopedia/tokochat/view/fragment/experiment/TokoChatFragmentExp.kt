@@ -235,4 +235,8 @@ class TokoChatFragmentExp: TokoChatBaseFragment<FragmentTokoChatExpBinding>(),
     override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
 
     }
+
+    override fun onLoadMore() {
+
+    }
 }
