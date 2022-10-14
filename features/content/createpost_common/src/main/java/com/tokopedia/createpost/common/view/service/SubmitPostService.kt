@@ -30,6 +30,9 @@ import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Revamped By : Jonathan Darwin on October 13, 2022
+ */
 @Suppress("LateinitUsage")
 class SubmitPostService : JobIntentServiceX() {
 
@@ -70,7 +73,6 @@ class SubmitPostService : JobIntentServiceX() {
         initInjector()
         super.onCreate()
     }
-
 
     override fun onHandleWork(intent: Intent) {
         val id: String = intent.getStringExtra(DRAFT_ID) ?: return

@@ -31,7 +31,9 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.Exception
 
-
+/**
+ * Revamped By : Jonathan Darwin on October 13, 2022
+ */
 class UploadMultipleMediaUseCase @Inject constructor(
     @ActivityContext private val context: Context,
     @SubmitPostCoroutineScope private val scope: CoroutineScope,

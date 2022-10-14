@@ -19,7 +19,9 @@ import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-
+/**
+ * Revamped By : Jonathan Darwin on October 13, 2022
+ */
 @GqlQuery(SubmitPostUseCase.QUERY_NAME, SubmitPostUseCase.QUERY)
 open class SubmitPostUseCase @Inject constructor(
     private val uploadMultipleMediaUseCase: UploadMultipleMediaUseCase,
