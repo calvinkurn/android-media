@@ -7,7 +7,6 @@ apply from: "../../../compile-instrument-test.gradle"
 android{
     buildFeatures {
         viewBinding true
-        compose true
     }
     testOptions {
         unitTests {
@@ -27,9 +26,7 @@ android{
         jvmTarget = "11"
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.0.4'
-    }
+
 }
 
 buildscript {
@@ -130,7 +127,6 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.medialoader)
-
 }
 
 project.ext {
