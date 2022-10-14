@@ -32,7 +32,7 @@ import java.lang.Exception
 /**
  * @author by astidhiyaa on 16/08/22
  */
-class PlayGameLeaderBoardViewComponent(
+class PlayGameLeaderboardViewComponent(
     container: ViewGroup,
     listener: Listener
 ) : ViewComponent(container, R.id.cl_leaderboard_sheet) {
@@ -64,11 +64,11 @@ class PlayGameLeaderBoardViewComponent(
 
     }, object : PlayGameViewHolder.Winner.Listener {
         override fun onChatButtonClicked(item: LeaderboardGameUiModel.Winner, position: Int) {
-            listener.onChatWinnerButtonClicked(this@PlayGameLeaderBoardViewComponent, item, position)
+            listener.onChatWinnerButtonClicked(this@PlayGameLeaderboardViewComponent, item, position)
         }
     }, object : PlayGameViewHolder.Header.Listener{
         override fun onLeaderBoarImpressed(item: LeaderboardGameUiModel.Header) {
-            listener.onLeaderBoardImpressed(this@PlayGameLeaderBoardViewComponent, item)
+            listener.onLeaderBoardImpressed(this@PlayGameLeaderboardViewComponent, item)
         }
     })
 
@@ -196,18 +196,18 @@ class PlayGameLeaderBoardViewComponent(
     }
 
     interface Listener {
-        fun onCloseButtonClicked(view: PlayGameLeaderBoardViewComponent)
+        fun onCloseButtonClicked(view: PlayGameLeaderboardViewComponent)
         fun onChatWinnerButtonClicked(
-            view: PlayGameLeaderBoardViewComponent,
+            view: PlayGameLeaderboardViewComponent,
             winner: LeaderboardGameUiModel.Winner,
             position: Int,
         ) {
         }
-        fun onRefreshButtonClicked(view: PlayGameLeaderBoardViewComponent)
+        fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent)
         fun onChoiceItemClicked(item: QuizChoicesUiModel) {}
-        fun onRefreshButtonImpressed(view: PlayGameLeaderBoardViewComponent)
+        fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent)
         fun onLeaderBoardImpressed(
-            view: PlayGameLeaderBoardViewComponent,
+            view: PlayGameLeaderboardViewComponent,
             leaderboard: LeaderboardGameUiModel.Header
         )
     }

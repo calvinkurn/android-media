@@ -24,7 +24,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.PlayBroadcastViewModel
 import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewModelFactory
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderBoardViewComponent
+import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collectLatest
@@ -34,7 +34,7 @@ import com.tokopedia.play_common.R as commonR
 class PlayBroInteractiveBottomSheet @Inject constructor(
     private val parentViewModelFactoryCreator: PlayBroadcastViewModelFactory.Creator,
     private val analytic: PlayBroadcastAnalytic,
-) : BottomSheetUnify(), PlayGameLeaderBoardViewComponent.Listener,
+) : BottomSheetUnify(), PlayGameLeaderboardViewComponent.Listener,
     QuizOptionDetailViewComponent.Listener {
 
     private val sheetType
@@ -43,7 +43,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         get() = arguments?.getString(ARG_SIZE) ?: Size.HALF.tag
 
     private val leaderboardSheetView by viewComponent {
-        PlayGameLeaderBoardViewComponent(
+        PlayGameLeaderboardViewComponent(
             it,
             this
         )
@@ -212,7 +212,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         if (!isAdded) showNow(fragmentManager, TAG)
     }
 
-    override fun onCloseButtonClicked(view: PlayGameLeaderBoardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayGameLeaderboardViewComponent) {
         when (Type.mapFromString(sheetType)) {
             Type.QUIZ_DETAIL -> {
                 analytic.onClickCloseOngoingQuizBottomSheet(
@@ -239,7 +239,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
     }
 
     override fun onChatWinnerButtonClicked(
-        view: PlayGameLeaderBoardViewComponent,
+        view: PlayGameLeaderboardViewComponent,
         winner: LeaderboardGameUiModel.Winner,
         position: Int
     ) {
@@ -255,7 +255,7 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         )
     }
 
-    override fun onRefreshButtonClicked(view: PlayGameLeaderBoardViewComponent) {
+    override fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent) {
         if (!isQuizDetail()) {
             analytic.onClickRefreshGameResult(
                 parentViewModel.channelId,
@@ -287,12 +287,12 @@ class PlayBroInteractiveBottomSheet @Inject constructor(
         parentViewModel.submitAction(PlayBroadcastAction.ClickQuizChoiceOption(item))
     }
 
-    override fun onRefreshButtonImpressed(view: PlayGameLeaderBoardViewComponent) {
+    override fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent) {
         analytic.onImpressFailedLeaderboard(parentViewModel.channelId, parentViewModel.channelTitle)
     }
 
     override fun onLeaderBoardImpressed(
-        view: PlayGameLeaderBoardViewComponent,
+        view: PlayGameLeaderboardViewComponent,
         leaderboard: LeaderboardGameUiModel.Header
     ) {
         when (Type.mapFromString(sheetType)) {

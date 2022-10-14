@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -28,7 +27,6 @@ import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
 import com.tokopedia.play.extensions.isProductSheetsShown
-import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
@@ -60,7 +58,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
-import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderBoardViewComponent
+import com.tokopedia.play_common.ui.leaderboard.PlayGameLeaderboardViewComponent
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.viewcomponent.viewComponent
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
@@ -82,7 +80,7 @@ class PlayBottomSheetFragment @Inject constructor(
         PlayFragmentContract,
         ProductSheetViewComponent.Listener,
         VariantSheetViewComponent.Listener,
-        PlayGameLeaderBoardViewComponent.Listener,
+        PlayGameLeaderboardViewComponent.Listener,
         ShopCouponSheetViewComponent.Listener {
 
     companion object {
@@ -95,7 +93,7 @@ class PlayBottomSheetFragment @Inject constructor(
         ProductSheetViewComponent(it, this, viewLifecycleOwner.lifecycleScope)
     }
     private val variantSheetView by viewComponent { VariantSheetViewComponent(it, this) }
-    private val leaderboardSheetView by viewComponent { PlayGameLeaderBoardViewComponent(it, this) }
+    private val leaderboardSheetView by viewComponent { PlayGameLeaderboardViewComponent(it, this) }
     private val couponSheetView by viewComponent { ShopCouponSheetViewComponent(it, this) }
 
     private val offset16 by lazy { context?.resources?.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4) ?: 0 }
@@ -245,11 +243,11 @@ class PlayBottomSheetFragment @Inject constructor(
     /**
      * LeaderboardSheet View Component Listener
      */
-    override fun onCloseButtonClicked(view: PlayGameLeaderBoardViewComponent) {
+    override fun onCloseButtonClicked(view: PlayGameLeaderboardViewComponent) {
         playViewModel.submitAction(ClickCloseLeaderboardSheetAction)
     }
 
-    override fun onRefreshButtonClicked(view: PlayGameLeaderBoardViewComponent) {
+    override fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent) {
         newAnalytic.clickRefreshLeaderBoard(
             interactiveId = playViewModel.interactiveData.id,
             shopId = playViewModel.partnerId.toString(),
@@ -258,12 +256,12 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(RefreshLeaderboard)
     }
 
-    override fun onRefreshButtonImpressed(view: PlayGameLeaderBoardViewComponent) {
+    override fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent) {
         newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(
-        view: PlayGameLeaderBoardViewComponent,
+        view: PlayGameLeaderboardViewComponent,
         leaderboard: LeaderboardGameUiModel.Header
     ) {
         if (leaderboard.leaderBoardType != LeadeboardType.Quiz) return
