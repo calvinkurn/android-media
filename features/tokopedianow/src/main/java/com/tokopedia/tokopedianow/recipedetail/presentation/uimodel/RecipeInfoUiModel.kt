@@ -5,6 +5,7 @@ import com.tokopedia.tokopedianow.recipebookmark.persentation.uimodel.TagUiModel
 import com.tokopedia.tokopedianow.recipedetail.presentation.adapter.RecipeDetailTypeFactory
 
 data class RecipeInfoUiModel(
+    val id: String,
     val title: String,
     val portion: Int,
     val duration: Int,

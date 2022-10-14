@@ -125,6 +125,7 @@ object RecipeDetailMapper {
         }
 
         return RecipeInfoUiModel(
+            id = response.id,
             title = response.title,
             portion = response.portion,
             duration = response.duration.orZero(),

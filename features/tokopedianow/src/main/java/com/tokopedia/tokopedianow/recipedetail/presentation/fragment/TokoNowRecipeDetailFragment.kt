@@ -19,7 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.linker.model.LinkerData.NOW_TYPE
+import com.tokopedia.linker.model.LinkerData.NOW_RECIPE_TYPE
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -299,11 +299,12 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
         val shareText = getString(R.string.tokopedianow_share_recipe_text, title)
 
         val shareData = ShareTokonow(
+            id = recipeInfo.id,
             sharingText = shareText,
             thumbNailImage = thumbnailImageUrl,
             ogImageUrl = thumbnailImageUrl,
             sharingUrl = shareUrl,
-            linkerType = NOW_TYPE
+            linkerType = NOW_RECIPE_TYPE
         )
 
         shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {

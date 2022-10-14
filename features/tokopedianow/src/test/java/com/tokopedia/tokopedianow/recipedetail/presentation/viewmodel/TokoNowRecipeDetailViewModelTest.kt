@@ -149,6 +149,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         )
 
         val recipeInfo = RecipeInfoUiModel(
+            id = "20",
             title = title,
             portion = 32,
             duration = 13,
@@ -258,6 +259,7 @@ class TokoNowRecipeDetailViewModelTest : TokoNowRecipeDetailViewModelTestFixture
         val mediaSlider = MediaSliderUiModel(emptyList())
 
         val recipeInfo = RecipeInfoUiModel(
+            id = "20",
             title = title,
             portion = 32,
             duration = 13,
