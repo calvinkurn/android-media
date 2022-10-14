@@ -10,10 +10,11 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toDoubleOrZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.product.detail.common.AtcVariantMapper
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
+import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirType
 import com.tokopedia.product.detail.common.data.model.pdplayout.Component
 import com.tokopedia.product.detail.common.data.model.pdplayout.ComponentData
 import com.tokopedia.product.detail.common.data.model.pdplayout.Content
@@ -27,6 +28,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -37,8 +39,6 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoContent
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -59,6 +59,10 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVe
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoContent
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
@@ -74,6 +78,8 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.track.TrackApp
+import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
@@ -98,7 +104,7 @@ object DynamicProductDetailMapper {
                     listOfComponent.add(ProductDiscussionMostHelpfulDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.PRODUCT_DETAIL -> {
-                    listOfComponent.add(ProductDetailInfoDataModel(type = component.type, name = component.componentName, dataContent = mapToProductDetailInfoContent(component.componentData.firstOrNull())))
+                    listOfComponent.add(mapToProductDetailInfo(component = component))
                 }
                 ProductDetailConstant.MINI_SOCIAL_PROOF -> {
                     listOfComponent.add(ProductMiniSocialProofDataModel(type = component.type, name = component.componentName))
@@ -367,6 +373,22 @@ object DynamicProductDetailMapper {
         }
     }
 
+    private fun mapToProductDetailInfo(component: Component): ProductDetailInfoDataModel {
+        val data = component.componentData.firstOrNull()
+        val contents = mapToProductDetailInfoContent(data = data)
+        val catalog = data?.catalogBottomSheet?.asUiData()
+        val bottomSheet = data?.bottomSheet?.asUiData() ?: ProductDetailInfoSeeMore()
+
+        return ProductDetailInfoDataModel(
+            type = component.type,
+            name = component.componentName,
+            title = data?.title.orEmpty(),
+            catalogBottomSheet = catalog,
+            bottomSheet = bottomSheet,
+            dataContent = contents
+        )
+    }
+
     private fun mapToProductDetailInfoContent(data: ComponentData?): List<ProductDetailInfoContent> {
         if (data == null) return listOf()
         return data.content.map {
@@ -377,7 +399,8 @@ object DynamicProductDetailMapper {
                 applink = it.applink,
                 showAtFront = it.showAtFront,
                 isAnnotation = it.isAnnotation,
-                infoLink = it.infoLink
+                infoLink = it.infoLink,
+                showAtBottomSheet = it.showAtBottomSheet
             )
         }
     }
@@ -570,6 +593,27 @@ object DynamicProductDetailMapper {
                         shopStatus = shopInfo?.statusInfo?.shopStatus
                 )
         )
+    }
+
+    fun generateImageGeneratorData(product: DynamicProductInfoP1, bebasOngkir: BebasOngkirImage): PdpParamModel {
+        return PdpParamModel(
+            isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
+            bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
+            productImageUrl = product.data.getProductImageUrl() ?: "",
+            productPrice = product.data.price.value.toLong(),
+            productRating = product.basic.stats.rating,
+            productTitle = MethodChecker.fromHtml(product.getProductName).toString()
+        )
+    }
+
+    private fun isBebasOngkir(type: Int) = type == BebasOngkirType.NON_BO.value
+
+    private fun mapBebasOngkirType(type: Int): String {
+        return when (type) {
+            BebasOngkirType.BO_REGULER.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR.value
+            BebasOngkirType.BO_EXTRA.value -> BoTypeImageGeneratorParam.BEBAS_ONGKIR_EXTRA.value
+            else -> BoTypeImageGeneratorParam.NONE.value
+        }
     }
 
     fun removeUnusedComponent(
