@@ -411,6 +411,8 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
 
 private const val CURSOR: String = "cursor"
 private const val LIMIT = "limit"
+private const val SCREEN_NAME = "screenName"
+private const val SCREEN_NAME_UPDATE_TAB = "update_tab"
 val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
@@ -427,10 +429,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         setGraphqlQuery(GetFeedXHomeQuery.GQL_QUERY)
     }
 
-    fun setParams(cursor: String, limit: Int, detailId: String = "") {
+    fun setParams(cursor: String, limit: Int, detailId: String = "", screenName: String = SCREEN_NAME_UPDATE_TAB) {
         val queryMap = mutableMapOf(
                 CURSOR to cursor,
-                LIMIT to limit
+                LIMIT to limit,
+                SCREEN_NAME to screenName,
         )
         if (!TextUtils.isEmpty(detailId)) {
             queryMap[DETAIL_ID] = detailId

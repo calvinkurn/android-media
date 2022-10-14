@@ -14,6 +14,11 @@ import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_FEED_UPDATE
+import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
@@ -23,6 +28,7 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
@@ -67,6 +73,8 @@ class FeedViewModel @Inject constructor(
     private val deletePostUseCase: DeletePostUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
+    private val shopRecomUseCase: ShopRecomUseCase,
+    private val shopRecomMapper: ShopRecomUiMapper,
     private val getDynamicFeedNewUseCase: GetDynamicFeedNewUseCase,
     private val getWhitelistNewUseCase: GetWhitelistNewUseCase,
     private val sendReportUseCase: SendReportUseCase,
@@ -101,10 +109,13 @@ class FeedViewModel @Inject constructor(
     val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     val longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
 
-
     private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
         get() = _playWidgetModel
+
+    private val _shopRecomWidget = MutableLiveData<Result<ShopRecomWidgetViewModel>>()
+    val shopRecomWidget: LiveData<Result<ShopRecomWidgetViewModel>>
+        get() = _shopRecomWidget
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
@@ -182,6 +193,9 @@ class FeedViewModel @Inject constructor(
                     _playWidgetModel.value = Fail(e)
                 }
             }
+
+            getShopRecomWidget(results.dynamicFeedDomainModel)
+
         }) {
             getFeedFirstPageResp.value = Fail(it)
         }
@@ -209,6 +223,9 @@ class FeedViewModel @Inject constructor(
                     _playWidgetModel.value = Fail(e)
                 }
             }
+
+            getShopRecomWidget(results)
+
         }) {
             getFeedNextPageResp.value = Fail(it)
         }
@@ -674,4 +691,32 @@ class FeedViewModel @Inject constructor(
         val uiModel = playWidgetTools.mapWidgetToModel(response)
         return CarouselPlayCardViewModel(uiModel, isAutoRefresh)
     }
+
+    /**
+     * Shop Recommendation Widget
+     */
+    private fun getShopRecomWidget(model: DynamicFeedDomainModel) {
+        if (!shouldGetShopRecomWidget(model)) return
+        launchCatchError(block = {
+            val request = requestShopRecomWidget()
+            _shopRecomWidget.value = Success(request)
+        }, onError = {
+            _shopRecomWidget.value = Fail(it)
+        })
+    }
+
+    private fun shouldGetShopRecomWidget(model: DynamicFeedDomainModel): Boolean {
+        return model.postList.any { it is ShopRecomWidgetViewModel }
+    }
+
+    private suspend fun requestShopRecomWidget(): ShopRecomWidgetViewModel {
+        val response = shopRecomUseCase.executeOnBackground(
+            screenName = VAL_SCREEN_NAME_FEED_UPDATE,
+            limit = VAL_LIMIT,
+            cursor = VAL_CURSOR
+        )
+        val uiModel = shopRecomMapper.mapShopRecom(response)
+        return ShopRecomWidgetViewModel(uiModel)
+    }
+
 }
