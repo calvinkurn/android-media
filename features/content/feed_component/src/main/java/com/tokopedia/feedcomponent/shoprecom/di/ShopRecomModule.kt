@@ -1,11 +1,13 @@
 package com.tokopedia.feedcomponent.shoprecom.di
 
-import android.content.Context
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapperImpl
 import dagger.Module
 import dagger.Provides
 
+/**
+ * created by fachrizalmrsln on 14/10/22
+ **/
 @Module
 class ShopRecomModule {
 

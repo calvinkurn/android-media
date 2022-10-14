@@ -1,5 +1,8 @@
 package com.tokopedia.feedcomponent.shoprecom.model
 
+/**
+ * created by fachrizalmrsln on 13/07/22
+ **/
 data class ShopRecomUiModel(
     val isShown: Boolean = false,
     val items: List<ShopRecomUiModelItem> = emptyList(),

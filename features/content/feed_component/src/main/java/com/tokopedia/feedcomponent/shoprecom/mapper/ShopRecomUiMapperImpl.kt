@@ -1,10 +1,12 @@
 package com.tokopedia.feedcomponent.shoprecom.mapper
 
-import android.content.Context
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
 
+/**
+ * created by fachrizalmrsln on 14/10/22
+ **/
 class ShopRecomUiMapperImpl: ShopRecomUiMapper {
     override fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel {
         return with(response.feedXRecomWidget) {

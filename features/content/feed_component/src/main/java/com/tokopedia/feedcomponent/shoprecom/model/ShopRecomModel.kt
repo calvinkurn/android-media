@@ -2,6 +2,9 @@ package com.tokopedia.feedcomponent.shoprecom.model
 
 import com.google.gson.annotations.SerializedName
 
+/**
+ * created by fachrizalmrsln on 13/07/22
+ **/
 data class UserShopRecomModel(
     @SerializedName("feedXRecomWidget")
     val feedXRecomWidget: FeedXRecomWidget = FeedXRecomWidget(),
