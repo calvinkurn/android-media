@@ -752,18 +752,18 @@ class ProductListFragment: BaseDaggerFragment(),
         product.priceFormat = item.price
         product.category = Category(item.categoryID)
         product.freeOngkir = createTopAdsProductFreeOngkirForTracking(item)
-        product.categoryBreadcrumb = item.categoryBreadcrumb
+        product.categoryBreadcrumb = item.categoryBreadcrumb ?: ""
 
         return product
     }
 
-    private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir? {
+    private fun createTopAdsProductFreeOngkirForTracking(item: ProductItemDataView?): FreeOngkir {
         return if (item?.freeOngkirDataView != null) {
             FreeOngkir(
                     item.freeOngkirDataView.isActive,
                     item.freeOngkirDataView.imageUrl
             )
-        } else null
+        } else FreeOngkir()
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {

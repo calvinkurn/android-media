@@ -13,4 +13,6 @@ interface OnBindItemTicketListener {
     fun resetPackage()
 
     fun clickRecommendation(list: List<String>)
+
+    fun onCollapseAccordion()
 }
