@@ -4,15 +4,15 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.view.ShopRecomView
-import com.tokopedia.feedcomponent.shoprecom.listener.ShopRecomCallback
 import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 
 /**
  * created by fachrizalmrsln on 13/07/22
  **/
 class ShopRecomAdapter(
-    private val shopRecomCallback: ShopRecomCallback
-) : RecyclerView.Adapter<ShopRecomViewHolder>(), ShopRecomCallback {
+    private val shopRecomCallback: ShopRecomWidgetCallback
+) : RecyclerView.Adapter<ShopRecomViewHolder>(), ShopRecomWidgetCallback {
 
     private val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
 

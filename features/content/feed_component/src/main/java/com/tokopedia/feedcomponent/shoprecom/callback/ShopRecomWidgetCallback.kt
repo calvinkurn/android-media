@@ -1,11 +1,8 @@
-package com.tokopedia.feedcomponent.shoprecom.listener
+package com.tokopedia.feedcomponent.shoprecom.callback
 
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
-/**
- * created by fachrizalmrsln on 07/07/22
- **/
-interface ShopRecomCallback {
+interface ShopRecomWidgetCallback {
     fun onShopRecomCloseClicked(itemID: Long)
     fun onShopRecomFollowClicked(itemID: Long)
     fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int)

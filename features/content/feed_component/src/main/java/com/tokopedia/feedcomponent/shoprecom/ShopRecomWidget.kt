@@ -11,8 +11,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.feedcomponent.databinding.LayoutShopRecommendationBinding
 import com.tokopedia.feedcomponent.shoprecom.adapter.ShopRecomAdapter
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.decor.ShopRecomItemDecoration
-import com.tokopedia.feedcomponent.shoprecom.listener.ShopRecomCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -20,7 +20,7 @@ import com.tokopedia.kotlin.extensions.view.show
 /**
  * created by fachrizalmrsln on 07/10/22
  **/
-class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomCallback {
+class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCallback {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -103,14 +103,6 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomCallback {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         mListener = null
-    }
-
-    interface ShopRecomWidgetCallback {
-        fun onShopRecomCloseClicked(itemID: Long)
-        fun onShopRecomFollowClicked(itemID: Long)
-        fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int)
-
-        fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int)
     }
 
 }

@@ -13,7 +13,7 @@ import com.tokopedia.feedcomponent.R.string.btn_text_following
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.databinding.ItemShopRecommendationBinding
-import com.tokopedia.feedcomponent.shoprecom.listener.ShopRecomCallback
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.unifycomponents.UnifyButton.Type.ALTERNATE
 import com.tokopedia.unifycomponents.UnifyButton.Type.MAIN
 import com.tokopedia.unifycomponents.UnifyButton.Variant.FILLED
@@ -32,7 +32,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         defStyleAttr
     )
 
-    private var mListener: ShopRecomCallback? = null
+    private var mListener: ShopRecomWidgetCallback? = null
 
     private var binding = ItemShopRecommendationBinding.inflate(
         LayoutInflater.from(this.context),
@@ -44,7 +44,7 @@ class ShopRecomView : FrameLayout, LifecycleObserver {
         if (context is LifecycleOwner) (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
     }
 
-    fun setListener(listener: ShopRecomCallback?) {
+    fun setListener(listener: ShopRecomWidgetCallback?) {
         mListener = listener
     }
 

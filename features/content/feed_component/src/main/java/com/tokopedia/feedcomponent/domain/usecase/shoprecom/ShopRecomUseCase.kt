@@ -41,6 +41,11 @@ class ShopRecomUseCase @Inject constructor(
         private const val KEY_LIMIT = "limit"
         private const val KEY_CURSOR = "cursor"
 
+        const val VAL_SCREEN_NAME_USER_PROFILE = "user_profile"
+        const val VAL_SCREEN_NAME_FEED_UPDATE = "update_tab"
+        const val VAL_LIMIT = 10
+        const val VAL_CURSOR = ""
+
         const val QUERY_NAME = "ShopRecommendationUseCaseQuery"
         const val QUERY = """
             query FeedXRecomWidget(
