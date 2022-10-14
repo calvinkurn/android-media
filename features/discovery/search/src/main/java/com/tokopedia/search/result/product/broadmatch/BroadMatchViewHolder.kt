@@ -1,4 +1,4 @@
-package com.tokopedia.search.result.presentation.view.adapter.viewholder.product
+package com.tokopedia.search.result.product.broadmatch
 
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -14,10 +14,8 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
 import com.tokopedia.search.result.presentation.model.BadgeItemDataView
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
 import com.tokopedia.utils.view.binding.viewBinding
 
 class BroadMatchViewHolder(
