@@ -18,7 +18,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
-import com.tokopedia.feedcomponent.shoprecom.ShopRecomWidget
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -90,7 +90,7 @@ class UserProfileFragment @Inject constructor(
     ScreenShotListener,
     PermissionListener,
     UserPostBaseAdapter.PlayWidgetCallback,
-    ShopRecomWidget.ShopRecomWidgetCallback,
+    ShopRecomWidgetCallback,
     FeedPlusContainerListener {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {

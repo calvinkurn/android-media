@@ -28,7 +28,5 @@ interface UserProfileUiMapper {
 
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
 
-    fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel
-
     fun mapShopFollow(response: ShopFollowModel): MutationUiModel
 }

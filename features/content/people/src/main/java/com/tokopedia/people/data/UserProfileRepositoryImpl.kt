@@ -7,6 +7,10 @@ import com.tokopedia.feedcomponent.domain.usecase.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
+import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
@@ -26,6 +30,7 @@ import javax.inject.Inject
 class UserProfileRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val mapper: UserProfileUiMapper,
+    private val shopRecomMapper: ShopRecomUiMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
     private val doFollowUseCase: ProfileFollowUseCase,
@@ -100,12 +105,12 @@ class UserProfileRepositoryImpl @Inject constructor(
 
     override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
-            screenName = VAL_SCREEN_NAME,
+            screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
             cursor = VAL_CURSOR,
         )
 
-        return@withContext mapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result)
     }
 
     override suspend fun shopFollowUnfollow(
@@ -147,9 +152,5 @@ class UserProfileRepositoryImpl @Inject constructor(
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
-
-        private const val VAL_SCREEN_NAME = "user_profile"
-        private const val VAL_LIMIT = 10
-        private const val VAL_CURSOR = ""
     }
 }
