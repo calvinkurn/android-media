@@ -11,7 +11,9 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class ScheduleDelivery(
     @SerializedName("timeslot_id")
-    var timeslotId: Long = 0,
+    var timeslotId: Long = 0L,
     @SerializedName("schedule_date")
     var scheduleDate: String = "",
+    @SerializedName("shipping_price")
+    var shippingPrice: Double = 0.0,
 ) : Parcelable

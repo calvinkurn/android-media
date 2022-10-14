@@ -1750,8 +1750,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             RatesFeature ratesFeature = ShipmentDataRequestConverter.generateRatesFeature(courierData);
 
             ShipmentStateShippingInfoData shipmentStateShippingInfoData = new ShipmentStateShippingInfoData();
-            shipmentStateShippingInfoData.setShippingId(courierData.getShipperId());
-            shipmentStateShippingInfoData.setSpId(courierData.getShipperProductId());
+            shipmentStateShippingInfoData.setShippingId(courierData.getSelectedShipper().getShipperId());
+            shipmentStateShippingInfoData.setSpId(courierData.getSelectedShipper().getShipperProductId());
             shipmentStateShippingInfoData.setRatesFeature(ratesFeature);
 
             ShipmentStateShopProductData shipmentStateShopProductData = new ShipmentStateShopProductData();

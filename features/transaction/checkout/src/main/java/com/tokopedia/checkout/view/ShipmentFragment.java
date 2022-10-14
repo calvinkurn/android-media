@@ -3620,7 +3620,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.setValidationMetadata("");
             }
             shipmentAdapter.updateShipmentCostModel();
-            shipmentAdapter.updateCheckoutButtonData(null);
             if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
                 shipmentAdapter.checkHasSelectAllCourier(false, position, "", false);
             }

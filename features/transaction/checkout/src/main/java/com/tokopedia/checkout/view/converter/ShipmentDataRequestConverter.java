@@ -104,15 +104,15 @@ public class ShipmentDataRequestConverter {
 
                 // Create shop product model for shipment
                 ShippingInfoCheckoutRequest shippingInfoCheckoutRequest = new ShippingInfoCheckoutRequest();
-                shippingInfoCheckoutRequest.setShippingId(courierItemData.getShipperId());
-                shippingInfoCheckoutRequest.setSpId(courierItemData.getShipperProductId());
+                shippingInfoCheckoutRequest.setShippingId(courierItemData.getSelectedShipper().getShipperId());
+                shippingInfoCheckoutRequest.setSpId(courierItemData.getSelectedShipper().getShipperProductId());
                 shippingInfoCheckoutRequest.setRatesId(
                         shipmentDetailData.getShippingCourierViewModels() != null ?
                                 shipmentDetailData.getShippingCourierViewModels().get(0).getRatesId() : ""
                 );
                 shippingInfoCheckoutRequest.setChecksum(courierItemData.getChecksum());
                 shippingInfoCheckoutRequest.setUt(courierItemData.getUt());
-                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(courierItemData.getRealShipperPrice()));
+                shippingInfoCheckoutRequest.setAnalyticsDataShippingCourierPrice(String.valueOf(courierItemData.getSelectedShipper().getShipperPrice()));
                 shippingInfoCheckoutRequest.setRatesFeature(ratesFeature);
 
                 ShopProductCheckoutRequest shopProductCheckout = new ShopProductCheckoutRequest();
@@ -132,6 +132,13 @@ public class ShipmentDataRequestConverter {
                 //  get timeslotid and scheduledate from selected courier if necessary
                 scheduleDelivery.setTimeslotId(shipmentCartItemModel.getTimeslotId());
                 scheduleDelivery.setScheduleDate(shipmentCartItemModel.getScheduleDate());
+                if (courierItemData.getScheduleDeliveryUiModel() != null && courierItemData.getScheduleDeliveryUiModel().getDeliveryProduct() != null) {
+                    scheduleDelivery.setShippingPrice(courierItemData.getScheduleDeliveryUiModel().getDeliveryProduct().getRealPrice());
+                }
+                else {
+                    scheduleDelivery.setShippingPrice(0.0);
+                }
+
                 shopProductCheckout.setScheduleDelivery(scheduleDelivery);
 
                 ArrayList<String> promoCodes = new ArrayList<>();
@@ -210,9 +217,9 @@ public class ShipmentDataRequestConverter {
         String serviceId = "";
         String shippingPrice = "";
         if (shipmentDetailData != null && shipmentDetailData.getSelectedCourier() != null) {
-            courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getShipperProductId());
+            courierId = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperProductId());
             serviceId = String.valueOf(shipmentDetailData.getSelectedCourier().getServiceId());
-            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getRealShipperPrice());
+            shippingPrice = String.valueOf(shipmentDetailData.getSelectedCourier().getSelectedShipper().getShipperPrice());
         }
 
         ProductDataCheckoutRequest productDataCheckoutRequest = new ProductDataCheckoutRequest();
