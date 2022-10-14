@@ -72,7 +72,7 @@ annotation class CreateScreenType {
         const val COUPON_MULTIPLE_EXTEND = 5
         const val PREVIEW = 6
         const val PREVIEW_BUAT = 7
-        const val PREVIEW_EXTEND = 7
+        const val PREVIEW_EXTEND = 8
     }
 }
 

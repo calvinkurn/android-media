@@ -317,7 +317,7 @@ class TokomemberDashCouponFragment : BaseDaggerFragment(), TmCouponActions, Sort
                     it.data?.merchantPromotionGetMVList?.data?.paging?.perPage?.let{
                         perPage = it
                     }
-                    if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty()){
+                    if(it.data?.merchantPromotionGetMVList?.data?.vouchers.isNullOrEmpty() && tmCouponAdapter.vouchersItemList.isNullOrEmpty()){
                         viewFlipperCoupon.displayedChild = 2
                         filter_error.show()
                     }
