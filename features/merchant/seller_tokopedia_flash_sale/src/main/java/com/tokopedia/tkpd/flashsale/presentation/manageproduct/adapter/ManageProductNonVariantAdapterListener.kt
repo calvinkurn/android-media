@@ -10,12 +10,6 @@ interface ManageProductNonVariantAdapterListener {
         discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
     ): ValidationResult
 
-    // TODO("Remove if Unnecessary")
-    fun validateItem(
-        criteria: ReservedProduct.Product.ProductCriteria,
-        discountSetup: ReservedProduct.Product.Warehouse.DiscountSetup
-    ): ValidationResult
-
     fun calculatePrice(percentInput: Long, adapterPosition: Int): String
 
     fun calculatePercent(priceInput: Long, adapterPosition: Int): String

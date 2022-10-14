@@ -92,20 +92,9 @@ class ManageProductNonVariantMultilocFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        viewModel.product.value?.let {
+        product?.let {
             val warehouses = inputAdapter.getDataList()
             val newProduct = it.copy(warehouses = warehouses)
-            // TODO("Move This Logic To ViewModel")
-            if (newProduct.warehouses.filter { w -> w.isToggleOn && w.isDilayaniTokopedia }.size > DT_THRESHOLD)
-                newProduct.warehouses.forEachIndexed { index, warehouse ->
-                    if (warehouse.isToggleOn && warehouse.isDilayaniTokopedia) {
-                        warehouse.discountSetup.apply {
-                            price = discountSetup.price
-                            discount = discountSetup.discount
-                        }
-                        inputAdapter.setDataList(index, warehouse)
-                    }
-                }
             viewModel.setProduct(newProduct)
         }
         return viewModel.validateInput(criteria, discountSetup)
@@ -121,13 +110,6 @@ class ManageProductNonVariantMultilocFragment :
         val warehouses = (adapter as ManageProductNonVariantMultilocAdapter).getDataList()
         val originalPrice = warehouses.getOrNull(adapterPosition)?.price.orZero()
         return viewModel.calculatePercent(priceInput, originalPrice)
-    }
-
-    override fun validateItem(
-        criteria: ProductCriteria,
-        discountSetup: DiscountSetup
-    ): ValidationResult {
-        return viewModel.validateInput(criteria, discountSetup)
     }
 
     override fun onWidgetBulkApplyClicked() {

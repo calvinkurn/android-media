@@ -99,13 +99,6 @@ class ManageProductNonVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
-    override fun validateItem(
-        criteria: ProductCriteria,
-        discountSetup: DiscountSetup
-    ): ValidationResult {
-        return viewModel.validateInput(criteria, discountSetup)
-    }
-
     private fun setupObserver() {
         viewModel.isMultiloc.observe(viewLifecycleOwner) {
             if (it) moveToMultilocPage()
