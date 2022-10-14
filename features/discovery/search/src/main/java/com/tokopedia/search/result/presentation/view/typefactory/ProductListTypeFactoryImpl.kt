@@ -1,6 +1,7 @@
 package com.tokopedia.search.result.presentation.view.typefactory
 
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -56,6 +57,9 @@ import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleLi
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundleViewHolder
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListener
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.BigGridInspirationCardViewHolder
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardDataView
 import com.tokopedia.search.result.product.inspirationwidget.card.InspirationCardListener
@@ -105,10 +109,12 @@ class ProductListTypeFactoryImpl(
     private val violationListener: ViolationListener,
     private val videoCarouselListener: InspirationVideoCarouselListener,
     private val inspirationBundleListener: InspirationBundleListener,
+    private val inspirationListAtcListener: InspirationListAtcListener,
     private val videoCarouselWidgetCoordinator: VideoCarouselWidgetCoordinator,
     private val networkMonitor: NetworkMonitor,
     private val isUsingViewStub: Boolean = false,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
+    private val recycledViewPool: RecyclerView.RecycledViewPool,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -219,6 +225,9 @@ class ProductListTypeFactoryImpl(
     override fun type(sameSessionRecommendationDataView: SameSessionRecommendationDataView): Int =
         SameSessionRecommendationViewHolder.LAYOUT
 
+    override fun type(inspirationListAtcDataView: InspirationListAtcDataView): Int =
+        InspirationListAtcViewHolder.LAYOUT
+
     @Suppress("ComplexMethod")
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
@@ -235,7 +244,7 @@ class ProductListTypeFactoryImpl(
             EmptyStateFilterViewHolder.LAYOUT -> EmptyStateFilterViewHolder(view, emptyStateListener)
             GlobalNavViewHolder.LAYOUT -> GlobalNavViewHolder(view, globalNavListener)
             InspirationCarouselViewHolder.LAYOUT ->
-                InspirationCarouselViewHolder(view, inspirationCarouselListener)
+                InspirationCarouselViewHolder(view, inspirationCarouselListener, recycledViewPool)
             InspirationCarouselVideoViewHolder.LAYOUT -> InspirationCarouselVideoViewHolder(
                     view,
                     videoCarouselListener,
@@ -251,7 +260,8 @@ class ProductListTypeFactoryImpl(
             RecommendationItemViewHolder.LAYOUT ->
                 RecommendationItemViewHolder(view, recommendationListener)
             BannedProductsEmptySearchViewHolder.LAYOUT -> BannedProductsEmptySearchViewHolder(view)
-            BroadMatchViewHolder.LAYOUT -> BroadMatchViewHolder(view, broadMatchListener)
+            BroadMatchViewHolder.LAYOUT ->
+                BroadMatchViewHolder(view, broadMatchListener, recycledViewPool)
             SmallGridInspirationCardViewHolder.LAYOUT ->
                 SmallGridInspirationCardViewHolder(view, inspirationCardListener)
             BigGridInspirationCardViewHolder.LAYOUT ->
@@ -277,6 +287,8 @@ class ProductListTypeFactoryImpl(
                 inspirationCarouselListener,
                 sameSessionRecommendationListener,
             )
+            InspirationListAtcViewHolder.LAYOUT ->
+                InspirationListAtcViewHolder(view, inspirationListAtcListener, recycledViewPool)
 
             else -> super.createViewHolder(view, type)
         }

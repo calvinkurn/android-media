@@ -41,6 +41,7 @@ import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimate
 import com.tokopedia.product.detail.common.data.model.rates.TokoNowParam
 import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
+import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
 import com.tokopedia.product.detail.data.model.ProductInfoP2Login
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
@@ -51,6 +52,7 @@ import com.tokopedia.product.detail.data.util.DynamicProductDetailTalkGoToWriteD
 import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import com.tokopedia.product.detail.tracking.ProductDetailServerLogger
 import com.tokopedia.product.detail.usecase.GetPdpLayoutUseCase
+import com.tokopedia.product.detail.view.util.ProductDetailVariantLogic
 import com.tokopedia.product.util.ProductDetailTestUtil
 import com.tokopedia.product.util.ProductDetailTestUtil.generateMiniCartMock
 import com.tokopedia.product.util.ProductDetailTestUtil.generateNotifyMeMock
@@ -87,6 +89,7 @@ import io.mockk.every
 import io.mockk.invoke
 import io.mockk.just
 import io.mockk.mockk
+import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
 import java.util.concurrent.TimeoutException
@@ -1437,6 +1440,40 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `process initial variant with empty child tokonow`() {
         viewModel.processVariant(ProductVariant(), mutableMapOf(), true)
 
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == null)
+    }
+
+    @Test
+    fun `determine variant return value`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        val expectedVariantCategory = VariantCategory()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns expectedVariantCategory
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
+        Assert.assertTrue(viewModel.initialVariantData.value == null)
+        Assert.assertTrue(viewModel.singleVariantData.value == expectedVariantCategory)
+    }
+
+    @Test
+    fun `determine variant return null`() {
+        val productVariant = ProductVariant()
+        val mapOfSelectedOptionIds = mutableMapOf<String, String>()
+
+        mockkObject(ProductDetailVariantLogic)
+
+        every {
+            ProductDetailVariantLogic.determineVariant(mapOfSelectedOptionIds, productVariant)
+        } returns null
+
+        viewModel.processVariant(productVariant, mapOfSelectedOptionIds, true)
         Assert.assertTrue(viewModel.initialVariantData.value == null)
         Assert.assertTrue(viewModel.singleVariantData.value == null)
     }
