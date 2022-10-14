@@ -15,21 +15,16 @@
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp">
 
-        <com.tokopedia.unifyprinciples.Typography
+        <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_label_out_of_date"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_ticker_out_of_date"
-            android:gravity="center"
-            android:paddingHorizontal="4dp"
-            android:paddingVertical="2dp"
-            android:text="@string/label_out_of_date"
-            android:textColor="@color/Unify_NN0"
+            app:labelType="general_dark_grey"
+            app:labelTitle="@string/label_out_of_date"
             app:layout_constraintBottom_toTopOf="@id/tv_title_date"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="small" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tv_title_date"
