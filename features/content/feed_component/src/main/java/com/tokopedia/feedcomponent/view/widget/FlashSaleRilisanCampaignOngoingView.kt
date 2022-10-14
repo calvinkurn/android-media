@@ -38,12 +38,12 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
     defStyleAttr: Int = 0,
 ) : ConstraintLayout(context, attrs, defStyleAttr), LifecycleObserver {
 
-    private val fstTimer : TimerUnifySingle
-    private val postImageLayout : ConstraintLayout
-    private val fstSaleProductTitle : Typography
-    private val stockText : Typography
-    private val stockProgressBar : ProgressBarUnify
-    private var mListener : FeedCampaignListener? = null
+    private val fstTimer: TimerUnifySingle
+    private val postImageLayout: ConstraintLayout
+    private val fstSaleProductTitle: Typography
+    private val stockText: Typography
+    private val stockProgressBar: ProgressBarUnify
+    private var mListener: FeedCampaignListener? = null
     private var mPostionInFeed: Int = 0
     private var mFeedXCard: FeedXCard? = null
     private var mFeedXProduct: FeedXProduct? = null
