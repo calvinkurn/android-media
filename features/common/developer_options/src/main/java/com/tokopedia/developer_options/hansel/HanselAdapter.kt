@@ -55,6 +55,7 @@ class HanselAdapter(private val data: List<HanselUiModel>) : RecyclerView.Adapte
                             hanselUiModel.patchId.toString().contains(text.toString())
                         } else {
                             hanselUiModel.functionName.contains(text.toString())
+                                || hanselUiModel.patchName.contains(text.toString())
                         }
                     }.toList()
                     listResults.addAll(filteredData)
