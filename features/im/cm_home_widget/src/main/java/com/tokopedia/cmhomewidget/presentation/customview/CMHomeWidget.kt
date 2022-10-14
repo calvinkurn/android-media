@@ -221,7 +221,7 @@ class CMHomeWidget @JvmOverloads constructor(
     }
 
     override fun setPaymentCardHeight(measuredHeight: Int) {
-         productCardHeight = measuredHeight
+        productCardHeight = measuredHeight
     }
 
     override fun timerUpWidgetClose() {
