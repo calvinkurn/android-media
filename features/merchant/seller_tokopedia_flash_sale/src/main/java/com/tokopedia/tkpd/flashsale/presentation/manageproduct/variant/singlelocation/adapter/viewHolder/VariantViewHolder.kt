@@ -1,10 +1,8 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ViewHolder
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailVariantItemBinding
-import com.tokopedia.campaign.utils.extension.disable
-import com.tokopedia.campaign.utils.extension.enable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -39,23 +37,24 @@ class VariantViewHolder(
                 R.string.manageproductnonvar_stock_total_format,
                 selectedChildProduct.stock
             )
-            switcherToggleParent.isChecked = selectedChildProduct.isToggleOn
-            switcherToggleParent.setOnClickListener {
-                selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
-                binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
-                listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                discount?.let { disc ->
-                    listener?.onDataInputChanged(
-                        adapterPosition,
-                        product, disc
-                    )
+            switcherToggleParent.apply {
+                isChecked = selectedChildProduct.isToggleOn
+                setOnClickListener {
+                    selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
+                    binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
+                    listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
+                    discount?.let { disc ->
+                        listener?.onDataInputChanged(
+                            adapterPosition,
+                            product, disc
+                        )
+                    }
                 }
+                isEnabled = !selectedChildProduct.isDisabled
             }
             if (selectedChildProduct.isDisabled) {
-                switcherToggleParent.disable()
                 groupVariantNotEligibleErrorMessage.visible()
             } else {
-                switcherToggleParent.enable()
                 groupVariantNotEligibleErrorMessage.gone()
             }
             textCheckDetail.setOnClickListener {

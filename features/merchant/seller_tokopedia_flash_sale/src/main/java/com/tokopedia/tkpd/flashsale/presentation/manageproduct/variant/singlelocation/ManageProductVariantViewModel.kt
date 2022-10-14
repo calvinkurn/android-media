@@ -111,13 +111,14 @@ class ManageProductVariantViewModel @Inject constructor(
     fun validateInputPage(
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
-        if (productData.childProducts.any { it.isToggleOn }) {
+        if (productData.childProducts.any { it.isToggleOn && !it.isDisabled}) {
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
                 .all { childProduct ->
-                    if (childProduct.warehouses.any { it.isToggleOn }) {
+                    if (childProduct.warehouses.any { it.isToggleOn && !it.isDisabled}) {
                         childProduct.warehouses
                             .filter { warehouse -> warehouse.isToggleOn }
+                            .filter { warehouse -> !warehouse.isDisabled}
                             .all { warehouse ->
                                 validateInput(
                                     criteria,
