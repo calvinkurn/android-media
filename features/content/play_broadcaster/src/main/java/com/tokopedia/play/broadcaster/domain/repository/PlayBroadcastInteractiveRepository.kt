@@ -27,7 +27,6 @@ interface PlayBroadcastInteractiveRepository {
     suspend fun createInteractiveQuiz(
         channelId: String,
         question: String,
-        prize: String,
         runningTime: Long,
         choices: List<PostInteractiveCreateQuizUseCase.Choice>
     )
