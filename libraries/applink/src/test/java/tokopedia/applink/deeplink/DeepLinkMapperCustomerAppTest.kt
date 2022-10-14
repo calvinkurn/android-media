@@ -23,7 +23,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 197
+        const val SIZE_MAPPER = 199
     }
 
     override fun setup() {
@@ -799,6 +799,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     }
 
     @Test
+    fun `check external wishlist collection detail appLink then should return tokopedia internal marketplace`() {
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://transaction/wishlist/collection/{collection_id}/"
+        assertEqualsDeepLinkMapper(ApplinkConst.WISHLIST_COLLECTION_DETAIL, expectedDeepLink)
+    }
+
+    @Test
     fun `check recently viewed appLink then should return tokopedia internal recently viewed in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://home/recentlyviewed"
         assertEqualsDeepLinkMapper(ApplinkConst.RECENT_VIEW, expectedDeepLink)
@@ -1158,6 +1165,12 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
         val expectedDeepLink =
             "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=modaltoko"
         assertEqualsDeepLinkMapper(ApplinkConst.MODAL_TOKO_ORDER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check Plus order appLink then should return tokopedia internal Plus order in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://order/unified?filter=plus"
+        assertEqualsDeepLinkMapper(ApplinkConst.TOKOPEDIA_PLUS_ORDER, expectedDeepLink)
     }
 
     @Test
@@ -2066,6 +2079,14 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
             ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS,
             expectedDeepLink
         )
+    }
+
+    @Test
+    fun `check gofood appLink then should return tokopedia internal tokofood home in customerapp`() {
+        val expectedDeepLink = ApplinkConstInternalTokoFood.HOME
+        val goFoodAppLink = ApplinkConst.TokoFood.GOFOOD
+        foodRollenceEnabler()
+        assertEqualsDeepLinkMapper(goFoodAppLink, expectedDeepLink)
     }
 
     @Test

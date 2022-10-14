@@ -253,16 +253,6 @@ object SearchTracking {
     }
 
     @JvmStatic
-    fun eventSearchResultChangeGrid(gridName: String, screenName: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
-                SearchEventTracking.Event.SEARCH_RESULT,
-                SearchEventTracking.Category.GRID_MENU,
-                SearchEventTracking.Action.CLICK_CHANGE_GRID + gridName,
-                screenName
-        ))
-    }
-
-    @JvmStatic
     fun eventSearchResultTabClick(tabTitle: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
                 SearchEventTracking.Event.SEARCH_RESULT,
@@ -345,31 +335,11 @@ object SearchTracking {
                 SearchEventTracking.Action.LONG_PRESS_PRODUCT, String.format(SearchEventTracking.Label.KEYWORD_PRODUCT_ID, keyword, productId))
     }
 
-    @JvmStatic
-    fun trackEventImpressionBannedProductsEmptySearch(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_EMPTY,
-                keyword
-        )
-    }
-
     fun trackEventClickGoToBrowserBannedProductsEmptySearch(keyword: String?) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 SearchEventTracking.Event.CLICK_SEARCH_RESULT_IRIS,
                 SearchEventTracking.Category.SEARCH_RESULT,
                 SearchEventTracking.Action.CLICK_BANNED_PRODUCT_TICKER_EMPTY,
-                keyword
-        )
-    }
-
-    @JvmStatic
-    fun trackEventImpressionBannedProductsWithResult(keyword: String?) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                SearchEventTracking.Event.VIEW_SEARCH_RESULT_IRIS,
-                SearchEventTracking.Category.SEARCH_RESULT,
-                SearchEventTracking.Action.IMPRESSION_BANNED_PRODUCT_TICKER_RELATED,
                 keyword
         )
     }

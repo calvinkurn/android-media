@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
+import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -19,5 +20,10 @@ abstract class ProductBundleViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(ProductBundleViewModel::class)
-    abstract fun provideProductViewModel(productBundleViewModel: ProductBundleViewModel): ViewModel
+    abstract fun provideProductBundleViewModel(productBundleViewModel: ProductBundleViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductBundleWidgetViewModel::class)
+    abstract fun provideProductBundleWidgetViewModel(productBundleViewModel: ProductBundleWidgetViewModel): ViewModel
 }

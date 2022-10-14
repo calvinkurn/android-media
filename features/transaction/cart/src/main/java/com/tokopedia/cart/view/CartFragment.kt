@@ -156,7 +156,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.setImage
@@ -3994,11 +3994,11 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
         }
     }
 
-    override fun sendATCTrackingURL(bannerShopProductViewModel: BannerShopProductViewModel) {
-        val productId = bannerShopProductViewModel.productId.toString()
-        val productName = bannerShopProductViewModel.productName
-        val imageUrl = bannerShopProductViewModel.imageUrl
-        val url = "${bannerShopProductViewModel.adsClickUrl}&click_source=ATC_direct_click"
+    override fun sendATCTrackingURL(bannerShopProductUiModel: BannerShopProductUiModel) {
+        val productId = bannerShopProductUiModel.productId.toString()
+        val productName = bannerShopProductUiModel.productName
+        val imageUrl = bannerShopProductUiModel.imageUrl
+        val url = "${bannerShopProductUiModel.adsClickUrl}&click_source=ATC_direct_click"
 
         activity?.let {
             TopAdsUrlHitter(CartFragment::class.qualifiedName).hitClickUrl(

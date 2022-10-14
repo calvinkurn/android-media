@@ -145,4 +145,6 @@ public interface ShipmentAdapterActionListener {
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onViewFreeShippingPlusBadge();
+
+    void onInsuranceInfoTooltipClickedTrackingAnalytics();
 }

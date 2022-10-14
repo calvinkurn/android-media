@@ -23,6 +23,7 @@ import com.tokopedia.topchat.stub.chatroom.usecase.*
 import com.tokopedia.topchat.stub.chatroom.usecase.api.ChatRoomApiStub
 import com.tokopedia.topchat.stub.common.GraphqlRepositoryStub
 import com.tokopedia.topchat.stub.common.usecase.MutationMoveChatToTrashUseCaseStub
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import dagger.Module
 import dagger.Provides
 
@@ -458,5 +459,21 @@ class ChatRoomFakeUseCaseModule {
         dispatchers: CoroutineDispatchers
     ): GetChatPreAttachPayloadUseCaseStub {
         return GetChatPreAttachPayloadUseCaseStub(repository, dispatchers)
+    }
+
+    // -- separator -- //
+
+    @Provides
+    @ChatScope
+    fun provideAddToWishlistV2UseCase(
+        stub: AddToWishlistV2UseCaseStub
+    ): AddToWishlistV2UseCase = stub
+
+    @Provides
+    @ChatScope
+    fun provideAddToWishlistV2UseCaseStub(
+        repository: GraphqlRepositoryStub
+    ): AddToWishlistV2UseCaseStub {
+        return AddToWishlistV2UseCaseStub(repository)
     }
 }
