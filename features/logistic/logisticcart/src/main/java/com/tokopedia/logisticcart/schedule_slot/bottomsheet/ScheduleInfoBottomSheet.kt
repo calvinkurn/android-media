@@ -22,7 +22,6 @@ class ScheduleInfoBottomSheet(private val data: BottomSheetInfoUiModel) : Bottom
     }
 
     private fun initView() {
-        clearContentPadding = true
         val view = BottomsheetScheduleShippingInfoBinding.inflate(layoutInflater).apply {
             tvScheduleShippingInfo.text = data.description
             // todo
