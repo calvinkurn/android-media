@@ -11,6 +11,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -115,7 +116,7 @@ class OrderAppWidgetViewModelTest {
                 assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
             }
 
-            coVerify {
+            verify {
                 mView.onSuccess(result)
             }
         }
@@ -169,6 +170,10 @@ class OrderAppWidgetViewModelTest {
             readyToShipList?.forEach {
                 assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
             }
+
+            verify(inverse = true) {
+                mView.onSuccess(result)
+            }
         }
 
     @Test
@@ -219,7 +224,7 @@ class OrderAppWidgetViewModelTest {
                 assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
             }
 
-            coVerify {
+            verify {
                 mView.onSuccess(result)
             }
         }
@@ -245,7 +250,7 @@ class OrderAppWidgetViewModelTest {
             getNewOrderUseCase.executeOnBackground()
         }
 
-        coVerify {
+        verify {
             mView.onError(any())
         }
     }
@@ -278,7 +283,7 @@ class OrderAppWidgetViewModelTest {
             getReadyToShipUseCase.executeOnBackground()
         }
 
-        coVerify {
+        verify {
             mView.onError(any())
         }
     }
@@ -310,6 +315,10 @@ class OrderAppWidgetViewModelTest {
 
         coVerify {
             getReadyToShipUseCase.executeOnBackground()
+        }
+
+        verify(inverse = true) {
+            mView.onError(any())
         }
     }
 }

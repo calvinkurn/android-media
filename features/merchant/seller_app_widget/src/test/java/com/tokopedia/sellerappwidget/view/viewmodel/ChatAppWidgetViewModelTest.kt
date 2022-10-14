@@ -9,6 +9,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -63,7 +64,7 @@ class ChatAppWidgetViewModelTest {
                 getChatUseCase.executeOnBackground()
             }
 
-            coVerify {
+            verify {
                 mView.onSuccess(chatModel)
             }
 
@@ -89,6 +90,10 @@ class ChatAppWidgetViewModelTest {
             coVerify {
                 getChatUseCase.executeOnBackground()
             }
+
+            verify(inverse = true) {
+                mView.onSuccess(chatModel)
+            }
         }
 
     @Test
@@ -107,7 +112,7 @@ class ChatAppWidgetViewModelTest {
                 getChatUseCase.executeOnBackground()
             }
 
-            coVerify {
+            verify {
                 mView.onError(any())
             }
         }
@@ -127,6 +132,10 @@ class ChatAppWidgetViewModelTest {
 
             coVerify {
                 getChatUseCase.executeOnBackground()
+            }
+
+            verify(inverse = true) {
+                mView.onError(any())
             }
         }
     }
