@@ -68,7 +68,7 @@ data class GetInsuranceDetailResponse(
                     data class Protection(
                         @SerializedName("bundleID")
                         @Expose
-                        val bundleID: Int?,
+                        val bundleID: String?,
                         @SerializedName("isBundle")
                         @Expose
                         val isBundle: Boolean?,

@@ -118,7 +118,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
 
     val buyerOrderDetailUiState: StateFlow<BuyerOrderDetailUiState> = combine(
         actionButtonsUiState, orderStatusUiState, paymentInfoUiState, productListUiState,
-        shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState
+        shipmentInfoUiState, pGRecommendationWidgetUiState, orderResolutionTicketStatusUiState,
+        orderInsuranceUiState
     ) { flows ->
         mapBuyerOrderDetailUiState(
             flows[0] as ActionButtonsUiState,
@@ -249,6 +250,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
             shopId = getShopId().toIntOrZero(),
             custId = userSession.get().userId.toIntOrZero()
         )
+    }
+
+    private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {
+        return when (result) {
+            is Success -> MultiATCState.Success(result.data)
+            is Fail -> MultiATCState.Fail(throwable = result.throwable)
+        }
     }
 
     fun getBuyerOrderDetailData(
@@ -398,117 +406,5 @@ class BuyerOrderDetailViewModel @Inject constructor(
         return if (orderStatusUiState is OrderStatusUiState.Showing) {
             orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId
         } else "0"
-    }
-
-    private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(FLOW_TIMEOUT_MILLIS),
-        initialValue = initialValue
-    )
-
-    private fun observeGetBuyerOrderDetailDataParams() {
-        viewModelScope.launch {
-            buyerOrderDetailDataRequestParams.collectLatest(::doGetBuyerOrderDetailData)
-        }
-    }
-
-    private suspend fun doGetBuyerOrderDetailData(params: GetBuyerOrderDetailDataParams) {
-        buyerOrderDetailDataRequestState.emitAll(getBuyerOrderDetailDataUseCase.get()(params))
-    }
-
-    private fun mapActionButtonsUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): ActionButtonsUiState {
-        return ActionButtonsUiStateMapper.map(getBuyerOrderDetailDataRequestState)
-    }
-
-    private fun mapOrderStatusUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): OrderStatusUiState {
-        return OrderStatusUiStateMapper.map(getBuyerOrderDetailDataRequestState)
-    }
-
-    private fun mapPaymentInfoUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): PaymentInfoUiState {
-        return PaymentInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, resourceProvider.get()
-        )
-    }
-
-    private fun mapProductListUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return ProductListUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, singleAtcRequestStates
-        )
-    }
-
-    private fun mapShipmentInfoUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): ShipmentInfoUiState {
-        return ShipmentInfoUiStateMapper.map(
-            getBuyerOrderDetailDataRequestState, resourceProvider.get()
-        )
-    }
-
-    private fun mapPGRecommendationWidgetUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): PGRecommendationWidgetUiState {
-        return PGRecommendationWidgetUiStateMapper.map(getBuyerOrderDetailDataRequestState)
-    }
-
-    private fun mapOrderResolutionTicketStatusUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
-    ): OrderResolutionTicketStatusUiState {
-        return OrderResolutionTicketStatusUiStateMapper.map(getBuyerOrderDetailDataRequestState)
-    }
-
-    private fun mapBuyerOrderDetailUiState(
-        actionButtonsUiState: ActionButtonsUiState,
-        orderStatusUiState: OrderStatusUiState,
-        paymentInfoUiState: PaymentInfoUiState,
-        productListUiState: ProductListUiState,
-        shipmentInfoUiState: ShipmentInfoUiState,
-        pgRecommendationWidgetUiState: PGRecommendationWidgetUiState,
-        orderResolutionTicketStatusUiState: OrderResolutionTicketStatusUiState
-    ): BuyerOrderDetailUiState {
-        return BuyerOrderDetailUiStateMapper.map(
-            actionButtonsUiState,
-            orderStatusUiState,
-            paymentInfoUiState,
-            productListUiState,
-            shipmentInfoUiState,
-            pgRecommendationWidgetUiState,
-            orderResolutionTicketStatusUiState,
-            buyerOrderDetailUiState.value
-        )
-    }
-
-    private fun getFinishOrderActionStatus(): String {
-        val statusId = getOrderStatusId()
-        return if (statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) {
-            BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER
-        } else ""
-    }
-
-    private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
-        return AddToCartMultiParam(
-            productId = productId.toLongOrZero(),
-            productName = productName,
-            productPrice = price.toLong(),
-            qty = quantity,
-            notes = productNote,
-            shopId = getShopId().toIntOrZero(),
-            custId = userSession.get().userId.toIntOrZero()
-        )
-    }
-
-    private fun mapMultiATCResult(result: Result<AtcMultiData>): MultiATCState {
-        return when (result) {
-            is Success -> MultiATCState.Success(result.data)
-            is Fail -> MultiATCState.Fail(throwable = result.throwable)
-        }
     }
 }

@@ -6,8 +6,8 @@ import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataReque
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
+import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP0DataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
@@ -204,6 +204,7 @@ object ProductListUiStateMapper {
             bundleIcon,
             orderId,
             orderStatusId,
+            insuranceDetailData,
             singleAtcResultFlow
         )
         return ProductListUiModel(
@@ -239,6 +240,7 @@ object ProductListUiStateMapper {
         bundleIcon: String,
         orderId: String,
         orderStatusId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): List<ProductListUiModel.ProductBundlingUiModel> {
         return bundleDetail?.map { bundle ->
@@ -248,7 +250,7 @@ object ProductListUiStateMapper {
                 totalPrice = bundle.bundleSubtotalPrice,
                 totalPriceText = bundle.bundleSubtotalPrice.toCurrencyFormatted(),
                 bundleItemList = bundle.orderDetail.map { bundleDetail ->
-                    mapProductBundleItem(bundleDetail, orderId, orderStatusId, singleAtcResultFlow)
+                    mapProductBundleItem(bundleDetail, orderId, orderStatusId, bundle.bundleId, insuranceDetailData, singleAtcResultFlow)
                 }
             )
         }.orEmpty()
@@ -345,10 +347,32 @@ object ProductListUiStateMapper {
         }
     }
 
+    private fun mapInsurance(
+        productId: String,
+        bundleId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?
+    ): ProductListUiModel.ProductUiModel.Insurance? {
+        return insuranceDetailData?.protectionProduct?.protections?.let { protectionProducts ->
+            protectionProducts.find {
+                it?.productID == productId && it.bundleID == bundleId
+            }?.let { protectionProduct ->
+                val iconUrl = protectionProduct.protectionConfig?.icon?.label
+                val label = protectionProduct.protectionConfig?.wording?.id?.label
+                if (iconUrl.isNullOrBlank() || label.isNullOrBlank()) {
+                    null
+                } else {
+                    ProductListUiModel.ProductUiModel.Insurance(iconUrl, label)
+                }
+            }
+        }
+    }
+
     private fun mapProductBundleItem(
         product: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Details.Bundle.OrderDetail,
         orderId: String,
         orderStatusId: String,
+        bundleId: String,
+        insuranceDetailData: GetInsuranceDetailResponse.Data.PpGetInsuranceDetail.Data?,
         singleAtcResultFlow: Map<String, AddToCartSingleRequestState>
     ): ProductListUiModel.ProductUiModel {
         return ProductListUiModel.ProductUiModel(
@@ -367,7 +391,8 @@ object ProductListUiStateMapper {
             quantity = product.quantity,
             totalPrice = product.totalPrice,
             totalPriceText = product.totalPriceText,
-            isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting
+            isProcessing = singleAtcResultFlow[product.productId] is AddToCartSingleRequestState.Requesting,
+            insurance = mapInsurance(product.productId, bundleId, insuranceDetailData)
         )
     }
 

@@ -424,10 +424,6 @@ data class GetBuyerOrderDetailResponse(
                         @Expose
                         val button: Button? = null,
 
-                        @SerializedName("bundle_id")
-                        @Expose
-                        val bundleId: String = "0",
-
                         @SerializedName("category_id")
                         @Expose
                         val categoryId: String = "0",
