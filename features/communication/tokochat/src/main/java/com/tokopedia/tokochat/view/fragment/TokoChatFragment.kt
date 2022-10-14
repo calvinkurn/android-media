@@ -13,7 +13,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
@@ -21,9 +20,9 @@ import com.tokopedia.tokochat.view.activity.TokoChatActivity
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
-import com.tokopedia.tokochat_common.util.TokoChatImageUrl
-import com.tokopedia.tokochat_common.util.TokoChatSource
+import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
+import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
@@ -42,7 +41,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    private var source: String? = null
+    private var source: String = ""
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
 
@@ -66,7 +65,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
     }
 
     private fun setDataFromArguments() {
-        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)
+        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
     }
 
     private fun renderBackground(url: String) {
@@ -309,7 +308,7 @@ class TokoChatFragment: TokoChatBaseFragment<FragmentTokoChatBinding>(), TokoCha
 
     private fun getSourceLogoUrl(source: String?): String {
         return when (source) {
-            TokoChatSource.TokoFood -> TokoChatImageUrl.IC_TOKOFOOD_SOURCE
+            TOKOFOOD -> IC_TOKOFOOD_SOURCE
             else -> ""
         }
     }
