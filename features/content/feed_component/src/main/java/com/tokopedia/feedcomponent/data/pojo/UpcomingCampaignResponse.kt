@@ -16,7 +16,6 @@ data class PostUpcomingCampaign(
     val response: UpcomingCampaignResponse = UpcomingCampaignResponse(),
 )
 
-
 data class UpcomingCampaignResponse(
     @SerializedName("campaign_id")
     val id: String = "",
