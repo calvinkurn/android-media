@@ -3621,6 +3621,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             }
             shipmentAdapter.updateShipmentCostModel();
             shipmentAdapter.updateCheckoutButtonData(null);
+            if (shipmentCartItemModel.isEligibleNewShippingExperience()) {
+                shipmentAdapter.checkHasSelectAllCourier(false, position, "", false);
+            }
             onNeedUpdateViewItem(position);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
             checkCourierPromo(courierItemData, position);
