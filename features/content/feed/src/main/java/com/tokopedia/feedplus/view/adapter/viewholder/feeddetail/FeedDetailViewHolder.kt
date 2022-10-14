@@ -28,24 +28,24 @@ private const val RATING_FORMAT = 20.0
 
 class FeedDetailViewHolder(itemView: View, private val viewListener: FeedPlusDetailListener) : AbstractViewHolder<FeedDetailProductModel>(itemView) {
 
-    private var discountLayout: LinearLayout
-    private var productImage: ImageUnify
-    private var discountLabel: Label
-    private var productPrice: Typography
-    private var productName: Typography
-    private var productTag: Typography
-    private var rating: Typography
-    private var soldInfo: Typography
-    private var freeShipping: ImageView
-    private var divider: View
-    private var star: IconUnify
-    private var menuBtn: IconUnify
-    private var btnAddToCart: UnifyButton
-    private var btnAddToWishlist: FrameLayout
-    private var btnAddToWishlistIcon: IconUnify
-    private var progressBar: ProgressBarUnify
-    private var stockProgressBarLayout: View
-    private var stockText: Typography
+    private val discountLayout: LinearLayout
+    private val productImage: ImageUnify
+    private val discountLabel: Label
+    private val productPrice: Typography
+    private val productName: Typography
+    private val productTag: Typography
+    private val rating: Typography
+    private val soldInfo: Typography
+    private val freeShipping: ImageView
+    private val divider: View
+    private val star: IconUnify
+    private val menuBtn: IconUnify
+    private val btnAddToCart: UnifyButton
+    private val btnAddToWishlist: FrameLayout
+    private val btnAddToWishlistIcon: IconUnify
+    private val progressBar: ProgressBarUnify
+    private val stockProgressBarLayout: View
+    private val stockText: Typography
 
     init {
         itemView.run {

@@ -1812,12 +1812,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         colorArray: ArrayList<String>,
         secondaryColor: Int,
     ) {
-        //Todo add background animation for gradient color
-//        TransitionManager.beginDelayedTransition(
-//            this,
-//            BackgroundColorTransition()
-//                .addTarget(topAdsCard)
-//        )
         topAdsProductName.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)

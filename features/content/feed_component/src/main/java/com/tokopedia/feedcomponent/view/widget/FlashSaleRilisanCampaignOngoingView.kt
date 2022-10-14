@@ -6,8 +6,10 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.annotation.Nullable
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -48,8 +50,7 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
 
     init {
         (context as? LifecycleOwner)?.lifecycle?.addObserver(this)
-        val view =
-            LayoutInflater.from(context)
+        LayoutInflater.from(context)
                 .inflate(R.layout.item_flash_sale_rs_ongoing_card, this, true)
 
         fstTimer = findViewById(R.id.fst_ongoing_timer)
@@ -112,5 +113,9 @@ class FlashSaleRilisanCampaignOngoingView @JvmOverloads constructor(
                 postImageLayout.background = resource
             }
         })
+    }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    fun onDestroy(){
+        mListener = null
     }
 }
