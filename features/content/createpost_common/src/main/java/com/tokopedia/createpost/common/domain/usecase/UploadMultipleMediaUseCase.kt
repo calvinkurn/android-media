@@ -28,8 +28,8 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.functions.Func1
 import rx.schedulers.Schedulers
 import java.io.File
-import java.lang.Exception
 import javax.inject.Inject
+import kotlin.Exception
 
 
 class UploadMultipleMediaUseCase @Inject constructor(
@@ -103,11 +103,13 @@ class UploadMultipleMediaUseCase @Inject constructor(
             .toList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { newMediumList ->
+            .subscribe({ newMediumList ->
                 _videos.update {
                     UploadMediaDataModel.Media.Success(newMediumList)
                 }
-            }
+            }, { throwable ->
+                _videos.update { UploadMediaDataModel.Media.Fail(throwable) }
+            })
     }
 
     private fun mapToUrlVideo(
