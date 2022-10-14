@@ -314,6 +314,7 @@
 /libraries/fingerprint/									@tokopedia/android-core-dev
 /libraries/floating_window                              @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 /libraries/graphql/									    @tokopedia/android-core-dev
+/libraries/image_assets/                                @tokopedia/android-minionken-dev
 /libraries/image_picker/								@tokopedia/android-core-dev
 /libraries/image_picker_insta/							@tokopedia/android-minionlance-dev
 /libraries/image_picker_insta_common/					@tokopedia/android-minionlance-dev
