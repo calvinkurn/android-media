@@ -75,7 +75,6 @@ class ContentDetailViewModel @Inject constructor(
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
 
-
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         launchCatchError(block = {
             val response = repository.getContentDetail(detailId)
