@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -123,7 +122,11 @@ class OngoingRejectedDelegateAdapter(
 
         private fun Typography.setRejectReason(item: OngoingRejectedItem) {
             val isWarehouseAvailable = item.warehouses.size.isMoreThanZero()
-            val isRejectReasonAvailable = item.warehouses[Int.ZERO].rejectionReason.isNotEmpty()
+            val isRejectReasonAvailable = if (isWarehouseAvailable) {
+                item.warehouses[Int.ZERO].rejectionReason.isNotEmpty()
+            } else {
+                false
+            }
             this.run {
                 if (isWarehouseAvailable && isRejectReasonAvailable) {
                     visible()
