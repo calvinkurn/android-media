@@ -62,8 +62,8 @@ class TokomemberMainFragment : BaseDaggerFragment(),TmCouponListRefreshCallback 
         tmTracker = TmTracker()
         iv_error.loadImage(TM_SELLER_NO_OS)
         btn_error.setOnClickListener {
-            activity?.finish()
             tmTracker?.clickBackHomeBSNoAccess(shopId.toString())
+            activity?.finish()
         }
     }
 
