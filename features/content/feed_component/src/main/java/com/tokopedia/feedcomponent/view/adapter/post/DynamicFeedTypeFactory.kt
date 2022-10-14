@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
@@ -24,6 +25,8 @@ interface DynamicFeedTypeFactory {
     fun type(topAdsBannerViewmodel: TopAdsBannerViewModel): Int
 
     fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int
+
+    fun type(shopRecomWidgetViewModel: ShopRecomWidgetViewModel): Int
 
     fun type(shimmerUiModel: ShimmerUiModel): Int
 

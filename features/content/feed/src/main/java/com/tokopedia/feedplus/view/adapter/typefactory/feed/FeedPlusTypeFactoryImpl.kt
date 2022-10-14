@@ -1,9 +1,10 @@
 package com.tokopedia.feedplus.view.adapter.typefactory.feed
 
 import android.view.View
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.feedcomponent.shoprecom.ShopRecomWidgetCarousel
+import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -22,12 +23,14 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
+import com.tokopedia.feedplus.view.adapter.viewholder.shoprecomwidget.ShopRecomWidgetViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
@@ -39,7 +42,7 @@ import com.tokopedia.user.session.UserSessionInterface
  */
 
 class FeedPlusTypeFactoryImpl(
-        context: FeedPlusFragment,
+        private val context: FeedPlusFragment,
         private val userSession: UserSessionInterface,
         private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
@@ -59,6 +62,7 @@ class FeedPlusTypeFactoryImpl(
     private val highlightListener: HighlightAdapter.HighlightListener
     private val topAdsBannerListener: TopAdsBannerViewHolder.TopAdsBannerListener
     private val topAdsHeadlineListener: TopAdsHeadlineListener
+    private val shopRecomCallback: ShopRecomWidgetCallback
 
     init {
         this.kolPostListener = context
@@ -76,6 +80,7 @@ class FeedPlusTypeFactoryImpl(
         this.highlightListener = context
         this.topAdsBannerListener = context
         this.topAdsHeadlineListener = context
+        this.shopRecomCallback = context
     }
 
     override fun type(dynamicPostViewModel: DynamicPostViewModel): Int {
@@ -99,6 +104,10 @@ class FeedPlusTypeFactoryImpl(
 
     override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
         return CarouselPlayCardViewHolder.LAYOUT
+    }
+
+    override fun type(shopRecomWidgetViewModel: ShopRecomWidgetViewModel): Int {
+        return ShopRecomWidgetViewHolder.LAYOUT
     }
 
     override fun type(shimmerUiModel: ShimmerUiModel): Int {
@@ -150,6 +159,11 @@ class FeedPlusTypeFactoryImpl(
                                 itemView = view,
                                 coordinator = playWidgetCoordinator
                         )
+                )
+            }
+            ShopRecomWidgetViewHolder.LAYOUT -> {
+                viewHolder = ShopRecomWidgetViewHolder(
+                    ShopRecomWidgetCarousel(view, shopRecomCallback, context)
                 )
             }
             ShimmerViewHolder.LAYOUT -> {

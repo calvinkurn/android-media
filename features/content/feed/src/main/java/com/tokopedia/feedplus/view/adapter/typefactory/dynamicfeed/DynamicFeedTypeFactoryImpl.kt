@@ -12,6 +12,7 @@ import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
@@ -44,6 +45,10 @@ class DynamicFeedTypeFactoryImpl(val highlightListener: HighlightAdapter.Highlig
     }
 
     override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
+    }
+
+    override fun type(shopRecomWidgetViewModel: ShopRecomWidgetViewModel): Int {
         return 0
     }
 
