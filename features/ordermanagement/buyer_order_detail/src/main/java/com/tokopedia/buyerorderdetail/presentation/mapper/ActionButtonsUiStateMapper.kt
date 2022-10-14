@@ -22,10 +22,10 @@ object ActionButtonsUiStateMapper {
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 mapOnGetBuyerOrderDetailRequesting(currentState)
             }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState)
+            is GetBuyerOrderDetailRequestState.Complete.Error -> {
+                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState, p1DataRequestState, currentState)
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
+            is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState, p1DataRequestState, currentState
                 )
@@ -44,7 +44,7 @@ object ActionButtonsUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState,
         currentState: ActionButtonsUiState
     ): ActionButtonsUiState {
@@ -59,13 +59,22 @@ object ActionButtonsUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Error
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: ActionButtonsUiState
     ): ActionButtonsUiState {
-        return mapOnError(buyerOrderDetailRequestState.throwable)
+        return when (p1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(buyerOrderDetailRequestState, p1DataRequestState, currentState)
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnError(buyerOrderDetailRequestState.throwable)
+            }
+        }
     }
 
     private fun mapOnP1Requesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState.Requesting,
         currentState: ActionButtonsUiState
     ): ActionButtonsUiState {
@@ -73,33 +82,64 @@ object ActionButtonsUiStateMapper {
             is GetOrderResolutionRequestState.Requesting -> {
                 mapOnOrderResolutionRequesting(currentState, buyerOrderDetailRequestState)
             }
-            else -> {
+            is GetOrderResolutionRequestState.Complete -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
+            }
+        }
+    }
+
+    private fun mapOnP1Requesting(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: ActionButtonsUiState
+    ): ActionButtonsUiState {
+        return when (p1DataRequestState.getOrderResolutionRequestState) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnOrderResolutionRequesting(currentState)
+            }
+            is GetOrderResolutionRequestState.Complete -> {
                 mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
             }
         }
     }
 
     private fun mapOnP1Complete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): ActionButtonsUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
     }
 
     private fun mapOnOrderResolutionRequesting(
         currentState: ActionButtonsUiState,
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): ActionButtonsUiState {
         return if (currentState is ActionButtonsUiState.HasData) {
-            mapOnDataReady(buyerOrderDetailRequestState.result)
+            mapOnReloading(buyerOrderDetailRequestState.result)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: ActionButtonsUiState
+    ): ActionButtonsUiState {
+        return if (currentState is ActionButtonsUiState.HasData) {
+            mapOnReloading(currentState)
         } else {
             mapOnLoading()
         }
     }
 
     private fun mapOnOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): ActionButtonsUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+    ): ActionButtonsUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
     }
 
     private fun mapOnLoading(): ActionButtonsUiState {
@@ -110,6 +150,14 @@ object ActionButtonsUiStateMapper {
         currentState: ActionButtonsUiState.HasData
     ): ActionButtonsUiState {
         return ActionButtonsUiState.HasData.Reloading(currentState.data)
+    }
+
+    private fun mapOnReloading(
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
+    ): ActionButtonsUiState {
+        return ActionButtonsUiState.HasData.Reloading(
+            mapActionButtons(buyerOrderDetailData.button, buyerOrderDetailData.dotMenu)
+        )
     }
 
     private fun mapOnDataReady(

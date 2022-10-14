@@ -29,7 +29,7 @@ class GetP1DataUseCase @Inject constructor(
                 )
             )
         } else {
-            emit(GetOrderResolutionRequestState.Success(null))
+            emit(GetOrderResolutionRequestState.Complete.Success(null))
         }
     }
 
@@ -45,7 +45,7 @@ class GetP1DataUseCase @Inject constructor(
                 )
             )
         } else {
-            emit(GetInsuranceDetailRequestState.Success(null))
+            emit(GetInsuranceDetailRequestState.Complete.Success(null))
         }
     }
 
@@ -77,8 +77,8 @@ class GetP1DataUseCase @Inject constructor(
         }.catch {
             emit(
                 GetP1DataRequestState.Complete(
-                    GetOrderResolutionRequestState.Error(it),
-                    GetInsuranceDetailRequestState.Error(it)
+                    GetOrderResolutionRequestState.Complete.Error(it),
+                    GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
         }

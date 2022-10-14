@@ -32,7 +32,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerView
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
@@ -180,7 +180,7 @@ open class BuyerOrderDetailTypeFactory(
         return AddonsViewHolder.LAYOUT
     }
 
-    fun type(orderResolutionUIModel: OrderResolutionUIModel): Int {
+    fun type(orderResolutionUIModel: OrderResolutionUiModel): Int {
         return OrderResolutionViewHolder.LAYOUT
     }
 

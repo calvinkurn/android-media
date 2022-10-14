@@ -14,9 +14,9 @@ sealed interface GetP1DataRequestState {
         override val getInsuranceDetailRequestState: GetInsuranceDetailRequestState,
     ) : GetP1DataRequestState {
         fun getThrowable(): Throwable? {
-            return if (getOrderResolutionRequestState is GetOrderResolutionRequestState.Error) {
+            return if (getOrderResolutionRequestState is GetOrderResolutionRequestState.Complete.Error) {
                 getOrderResolutionRequestState.throwable
-            } else if (getInsuranceDetailRequestState is GetInsuranceDetailRequestState.Error) {
+            } else if (getInsuranceDetailRequestState is GetInsuranceDetailRequestState.Complete.Error) {
                 getInsuranceDetailRequestState.throwable
             } else null
         }

@@ -28,10 +28,14 @@ object PaymentInfoUiStateMapper {
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 mapOnGetBuyerOrderDetailRequesting(currentState)
             }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState)
+            is GetBuyerOrderDetailRequestState.Complete.Error -> {
+                mapOnGetBuyerOrderDetailError(
+                    getBuyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
+            is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState,
                     p1DataRequestState,
@@ -53,7 +57,7 @@ object PaymentInfoUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState,
         currentState: PaymentInfoUiState,
         resourceProvider: ResourceProvider
@@ -71,13 +75,26 @@ object PaymentInfoUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Error
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: PaymentInfoUiState
     ): PaymentInfoUiState {
-        return mapOnError(buyerOrderDetailRequestState.throwable)
+        return when (p1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnError(buyerOrderDetailRequestState.throwable)
+            }
+        }
     }
 
     private fun mapOnP1Requesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState.Requesting,
         currentState: PaymentInfoUiState,
         resourceProvider: ResourceProvider
@@ -90,14 +107,29 @@ object PaymentInfoUiStateMapper {
                     resourceProvider
                 )
             }
-            else -> {
+            is GetOrderResolutionRequestState.Complete -> {
                 mapOnOrderResolutionComplete(buyerOrderDetailRequestState, resourceProvider)
             }
         }
     }
 
+    private fun mapOnP1Requesting(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: PaymentInfoUiState
+    ): PaymentInfoUiState {
+        return when (p1DataRequestState.getOrderResolutionRequestState) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnOrderResolutionRequesting(currentState)
+            }
+            is GetOrderResolutionRequestState.Complete -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
+            }
+        }
+    }
+
     private fun mapOnP1Complete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         resourceProvider: ResourceProvider
     ): PaymentInfoUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
@@ -105,21 +137,37 @@ object PaymentInfoUiStateMapper {
 
     private fun mapOnOrderResolutionRequesting(
         currentState: PaymentInfoUiState,
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         resourceProvider: ResourceProvider
     ): PaymentInfoUiState {
         return if (currentState is PaymentInfoUiState.HasData) {
-            mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
+            mapOnReloading(buyerOrderDetailRequestState.result, resourceProvider)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: PaymentInfoUiState
+    ): PaymentInfoUiState {
+        return if (currentState is PaymentInfoUiState.HasData) {
+            mapOnReloading(currentState)
         } else {
             mapOnLoading()
         }
     }
 
     private fun mapOnOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         resourceProvider: ResourceProvider
     ): PaymentInfoUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result, resourceProvider)
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+    ): PaymentInfoUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
     }
 
     private fun mapOnLoading(): PaymentInfoUiState {
@@ -130,6 +178,17 @@ object PaymentInfoUiStateMapper {
         currentState: PaymentInfoUiState.HasData
     ): PaymentInfoUiState {
         return PaymentInfoUiState.HasData.Reloading(currentState.data)
+    }
+
+    private fun mapOnReloading(
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
+        resourceProvider: ResourceProvider
+    ): PaymentInfoUiState {
+        return PaymentInfoUiState.HasData.Reloading(
+            mapPaymentInfoUiModel(
+                buyerOrderDetailData.payment, buyerOrderDetailData.cashbackInfo, resourceProvider
+            )
+        )
     }
 
     private fun mapOnDataReady(

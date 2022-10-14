@@ -11,7 +11,7 @@ sealed interface GetP0DataRequestState {
         override val getBuyerOrderDetailRequestState: GetBuyerOrderDetailRequestState
     ) : GetP0DataRequestState {
         fun getThrowable(): Throwable? {
-            return if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Error) {
+            return if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Error) {
                 getBuyerOrderDetailRequestState.throwable
             } else null
         }

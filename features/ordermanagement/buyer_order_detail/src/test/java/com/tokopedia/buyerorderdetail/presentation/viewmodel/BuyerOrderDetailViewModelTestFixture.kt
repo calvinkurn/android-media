@@ -162,11 +162,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             emit(
                 GetBuyerOrderDetailDataRequestState.Complete(
                     GetP0DataRequestState.Complete(
-                        GetBuyerOrderDetailRequestState.Success(getBuyerOrderDetailResult)
+                        GetBuyerOrderDetailRequestState.Complete.Success(getBuyerOrderDetailResult)
                     ),
                     GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Success(getOrderResolutionResult),
-                        GetInsuranceDetailRequestState.Success(getInsuranceDetailResult)
+                        GetOrderResolutionRequestState.Complete.Success(getOrderResolutionResult),
+                        GetInsuranceDetailRequestState.Complete.Success(getInsuranceDetailResult)
                     )
                 )
             )
@@ -191,11 +191,11 @@ abstract class BuyerOrderDetailViewModelTestFixture {
             emit(
                 GetBuyerOrderDetailDataRequestState.Complete(
                     GetP0DataRequestState.Complete(
-                        GetBuyerOrderDetailRequestState.Error(throwable)
+                        GetBuyerOrderDetailRequestState.Complete.Error(throwable)
                     ),
                     GetP1DataRequestState.Complete(
-                        GetOrderResolutionRequestState.Error(throwable),
-                        GetInsuranceDetailRequestState.Error(throwable)
+                        GetOrderResolutionRequestState.Complete.Error(throwable),
+                        GetInsuranceDetailRequestState.Complete.Error(throwable)
                     )
                 )
             )

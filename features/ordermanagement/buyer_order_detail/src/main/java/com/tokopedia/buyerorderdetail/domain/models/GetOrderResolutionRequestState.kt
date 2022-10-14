@@ -1,12 +1,13 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-sealed class GetOrderResolutionRequestState {
+sealed interface GetOrderResolutionRequestState {
+    object Requesting : GetOrderResolutionRequestState
+    sealed interface Complete : GetOrderResolutionRequestState {
 
-    object Requesting : GetOrderResolutionRequestState()
+        data class Success(
+            val result: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
+        ) : Complete
 
-    data class Success(
-        val result: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
-    ) : GetOrderResolutionRequestState()
-
-    data class Error(val throwable: Throwable?) : GetOrderResolutionRequestState()
+        data class Error(val throwable: Throwable?) : Complete
+    }
 }

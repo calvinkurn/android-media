@@ -19,9 +19,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
 
     override suspend fun execute(params: GetBuyerOrderDetailParams) = flow {
         emit(GetBuyerOrderDetailRequestState.Requesting)
-        emit(GetBuyerOrderDetailRequestState.Success(sendRequest(params).buyerOrderDetail))
+        emit(GetBuyerOrderDetailRequestState.Complete.Success(sendRequest(params).buyerOrderDetail))
     }.catch {
-        emit(GetBuyerOrderDetailRequestState.Error(it))
+        emit(GetBuyerOrderDetailRequestState.Complete.Error(it))
     }
 
     private fun createRequestParam(params: GetBuyerOrderDetailParams): Map<String, Any> {

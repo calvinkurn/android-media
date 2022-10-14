@@ -3,7 +3,7 @@ package com.tokopedia.buyerorderdetail.presentation.mapper
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionResponse
-import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.uistate.OrderResolutionTicketStatusUiState
 import com.tokopedia.kotlin.extensions.orFalse
 
@@ -20,17 +20,17 @@ object OrderResolutionTicketStatusUiStateMapper {
             is GetOrderResolutionRequestState.Requesting -> {
                 mapOnGetOrderResolutionRequesting(currentState)
             }
-            is GetOrderResolutionRequestState.Error -> {
+            is GetOrderResolutionRequestState.Complete.Error -> {
                 mapOnGetOrderResolutionError()
             }
-            is GetOrderResolutionRequestState.Success -> {
+            is GetOrderResolutionRequestState.Complete.Success -> {
                 mapOnGetOrderResolutionSuccess(getOrderResolutionRequestState)
             }
         }
     }
 
     private fun mapOnGetOrderResolutionSuccess(
-        orderResolutionRequestState: GetOrderResolutionRequestState.Success
+        orderResolutionRequestState: GetOrderResolutionRequestState.Complete.Success
     ): OrderResolutionTicketStatusUiState {
         return mapOnDataReady(orderResolutionRequestState.result)
     }
@@ -73,8 +73,8 @@ object OrderResolutionTicketStatusUiStateMapper {
 
     private fun mapOrderResolutionTicketStatus(
         resolutionData: GetOrderResolutionResponse.ResolutionGetTicketStatus.ResolutionData?
-    ): OrderResolutionUIModel {
-        return OrderResolutionUIModel(
+    ): OrderResolutionUiModel {
+        return OrderResolutionUiModel(
             title = resolutionData?.cardTitle.orEmpty(),
             status = resolutionData?.resolutionStatus?.text.orEmpty(),
             description = resolutionData?.description.orEmpty(),

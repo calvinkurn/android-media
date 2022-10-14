@@ -43,7 +43,7 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
             is GetP0DataRequestState.Complete -> {
                 val getBuyerOrderDetailRequestState = p0DataRequestState
                     .getBuyerOrderDetailRequestState
-                if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Success) {
+                if (getBuyerOrderDetailRequestState is GetBuyerOrderDetailRequestState.Complete.Success) {
                     val getP1DataParams = GetP1DataParams(
                         getBuyerOrderDetailRequestState.result.hasResoStatus.orFalse(),
                         getBuyerOrderDetailRequestState.result.hasInsurance.orFalse(),
@@ -56,8 +56,8 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
                     emit(
                         GetBuyerOrderDetailDataRequestState.Complete(
                             p0DataRequestState, GetP1DataRequestState.Complete(
-                                GetOrderResolutionRequestState.Error(null),
-                                GetInsuranceDetailRequestState.Error(null),
+                                GetOrderResolutionRequestState.Complete.Error(null),
+                                GetInsuranceDetailRequestState.Complete.Error(null),
                             )
                         )
                     )
@@ -101,10 +101,10 @@ class GetBuyerOrderDetailDataUseCase @Inject constructor(
     }.catch {
         emit(
             GetBuyerOrderDetailDataRequestState.Complete(
-                GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Error(it)),
+                GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)),
                 GetP1DataRequestState.Complete(
-                    GetOrderResolutionRequestState.Error(it),
-                    GetInsuranceDetailRequestState.Error(it)
+                    GetOrderResolutionRequestState.Complete.Error(it),
+                    GetInsuranceDetailRequestState.Complete.Error(it)
                 )
             )
         )

@@ -23,8 +23,7 @@ class GetP0DataUseCase @Inject constructor(
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 emit(GetP0DataRequestState.Requesting(getBuyerOrderDetailRequestState))
             }
-            is GetBuyerOrderDetailRequestState.Success,
-            is GetBuyerOrderDetailRequestState.Error -> {
+            is GetBuyerOrderDetailRequestState.Complete -> {
                 emit(GetP0DataRequestState.Complete(getBuyerOrderDetailRequestState))
             }
         }
@@ -35,6 +34,6 @@ class GetP0DataUseCase @Inject constructor(
             params.cart, params.orderId, params.paymentId, params.shouldCheckCache
         )
     ).flatMapConcat(::mapToGetP0DataRequestState).catch {
-        emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Error(it)))
+        emit(GetP0DataRequestState.Complete(GetBuyerOrderDetailRequestState.Complete.Error(it)))
     }
 }

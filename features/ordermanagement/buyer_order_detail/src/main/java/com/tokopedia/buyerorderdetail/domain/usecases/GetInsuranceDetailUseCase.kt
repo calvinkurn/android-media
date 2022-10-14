@@ -7,6 +7,7 @@ import com.tokopedia.buyerorderdetail.domain.models.GetInsuranceDetailResponse
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.usecase.RequestParams
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -20,9 +21,10 @@ class GetInsuranceDetailUseCase @Inject constructor(
 
     override suspend fun execute(params: GetInsuranceDetailParams) = flow {
         emit(GetInsuranceDetailRequestState.Requesting)
-        emit(GetInsuranceDetailRequestState.Success(sendRequest(params).ppGetInsuranceDetail?.data))
+        delay(5000L)
+        emit(GetInsuranceDetailRequestState.Complete.Success(sendRequest(params).ppGetInsuranceDetail?.data))
     }.catch {
-        emit(GetInsuranceDetailRequestState.Error(it))
+        emit(GetInsuranceDetailRequestState.Complete.Error(it))
     }
 
     private fun createRequestParam(params: GetInsuranceDetailParams): Map<String, Any> {

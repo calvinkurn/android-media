@@ -2,12 +2,20 @@ package com.tokopedia.buyerorderdetail.presentation.uistate
 
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
 
-sealed class OrderInsuranceUiState {
-    object Loading : OrderInsuranceUiState()
+sealed interface OrderInsuranceUiState {
+    object Loading : OrderInsuranceUiState
 
-    data class Showing(
+    sealed interface HasData : OrderInsuranceUiState {
         val data: OrderInsuranceUiModel
-    ) : OrderInsuranceUiState()
 
-    object Hidden : OrderInsuranceUiState()
+        data class Reloading(
+            override val data: OrderInsuranceUiModel
+        ) : HasData
+
+        data class Showing(
+            override val data: OrderInsuranceUiModel
+        ) : HasData
+    }
+
+    object Hidden : OrderInsuranceUiState
 }

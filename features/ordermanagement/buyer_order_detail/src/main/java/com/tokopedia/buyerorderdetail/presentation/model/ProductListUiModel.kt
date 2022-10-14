@@ -72,6 +72,7 @@ data class ProductListUiModel(
     }
 
     data class ProductBundlingUiModel(
+        val bundleId: String,
         val bundleName: String,
         val bundleIconUrl: String,
         val totalPrice: Double,

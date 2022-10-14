@@ -1,12 +1,9 @@
 package com.tokopedia.buyerorderdetail.domain.models
 
-sealed class GetBuyerOrderDetailRequestState {
-
-    object Requesting : GetBuyerOrderDetailRequestState()
-
-    data class Success(
-        val result: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
-    ) : GetBuyerOrderDetailRequestState()
-
-    data class Error(val throwable: Throwable?) : GetBuyerOrderDetailRequestState()
+sealed interface GetBuyerOrderDetailRequestState {
+    object Requesting : GetBuyerOrderDetailRequestState
+    sealed interface Complete : GetBuyerOrderDetailRequestState {
+        data class Success(val result: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail) : Complete
+        data class Error(val throwable: Throwable?) : Complete
+    }
 }

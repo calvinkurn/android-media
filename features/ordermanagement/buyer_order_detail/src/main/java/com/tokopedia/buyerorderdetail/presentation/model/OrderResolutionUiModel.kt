@@ -5,7 +5,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.typefactory.BuyerOrde
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.coachmark.BuyerOrderDetailCoachMarkItemManager
 
-data class OrderResolutionUIModel(
+data class OrderResolutionUiModel(
     val title: String = "",
     val status: String = "",
     val description: String = "",

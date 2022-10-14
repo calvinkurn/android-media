@@ -23,10 +23,14 @@ object OrderStatusUiStateMapper {
             is GetBuyerOrderDetailRequestState.Requesting -> {
                 mapOnGetBuyerOrderDetailRequesting(currentState)
             }
-            is GetBuyerOrderDetailRequestState.Error -> {
-                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState)
+            is GetBuyerOrderDetailRequestState.Complete.Error -> {
+                mapOnGetBuyerOrderDetailError(
+                    getBuyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
             }
-            is GetBuyerOrderDetailRequestState.Success -> {
+            is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState, p1DataRequestState, currentState
                 )
@@ -45,7 +49,7 @@ object OrderStatusUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState,
         currentState: OrderStatusUiState
     ): OrderStatusUiState {
@@ -60,13 +64,26 @@ object OrderStatusUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Error
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState,
+        currentState: OrderStatusUiState
     ): OrderStatusUiState {
-        return mapOnError(buyerOrderDetailRequestState.throwable)
+        return when (p1DataRequestState) {
+            is GetP1DataRequestState.Requesting -> {
+                mapOnP1Requesting(
+                    buyerOrderDetailRequestState,
+                    p1DataRequestState,
+                    currentState
+                )
+            }
+            is GetP1DataRequestState.Complete -> {
+                mapOnError(buyerOrderDetailRequestState.throwable)
+            }
+        }
     }
 
     private fun mapOnP1Requesting(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success,
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success,
         p1DataRequestState: GetP1DataRequestState.Requesting,
         currentState: OrderStatusUiState
     ): OrderStatusUiState {
@@ -74,33 +91,64 @@ object OrderStatusUiStateMapper {
             is GetOrderResolutionRequestState.Requesting -> {
                 mapOnOrderResolutionRequesting(currentState, buyerOrderDetailRequestState)
             }
-            else -> {
+            is GetOrderResolutionRequestState.Complete -> {
+                mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
+            }
+        }
+    }
+
+    private fun mapOnP1Requesting(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error,
+        p1DataRequestState: GetP1DataRequestState.Requesting,
+        currentState: OrderStatusUiState
+    ): OrderStatusUiState {
+        return when (p1DataRequestState.getOrderResolutionRequestState) {
+            is GetOrderResolutionRequestState.Requesting -> {
+                mapOnOrderResolutionRequesting(currentState)
+            }
+            is GetOrderResolutionRequestState.Complete -> {
                 mapOnOrderResolutionComplete(buyerOrderDetailRequestState)
             }
         }
     }
 
     private fun mapOnP1Complete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): OrderStatusUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
     }
 
     private fun mapOnOrderResolutionRequesting(
         currentState: OrderStatusUiState,
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): OrderStatusUiState {
         return if (currentState is OrderStatusUiState.HasData) {
-            mapOnDataReady(buyerOrderDetailRequestState.result)
+            mapOnReloading(buyerOrderDetailRequestState.result)
+        } else {
+            mapOnLoading()
+        }
+    }
+
+    private fun mapOnOrderResolutionRequesting(
+        currentState: OrderStatusUiState
+    ): OrderStatusUiState {
+        return if (currentState is OrderStatusUiState.HasData) {
+            mapOnReloading(currentState)
         } else {
             mapOnLoading()
         }
     }
 
     private fun mapOnOrderResolutionComplete(
-        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Success
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Success
     ): OrderStatusUiState {
         return mapOnDataReady(buyerOrderDetailRequestState.result)
+    }
+
+    private fun mapOnOrderResolutionComplete(
+        buyerOrderDetailRequestState: GetBuyerOrderDetailRequestState.Complete.Error
+    ): OrderStatusUiState {
+        return mapOnError(buyerOrderDetailRequestState.throwable)
     }
 
     private fun mapOnLoading(): OrderStatusUiState {
@@ -111,6 +159,23 @@ object OrderStatusUiStateMapper {
         currentState: OrderStatusUiState.HasData
     ): OrderStatusUiState {
         return OrderStatusUiState.HasData.Reloading(currentState.data)
+    }
+
+    private fun mapOnReloading(
+        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail
+    ): OrderStatusUiState {
+        return OrderStatusUiState.HasData.Reloading(
+            mapOrderStatusUiModel(
+                buyerOrderDetailData.orderStatus,
+                buyerOrderDetailData.tickerInfo,
+                buyerOrderDetailData.preOrder,
+                buyerOrderDetailData.invoice,
+                buyerOrderDetailData.invoiceUrl,
+                buyerOrderDetailData.deadline,
+                buyerOrderDetailData.paymentDate,
+                buyerOrderDetailData.orderId
+            )
+        )
     }
 
     private fun mapOnDataReady(

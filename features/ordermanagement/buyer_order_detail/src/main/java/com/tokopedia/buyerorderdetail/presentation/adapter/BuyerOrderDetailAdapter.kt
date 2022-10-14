@@ -92,7 +92,7 @@ open class BuyerOrderDetailAdapter(private val typeFactory: BuyerOrderDetailType
     private fun MutableList<Visitable<BuyerOrderDetailTypeFactory>>.setupOrderInsuranceSection(
         context: Context?, orderInsuranceUiState: OrderInsuranceUiState
     ) {
-        if (orderInsuranceUiState is OrderInsuranceUiState.Showing) {
+        if (orderInsuranceUiState is OrderInsuranceUiState.HasData) {
             if (orderInsuranceUiState.data.shouldShow(context)) {
                 addThickDividerSection()
                 addOrderInsuranceSection(orderInsuranceUiState.data)
