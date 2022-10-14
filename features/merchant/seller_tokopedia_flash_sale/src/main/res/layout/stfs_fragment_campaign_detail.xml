@@ -262,7 +262,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:globalerrors_type="SERVER_ERROR"
+        app:globalerrors_type="PAGE_NOT_FOUND"
         tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
