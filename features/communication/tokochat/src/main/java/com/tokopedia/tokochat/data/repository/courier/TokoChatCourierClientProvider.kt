@@ -26,6 +26,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     private val courierRemoteConfig: CourierRemoteConfig
 ) {
 
+    // TODO: Change the value after BE ready
     fun initializeCourierConnection(): CourierConnection {
         val params = CourierComponent.Params(
             context = context,
@@ -46,7 +47,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     private fun getUsernameProvider(): UsernameProvider {
         return object : UsernameProvider {
             override fun get(): String {
-                // Change this to userSession.userId
+                // TODO: Change this to userSession.userId
                 return "3306058"
             }
         }

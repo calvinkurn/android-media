@@ -44,10 +44,11 @@ object TokoChatModule {
     @Provides
     fun provideTokoChatBabbleCourier(
         courierConnection: CourierConnection,
-        courierStateObservable: TokoChatCourierStateObservable
+        courierStateObservable: TokoChatCourierStateObservable,
+        remoteConfig: RemoteConfig
     ): BabbleCourierClient {
         return TokoChatBabbleCourierImpl(
-            courierConnection, courierStateObservable)
+            courierConnection, courierStateObservable, remoteConfig)
     }
 
     @TokoChatScope

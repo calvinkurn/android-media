@@ -88,7 +88,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     override fun onStart() {
         super.onStart()
         TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Started)
-        if (channelId.isNotEmpty()) {
+        if (channelId.isNotEmpty() && channelId.isNotBlank()) {
             viewModel.registerActiveChannel(channelId)
         }
     }
@@ -96,7 +96,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     override fun onStop() {
         super.onStop()
         TokoChatCourierConnectionLifecycle.publishSubject.onNext(LifecycleEvent.Stopped)
-        if (channelId.isNotEmpty()) {
+        if (channelId.isNotEmpty() && channelId.isNotBlank()) {
             viewModel.deRegisterActiveChannel(channelId)
         }
     }
@@ -225,7 +225,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                     mapper.setFirstTicker(ticker)
 
                     // If the ticker is not in list, manually add ticker
-                    if (!adapter.getItems().contains(ticker)) {
+                    if (adapter.getItems()[adapter.itemCount] !is TokochatReminderTickerUiModel) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }

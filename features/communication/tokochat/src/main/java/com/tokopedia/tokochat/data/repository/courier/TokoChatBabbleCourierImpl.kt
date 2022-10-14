@@ -7,13 +7,16 @@ import com.gojek.conversations.courier.retry.policy.RetryPolicy
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.messageadapter.gson.GsonMessageAdapterFactory
 import com.gojek.courier.streamadapter.rxjava.RxJavaStreamAdapterFactory
+import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl.Companion.SHOULD_TRACK_MESSAGE_RECEIVE_EVENT
 import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
 import rx.Observable
 import javax.inject.Inject
 
 class TokoChatBabbleCourierImpl @Inject constructor(
     private val courierConnection: CourierConnection,
-    private val tokoChatCourierStateObservable: TokoChatCourierStateObservable
+    private val tokoChatCourierStateObservable: TokoChatCourierStateObservable,
+    private val remoteConfig: RemoteConfig
 ): BabbleCourierClient {
 
     private val courier = courierConnection.createCourier(
@@ -33,9 +36,8 @@ class TokoChatBabbleCourierImpl @Inject constructor(
         return true
     }
 
-    //Remote config if we want to log or not
     override fun shouldTrackMessageReceiveEvent(): Boolean {
-        return false
+        return remoteConfig.getBoolean(SHOULD_TRACK_MESSAGE_RECEIVE_EVENT, false)
     }
 
     //We don't need this, not required
@@ -45,8 +47,11 @@ class TokoChatBabbleCourierImpl @Inject constructor(
 
     override fun init(chatProfileId: String?) {
         chatProfileId?.let {
-            courierConnection.init("", it)
+            courierConnection.init(SOURCE_APP_INIT, it)
         }
     }
 
+    companion object {
+        const val SOURCE_APP_INIT = "App Init"
+    }
 }

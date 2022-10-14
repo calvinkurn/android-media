@@ -241,5 +241,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         private const val SSL_UPPER_BOUND_CONN_TIMEOUT = "android_tokochat_sslUpperBoundConnTimeOut"
         private const val UPPER_BOUND_COUNT_TIMEOUT = "android_tokochat_upperBoundCountTimeOut"
         private const val MAX_RETRY_COUNT = "android_tokochat_maxRetryCount"
+
+        const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
     }
 }

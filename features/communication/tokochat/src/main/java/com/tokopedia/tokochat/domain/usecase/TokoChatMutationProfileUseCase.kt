@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.domain.usecase
 
 import com.gojek.courier.CourierConnection
 import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokopedia.tokochat.data.repository.courier.TokoChatBabbleCourierImpl.Companion.SOURCE_APP_INIT
 import javax.inject.Inject
 
 class TokoChatMutationProfileUseCase @Inject constructor(
@@ -15,7 +16,7 @@ class TokoChatMutationProfileUseCase @Inject constructor(
 
     private fun initConnection() {
         courierConnection.init(
-            source = "",
+            source = SOURCE_APP_INIT,
             chatProfileId = getUserId()
         )
     }
