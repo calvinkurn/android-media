@@ -148,6 +148,7 @@ import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder
 import com.tokopedia.topchat.chatroom.view.bottomsheet.TopchatBottomSheetBuilder.MENU_ID_REPLY
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.custom.ComposeMessageAreaConstraintLayout
 import com.tokopedia.topchat.chatroom.view.custom.FlexBoxChatLayout
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
@@ -220,7 +221,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     TopchatProductAttachmentListener, UploadImageBroadcastListener,
     SrwQuestionViewHolder.Listener, ReplyBoxTextListener, SrwBubbleViewHolder.Listener,
     FlexBoxChatLayout.Listener, ReplyBubbleAreaMessage.Listener,
-    ReminderTickerViewHolder.Listener, ProductBundlingListener {
+    ReminderTickerViewHolder.Listener, ProductBundlingListener,
+    ChatTextAreaTabLayoutListener {
 
     @Inject
     lateinit var topChatRoomDialog: TopChatRoomDialog
@@ -670,7 +672,8 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onCreateViewState(view: View): BaseChatViewState {
         return TopChatViewStateImpl(
             view, this, this, this,
-            this, this, this, this,
+            this, this, this,
+            this, this,
             (activity as BaseChatToolbarActivity).getToolbar(), analytics
         ).also {
             val bubbleSource = getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null)
@@ -3357,6 +3360,20 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     private fun isSrwNewDesign(): Boolean {
         return abTestPlatform.getString(AB_TEST_NEW_SRW, AB_TEST_OLD_SRW) == AB_TEST_NEW_SRW
+    }
+
+    override fun onClickSRWTab() {
+        val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
+        TopChatAnalyticsKt.eventClickSRWTabChatTextAreaLayout(
+            productIds, getUserSession().userId, shopId
+        )
+    }
+
+    override fun onClickReplyTab() {
+        val productIds = viewModel.attachmentPreviewData.keys.joinToString(separator = ",")
+        TopChatAnalyticsKt.eventClickReplyTabChatTextAreaLayout(
+            productIds, getUserSession().userId, shopId
+        )
     }
 
     companion object {

@@ -298,6 +298,8 @@ ext {
             newRelic              : "com.newrelic.agent.android:android-agent:$newRelicVersion",
             biometric             : "androidx.biometric:biometric:$biometricVersion",
             dataStore             : "androidx.datastore:datastore:$dataStoreVersion",
+            dataStoreCore         : "androidx.datastore:datastore-core:$dataStoreVersion",
+            dataStorePreferences  : "androidx.datastore:datastore-preferences:$dataStoreVersion",
             googleTink            : "com.google.crypto.tink:tink-android:$googleTinkVersion",
             protobufLite          : "com.google.protobuf:protobuf-javalite:$protobufLiteVersion",
             embraceSdk            : "io.embrace:embrace-android-sdk:$embraceVersion",

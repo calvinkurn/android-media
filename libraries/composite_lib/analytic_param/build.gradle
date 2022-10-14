@@ -7,8 +7,8 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk8
 }
 
-sourceCompatibility = "11"
-targetCompatibility = "11"
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
 buildscript {
     repositories {
         google()

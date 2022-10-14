@@ -2,23 +2,26 @@ package com.tokopedia.search.result.presentation.presenter.product
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.result.domain.model.InspirationCarouselChipsProductModel
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.domain.model.SearchSameSessionRecommendationModel
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.QueryKeyProvider
+import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banned.BannedProductsView
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -86,6 +89,9 @@ internal open class ProductListPresenterTestFixtures {
         mockk<SameSessionRecommendationPreference>(relaxed = true)
     protected val queryKeyProvider = mockk<QueryKeyProvider>(relaxed = true)
     protected val productFilterIndicator = mockk<ProductFilterIndicator>(relaxed = true)
+    protected val addToCartUseCase = mockk<AddToCartUseCase>(relaxed = true)
+    protected val searchParameterProvider = mockk<SearchParameterProvider>(relaxed = true)
+    protected val inspirationListAtcView = mockk<InspirationListAtcView>(relaxed = true)
 
     protected lateinit var sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate
     protected lateinit var productListPresenter: ProductListPresenter
@@ -101,6 +107,13 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPreference,
             queryKeyProvider,
             productFilterIndicator,
+        )
+
+        val inspirationListAtcPresenterDelegate = InspirationListAtcPresenterDelegate(
+            addToCartUseCase,
+            userSession,
+            inspirationListAtcView,
+            searchParameterProvider,
         )
 
         productListPresenter = ProductListPresenter(
@@ -127,7 +140,8 @@ internal open class ProductListPresenterTestFixtures {
                 chooseAddressPresenterDelegate
             ) { saveLastFilterUseCase },
             sameSessionRecommendationPresenterDelegate,
-            BannedProductsPresenterDelegate(bannedProductsView, viewUpdater)
+            BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
+            inspirationListAtcPresenterDelegate,
         )
         productListPresenter.attachView(productListView)
     }

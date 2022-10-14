@@ -67,12 +67,6 @@ apply from: 'buildproj.gradle'
 
 apply from: "$rootDir/tools/set_debug_tools.gradle"
 
-//subprojects{
-//    plugins.withType(com.android.build.gradle.BasePlugin) {
-//        project.apply plugin: "org.gradle.android.cache-fix"
-//    }
-//}
-
 //Installing Git Hooks
 task installGitHooks {
     doLast {

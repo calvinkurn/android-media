@@ -151,7 +151,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
 
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             new Cassava.Builder(this).initialize();
         }
         TrackApp.initTrackApp(this);
