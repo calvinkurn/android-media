@@ -19,6 +19,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.linker.model.LinkerData.NOW_TYPE
 import com.tokopedia.localizationchooseaddress.ui.bottomsheet.ChooseAddressBottomSheet
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -301,7 +302,8 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
             sharingText = shareText,
             thumbNailImage = thumbnailImageUrl,
             ogImageUrl = thumbnailImageUrl,
-            sharingUrl = shareUrl
+            sharingUrl = shareUrl,
+            linkerType = NOW_TYPE
         )
 
         shareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
