@@ -2524,18 +2524,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somListBinding?.containerBtnBulkAction?.height?.toFloat().orZero()
         )
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 somListBinding?.containerBtnBulkAction?.gone()
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
