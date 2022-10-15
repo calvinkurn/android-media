@@ -294,7 +294,7 @@ open class PickerActivity : BaseActivity()
         }
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         if (!param.get().isIncludeVideoFile()) {
             return super.dispatchTouchEvent(ev)
         }
