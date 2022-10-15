@@ -211,7 +211,7 @@ class TopPayActivity : AppCompatActivity(), TopPayContract.View,
             domStorageEnabled = true
             builtInZoomControls = false
             displayZoomControls = true
-            setAppCacheEnabled(true)
+//            setAppCacheEnabled(true)
         }
         scroogeWebView?.apply {
             webViewClient = TopPayWebViewClient()
