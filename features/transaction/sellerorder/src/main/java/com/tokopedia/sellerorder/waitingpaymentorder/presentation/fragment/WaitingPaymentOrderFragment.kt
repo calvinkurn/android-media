@@ -342,9 +342,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         binding?.cardCheckAndSetStock?.visible()
         buttonEnterAnimation = animateCheckAndSetStockButton(binding?.cardCheckAndSetStock?.height?.toFloat().orZero(), Float.ZERO)
         buttonEnterAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 if (isLoadingInitialData) {
                     if (shouldScrollToTop) {
                         scrollToTopAfterRecyclerViewInflated()
@@ -354,9 +354,9 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
                 }
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
@@ -364,15 +364,15 @@ class WaitingPaymentOrderFragment : BaseListFragment<Visitable<WaitingPaymentOrd
         if (buttonEnterAnimation?.isRunning == true) buttonEnterAnimation?.end()
         buttonLeaveAnimation = animateCheckAndSetStockButton(Float.ZERO, binding?.cardCheckAndSetStock?.height?.toFloat().orZero())
         buttonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 binding?.cardCheckAndSetStock?.gone()
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(animation: Animator) {}
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 

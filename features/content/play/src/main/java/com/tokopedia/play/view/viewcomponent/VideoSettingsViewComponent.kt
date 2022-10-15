@@ -31,39 +31,39 @@ class VideoSettingsViewComponent(
     private val ivFullscreenControl: IconUnify = findViewById(R.id.iv_fullscreen_control)
 
     private val fadeInListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = rootView.isFullSolid
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             rootView.isClickable = false
         }
     }
 
     private val fadeOutListener = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = false
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             rootView.isClickable = rootView.isFullSolid
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             rootView.isClickable = false
         }
     }

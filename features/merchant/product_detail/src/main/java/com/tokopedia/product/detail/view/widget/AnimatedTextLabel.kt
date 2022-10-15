@@ -236,7 +236,7 @@ class TextLabelAnimator(
             alpha = it.animatedValue as Float
         }
         addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 onAnimationEnd?.invoke()
             }
         })

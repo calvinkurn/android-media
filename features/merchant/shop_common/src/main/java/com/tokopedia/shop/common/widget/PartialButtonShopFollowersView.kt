@@ -141,7 +141,7 @@ class PartialButtonShopFollowersView private constructor(val view: View, private
 
     private fun animateSlideDown() = with(view) {
         animate().translationY(view.height.toFloat()).setDuration(GONE_ANIMATION_DURATION).setListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 visibility = View.GONE
                 stopLoading()

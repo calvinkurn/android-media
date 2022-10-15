@@ -120,7 +120,7 @@ class RealTimeNotificationViewComponent(
                 if (cont.isActive) cont.resume(Unit)
             }
 
-            override fun onAnimationStart(animation: Animator?, isReverse: Boolean) {
+            override fun onAnimationStart(animation: Animator, isReverse: Boolean) {
                 rtnBubbleView.show()
             }
         }

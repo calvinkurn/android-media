@@ -42,19 +42,19 @@ class WaitingPaymentOrdersViewHolder(
     private var animatorSet: AnimatorSet = AnimatorSet()
 
     private val animationListener = object: Animator.AnimatorListener {
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             binding?.root?.setHasTransientState(false)
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             binding?.root?.setHasTransientState(false)
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             binding?.root?.setHasTransientState(true)
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
             binding?.root?.setHasTransientState(true)
         }
     }

@@ -45,19 +45,19 @@ class TmIntroBenefitImageVh(val view: View)
     }
 
     private val animListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             holderElement?.isAnimationFinished = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
     }
 

@@ -58,17 +58,17 @@ class PromoRecommendationViewHolder(private val viewBinding: PromoCheckoutMarket
     private fun playAnimation() {
         with(viewBinding) {
             lottieButtonApplyPromoRecommendation.addAnimatorListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animator: Animator?) {}
+                override fun onAnimationRepeat(animator: Animator) {}
 
-                override fun onAnimationEnd(animator: Animator?) {
+                override fun onAnimationEnd(animator: Animator) {
                     lottieButtonApplyPromoRecommendation.gone()
                 }
 
-                override fun onAnimationCancel(animator: Animator?) {
+                override fun onAnimationCancel(animator: Animator) {
                     lottieButtonApplyPromoRecommendation.gone()
                 }
 
-                override fun onAnimationStart(animator: Animator?) {}
+                override fun onAnimationStart(animator: Animator) {}
             })
             if (!lottieButtonApplyPromoRecommendation.isAnimating) {
                 lottieButtonApplyPromoRecommendation.playAnimation()

@@ -738,18 +738,18 @@ open class ProductManageFragment :
                             }
                         }
                         addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 tickerIsReady = false
                                 if (!isEnter) {
                                     this@run.invisible()
                                 }
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
                         })
                     }
 

@@ -78,7 +78,7 @@ class ScaleTransition : Visibility {
 
     private fun getAnimatorListener(view: View): AnimatorListenerAdapter {
         return object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 doOnEnd(view)
             }
         }

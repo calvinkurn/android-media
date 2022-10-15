@@ -27,20 +27,20 @@ class PlayFadeOutAnimation(
     }
 
     private fun getListener(view: View) = object : Animator.AnimatorListener {
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             animation?.removeAllListeners()
             view.isClickable = true
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
             animation?.removeAllListeners()
             view.isClickable = true
         }
 
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
             view.isClickable = false
         }
     }

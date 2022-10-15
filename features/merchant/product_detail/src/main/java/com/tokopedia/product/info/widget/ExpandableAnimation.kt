@@ -47,7 +47,7 @@ object ExpandableAnimation {
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 onAnimationEndListener?.invoke()
             }
@@ -74,7 +74,7 @@ object ExpandableAnimation {
 
         val set = AnimatorSet()
         set.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
                 view.visibility = View.GONE
             }

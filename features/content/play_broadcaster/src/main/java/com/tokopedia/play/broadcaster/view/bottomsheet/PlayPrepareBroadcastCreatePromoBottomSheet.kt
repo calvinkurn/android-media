@@ -152,16 +152,16 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
         btnPlayPrepareBroadcastNext.setOnClickListener {
             dialog?.window?.decorView?.animate()?.setDuration(ANIMATION_DURATION)?.translationX((screenWidth * -1).toFloat())
                 ?.setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationRepeat(p0: Animator?) {}
+                    override fun onAnimationRepeat(p0: Animator) {}
 
-                    override fun onAnimationEnd(p0: Animator?) {
+                    override fun onAnimationEnd(p0: Animator) {
                         listener.onVoucherSaved(radioPlayPrepareBroadcastWithPromo.isChecked, promoPercentage, promoQuota)
                         dismiss()
                     }
 
-                    override fun onAnimationCancel(p0: Animator?) {}
+                    override fun onAnimationCancel(p0: Animator) {}
 
-                    override fun onAnimationStart(p0: Animator?) {}
+                    override fun onAnimationStart(p0: Animator) {}
 
                 })
         }
@@ -196,15 +196,15 @@ class PlayPrepareBroadcastCreatePromoBottomSheet : BottomSheetUnify() {
                         ?.setDuration(ANIMATION_DURATION)
                         ?.translationX(screenWidth.toFloat())
                         ?.setListener(object : Animator.AnimatorListener {
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 dismiss()
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
                         })
                 } else {
                     dismiss()

@@ -91,17 +91,17 @@ class CreateReviewTopics @JvmOverloads constructor(
                 binding.root.scrollTo(value.animatedValue as Int, Int.ZERO)
             }
             addListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     animateScrollToStart(continuation)
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     continuation.resume(Unit)
                 }
 
-                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator) {}
             })
             start()
         }
@@ -121,17 +121,17 @@ class CreateReviewTopics @JvmOverloads constructor(
                 binding.root.scrollTo(value.animatedValue as Int, Int.ZERO)
             }
             addListener(object: Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {}
+                override fun onAnimationStart(animation: Animator) {}
 
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     continuation.resume(Unit)
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {
+                override fun onAnimationCancel(animation: Animator) {
                     continuation.resume(Unit)
                 }
 
-                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationRepeat(animation: Animator) {}
             })
             start()
         }
