@@ -21,9 +21,8 @@ import java.util.TimerTask
 @SuppressLint("ClickableViewAccessibility")
 class TokoNowQuantityEditorView @JvmOverloads constructor(
     context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr) {
+    attrs: AttributeSet? = null
+) : BaseCustomView(context, attrs) {
 
     companion object {
         private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
