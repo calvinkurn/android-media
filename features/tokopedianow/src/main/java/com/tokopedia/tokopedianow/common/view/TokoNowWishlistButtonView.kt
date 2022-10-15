@@ -60,8 +60,15 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     private fun getTransitionDrawable(): TransitionDrawable {
         val transitionDrawable = TransitionDrawable(
             arrayOf(
-                convertVectorToDrawable(context, iconR.iconunify_bell),
-                convertVectorToDrawable(context, iconR.iconunify_bell_filled)
+                convertVectorToDrawable(
+                    context = context,
+                    drawableId = iconR.iconunify_bell,
+                    colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN900),
+                convertVectorToDrawable(
+                    context = context,
+                    drawableId = iconR.iconunify_bell_filled,
+                    colorId = com.tokopedia.unifyprinciples.R.color.Unify_NN900
+                )
             )
         )
         transitionDrawable.isCrossFadeEnabled = true

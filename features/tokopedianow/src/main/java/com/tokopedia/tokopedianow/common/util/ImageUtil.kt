@@ -5,9 +5,9 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.view.View
+import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.BlendModeColorFilterCompat
-import androidx.core.graphics.BlendModeCompat
+import androidx.core.graphics.drawable.DrawableCompat
 import com.tokopedia.media.loader.loadImageWithTarget
 import com.tokopedia.media.loader.utils.MediaTarget
 
@@ -31,12 +31,13 @@ object ImageUtil {
 
     fun convertVectorToDrawable(
         context: Context,
-        drawableId: Int
+        @DrawableRes drawableId: Int,
+        colorId: Int
     ): BitmapDrawable? {
         ContextCompat.getDrawable(context, drawableId)?.apply {
-            colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(
-                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN900),
-                BlendModeCompat.SRC_ATOP
+            DrawableCompat.setTint(
+                this,
+                ContextCompat.getColor(context, colorId)
             )
             val bitmap = Bitmap.createBitmap(
                 intrinsicWidth,
@@ -44,7 +45,12 @@ object ImageUtil {
                 Bitmap.Config.ARGB_8888
             )
             val canvas = Canvas(bitmap)
-            setBounds(LEFT_BOUND, TOP_BOUND, canvas.width, canvas.height)
+            setBounds(
+                LEFT_BOUND,
+                TOP_BOUND,
+                canvas.width,
+                canvas.height
+            )
             draw(canvas)
             return BitmapDrawable(context.resources, bitmap)
         }
