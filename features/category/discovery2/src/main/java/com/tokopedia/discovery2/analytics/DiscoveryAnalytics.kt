@@ -704,6 +704,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[USER_ID] = (userSession.userId ?: "")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
+
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
     }
