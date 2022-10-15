@@ -33,7 +33,7 @@ class ResultNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
     override val viewBound = ResultNotifViewBinding()
 
-    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(context)
+    override fun getToolbar(): Toolbar = viewBound.toolbar ?: Toolbar(requireContext())
 
     override fun getScreenName(): String = ""
 

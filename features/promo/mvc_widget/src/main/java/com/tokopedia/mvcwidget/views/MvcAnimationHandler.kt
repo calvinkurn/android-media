@@ -44,13 +44,13 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     }
 
     private val onAttachListener = object :View.OnAttachStateChangeListener{
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             if (isTokomember){
                 startTimer()
             }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             if (isTokomember) {
                 stopAnimation()
             }

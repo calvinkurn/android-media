@@ -19,7 +19,7 @@ import androidx.transition.Visibility
 class ScaleTransition : Visibility {
 
     constructor() : super()
-    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
     override fun captureStartValues(transitionValues: TransitionValues) {
         super.captureStartValues(transitionValues)
