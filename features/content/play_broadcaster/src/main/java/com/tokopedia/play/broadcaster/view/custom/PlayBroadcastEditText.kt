@@ -16,9 +16,9 @@ import com.tokopedia.play.broadcaster.R
  */
 class PlayBroadcastEditText : AppCompatEditText {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
 
     private val forbiddenMimeTypes = arrayOf("image/*", "image/png", "image/gif", "image/jpeg")
     private val errorMessageForbiddenMime = context.getString(R.string.play_error_image_edit_text)

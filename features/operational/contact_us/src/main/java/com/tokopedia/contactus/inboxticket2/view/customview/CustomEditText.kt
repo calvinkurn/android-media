@@ -18,9 +18,9 @@ class CustomEditText : AppCompatEditText {
     private val delayTextChanged = DEFAULT_DELAY_TEXT_CHANGED
     private var listener: Listener? = null
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
+    constructor(context: Context?) : super(context!!)
+    constructor(context: Context?, attrs: AttributeSet?) : super(context!!, attrs)
+    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(context!!, attrs, defStyleAttr)
 
     fun setListener(listener: Listener?) {
         this.listener = listener
