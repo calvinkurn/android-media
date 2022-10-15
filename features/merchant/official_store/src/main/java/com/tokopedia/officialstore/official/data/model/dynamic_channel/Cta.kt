@@ -19,7 +19,7 @@ data class Cta(
             couponCode = parcel.readString() ?: ""
     )
 
-    override fun writeToParcel(dest: Parcel?, flags: Int) {
+    override fun writeToParcel(dest: Parcel, flags: Int) {
         dest?.run {
             writeString(type)
             writeString(mode)
