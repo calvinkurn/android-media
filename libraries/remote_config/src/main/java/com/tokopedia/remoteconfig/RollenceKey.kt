@@ -42,9 +42,6 @@ object RollenceKey {
     const val WISHLIST_COLLECTION = "WL_collection_andro"
     const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
 
-    // Logistic
-    const val LCA_REFRESH = "android_lca_refresh"
-
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
