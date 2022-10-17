@@ -28,6 +28,8 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchListener
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewListener
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationListener
 import com.tokopedia.autocompletecomponent.util.OnScrollListenerAutocomplete
 import com.tokopedia.autocompletecomponent.util.SCREEN_UNIVERSEARCH
 import com.tokopedia.autocompletecomponent.util.getModifiedApplink
@@ -45,7 +47,8 @@ class InitialStateFragment:
     PopularSearchListener,
     DynamicInitialStateListener,
     CuratedCampaignListener,
-    InitialStateChipListener {
+    InitialStateChipListener,
+    SearchBarEducationListener {
 
     companion object {
         const val INITIAL_STATE_FRAGMENT_TAG = "INITIAL_STATE_FRAGMENT"
@@ -78,6 +81,7 @@ class InitialStateFragment:
         dynamicInitialStateListener = this,
         curatedCampaignListener = this,
         chipListener = this,
+        searchBarEducationListener = this,
     )
     private val initialStateAdapter = InitialStateAdapter(initialStateAdapterTypeFactory)
 
@@ -388,5 +392,13 @@ class InitialStateFragment:
     interface InitialStateViewUpdateListener {
 
         fun showInitialStateView()
+    }
+
+    override fun onSearchBarEducationClick(item: BaseItemInitialStateSearch) {
+        presenter?.onSearchBarEducationClick(item)
+    }
+
+    override fun trackEventClickSearchBarEducation(item: BaseItemInitialStateSearch) {
+        initialStateTracking?.eventClickSearchBarEducation(item)
     }
 }

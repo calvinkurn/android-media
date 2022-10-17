@@ -14,6 +14,9 @@ class SaveAddressMapper @Inject constructor() {
         saveAddressDataModel.districtId = autoFillModel.districtId
         saveAddressDataModel.provinceId = autoFillModel.provinceId
         saveAddressDataModel.cityId = autoFillModel.cityId
+        saveAddressDataModel.districtName = autoFillModel.districtName
+        saveAddressDataModel.provinceName = autoFillModel.provinceName
+        saveAddressDataModel.cityName = autoFillModel.cityName
         saveAddressDataModel.postalCode = autoFillModel.postalCode
         saveAddressDataModel.latitude = autoFillModel.latitude
         saveAddressDataModel.longitude = autoFillModel.longitude
@@ -32,6 +35,9 @@ class SaveAddressMapper @Inject constructor() {
         saveAddressDataModel.districtId = getDistrictDataUiModel.districtId
         saveAddressDataModel.provinceId = getDistrictDataUiModel.provinceId
         saveAddressDataModel.cityId = getDistrictDataUiModel.cityId
+        saveAddressDataModel.districtName = getDistrictDataUiModel.districtName
+        saveAddressDataModel.provinceName = getDistrictDataUiModel.provinceName
+        saveAddressDataModel.cityName = getDistrictDataUiModel.cityName
         saveAddressDataModel.postalCode = getDistrictDataUiModel.postalCode
         saveAddressDataModel.latitude = getDistrictDataUiModel.latitude
         saveAddressDataModel.longitude = getDistrictDataUiModel.longitude

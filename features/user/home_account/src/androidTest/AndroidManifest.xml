@@ -6,7 +6,7 @@
     android:versionName="1.0.0">
 
     <application
-        android:debuggable="false"
+        android:debuggable="true"
         android:label="New Home Account Test"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label">

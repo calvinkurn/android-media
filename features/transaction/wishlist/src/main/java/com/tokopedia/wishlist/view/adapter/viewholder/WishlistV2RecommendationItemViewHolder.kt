@@ -7,6 +7,7 @@ import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
 import com.tokopedia.wishlist.databinding.WishlistV2RecommendationItemBinding
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.clickWithDebounce
 
 class WishlistV2RecommendationItemViewHolder(
     private val binding: WishlistV2RecommendationItemBinding,
@@ -19,7 +20,7 @@ class WishlistV2RecommendationItemViewHolder(
             cardView.run {
                 setProductModel(item.dataObject)
 
-                setOnClickListener {
+                clickWithDebounce {
                     actionListener?.onRecommendationItemClick(item.recommItem, adapterPosition)
                 }
 

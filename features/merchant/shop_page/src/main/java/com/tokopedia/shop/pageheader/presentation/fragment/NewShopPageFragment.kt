@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -80,6 +81,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.linker.utils.AffiliateLinkType
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
@@ -203,7 +205,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomShee
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ScreenShotListener
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
+import com.tokopedia.universal_sharing.view.model.PageDetail
+import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.universal_sharing.view.model.Shop
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
@@ -533,8 +539,9 @@ class NewShopPageFragment :
     }
 
     private fun initViewPager() {
-        viewPager?.isUserInputEnabled = false
+        @SuppressLint("WrongConstant") // Suggested constant not same with actual needed value for offscreenPageLimit
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
+        viewPager?.isUserInputEnabled = false
         viewPager?.adapter = viewPagerAdapter
     }
 
@@ -769,6 +776,7 @@ class NewShopPageFragment :
                     it.location = result.data.location
                     it.description = result.data.shopCore.description
                     it.tagline = result.data.shopCore.tagLine
+                    it.shopStatus = result.data.statusInfo.shopStatus
                 }
             }
         })
@@ -871,8 +879,8 @@ class NewShopPageFragment :
                             buttonLabel ?: ""
                     )
                     {
-                        if (!shopId.isNullOrBlank()) {
-                            showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                        if (shopId.isNotBlank()) {
+                            showMerchantVoucherCouponBottomSheet(shopId.toIntOrZero())
                             shopPageTracking?.clickCekToasterSuccess(
                                     shopId,
                                     shopViewModel?.userId
@@ -1711,11 +1719,7 @@ class NewShopPageFragment :
     }
 
     private fun handleSelectedTab(tab: TabLayout.Tab, isActive: Boolean) {
-        if (ShopUtil.isEnableShopDynamicTab(context)) {
-            viewPagerAdapter?.handleSelectedDynamicTab(tab, isActive)
-        } else {
-            viewPagerAdapter?.handleSelectedTab(tab, isActive)
-        }
+        viewPagerAdapter?.handleSelectedTab(tab, isActive)
     }
 
     private fun getTabView(index: Int): View? {
@@ -2279,6 +2283,7 @@ class NewShopPageFragment :
             type = LinkerData.SHOP_TYPE
             uri = shopPageHeaderDataModel?.shopCoreUrl
             id = shopPageHeaderDataModel?.shopId
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
                 LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
@@ -2848,12 +2853,16 @@ class NewShopPageFragment :
             if(shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                 ogImageUrl = shareModel.ogImgUrl
             }
+            isAffiliate = shareModel.isAffiliate
+            linkAffiliateType = AffiliateLinkType.SHOP.value
         })
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     context?.let{
-                        checkUsingCustomBranchLinkDomain(linkerShareData)
+                        if (!shareModel.isAffiliate) {
+                            checkUsingCustomBranchLinkDomain(linkerShareData)
+                        }
                         var shareString = getString(
                                 R.string.shop_page_share_text_with_link,
                                 shopPageHeaderDataModel?.shopName,
@@ -2958,7 +2967,16 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
-        universalShareBottomSheet?.show(fragmentManager, this, screenShotDetector)
+        universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
+            val inputShare = AffiliatePDPInput().apply {
+                pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
+                pageType = "shop"
+                product = Product()
+                shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
+            }
+            universalShareBottomSheet?.setAffiliateRequestHolder(inputShare)
+            universalShareBottomSheet?.affiliateRequestDataReceived(true)
+        })
     }
 
     override fun onRequestPermissionsResult(

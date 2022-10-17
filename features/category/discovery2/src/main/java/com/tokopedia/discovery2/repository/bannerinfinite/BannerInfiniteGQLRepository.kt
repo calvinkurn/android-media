@@ -18,15 +18,14 @@ class BannerInfiniteGQLRepository @Inject constructor() : BaseRepository(), Bann
 
         val componentData = response.data.component?.data
         val componentProperties = response.data.component?.properties
-        val creativeName = response.data.component?.creativeName ?: ""
         val nextPage = response.data.component?.compAdditionalInfo?.nextPage
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = when (bannerComponentName) {
             ComponentNames.BannerInfinite.componentName ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
+                DiscoveryDataMapper().mapListToBannerComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, componentProperties, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
             else ->
-                DiscoveryDataMapper().mapListToComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, null, creativeName, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
+                DiscoveryDataMapper().mapListToBannerComponentList(componentData, ComponentNames.BannerInfiniteItem.componentName, null, parentListSize = componentsListSize,parentSectionId = componentItem?.parentSectionId)
 
         }
         return Pair(list,nextPage)

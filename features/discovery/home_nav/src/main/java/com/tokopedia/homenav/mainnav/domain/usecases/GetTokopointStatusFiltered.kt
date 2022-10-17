@@ -4,6 +4,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.tokopoint.TokopointsStatusFilteredPojo
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetHomeNavTokopointsQuery
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -20,22 +21,7 @@ class GetTokopointStatusFiltered @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     init {
-        val query = """
-            query GetHomeNavTokopoints {
-              tokopointsStatusFiltered(filterKeys: ["points"], pointsExternalCurrency: "IDR", source: "globalMenu"){
-                statusFilteredData {
-                  points {
-                    iconImageURL
-                    pointsAmount
-                    pointsAmountStr
-                    externalCurrencyAmount
-                    externalCurrencyAmountStr
-                  }
-                }
-              }
-            }
-        """.trimIndent()
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetHomeNavTokopointsQuery())
         graphqlUseCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         graphqlUseCase.setTypeClass(TokopointsStatusFilteredPojo::class.java)
     }

@@ -1,5 +1,6 @@
 package com.tokopedia.topchat.chatroom.domain.usecase
 
+import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -19,14 +20,18 @@ open class GetReminderTickerUseCase @Inject constructor(
 
     private fun generateParam(param: Param): Map<String, Any> {
         return mapOf(
-            PARAM_FEATURE_ID to param.featureId
+            PARAM_FEATURE_ID to param.featureId,
+            PARAM_IS_SELLER to param.isSeller,
+            PARAM_MSG_ID to param.msgId
         )
     }
 
     override fun graphqlQuery(): String = """
-            query GetReminderTicker($$PARAM_FEATURE_ID: Int!) {
-                GetReminderTicker ($PARAM_FEATURE_ID: $$PARAM_FEATURE_ID) {
+            query GetReminderTicker($$PARAM_FEATURE_ID: Int!, $$PARAM_IS_SELLER: Boolean, $$PARAM_MSG_ID: Int) {
+                GetReminderTicker ($PARAM_FEATURE_ID: $$PARAM_FEATURE_ID, $PARAM_IS_SELLER: $$PARAM_IS_SELLER, $PARAM_MSG_ID: $$PARAM_MSG_ID) {
                     featureId
+                    replyId
+                    tickerType
                     enable
                     mainText
                     subText
@@ -38,15 +43,20 @@ open class GetReminderTickerUseCase @Inject constructor(
             }
         """
 
-    class Param(
-        val featureId: Int = -1
-    ) {
-        companion object {
-            const val SRW_TICKER = 1
-        }
-    }
+    data class Param(
+        @SerializedName(PARAM_FEATURE_ID)
+        val featureId: Long,
+        @SerializedName(PARAM_IS_SELLER)
+        val isSeller: Boolean,
+        @SerializedName(PARAM_MSG_ID)
+        val msgId: Long
+    )
 
     companion object {
         private const val PARAM_FEATURE_ID: String = "featureId"
+        private const val PARAM_IS_SELLER: String = "isSeller"
+        private const val PARAM_MSG_ID: String = "msgId"
+
+        const val FEATURE_ID_GENERAL: Long = 0
     }
 }
