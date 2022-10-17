@@ -3,6 +3,7 @@ package com.tokopedia.purchase_platform.common.feature.ethicaldrug.view
 import android.animation.Animator
 import android.annotation.SuppressLint
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.purchase_platform.common.R
@@ -31,9 +32,14 @@ class UploadPrescriptionViewHolder(
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
         if (uploadPrescriptionUiModel.showImageUpload != true) {
             binding.root.gone()
+            binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
             return
         } else {
             binding.root.visible()
+            binding.root.layoutParams = RecyclerView.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
         binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
         binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
