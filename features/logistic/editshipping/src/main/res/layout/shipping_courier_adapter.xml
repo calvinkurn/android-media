@@ -12,16 +12,6 @@
         android:id="@+id/courier_name_placeholder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
-        <CheckBox
-            android:id="@+id/checkbox_whitelabel_service"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.1"
-            android:layout_marginStart="5dp"
-            android:layout_gravity="start"
-            android:visibility="gone"
-            tools:visibility="visible"/>
         <ImageView
             android:id="@+id/img_courier"
             android:layout_width="0dp"
@@ -46,14 +36,6 @@
             app:typographyType="paragraph_2"
             app:typographyWeight="bold"
             tools:text="Instan"/>
-
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/icon_service_whitelabel"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:visibility="gone"
-            app:icon_name="INFORMATION" />
-
 
     </LinearLayout>
     <LinearLayout
