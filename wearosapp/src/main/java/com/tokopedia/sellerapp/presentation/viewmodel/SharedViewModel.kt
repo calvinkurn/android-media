@@ -97,8 +97,12 @@ class SharedViewModel @Inject constructor(
     val action: StateFlow<UiState<Boolean>>
         get() = _action
 
-    private var _acceptBulkOrder= MutableStateFlow<UiState<AcceptBulkOrderModel>>(UiState.Idle())
-    val acceptBulkOrder: StateFlow<UiState<AcceptBulkOrderModel>> = _acceptBulkOrder
+    private var _acceptBulkOrder= MutableStateFlow<UiState<Unit>>(UiState.Loading())
+    val acceptBulkOrder: StateFlow<UiState<Unit>> = _acceptBulkOrder.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
 
     fun checkPhoneState() {
         viewModelScope.launch {
@@ -148,6 +152,18 @@ class SharedViewModel @Inject constructor(
                 throwable = throwable
             )
         })
+    }
+
+    fun sendRequestAcceptBulkOrder(listOrderId: List<String>) {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.ACCEPT_BULK_ORDER, listOrderId)
+        }
+    }
+
+    fun resetAcceptBulkOrderState() {
+        launch {
+            _acceptBulkOrder.emit(UiState.Loading())
+        }
     }
 
     private fun getUpdatedMenuCounter(listSummary: List<SummaryModel>) : List<MenuItem> {
@@ -220,4 +236,12 @@ class SharedViewModel @Inject constructor(
             throwable.printStackTrace()
         }
     }
+
+    fun setAcceptOrderSuccess() {
+        launchCatchError(block = {
+            _acceptBulkOrder.emit(UiState.Success())
+        }){
+        }
+    }
+
 }

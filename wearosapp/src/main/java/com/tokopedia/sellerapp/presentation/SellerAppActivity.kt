@@ -132,6 +132,9 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                 phoneStateProgressFlow.value = timeoutMaxProgress
                 validatePhoneState()
             }
+            MessageConstant.ACCEPT_BULK_ORDER_PATH ->  {
+                sharedViewModel.setAcceptOrderSuccess()
+            }
             else -> { }
         }
     }

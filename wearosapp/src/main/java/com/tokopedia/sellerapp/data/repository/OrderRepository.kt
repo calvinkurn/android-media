@@ -25,8 +25,4 @@ class OrderRepository @Inject constructor(
         clientMessageDatasource.sendMessagesToNodes(action)
     }
 
-    override fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> {
-        return clientMessageDatasource.acceptBulkOrder
-    }
-
 }

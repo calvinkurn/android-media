@@ -85,7 +85,7 @@ fun NewOrderDetailScreen(
                 NewOrderDetailMain(orderDetailData, orderType)
             }
             item {
-                NewOrderDetailFooter(orderDetailData, orderType)
+                NewOrderDetailFooter(orderDetailData, orderType, screenNavigation, sharedViewModel)
             }
         }
     }
@@ -292,7 +292,12 @@ fun NewOrderDetailLocation(orderDetailData: OrderModel) {
 }
 
 @Composable
-fun NewOrderDetailFooter(orderDetailData: OrderModel, orderType: String) {
+fun NewOrderDetailFooter(
+    orderDetailData: OrderModel,
+    orderType: String,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
+) {
     NewOrderDetailSpacer(
         height = NEST_SPACING_LVL2
     )
@@ -316,7 +321,14 @@ fun NewOrderDetailFooter(orderDetailData: OrderModel, orderType: String) {
     )
     if(orderType == DATAKEY_NEW_ORDER) {
         NewOrderDetailActionButton(
-            text = stringResource(id = R.string.new_order_detail_accept_order)
+            text = stringResource(id = R.string.new_order_detail_accept_order),
+            onButtonClicked = {
+                redirectToAcceptOrderScreen(
+                    listOf(orderDetailData),
+                    screenNavigation,
+                    sharedViewModel
+                )
+            }
         )
     }
     NewOrderDetailSpacer(
@@ -332,11 +344,12 @@ fun NewOrderDetailFooter(orderDetailData: OrderModel, orderType: String) {
 
 @Composable
 fun NewOrderDetailActionButton(
-    text: String
+    text: String,
+    onButtonClicked: () -> Unit = {}
 ) {
     Button(
         onClick = {
-          /* nothing to do for now */
+            onButtonClicked()
         },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = ActionButtonGrayColor
@@ -400,5 +413,16 @@ fun NewOrderDetailSpacer(height: Dp) {
                 height = height
             )
     )
+}
+
+private fun redirectToAcceptOrderScreen(
+    orderList: List<OrderModel>?,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
+) {
+    orderList?.let {
+        sharedViewModel.resetAcceptBulkOrderState()
+        screenNavigation.toAcceptOrderScreen(it.map { it.orderId })
+    }
 }
 

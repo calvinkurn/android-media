@@ -41,6 +41,10 @@
                     android:host="*"
                     android:pathPrefix="/open-login-page"
                     android:scheme="wear" />
+                <data
+                    android:host="*"
+                    android:pathPrefix="/accept-bulk-order"
+                    android:scheme="wear" />
 
             </intent-filter>
         </service>

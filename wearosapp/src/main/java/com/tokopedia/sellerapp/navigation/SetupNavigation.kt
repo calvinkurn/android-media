@@ -42,5 +42,9 @@ fun SetupNavigation(
         connectionFailedScreenComposable(
             sharedViewModel = sharedViewModel
         )
+        acceptOrderScreenComposable(
+            sharedViewModel = sharedViewModel,
+            screenNavigation = nav
+        )
     }
 }
