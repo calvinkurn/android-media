@@ -69,12 +69,12 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
                     }
 
                     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                        if (s.toString().length >= minLength && s.toString().length <= maxLength) {
-                            disableSubmitButton()
+                        val reviewLength = s.toString().findLength()
+                        updateReviewLength(reviewLength)
+                        if (reviewLength in minLength..maxLength) {
                             warning_text.show()
                         } else {
                             warning_text.hide()
-                            enableSubmitButton()
                         }
                     }
 
@@ -82,6 +82,13 @@ class ChatBotProvideRatingFragment: BaseFragmentProvideRating() {
             }
 
         }
+    }
+
+    //Calculates the length of alphanumeric characters
+    private fun String.findLength() : Int {
+        return this.filter {
+            it.isLetterOrDigit()
+        }.length
     }
 
     private fun findViews(view: View) {

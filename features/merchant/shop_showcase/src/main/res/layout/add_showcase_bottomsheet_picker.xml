@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/save_product_action_text"
-        android:layout_marginTop="@dimen/dp_28"
+        android:layout_marginTop="28dp"
         android:enabled="false"
         app:unifyButtonVariant="filled"
         app:unifyButtonSize="large"

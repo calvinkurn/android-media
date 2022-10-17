@@ -119,6 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/spacing_lvl4"
+                android:layout_marginEnd="@dimen/spacing_lvl3"
                 android:layout_marginBottom="@dimen/spacing_lvl3" />
 
             <com.tokopedia.unifyprinciples.Typography

@@ -21,6 +21,7 @@ import com.tokopedia.affiliate.AFFILIATE_YT_REGEX
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.FACEBOOK_DEFAULT
 import com.tokopedia.affiliate.INSTAGRAM_DEFAULT
+import com.tokopedia.affiliate.PAGE_TYPE_PDP
 import com.tokopedia.affiliate.TIKTOK_DEFAULT
 import com.tokopedia.affiliate.TWITTER_DEFAULT
 import com.tokopedia.affiliate.WWW
@@ -82,9 +83,9 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
     companion object {
 
-        enum class SheetType(type: Int) {
-            LINK_GENERATION(1),
-            ADD_SOCIAL(2)
+        enum class SheetType {
+            LINK_GENERATION,
+            ADD_SOCIAL
         }
 
         private const val COPY_LABEL = "Tokopedia"
@@ -201,7 +202,7 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                 isLinkGenerationEnabled = bundle.getBoolean(KEY_LINK_GEN_ENABLED)
                 commission = bundle.getString(KEY_COMMISON_PRICE, "")
                 status = bundle.getString(KEY_STATUS, "")
-                type = bundle.getString(KEY_TYPE, "pdp")
+                type = bundle.getString(KEY_TYPE, PAGE_TYPE_PDP)
             }
 
             if (sheetType == SheetType.ADD_SOCIAL) {
@@ -328,11 +329,18 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
     private fun setObservers(contentView: View) {
         affiliatePromotionBSViewModel.generateLinkData().observe(this) {
             it?.let { data ->
-                sendClickPGevent(
-                    data.linkID,
-                    currentServiceFormat,
-                    AffiliateAnalytics.LabelKeys.SUCCESS
-                )
+                if (type == PAGE_TYPE_PDP) {
+                    sendClickPGevent(
+                        data.linkID,
+                        AffiliateAnalytics.LabelKeys.SUCCESS,
+                    )
+                } else {
+                    sendClickPGeventShop(
+                        data.linkID,
+                        AffiliateAnalytics.LabelKeys.SUCCESS,
+                        status
+                    )
+                }
                 val clipboardManager =
                     context?.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                 clipboardManager.setPrimaryClip(
@@ -348,7 +356,14 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
                     Toaster.TYPE_NORMAL
                 ).show()
             } ?: kotlin.run {
-                sendClickPGevent("", currentServiceFormat, AffiliateAnalytics.LabelKeys.FAIL)
+                if (type == PAGE_TYPE_PDP) {
+                    sendClickPGevent("", AffiliateAnalytics.LabelKeys.FAIL)
+                } else {
+                    sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+                }
+
+                Toaster.build(contentView.rootView, getString(R.string.affiliate_link_empty_error),
+                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
 
@@ -360,7 +375,11 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
 
         affiliatePromotionBSViewModel.getErrorMessage().observe(this) { error ->
             if (error != null) {
-                sendClickPGevent("", currentServiceFormat, AffiliateAnalytics.LabelKeys.FAIL)
+                if (type == PAGE_TYPE_PDP) {
+                    sendClickPGevent("", AffiliateAnalytics.LabelKeys.FAIL)
+                } else {
+                    sendClickPGeventShop("", AffiliateAnalytics.LabelKeys.FAIL, status)
+                }
                 Toaster.build(
                     contentView.rootView, error,
                     Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
@@ -369,53 +388,70 @@ class AffiliatePromotionBottomSheet : BottomSheetUnify(), ShareButtonInterface, 
         }
     }
 
-    private fun sendClickPGevent(linkID: String?, currentServiceFormat: String, state: String) {
-        if (type == "pdp") {
-            var eventAction = ""
-            var eventCategory = ""
-
-            val eventLabel: String = if (status == AffiliateAnalytics.LabelKeys.SUCCESS) {
-                if (originScreen == ORIGIN_PROMOSIKAN) "$productId - $linkID - $currentServiceFormat - $status - $state"
-                else "$productId - $linkID - $currentServiceFormat - $state"
-            } else {
-                if (originScreen == ORIGIN_PROMOSIKAN) "$productId - $currentServiceFormat - $status - $state"
-                else "$productId - $currentServiceFormat - $state"
+    private fun sendClickPGevent(linkID: String?, state: String) {
+        var eventAction = ""
+        var eventCategory = ""
+        val eventLabel = if (originScreen == ORIGIN_PROMOSIKAN) "$linkID - $status - $state" else "$linkID - $state"
+        when (originScreen) {
+            ORIGIN_HOME -> {
+                eventAction =
+                    AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
             }
-            when (originScreen) {
-                ORIGIN_HOME -> {
-                    eventAction =
-                        AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PRODUK_YANG_DIPROMOSIKAN
-                    eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
-                }
-                ORIGIN_HOME_GENERATED -> {
-                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
-                    eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
-                }
-                ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
-                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
-                    eventCategory =
-                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
-
-                }
-                ORIGIN_TERAKHIR_DILIHAT -> {
-                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
-                    eventCategory =
-                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
-                }
-                ORIGIN_PROMOSIKAN -> {
-                    eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
-                    eventCategory =
-                        AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
-                }
+            ORIGIN_HOME_GENERATED -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_DAFTAR_LINK_PRODUK
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
             }
-            AffiliateAnalytics.sendEvent(
-                AffiliateAnalytics.EventKeys.CLICK_PG,
-                eventAction,
-                eventCategory,
-                eventLabel,
-                userSessionInterface.userId
-            )
+            ORIGIN_PERNAH_DIBELI_PROMOSIKA -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DIABEL
+                eventCategory =
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+
+            }
+            ORIGIN_TERAKHIR_DILIHAT -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_PERNAH_DILIHAT
+                eventCategory =
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+            }
+            ORIGIN_PROMOSIKAN -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_RESULT_PAGE
+                eventCategory =
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+            }
         }
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            eventCategory,
+            eventLabel,
+            userSessionInterface.userId
+        )
+    }
+
+    private fun sendClickPGeventShop(linkID: String?, status: String, entryFlag: String) {
+        var eventAction = ""
+        var eventCategory = ""
+        var eventLabel = ""
+        when (originScreen) {
+            ORIGIN_HOME -> {
+                eventAction =
+                    AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_HOME_PAGE_BOTTOM_SHEET
+                eventLabel = "$linkID - $status"
+            }
+            ORIGIN_PROMOSIKAN -> {
+                eventAction = AffiliateAnalytics.ActionKeys.CLICK_SALIN_LINK_SHOP_SEARCH_RESULT
+                eventCategory = AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_BOTTOM_SHEET
+                eventLabel = "$linkID - $entryFlag - $status"
+            }
+        }
+        AffiliateAnalytics.sendEvent(
+            AffiliateAnalytics.EventKeys.CLICK_PG,
+            eventAction,
+            eventCategory,
+            eventLabel,
+            userSessionInterface.userId
+        )
     }
 
     private fun loading(stop: Boolean) {

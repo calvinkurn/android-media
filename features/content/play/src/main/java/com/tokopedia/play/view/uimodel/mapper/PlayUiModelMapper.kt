@@ -25,6 +25,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 /**
@@ -42,8 +43,11 @@ class PlayUiModelMapper @Inject constructor(
     private val cartMapper: PlayCartMapper,
 ) {
 
-    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel> {
-        return input.map(productTagMapper::mapSection)
+    fun mapProductSection(input: List<Section>): List<ProductSectionUiModel.Section> {
+        val controlTime = DateUtil.getCurrentDate()
+        return input.map {
+            productTagMapper.mapSection(it, controlTime)
+        }
     }
 
     fun mapMerchantVouchers(input: List<Voucher>): List<MerchantVoucherUiModel> {
@@ -114,7 +118,7 @@ class PlayUiModelMapper @Inject constructor(
                 DiscountedPrice(
                     originalPrice = child.campaign?.originalPriceFmt.toEmptyStringIfNull(),
                     discountedPriceNumber = child.campaign?.discountedPrice ?: 0.0,
-                    discountPercent = child.campaign?.discountedPercentage?.toInt() ?: 0,
+                    discountPercent = child.campaign?.discountedPercentage?.toLong() ?: 0,
                     discountedPrice = child.campaign?.discountedPriceFmt.toEmptyStringIfNull()
                 )
             } else {
@@ -123,7 +127,9 @@ class PlayUiModelMapper @Inject constructor(
             minQty = prevDetail.minQty.orZero(),
             isFreeShipping = prevDetail.isFreeShipping,
             applink = prevDetail.applink,
-            isTokoNow = false,
+            isTokoNow = prevDetail.isTokoNow,
+            isPinned = prevDetail.isPinned,
+            isRilisanSpesial = prevDetail.isRilisanSpesial,
         )
     }
 }

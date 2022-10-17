@@ -41,11 +41,6 @@ sealed class SellerFeatureUiModel(
             titleId = R.string.seller_migration_fragment_product_tab_multi_edit_title,
             descriptionId = R.string.seller_migration_fragment_product_tab_multi_edit_description)
 
-    class SetCashbackFeatureUiModel : SellerFeatureUiModel(
-            imageUrl = URL_CASHBACK_ICON,
-            titleId = R.string.seller_migration_fragment_product_tab_set_cashback_title,
-            descriptionId = R.string.seller_migration_fragment_product_tab_set_cashback_description)
-
     class SetVariantFeatureUiModel : SellerFeatureUiModel(
             imageUrl = URL_VARIANT_ICON,
             titleId = R.string.seller_migration_fragment_product_tab_set_variant_title,
@@ -106,12 +101,6 @@ sealed class SellerFeatureUiModel(
             imageUrl = URL_TOPADS_ICON,
             titleId = R.string.seller_migration_fragment_ads_and_promo_tab_topads_title,
             descriptionId = R.string.seller_migration_fragment_ads_and_promo_tab_topads_description,
-            data = data)
-
-    class SetCashbackFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(
-            imageUrl = URL_CASHBACK_ICON,
-            titleId = R.string.seller_migration_fragment_product_tab_set_cashback_title,
-            descriptionId = R.string.seller_migration_fragment_product_tab_set_cashback_description,
             data = data)
 
     class FeaturedProductFeatureWithDataUiModel(data: Any) : SellerFeatureUiModel(

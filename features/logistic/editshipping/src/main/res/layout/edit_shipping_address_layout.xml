@@ -26,7 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/shop_phone_number_title"
         android:layout_marginLeft="10dp"
-        android:textSize="@dimen/sp_18"
+        android:textSize="18sp"
         android:visibility="gone"
         app:typographyType="body_1"
         tools:text="08678493038"

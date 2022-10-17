@@ -47,8 +47,14 @@ data class SearchProductModel(
 
     private val topAdsImageViewModelList: MutableList<TopAdsImageViewModel> = mutableListOf()
 
+    val isPostProcessing: Boolean
+        get() = searchProduct.header.meta.isPostProcessing
+
     val backendFilters: String
         get() = searchProduct.backendFilters
+
+    val keywordIntention: Int
+        get() = searchProduct.data.keywordIntention
 
     fun setTopAdsImageViewModelList(topAdsImageViewModelList: List<TopAdsImageViewModel>) {
         this.topAdsImageViewModelList.clear()
@@ -71,6 +77,9 @@ data class SearchProductModel(
 
         val backendFilters: String
             get() = data.backendFilters
+
+        val errorMessage: String
+            get() = header.errorMessage
     }
 
     data class SearchProductHeader(
@@ -114,6 +123,9 @@ data class SearchProductModel(
     data class SearchProductHeaderMeta(
         @SerializedName("productListType")
         val productListType: String = "",
+
+        @SerializedName("isPostProcessing")
+        val isPostProcessing: Boolean = false,
     )
 
     data class SearchProductData(
@@ -156,6 +168,10 @@ data class SearchProductModel(
             @SerializedName("violation")
             @Expose
             val violation: Violation = Violation(),
+
+            @SerializedName("keywordIntention")
+            @Expose
+            val keywordIntention: Int = 1,
     )
 
     data class Redirection(
@@ -780,6 +796,9 @@ data class SearchProductModel(
             @SerializedName("card_button")
             @Expose
             val cardButton: InspirationCarouselCardButton = InspirationCarouselCardButton(),
+
+            @SerializedName("bundle")
+            val bundle: InspirationCarouselBundle = InspirationCarouselBundle(),
     )
 
     data class InspirationCarouselProduct (
@@ -844,6 +863,10 @@ data class SearchProductModel(
             @Expose
             val discountPercentage: Int = 0,
 
+            @SerializedName("discount")
+            @Expose
+            val discount: String = "",
+
             @SerializedName("badges")
             @Expose
             val badgeList: List<InspirationCarouselProductBadge> = listOf(),
@@ -867,6 +890,22 @@ data class SearchProductModel(
             @SerializedName("customvideo_url")
             @Expose
             val customVideoURL: String = "",
+
+            @SerializedName("label")
+            @Expose
+            val label: String = "",
+
+            @SerializedName("bundle_id")
+            @Expose
+            val bundleId: String = "",
+
+            @SerializedName("parent_id")
+            @Expose
+            val parentId: String = "",
+
+            @SerializedName("min_order")
+            @Expose
+            val minOrder: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -886,6 +925,9 @@ data class SearchProductModel(
     )
 
     data class InspirationCarouselProductShop(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
             @SerializedName("name")
             @Expose
             val name: String = "",
@@ -913,6 +955,29 @@ data class SearchProductModel(
         @Expose
         val applink: String = "",
     )
+
+    @SuppressLint("Invalid Data Type")
+    data class InspirationCarouselBundle(
+        @SerializedName("shop")
+        val shop: Shop = Shop(),
+        @SerializedName("count_sold")
+        val countSold: String = "",
+        @SerializedName("price")
+        val price: Long = 0,
+        @SerializedName("original_price")
+        val originalPrice: String = "",
+        @SerializedName("discount")
+        val discount: String = "",
+        @SerializedName("discount_percentage")
+        val discountPercentage: Int = 0,
+    ) {
+        data class Shop(
+            @SerializedName("name")
+            val name: String = "",
+            @SerializedName("url")
+            val url: String = "",
+        )
+    }
 
     data class SearchInspirationWidget(
         @SerializedName("data")

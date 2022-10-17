@@ -237,9 +237,6 @@ class InfiniteTokonowRecomFragment :
         }
     }
 
-    override fun onWishlistClick(item: RecommendationItem, isAddWishlist: Boolean, callback: (Boolean, Throwable?) -> Unit) {
-    }
-
     override fun onWishlistV2Click(item: RecommendationItem, isAddWishlist: Boolean) {
 
     }

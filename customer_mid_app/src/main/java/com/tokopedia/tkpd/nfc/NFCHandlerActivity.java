@@ -41,6 +41,7 @@ public class NFCHandlerActivity extends AppCompatActivity {
             }
             newIntent.replaceExtras(intent.getExtras());
             newIntent.setAction(intent.getAction());
+
             startActivity(newIntent);
             finish();
         }

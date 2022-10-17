@@ -1,0 +1,130 @@
+{
+  "tokofoodInitSearchState": {
+    "sections": [
+      {
+        "id": "recent_search",
+        "header": "Terakhir dicari",
+        "labelText": "Hapus Semua",
+        "labelAction": "clear_history",
+        "type": "keyword",
+        "items": [
+          {
+            "id": "0",
+            "imageUrl": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/f86ebb9f-57f3-4c25-b4c9-00a2a644ba4f.png",
+            "applink": "tokopedia://food/search?",
+            "template": "list_single_line",
+            "title": "mcd",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png",
+            "shortcutAction": "delete"
+          },
+          {
+            "id": "1",
+            "imageUrl": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/f86ebb9f-57f3-4c25-b4c9-00a2a644ba4f.png",
+            "applink": "tokopedia://food/search?",
+            "template": "list_single_line",
+            "title": "Abuba",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "https://images.tokopedia.net/img/jbZAUJ/2020/12/15/845f9be9-d0d7-46ea-9c7d-d3333633f0e2.png",
+            "shortcutAction": "delete"
+          }
+        ]
+      },
+      {
+        "id": "popular_search",
+        "header": "Paling banyak dicari",
+        "labelText": "",
+        "labelAction": "",
+        "type": "chips",
+        "items": [
+          {
+            "id": "0",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/search?xxx",
+            "template": "list_double_line",
+            "title": "mcd",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          },
+          {
+            "itemId": "1",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/search?xxx",
+            "template": "list_double_line",
+            "title": "sate",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          },
+          {
+            "itemId": "2",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/search?xxx",
+            "template": "list_double_line",
+            "title": "kopi",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          }
+        ]
+      },
+      {
+        "id": "cuisine_list",
+        "header": "Kuliner enak",
+        "labelText": "",
+        "labelAction": "",
+        "type": "bold_square",
+        "items": [
+          {
+            "itemId": "0",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/category?xxx",
+            "template": "list_double_line",
+            "title": "Kopi",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          },
+          {
+            "itemId": "1",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/category?xxx",
+            "template": "list_double_line",
+            "url": "",
+            "title": "Nasi",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          },
+          {
+            "itemId": "2",
+            "imageUrl": "abc.jpg",
+            "applink": "tokopedia://food/category?xxx",
+            "template": "list_double_line",
+            "title": "Jajanan gurih",
+            "subtitle": "",
+            "label": "",
+            "labelType": "",
+            "shortcutImage": "",
+            "shortcutAction": ""
+          }
+        ]
+      }
+    ]
+  }
+}

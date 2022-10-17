@@ -317,6 +317,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         title
         subTitle
         text
+        webLink
         appLink
         appLinkProductList
         webLinkProductList
@@ -445,6 +446,11 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
         val dynamicFeedResponse = executeOnBackground()
         val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
         return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+    }
+    suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
+            FeedXData {
+        this.setParams(cursor, limit, detailId)
+        return executeOnBackground()
     }
 
 }

@@ -9,6 +9,7 @@ import android.content.SharedPreferences
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.text.SpannableString
 import android.text.TextPaint
 import android.text.TextUtils
@@ -16,7 +17,12 @@ import android.text.format.DateFormat
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -36,12 +42,13 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.analytics.firebase.TkpdFirebaseAnalytics
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal.LANDING_SHOP_CREATION
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
@@ -49,6 +56,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LO
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.appauth.AppAuthWorker
 import com.tokopedia.devicefingerprint.datavisor.workmanager.DataVisorWorker
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiConstant
+import com.tokopedia.devicefingerprint.integrityapi.IntegrityApiWorker
 import com.tokopedia.devicefingerprint.submitdevice.service.SubmitDeviceWorker
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
@@ -70,6 +79,7 @@ import com.tokopedia.loginregister.common.analytics.RegisterAnalytics
 import com.tokopedia.loginregister.common.analytics.SeamlessLoginAnalytics
 import com.tokopedia.loginregister.common.domain.pojo.ActivateUserData
 import com.tokopedia.loginregister.common.error.LoginErrorCode
+import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
 import com.tokopedia.loginregister.common.view.LoginTextView
@@ -122,6 +132,7 @@ import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
@@ -134,10 +145,15 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
-import kotlinx.android.synthetic.main.fragment_login_with_phone.*
-import kotlinx.android.synthetic.main.layout_partial_register_input.*
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import javax.inject.Inject
+import kotlinx.android.synthetic.main.fragment_login_with_phone.container
+import kotlinx.android.synthetic.main.fragment_login_with_phone.emailExtension
+import kotlinx.android.synthetic.main.fragment_login_with_phone.fingerprint_btn
+import kotlinx.android.synthetic.main.fragment_login_with_phone.progressBarLoginWithPhone
+import kotlinx.android.synthetic.main.fragment_login_with_phone.register_button
+import kotlinx.android.synthetic.main.layout_partial_register_input.wrapper_password
 
 
 /**
@@ -194,6 +210,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var isUseHash = false
     private var validateToken = ""
     private var isLoginAfterSq = false
+    private var isReturnHomeWhenBackPressed = false
 
     private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
@@ -204,6 +221,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var tempValidateToken = ""
 
     private var partialRegisterInputView: PartialRegisterInputView? = null
+    private var fieldUnifyInputEmailPhone: TextFieldUnify2? = null
     private var emailPhoneEditText: EditText? = null
     var partialActionButton: UnifyButton? = null
     private var tickerAnnouncement: Ticker? = null
@@ -325,6 +343,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         source = getParamString(ApplinkConstInternalGlobal.PARAM_SOURCE, arguments, savedInstanceState, "")
         isAutoLogin = getParamBoolean(LoginConstants.AutoLogin.IS_AUTO_LOGIN, arguments, savedInstanceState, false)
+        isReturnHomeWhenBackPressed = getParamBoolean(
+            ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME, arguments, savedInstanceState, false
+        )
         isUsingRollenceNeedHelp = isUsingRollenceNeedHelp()
         isEnableSeamlessLogin = isEnableSeamlessGoto()
         isEnableFingerprint = abTestPlatform.getString(LoginConstants.RollenceKey.LOGIN_PAGE_BIOMETRIC, "").isNotEmpty()
@@ -347,7 +368,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_login_with_phone, container, false)
         partialRegisterInputView = view.findViewById(R.id.login_input_view)
-        emailPhoneEditText = partialRegisterInputView?.findViewById(R.id.input_email_phone)
+        fieldUnifyInputEmailPhone = partialRegisterInputView?.findViewById(R.id.input_email_phone)
+        emailPhoneEditText = fieldUnifyInputEmailPhone?.editText
         partialActionButton = partialRegisterInputView?.findViewById(R.id.register_btn)
         tickerAnnouncement = view.findViewById(R.id.ticker_announcement)
         bannerLogin = view.findViewById(R.id.banner_login)
@@ -393,6 +415,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         partialRegisterInputView?.initKeyboardListener(view)
 
         autoFillWithDataFromLatestLoggedIn()
+
+        initInputType()
+    }
+
+    private fun initInputType() {
+        fieldUnifyInputEmailPhone?.apply {
+            setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE)
+            setLabel(requireActivity().getString(R.string.phone_or_email_input))
+        }
     }
 
     private fun checkSeamless() {
@@ -542,6 +573,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             }
         })
 
+        viewModel.adminRedirection.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onLocationAdminRedirection()
+            }
+        }
+
         viewModel.loginBiometricResponse.observe(viewLifecycleOwner, androidx.lifecycle.Observer {
             when (it) {
                 is Success -> onSuccessLoginBiometric()
@@ -637,7 +674,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         val pw = arguments?.getString(LoginConstants.AutoLogin.AUTO_LOGIN_PASS, "") ?: ""
         partialRegisterInputView?.showLoginEmailView(email)
         emailPhoneEditText?.setText(email)
-        wrapper_password?.textFieldInput?.setText(pw)
+        wrapper_password?.editText?.setText(pw)
         loginEmail(email, pw)
         activity?.let {
             analytics.eventClickLoginEmailButton(it.applicationContext)
@@ -714,10 +751,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             registerCheck(emailPhoneEditText?.text.toString())
         }
 
-        wrapper_password?.textFieldInput?.setOnEditorActionListener { textView, id, keyEvent ->
+        wrapper_password?.editText?.setOnEditorActionListener { textView, id, keyEvent ->
             if (id == EditorInfo.IME_ACTION_DONE) {
                 loginEmail(emailPhoneEditText?.text.toString().trim(),
-                        wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
+                        wrapper_password?.editText?.text.toString(), useHash = isUseHash)
                 activity?.let {
                     analytics.eventClickLoginEmailButton(it.applicationContext)
                     KeyboardHandler.hideSoftKeyboard(it)
@@ -879,12 +916,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         partialActionButton?.text = getString(R.string.next)
         partialActionButton?.contentDescription = getString(R.string.content_desc_register_btn)
-        partialActionButton?.setOnClickListener { registerCheck(emailPhoneEditText?.text.toString()) }
+        partialActionButton?.setOnClickListener {
+            showLoadingLogin()
+            registerCheck(emailPhoneEditText?.text.toString())
+        }
         partialRegisterInputView?.showDefaultView()
     }
 
     override fun goToForgotPassword() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.FORGOT_PASSWORD)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, emailPhoneEditText?.text.toString().trim())
         intent.flags = Intent.FLAG_ACTIVITY_FORWARD_RESULT
         startActivity(intent)
@@ -1060,7 +1100,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun goToRegisterInitial(source: String) {
         activity?.let {
             analytics.eventClickRegisterFromLogin()
-            var intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+            var intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
             if (GlobalConfig.isSellerApp()) {
                 intent = RouteManager.getIntent(context, ApplinkConst.CREATE_SHOP)
             }
@@ -1082,7 +1122,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingDiscover()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable, getErrorHandlerBuilder())
+        val errorMessage = throwable.getMessage(requireActivity())
         if (errorMessage.removeErrorCode() == forbiddenMessage) {
             onGoToForbiddenPage()
         } else {
@@ -1121,6 +1161,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             userSession.autofillUserData = emailPhoneEditText?.text.toString()
 
         registerPushNotif()
+        submitIntegrityApi()
 
         activity?.let {
             if (GlobalConfig.isSellerApp()) {
@@ -1131,6 +1172,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
                 if (isFromRegister) {
                     bundle.putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SUCCESS_REGISTER, true)
+                }
+
+                if (isReturnHomeWhenBackPressed) {
+                    goToHome()
                 }
 
                 it.setResult(Activity.RESULT_OK, Intent().putExtras(bundle))
@@ -1170,7 +1215,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val intent = if (userSession.hasShop()) {
                 RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_HOME)
             } else {
-                RouteManager.getIntent(context, LANDING_SHOP_CREATION)
+                RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.LANDING_SHOP_CREATION)
             }
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
             startActivity(intent)
@@ -1185,11 +1230,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     private fun setTrackingUserId(userId: String) {
         try {
-            TkpdAppsFlyerMapper.getInstance(activity?.applicationContext).mapAnalytics()
+            val ctx = activity?.applicationContext
+            TkpdAppsFlyerMapper.getInstance(ctx).mapAnalytics()
             TrackApp.getInstance().gtm.pushUserId(userId)
             val crashlytics: FirebaseCrashlytics = FirebaseCrashlytics.getInstance()
             if (!GlobalConfig.DEBUG && crashlytics != null)
                 crashlytics.setUserId(userId)
+            ctx?.let {
+                TkpdFirebaseAnalytics.getInstance(ctx).setUserId(userId)
+            }
 
             if (userSession.isLoggedIn) {
                 val userData = UserData()
@@ -1253,6 +1302,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         showToaster(errMsg)
     }
 
+    private fun goToHome() {
+        val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
     override fun trackSuccessValidate() {
         analytics.trackClickOnNextSuccess(emailPhoneEditText?.text.toString())
     }
@@ -1261,12 +1316,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         val message = getErrorMsgWithLogging(throwable, withErrorCode = false, flow = "")
         analytics.trackClickOnNextFail(emailPhoneEditText?.text.toString(), message.removeErrorCode())
-        partialRegisterInputView?.onErrorValidate(message)
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(message)
     }
 
     override fun onErrorEmptyEmailPhone() {
         dismissLoadingLogin()
-        partialRegisterInputView?.onErrorValidate(getString(R.string.must_insert_email_or_phone))
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(R.string.must_insert_email_or_phone))
     }
 
     override fun goToLoginPhoneVerifyPage(phoneNumber: String) {
@@ -1292,7 +1347,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         dismissLoadingLogin()
         partialRegisterInputView?.showLoginEmailView(email)
         partialActionButton?.setOnClickListener {
-            loginEmail(email, wrapper_password?.textFieldInput?.text.toString(), useHash = isUseHash)
+            loginEmail(email, wrapper_password?.editText?.text.toString(), useHash = isUseHash)
             activity?.let {
                 analytics.eventClickLoginEmailButton(it.applicationContext)
                 KeyboardHandler.hideSoftKeyboard(it)
@@ -1315,7 +1370,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                     if (GlobalConfig.isSellerApp()) {
                         goToRegisterInitial(source)
                     } else {
-                        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.INIT_REGISTER)
+                        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.INIT_REGISTER)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_SOURCE, source)
                         intent.putExtra(ApplinkConstInternalGlobal.PARAM_IS_SMART_LOGIN, true)
@@ -1346,7 +1401,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun showErrorEmail(resId: Int) {
-        partialRegisterInputView?.onErrorValidate(getString(resId))
+        partialRegisterInputView?.onErrorInputEmailPhoneValidate(getString(resId))
     }
 
     override fun onErrorLoginEmail(email: String): (Throwable) -> Unit {
@@ -1369,10 +1424,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 onErrorLogin(it, "${it.errorDescription} - ${LoginErrorCode.ERROR_EMAIL_TOKEN_EXCEPTION}")
             } else {
                 val forbiddenMessage = context?.getString(com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
-                val errorMessage = ErrorHandler.getErrorMessage(context, it,
-                    ErrorHandler.Builder().apply {
-                        sendToScalyr = false
-                    }.build())
+                val errorMessage = it.getMessage(requireActivity())
                 if (errorMessage.removeErrorCode() == forbiddenMessage) {
                     onGoToForbiddenPage()
                 } else {
@@ -1390,7 +1442,11 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if (profilePojo.profileInfo.fullName.contains(CHARACTER_NOT_ALLOWED)) {
             onGoToChangeName()
         } else {
-            viewModel.getTemporaryKeyForSDK(profilePojo)
+            if(isEnableSeamlessLogin) {
+                viewModel.getTemporaryKeyForSDK(profilePojo)
+            } else {
+                onSuccessLogin()
+            }
         }
         getDefaultChosenAddress()
     }
@@ -1409,8 +1465,15 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }.show()
     }
 
+    override fun onLocationAdminRedirection() {
+        context?.let {
+            dismissLoadingLogin()
+            RouteManager.route(it, ApplinkConstInternalMarketplace.ADMIN_INVITATION)
+        }
+    }
+
     override fun showGetAdminTypeError(throwable: Throwable) {
-        val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+        val errorMessage = throwable.getMessage(requireActivity())
         showToaster(errorMessage)
         dismissLoadingLogin()
     }
@@ -1453,7 +1516,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             if (it is AkamaiErrorException) {
                 showPopupErrorAkamai()
             } else {
-                val errorMessage = ErrorHandler.getErrorMessage(context, it)
+                val errorMessage = it.getMessage(requireActivity())
                 NetworkErrorHelper.createSnackbarWithAction(activity, errorMessage) {
                     viewModel.reloginAfterSQ(tempValidateToken)
                 }.showRetrySnackbar()
@@ -1506,7 +1569,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun goToVerification(phone: String = "", email: String = "", otpType: Int): Intent {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.COTP)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, phone)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, otpType)
@@ -1663,7 +1726,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     override fun goToAddPin2FA(enableSkip2FA: Boolean) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.ADD_PIN)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.ADD_PIN)
         intent.putExtras(Bundle().apply {
             putBoolean(ApplinkConstInternalGlobal.PARAM_ENABLE_SKIP_2FA, enableSkip2FA)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SKIP_OTP, true)
@@ -1677,7 +1740,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private fun isFromAtcPage(): Boolean = source == LoginConstants.SourcePage.SOURCE_ATC
 
     override fun goToAddNameFromRegisterPhone(uuid: String, msisdn: String) {
-        val applink = ApplinkConstInternalGlobal.ADD_NAME_REGISTER_CLEAN_VIEW
+        val applink = ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
         val intent = RouteManager.getIntent(context, applink)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, msisdn)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_UUID, uuid)
@@ -1713,6 +1776,9 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     override fun onGoToChangeName() {
         if (activity != null) {
             val intent = RouteManager.getIntent(context, ApplinkConst.ADD_NAME_PROFILE)
+            intent.putExtras(Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_TOKEN, validateToken)
+            })
             startActivityForResult(intent, LoginConstants.Request.REQUEST_ADD_NAME)
         }
     }
@@ -1723,6 +1789,8 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             val email = emailPhoneEditText?.text.toString()
             onChangeButtonClicked()
             emailPhoneEditText?.setText(email)
+        } else if (isReturnHomeWhenBackPressed) {
+            goToHome()
         } else if (activity != null) {
             activity?.finish()
         }
@@ -1911,6 +1979,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
+    private fun submitIntegrityApi() {
+        context?.let {
+            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
+        }
+    }
+
     private fun getDefaultChosenAddress() {
         activity?.let {
             GetDefaultChosenAddressService.startService(it.applicationContext)
@@ -1973,7 +2047,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     companion object {
 
         const val ROLLENCE_KEY_INACTIVE_PHONE_NUMBER = "inactivephone_login"
-        const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_login"
+        const val ROLLENCE_KEY_GOTO_SEAMLESS = "goto_seamless_v2"
 
         private const val TAG_NEED_HELP_BOTTOM_SHEET = "NEED HELP BOTTOM SHEET"
 

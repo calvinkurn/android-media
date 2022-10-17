@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="2dp"
+    android:paddingEnd="0dp">
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icSomListNavigationBack"
+        android:layout_width="36dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="14dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="12dp"
+        app:icon_name="ARROW_BACK"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList" />
+
+    <com.tokopedia.unifycomponents.SearchBarUnify
+        android:id="@+id/searchBarSomList"
+        android:layout_width="@dimen/layout_lvl0"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_plus"
+        app:layout_constraintStart_toEndOf="@id/icSomListNavigationBack"
+        app:layout_constraintTop_toTopOf="parent"
+        app:search_bar_placeholder="@string/som_list_hint_search_product"
+        app:search_bar_show_icon="false" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/icSomListMenuPlus"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:unify_image_corner_radius="0"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/icSomListMenuWaitingPayment"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:icon_name="SALDO_TEMPO"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        tools:visibility="visible" />
+
+    <View
+        android:id="@+id/icSomListMenuWaitingPaymentDot"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:background="@drawable/dot_red"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="@id/icSomListMenuWaitingPayment"
+        app:layout_constraintTop_toTopOf="@id/icSomListMenuWaitingPayment"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderSomListMenuPlus"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toStartOf="@id/barrier_start_som_list_menu_waiting_payment"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:loader_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderSomListMenuWaitingPayment"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="14dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/searchBarSomList"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/searchBarSomList"
+        app:loader_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_som_list_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintTop_toBottomOf="@id/searchBarSomList" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_start_som_list_menu_plus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="icSomListMenuPlus,loaderSomListMenuPlus"
+        tools:layout_constraintEnd_toStartOf="@id/icSomListMenuPlus"
+        tools:layout_height="0dp"
+        tools:layout_width="0dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_start_som_list_menu_waiting_payment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="start"
+        app:constraint_referenced_ids="icSomListMenuWaitingPayment,icSomListMenuWaitingPaymentDot,loaderSomListMenuWaitingPayment"
+        tools:layout_constraintEnd_toStartOf="@id/icSomListMenuWaitingPayment"
+        tools:layout_height="0dp"
+        tools:layout_width="0dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

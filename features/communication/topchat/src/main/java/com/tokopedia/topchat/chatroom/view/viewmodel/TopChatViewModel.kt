@@ -18,7 +18,7 @@ import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
@@ -41,7 +41,6 @@ import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.ErrorAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.ActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.BlockActionType
 import com.tokopedia.topchat.chatroom.domain.pojo.chatroomsettings.WrapperChatSetting
-import com.tokopedia.topchat.chatroom.domain.pojo.getreminderticker.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.domain.pojo.headerctamsg.HeaderCtaButtonAttachment
 import com.tokopedia.topchat.chatroom.domain.pojo.orderprogress.OrderProgressResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.param.AddToCartParam
@@ -52,11 +51,12 @@ import com.tokopedia.topchat.chatroom.domain.pojo.sticker.Sticker
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.ChatListGroupStickerResponse
 import com.tokopedia.topchat.chatroom.domain.pojo.stickergroup.StickerGroup
 import com.tokopedia.topchat.chatroom.domain.usecase.*
-import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Param.Companion.SRW_TICKER
+import com.tokopedia.topchat.chatroom.domain.usecase.GetReminderTickerUseCase.Companion.FEATURE_ID_GENERAL
 import com.tokopedia.topchat.chatroom.service.UploadImageChatService
 import com.tokopedia.topchat.chatroom.view.custom.SingleProductAttachmentContainer
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.InvoicePreviewUiModel
+import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.Constant
@@ -69,9 +69,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.websocket.WebSocketResponse
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
@@ -80,6 +77,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
@@ -107,8 +105,6 @@ open class TopChatViewModel @Inject constructor(
     private val getChatListGroupStickerUseCase: GetChatListGroupStickerUseCase,
     private val chatSrwUseCase: GetSmartReplyQuestionUseCase,
     private val tokoNowWHUsecase: GetChatTokoNowWarehouseUseCase,
-    private var addWishListUseCase: AddWishListUseCase,
-    private var removeWishListUseCase: RemoveWishListUseCase,
     private var addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private var deleteWishlistV2UseCase: DeleteWishlistV2UseCase,
     private var getChatUseCase: GetChatUseCase,
@@ -156,9 +152,9 @@ open class TopChatViewModel @Inject constructor(
     val orderProgress: LiveData<Result<OrderProgressResponse>>
         get() = _orderProgress
 
-    private val _srwTickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
-    val srwTickerReminder: LiveData<Result<ReminderTickerUiModel>>
-        get() = _srwTickerReminder
+    private val _tickerReminder = MutableLiveData<Result<ReminderTickerUiModel>>()
+    val tickerReminder: LiveData<Result<ReminderTickerUiModel>>
+        get() = _tickerReminder
 
     private val _occProduct = MutableLiveData<Result<ProductAttachmentUiModel>>()
     val occProduct: LiveData<Result<ProductAttachmentUiModel>>
@@ -320,7 +316,7 @@ open class TopChatViewModel @Inject constructor(
 
     private fun handleOnMessageWebSocket(response: WebSocketResponse) {
         val incomingChatEvent = topChatRoomWebSocketMessageMapper.parseResponse(response)
-        if (incomingChatEvent.msgId.toString() != roomMetaData.msgId) return
+        if (incomingChatEvent.msgId != roomMetaData.msgId) return
         when (response.code) {
             WebsocketEvent.Event.EVENT_TOPCHAT_TYPING -> onReceiveTypingEvent()
             WebsocketEvent.Event.EVENT_TOPCHAT_END_TYPING -> onReceiveEndTypingEvent()
@@ -516,10 +512,10 @@ open class TopChatViewModel @Inject constructor(
     private fun setupAddToCartParam(addToCartParam: AddToCartParam) {
         val addToCartRequestParams = AddToCartRequestParams(
             productId = addToCartParam.productId.toLongOrZero(),
-            shopId = addToCartParam.shopId.toInt(),
+            shopId = addToCartParam.shopId.toIntOrZero(),
             quantity = addToCartParam.minOrder,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT,
-            warehouseId = attachProductWarehouseId.toIntSafely()
+            warehouseId = attachProductWarehouseId.toIntOrZero()
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
     }
@@ -559,28 +555,28 @@ open class TopChatViewModel @Inject constructor(
         })
     }
 
-    fun getTickerReminder() {
+    fun getTickerReminder(isSeller: Boolean) {
         launchCatchError(
             block = {
                 val existingMessageIdParam = GetReminderTickerUseCase.Param(
-                    featureId = SRW_TICKER
+                    featureId = FEATURE_ID_GENERAL,
+                    isSeller = isSeller,
+                    msgId = roomMetaData.msgId.toLongOrZero()
                 )
                 val result = reminderTickerUseCase(existingMessageIdParam)
-                _srwTickerReminder.value = Success(result.getReminderTicker)
+                _tickerReminder.value = Success(result.getReminderTicker)
             },
             onError = { }
         )
     }
 
-    fun removeTicker() {
-        _srwTickerReminder.value = null
-    }
-
-    fun closeTickerReminder(element: ReminderTickerUiModel) {
+    fun closeTickerReminder(element: ReminderTickerUiModel, isSeller: Boolean) {
         launchCatchError(
             block = {
                 val existingMessageIdParam = GetReminderTickerUseCase.Param(
-                    featureId = element.featureId.toIntSafely()
+                    featureId = element.featureId,
+                    isSeller = isSeller,
+                    msgId = roomMetaData.msgId.toLongOrZero()
                 )
                 closeReminderTicker(existingMessageIdParam)
             },
@@ -757,16 +753,18 @@ open class TopChatViewModel @Inject constructor(
 
     fun getSmartReplyWidget(msgId: String, productIds: String) {
         launchCatchError(block = {
-            val param = GetSmartReplyQuestionUseCase.Param(
-                msgId = msgId,
-                productIds = productIds,
-                addressId = userLocationInfo.address_id.toLongOrZero(),
-                districtId = userLocationInfo.district_id.toLongOrZero(),
-                postalCode = userLocationInfo.postal_code,
-                latLon = userLocationInfo.latLong
-            )
-            chatSrwUseCase(param).collect {
-                _srw.postValue(it)
+            withTimeout(SRW_TIMEOUT) {
+                val param = GetSmartReplyQuestionUseCase.Param(
+                    msgId = msgId,
+                    productIds = productIds,
+                    addressId = userLocationInfo.address_id.toLongOrZero(),
+                    districtId = userLocationInfo.district_id.toLongOrZero(),
+                    postalCode = userLocationInfo.postal_code,
+                    latLon = userLocationInfo.latLong
+                )
+                chatSrwUseCase(param).collect {
+                    _srw.postValue(it)
+                }
             }
         }, onError = {
             _srw.postValue(Resource.error(it, null))
@@ -785,14 +783,6 @@ open class TopChatViewModel @Inject constructor(
             })
     }
 
-    fun addToWishList(
-        productId: String,
-        userId: String,
-        wishlistActionListener: WishListActionListener
-    ) {
-        addWishListUseCase.createObservable(productId, userId, wishlistActionListener)
-    }
-
     fun addToWishListV2(
         productId: String,
         userId: String,
@@ -808,12 +798,6 @@ open class TopChatViewModel @Inject constructor(
                 wishlistActionListener.onErrorAddWishList(error, productId)
             }
         }
-    }
-
-    fun removeFromWishList(
-        productId: String, userId: String, wishListActionListener: WishListActionListener
-    ) {
-        removeWishListUseCase.createObservable(productId, userId, wishListActionListener)
     }
 
     fun removeFromWishListV2(
@@ -1204,5 +1188,7 @@ open class TopChatViewModel @Inject constructor(
         private const val ERROR_TYPE_LOG = "ErrorConnectWebSocket"
         const val ENABLE_UPLOAD_IMAGE_SERVICE = "android_enable_topchat_upload_image_service"
         private val PROBLEMATIC_DEVICE = listOf("iris88", "iris88_lite", "lenovo k9")
+
+        private const val SRW_TIMEOUT = 3000L
     }
 }

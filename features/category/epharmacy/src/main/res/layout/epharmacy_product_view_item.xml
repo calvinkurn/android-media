@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/shop_icon"
+        android:layout_width="@dimen/unify_space_12"
+        android:layout_height="@dimen/unify_space_12"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/shop_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:typographyType="heading_6"
+        tools:text="Apotek Century Meruya Raden Saleh"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/shop_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/shop_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:textColor="@color/Unify_N700_68"
+        app:typographyType="small"
+        tools:text="Jakarta Bharat"
+        />
+
+    <com.tokopedia.unifycomponents.CardUnify2
+        android:id="@+id/product_image_card"
+        android:layout_width="@dimen/dp_50"
+        android:layout_height="@dimen/dp_50"
+        app:layout_constraintTop_toBottomOf="@id/shop_location"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        >
+        <com.tokopedia.unifycomponents.ImageUnify
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </com.tokopedia.unifycomponents.CardUnify2>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/product_image_card"
+        app:layout_constraintTop_toBottomOf="@id/shop_location"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        app:typographyType="paragraph_3"
+        tools:text="Rhinos SR Psadine 1 Strip 10 Kapsul"
+        android:textColor="@color/Unify_NN950"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/product_quantity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/product_image_card"
+        app:layout_constraintTop_toBottomOf="@id/product_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        android:layout_marginEnd="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl2"
+        app:typographyType="small"
+        tools:text="1 Barang (1kg)"
+        android:textColor="@color/Unify_NN600"
+        />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/spacing_lvl2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/product_image_card"
+        android:layout_marginTop="@dimen/unify_space_12"
+        android:visibility="gone"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

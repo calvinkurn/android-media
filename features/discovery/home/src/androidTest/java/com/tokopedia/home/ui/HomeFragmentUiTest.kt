@@ -10,7 +10,6 @@ import androidx.test.espresso.matcher.RootMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.R
 import com.tokopedia.home.component.enableCoachMark
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
@@ -20,6 +19,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -40,7 +40,6 @@ import org.junit.Test
 class HomeFragmentUiTest {
     private var homeRecyclerViewIdlingResource: HomeRecyclerViewIdlingResource? = null
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private val totalData =
         MOCK_HEADER_COUNT + MOCK_ATF_COUNT + MOCK_DYNAMIC_CHANNEL_COUNT + MOCK_RECOMMENDATION_TAB_COUNT
 
@@ -51,11 +50,11 @@ class HomeFragmentUiTest {
         override fun beforeActivityLaunched() {
             InstrumentationRegistry.getInstrumentation().context.deleteHomeDatabase()
             InstrumentationAuthHelper.clearUserSession()
-            gtmLogDBSource.deleteAll().subscribe()
             InstrumentationAuthHelper.loginInstrumentationTestUser1()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             enableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupDynamicChannelQueryRemoteConfig()
             super.beforeActivityLaunched()
         }
     }
@@ -148,12 +147,12 @@ class HomeFragmentUiTest {
         /**
          * Assert header background
          */
-        onView(withId(R.id.view_background_image)).check(matches(isDisplayed()))
+        onView(withId(R.id.header_background_home_background)).check(matches(isDisplayed()))
 
         /**
          * Assert choose address widget
          */
-        onView(withId(R.id.widget_choose_address)).check(matches(isDisplayed()))
+        onView(withId(R.id.view_choose_address)).check(matches(isDisplayed()))
 
         /**
          * Assert balance widget
@@ -177,6 +176,17 @@ class HomeFragmentUiTest {
         onView(
             withTagStringValue(
                 HomeTagHelper.getTokopointsBalanceWidgetTag(context)
+            )
+        ).check(matches(isClickable()))
+
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
+            )
+        ).check(matches(isDisplayed()))
+        onView(
+            withTagStringValue(
+                HomeTagHelper.getSubscriptionBalanceWidgetTag(context)
             )
         ).check(matches(isClickable()))
     }
@@ -222,17 +232,10 @@ class HomeFragmentUiTest {
      */
     private fun assertHomeCoachmarkDisplayed() {
         assertCoachmarkAndNext(
-            titleRes = R.string.home_gopay_new_coachmark_title,
-            descRes = R.string.home_gopay_new_coachmark_description,
-            isSingleCoachmark = true
-        )
-
-        assertCoachmarkAndNext(
             titleRes = null,
             descRes = null,
             isSingleCoachmark = true
         )
-
         assertCoachmarkAndNext(
             titleRes = R.string.home_tokonow_coachmark_title,
             descRes = R.string.home_tokonow_coachmark_description,
@@ -247,7 +250,7 @@ class HomeFragmentUiTest {
         desc: String? = null,
         isSingleCoachmark: Boolean = false
     ) {
-        Thread.sleep(1000)
+        Thread.sleep(3000)
         titleRes?.let {
             onView(withText(titleRes))
                 .inRoot(RootMatchers.isPlatformPopup())

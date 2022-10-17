@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginTop="@dimen/unify_space_4"
     android:padding="@dimen/unify_space_16"
     android:background="@color/Unify_Background"
     android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -12,6 +12,17 @@
         android:id="@+id/include3"
         layout="@layout/home_account_profile_shimmer"
    />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_lvl4"
+        android:layout_marginTop="@dimen/layout_lvl2"
+        android:orientation="horizontal"
+        app:loader_corner_radius="@dimen/spacing_lvl3"
+        app:loader_type="rect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/home_account_expandable_layout_title" />
 
     <include
         android:layout_marginTop="18dp"

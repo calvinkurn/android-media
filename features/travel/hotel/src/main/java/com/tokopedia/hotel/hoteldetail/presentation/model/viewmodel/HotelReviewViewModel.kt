@@ -3,6 +3,7 @@ package com.tokopedia.hotel.hoteldetail.presentation.model.viewmodel
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
@@ -22,7 +23,7 @@ class HotelReviewViewModel @Inject constructor(private val dispatcher: Coroutine
 
     val reviewResult = MutableLiveData<Result<HotelReview.ReviewData>>()
 
-    fun getReview(query: String, hotelReviewParam: HotelReviewParam) {
+    fun getReview(query: GqlQueryInterface, hotelReviewParam: HotelReviewParam) {
         val dataParams = mapOf(PARAM_REVIEW_KEY to hotelReviewParam)
         launchCatchError(block = {
             val data = withContext(dispatcher.main) {

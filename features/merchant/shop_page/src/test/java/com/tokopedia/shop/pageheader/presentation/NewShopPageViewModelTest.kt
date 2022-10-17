@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
@@ -91,6 +92,9 @@ class NewShopPageViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
+    lateinit var affiliateCookieHelper: AffiliateCookieHelper
+
+    @RelaxedMockK
     lateinit var context: Context
 
     private val testCoroutineDispatcherProvider by lazy {
@@ -169,6 +173,38 @@ class NewShopPageViewModelTest {
                 false,
                 addressWidgetData,
                 mockExtParam
+        )
+        coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
+        assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
+        assert(shopPageViewModel.productListData.data.size == 2)
+        assert(shopPageViewModel.homeWidgetLayoutData.widgetIdList.isNotEmpty())
+    }
+
+    @Test
+    fun `check whether shopPageP1Data value is Success when shopId same as user session shopId`() {
+        coEvery { userSessionInterface.shopId } returns SAMPLE_SHOP_ID
+        coEvery { getShopPageP1DataUseCase.get().executeOnBackground() } returns ShopPageHeaderP1(
+            shopInfoHomeTypeData = ShopPageGetHomeType(
+                homeLayoutData = HomeLayoutData(
+                    widgetIdList = listOf(WidgetIdList())
+                )
+            )
+        )
+        coEvery { getShopPageHeaderLayoutUseCase.get().executeOnBackground() } returns ShopPageHeaderLayoutResponse()
+        coEvery { getShopProductListUseCase.get().executeOnBackground() } returns ShopProduct.GetShopProduct(
+            data = listOf(ShopProduct(),ShopProduct())
+        )
+        shopPageViewModel.getShopPageTabData(
+            SAMPLE_SHOP_ID,
+            "shop domain",
+            1,
+            10,
+            ShopProductFilterParameter(),
+            "",
+            "",
+            false,
+            addressWidgetData,
+            mockExtParam
         )
         coVerify { getShopPageP1DataUseCase.get().executeOnBackground() }
         assertTrue(shopPageViewModel.shopPageP1Data.value is Success)
@@ -676,6 +712,40 @@ class NewShopPageViewModelTest {
         shopPageViewModel.getShopShareAndOperationalHourStatusData(mockShopId, mockShopDomain, false)
         assert(shopPageViewModel.shopPageTickerData.value == null)
         assert(shopPageViewModel.shopPageShopShareData.value == null)
+    }
+
+    @Test
+    fun `check when call initAffiliateCookie is success`() {
+        val mockAffiliateUUId = "123"
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } returns Unit
+        shopPageViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockAffiliateUUId,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when when call initAffiliateCookie is not success`() {
+        val mockAffiliateUUId = "123"
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } throws Exception()
+        shopPageViewModel.initAffiliateCookie(
+            affiliateCookieHelper,
+            mockAffiliateUUId,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
 }

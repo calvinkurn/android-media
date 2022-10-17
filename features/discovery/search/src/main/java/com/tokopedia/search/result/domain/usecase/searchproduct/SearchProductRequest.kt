@@ -70,12 +70,14 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
                 componentId
                 meta {
                     productListType
+                    isPostProcessing
                 }
             }
             data {
                 isQuerySafe
                 autocompleteApplink
                 backendFilters
+                keywordIntention
                 redirection {
                     redirectApplink
                 }

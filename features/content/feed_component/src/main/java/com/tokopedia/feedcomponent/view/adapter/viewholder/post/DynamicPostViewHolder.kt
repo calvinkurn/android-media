@@ -1,6 +1,5 @@
 package com.tokopedia.feedcomponent.view.adapter.viewholder.post
 
-import android.content.Context
 import android.os.Handler
 import android.text.SpannableString
 import android.text.TextUtils
@@ -42,7 +41,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.CtaPostTagViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
@@ -107,7 +105,7 @@ open class DynamicPostViewHolder(v: View,
         }
 
         bindTitle(element.title, element.template.cardpost.title)
-        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "")
+        bindHeader(element.id, element.header, element.template.cardpost.header, element.activityName, "", element.caption.text)
         bindCaption(element.caption, element.template.cardpost.body, element.trackingPostModel)
         bindContentList(element.id, element.contentList, element.template.cardpost.body, element.feedType)
         bindPostTag(element.id, element.postTag, element.template.cardpost.body, element.feedType, element.header.followCta.authorType)
@@ -147,7 +145,7 @@ open class DynamicPostViewHolder(v: View,
         return template.text || template.textBadge || template.ctaLink
     }
 
-    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String) {
+    private fun bindHeader(postId: String, header: Header, template: TemplateHeader, activityName: String, shopId: String, caption: String) {
         itemView.header.shouldShowWithAction(shouldShowHeader(template)) {
             itemView.authorImage.shouldShowWithAction(template.avatar) {
                 if (!TextUtils.isEmpty(header.avatar)) {
@@ -205,16 +203,16 @@ open class DynamicPostViewHolder(v: View,
                     itemView.menu.setOnClickListener {
                         listener.onMenuClick(
                                 adapterPosition,
-                                postId.toIntOrZero(),
+                                postId,
                                 header.reportable,
                                 header.deletable,
                                 header.editable,
                                 true,
+                                header.followCta.authorID,
                                 "",
                                 "",
                                 "",
-                                "",
-                                ""
+                                caption,
                         )
                     }
                 } else{
@@ -238,7 +236,7 @@ open class DynamicPostViewHolder(v: View,
         listener.onAvatarClick(
                 adapterPosition,
                 redirectUrl,
-                activityId.toIntOrZero(),
+                activityId,
                 activityName,
                 followCta,
                 shopId = shopId,
@@ -347,7 +345,7 @@ open class DynamicPostViewHolder(v: View,
                                 template: TemplateBody,
                                 feedType: String) {
         itemView.contentLayout.shouldShowWithAction(template.media && contentList.size !=0) {
-            contentList.forEach { it.postId = postId.toIntOrZero() }
+            contentList.forEach { it.postId = postId }
             contentList.forEach { it.positionInFeed = adapterPosition }
 
             adapter = PostPagerAdapter(imagePostListener,
@@ -381,7 +379,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.likeIcon.setOnClickListener {
                     listener.onLikeClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id.toLongOrZero(),
                             footer.like.isChecked,
                             "",
                             false,
@@ -391,7 +389,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.likeText.setOnClickListener {
                     listener.onLikeClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id.toLongOrZero(),
                             footer.like.isChecked,
                             "",
                             isFollowed = false, type = false, "", ""
@@ -407,7 +405,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.commentIcon.setOnClickListener {
                     listener.onCommentClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             "",
                             "",
                             isFollowed = false,
@@ -417,7 +415,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.commentText.setOnClickListener {
                     listener.onCommentClick(
                             adapterPosition,
-                            id.toIntOrZero(), "",
+                            id, "",
                             "",
                             isFollowed = false,
                             mediaType = ""
@@ -434,7 +432,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareIcon.setOnClickListener {
                     listener.onShareClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             footer.share.title,
                             footer.share.description,
                             footer.share.url,
@@ -445,7 +443,7 @@ open class DynamicPostViewHolder(v: View,
                 itemView.shareText.setOnClickListener {
                     listener.onShareClick(
                             adapterPosition,
-                            id.toIntOrZero(),
+                            id,
                             footer.share.title,
                             footer.share.description,
                             footer.share.url,
@@ -522,7 +520,7 @@ open class DynamicPostViewHolder(v: View,
                 }
                 itemView.rvPosttag.isNestedScrollingEnabled = false
                 itemView.rvPosttag.layoutManager = layoutManager
-                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId.toIntOrZero(), adapterPosition, authorType),
+                itemView.rvPosttag.adapter = PostTagAdapter(mapPostTag(postTag.items, feedType, postId, adapterPosition, authorType),
                         PostTagTypeFactoryImpl(listener,  DeviceScreenInfo.getScreenWidth(itemView.context)))
                 (itemView.rvPosttag.adapter as PostTagAdapter).notifyDataSetChanged()
             } else {
@@ -539,7 +537,7 @@ open class DynamicPostViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: Int, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<PostTagItem>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
         val needToRezise = postTagItemList.size > 1
         val itemList: MutableList<BasePostTagViewModel> = ArrayList()
         for (postTagItem in postTagItemList) {
@@ -597,7 +595,7 @@ open class DynamicPostViewHolder(v: View,
         fun onAvatarClick(
             positionInFeed: Int,
             redirectUrl: String,
-            activityId: Int,
+            activityId: String,
             activityName: String,
             followCta: FollowCta,
             type: String = "",
@@ -619,7 +617,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onMenuClick(
             positionInFeed: Int,
-            postId: Int,
+            postId: String,
             reportable: Boolean,
             deletable: Boolean,
             editable: Boolean,
@@ -636,7 +634,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onLikeClick(
             positionInFeed: Int,
-            id: Int,
+            id: Long,
             isLiked: Boolean,
             postType: String = "",
             isFollowed: Boolean = false,
@@ -648,7 +646,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onCommentClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             authorType: String,
             type: String,
             isFollowed: Boolean = false,
@@ -662,7 +660,7 @@ open class DynamicPostViewHolder(v: View,
 
         fun onShareClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -673,20 +671,14 @@ open class DynamicPostViewHolder(v: View,
             shopId: String = "",
             mediaType: String = "",
             isTopads:Boolean = false,
-            playChannelId: String = ""
+            playChannelId: String = "",
+            weblink: String = ""
         )
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
         fun onPostTagItemClick(positionInFeed: Int, redirectUrl: String, postTagItem: PostTagItem, itemPosition: Int)
 
-        fun onPostTagItemBSClick(
-            positionInFeed: Int,
-            redirectUrl: String,
-            postTagItem: FeedXProduct,
-            itemPosition: Int,
-            mediaType: String
-        )
         fun onFullScreenCLick(
                 feedXCard: FeedXCard,
                 positionInFeed: Int,
@@ -702,19 +694,17 @@ open class DynamicPostViewHolder(v: View,
                 time:Long,
                 hitTrackerApi:Boolean
         )
+        fun sendWatchVODTracker(
+            feedXCard: FeedXCard,
+            playChannelId: String,
+            rowNumber: Int,
+            time: Long
+        )
         fun onPostTagBubbleClick(
                 positionInFeed: Int,
                 redirectUrl: String,
                 postTagItem: FeedXProduct,
                 adClickUrl: String
-        )
-        fun onPostTagItemBSImpression(
-            activityId: String,
-            postTagItemList: List<FeedXProduct>,
-            type: String,
-            shopId: String,
-            isFollowed: Boolean,
-            mediaType: String
         )
 
         fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
@@ -732,7 +722,7 @@ open class DynamicPostViewHolder(v: View,
         fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
 
         fun onTagClicked(
-                postId: Int,
+                postId: String,
                 products: List<FeedXProduct>,
                 listener: DynamicPostListener,
                 id: String,
@@ -752,11 +742,6 @@ open class DynamicPostViewHolder(v: View,
             mediaType: String
         )
 
-        fun onBottomSheetMenuClicked(
-            item: ProductPostTagViewModelNew,
-            context: Context,
-            shopId: String = ""
-        )
 
         fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
 

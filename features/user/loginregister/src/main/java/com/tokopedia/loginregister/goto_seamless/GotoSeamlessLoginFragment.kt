@@ -11,7 +11,6 @@ import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -109,8 +108,6 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     }
 
     private fun setupViews() {
-        binding?.gotoSeamlessMainImg?.loadImage(ILLUSTRATION_IMG_URL)
-
         binding?.gotoSeamlessPrimaryBtn?.setOnClickListener {
             GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.CLICK)
             val gojekProfileData = viewModel.gojekProfileData.value
@@ -133,8 +130,6 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
-        const val ILLUSTRATION_IMG_URL = "https://images.tokopedia.net/img/android/user/loginregister/img_goto_illustration_2x.png"
-
         const val RESULT_OTHER_ACCS = 235
 
         fun createInstance(): GotoSeamlessLoginFragment {

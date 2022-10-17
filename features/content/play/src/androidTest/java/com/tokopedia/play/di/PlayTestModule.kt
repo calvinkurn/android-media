@@ -52,6 +52,8 @@ import javax.inject.Named
 class PlayTestModule(
     val mContext: Context,
     val channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
+    val trackingQueue: TrackingQueue = TrackingQueue(mContext),
+    val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
 ) {
 
     @PlayScope
@@ -69,7 +71,7 @@ class PlayTestModule(
     @PlayScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
-        return UserSession(context)
+        return userSession(context)
     }
 
     @PlayScope
@@ -110,7 +112,7 @@ class PlayTestModule(
     @Provides
     @PlayScope
     fun provideTrackingQueue(): TrackingQueue {
-        return TrackingQueue(mContext)
+        return trackingQueue
     }
 
     @Provides

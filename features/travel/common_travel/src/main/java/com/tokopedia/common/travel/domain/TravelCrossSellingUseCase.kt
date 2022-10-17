@@ -1,6 +1,7 @@
 package com.tokopedia.common.travel.domain
 
 import com.tokopedia.common.travel.data.entity.TravelCrossSelling
+import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -22,7 +23,7 @@ import javax.inject.Inject
 class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRequestGraphqlUseCase,
                                                     private val graphqlUseCase: GraphqlUseCase) {
 
-    suspend fun execute(query: String, orderId: String, orderCategory: String): Result<TravelCrossSelling> {
+    suspend fun execute(query: GqlQueryInterface, orderId: String, orderCategory: String): Result<TravelCrossSelling> {
         useCase.setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
         useCase.clearRequest()
 
@@ -40,7 +41,7 @@ class TravelCrossSellingUseCase @Inject constructor(private val useCase: MultiRe
         }
     }
 
-    fun executeRx(query: String, requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
+    fun executeRx(query: GqlQueryInterface, requestParams: RequestParams?, subscriber: Subscriber<GraphqlResponse>?) {
         requestParams?.let {
             val graphqlRequest = GraphqlRequest(query, TravelCrossSelling.Response::class.java, it.parameters)
             graphqlUseCase.clearRequest()

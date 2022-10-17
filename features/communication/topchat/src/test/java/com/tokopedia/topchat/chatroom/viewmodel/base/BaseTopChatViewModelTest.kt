@@ -17,8 +17,6 @@ import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.network.TopchatCacheManager
 import com.tokopedia.topchat.common.websocket.*
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import io.mockk.*
@@ -85,12 +83,6 @@ abstract class BaseTopChatViewModelTest {
 
     @RelaxedMockK
     lateinit var getChatTokoNowWarehouseUseCase: GetChatTokoNowWarehouseUseCase
-
-    @RelaxedMockK
-    lateinit var addWishListUseCase: AddWishListUseCase
-
-    @RelaxedMockK
-    lateinit var removeWishListUseCase: RemoveWishListUseCase
 
     @RelaxedMockK
     lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCase
@@ -176,8 +168,6 @@ abstract class BaseTopChatViewModelTest {
             getChatListGroupStickerUseCase,
             getSmartReplyQuestionUseCase,
             getChatTokoNowWarehouseUseCase,
-            addWishListUseCase,
-            removeWishListUseCase,
             addToWishlistV2UseCase,
             deleteWishlistV2UseCase,
             getChatUseCase,

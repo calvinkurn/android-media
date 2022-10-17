@@ -70,12 +70,9 @@ class OneLinersViewHolder(
         title?.apply {
             text = content.linkText
 
-            try {
+            runCatching {
                 val unifyColor = stringToUnifyColor(context, content.color)
                 setTextColor(unifyColor.unifyColor ?: unifyColor.defaultColor)
-
-            } catch (ex: RuntimeException) {
-                ex.printStackTrace()
             }
         }
 

@@ -28,8 +28,9 @@ class ChatTabCounterViewModel @Inject constructor(
         get() = _mutateChatNotification
 
 
-    fun queryGetNotifCounter() {
+    fun queryGetNotifCounter(shopId: String) {
         getChatNotificationUseCase.getChatNotification(
+                shopId,
                 {
                     _mutateChatNotification.value = Success(it)
                 },

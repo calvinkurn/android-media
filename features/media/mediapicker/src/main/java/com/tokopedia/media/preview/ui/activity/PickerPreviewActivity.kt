@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
 
-class PickerPreviewActivity : BaseActivity()
+open class PickerPreviewActivity : BaseActivity()
     , NavToolbarComponent.Listener
     , DrawerSelectionWidget.Listener {
 
@@ -110,6 +110,11 @@ class PickerPreviewActivity : BaseActivity()
         if (param.get().isMultipleSelectionType()) {
             onBackPickerIntent()
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             onCancelOrRetakeMedia(uiModel.first())
         }
     }
@@ -230,8 +235,16 @@ class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().isEditorEnabled()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
+        param.get().apply {
+            if (!isEditorEnabled()) {
+                navToolbar.setContinueTitle(
+                    if (previewActionText().isNotEmpty()) {
+                        previewActionText()
+                    } else {
+                        getString(R.string.picker_button_upload)
+                    }
+                )
+            }
         }
     }
 
@@ -248,6 +261,11 @@ class PickerPreviewActivity : BaseActivity()
                 binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
             }
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             val media = uiModel.first()
             retakeButtonAction(media)
         }
@@ -306,7 +324,7 @@ class PickerPreviewActivity : BaseActivity()
         finish()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerPreviewComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()

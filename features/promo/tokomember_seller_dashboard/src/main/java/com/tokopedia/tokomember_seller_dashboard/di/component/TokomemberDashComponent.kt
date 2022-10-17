@@ -27,4 +27,5 @@ interface TokomemberDashComponent {
     fun inject(tmMultipleCuponCreateFragment: TmMultipleCuponCreateFragment)
     fun inject(tokomemberDashHomeActivity: TokomemberDashHomeActivity)
     fun inject(tmSingleCouponCreateFragment: TmSingleCouponCreateFragment)
+    fun inject(tmMemberListFragment: TokomemberMemberListFragment)
 }

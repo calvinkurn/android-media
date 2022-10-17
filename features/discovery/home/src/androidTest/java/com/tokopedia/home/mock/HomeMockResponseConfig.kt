@@ -5,13 +5,14 @@ import com.tokopedia.home.test.R
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
-internal open class HomeMockResponseConfig : MockModelConfig() {
+internal open class HomeMockResponseConfig(private val isLinkedBalanceWidget: Boolean = true) : MockModelConfig() {
     companion object {
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL = "homeData"
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_1 = "\"param\": \"channel_ids=65312\""
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ATF_2 = "\"param\": \"channel_ids=45397\""
 
         const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY = "getDynamicChannel"
+        const val KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2 = "getHomeChannelV2"
         const val KEY_QUERY_DYNAMIC_POSITION = "dynamicPosition"
         const val KEY_QUERY_DYNAMIC_POSITION_ICON = "homeIcon"
         const val KEY_QUERY_DYNAMIC_POSITION_TICKER = "homeTicker"
@@ -43,6 +44,7 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         const val KEY_CONTAINS_CM_HOME_WIDGET = "notifier_getHtdw"
         const val KEY_CONTAINS_PAYLATER_WIDGET = "paylater_getHomeWidget"
         const val KEY_CONTAINS_MISSION_WIDGET = "getHomeMissionWidget"
+        const val KEY_CONTAINS_HOME_BALANCE_WIDGET = "getHomeBalanceWidget"
     }
 
     override fun createMockModel(context: Context): MockModelConfig {
@@ -85,6 +87,12 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_QUERY_DYNAMIC_HOME_CHANNEL_ONLY,
             getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot),
+            FIND_BY_CONTAINS
+        )
+
+        addMockResponse(
+            KEY_QUERY_DYNAMIC_HOME_CHANNEL_V2,
+            getRawString(context, R.raw.response_mock_data_dynamic_home_channel_screenshot_v2),
             FIND_BY_CONTAINS
         )
 
@@ -216,7 +224,8 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
 
         addMockResponse(
             KEY_CONTAINS_WALLETAPP_GETBALANCES,
-            getRawString(context, R.raw.response_mock_data_walletapp),
+            if (isLinkedBalanceWidget) getRawString(context, R.raw.response_mock_data_walletapp)
+            else getRawString(context, R.raw.response_mock_data_walletapp_not_linked),
             FIND_BY_CONTAINS
         )
         addMockResponse(
@@ -247,6 +256,11 @@ internal open class HomeMockResponseConfig : MockModelConfig() {
         addMockResponse(
             KEY_CONTAINS_MISSION_WIDGET,
             getRawString(context, R.raw.response_mock_data_mission_widget),
+            FIND_BY_CONTAINS
+        )
+        addMockResponse(
+            KEY_CONTAINS_HOME_BALANCE_WIDGET,
+            getRawString(context, R.raw.response_mock_data_home_balance_widget),
             FIND_BY_CONTAINS
         )
         updateMock(context)

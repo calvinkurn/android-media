@@ -58,6 +58,14 @@ public class Catalog implements Parcelable {
         this.digitalProductCode = digitalProductCode;
     }
 
+    public void setDigitalCategoryId(String digitalCategoryId) {
+        this.digitalCategoryId = digitalCategoryId;
+    }
+
+    public void setDigitalProductId(String digitalProductId) {
+        this.digitalProductId = digitalProductId;
+    }
+
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(digitalCategoryId);
         dest.writeString(digitalProductId);
