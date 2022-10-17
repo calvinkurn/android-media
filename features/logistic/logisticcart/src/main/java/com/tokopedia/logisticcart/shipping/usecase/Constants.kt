@@ -186,6 +186,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           sent_shipper_partner
           benefit_class
           shipping_subsidy
+          additional_data
         }
       }
       promo_stackings {
@@ -234,6 +235,7 @@ query ${queryName}(${"$"}param : OngkirRatesV3Input!) {
           sent_shipper_partner
           benefit_class
           shipping_subsidy
+          additional_data
         }
       }
       pre_order {
@@ -438,6 +440,7 @@ internal fun ratesQuery() = """
               sent_shipper_partner
               benefit_class
               shipping_subsidy
+              additional_data
             }
           }
           promo_stackings {
@@ -487,6 +490,7 @@ internal fun ratesQuery() = """
               sent_shipper_partner
               benefit_class
               shipping_subsidy
+              additional_data
             }
             bo_campaign_id
           }
