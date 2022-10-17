@@ -40,7 +40,7 @@ object WishlistV2Utils {
         }
 
         // empty wishlist
-        if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page == 1) {
+        if (wishlistV2UiModel.items.isEmpty() && wishlistV2UiModel.page <= 1) {
             listData = mapToEmptyState(wishlistV2UiModel, listData, isFilterActive, recomm, isUsingCollection)
 
         // non-empty wishlist

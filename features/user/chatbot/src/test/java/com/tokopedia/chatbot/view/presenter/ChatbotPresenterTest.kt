@@ -3,25 +3,47 @@ package com.tokopedia.chatbot.view.presenter
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.google.gson.JsonObject
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.ChatroomViewModel
+import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
+import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
+import com.tokopedia.chatbot.ChatbotConstant
+import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.data.TickerData.ChipGetActiveTickerV4
+import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 import com.tokopedia.chatbot.data.SocketResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.CheckUploadSecureResponse
 import com.tokopedia.chatbot.domain.mapper.ChatBotWebSocketMessageMapper
 import com.tokopedia.chatbot.domain.mapper.ChatbotGetExistingChatMapper
+import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
+import com.tokopedia.chatbot.domain.pojo.csatRating.csatResponse.SubmitCsatGqlResponse
+import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
+import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
 import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
+import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
+import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
+import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipGetChatRatingListUseCase
 import com.tokopedia.chatbot.domain.usecase.ChipSubmitChatCsatUseCase
@@ -30,8 +52,8 @@ import com.tokopedia.chatbot.domain.usecase.GetExistingChatUseCase
 import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
-import com.tokopedia.chatbot.domain.usecase.LeaveQueueUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
+import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
 import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
@@ -41,6 +63,10 @@ import com.tokopedia.chatbot.websocket.ChatbotWebSocketException
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.graphql.data.model.GraphqlResponse
 import com.tokopedia.imageuploader.domain.UploadImageUseCase
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.mediauploader.UploaderUseCase
+import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.network.interceptor.FingerprintInterceptor
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.unit.test.rule.CoroutineTestRule
@@ -50,7 +76,6 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
-import io.mockk.mockkConstructor
 import io.mockk.mockkObject
 import io.mockk.runs
 import io.mockk.spyk
@@ -61,8 +86,9 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.resetMain
 import org.junit.After
-import org.junit.Assert
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -82,10 +108,8 @@ class ChatbotPresenterTest {
     private lateinit var tkpdAuthInterceptor: TkpdAuthInterceptor
     private lateinit var fingerprintInterceptor: FingerprintInterceptor
     private lateinit var sendChatRatingUseCase: SendChatRatingUseCase
-    private lateinit var sendRatingReasonUseCase: SendRatingReasonUseCase
     private lateinit var uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>
     private lateinit var submitCsatRatingUseCase: SubmitCsatRatingUseCase
-    private lateinit var leaveQueueUseCase: LeaveQueueUseCase
     private lateinit var getTickerDataUseCase: GetTickerDataUseCase
     private lateinit var chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase
     private lateinit var chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase
@@ -94,7 +118,9 @@ class ChatbotPresenterTest {
     private lateinit var getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase
     private lateinit var checkUploadSecureUseCase: CheckUploadSecureUseCase
     private lateinit var chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase
+    private lateinit var uploaderUseCase: UploaderUseCase
     private lateinit var getExistingChatMapper: ChatbotGetExistingChatMapper
+    private lateinit var chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase
     private lateinit var chatbotWebSocket: ChatbotWebSocket
     private lateinit var chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler
     private lateinit var dispatcher: CoroutineDispatchers
@@ -116,10 +142,8 @@ class ChatbotPresenterTest {
         tkpdAuthInterceptor = mockk(relaxed = true)
         fingerprintInterceptor = mockk(relaxed = true)
         sendChatRatingUseCase = mockk(relaxed = true)
-        sendRatingReasonUseCase = mockk(relaxed = true)
         uploadImageUseCase = mockk(relaxed = true)
         submitCsatRatingUseCase = mockk(relaxed = true)
-        leaveQueueUseCase = mockk(relaxed = true)
         getTickerDataUseCase = mockk(relaxed = true)
         chipSubmitHelpfulQuestionsUseCase = mockk(relaxed = true)
         chipGetChatRatingListUseCase = mockk(relaxed = true)
@@ -132,6 +156,8 @@ class ChatbotPresenterTest {
         chatbotWebSocket = mockk(relaxed = true)
         chatbotWebSocketStateHandler = mockk(relaxed = true)
         dispatcher = testRule.dispatchers
+        uploaderUseCase = mockk(relaxed = true)
+        chatbotVideoUploadVideoEligibilityUseCase = mockk(relaxed = true)
 
         presenter = spyk(
             ChatbotPresenter(
@@ -141,10 +167,8 @@ class ChatbotPresenterTest {
                 tkpdAuthInterceptor,
                 fingerprintInterceptor,
                 sendChatRatingUseCase,
-                sendRatingReasonUseCase,
                 uploadImageUseCase,
                 submitCsatRatingUseCase,
-                leaveQueueUseCase,
                 getTickerDataUseCase,
                 chipSubmitHelpfulQuestionsUseCase,
                 chipGetChatRatingListUseCase,
@@ -153,6 +177,8 @@ class ChatbotPresenterTest {
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
                 chatBotSecureImageUploadUseCase,
+                uploaderUseCase,
+                chatbotVideoUploadVideoEligibilityUseCase,
                 getExistingChatMapper,
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
@@ -170,6 +196,394 @@ class ChatbotPresenterTest {
         Dispatchers.resetMain()
     }
 
+    @Test
+    fun `submitChatCsat success`() {
+        val response = mockk<ChipSubmitChatCsatResponse>(relaxed = true)
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat success when toaster Message is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            ChipSubmitChatCsatResponse.ChipSubmitChatCSAT(
+                ChipSubmitChatCsatResponse.ChipSubmitChatCSAT.CsatSubmitData(
+                    1,
+                    null
+                ),
+                emptyList(),
+                "",
+                ""
+            )
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat success when csatSubmitData is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            ChipSubmitChatCsatResponse.ChipSubmitChatCSAT(
+                null,
+                emptyList(),
+                "",
+                ""
+            )
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat success when ChipSubmitChatCsat is null`() {
+        val response = ChipSubmitChatCsatResponse(
+            null
+        )
+
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(captureLambda(), any(), any(), any())
+        } coAnswers {
+            firstArg<(ChipSubmitChatCsatResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
+
+        verify {
+            view.onSuccessSubmitChatCsat(any())
+        }
+    }
+
+    @Test
+    fun `submitChatCsat failure`() {
+        coEvery {
+            chipSubmitChatCsatUseCase.chipSubmitChatCsat(any(), captureLambda(), any(), any())
+        } coAnswers {
+            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.submitChatCsat("123", ChipSubmitChatCsatInput())
+
+        verify {
+            view.onError(any())
+        }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList("123", 1, null)
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with model not null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList(
+            "123",
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseChatId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList(
+            "1234",
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion(null, "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel helpfulQuestion caseId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList(
+            "123",
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", null, emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel messageId  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList(
+            "123",
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `hitGqlforOptionList failure with HelpFullQuestionsUiModel is  null`() {
+        coEvery {
+            chipSubmitHelpfulQuestionsUseCase.chipSubmitHelpfulQuestions(any(), any(), any())
+        } answers {
+            firstArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.hitGqlforOptionList(
+            "123",
+            1,
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "", "", "",
+                "", null, ""
+            )
+        )
+
+        verify { presenter.onSubmitError(any()) }
+    }
+
+    @Test
+    fun `checkLinkForRedirection success resoList not empty`() {
+        val response = mockk<ResoLinkResponse>(relaxed = true)
+        val stickyButtonStatus = true
+        val expectedButtonStatus = true
+        val mockOrderData =
+            mockk<List<ResoLinkResponse.GetResolutionLink.ResolutionLinkData.Order>>(relaxed = true)
+
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } returns response
+
+        every {
+            response.getResolutionLink?.resolutionLinkData?.orderList
+        } returns mockOrderData
+
+        presenter.checkLinkForRedirection("123", "123", {}, {}, {})
+
+        assertEquals(stickyButtonStatus, expectedButtonStatus)
+    }
+
+    @Test
+    fun `checkLinkForRedirection success resoList empty`() {
+        val response = mockk<ResoLinkResponse>(relaxed = true)
+        val stickyButtonStatus = false
+        val expectedButtonStatus = false
+        val mockOrderData =
+            mockk<List<ResoLinkResponse.GetResolutionLink.ResolutionLinkData.Order>>(relaxed = true)
+        val expectedDynamicLink = "Dynamic Link"
+
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } returns response
+
+        every {
+            response.getResolutionLink?.resolutionLinkData?.orderList
+        } returns mockOrderData
+
+        every {
+            mockOrderData.firstOrNull()?.resoList?.isNotEmpty()
+        } returns stickyButtonStatus
+
+        every {
+            mockOrderData.firstOrNull()?.dynamicLink
+        } returns expectedDynamicLink
+
+        presenter.checkLinkForRedirection("123", "123", {}, {}, {})
+
+        assertEquals(stickyButtonStatus, expectedButtonStatus)
+    }
+
+    @Test
+    fun `checkLinkForRedirection failure`() {
+        val throwable = mockk<Throwable>(relaxed = true)
+        var result: Throwable? = null
+
+        coEvery {
+            getResolutionLinkUseCase.getResoLinkResponse(any())
+        } throws throwable
+
+        presenter.checkLinkForRedirection("123", "123", {}, {}, { throwable ->
+            result = throwable
+        })
+
+        assertEquals(
+            throwable,
+            (result as Throwable)
+        )
+    }
+
+    @Test
+    fun `showTickerData success`() {
+        val response = mockk<TickerDataResponse>(relaxed = true)
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData("123")
+
+        verify {
+            view.onSuccessGetTickerData(any())
+        }
+    }
+
+    @Test
+    fun `showTickerData success with null tickerdata`() {
+        val response = TickerDataResponse(
+            ChipGetActiveTickerV4(
+                "", null
+            )
+        )
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData("123")
+
+        verify(exactly = 0) {
+            view.onSuccessGetTickerData(any())
+        }
+    }
+
+    @Test
+    fun `showTickerData success with null ChipGetActiveTickerV4`() {
+        val response = TickerDataResponse(
+            null
+        )
+
+        coEvery {
+            getTickerDataUseCase.getTickerData(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TickerDataResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.showTickerData("123")
+
+        verify(exactly = 0) {
+            view.onSuccessGetTickerData(any())
+        }
+    }
+
+    @Test
+    fun `showTickerData failure`() {
+        coEvery {
+            getTickerDataUseCase.getTickerData(any(), captureLambda(), any())
+        } coAnswers {
+            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.showTickerData("123")
+
+        verify {
+            view.onError(any())
+        }
+    }
+
+    @Test
+    fun `submitCsatRating success`() {
+        val response = mockk<SubmitCsatGqlResponse>(relaxed = true)
+
+        coEvery {
+            submitCsatRatingUseCase.submitCsatRating(captureLambda(), any(), any(), any())
+        } coAnswers {
+            firstArg<(SubmitCsatGqlResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.submitCsatRating("123", InputItem(0, "", "", "", "", "", ""))
+
+        verify {
+            view.onSuccessSubmitCsatRating(any())
+        }
+    }
+
+    @Test
+    fun `submitCsatRating failure`() {
+        coEvery {
+            submitCsatRatingUseCase.submitCsatRating(any(), captureLambda(), any(), any())
+        } coAnswers {
+            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.submitCsatRating("123", InputItem(0, "", "", "", "", "", ""))
+
+        verify {
+            view.onError(any())
+        }
+    }
     @Test
     fun `connectWebSocket success when Socket is Opened`() {
         val socketJob = MutableStateFlow<ChatbotWebSocketAction>(
@@ -448,6 +862,44 @@ class ChatbotPresenterTest {
                     any()
                 ),
                 any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `sendMessage without parent reply and with empty message`() {
+        mockkObject(RxWebSocket)
+        mockkObject(ChatbotSendWebsocketParam)
+
+        every {
+            ChatbotSendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
+            )
+        } just runs
+
+        presenter.sendMessage("", "", "", "", null) {}
+
+        verify(exactly = 0) {
+            RxWebSocket.send(
+                ChatbotSendWebsocketParam.generateParamSendMessage(
+                    any(),
+                    any(),
+                    any(),
+                    any()
+                ),
+                any()
             )
         }
     }
@@ -496,7 +948,7 @@ class ChatbotPresenterTest {
     fun `getBottomChat success when chat ratings list is not empty`() {
         val expectedResponse = GetExistingChatPojo()
         val chatroomViewModel = getExistingChatMapper.map(expectedResponse)
-        var chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
+        val chatRatingListInput = ChipGetChatRatingListInput(mutableListOf(mockk(relaxed = true)))
 
         coEvery {
             getExistingChatUseCase.getBottomChat(any())
@@ -514,7 +966,7 @@ class ChatbotPresenterTest {
             presenter.getChatRatingList(any(), any(), any())
         }
 
-        presenter.getBottomChat("123456", { viewModel, chatReplies -> }, {}, {})
+        presenter.getBottomChat("123456", { _, _ -> }, {}, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any(), any())
@@ -539,8 +991,8 @@ class ChatbotPresenterTest {
             presenter.getChatRatingData(any())
         } returns chatRatingListInput
 
-        presenter.getBottomChat("123456", { viewModel, chatReplies ->
-            chatroomViewModel = viewModel!!
+        presenter.getBottomChat("123456", { viewModel, _ ->
+            chatroomViewModel = viewModel
         }, {}, {})
 
         Assert.assertEquals(
@@ -558,7 +1010,7 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getBottomChat(any())
         } throws exception
 
-        presenter.getBottomChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+        presenter.getBottomChat("123", { _, _ -> }, { exception ->
             result = exception
         }, {})
 
@@ -591,7 +1043,7 @@ class ChatbotPresenterTest {
         }
 
         // When
-        presenter.getTopChat("123456", { viewModel, chatReplies -> }, {}, {})
+        presenter.getTopChat("123456", { _, _ -> }, {}, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any(), any())
@@ -635,11 +1087,11 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getTopChat(any())
         } throws exception
 
-        presenter.getTopChat("123", { chatroomViewModel, chatReplies -> }, { exception ->
+        presenter.getTopChat("123", { _, _ -> }, { exception ->
             result = exception
         }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception,
             (result as Exception)
         )
@@ -651,7 +1103,7 @@ class ChatbotPresenterTest {
             getExistingChatUseCase.getFirstPageChat(any())
         }
 
-        presenter.getExistingChat("", {}, { chatroomViewModel, chatReplies -> }, {})
+        presenter.getExistingChat("", {}, { _, _ -> }, {})
 
         verify(exactly = 0) {
             presenter.getChatRatingData(any())
@@ -681,7 +1133,7 @@ class ChatbotPresenterTest {
         }
 
         // When
-        presenter.getExistingChat("123456", { }, { viewModel, chatReplies -> }, {})
+        presenter.getExistingChat("123456", { }, { _, _ -> }, {})
 
         verify {
             presenter.getChatRatingList(chatRatingListInput, any(), any())
@@ -699,9 +1151,9 @@ class ChatbotPresenterTest {
 
         presenter.getExistingChat("123", { exception ->
             result = exception
-        }, { chatroomViewModel, chatReplies -> }, {})
+        }, { _, _ -> }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception,
             (result as Exception)
         )
@@ -722,11 +1174,15 @@ class ChatbotPresenterTest {
             response.getData<ChipGetChatRatingListResponse>(ChipGetChatRatingListResponse::class.java)
         } returns ratingListResponse
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123456") { chipGetChatRatingList ->
+        presenter.getChatRatingList(
+            ChipGetChatRatingListInput(),
+            "123456"
+        ) { chipGetChatRatingList ->
             expectedChatRatingList = chipGetChatRatingList!!
         }
 
-        Assert.assertEquals(
+
+        assertEquals(
             expectedChatRatingList,
             ratingListResponse.chipGetChatRatingList
         )
@@ -739,7 +1195,7 @@ class ChatbotPresenterTest {
             chipGetChatRatingListUseCase.getChatRatingList(any())
         } throws exception
 
-        presenter.getChatRatingList(ChipGetChatRatingListInput(),"123456", {})
+        presenter.getChatRatingList(ChipGetChatRatingListInput(), "123") {}
 
         verify {
             exception.printStackTrace()
@@ -833,37 +1289,72 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `checkForSession when new session`() {
+    fun `checkForSession success if newSession is in response calls startNewSession`() {
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
+        val isNewSession = true
+        val isTypingBlock = true
 
         coEvery {
-            getTopBotNewSessionUseCase.getTobBotUserSession(any())
-        } returns response
+            getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TopBotNewSessionResponse) -> Unit>().invoke(response)
+        }
 
-        coEvery {
+        every {
             response.topBotGetNewSession.isNewSession
-        } returns true
+        } returns isNewSession
 
-        presenter.checkForSession("")
+        every {
+            response.topBotGetNewSession.isTypingBlocked
+        } returns isTypingBlock
+
+        presenter.checkForSession("123456")
 
         verify {
             view.startNewSession()
         }
+        verify {
+            view.blockTyping()
+        }
     }
 
-    @Test
-    fun `checkForSession when existing session`() {
+    fun `checkForSession success if newSession is in response calls loadChatHistory`() {
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
+        val isNewSession = false
+        val isTypingBlock = false
 
         coEvery {
-            getTopBotNewSessionUseCase.getTobBotUserSession(any())
-        } returns response
+            getTopBotNewSessionUseCase.getTopBotUserSession(captureLambda(), any(), any())
+        } coAnswers {
+            firstArg<(TopBotNewSessionResponse) -> Unit>().invoke(response)
+        }
 
-        coEvery {
+        every {
             response.topBotGetNewSession.isNewSession
-        } returns false
+        } returns isNewSession
 
-        presenter.checkForSession("")
+        every {
+            response.topBotGetNewSession.isTypingBlocked
+        } returns isTypingBlock
+
+        presenter.checkForSession("123456")
+
+        verify {
+            view.loadChatHistory()
+        }
+        verify {
+            view.enableTyping()
+        }
+    }
+
+    fun `checkForSession failure  calls loadChatHistory`() {
+        coEvery {
+            getTopBotNewSessionUseCase.getTopBotUserSession(any(), captureLambda(), any())
+        } coAnswers {
+            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
+
+        presenter.checkForSession("123456")
 
         verify {
             view.loadChatHistory()
@@ -871,43 +1362,28 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `sendRating success`() {
-        val params = mapOf<String, Any>()
-        mockkConstructor(SendRatingSubscriber::class)
-        mockkObject(SendChatRatingUseCase)
+    fun `sendRating success `() {
+        val response = mockk<SendRatingPojo>(relaxed = true)
+        val rating = 1
+        val uiModel = mockk<ChatRatingUiModel>(relaxed = true)
 
-        every {
-            SendChatRatingUseCase.generateParam(
-                any(),
-                any(),
-                any()
+        coEvery {
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
+        } coAnswers {
+            firstArg<(SendRatingPojo, Int, ChatRatingUiModel) -> Unit>().invoke(
+                response,
+                rating,
+                uiModel
             )
-        } returns params
-
-        every {
-            sendChatRatingUseCase.execute(any(), any())
-        } just runs
-
-        presenter.sendRating("", 1, "", {}, {})
-
-        verify {
-            sendChatRatingUseCase.execute(any(), any())
         }
-    }
-
-    @Test
     fun `submitChatCsat success`() {
         mockkConstructor(SendRatingReasonSubscriber::class)
         mockkObject(SendRatingReasonUseCase)
 
-        every {
-            chipSubmitChatCsatUseCase.execute(any(), any())
-        } just runs
-
-        presenter.submitChatCsat("123456", ChipSubmitChatCsatInput(), {}, {})
+        presenter.sendRating("123456", 5, ChatRatingUiModel())
 
         verify {
-            chipSubmitChatCsatUseCase.execute(any(), any())
+            view.onSuccessSendRating(any(), any(), any())
         }
     }
 
@@ -925,14 +1401,10 @@ class ChatbotPresenterTest {
             )
         } returns params
 
-        every {
-            sendRatingReasonUseCase.execute(any(), any())
-        } just runs
-
-        presenter.sendReasonRating("", "", "", {}, {})
+        presenter.sendRating("123456", 5, ChatRatingUiModel())
 
         verify {
-            sendRatingReasonUseCase.execute(any(), any())
+            view.onError(any())
         }
     }
 
@@ -963,7 +1435,7 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendActionBubble("", ChatActionBubbleViewModel(), "", "")
+        presenter.sendActionBubble("", ChatActionBubbleUiModel(), "", "")
 
         verify {
             chatbotWebSocket.send(
@@ -1005,7 +1477,7 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendQuickReplyInvoice("123", QuickReplyViewModel("", "", ""), "", "", "", "")
+        presenter.sendQuickReplyInvoice("123", QuickReplyUiModel("", "", ""), "", "", "", "")
 
         verify {
             chatbotWebSocket.send(
@@ -1046,7 +1518,7 @@ class ChatbotPresenterTest {
             )
         } just runs
 
-        presenter.sendQuickReply("123", QuickReplyViewModel("", "", ""), "", "")
+        presenter.sendQuickReply("123", QuickReplyUiModel("", "", ""), "", "")
 
         verify {
             chatbotWebSocket.send(
@@ -1188,5 +1660,589 @@ class ChatbotPresenterTest {
                 any()
             )
         }
+    }
+
+    @Test
+    fun `mapToVisitable success`() {
+        val mockkVisitable = mockk<Visitable<*>>(relaxed = true)
+
+        every {
+            chatBotWebSocketMessageMapper.map(any())
+        } returns mockkVisitable
+
+        presenter.mapToVisitable(ChatSocketPojo())
+
+        assertNotNull(mockkVisitable)
+    }
+
+    @Test
+    fun `getActionBubbleforNoTrasaction success`() {
+        val actionBubbleUiModel = createActionBubble()
+
+        presenter.getActionBubbleforNoTrasaction()
+
+        assertNotNull(actionBubbleUiModel)
+    }
+
+    @Test
+    fun `clearText success`() {
+        every {
+            view.clearChatText()
+        } just runs
+
+        presenter.clearText()
+
+        verify {
+            view.clearChatText()
+        }
+    }
+
+    @Test
+    fun `showErrorSnackbar success`() {
+        every {
+            view.showSnackbarError(any())
+        } just runs
+
+        presenter.showErrorSnackbar(1)
+
+        verify {
+            view.showSnackbarError(any())
+        }
+    }
+
+    @Test
+    fun `createAttachInvoiceSingleViewModel success`() {
+        val map = getMapForArticleEntry()
+        val attachInvoiceSingleUiModel = getAttachSingleInvoiceUiModel(map)
+        presenter.createAttachInvoiceSingleViewModel(map)
+        assertNotNull(attachInvoiceSingleUiModel)
+    }
+
+    @Test
+    fun `createAttachInvoiceSingleViewModel success with null`() {
+        val map = getMapForArticleEntry()
+        val attachInvoiceSingleUiModel = getAttachSingleInvoiceUiModelWithNull()
+        presenter.createAttachInvoiceSingleViewModel(map)
+        assertNotNull(attachInvoiceSingleUiModel)
+    }
+
+    @Test
+    fun `generateInvoice success`() {
+        val generatedInvoice = getInvoice()
+        presenter.generateInvoice(InvoiceLinkPojo(), "")
+        assertNotNull(generatedInvoice)
+    }
+
+    @Test
+    fun `detachView success`() {
+        every {
+            presenter.destroyWebSocket()
+        } just runs
+
+        presenter.detachView()
+
+        verify { presenter.destroyWebSocket() }
+    }
+
+    @Test
+    fun `getChatRatingData when type is HelpFullQuestionsViewModel`() {
+        val input = ChipGetChatRatingListInput()
+        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        val helpfulQuestionUiModel = mockk<HelpFullQuestionsUiModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns helpfulQuestionUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    22,
+                    helpfulQuestionUiModel.helpfulQuestion?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsUiModel(
+                "", "", "", "", "", "", "",
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is HelpFullQuestionsViewModel with attachment type null`() {
+        val input = ChipGetChatRatingListInput()
+        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        val helpfulQuestionUiModel = mockk<HelpFullQuestionsUiModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns helpfulQuestionUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    null.toIntOrZero(),
+                    helpfulQuestionUiModel.helpfulQuestion?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsUiModel(
+                "", "", "", "", "", "", "",
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is HelpFullQuestionsViewModel and null`() {
+        val input = ChipGetChatRatingListInput()
+        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        val helpfulQuestionUiModel = mockk<HelpFullQuestionsUiModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns helpfulQuestionUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    22,
+                    helpfulQuestionUiModel.helpfulQuestion?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "",
+                "", "", "",
+                null
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsUiModel(
+                "", "", "", "", "", "", "",
+                "", null
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is CsatOptionsViewModel`() {
+        val input = ChipGetChatRatingListInput()
+        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        val csatOptionsUiModel = mockk<CsatOptionsUiModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns csatOptionsUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    23,
+                    csatOptionsUiModel.csat?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsUiModel(
+                "", "", "", "", "", "", "",
+                "", CsatAttributesPojo.Csat("", "", emptyList(), "", emptyList(), "", "", 1)
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `getChatRatingData when type is CsatOptionsViewModel and null`() {
+        val input = ChipGetChatRatingListInput()
+        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+        mappedPojo.listChat.add(mockk())
+        val csatOptionsUiModel = mockk<CsatOptionsUiModel>(relaxed = true)
+        every {
+            mappedPojo.listChat.firstOrNull()
+        } returns csatOptionsUiModel
+
+        every {
+            input.list.add(
+                ChipGetChatRatingListInput.ChatRating(
+                    23,
+                    csatOptionsUiModel.csat?.caseChatId ?: ""
+                )
+            )
+        } returns true
+
+        val chatRoomViewModel = ChatroomViewModel()
+        chatRoomViewModel.listChat.add(
+            HelpFullQuestionsUiModel(
+                "", "", "", "", "",
+                "", "", "",
+                HelpFullQuestionPojo.HelpfulQuestion("", "", emptyList(), 1)
+            )
+        )
+        chatRoomViewModel.listChat.add(
+            CsatOptionsUiModel(
+                "", "", "", "", "", "", "",
+                "", null
+            )
+        )
+
+        presenter.getChatRatingData(chatRoomViewModel)
+
+        assertEquals(1, input.list.size)
+        assertTrue(input.list.firstOrNull() is ChipGetChatRatingListInput.ChatRating)
+    }
+
+    @Test
+    fun `sendUploadedImageToWebsocket success`() {
+        mockkObject(RxWebSocket)
+
+        every {
+            RxWebSocket.send(any<JsonObject>(), any())
+        } returns mockk(relaxed = true)
+
+        presenter.sendUploadedImageToWebsocket(JsonObject())
+
+        verify {
+            RxWebSocket.send(
+                any<JsonObject>(),
+                any()
+            )
+        }
+    }
+
+//    @Test
+//    fun `updateMappedPojo success`() {
+//        val mockkRatings = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList>(relaxed = true)
+//        val isSuccess = 1
+//        val mappedPojo = mockk<ChatroomViewModel>(relaxed = true)
+//        val mockkHelpfullQuestion = mockk<HelpFullQuestionsViewModel>(relaxed = true)
+//        val mockkRatingList = mockk<ChipGetChatRatingListResponse.ChipGetChatRatingList.RatingListData.RatingList>(relaxed = true)
+//        var mockkRateListMsg= mockk<MutableList<HelpFullQuestionsViewModel>>(relaxed = true)
+//        mockkRateListMsg.add(mockkHelpfullQuestion)
+//
+//        every {
+//            mockkRatings?.ratingListData?.isSuccess
+//        } returns isSuccess
+//
+//        every {
+//            mockkRatings.ratingListData?.list?.firstOrNull()
+//        } returns mockkRatingList
+//
+//        every {
+//            mappedPojo.listChat.firstOrNull()
+//        } returns mockkHelpfullQuestion
+//
+//        every {
+//            mockkRatingList.attachmentType == 22
+//        } returns true
+//
+//        every {
+//            mockkHelpfullQuestion
+//                .helpfulQuestion?.caseChatId == mockkRatingList.caseChatID
+//        } returns true
+//
+//        every {
+//            mockkHelpfullQuestion.isSubmited = mockkRatingList.isSubmitted?: true
+//        } just runs
+//
+//        var ratings = ChipGetChatRatingListResponse.ChipGetChatRatingList(
+//            ChipGetChatRatingListResponse.ChipGetChatRatingList.RatingListData(
+//                1,
+//                listOf(
+//                    ChipGetChatRatingListResponse.ChipGetChatRatingList.RatingListData.RatingList(
+//                        "1",
+//                        true,
+//                        "",
+//                        22
+//                    ),
+//                    ChipGetChatRatingListResponse.ChipGetChatRatingList.RatingListData.RatingList(
+//                        "2",
+//                        false,
+//                        "",
+//                        22
+//                    )
+//                )
+//            ),
+//            emptyList(),
+//            "",
+//            ""
+//        )
+//
+//        presenter.updateMappedPojo(
+//            ChatroomViewModel(),
+//            ratings
+//        ) {
+//        }
+//
+//        assertTrue(true)
+//    }
+
+    private fun getInvoice(): AttachInvoiceSentUiModel {
+        return AttachInvoiceSentUiModel.Builder().build()
+    }
+
+    private fun createActionBubble(): ChatActionBubbleUiModel {
+        return ChatActionBubbleUiModel(
+            "Text",
+            "Value",
+            "Action"
+        )
+    }
+
+    @Test
+    fun `sendVideoAttachment message via socket success`() {
+        mockkObject(RxWebSocket)
+        mockkObject(SendChatbotWebsocketParam)
+
+        every {
+            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                any(), any(), any()
+            )
+        } returns mockk(relaxed = true)
+
+        every {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+            )
+        } just runs
+
+        presenter.sendVideoAttachment("", "", "")
+
+        verify {
+            RxWebSocket.send(
+                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+                    any(), any(), any()
+                ), any()
+                ),
+                any()
+            )
+        }
+    }
+
+    @Test
+    fun `startNewUploadMediaJob success when uploaderUseCase returns success`() {
+        val response = mockk<UploadResult.Success>(relaxed = true)
+        var result: String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            result = response.videoUrl
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(result)
+
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure when uploaderUseCase returns failure`() {
+        val response = mockk<UploadResult.Error>(relaxed = true)
+        var message: String? = null
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } returns response
+
+        every {
+            message = response.message
+        } just runs
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        assertNotNull(message)
+    }
+
+    @Test
+    fun `startNewUploadMediaJob failure`() {
+
+        coEvery {
+            uploaderUseCase.invoke(any())
+        } answers {
+            throw mockThrowable
+        }
+
+        presenter.startNewUploadMediaJob(
+            "https://vod-tokopedia.com/abc",
+            "123456",
+            ""
+        )
+
+        verify {
+            presenter.updateMediaUploadResults(any(), any())
+        }
+    }
+
+    private fun getAttachSingleInvoiceUiModel(hashMap: Map<String, String>): AttachInvoiceSingleUiModel {
+        return AttachInvoiceSingleUiModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[ChatbotConstant.ChatbotUnification.CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] ?: "",
+            url = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            id = hashMap.get(ChatbotConstant.ChatbotUnification.ID)!!.toLongOrZero(),
+            imageUrl = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            status = hashMap[ChatbotConstant.ChatbotUnification.STATUS] ?: "",
+            statusId = hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID]!!.toIntOrZero(),
+            title = hashMap[ChatbotConstant.ChatbotUnification.TITLE] ?: "",
+            amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: "",
+            color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
+        )
+    }
+
+    @Test
+    fun `checkUploadVideoEligibility success`() {
+
+        val response = mockk<ChatbotUploadVideoEligibilityResponse>(relaxed = true)
+
+        coEvery {
+            chatbotVideoUploadVideoEligibilityUseCase.getVideoUploadEligibility(
+                captureLambda(),
+                any(),
+                any()
+            )
+        } coAnswers {
+            firstArg<(ChatbotUploadVideoEligibilityResponse) -> Unit>().invoke(response)
+        }
+
+        presenter.checkUploadVideoEligibility("1234")
+
+        verify {
+            view.videoUploadEligibilityHandler(any())
+        }
+
+    }
+
+    private fun getAttachSingleInvoiceUiModelWithNull(): AttachInvoiceSingleUiModel {
+        val hashMap = HashMap<String, String?>()
+        hashMap[ChatbotConstant.ChatbotUnification.CODE] = null
+        hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] = null
+        hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] = null
+        hashMap[ChatbotConstant.ChatbotUnification.ID] = null
+        hashMap[ChatbotConstant.ChatbotUnification.STATUS] = null
+        hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID] = null
+        hashMap[ChatbotConstant.ChatbotUnification.TITLE] = null
+        hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] = null
+        return AttachInvoiceSingleUiModel(
+            typeString = "",
+            type = 0,
+            code = hashMap[ChatbotConstant.ChatbotUnification.CODE] ?: "",
+            createdTime = SendableUiModel.generateStartTime(),
+            description = hashMap[ChatbotConstant.ChatbotUnification.DESCRIPTION] ?: "",
+            url = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            id = hashMap.get(ChatbotConstant.ChatbotUnification.ID).toLongOrZero(),
+            imageUrl = hashMap[ChatbotConstant.ChatbotUnification.IMAGE_URL] ?: "",
+            status = hashMap[ChatbotConstant.ChatbotUnification.STATUS] ?: "",
+            statusId = hashMap[ChatbotConstant.ChatbotUnification.STATUS_ID].toIntOrZero(),
+            title = hashMap[ChatbotConstant.ChatbotUnification.TITLE] ?: "",
+            amount = hashMap[ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT] ?: "",
+            color = hashMap[ChatbotConstant.ChatbotUnification.STATUS_COLOR] ?: ""
+        )
+    }
+
+    private fun getMapForArticleEntry(): Map<String, String> {
+        return mapOf(
+            ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
+            ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",
+            ChatbotConstant.ChatbotUnification.CODE to "3",
+            ChatbotConstant.ChatbotUnification.CREATE_TIME to "time",
+            ChatbotConstant.ChatbotUnification.DESCRIPTION to "description",
+            ChatbotConstant.ChatbotUnification.EVENT to "event",
+            ChatbotConstant.ChatbotUnification.ID to "0",
+            ChatbotConstant.ChatbotUnification.IMAGE_URL to "url",
+            ChatbotConstant.ChatbotUnification.IS_ATTACHED to "true",
+            ChatbotConstant.ChatbotUnification.STATUS to "status",
+            ChatbotConstant.ChatbotUnification.STATUS_COLOR to "status_color",
+            ChatbotConstant.ChatbotUnification.STATUS_ID to "0",
+            ChatbotConstant.ChatbotUnification.TITLE to "title",
+            ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
+            ChatbotConstant.ChatbotUnification.USED_BY to "Article"
+        )
+    }
+
+    private fun getMapForArticleEntryForNull(): Map<String, String> {
+        return mapOf(
+            ChatbotConstant.ChatbotUnification.ARTICLE_ID to "1",
+            ChatbotConstant.ChatbotUnification.ARTICLE_TITLE to "2",
+            ChatbotConstant.ChatbotUnification.CODE to "3",
+            ChatbotConstant.ChatbotUnification.CREATE_TIME to "time",
+            ChatbotConstant.ChatbotUnification.DESCRIPTION to "description",
+            ChatbotConstant.ChatbotUnification.EVENT to "event",
+            ChatbotConstant.ChatbotUnification.ID to "0",
+            ChatbotConstant.ChatbotUnification.IMAGE_URL to "url",
+            ChatbotConstant.ChatbotUnification.IS_ATTACHED to "true",
+            ChatbotConstant.ChatbotUnification.STATUS to "status",
+            ChatbotConstant.ChatbotUnification.STATUS_COLOR to "status_color",
+            ChatbotConstant.ChatbotUnification.STATUS_ID to "0",
+            ChatbotConstant.ChatbotUnification.TITLE to "title",
+            ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT to "123",
+            ChatbotConstant.ChatbotUnification.USED_BY to "Article"
+        )
     }
 }

@@ -104,7 +104,6 @@ class ChatbotModule {
         return BaseRepository()
     }
 
-    @ChatbotScope
     @Provides
     internal fun provideChatbotCacheManager(@ApplicationContext context: Context): ChatbotCacheManager {
         val chatbotCacheManager = context.getSharedPreferences("chatbotCache", Context.MODE_PRIVATE)
@@ -143,4 +142,5 @@ class ChatbotModule {
     fun provideChatbotWebSocketStateHandler(): ChatbotWebSocketStateHandler {
         return ChatbotDefaultWebSocketStateHandler()
     }
+    fun provideGraphQlRepository() = GraphqlInteractor.getInstance().graphqlRepository
 }
