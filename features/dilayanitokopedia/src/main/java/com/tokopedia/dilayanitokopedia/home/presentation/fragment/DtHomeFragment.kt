@@ -34,7 +34,10 @@ import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewMod
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.model.ChannelGrid
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -81,6 +84,9 @@ class DtHomeFragment : Fragment() {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 dtView = createDtView(),
+                null,
+                featuredShopListener = createFeatureShopCallback(),
+
 //                homeTickerListener = this,
 //                tokoNowChooseAddressWidgetListener = this,
 //                tokoNowCategoryGridListener = this,
@@ -102,6 +108,41 @@ class DtHomeFragment : Fragment() {
             ),
             differ = HomeListDiffer()
         )
+    }
+
+    private fun createFeatureShopCallback(): FeaturedShopListener {
+        return object : FeaturedShopListener {
+            override fun onSeeAllClicked(channelModel: ChannelModel, position: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSeeAllBannerClicked(channelModel: ChannelModel, applink: String, position: Int) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopBannerBackgroundClicked(channel: ChannelModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopItemImpressed(
+                channelModel: ChannelModel,
+                channelGrid: ChannelGrid,
+                position: Int,
+                parentPosition: Int
+            ) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onFeaturedShopItemClicked(
+                channelModel: ChannelModel,
+                channelGrid: ChannelGrid,
+                position: Int,
+                parentPosition: Int
+            ) {
+                TODO("Not yet implemented")
+            }
+
+        }
     }
 
 
@@ -180,12 +221,21 @@ class DtHomeFragment : Fragment() {
     private fun initHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
             navToolbar?.setupSearchbar(
+//                hints = listOf(
+//                    HintData(
+//                        data.placeholder.orEmpty(),
+//                        data.keyword.orEmpty()
+//                    )
+//                ),
                 hints = listOf(
                     HintData(
-                        data.placeholder.orEmpty(),
-                        data.keyword.orEmpty()
+                        data.placeholder ?: "", data.keyword
+                            ?: ""
                     )
                 ),
+                applink = if (data.keyword?.isEmpty() != false) {
+                    ApplinkConstInternalDiscovery.AUTOCOMPLETE
+                } else PARAM_APPLINK_AUTOCOMPLETE,
                 searchbarClickCallback = { onSearchBarClick() },
                 searchbarImpressionCallback = {},
 //                durationAutoTransition = durationAutoTransition,
@@ -207,9 +257,6 @@ class DtHomeFragment : Fragment() {
 //        }
     }
 
-    private fun onSearchBarClick() {
-
-    }
 
     private fun isFirstInstall(): Boolean {
 //        context?.let {
@@ -303,7 +350,7 @@ class DtHomeFragment : Fragment() {
         }
 
         observe(viewModelDtHome.chooseAddress) {
-            when(it) {
+            when (it) {
                 is Success -> {
                     setupChooseAddress(it.data)
                 }
@@ -409,23 +456,26 @@ class DtHomeFragment : Fragment() {
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
 //        loadHeaderBackground()
-//        checkAddressDataAndServiceArea()
+        checkAddressDataAndServiceArea()
         showLayout()
 //        showHideChooseAddress()
 //        hideSwitcherCoachMark()
     }
+
+
     private fun onSearchBarClick() {
-        RouteManager.route(context,
+        RouteManager.route(
+            context,
             getAutoCompleteApplinkPattern(),
             SOURCE,
             context?.resources?.getString(R.string.dt_search_bar_hint).orEmpty(),
-            isFirstInstall().toString())
+            isFirstInstall().toString()
+        )
     }
 
 
     private fun getAutoCompleteApplinkPattern() =
         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
-
 
 
     private fun switchServiceOrLoadLayout() {
@@ -437,19 +487,12 @@ class DtHomeFragment : Fragment() {
         }
     }
 
-    private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
-        showHomeLayout(data)
-//        loadHeaderBackground()
-        checkAddressDataAndServiceArea()
-//        showHideChooseAddress()
-//        hideSwitcherCoachMark()
-    }
 
     private fun checkAddressDataAndServiceArea() {
         checkIfChooseAddressWidgetDataUpdated()
         val shopId = localCacheModel?.shop_id.toLongOrZero()
         val warehouseId = localCacheModel?.warehouse_id.toLongOrZero()
-        checkStateNotInServiceArea(shopId,warehouseId)
+        checkStateNotInServiceArea(shopId, warehouseId)
     }
 
     private fun checkStateNotInServiceArea(shopId: Long = -1L, warehouseId: Long) {
@@ -462,7 +505,7 @@ class DtHomeFragment : Fragment() {
 ////                    showEmptyStateNoAddress()
 //                }
 //                else -> {
-                    showLayout()
+        showLayout()
 ////                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
 //                }
 //            }
@@ -487,54 +530,6 @@ class DtHomeFragment : Fragment() {
         return false
     }
 
-
-    /**
-     * DtView
-     */
-    override fun getFragmentPage()  = this
-
-
-    override fun getFragmentManagerPage()= childFragmentManager
-
-    override fun refreshLayoutPage() {
-        onRefreshLayout()
-    }
-
-    override fun getScrollState(adapterPosition: Int): Parcelable? {
-        TODO("Not yet implemented")
-    }
-
-    override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getParallaxState(): Map<String, Float> {
-        TODO("Not yet implemented")
-    }
-
-    /*
-    end DtView
-     */
-
-    private fun onRefreshLayout() {
-//        refreshMiniCart()
-//        resetMovingPosition()
-//        removeAllScrollListener()
-//        hideStickyLogin()
-//        rvLayoutManager?.setScrollEnabled(true)
-//        carouselScrollState.clear()
-//        carouselParallaxState.clear()
-//        isRefreshed = true
-        loadLayout()
-    }
-
-    private fun loadLayout() {
-        viewModelDtHome.getLoadingState()
-    }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
@@ -569,7 +564,7 @@ class DtHomeFragment : Fragment() {
 //            showEmptyState(EMPTY_STATE_NO_ADDRESS_AND_LOCAL_CACHE)
 //        } else {
 //            viewModelTokoNow.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + HOMEPAGE_TOKONOW)
-            showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
+        showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
 //        }
     }
 }

@@ -11,6 +11,7 @@ import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.DtChooseAddr
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
+import com.tokopedia.home_component.listener.FeaturedShopListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
@@ -50,6 +51,7 @@ class DtHomeAdapterTypeFactory(
     private val dtView: DtView? = null,
 //    private val homeTickerListener: HomeTickerViewHolder.HomeTickerListener? = null,
     private val dtChooseAddressWidgetListener: DtChooseAddressWidgetViewHolder.DtChooseAddressWidgetListener? = null,
+    private val featuredShopListener: FeaturedShopListener,
 //    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
 //    private val homeProductRecomListener: HomeProductRecomListener? = null,
@@ -115,21 +117,23 @@ class DtHomeAdapterTypeFactory(
     override fun type(mixTopDataModel: MixTopDataModel): Int = MixTopComponentViewHolder.LAYOUT
     override fun type(productHighlightDataModel: ProductHighlightDataModel): Int = ProductHighlightComponentViewHolder.LAYOUT
     override fun type(lego4AutoDataModel: Lego4AutoDataModel) = Lego4AutoBannerViewHolder.LAYOUT
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
     override fun type(categoryNavigationDataModel: CategoryNavigationDataModel): Int = CategoryNavigationViewHolder.LAYOUT
     override fun type(dynamicIconComponentDataModel: DynamicIconComponentDataModel): Int = DynamicIconViewHolder.LAYOUT
     override fun type(featuredBrandDataModel: FeaturedBrandDataModel): Int = FeaturedBrandViewHolder.LAYOUT
     override fun type(questWidgetModel: QuestWidgetModel): Int = QuestWidgetViewHolder.LAYOUT
 
-    //current used
+    //current used in DT
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
-    override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
+    override fun type(mixLeftDataModel: MixLeftDataModel): Int =
+        MixLeftComponentViewHolder.LAYOUT
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int =
+        FeaturedShopViewHolder.LAYOUT
 
 
     // endregion
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
-        Timber.d("logging--DtHomeAdapterTypeFactory-createViewHolder called")
+        Timber.d("logging--DtHomeAdapterTypeFactory-createViewHolder called ${type.toString()}")
 
         return when (type) {
 //            // region Common TokoNow Component
@@ -167,13 +171,10 @@ class DtHomeAdapterTypeFactory(
                 DynamicLegoBannerViewHolder(view, dynamicLegoBannerCallback, null)
             }
 
+            MixLeftComponentViewHolder.LAYOUT -> MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
 
-            BannerComponentViewHolder.LAYOUT -> {
-                BannerComponentViewHolder(view, bannerComponentListener, null)
-            }
-            MixLeftComponentViewHolder.LAYOUT -> {
-                MixLeftComponentViewHolder(view, homeLeftCarouselListener, null)
-            }
+            FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopListener, null)
+
             // endregion
             else -> {
                 //TODO - should handle biar gak crash

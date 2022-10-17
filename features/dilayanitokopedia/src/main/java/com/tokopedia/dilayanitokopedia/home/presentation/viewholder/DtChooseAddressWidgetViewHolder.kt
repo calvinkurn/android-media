@@ -13,6 +13,7 @@ import com.tokopedia.dilayanitokopedia.databinding.ItemDtChooseAddressWidgetBind
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeFragment.Companion.SOURCE
 import com.tokopedia.dilayanitokopedia.home.presentation.fragment.DtHomeFragment.Companion.SOURCE_TRACKING
 import com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.utils.view.binding.viewBinding
 
 
@@ -26,7 +27,6 @@ class DtChooseAddressWidgetViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_dt_choose_address_widget
-        const val ENABLE_CHOOSE_ADDRESS_WIDGET = "android_tokopedianow_enable_choose_address_widget_on_home_page"
     }
 
     private var binding: ItemDtChooseAddressWidgetBinding? by viewBinding()
@@ -94,18 +94,18 @@ class DtChooseAddressWidgetViewHolder(
     }
 
     private fun getChooseAddressWidgetCoachMarkItem(): CoachMark2Item? {
-//        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(itemView.context)
-//        return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
-//            chooseAddressWidget?.let {
-//                CoachMark2Item(
-//                    it,
-//                    itemView.context?.getString(R.string.tokopedianow_home_choose_address_widget_coachmark_title).orEmpty(),
-//                    itemView.context?.getString(R.string.tokopedianow_home_choose_address_widget_coachmark_description).orEmpty()
-//                )
-//            }
-//        } else {
+        val isNeedToShowCoachMark = ChooseAddressUtils.isLocalizingAddressNeedShowCoachMark(itemView.context)
+        return if (isNeedToShowCoachMark == true && chooseAddressWidget?.isShown == true) {
+            chooseAddressWidget?.let {
+                CoachMark2Item(
+                    it,
+                    itemView.context?.getString(R.string.dt_home_choose_address_widget_coachmark_title).orEmpty(),
+                    itemView.context?.getString(R.string.dt_home_choose_address_widget_coachmark_description).orEmpty()
+                )
+            }
+        } else {
         return null
-//        }
+        }
     }
 
     interface DtChooseAddressWidgetListener {

@@ -20,23 +20,39 @@ import androidx.annotation.StringDef
 //    DtLayoutType.SHARING_REFERRAL,
 //    DtLayoutType.MAIN_QUEST,
     DtLayoutType.MIX_LEFT_CAROUSEL,
+    DtLayoutType.FEATURED_SHOP
 //    DtLayoutType.MIX_LEFT_CAROUSEL_ATC
 )
 annotation class DtLayoutType {
     companion object {
+
+    //list supported by BE
+//        "
+//        banner_carousel_v2,
+//        page_usp,
+//        top_carousel,
+//        6_image,
+//        shop_widget,
+//        left_carousel,
+//        ",
+
+
         const val BANNER_CAROUSEL = "banner_carousel_v2"
+        //        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
+        //        const val PRODUCT_RECOM = "top_carousel_tokonow"
+
+        const val LEGO_6_IMAGE = "6_image"
+        const val FEATURED_SHOP = "shop_widget"
+        const val MIX_LEFT_CAROUSEL = "left_carousel"
+
+
 
         //        const val CATEGORY = "category_tokonow"
 //        const val LEGO_3_IMAGE = "lego_3_image"
-        const val LEGO_6_IMAGE = "6_image"
-
-        //        const val PRODUCT_RECOM = "top_carousel_tokonow"
 //        const val REPURCHASE_PRODUCT = "recent_purchase_tokonow"
-//        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
 //        const val SHARING_EDUCATION = "tokonow_share"
 //        const val SHARING_REFERRAL = "tokonow_referral"
 //        const val MAIN_QUEST = "tokonow_main_quest"
-        const val MIX_LEFT_CAROUSEL = "left_carousel"
 //        const val MIX_LEFT_CAROUSEL_ATC = "left_carousel_atc"
 //        const val MEDIUM_PLAY_WIDGET = "play_carousel"
 //        const val SMALL_PLAY_WIDGET = "play_carousel_small"

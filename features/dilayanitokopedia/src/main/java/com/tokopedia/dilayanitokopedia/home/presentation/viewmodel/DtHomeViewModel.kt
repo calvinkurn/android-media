@@ -106,16 +106,7 @@ class DtHomeViewModel @Inject constructor(
         }
     }
 
-    fun getLoadingState() {
-//        channelToken = ""
-        homeLayoutItemList.clear()
-//        homeLayoutItemList.addLoadingIntoList()
-        val data = HomeLayoutListUiModel(
-            items = getHomeVisitableList(),
-            state = DtLayoutState.LOADING
-        )
-        _homeLayoutList.postValue(Success(data))
-    }
+
 
 
 
@@ -144,6 +135,7 @@ class DtHomeViewModel @Inject constructor(
         )
         _homeLayoutList.postValue(Success(data))
     }
+
 
     fun getChooseAddress(source: String){
         getChooseAddressWarehouseLocUseCase.getStateChosenAddress( {
