@@ -8,7 +8,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import com.tokopedia.explore.view.fragment.ContentExploreFragment
 import com.tokopedia.feedplus.data.pojo.FeedTabs
-import com.tokopedia.feedplus.view.fragment.DynamicFeedFragment.Companion.newInstance
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.videoTabComponent.view.VideoTabFragment
 
@@ -28,14 +27,12 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
     }
 
     override fun getItem(position: Int): Fragment {
-        val (_, key, _, _, type) = itemList[position]
-        return if (type == FeedTabs.TYPE_FEEDS) {
+        val data = itemList[position]
+        return if (data.type == FeedTabs.TYPE_FEEDS) {
             FeedPlusFragment.newInstance(bundle)
-        } else if (type == FeedTabs.TYPE_EXPLORE) {
+        } else if (data.type == FeedTabs.TYPE_EXPLORE) {
             ContentExploreFragment.newInstance(bundle)
-        } else if (type == FeedTabs.TYPE_CUSTOM && key == FeedTabs.KEY_TRENDING) {
-            newInstance(key)
-        } else if (type == FeedTabs.TYPE_CUSTOM && key == FeedTabs.TYPE_VIDEO) {
+        } else if (data.type == FeedTabs.TYPE_CUSTOM && data.key == FeedTabs.TYPE_VIDEO) {
             VideoTabFragment.newInstance(bundle)
         } else {
             /* Will be override for next to handle custom tab */

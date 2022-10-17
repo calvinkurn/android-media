@@ -106,7 +106,7 @@ class FeedAnalytics @Inject constructor(
     private fun getEventEcommerceView(
         action: String, label: String,
         promotions: List<FeedEnhancedTracking.Promotion>,
-        userId: Int
+        userId: Long
     ): HashMap<String, Any>? {
         return DataLayer.mapOf(
             EVENT_NAME, PROMO_VIEW,
@@ -123,7 +123,7 @@ class FeedAnalytics @Inject constructor(
         action: String,
         label: String,
         promotions: List<FeedEnhancedTracking.Promotion>,
-        userId: Int
+        userId: Long
     ): HashMap<String, Any>? {
         return DataLayer.mapOf(
             EVENT_NAME, PROMO_CLICK,
@@ -140,137 +140,9 @@ class FeedAnalytics @Inject constructor(
         return if (totalContent == 1) SINGLE else MULTIPLE
     }
 
-    fun eventBannerImpression(trackingBannerModels: List<TrackingBannerModel>, userId: Int) {
-        val firstPostId = if (trackingBannerModels.isEmpty()) "" else trackingBannerModels[0].postId
-        val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
-        for ((templateType, activityName, _, mediaType, _, bannerUrl, applink, postId, _, bannerPosition) in trackingBannerModels) {
-            promotionList.add(
-                FeedEnhancedTracking.Promotion(
-                    postId, String.format(
-                        "%s - %s - %s", CONTENT_FEED,
-                        activityName, mediaType
-                    ),
-                    bannerUrl,
-                    applink,
-                    bannerPosition,
-                    "",
-                    postId,
-                    templateType
-                )
-            )
-        }
-        trackEnhancedEcommerceEvent(
-            getEventEcommerceView(
-                "impression banner", firstPostId,
-                promotionList,
-                userId
-            )
-        )
-    }
-
-    //docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
-    //screenshot 1
-    fun eventBannerClick(
-        templateType: String?, activityName: String?, mediaType: String?,
-        bannerUrl: String?, applink: String?, totalBanner: Int, postId: String,
-        bannerPosition: Int, userId: Int
-    ) {
-        val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
-        promotionList.add(
-            FeedEnhancedTracking.Promotion(
-                postId, String.format("%s - %s - %s", CONTENT_FEED, activityName, mediaType),
-                bannerUrl!!,
-                applink!!,
-                bannerPosition, totalBanner.toString(),
-                postId,
-                templateType!!
-            )
-        )
-        trackEnhancedEcommerceEvent(
-            getEventEcommerceClick(
-                "click",
-                "banner - $postId",
-                promotionList,
-                userId
-            )
-        )
-    }
-
-    // docs : https://docs.google.com/spreadsheets/d/1pnZfjiNKbAk8LR37DhNGSwm2jvM3wKqNJc2lfWLejXA/edit#gid=1878700964
-    // screenshot 2
-    fun eventCardPostElementClick(
-        element: String?, activityName: String?, mediaType: String?,
-        activityId: String?, recomId: Int
-    ) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-            EVENT_CLICK_FEED,
-            CONTENT_FEED_TIMELINE,
-            String.format("click %s - %s - %s", element, activityName, mediaType),
-            String.format(
-                FORMAT_2_VALUE, activityId, recomId
-            )
-        )
-    }
-
-    fun eventRecommendationImpression(
-        trackingList: List<TrackingRecommendationModel>,
-        userId: Int
-    ) {
-        val firstAuthorId = if (trackingList.isEmpty()) "0" else trackingList[0].authorId
-        val firstAuthorType = if (trackingList.isEmpty()) "" else trackingList[0].authorType
-        val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
-        for ((templateType, activityName, _, _, authorName, authorType, authorId, cardPosition) in trackingList) {
-            promotionList.add(
-                FeedEnhancedTracking.Promotion(
-                    authorId, String.format("/content feed - %s - %s", activityName, authorType),
-                    authorName,
-                    "",
-                    cardPosition,
-                    "",
-                    "0",
-                    templateType
-                )
-            )
-        }
-        trackEnhancedEcommerceEvent(
-            getEventEcommerceView(
-                String.format("impression - %s recommendation", firstAuthorType),
-                firstAuthorId,
-                promotionList,
-                userId
-            )
-        )
-    }
-
-    fun eventRecommendationClick(
-        templateType: String?, activityName: String?,
-        authorName: String?, authorType: String?, authorId: String?,
-        cardPosition: Int, userId: Int
-    ) {
-        val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
-        promotionList.add(
-            FeedEnhancedTracking.Promotion(
-                authorId!!, String.format("/content feed - %s - %s", activityName, authorType),
-                authorName!!,
-                "",
-                cardPosition,
-                "",
-                "0",
-                templateType!!
-            )
-        )
-        trackEnhancedEcommerceEvent(
-            getEventEcommerceClick(
-                "click", String.format("avatar - %s recommendation - %s", authorType, authorId),
-                promotionList,
-                userId
-            )
-        )
-    }
-
     fun eventTopadsRecommendationImpression(
         trackingList: List<TrackingRecommendationModel>,
-        userId: Int
+        userId: Long
     ) {
         val firstAuthorId = if (trackingList.isEmpty()) "0" else trackingList[0].authorId
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
@@ -301,7 +173,7 @@ class FeedAnalytics @Inject constructor(
     // screenshot 13
     fun eventTopadsRecommendationClick(
         templateType: String?, adId: String?, authorId: String,
-        cardPosition: Int, userId: Int
+        cardPosition: Int, userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
@@ -375,39 +247,11 @@ class FeedAnalytics @Inject constructor(
         }
     }
 
-    fun eventCardPostImpression(
-        templateType: String?, activityName: String?, mediaType: String?,
-        redirectUrl: String?, imageUrl: String?, authorId: String?,
-        totalContent: Int, postId: String?, userId: Int,
-        feedPosition: Int, recomId: Int
-    ) {
-        val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
-        promotionList.add(
-            FeedEnhancedTracking.Promotion(
-                postId!!, String.format("/content feed - %s - %s", activityName, mediaType),
-                imageUrl!!,
-                redirectUrl!!,
-                feedPosition,
-                "",
-                authorId!!, String.format("%s - %s", templateType, singleOrMultiple(totalContent))
-            )
-        )
-        trackEnhancedEcommerceEvent(
-            getEventEcommerceView(
-                String.format("impression - %s - %s", activityName, mediaType), String.format(
-                    FORMAT_2_VALUE, postId, recomId
-                ),
-                promotionList,
-                userId
-            )
-        )
-    }
-
     fun eventCardPostClick(
         templateType: String?, activityName: String?, mediaType: String?,
         redirectUrl: String?, imageUrl: String?, authorId: String?,
-        totalContent: Int, postId: String?, userId: Int,
-        feedPosition: Int, recomId: Int
+        totalContent: Int, postId: String?, userId: Long,
+        feedPosition: Int, recomId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
@@ -472,7 +316,7 @@ class FeedAnalytics @Inject constructor(
 
     fun eventVoteImpression(
         activityName: String?, mediaType: String?, pollId: String,
-        postId: String?, userId: Int
+        postId: String?, userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(
@@ -498,7 +342,7 @@ class FeedAnalytics @Inject constructor(
 
     fun eventVoteClick(
         activityName: String?, mediaType: String?, pollId: String?, optionId: String?,
-        optionName: String?, imageUrl: String?, postId: String?, userId: Int
+        optionName: String?, imageUrl: String?, postId: String?, userId: Long
     ) {
         val promotionList: MutableList<FeedEnhancedTracking.Promotion> = ArrayList()
         promotionList.add(

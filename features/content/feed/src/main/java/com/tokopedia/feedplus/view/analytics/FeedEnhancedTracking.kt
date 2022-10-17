@@ -25,7 +25,7 @@ object FeedEnhancedTracking {
 
     fun getClickTracking(
         listPromotion: List<Promotion>,
-        userId: Int
+        userId: Long
     ): Map<String, Any> {
         return DataLayer.mapOf(
             EVENT, Event.PROMO_CLICK,
