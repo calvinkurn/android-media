@@ -64,7 +64,8 @@ open class BuyerOrderDetailTypeFactory(
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(
                 parent,
-                courierInfoViewHolderListener
+                courierInfoViewHolderListener,
+                navigator
             )
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)

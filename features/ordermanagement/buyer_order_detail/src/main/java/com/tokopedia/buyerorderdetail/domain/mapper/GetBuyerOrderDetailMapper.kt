@@ -61,7 +61,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
                 buyerOrderDetail.orderId,
                 buyerOrderDetail.orderStatus.id,
                 buyerOrderDetail.dropship,
-                buyerOrderDetail.getDriverTippingInfo()
+                buyerOrderDetail.getDriverTippingInfo(),
+                buyerOrderDetail.getPodInfo()
             ),
             pgRecommendationWidgetUiModel = mapToRecommendationWidgetUiModel(
                 buyerOrderDetail.adsPageName,
@@ -207,13 +208,14 @@ class GetBuyerOrderDetailMapper @Inject constructor(
         orderId: String,
         orderStatusId: String,
         dropship: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Dropship,
-        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
+        driverTippingInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?,
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
     ): ShipmentInfoUiModel {
         return ShipmentInfoUiModel(
             awbInfoUiModel = mapAwbInfoUiModel(shipment.shippingRefNum, orderStatusId, orderId),
             courierDriverInfoUiModel = mapCourierDriverInfoUiModel(shipment.driver),
             driverTippingInfoUiModel = mapDriverTippingInfoUiModel(driverTippingInfo),
-            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta),
+            courierInfoUiModel = mapCourierInfoUiModel(shipment, meta, podInfo),
             dropShipperInfoUiModel = mapDropShipperInfoUiModel(dropship),
             headerUiModel = mapPlainHeader(resourceProvider.getShipmentInfoSectionHeader()),
             receiverAddressInfoUiModel = mapReceiverAddressInfoUiModel(shipment.receiver),
@@ -502,7 +504,8 @@ class GetBuyerOrderDetailMapper @Inject constructor(
 
     private fun mapCourierInfoUiModel(
         shipment: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment,
-        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta
+        meta: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Meta,
+        podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?
     ): ShipmentInfoUiModel.CourierInfoUiModel {
         return ShipmentInfoUiModel.CourierInfoUiModel(
             arrivalEstimation = composeETA(shipment.eta),
@@ -510,8 +513,25 @@ class GetBuyerOrderDetailMapper @Inject constructor(
             isFreeShipping = meta.isBebasOngkir,
             boBadgeUrl = meta.boImageUrl,
             etaChanged = shipment.etaIsUpdated,
-            etaUserInfo = shipment.userUpdatedInfo
+            etaUserInfo = shipment.userUpdatedInfo,
+            pod = mapPod(podInfo)
         )
+    }
+
+    private fun mapPod(podInfo: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.LogisticSectionInfo?): ShipmentInfoUiModel.CourierInfoUiModel.Pod? {
+        return podInfo?.let {
+            ShipmentInfoUiModel.CourierInfoUiModel.Pod(
+                podPictureUrl = it.imageUrl,
+                podLabel = it.title,
+                podCtaText = it.action.name,
+                podCtaUrl = it.action.link
+            )
+        }?.takeIf {
+            it.podPictureUrl.isNotBlank() &&
+                it.podLabel.isNotBlank() &&
+                it.podCtaText.isNotBlank() &&
+                it.podCtaUrl.isNotBlank()
+        }
     }
 
     private fun mapCourierDriverInfoUiModel(driver: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail.Shipment.Driver): ShipmentInfoUiModel.CourierDriverInfoUiModel {

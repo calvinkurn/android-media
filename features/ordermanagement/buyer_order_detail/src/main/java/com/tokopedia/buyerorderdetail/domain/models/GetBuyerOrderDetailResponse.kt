@@ -84,6 +84,9 @@ data class GetBuyerOrderDetailResponse(
             fun getDriverTippingInfo(): LogisticSectionInfo? {
                 return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.DRIVER_TIPPING_INFO }
             }
+            fun getPodInfo(): LogisticSectionInfo? {
+                return logisticSections.find { it.id == BuyerOrderDetailLogisticSectionInfoID.POD_INFO }
+            }
 
             data class Button(
                 @Expose
