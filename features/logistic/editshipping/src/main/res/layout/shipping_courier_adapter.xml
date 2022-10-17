@@ -43,7 +43,17 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="0.9"
             android:layout_marginLeft="5dp"
+            app:typographyType="paragraph_2"
+            app:typographyWeight="bold"
             tools:text="Instan"/>
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icon_service_whitelabel"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:visibility="gone"
+            app:icon_name="INFORMATION" />
+
 
     </LinearLayout>
     <LinearLayout

@@ -15,6 +15,7 @@ import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.domain.model.editshipping.Service;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
 import com.tokopedia.editshipping.util.EditShippingConstant;
+import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -32,6 +33,7 @@ public class CourierView extends EditShippingCourierView<Courier,
     LinearLayout packageViewHolder;
     Typography courierUnavailableWarning;
     CheckBox checkBoxWhitelabelService;
+    IconUnify iconWhitelabelService;
     private EditShippingViewListener mainView;
 
     public CourierView(Context context) {
@@ -50,6 +52,7 @@ public class CourierView extends EditShippingCourierView<Courier,
         courierImageHolder = (ImageView) view.findViewById(R.id.img_courier);
         shipmentSettings = (LinearLayout) view.findViewById(R.id.shipping_settings);
         checkBoxWhitelabelService = (CheckBox) view.findViewById(R.id.checkbox_whitelabel_service);
+        iconWhitelabelService = (IconUnify) view.findViewById(R.id.icon_service_whitelabel);
 
         packageView = (PackageView) view.findViewById(R.id.children_layout);
         packageViewHolder = (LinearLayout) view.findViewById(R.id.package_view_holder);
@@ -64,13 +67,13 @@ public class CourierView extends EditShippingCourierView<Courier,
         if (isWhitelabelService(courier)) {
             courierImageHolder.setVisibility(View.GONE);
             checkBoxWhitelabelService.setVisibility(View.VISIBLE);
-            setWhitelabelInitialState(courier);
-            // set service condition
-            checkBoxWhitelabelService.setOnCheckedChangeListener(onWhitelabelServiceChecked(courier, courierIndex));
             packageView.setVisibility(View.GONE);
+            setWhitelabelCheckbox(courier, courierIndex);
+            setWhitelabelServiceDescription(courier);
         } else {
             ImageHandler.LoadImage(courierImageHolder, courier.logo);
             courierImageHolder.setVisibility(View.VISIBLE);
+            iconWhitelabelService.setVisibility(View.GONE);
             checkBoxWhitelabelService.setVisibility(View.GONE);
             packageView.setViewListener(mainView);
             setPackageAvailability(courierIndex, courier);
@@ -84,6 +87,22 @@ public class CourierView extends EditShippingCourierView<Courier,
             }
         });
         setAdditionalOptionVisibility(courier);
+    }
+
+    private void setWhitelabelServiceDescription(Courier courier) {
+        if (courier.available.equals("1") && !courier.services.isEmpty()) {
+            Service service = courier.services.get(0);
+            iconWhitelabelService.setVisibility(View.VISIBLE);
+            iconWhitelabelService.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mainView.showInfoBottomSheet(service.description, service.name);
+                }
+            });
+        }
+        else {
+            iconWhitelabelService.setVisibility(View.GONE);
+        }
     }
 
     private void setAdditionalOptionVisibility(Courier courier){
@@ -104,11 +123,13 @@ public class CourierView extends EditShippingCourierView<Courier,
         }
     }
 
-    private void setWhitelabelInitialState(Courier courier) {
+    private void setWhitelabelCheckbox(Courier courier, int courierIndex) {
         if (courier.available.equals("1") && !courier.services.isEmpty()) {
             checkBoxWhitelabelService.setEnabled(true);
             Service service = courier.services.get(0);
             checkBoxWhitelabelService.setChecked(service.getActive());
+            // set service condition
+            checkBoxWhitelabelService.setOnCheckedChangeListener(onWhitelabelServiceChecked(courier, courierIndex));
         }
         else {
             checkBoxWhitelabelService.setEnabled(false);
