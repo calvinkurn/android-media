@@ -30,6 +30,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.TM_FEEDBACK_URL
 import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.unifycomponents.TabsUnify
+import java.util.*
 import javax.inject.Inject
 
 class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
@@ -90,7 +91,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
             )
             feedbackIcon.setOnClickListener {
                 tmTracker?.clickHomeFeedback(shopId = arguments?.getInt(BUNDLE_SHOP_ID).toString())
-                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_FEEDBACK_URL))
+                RouteManager.route(context,String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, Uri.encode(TM_FEEDBACK_URL)))
             }
 
         }
