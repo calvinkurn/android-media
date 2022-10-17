@@ -78,8 +78,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_total"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginStart="@dimen/dp_11"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@id/label"
@@ -100,8 +100,8 @@
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/img_key"
-            android:layout_width="10dp"
-            android:layout_height="10dp"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
             android:layout_marginStart="@dimen/dp_11"
             android:layout_marginTop="8dp"
             app:layout_constraintStart_toEndOf="@id/total_item"
@@ -152,7 +152,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/Unify_TN800"
+            app:cardBackgroundColor="@color/topads_dash_cardview_color"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             app:card_type="shadow_disabled"

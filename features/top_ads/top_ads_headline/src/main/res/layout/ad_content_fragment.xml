@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.fragment.AdContentFragment">
+    tools:context=".view.fragment.AdContentFragment"
+    android:background="@color/Unify_Background">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -14,6 +15,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/Unify_Background"
         tools:context=".view.fragment.AdContentFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
