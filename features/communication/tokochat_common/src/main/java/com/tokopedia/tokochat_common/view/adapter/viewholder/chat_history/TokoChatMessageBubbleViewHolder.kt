@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.hide
@@ -135,6 +136,7 @@ class TokoChatMessageBubbleViewHolder(itemView: View): BaseViewHolder(itemView) 
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.tokochat_item_message_bubble
     }
 }

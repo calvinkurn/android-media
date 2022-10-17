@@ -9,6 +9,6 @@ class TokoChatLoadingStateViewHolder(itemView: View): BaseViewHolder(itemView) {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokochat_shimmer
+        val LAYOUT = R.layout.tokochat_item_shimmer
     }
 }

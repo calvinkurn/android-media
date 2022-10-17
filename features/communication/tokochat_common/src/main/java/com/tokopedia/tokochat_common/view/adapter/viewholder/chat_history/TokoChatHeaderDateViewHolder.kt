@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat_common.view.adapter.viewholder.chat_history
 
 import android.view.View
+import androidx.annotation.LayoutRes
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.tokochat_common.databinding.TokochatItemHeaderDateBinding
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
@@ -20,6 +21,7 @@ class TokoChatHeaderDateViewHolder(itemView: View) : BaseViewHolder(itemView) {
     }
 
     companion object {
+        @LayoutRes
         val LAYOUT = R.layout.tokochat_item_header_date
     }
 }

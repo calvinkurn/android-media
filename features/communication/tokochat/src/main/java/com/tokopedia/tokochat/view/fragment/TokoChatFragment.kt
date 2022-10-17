@@ -1,6 +1,7 @@
 package com.tokopedia.tokochat.view.fragment
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +17,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -46,6 +48,7 @@ import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
 class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
+    ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
     TokochatReminderTickerListener {
@@ -121,6 +124,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observeChatRoomTicker()
         observeChannelDetails()
         observerTyping()
+        observeMemberLeft()
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
@@ -225,7 +229,9 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                     mapper.setFirstTicker(ticker)
 
                     // If the ticker is not in list, manually add ticker
-                    if (adapter.getItems()[adapter.itemCount] !is TokochatReminderTickerUiModel) {
+                    if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
+                            !is TokochatReminderTickerUiModel
+                    ) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
@@ -254,12 +260,21 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                     }
                     headerUiModel?.let { header ->
                         setupToolbarData(header)
+                        showHeader()
                     }
                 }
                 is Fail -> {
+                    hideShimmeringHeader()
                     showSnackbarError(it.throwable.message.toString())
                 }
             }
+        }
+    }
+
+    private fun observeMemberLeft() {
+        observe(viewModel.getMemberLeft()) {
+            Log.d("MEMBER LEFT - CONV", it)
+            // TODO: Add bottomsheet for not available chat
         }
     }
 
@@ -319,7 +334,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     private fun initializeChatProfile() {
         val userId = viewModel.getUserId()
-        if (userId.isEmpty()) {
+        if (userId.isEmpty() || userId.isBlank()) {
             viewModel.initializeProfile()
         }
     }
@@ -333,33 +348,36 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.resetTypingStatus()
         viewModel.initGroupBooking(
             orderId = gojekOrderId,
-            groupBookingListener = getGroupBookingListener()
+            groupBookingListener = this
         )
     }
 
-    private fun getGroupBookingListener(): ConversationsGroupBookingListener {
-        return object : ConversationsGroupBookingListener {
-
-            override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-                removeShimmering()
-                var errorMessage = error.getErrorMessage()
-                if (errorMessage.isEmpty()) {
-                    errorMessage = error.toString()
-                    showSnackbarError(errorMessage)
-                }
-            }
-
-            override fun onGroupBookingChannelCreationStarted() {}
-
-            override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-                this@TokoChatFragment.channelId = channelUrl
-                viewModel.registerActiveChannel(channelUrl)
-                viewModel.getGroupBookingChannel(channelId)
-                removeShimmering()
-                observeChatHistory()
-            }
-
+    override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
+        removeShimmering()
+        var errorMessage = error.getErrorMessage()
+        if (errorMessage.isEmpty()) {
+            errorMessage = error.toString()
+            showSnackbarError(errorMessage)
         }
+    }
+
+    override fun onGroupBookingChannelCreationStarted() {
+        // No op
+    }
+
+    override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
+        resetRecyclerViewScrollState()
+        this@TokoChatFragment.channelId = channelUrl
+        viewModel.registerActiveChannel(channelUrl)
+        viewModel.getGroupBookingChannel(channelId)
+        removeShimmering()
+        observeChatHistory()
+    }
+
+    override fun onLoadMore() {
+        viewModel.loadPreviousMessages()
+        // Turn on the load more flag
+        changeLoadMoreStatus(true)
     }
 
     private fun observeChatHistory() {
@@ -368,6 +386,13 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             if (firstTimeOpen) {
                 firstTimeOpen = false
                 viewModel.loadChatRoomTicker()
+            }
+
+            // It's from load more func, if recyclerview is loading more
+            // Should skip if recyclerview is not loading more message
+            if (isRecyclerViewLoadingMore()) {
+                // turn off the load more flag
+                changeLoadMoreStatus(false)
             }
 
             // Map conversation message into ui model

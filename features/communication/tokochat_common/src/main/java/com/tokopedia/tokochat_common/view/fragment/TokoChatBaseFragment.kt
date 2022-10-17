@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat_common.databinding.TokochatBaseFragmentBinding
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
+import com.tokopedia.tokochat_common.view.listener.TokoChatEndlessScrollListener
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatLoadingUiModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -26,6 +27,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     protected var baseBinding: TokochatBaseFragmentBinding? by autoClearedNullable()
     abstract var adapter: TokoChatBaseAdapter
 
+    private var endlessRecyclerViewScrollListener: TokoChatEndlessScrollListener? = null
     private val shimmerUiModel = TokoChatLoadingUiModel()
 
     override fun onCreateView(
@@ -50,9 +52,11 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding
     abstract fun additionalSetup()
     abstract fun initObservers()
+    abstract fun onLoadMore()
 
     protected open fun initViews(view: View, savedInstanceState: Bundle?) {
         setupChatRoomRecyclerView()
+        setupRecyclerViewLoadMore()
         addInitialShimmering()
     }
 
@@ -67,6 +71,35 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
         baseBinding?.tokochatChatroomRv?.adapter = adapter
     }
 
+    private fun setupRecyclerViewLoadMore() {
+        if (endlessRecyclerViewScrollListener == null) {
+            baseBinding?.tokochatChatroomRv?.layoutManager?.apply {
+                endlessRecyclerViewScrollListener = object : TokoChatEndlessScrollListener(this) {
+                    override fun onLoadMore(page: Int, totalItemsCount: Int) {
+                       if (!isRecyclerViewLoadingMore()) {
+                           onLoadMore()
+                       }
+                    }
+                }
+            }
+        }
+        endlessRecyclerViewScrollListener?.let {
+            baseBinding?.tokochatChatroomRv?.addOnScrollListener(it)
+        }
+    }
+
+    protected fun isRecyclerViewLoadingMore(): Boolean {
+        return endlessRecyclerViewScrollListener?.getLoadingStatus() == true
+    }
+
+    protected fun changeLoadMoreStatus(status: Boolean) {
+        endlessRecyclerViewScrollListener?.changeLoadingStatus(status)
+    }
+
+    protected fun resetRecyclerViewScrollState() {
+        endlessRecyclerViewScrollListener?.resetState()
+    }
+
     private fun addInitialShimmering() {
         adapter.addItem(shimmerUiModel)
         adapter.notifyItemInserted(adapter.itemCount)
@@ -74,14 +107,9 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun removeShimmering() {
+        hideShimmeringHeader()
         adapter.removeItem(shimmerUiModel)
         adapter.notifyDataSetChanged()
-    }
-
-    protected fun scrollToBottom() {
-        if (adapter.itemCount > 0) {
-            baseBinding?.tokochatChatroomRv?.smoothScrollToPosition(Int.ZERO)
-        }
     }
 
     protected fun getTokoChatHeader(): HeaderUnify? {
@@ -94,5 +122,19 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     protected fun hideInterlocutorTypingStatus() {
         (activity as? TokoChatBaseActivity<*>)?.hideInterlocutorTyping()
+    }
+
+    protected fun showHeader() {
+        (activity as? TokoChatBaseActivity<*>)?.showHeader()
+    }
+
+    protected fun hideShimmeringHeader() {
+        (activity as? TokoChatBaseActivity<*>)?.hideHeaderShimmering()
+    }
+
+    protected fun scrollToBottom() {
+        if (adapter.itemCount > 0) {
+            baseBinding?.tokochatChatroomRv?.smoothScrollToPosition(Int.ZERO)
+        }
     }
 }

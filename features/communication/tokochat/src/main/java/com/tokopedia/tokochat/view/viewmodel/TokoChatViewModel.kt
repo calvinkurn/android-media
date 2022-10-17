@@ -267,4 +267,13 @@ class TokoChatViewModel @Inject constructor(
             ""
         }
     }
+
+    fun getMemberLeft(): MutableLiveData<String> {
+        return try {
+            chatChannelUseCase.getMemberLeftLiveData()
+        } catch (throwable: Throwable) {
+            _error.value = throwable
+            MutableLiveData()
+        }
+    }
 }
