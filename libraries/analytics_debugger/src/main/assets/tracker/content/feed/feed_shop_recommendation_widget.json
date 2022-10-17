@@ -1,0 +1,62 @@
+{
+  "readme": "Feed Shop Recommendation Widget - Analytics",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "view_item",
+      "eventAction": "impression - shop recommendation",
+      "eventCategory": "content feed timeline",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed update tab - shop recommendations carousel"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click - shop recommendation",
+      "eventCategory": "content feed timeline",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "promotions": [
+        {
+          "creative_name": ".*",
+          "creative_slot": "\\d+",
+          "item_id": ".*",
+          "item_name": "/feed update tab - shop recommendations carousel"
+        }
+      ],
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - follow shop recommendation",
+      "eventCategory": "content feed timeline",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "clickPG",
+      "eventAction": "click - x - shop recommendation",
+      "eventCategory": "content feed timeline",
+      "eventLabel": ".*",
+      "businessUnit": "content",
+      "currentSite": "(tokopediamarketplace|tokopediaseller)",
+      "sessionIris": ".*",
+      "userId": ".*"
+    }
+  ]
+}
