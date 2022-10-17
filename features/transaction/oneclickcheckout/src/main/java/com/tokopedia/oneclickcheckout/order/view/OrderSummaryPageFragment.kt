@@ -480,15 +480,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun observeUploadPrescription() {
-        viewModel.imageUpload.observe(viewLifecycleOwner) {
-            UploadPrescriptionUiModel(
-                isOcc = true,
-                uploadImageText = it.text,
-                checkoutId = it.checkoutId,
-                leftIconUrl = it.leftIconUrl,
-                showImageUpload = it.showImageUpload,
-                frontEndValidation = it.frontEndValidation,
-            ).also {
+            viewModel.uploadPrescriptionUiModel.observe(viewLifecycleOwner) {
                 adapter.uploadPrescription = it
                 if (binding.rvOrderSummaryPage.isComputingLayout) {
                     binding.rvOrderSummaryPage.post {
@@ -498,7 +490,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                     adapter.notifyItemChanged(adapter.uploadPrescriptionIndex)
                 }
             }
-        }
     }
 
     private fun observeOrderProducts() {

@@ -12,7 +12,11 @@ import javax.inject.Inject
 class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseCase) {
 
     fun execute(checkoutId: String): Observable<GetPrescriptionIdsResponse> {
-        val gqlRequest = GraphqlRequest(query, GetPrescriptionIdsResponse::class.java, getRequestParams(checkoutId))
+        val gqlRequest = GraphqlRequest(
+            GET_PRESCRIPTION_IDS_QUERY,
+            GetPrescriptionIdsResponse::class.java,
+            getRequestParams(checkoutId)
+        )
         gql.clearCache()
         gql.addRequest(gqlRequest)
         return gql.getExecuteObservable(null)
@@ -34,18 +38,4 @@ class GetPrescriptionIdsUseCase @Inject constructor(private val gql: GraphqlUseC
     companion object {
         const val PARAM_CHECKOUT_ID = "checkout_id"
     }
-
 }
-
-private val query = """
-    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!) {
-    getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id) {
-      data {
-        checkout_id
-        prescription_images {
-          prescription_id
-        }
-      }
-    }
-}
-""".trimIndent()

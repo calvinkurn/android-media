@@ -29,6 +29,12 @@ class UploadPrescriptionViewHolder(
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
+        if (uploadPrescriptionUiModel.showImageUpload != true) {
+            binding.root.gone()
+            return
+        } else {
+            binding.root.visible()
+        }
         binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
         binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
         if (uploadPrescriptionUiModel.uploadedImageCount == 0) {

@@ -1,0 +1,41 @@
+package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase
+
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
+import com.tokopedia.usecase.coroutines.UseCase
+import javax.inject.Inject
+
+class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository
+) : UseCase<GetPrescriptionIdsResponse>() {
+
+    private var params: Map<String, Any?>? = null
+
+    fun setParams(checkoutId: String): GetPrescriptionIdsUseCaseCoroutine {
+        params = mapOf(
+            PARAM_CHECKOUT_ID to checkoutId
+        )
+        return this
+    }
+
+    @GqlQuery(QUERY_PRESCRIPTION_IDS, GET_PRESCRIPTION_IDS_QUERY)
+    override suspend fun executeOnBackground(): GetPrescriptionIdsResponse {
+        val request = GraphqlRequest(
+            PrescriptionIdsQuery(),
+            GetPrescriptionIdsResponse::class.java,
+            params
+        )
+        return graphqlRepository.response(listOf(request))
+            .getSuccessData()
+    }
+
+    companion object {
+        private const val PARAM_CHECKOUT_ID = "checkout_id"
+
+        private const val QUERY_PRESCRIPTION_IDS = "PrescriptionIdsQuery"
+    }
+}

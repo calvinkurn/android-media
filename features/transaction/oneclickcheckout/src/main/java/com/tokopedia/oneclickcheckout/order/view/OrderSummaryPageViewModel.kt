@@ -54,7 +54,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePayme
 import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromoProcessor
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -111,7 +111,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
 
-    val imageUpload: OccMutableLiveData<ImageUploadDataModel> = OccMutableLiveData(ImageUploadDataModel())
+    val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> = OccMutableLiveData(UploadPrescriptionUiModel())
 
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
@@ -181,7 +181,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
-            imageUpload.value = result.imageUpload
+            var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+            uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+                showImageUpload  = result.imageUpload.showImageUpload,
+                uploadImageText  = result.imageUpload.text,
+                leftIconUrl  = result.imageUpload.leftIconUrl,
+                checkoutId  = result.imageUpload.checkoutId,
+
+                prescriptionIds  = prescriptionIds.prescriptions?.map { prescription -> prescription.toString() } as ArrayList<String>,
+                uploadedImageCount  = prescriptionIds.prescriptions?.size?:0,
+                isError = false,
+                frontEndValidation = result.imageUpload.frontEndValidation,
+                isOcc = true,
+            )
         }
     }
 
