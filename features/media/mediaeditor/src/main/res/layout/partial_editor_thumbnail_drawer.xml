@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <ImageView
+        android:contentDescription="@null"
         android:id="@+id/img_thumbnail"
         android:layout_width="56dp"
         android:layout_height="56dp"

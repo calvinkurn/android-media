@@ -1,6 +1,4 @@
 <resources>
-    <string name="app_name">Media Editor</string>
-
     <!-- Editor tool name -->
     <string name="editor_tool_brightness">Brightness</string>
     <string name="editor_tool_contrast">Contrast</string>
