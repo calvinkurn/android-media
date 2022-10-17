@@ -23,6 +23,7 @@ import com.tokopedia.notifications.model.BaseNotificationModel
 import com.tokopedia.notifications.model.NotificationMode
 import com.tokopedia.notifications.model.NotificationStatus
 import com.tokopedia.notifications.utils.NotificationSettingsUtils
+import com.tokopedia.user.session.UserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlin.coroutines.CoroutineContext
@@ -41,6 +42,7 @@ class PushController(val context: Context) : CoroutineScope {
     private val isAutoRedirect
         get() = cmRemoteConfigUtils.getBooleanRemoteConfig(AUTO_REDIRECTION_REMOTE_CONFIG_KEY, false)
 
+    private val userSession by lazy { UserSession(context.applicationContext) }
 
     fun handleProcessedPushPayload(aidlApiBundle : Bundle?,
                                    baseNotificationModel: BaseNotificationModel,
@@ -51,10 +53,20 @@ class PushController(val context: Context) : CoroutineScope {
             aidlApiBundle,
             baseNotificationModel,
             advanceTargetingData, onValid = {
-                handleNotificationBundle(baseNotificationModel)
+                notificationDeliveryValidation(baseNotificationModel)
             }, onCancel = {
                 cancelPushNotification(baseNotificationModel)
             })
+    }
+
+    private fun notificationDeliveryValidation(model: BaseNotificationModel) {
+        if (userSession.isLoggedIn) {
+            if (userSession.userId == model.userId) {
+                handleNotificationBundle(model)
+            }
+        } else {
+            handleNotificationBundle(model)
+        }
     }
 
     private fun handleNotificationBundle(model: BaseNotificationModel) {
@@ -89,7 +101,7 @@ class PushController(val context: Context) : CoroutineScope {
         baseNotificationModel.apply {
             type = CMConstant.NotificationType.DROP_NOTIFICATION
         }.also {
-            handleNotificationBundle(it)
+            notificationDeliveryValidation(it)
         }
     }
 
