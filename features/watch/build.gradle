@@ -29,11 +29,16 @@ android{
 
 buildscript {
     repositories {
-        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven {
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+            allowInsecureProtocol = true
+        }
         mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        maven {
+            url 'https://maven-hansel.tokopedia.com/maven'
+            allowInsecureProtocol = true
+        }
         google()
-        allowInsecureProtocol = true
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
