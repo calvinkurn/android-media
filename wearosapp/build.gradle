@@ -52,7 +52,6 @@ android {
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             testCoverageEnabled false
@@ -63,7 +62,6 @@ android {
         release {
             minifyEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
-            signingConfig signingConfigs.debug
         }
     }
     defaultConfig {
