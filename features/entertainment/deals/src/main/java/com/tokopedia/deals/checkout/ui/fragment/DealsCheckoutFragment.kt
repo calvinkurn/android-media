@@ -37,12 +37,11 @@ import com.tokopedia.deals.checkout.ui.viewmodel.DealsCheckoutViewModel
 import com.tokopedia.deals.common.analytics.DealsAnalytics
 import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
-import com.tokopedia.deals.pdp.common.DealsPDPIdlingResource
 import com.tokopedia.deals.pdp.data.ProductDetailData
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
@@ -82,6 +81,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     private var couponCode = ""
     private var promoApplied = false
 
+    private var toolbar: HeaderUnify? = null
     private var imgBrand: ImageUnify? = null
     private var tgBrandName: Typography? = null
     private var tgTitle: Typography? = null
@@ -134,6 +134,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupUI()
+        setupHeader()
         showUI()
         observeFlowData()
     }
@@ -281,6 +282,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun setupUI() {
         view?.apply {
+            toolbar = binding?.toolbar
             imgBrand = binding?.imageViewBrand
             tgBrandName = binding?.tgBrandName
             tgTitle = binding?.tgDealDetails
@@ -303,8 +305,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun setupHeader() {
+        toolbar?.headerTitle = context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_title).orEmpty()
+        (activity as DealsCheckoutActivity).setSupportActionBar(toolbar)
+        (activity as DealsCheckoutActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
     private fun showUI() {
         analytics.checkoutSendScreenName()
+        (activity as DealsCheckoutActivity).supportActionBar?.title = "Checkout"
         imgBrand?.loadImage(dealsDetail.imageApp)
         tgBrandName?.text = dealsDetail.brand.title
         tgTitle?.text = dealsDetail.displayName

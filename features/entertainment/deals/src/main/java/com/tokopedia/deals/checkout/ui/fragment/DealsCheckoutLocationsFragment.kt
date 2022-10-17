@@ -64,9 +64,9 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
     }
 
     private fun setupHeader() {
+        toolbar?.headerTitle = context?.resources?.getString(com.tokopedia.deals.R.string.deals_pdp_redeem_locations).orEmpty()
         (activity as DealsCheckoutActivity).setSupportActionBar(toolbar)
         (activity as DealsCheckoutActivity).supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        toolbar?.setTitle(context?.resources?.getString(com.tokopedia.deals.R.string.deals_pdp_redeem_locations))
     }
 
     private fun setupRecycleView(outlets: List<Outlet>) {
