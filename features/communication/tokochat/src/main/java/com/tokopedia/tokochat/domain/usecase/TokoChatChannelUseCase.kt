@@ -32,7 +32,7 @@ class TokoChatChannelUseCase @Inject constructor(
         onSuccess: (channel: GroupBookingChannelDetails) -> Unit,
         onError: (error: ConversationsNetworkError) -> Unit
     ) {
-        repository.getConversationRepository().getRemoteGroupBookingChannelDetails(
+        repository.getConversationRepository().getLocalGroupBookingChannelDetails(
             channelId = channelId,
             onSuccess = onSuccess,
             onError = onError

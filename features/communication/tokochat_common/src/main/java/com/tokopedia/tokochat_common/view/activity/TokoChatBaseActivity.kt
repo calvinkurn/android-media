@@ -25,6 +25,10 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
 
     private var viewBinding: TokochatBaseActivityBinding? = null
 
+    private var headerShimmering: View? = null
+    private var photoHeaderContainer: View? = null
+    private var headerContainer: View? = null
+    private var iconHeaderMenu: View? = null
     private var headerSubtitle: Typography? = null
     private var typingLayout: View? = null
     private var typingImage: ImageUnify? = null
@@ -58,11 +62,15 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         setContentView(viewBinding?.root)
     }
 
-    private fun getChatHeaderLayout() = R.layout.item_tokochat_header
+    private fun getChatHeaderLayout() = R.layout.tokochat_item_header
 
     protected open fun setupTokoChatHeader() {
         val mInflater = LayoutInflater.from(this)
         headerCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        headerShimmering = headerCustomView?.findViewById(R.id.tokochat_layout_header_shimmering)
+        photoHeaderContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_photo_container)
+        headerContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_container)
+        iconHeaderMenu = headerCustomView?.findViewById(R.id.tokochat_icon_header_menu)
         headerSubtitle = headerCustomView?.findViewById(R.id.tokochat_text_user_subtitle)
         typingLayout = headerCustomView?.findViewById(R.id.tokochat_layout_typing)
         typingImage = headerCustomView?.findViewById(R.id.tokochat_iv_typing)
@@ -88,5 +96,16 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     fun hideInterlocutorTyping() {
         typingLayout?.hide()
         headerSubtitle?.show()
+    }
+
+    fun showHeader() {
+        hideHeaderShimmering()
+        photoHeaderContainer?.show()
+        headerContainer?.show()
+        iconHeaderMenu?.show()
+    }
+
+    fun hideHeaderShimmering() {
+        headerShimmering?.hide()
     }
 }

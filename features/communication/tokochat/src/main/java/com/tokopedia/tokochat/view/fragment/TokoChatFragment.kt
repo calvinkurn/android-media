@@ -257,9 +257,11 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                     }
                     headerUiModel?.let { header ->
                         setupToolbarData(header)
+                        showHeader()
                     }
                 }
                 is Fail -> {
+                    hideShimmeringHeader()
                     showSnackbarError(it.throwable.message.toString())
                 }
             }

@@ -107,6 +107,7 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     @SuppressLint("NotifyDataSetChanged")
     protected fun removeShimmering() {
+        hideShimmeringHeader()
         adapter.removeItem(shimmerUiModel)
         adapter.notifyDataSetChanged()
     }
@@ -121,6 +122,14 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     protected fun hideInterlocutorTypingStatus() {
         (activity as? TokoChatBaseActivity<*>)?.hideInterlocutorTyping()
+    }
+
+    protected fun showHeader() {
+        (activity as? TokoChatBaseActivity<*>)?.showHeader()
+    }
+
+    protected fun hideShimmeringHeader() {
+        (activity as? TokoChatBaseActivity<*>)?.hideHeaderShimmering()
     }
 
     protected fun scrollToBottom() {
