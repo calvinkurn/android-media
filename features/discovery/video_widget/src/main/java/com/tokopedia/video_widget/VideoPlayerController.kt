@@ -22,7 +22,7 @@ class VideoPlayerController(
     private var videoView = rootView?.findViewById<VideoPlayerView>(videoViewId)
     private var imageView = rootView?.findViewById<ImageView>(imageViewId)
 
-    private val application : Application?
+    private val application: Application?
         get() = rootView?.context?.applicationContext as? Application
 
     private var videoURL = ""
