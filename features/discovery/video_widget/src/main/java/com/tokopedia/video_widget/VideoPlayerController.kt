@@ -117,7 +117,7 @@ class VideoPlayerController(
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if(videoView?.context == activity) {
+        if (videoView?.context == activity) {
             helper.onActivityDestroy()
             unregisterActivityLifecycleCallback()
             rootView = null
