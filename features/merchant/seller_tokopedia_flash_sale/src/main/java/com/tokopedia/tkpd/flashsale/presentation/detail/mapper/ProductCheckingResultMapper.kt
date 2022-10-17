@@ -99,11 +99,11 @@ object ProductCheckingResultMapper {
 
     fun isVariantProduct(selectedProduct: DelegateAdapterItem): Boolean {
         return when (selectedProduct) {
-            is OngoingItem -> selectedProduct.totalChild.isMoreThanZero()
-            is OngoingRejectedItem -> selectedProduct.totalChild.isMoreThanZero()
-            is FinishedProcessSelectionItem -> selectedProduct.totalChild.isMoreThanZero()
-            is OnSelectionProcessItem -> selectedProduct.totalChild.isMoreThanZero()
-            is WaitingForSelectionItem -> selectedProduct.totalChild.isMoreThanZero()
+            is OngoingItem -> selectedProduct.isParentProduct
+            is OngoingRejectedItem -> selectedProduct.isParentProduct
+            is FinishedProcessSelectionItem -> selectedProduct.isParentProduct
+            is OnSelectionProcessItem -> selectedProduct.isParentProduct
+            is WaitingForSelectionItem -> selectedProduct.isParentProduct
             else -> false
         }
     }
