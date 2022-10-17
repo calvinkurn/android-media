@@ -16,7 +16,7 @@ sealed class PlayViewerNewUiEvent
 
 data class ShowWinningDialogEvent(val userImageUrl: String, val dialogTitle: String, val dialogSubtitle: String, val interactiveType: InteractiveUiModel) : PlayViewerNewUiEvent()
 
-data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: String) : PlayViewerNewUiEvent()
+data class ShowCoachMarkWinnerEvent(val title: String, val subtitle: UiString) : PlayViewerNewUiEvent()
 object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 
 data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
@@ -42,17 +42,17 @@ data class AnimateLikeEvent(val fromIsLiked: Boolean) : PlayViewerNewUiEvent()
 object RemindToLikeEvent : PlayViewerNewUiEvent()
 sealed class ShowLikeBubbleEvent : PlayViewerNewUiEvent() {
 
-    abstract val count: Int
+    abstract val count: Long
     abstract val reduceOpacity: Boolean
 
     data class Single(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()
 
     data class Burst(
-        override val count: Int,
+        override val count: Long,
         override val reduceOpacity: Boolean,
         val config: PlayLikeBubbleConfig,
     ) : ShowLikeBubbleEvent()
