@@ -85,7 +85,7 @@ class SubmitPostService : JobIntentServiceX() {
         postUpdateProgressManager = getProgressManager(viewModel)
         postUpdateProgressManager!!.setCreatePostData(viewModel)
         if (!viewModel.isEditState)
-            postUpdateProgressManager!!.setFirstIcon((viewModel.completeImageList.first().path))
+            postUpdateProgressManager!!.setFirstIcon(viewModel.completeImageList.first().path)
 
         postUpdateProgressManager?.isEditPostValue(viewModel.isEditState)
         postUpdateProgressManager?.onAddProgress()

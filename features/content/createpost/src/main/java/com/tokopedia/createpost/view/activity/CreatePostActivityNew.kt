@@ -295,7 +295,9 @@ class CreatePostActivityNew : BaseSimpleActivity(), CreateContentPostCommonListe
             createPostViewModel,
             TimeUnit.DAYS.toMillis(DEFAULT_CACHE_DURATION)
         )
-        SubmitPostService.startService(applicationContext, cacheManager.id!!)
+        cacheManager.id?.let { draftId ->
+            SubmitPostService.startService(applicationContext, draftId)
+        }
 
         when (isOpenFrom) {
             BundleData.VALUE_IS_OPEN_FROM_USER_PROFILE -> goToUserProfile()

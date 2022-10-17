@@ -92,8 +92,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             CreatePostViewModel.TAG,
             viewModel, TimeUnit.DAYS.toMillis(7)
         )
-        cacheManager.id?.let { it1 -> SubmitPostService.startService(this.context, it1) }
-//        cacheManager.id?.let { it1 -> service?.start(this.context, it1) }
+        cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
         retryText?.gone()
 
     }
