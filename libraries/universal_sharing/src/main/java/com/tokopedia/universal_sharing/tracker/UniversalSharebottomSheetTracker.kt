@@ -11,6 +11,7 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         private const val EVENT_CURRENT_SITE = "currentSite"
         private const val EVENT_PROMOTIONS = ""
         private const val EVENT_USER_ID = "userId"
+        private const val TRACKER_ID = "trackerId"
 
         private const val EVENT_CREATIVE_NAME = "creative_name"
         private const val EVENT_CREATIVE_SLOT = "creative_slot"
@@ -24,6 +25,9 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         private const val VALUE_CURRENT_SITE = "tokopediamarketplace"
         private const val VALUE_BUSINESS_UNIT = "sharingexperience"
 
+        private const val VALUE_TRACKER_ID_VIEW_AFFILIATE = "36616"
+        private const val VALUE_TRACKER_ID_CLICK_AFFILIATE = "36617"
+
         private const val TICKER_TYPE_AFFILIATE = "is_affiliate"
         private const val TICKER_TYPE_NON_AFFILIATE = "non_affiliate"
         private const val NOT_SET = "notset"
@@ -34,11 +38,21 @@ class UniversalSharebottomSheetTracker (private val userSession: UserSession) {
         val data = generateDefaultTracker(VALUE_EVENT_VIEW, VALUE_ACTION_IMPRESSION_AFFILIATE, isAffiliate, id, getCategory(page)).apply {
             this[EVENT_PROMOTIONS] = generatePromotions()
         }
+
+        if (page == PageType.SHOP.value) {
+            data[TRACKER_ID] =  VALUE_TRACKER_ID_VIEW_AFFILIATE
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
     fun onClickRegisterTicker(isAffiliate: Boolean, id: String, page: String) {
         val data = generateDefaultTracker(VALUE_EVENT_CLICK, VALUE_ACTION_CLICK_AFFILIATE, isAffiliate, id, getCategory(page))
+
+        if (page == PageType.SHOP.value) {
+            data[TRACKER_ID] = VALUE_TRACKER_ID_CLICK_AFFILIATE
+        }
+
         TrackApp.getInstance().gtm.sendGeneralEvent(data)
     }
 
