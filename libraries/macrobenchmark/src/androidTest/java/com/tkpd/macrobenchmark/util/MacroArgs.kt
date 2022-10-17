@@ -7,6 +7,8 @@ import androidx.benchmark.macro.StartupMode
 object MacroArgs {
     const val iteration = "iteration"
     const val rvIteration = "rviteration"
+    const val useMock = "useMock"
+    const val isLogin = "isLogin"
 
     const val compilation = "compilation"
     const val compilationNone = "none"
@@ -46,5 +48,13 @@ object MacroArgs {
         return args?.getString(rvIteration)?.toInt() ?: 1
     }
 
+    fun useMock(args: Bundle?): Boolean {
+        val useMock = args?.getString(useMock)?:""
+        return useMock == "true"
+    }
 
+    fun isLogin(args: Bundle?): Boolean {
+        val isLogin = args?.getString(isLogin)?:""
+        return isLogin == "true"
+    }
 }

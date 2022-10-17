@@ -719,9 +719,13 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendUnificationEmptyStateCtaClickEvent(element.dataKey, selectedTab)
     }
 
-    override fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {
+    override fun sendUnificationTableItemClickEvent(
+        element: UnificationWidgetUiModel,
+        text: String,
+        isEmpty: Boolean
+    ) {
         val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
-        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab)
+        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab, text, isEmpty)
     }
 
     override fun showUnificationWidgetCoachMark(anchor: View) {
