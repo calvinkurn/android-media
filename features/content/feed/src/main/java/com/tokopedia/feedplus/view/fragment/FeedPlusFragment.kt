@@ -140,6 +140,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 
 /**
  * @author by nisie on 5/15/17.
@@ -231,6 +232,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         get() {
             return userSession.userId.toLongOrZero()
         }
+
+    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
 
     companion object {
 
@@ -2401,6 +2404,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             shareBottomSheetProduct = false
             url
         }
+
+        /** TODO 1: show sharing experience bottom sheet here */
+
         activity?.let {
             val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
                 .setName(title)
