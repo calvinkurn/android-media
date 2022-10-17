@@ -1301,10 +1301,12 @@ class PlayViewModel @AssistedInject constructor(
         coachmarkJob?.cancel()
 
         if (isShown && !videoMetaInfo.videoPlayer.isYouTube) {
-            coachmarkJob?.cancel()
             coachmarkJob = viewModelScope.launch(dispatchers.computation) {
                 delay(ONBOARDING_DELAY)
-                _observableOnboarding.value = Event(Unit)
+
+                withContext(dispatchers.main) {
+                    _observableOnboarding.value = Event(Unit)
+                }
             }
         }
     }
