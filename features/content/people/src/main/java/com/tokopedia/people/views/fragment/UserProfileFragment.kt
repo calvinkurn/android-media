@@ -42,7 +42,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
-import com.tokopedia.people.analytic.cordinator.ShopRecomImpressCoordinator
+import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentUserProfileBinding
 import com.tokopedia.people.databinding.UpLayoutUserProfileHeaderBinding
@@ -190,7 +190,7 @@ class UserProfileFragment @Inject constructor(
 
     override fun onPause() {
         super.onPause()
-        impressionCoordinator.sendTracker()
+        impressionCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -753,7 +753,13 @@ class UserProfileFragment @Inject constructor(
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        impressionCoordinator.initiateShopImpress(viewModel.profileUserID, item, postPosition + 1)
+        impressionCoordinator.initiateShopImpress(item) { shopImpress ->
+            userProfileTracker.impressionProfileRecommendation(
+                viewModel.profileUserID,
+                shopImpress,
+                postPosition + 1
+            )
+        }
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {
