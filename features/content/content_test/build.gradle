@@ -21,10 +21,10 @@ dependencies {
 }
 
 project.ext {
-    artifactId = 'play-test'
+    artifactId = 'content-test'
     groupId = 'com.tokopedia.content'
     versionName = "0.0.1"
-    artifactName ="play_test-release"
+    artifactName ="content_test-release"
 }
 
 apply from: '../../../publish_local.gradle'

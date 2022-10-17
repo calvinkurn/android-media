@@ -1,4 +1,4 @@
-package com.tokopedia.play.test.factory
+package com.tokopedia.content.test.factory
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
