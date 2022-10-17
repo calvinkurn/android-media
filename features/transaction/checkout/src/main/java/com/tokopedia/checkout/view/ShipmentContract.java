@@ -20,6 +20,7 @@ import com.tokopedia.checkout.view.uimodel.ShipmentButtonPaymentModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCostModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -265,11 +266,11 @@ public interface ShipmentContract {
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,
                                             boolean isReloadAfterPriceChangeHinger,
-                                            String cornerId, String deviceId, String leasingId);
+                                            String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
 
         void processCheckout(boolean isOneClickShipment, boolean isTradeIn,
                              boolean isTradeInDropOff, String deviceId,
-                             String cornerId, String leasingId);
+                             String cornerId, String leasingId, boolean isPlusSelected);
 
         void checkPromoCheckoutFinalShipment(ValidateUsePromoRequest validateUsePromoRequest, int lastSelectedCourierOrderIndex, String cartString);
 
@@ -375,7 +376,7 @@ public interface ShipmentContract {
 
         void releaseBooking();
 
-        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded,String checkoutId);
+        void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId);
 
         void setLastApplyData(LastApplyUiModel lastApplyData);
 
@@ -405,6 +406,8 @@ public interface ShipmentContract {
 
         ShipmentUpsellModel getShipmentUpsellModel();
 
+        ShipmentNewUpsellModel getShipmentNewUpsellModel();
+
         Pair<ArrayList<String>, ArrayList<String>> validateBoPromo(ValidateUsePromoRevampUiModel validateUsePromoRevampUiModel);
 
         void clearOrderPromoCodeFromLastValidateUseRequest(String uniqueId, String promoCode);
@@ -420,6 +423,13 @@ public interface ShipmentContract {
         void doApplyBo(PromoCheckoutVoucherOrdersItemUiModel voucherOrdersItemUiModel);
 
         void hitClearAllBo();
+
+        void cancelUpsell(boolean isReloadData, boolean isOneClickShipment,
+                          boolean isTradeIn, boolean skipUpdateOnboardingState,
+                          boolean isReloadAfterPriceChangeHinger,
+                          String cornerId, String deviceId, String leasingId, boolean isPlusSelected);
+
+        void clearAllBoOnTemporaryUpsell();
 
         boolean validatePrescriptionOnBackPressed();
     }
