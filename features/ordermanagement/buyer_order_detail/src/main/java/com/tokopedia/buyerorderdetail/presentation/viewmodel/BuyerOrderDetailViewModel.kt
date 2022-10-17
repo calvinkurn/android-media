@@ -122,14 +122,14 @@ class BuyerOrderDetailViewModel @Inject constructor(
         orderInsuranceUiState
     ) { flows ->
         mapBuyerOrderDetailUiState(
-            flows[0] as ActionButtonsUiState,
-            flows[1] as OrderStatusUiState,
-            flows[2] as PaymentInfoUiState,
-            flows[3] as ProductListUiState,
-            flows[4] as ShipmentInfoUiState,
-            flows[5] as PGRecommendationWidgetUiState,
-            flows[6] as OrderResolutionTicketStatusUiState,
-            flows[7] as OrderInsuranceUiState,
+            flows[0] as ActionButtonsUiState, // please make sure that flow[1] is ActionButtonsUiState after editing the flow source
+            flows[1] as OrderStatusUiState, // please make sure that flow[1] is OrderStatusUiState after editing the flow source
+            flows[2] as PaymentInfoUiState, // please make sure that flow[1] is PaymentInfoUiState after editing the flow source
+            flows[3] as ProductListUiState, // please make sure that flow[1] is ProductListUiState after editing the flow source
+            flows[4] as ShipmentInfoUiState, // please make sure that flow[1] is ShipmentInfoUiState after editing the flow source
+            flows[5] as PGRecommendationWidgetUiState, // please make sure that flow[1] is PGRecommendationWidgetUiState after editing the flow source
+            flows[6] as OrderResolutionTicketStatusUiState, // please make sure that flow[1] is OrderResolutionTicketStatusUiState after editing the flow source
+            flows[7] as OrderInsuranceUiState, // please make sure that flow[1] is OrderInsuranceUiState after editing the flow source
         )
     }.toStateFlow(BuyerOrderDetailUiState.FullscreenLoading)
 

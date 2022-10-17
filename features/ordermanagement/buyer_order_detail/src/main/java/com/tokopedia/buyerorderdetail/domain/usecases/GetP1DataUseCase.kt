@@ -71,8 +71,8 @@ class GetP1DataUseCase @Inject constructor(
             getInsuranceDetailUseCaseRequestStates(params)
         ) { flows ->
             mapP1UseCasesRequestState(
-                flows[0] as GetOrderResolutionRequestState,
-                flows[1] as GetInsuranceDetailRequestState
+                flows[0] as GetOrderResolutionRequestState, // please make sure that flow[0] is GetOrderResolutionRequestState after editing the flow source
+                flows[1] as GetInsuranceDetailRequestState // please make sure that flow[1] is GetInsuranceDetailRequestState after editing the flow source
             )
         }.catch {
             emit(
