@@ -112,6 +112,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk
