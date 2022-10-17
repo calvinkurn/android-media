@@ -42,7 +42,7 @@ class GotoSeamlessLoginViewModel @Inject constructor(
                 if(result.authCode.isNotEmpty()) {
                     userSessionInterface.setToken(TokenGenerator().createBasicTokenGQL(), "")
                     val getNameResult = getNameUseCase(GetNameParam(authCode = result.authCode))
-                    result.tokopediaName = getNameResult.name
+                    result.tokopediaName = getNameResult.data.name
                 }
                 mutableGojekProfileData.value = Success(result)
             } catch (e: Exception) {
