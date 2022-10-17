@@ -30,6 +30,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
@@ -1316,7 +1317,7 @@ class ShopPageTrackingBuyer(
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DIRECT_PURCHASE_ADD_TO_CART, eventBundle)
     }
 
     private fun createClickProductAtcDirectPurchaseButtonItems(
@@ -1326,10 +1327,10 @@ class ShopPageTrackingBuyer(
         shopType: String
     ): Bundle {
         return Bundle().apply {
-            putString(CATEGORY_ID, "")
+            putString(CATEGORY_ID, NONE)
             putString(DIMENSION_45, atcTrackerModel.cartId)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, "")
+            putString(ITEM_BRAND, NONE)
+            putString(ITEM_CATEGORY, NONE)
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())

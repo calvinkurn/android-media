@@ -154,6 +154,8 @@
 
     <string name="mock_report_live_duration">00:00</string>
 
+    <string name="play_bro_custom_error_handler_msg">%s. Kode Error: (%s)</string>
+
     <!--Schedule-->
     <string name="play_broadcast_add_schedule_info">Atur Jadwal Siaran</string>
     <string name="play_broadcast_schedule_set_info">Jadwal Siaran</string>
