@@ -3438,7 +3438,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
-        feedViewModel.handleClickFollowButtonShopRecom(itemID)
+        if (userSession.isLoggedIn) feedViewModel.handleClickFollowButtonShopRecom(itemID)
+        else RouteManager.getIntent(activity, ApplinkConst.LOGIN)
     }
 
     override fun onShopRecomItemClicked(
