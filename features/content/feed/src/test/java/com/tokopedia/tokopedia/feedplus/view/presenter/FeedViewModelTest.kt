@@ -79,7 +79,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, sendReportUseCase = mockReport)
             .use {
-                it.vm.sendReport(1, 1, "", "")
+                it.vm.sendReport(1, "1", "", "")
                 it.vm.reportResponse.getOrAwaitValue()
                     .assertType<Success<DeletePostViewModel>> { dt ->
                         dt.data.errorMessage.assertEqualTo(expected.content.errorMessage)
@@ -101,7 +101,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, sendReportUseCase = mockReport)
             .use {
-                it.vm.sendReport(1, 1, "", "")
+                it.vm.sendReport(1, "1", "", "")
                 it.vm.reportResponse.getOrAwaitValue().assertType<Fail> { dt ->
                     dt.throwable.message.assertEqualTo(expected.content.errorMessage)
                 }
@@ -114,7 +114,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, sendReportUseCase = mockReport)
             .use {
-                it.vm.sendReport(1, 1, "", "")
+                it.vm.sendReport(1, "1", "", "")
                 it.vm.reportResponse.getOrAwaitValue().assertType<Fail> { dt ->
                     dt.throwable.assertEqualTo(gqlFailed)
                 }
@@ -319,7 +319,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, deletePostUseCase = mockDelete)
             .use {
-                it.vm.doDeletePost(1, 1)
+                it.vm.doDeletePost("1", 1)
                 it.vm.deletePostResp.getOrAwaitValue()
                     .assertType<Success<DeletePostViewModel>> { dt ->
                         dt.data.isSuccess.assertEqualTo(expected.content.success == SubmitPostData.SUCCESS)
@@ -338,7 +338,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, deletePostUseCase = mockDelete)
             .use {
-                it.vm.doDeletePost(1, 1)
+                it.vm.doDeletePost("", 1)
                 it.vm.deletePostResp.getOrAwaitValue()
                     .assertType<Fail> { dt ->
                         dt.throwable.assertType<MessageErrorException> { }
@@ -352,7 +352,7 @@ class FeedViewModelTest {
 
         create(dispatcher = testDispatcher, deletePostUseCase = mockDelete)
             .use {
-                it.vm.doDeletePost(1, 1)
+                it.vm.doDeletePost("", 1)
                 it.vm.deletePostResp.getOrAwaitValue().assertType<Fail> { dt ->
                     dt.throwable.assertEqualTo(gqlFailed)
                 }
@@ -431,7 +431,8 @@ class FeedViewModelTest {
     }
 
     /**
-     * track affiliate
+ * track affiliate
+ **/
 
     @Test
     fun `track affiliate - success` (){
@@ -477,7 +478,6 @@ class FeedViewModelTest {
                 }
             }
     }
-    */
 
     /**
      *

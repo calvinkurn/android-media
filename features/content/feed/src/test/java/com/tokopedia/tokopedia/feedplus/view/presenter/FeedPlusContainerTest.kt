@@ -3,6 +3,7 @@ package com.tokopedia.tokopedia.feedplus.view.presenter
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
 import com.tokopedia.feedplus.data.pojo.FeedTabs
+import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
 import com.tokopedia.feedplus.domain.usecase.GetContentFormForFeedUseCase
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
@@ -31,13 +32,11 @@ class FeedPlusContainerTest {
 
     private lateinit var viewModel: FeedPlusContainerViewModel
 
-    private val mockTab: GraphqlUseCase<FeedTabs.Response> = mockk(relaxed = true)
-    private val mockWhiteList: GetWhitelistNewUseCase = mockk(relaxed = true)
-    private val mockContentList: GetContentFormForFeedUseCase = mockk(relaxed = true)
+    private val mockRepo: FeedPlusRepository = mockk(relaxed = true)
 
     @Before
     fun setup() {
-        viewModel = FeedPlusContainerViewModel(testDispatcher, mockTab, mockWhiteList, mockContentList)
+        viewModel = FeedPlusContainerViewModel(testDispatcher, mockRepo)
     }
 
 //    @Test

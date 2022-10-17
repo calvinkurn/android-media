@@ -10,13 +10,6 @@ android {
         unitTests {
             includeAndroidResources = true
         }
-        junitPlatform {
-            filters {
-                engines {
-                    include 'spek2'
-                }
-            }
-        }
     }
     packagingOptions {
         exclude 'META-INF/**'
