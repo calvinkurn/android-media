@@ -2,9 +2,9 @@ package com.tokopedia.chatbot.view.presenter
 
 import android.content.Intent
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.google.gson.JsonObject
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.chat_common.data.ChatroomViewModel
 import com.tokopedia.chat_common.data.SendableUiModel
 import com.tokopedia.chat_common.data.parentreply.ParentReply
@@ -13,13 +13,12 @@ import com.tokopedia.chat_common.domain.pojo.GetExistingChatPojo
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
+import com.tokopedia.chatbot.data.SocketResponse
 import com.tokopedia.chatbot.data.TickerData.ChipGetActiveTickerV4
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.data.SocketResponse
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
 import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -37,11 +36,9 @@ import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
-import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
-import com.tokopedia.chatbot.domain.subscriber.SendRatingReasonSubscriber
-import com.tokopedia.chatbot.domain.subscriber.SendRatingSubscriber
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.resolink.ResoLinkResponse
+import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
@@ -53,8 +50,6 @@ import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
@@ -177,9 +172,9 @@ class ChatbotPresenterTest {
                 getTopBotNewSessionUseCase,
                 checkUploadSecureUseCase,
                 chatBotSecureImageUploadUseCase,
+                getExistingChatMapper,
                 uploaderUseCase,
                 chatbotVideoUploadVideoEligibilityUseCase,
-                getExistingChatMapper,
                 chatbotWebSocket,
                 chatbotWebSocketStateHandler,
                 dispatcher
@@ -862,24 +857,21 @@ class ChatbotPresenterTest {
                     any()
                 ),
                 any()
-                ),
-                any()
             )
         }
     }
 
     @Test
     fun `sendMessage without parent reply and with empty message`() {
-        mockkObject(RxWebSocket)
-        mockkObject(ChatbotSendWebsocketParam)
+        mockkObject(ChatbotSendableWebSocketParam)
 
         every {
-            ChatbotSendWebsocketParam.generateParamSendMessage(any(), any(), any(), any())
+            ChatbotSendableWebSocketParam.generateParamSendMessage(any(), any(), any(), any())
         } returns mockk(relaxed = true)
 
         every {
-            RxWebSocket.send(
-                ChatbotSendWebsocketParam.generateParamSendMessage(
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),
@@ -892,8 +884,8 @@ class ChatbotPresenterTest {
         presenter.sendMessage("", "", "", "", null) {}
 
         verify(exactly = 0) {
-            RxWebSocket.send(
-                ChatbotSendWebsocketParam.generateParamSendMessage(
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamSendMessage(
                     any(),
                     any(),
                     any(),
@@ -995,7 +987,7 @@ class ChatbotPresenterTest {
             chatroomViewModel = viewModel
         }, {}, {})
 
-        Assert.assertEquals(
+        assertEquals(
             chatroomViewModel,
             getExistingChatMapper.map(expectedResponse)
         )
@@ -1014,7 +1006,7 @@ class ChatbotPresenterTest {
             result = exception
         }, {})
 
-        Assert.assertEquals(
+        assertEquals(
             exception,
             (result as Exception)
         )
@@ -1072,7 +1064,7 @@ class ChatbotPresenterTest {
             chatroomViewModel = viewModel
         }, {}, {})
 
-        Assert.assertEquals(
+        assertEquals(
             chatroomViewModel,
             getExistingChatMapper.map(expectedResponse)
         )
@@ -1318,6 +1310,7 @@ class ChatbotPresenterTest {
         }
     }
 
+    @Test
     fun `checkForSession success if newSession is in response calls loadChatHistory`() {
         val response = mockk<TopBotNewSessionResponse>(relaxed = true)
         val isNewSession = false
@@ -1347,6 +1340,7 @@ class ChatbotPresenterTest {
         }
     }
 
+    @Test
     fun `checkForSession failure  calls loadChatHistory`() {
         coEvery {
             getTopBotNewSessionUseCase.getTopBotUserSession(any(), captureLambda(), any())
@@ -1376,9 +1370,6 @@ class ChatbotPresenterTest {
                 uiModel
             )
         }
-    fun `submitChatCsat success`() {
-        mockkConstructor(SendRatingReasonSubscriber::class)
-        mockkObject(SendRatingReasonUseCase)
 
         presenter.sendRating("123456", 5, ChatRatingUiModel())
 
@@ -1388,18 +1379,12 @@ class ChatbotPresenterTest {
     }
 
     @Test
-    fun `sendReasonRating success`() {
-        val params = mapOf<String, Any>()
-        mockkConstructor(SendRatingReasonSubscriber::class)
-        mockkObject(SendRatingReasonUseCase)
-
-        every {
-            SendRatingReasonUseCase.generateParam(
-                any(),
-                any(),
-                any()
-            )
-        } returns params
+    fun `sendRating throws exception `() {
+        coEvery {
+            sendChatRatingUseCase.sendChatRating(captureLambda(), any(), any(), any(), any())
+        } coAnswers {
+            secondArg<(Throwable, String) -> Unit>().invoke(mockThrowable, "123")
+        }
 
         presenter.sendRating("123456", 5, ChatRatingUiModel())
 
@@ -1407,6 +1392,7 @@ class ChatbotPresenterTest {
             view.onError(any())
         }
     }
+
 
     /******************************* Socket Related Unit Tests************************************/
 
@@ -1946,16 +1932,15 @@ class ChatbotPresenterTest {
 
     @Test
     fun `sendUploadedImageToWebsocket success`() {
-        mockkObject(RxWebSocket)
 
         every {
-            RxWebSocket.send(any<JsonObject>(), any())
+            chatbotWebSocket.send(any<JsonObject>(), any())
         } returns mockk(relaxed = true)
 
         presenter.sendUploadedImageToWebsocket(JsonObject())
 
         verify {
-            RxWebSocket.send(
+            chatbotWebSocket.send(
                 any<JsonObject>(),
                 any()
             )
@@ -2043,18 +2028,17 @@ class ChatbotPresenterTest {
 
     @Test
     fun `sendVideoAttachment message via socket success`() {
-        mockkObject(RxWebSocket)
-        mockkObject(SendChatbotWebsocketParam)
+        mockkObject(ChatbotSendableWebSocketParam)
 
         every {
-            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+            ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
                 any(), any(), any()
             )
         } returns mockk(relaxed = true)
 
         every {
-            RxWebSocket.send(
-                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
                     any(), any(), any()
                 ), any()
             )
@@ -2063,12 +2047,10 @@ class ChatbotPresenterTest {
         presenter.sendVideoAttachment("", "", "")
 
         verify {
-            RxWebSocket.send(
-                SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+            chatbotWebSocket.send(
+                ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
                     any(), any(), any()
                 ), any()
-                ),
-                any()
             )
         }
     }

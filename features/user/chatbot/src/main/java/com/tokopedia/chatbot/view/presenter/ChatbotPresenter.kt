@@ -67,8 +67,8 @@ import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
 import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.data.replybubble.ReplyBubbleAttributes
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
-import com.tokopedia.chatbot.data.sessionchange.SessionChangeAttributes
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.uploadEligibility.ChatbotUploadVideoEligibilityResponse
 import com.tokopedia.chatbot.data.uploadsecure.UploadSecureResponse
@@ -85,6 +85,7 @@ import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListRespons
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
+import com.tokopedia.chatbot.domain.socket.ChatbotSendableWebSocketParam
 import com.tokopedia.chatbot.domain.usecase.ChatBotSecureImageUploadUseCase
 import com.tokopedia.chatbot.domain.usecase.ChatbotUploadVideoEligibilityUseCase
 import com.tokopedia.chatbot.domain.usecase.CheckUploadSecureUseCase
@@ -96,19 +97,14 @@ import com.tokopedia.chatbot.domain.usecase.GetResolutionLinkUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
-import com.tokopedia.chatbot.domain.usecase.SendChatbotWebsocketParam
-import com.tokopedia.chatbot.domain.usecase.SendRatingReasonUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
 import com.tokopedia.chatbot.util.ChatbotNewRelicLogger
 import com.tokopedia.chatbot.util.ChatbotVideoUploadResult
 import com.tokopedia.chatbot.util.VideoUploadData
-import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.chatbot.view.listener.ChatbotContract
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER_DEBUGGING
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVIDER
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
-import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SORCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
@@ -133,14 +129,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.isActive
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody
@@ -159,29 +155,28 @@ import kotlin.coroutines.CoroutineContext
 typealias MediaUploadJobMap = Map<String, Job>
 typealias MediaUploadResultMap = Map<String, ChatbotVideoUploadResult>
 class ChatbotPresenter @Inject constructor(
-        var getExistingChatUseCase: GetExistingChatUseCase,
-        override var userSession: UserSessionInterface,
-        private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
-        private val tkpdAuthInterceptor: TkpdAuthInterceptor,
-        private val fingerprintInterceptor: FingerprintInterceptor,
-        private val sendChatRatingUseCase: SendChatRatingUseCase,
-        private val sendRatingReasonUseCase: SendRatingReasonUseCase,
-        private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
-        private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
-        private val leaveQueueUseCase: LeaveQueueUseCase,
-        private val getTickerDataUseCase: GetTickerDataUseCase,
-        private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
-        private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
-        private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
-        private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
-        private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
-        private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-        private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
-        private val getExistingChatMapper: ChatbotGetExistingChatMapper,
-        private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
-        private val chatbotWebSocket: ChatbotWebSocket,
-        private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
-        private val dispatcher: CoroutineDispatchers
+    var getExistingChatUseCase: GetExistingChatUseCase,
+    override var userSession: UserSessionInterface,
+    private var chatBotWebSocketMessageMapper: ChatBotWebSocketMessageMapper,
+    private val tkpdAuthInterceptor: TkpdAuthInterceptor,
+    private val fingerprintInterceptor: FingerprintInterceptor,
+    private val sendChatRatingUseCase: SendChatRatingUseCase,
+    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
+    private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
+    private val getTickerDataUseCase: GetTickerDataUseCase,
+    private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
+    private val chipGetChatRatingListUseCase: ChipGetChatRatingListUseCase,
+    private val chipSubmitChatCsatUseCase: ChipSubmitChatCsatUseCase,
+    private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
+    private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
+    private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
+    private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+    private val getExistingChatMapper: ChatbotGetExistingChatMapper,
+    private val uploaderUseCase: UploaderUseCase,
+    private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
+    private val chatbotWebSocket: ChatbotWebSocket,
+    private val chatbotWebSocketStateHandler: ChatbotWebSocketStateHandler,
+    private val dispatcher: CoroutineDispatchers
 
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
@@ -192,16 +187,9 @@ class ChatbotPresenter @Inject constructor(
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER = "15"
-        const val QUERY_SORCE_TYPE = "Apps"
-    }
-
-
-    override fun submitCsatRating(messageId: String, inputItem: InputItem, onError: (Throwable) -> Unit, onSuccess: (String) -> Unit) {
-        submitCsatRatingUseCase.execute(SubmitCsatRatingUseCase.generateParam(inputItem
-        ), SubmitCsatRatingSubscriber(messageId, onError, onSuccess))
-        const val CHAT_DIVIDER_DEBUGGING = "15"
         const val QUERY_SOURCE_TYPE = "Apps"
     }
+
 
     override fun clearText() {
         view.clearChatText()
@@ -218,10 +206,6 @@ class ChatbotPresenter @Inject constructor(
     private val job = SupervisorJob()
     private var autoRetryJob: Job? = null
     var socketJob: Job? = null
-    private var listInterceptor: ArrayList<Interceptor>
-    private var isErrorOnLeaveQueue = false
-    lateinit var chatResponse: ChatSocketPojo
-    private val job = SupervisorJob()
 
     private var mediaUploadJobs = MutableStateFlow<MediaUploadJobMap>(mapOf())
     var mediaUploadResults = MutableStateFlow<MediaUploadResultMap>(mapOf())
@@ -229,8 +213,6 @@ class ChatbotPresenter @Inject constructor(
     val mediaUris = MutableStateFlow<List<VideoUploadData>>(emptyList())
 
     init {
-        mSubscription = CompositeSubscription()
-        listInterceptor = arrayListOf(tkpdAuthInterceptor, fingerprintInterceptor)
         observeMediaUrisForUpload()
     }
 
@@ -398,7 +380,7 @@ class ChatbotPresenter @Inject constructor(
             chatResponse?.attachment?.attributes,
             LiveChatDividerAttributes::class.java
         )
-        val model = ChatSepratorViewModel(
+        val model = ChatSepratorUiModel(
             sepratorMessage = liveChatDividerAttribute?.divider?.label,
             //TODO recheck this
             dividerTiemstamp = chatResponse?.message?.timeStampUnixNano ?: ""
@@ -482,7 +464,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendActionBubble(
         messageId: String,
-        selected: ChatActionBubbleViewModel,
+        selected: ChatActionBubbleUiModel,
         startTime: String,
         opponentId: String
     ) {
@@ -540,7 +522,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendQuickReply(
         messageId: String,
-        quickReply: QuickReplyViewModel,
+        quickReply: QuickReplyUiModel,
         startTime: String,
         opponentId: String
     ) {
@@ -557,7 +539,7 @@ class ChatbotPresenter @Inject constructor(
 
     override fun sendQuickReplyInvoice(
         messageId: String,
-        quickReply: QuickReplyViewModel,
+        quickReply: QuickReplyUiModel,
         startTime: String,
         opponentId: String,
         event: String,
@@ -787,7 +769,7 @@ class ChatbotPresenter @Inject constructor(
         uploadImageUseCase.unsubscribe()
     }
 
-    private fun sendUploadedImageToWebsocket(json: JsonObject) {
+    fun sendUploadedImageToWebsocket(json: JsonObject) {
         val interceptors = ArrayList<Interceptor>()
         interceptors.add(tkpdAuthInterceptor)
         interceptors.add(fingerprintInterceptor)
@@ -820,9 +802,6 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    override fun hitGqlforOptionList(messageId: String,selectedValue: Int, model: HelpFullQuestionsViewModel?) {
-        val input = genrateInput(selectedValue, model)
-        chipSubmitHelpfulQuestionsUseCase.execute(chipSubmitHelpfulQuestionsUseCase.generateParam(input), ChipSubmitHelpfullQuestionsSubscriber(messageId, onSubmitError))
     override fun submitCsatRating(messageId: String, inputItem: InputItem) {
         submitCsatRatingUseCase.cancelJobs()
 
@@ -858,10 +837,10 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun genrateInput(
-        selectedValue: Int,
-        model: HelpFullQuestionsViewModel?
-    ): SubmitOptionInput {
+    fun onSubmitError(throwable: Throwable) {
+        throwable.printStackTrace()
+    }
+
     private fun onErrorOptionList(throwable: Throwable, messageId: String) {
         onSubmitError(throwable)
         ChatbotNewRelicLogger.logNewRelic(
@@ -870,10 +849,6 @@ class ChatbotPresenter @Inject constructor(
             ChatbotConstant.NewRelic.KEY_CHATBOT_SUBMIT_HELPFULL_QUESTION,
             throwable
         )
-    }
-
-    fun onSubmitError(throwable: Throwable) {
-        throwable.printStackTrace()
     }
 
     private fun generateInput(selectedValue: Int, model: HelpFullQuestionsUiModel?): SubmitOptionInput {
@@ -1147,8 +1122,8 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
-        RxWebSocket.send(
-            SendChatbotWebsocketParam.generateParamSendVideoAttachment(
+        chatbotWebSocket.send(
+            ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
                 filePath, startTime, messageId
             ), listInterceptor
         )
@@ -1235,14 +1210,14 @@ class ChatbotPresenter @Inject constructor(
     fun getChatRatingData(mappedPojo: ChatroomViewModel): ChipGetChatRatingListInput {
         val input = ChipGetChatRatingListInput()
         for (message in mappedPojo.listChat) {
-            if (message is HelpFullQuestionsViewModel) {
+            if (message is HelpFullQuestionsUiModel) {
                 input.list.add(
                     ChipGetChatRatingListInput.ChatRating(
                         ChatbotGetExistingChatMapper.Companion.TYPE_OPTION_LIST.toIntOrZero(),
                         message.helpfulQuestion?.caseChatId ?: ""
                     )
                 )
-            } else if (message is CsatOptionsViewModel) {
+            } else if (message is CsatOptionsUiModel) {
                 input.list.add(
                     ChipGetChatRatingListInput.ChatRating(
                         ChatbotGetExistingChatMapper.Companion.TYPE_CSAT_OPTIONS.toIntOrZero(),

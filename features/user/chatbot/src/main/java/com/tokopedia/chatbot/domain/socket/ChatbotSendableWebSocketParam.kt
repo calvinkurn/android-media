@@ -8,8 +8,8 @@ import com.tokopedia.chat_common.data.WebsocketEvent
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chatbot.ChatbotConstant
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
 import com.tokopedia.chatbot.util.convertMessageIdToLong
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -29,7 +29,7 @@ object ChatbotSendableWebSocketParam {
 
     fun generateParamSendBubbleAction(
         messageId: String,
-        chatActionBubbleViewModel: ChatActionBubbleViewModel,
+        chatActionBubbleViewModel: ChatActionBubbleUiModel,
         startTime: String,
         toUid: String
     ): JsonObject {
@@ -196,7 +196,7 @@ object ChatbotSendableWebSocketParam {
 
     fun generateParamSendQuickReply(
         messageId: String,
-        quickReplyViewModel: QuickReplyViewModel,
+        quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
         toUid: String
     ): JsonObject {
@@ -235,7 +235,7 @@ object ChatbotSendableWebSocketParam {
 
     fun generateParamSendQuickReplyEventArticle(
         messageId: String,
-        quickReplyViewModel: QuickReplyViewModel,
+        quickReplyViewModel: QuickReplyUiModel,
         startTime: String,
         event: String,
         usedBy: String
@@ -331,4 +331,30 @@ object ChatbotSendableWebSocketParam {
         json.add("data", data)
         return json
     }
+
+    fun generateParamSendVideoAttachment(
+        filePath: String,
+        startTime: String,
+        messageId: String
+    ): JsonObject {
+        val json = JsonObject()
+        json.addProperty("code", WebsocketEvent.Event.EVENT_TOPCHAT_REPLY_MESSAGE)
+
+        val data = JsonObject()
+        data.addProperty("message_id", messageId.convertMessageIdToLong())
+        data.addProperty("message", "Uploaded Video")
+        data.addProperty(
+            "attachment_type", (
+                ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+                ).toIntOrZero()
+        )
+        data.addProperty("file_path", filePath)
+        data.addProperty("start_time", startTime)
+
+        json.add("data", data)
+        return json
+
+    }
+
+
 }

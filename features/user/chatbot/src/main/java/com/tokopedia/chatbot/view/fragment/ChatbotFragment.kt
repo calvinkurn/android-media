@@ -1393,11 +1393,6 @@ class ChatbotFragment :
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
-    override fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>) {
-        getViewState()?.showLiveChatSeprator(chatSepratorViewModel)
-        getViewState()?.showLiveChatQuickReply(quickReplyList)
-    }
-
     override fun isBackAllowed(isBackAllowed: Boolean) {
         this.isBackAllowed = isBackAllowed
     }
