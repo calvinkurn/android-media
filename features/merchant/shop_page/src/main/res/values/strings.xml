@@ -58,6 +58,8 @@
     
     <string name="shop_product_search_empty_state_title">Produk tidak ditemukan</string>
     <string name="shop_product_search_empty_state_desc">Mohon coba kata kunci yang lain atau yang lebih umum</string>
+    <string name="shop_page_search_dynamic_result_image">Product Search Dynamic Result Image</string>
+    <string name="shop_page_search_fixed_result_image">Product Search Fixed Result Image</string>
 
     <string name="shop_product_search_empty_state_btn_primary">Coba kata lain</string>
     <string name="shop_product_search_empty_state_btn_secondary">Cari di Tokopedia</string>
@@ -68,6 +70,7 @@
     <string name="shop_product_showcase_empty_state_desc">Cek Etalase lainnya, ya.</string>
 
     <string name="shop_product_showcase_empty_state_btn_primary">Kembali</string>
+    <string name="shop_showcase_product_carousel_badge">Shop showcase carousel widget bagde content description</string>
 
     <string name="favorited_shop_title">Followers Toko</string>
     <string name="shop_product_title">Produk</string>

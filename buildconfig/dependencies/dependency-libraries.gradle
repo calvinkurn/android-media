@@ -3,7 +3,7 @@ ext {
     // Sort alphabetically by package name
     tkpdInternalLibDependencies = [
             cachemanager            : "com.tokopedia.cachemanager:cachemanager:2.24.5",
-            globalconfig            : "com.tokopedia.config:global_config:1.0.16",
+            globalconfig            : "com.tokopedia.config:global_config:1.0.17",
             url                     : "com.tokopedia.url:url:1.0.13",
             usecase                 : "com.tokopedia.usecase:usecase:1.0.3",
             analyticConstants       : "com.tokopedia.analytic_constant:analytic_constant:1.0.6",
@@ -25,7 +25,9 @@ ext {
             secUtilObs              : "com.tokopedia.sec:tkpd_util_obs:0.0.2",
             brizzi                  : "com.tokopedia.brizzi:brizzi:1.3.1@aar",
             larixBroadcaster        : "com.wmspanel.libstream:libstream:1.0@aar",
-            logger                  : "com.tokopedia.library:logger:0.0.2"
+            logger                  : "com.tokopedia.library:logger:0.0.2",
+            cassava                 : "com.tokopedia.analyticsdebugger:cassava:1.1.7",
+            cassavaNoOp             : "com.tokopedia.analyticsdebugger:cassava-no-op:1.1.7"
     ]
 
     // Sort and categorize alphabetically by folder name
@@ -118,5 +120,6 @@ ext {
             unitTest                : ":libraries:unit_test",
             telemetry               : ":libraries:telemetry",
             sse                     : ":libraries:sse",
+            macrobenchmarkUtil      : ":libraries:macrobenchmark_util",
     ]
 }
