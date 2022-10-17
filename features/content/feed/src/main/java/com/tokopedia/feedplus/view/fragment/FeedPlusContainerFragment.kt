@@ -591,9 +591,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (hasCategoryIdParam()) {
             goToExplore()
         }
-        if (userSession.isLoggedIn) {
-            viewModel.getWhitelist()
-        }
+
+        viewModel.getWhitelist()
     }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
@@ -708,13 +707,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
         view?.let {
-            Toaster.make(it, ErrorHandler.getErrorMessage(context, throwable), Snackbar.LENGTH_LONG,
-                    Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
-                if (userSession.isLoggedIn) {
+            Toaster.build(
+                view = it,
+                text = ErrorHandler.getErrorMessage(context, throwable),
+                duration = Toaster.LENGTH_LONG,
+                type = Toaster.TYPE_ERROR,
+                actionText = getString(com.tokopedia.abstraction.R.string.title_try_again),
+                clickListener = View.OnClickListener {
                     viewModel.getWhitelist()
                 }
-            })
+            ).show()
         }
+
         renderCompleteFab()
     }
 
