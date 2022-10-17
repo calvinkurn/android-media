@@ -29,7 +29,7 @@ class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
             val request = GraphqlRequest(
                 PrescriptionIdsQuery(),
                 GetPrescriptionIdsResponse::class.java,
-                params
+                it
             )
             return graphqlRepository.response(listOf(request))
                 .getSuccessData()
