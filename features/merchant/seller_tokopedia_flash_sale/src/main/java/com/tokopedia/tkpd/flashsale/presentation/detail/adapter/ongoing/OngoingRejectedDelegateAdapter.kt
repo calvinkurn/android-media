@@ -51,7 +51,11 @@ class OngoingRejectedDelegateAdapter(
                 tpgOriginalPrice.setPrice(item)
                 tpgProductSold.setSoldCount()
                 tpgVariantStockLocation.setStock(item)
-                tpgRejectionReason.setRejectReason(item)
+                if (item.isMultiwarehouse && item.totalChild.isZero()) {
+                    tpgRejectionReason.gone()
+                } else {
+                    tpgRejectionReason.setRejectReason(item)
+                }
             }
         }
 

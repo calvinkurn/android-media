@@ -58,7 +58,11 @@ class FinishedProcessSelectionDelegateAdapter(
                 tpgSubsidy.setSubsidy(item)
                 tpgVariantStockLocation.setStock(item)
                 labelStatus.setStatus(item)
-                tpgRejectionReason.setRejectReason(item)
+                if (item.isMultiwarehouse && item.totalChild.isZero()) {
+                    tpgRejectionReason.gone()
+                } else {
+                    tpgRejectionReason.setRejectReason(item)
+                }
             }
         }
 
