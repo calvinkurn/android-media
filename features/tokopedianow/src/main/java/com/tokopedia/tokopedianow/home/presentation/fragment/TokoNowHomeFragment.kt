@@ -1921,7 +1921,7 @@ class TokoNowHomeFragment: Fragment(),
 
         shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow,
+            shareTokoNowData = shareHomeTokonow,
             activity = activity,
             view = view,
             onSuccess = {
