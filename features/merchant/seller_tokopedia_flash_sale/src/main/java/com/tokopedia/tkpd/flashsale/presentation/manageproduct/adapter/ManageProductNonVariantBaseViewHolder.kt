@@ -109,14 +109,16 @@ open class ManageProductNonVariantBaseViewHolder(
         warehouse: ReservedProduct.Product.Warehouse
     ) {
         if (warehouse.isDisabled) {
+            groupVariantNotEligibleErrorMessage.visible()
             textParentErrorMessage.visible()
             textParentErrorMessage.text = root.context.getString(R.string.stfs_warning_location_not_in_criteria)
-            tvCheckDetail.visible()
-            tvCheckDetail.setOnClickListener { listener?.showDetailCriteria(adapterPosition) }
+            textCheckDetail.visible()
+            textCheckDetail.setOnClickListener { listener?.showDetailCriteria(adapterPosition) }
             warehouse.isToggleOn = false
             switcherToggleParent.disable()
             switcherToggleParent.isChecked = false
         } else {
+            groupVariantNotEligibleErrorMessage.gone()
             switcherToggleParent.isChecked = warehouse.isToggleOn
         }
     }
