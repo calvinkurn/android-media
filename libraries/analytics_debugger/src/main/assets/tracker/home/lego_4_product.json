@@ -1,0 +1,73 @@
+{
+  "readme": "Lego4Product (2x2 widget) impression and click",
+  "mode": "exact",
+  "query": [
+    {
+      "event": "clickHomepage",
+      "eventAction": "click view all on product dynamic channel 4 product",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "37306",
+      "businessUnit": "home & browse",
+      "channelId": ".*",
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "clientId": ".*",
+      "userId": ".*"
+    },
+    {
+      "event": "view_item_list",
+      "eventAction": "impression on product dynamic channel 4 product",
+      "eventCategory": "homepage",
+      "eventLabel": "",
+      "trackerId": "37307",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - dynamic channel 4 product - product - .* - .* - .* - .* - .* - .*",
+      "items": [
+        {
+          "dimension40": "/ - p.* - dynamic channel 4 product - product - .* - .* - .* - .* - .* - .*",
+          "dimension83": ".*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*"
+    },
+    {
+      "event": "select_content",
+      "eventAction": "click on product dynamic channel 4 product",
+      "eventCategory": "homepage",
+      "eventLabel": ".* - .*",
+      "trackerId": "37308",
+      "businessUnit": "home & browse",
+      "currentSite": "tokopediamarketplace",
+      "item_list": "/ - p.* - dynamic channel 4 product - product - .* - .* - .* - .* - .* - .*",
+      "items": [
+        {
+          "dimension83": ".*",
+          "dimension84": ".*",
+          "dimension96": ".*_.*",
+          "index": ".*",
+          "item_brand": ".*",
+          "item_category": ".*",
+          "item_id": ".*",
+          "item_name": ".*",
+          "item_variant": ".*",
+          "price": ".*"
+        }
+      ],
+      "userId": ".*",
+      "sessionIris": ".*",
+      "clientId": ".*"
+    }
+  ]
+}

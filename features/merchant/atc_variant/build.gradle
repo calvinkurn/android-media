@@ -17,6 +17,7 @@ buildscript {
 android {
     buildFeatures {
         buildConfig true
+        viewBinding true
     }
 }
 
@@ -74,6 +75,9 @@ dependencies {
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
+
+    // please remove remote config lib, if ItemContainerViewHolder has stable
+    implementation projectOrAar(rootProject.ext.libraries.remoteConfig)
 }
 
 project.ext {

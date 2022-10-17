@@ -41,6 +41,7 @@ import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
@@ -534,6 +535,12 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             when (it) {
                 is Success -> showLocationAdminPopUp()
                 is Fail -> showGetAdminTypeError(it.throwable)
+            }
+        }
+
+        viewModel.adminRedirection.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onLocationAdminRedirection()
             }
         }
 
@@ -1377,6 +1384,13 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
             clearData()
             dismissLoadingLogin()
         }.show()
+    }
+
+    override fun onLocationAdminRedirection() {
+        context?.let {
+            dismissLoadingLogin()
+            RouteManager.route(it, ApplinkConstInternalMarketplace.ADMIN_INVITATION)
+        }
     }
 
     override fun showGetAdminTypeError(throwable: Throwable) {

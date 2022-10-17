@@ -115,5 +115,7 @@ interface LoginEmailPhoneContract {
         fun showLocationAdminPopUp()
 
         fun showGetAdminTypeError(throwable: Throwable)
+
+        fun onLocationAdminRedirection()
     }
 }
