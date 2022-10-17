@@ -72,9 +72,11 @@ class ChooseProductAdapter {
         this.errorMessageCriteria = errorMessage
         this.disabledCriteriaIds = disabledCriteriaIds
         getItems().onEachIndexed { index, item ->
-            item.enableSelection = !disabledCriteriaIds.any { item.item.criteriaId == it }
-            item.errorMessage = if (item.enableSelection) "" else errorMessage
-            compositeAdapter.notifyItemChanged(index)
+            if (disabledCriteriaIds.any { item.item.criteriaId == it }) {
+                item.enableSelection = false
+                item.errorMessage = errorMessage
+                compositeAdapter.notifyItemChanged(index)
+            }
         }
     }
 

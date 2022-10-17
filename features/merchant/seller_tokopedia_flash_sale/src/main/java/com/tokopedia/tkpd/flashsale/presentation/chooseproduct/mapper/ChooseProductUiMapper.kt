@@ -73,7 +73,7 @@ object ChooseProductUiMapper {
         maxProduct: Int,
         criteriaList: List<CriteriaSelection>
     ): Boolean {
-        val productValidation = productCount <= maxProduct && productCount.isMoreThanZero()
+        val productValidation = productCount < maxProduct && productCount.isMoreThanZero()
         val criteriaValidation = criteriaList.validateMax()
         return productValidation && criteriaValidation
     }

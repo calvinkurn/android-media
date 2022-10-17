@@ -6,7 +6,9 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
+import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
 import com.tokopedia.campaign.utils.constant.LocaleConstant
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
