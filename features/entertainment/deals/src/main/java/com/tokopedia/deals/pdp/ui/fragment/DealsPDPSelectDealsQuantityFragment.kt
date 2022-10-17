@@ -32,6 +32,8 @@ import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -212,16 +214,20 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
                 when (it) {
                     is Success -> {
                         context?.let { context ->
-//                            val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
-//                            productDetailData?.let { productDetailData ->
-//                                intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, DealsPDPMapper.mapOldProductDetailData(productDetailData))
-//                            }
-//                            intent.putExtra(EXTRA_VERIFY_REVAMPED, it.data.eventVerify)
-//                            startActivity(intent)
-                            val intent = Intent(context, DealsCheckoutActivity::class.java)
-                            intent.putExtra(EXTRA_DEAL_DETAIL,productDetailData)
-                            intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
-                            startActivity(intent)
+                            val remoteConfig = FirebaseRemoteConfigImpl(context)
+                            if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_CHECKOUT)){
+                                val intent = Intent(context, DealsCheckoutActivity::class.java)
+                                intent.putExtra(EXTRA_DEAL_DETAIL,productDetailData)
+                                intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
+                                startActivity(intent)
+                            } else {
+                                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
+                                productDetailData?.let { productDetailData ->
+                                    intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, DealsPDPMapper.mapOldProductDetailData(productDetailData))
+                                }
+                                intent.putExtra(EXTRA_VERIFY_REVAMPED, it.data.eventVerify)
+                                startActivity(intent)
+                            }
                         }
                     }
 
