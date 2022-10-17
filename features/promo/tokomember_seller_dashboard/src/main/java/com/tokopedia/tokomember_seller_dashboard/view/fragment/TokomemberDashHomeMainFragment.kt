@@ -158,7 +158,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
     }
 
     private fun routeToScreen(){
-        val screen = arguments?.get(TOKOMEMBER_SCREEN) as Uri?
+        val screen = arguments?.get(TOKOMEMBER_SCREEN) as? Uri
         screen?.let{
             when(it.lastPathSegment){
                 PATH_TOKOMEMBER_PROGRAM_LIST -> setTabsProgramList()
