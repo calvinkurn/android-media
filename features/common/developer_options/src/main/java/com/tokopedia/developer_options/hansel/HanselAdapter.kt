@@ -1,5 +1,6 @@
 package com.tokopedia.developer_options.hansel
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,6 +66,7 @@ class HanselAdapter(private val data: List<HanselUiModel>) : RecyclerView.Adapte
                 return filterResult
             }
 
+            @SuppressLint("NotifyDataSetChanged")
             override fun publishResults(p0: CharSequence?, result: FilterResults) {
                 try {
                     val data = result.values as List<HanselUiModel>

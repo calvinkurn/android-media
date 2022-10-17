@@ -8,7 +8,7 @@ data class HanselUiModel (
     val counter: Int = 0
 ) {
     override fun equals(other: Any?): Boolean {
-        return patchId == (other as HanselUiModel?)?.patchId
+        return patchId == (other as? HanselUiModel?)?.patchId
     }
 
     override fun hashCode(): Int {

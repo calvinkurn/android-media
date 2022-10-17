@@ -55,7 +55,7 @@
         android:layout_marginStart="@dimen/unify_space_8"
         app:typographyWeight="reguler"
         app:typographyType="body_2"
-        android:text="122323"/>
+        tools:text="122323"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_title_patch_name"
@@ -97,7 +97,7 @@
         app:typographyWeight="reguler"
         app:typographyType="body_2"
         android:layout_marginStart="@dimen/unify_space_8"
-        android:text="122323"/>
+        tools:text="122323"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_function_name"

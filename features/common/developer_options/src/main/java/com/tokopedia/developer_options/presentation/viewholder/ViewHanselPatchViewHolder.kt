@@ -17,7 +17,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import com.tokopedia.unifycomponents.Toaster
 
-class ViewHanselPatchViewHolder(itemView: View): AbstractViewHolder<ViewHanselPatchUiModel>(itemView) {
+class ViewHanselPatchViewHolder(itemView: View) : AbstractViewHolder<ViewHanselPatchUiModel>(itemView) {
 
     companion object {
         @LayoutRes
@@ -60,7 +60,7 @@ class ViewHanselPatchViewHolder(itemView: View): AbstractViewHolder<ViewHanselPa
         val prefs = itemView.context.getSharedPreferences(PREFERENCE_NAME_HANSEL, Context.MODE_PRIVATE)
         val value = prefs.getString(KEY_STATIC_CRITERIA_VERSION, "") ?: ""
         if (value.isNotEmpty()) {
-            val jsonValue = Gson().fromJson<Map<String, Any>>(value, object: TypeToken<Map<String, Any>>(){}.type)
+            val jsonValue = Gson().fromJson<Map<String, Any>>(value, object: TypeToken<Map<String, Any>>() {}.type)
             val deviceId = jsonValue[KEY_DEVICE_ID] ?: ""
             return deviceId.toString()
         }
