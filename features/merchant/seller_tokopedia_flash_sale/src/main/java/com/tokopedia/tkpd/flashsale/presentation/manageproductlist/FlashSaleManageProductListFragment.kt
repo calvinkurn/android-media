@@ -48,6 +48,7 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.Flash
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.uimodel.FlashSaleManageProductListUiEvent
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT
 import com.tokopedia.tkpd.flashsale.util.constant.FlashSaleRequestCodeConstant.REQUEST_CODE_MANAGE_PRODUCT_VARIANT
+import com.tokopedia.tkpd.flashsale.util.tracker.FlashSaleManageProductListPageTracker
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
@@ -93,6 +94,8 @@ class FlashSaleManageProductListFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+    @Inject
+    lateinit var tracker: FlashSaleManageProductListPageTracker
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(FlashSaleManageProductListListViewModel::class.java) }
     private val coachMark by lazy {
@@ -497,7 +500,12 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onSubmitButtonClicked() {
+        sendClickApplyProductDiscountTracker()
         submitDiscountedProduct()
+    }
+
+    private fun sendClickApplyProductDiscountTracker() {
+        tracker.sendClickApplyManageDiscountEvent(campaignId)
     }
 
     private fun submitDiscountedProduct() {
@@ -518,7 +526,15 @@ class FlashSaleManageProductListFragment :
     }
 
     override fun onManageProductButtonClicked(productData: ReservedProduct.Product) {
+        sendClickManageProductDiscountTracker(productData)
         redirectToManageProductDetailPage(productData)
+    }
+
+    private fun sendClickManageProductDiscountTracker(productData: ReservedProduct.Product) {
+        tracker.sendClickManageProductDiscountEvent(
+            campaignId,
+            productData.productId.toString()
+        )
     }
 
     private fun redirectToManageProductDetailPage(productData: ReservedProduct.Product) {
