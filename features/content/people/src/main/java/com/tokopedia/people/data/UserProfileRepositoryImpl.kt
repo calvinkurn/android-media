@@ -16,7 +16,10 @@ import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel

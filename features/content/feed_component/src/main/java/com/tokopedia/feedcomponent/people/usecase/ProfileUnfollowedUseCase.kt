@@ -1,27 +1,27 @@
-package com.tokopedia.people.domains
+package com.tokopedia.feedcomponent.people.usecase
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.people.model.ProfileDoFollowModelBase
+import com.tokopedia.feedcomponent.people.model.ProfileDoUnFollowModelBase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
-@GqlQuery(ProfileFollowUseCase.QUERY_NAME, ProfileFollowUseCase.QUERY)
-class ProfileFollowUseCase @Inject constructor(
+@GqlQuery(ProfileUnfollowedUseCase.QUERY_NAME, ProfileUnfollowedUseCase.QUERY)
+class ProfileUnfollowedUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<ProfileDoFollowModelBase>(graphqlRepository) {
+) : GraphqlUseCase<ProfileDoUnFollowModelBase>(graphqlRepository) {
 
     init {
-        setGraphqlQuery(ProfileFollowUseCaseQuery())
+        setGraphqlQuery(ProfileUnfollowedUseCaseQuery())
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(ProfileDoFollowModelBase::class.java)
+        setTypeClass(ProfileDoUnFollowModelBase::class.java)
     }
 
-    suspend fun executeOnBackground(followingUserIdEnc: String): ProfileDoFollowModelBase {
+    suspend fun executeOnBackground(followedUserIdEnc: String): ProfileDoUnFollowModelBase {
         val request = mapOf(
-            KEY_USER_ID_ENC to followingUserIdEnc
+            KEY_USER_ID_ENC to followedUserIdEnc
         )
         setRequestParams(request)
 
@@ -31,18 +31,16 @@ class ProfileFollowUseCase @Inject constructor(
     companion object {
         private const val KEY_USER_ID_ENC = "userIDEnc"
 
-        const val QUERY_NAME = "ProfileFollowUseCaseQuery"
+        const val QUERY_NAME = "ProfileUnfollowedUseCaseQuery"
         const val QUERY = """
-            mutation SocialNetworkFollow(
+            mutation SocialNetworkUnfollow(
                 ${"$$KEY_USER_ID_ENC"}: String
             ) {
-                SocialNetworkFollow(
+                SocialNetworkUnfollow(
                     $KEY_USER_ID_ENC: ${"$$KEY_USER_ID_ENC"}
                 ) {
                   data {
-                    user_id_source
-                    user_id_target
-                    relation
+                    is_success
                   }
                   messages
                   error_code

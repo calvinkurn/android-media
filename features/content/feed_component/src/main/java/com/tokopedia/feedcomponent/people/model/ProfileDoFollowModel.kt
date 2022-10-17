@@ -1,4 +1,4 @@
-package com.tokopedia.people.model
+package com.tokopedia.feedcomponent.people.model
 
 import com.google.gson.annotations.SerializedName
 
