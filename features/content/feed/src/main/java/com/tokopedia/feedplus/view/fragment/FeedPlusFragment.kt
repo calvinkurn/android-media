@@ -1622,7 +1622,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                                         positionInFeed,
                                         postId,
                                         reasonType,
-                                        reasonDesc,
+                                        reasonDesc
                                     )
                                 }
                             })

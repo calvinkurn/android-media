@@ -81,6 +81,7 @@ class FeedViewModel @Inject constructor(
 
     companion object {
         private const val ERROR_FOLLOW_MESSAGE = "“Oops, gagal mem-follow."
+        private const val ERROR_UNFOLLOW_MESSAGE = "Oops, gagal meng-unfollow."
     }
 
     private val userId: String
@@ -229,6 +230,17 @@ class FeedViewModel @Inject constructor(
             followKolResp.value = Success(results)
         }) {
             followKolResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
+        }
+    }
+
+    fun doUnfollowKol(id: Int, rowNumber: Int) {
+        launchCatchError(block = {
+            val results = withContext(baseDispatcher.io) {
+                unfollowKol(id, rowNumber)
+            }
+            followKolResp.value = Success(results)
+        }) {
+            followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
         }
     }
 
