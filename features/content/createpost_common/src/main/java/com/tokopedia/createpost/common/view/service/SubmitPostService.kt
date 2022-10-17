@@ -29,6 +29,7 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.createpost.common.view.util.PostUpdateProgressManager
 
 /**
  * Revamped By : Jonathan Darwin on October 13, 2022
@@ -43,9 +44,6 @@ class SubmitPostService : JobIntentServiceX() {
     lateinit var userSession: UserSessionInterface
 
     @Inject
-    lateinit var twitterManager: com.tokopedia.twitter_share.TwitterManager
-
-    @Inject
     lateinit var sellerAppReviewHelper: com.tokopedia.createpost.common.view.util.FeedSellerAppReviewHelper
 
     @Inject
@@ -56,7 +54,7 @@ class SubmitPostService : JobIntentServiceX() {
     @CreatePostCommonDispatchers
     lateinit var dispatchers: CoroutineDispatchers
 
-    private var postUpdateProgressManager: com.tokopedia.createpost.common.view.util.PostUpdateProgressManager? = null
+    private var postUpdateProgressManager: PostUpdateProgressManager? = null
 
     companion object {
         private const val JOB_ID = 13131314
@@ -128,7 +126,6 @@ class SubmitPostService : JobIntentServiceX() {
                         withContext(dispatchers.main) {
                             postUpdateProgressManager?.onSuccessPost()
                             sendBroadcast()
-                            postContentToOtherService(result.feedContentSubmit.meta.content)
                             addFlagOnCreatePostSuccess()
 
                             stopService()
@@ -237,7 +234,7 @@ class SubmitPostService : JobIntentServiceX() {
     private fun isTypeAffiliate(authorType: String) = authorType == TYPE_AFFILIATE
     private fun isTypeBuyer(authorType: String) = authorType == TYPE_CONTENT_USER
 
-    private fun getProgressManager(viewModel: CreatePostViewModel): com.tokopedia.createpost.common.view.util.PostUpdateProgressManager {
+    private fun getProgressManager(viewModel: CreatePostViewModel): PostUpdateProgressManager {
         val firstImage = ""
         try {
             com.tokopedia.createpost.common.view.util.FileUtil.createFilePathFromUri(
@@ -248,7 +245,7 @@ class SubmitPostService : JobIntentServiceX() {
             Timber.e("Exception")
         }
         val maxCount = viewModel.completeImageList.size
-        return object : com.tokopedia.createpost.common.view.util.PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
+        return object : PostUpdateProgressManager(maxCount, firstImage, applicationContext) {
         }
     }
 
@@ -257,17 +254,6 @@ class SubmitPostService : JobIntentServiceX() {
         intent.putExtra(SUBMIT_POST_SUCCESS_NEW, true)
         LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intent)
     }
-
-    private fun postContentToOtherService(content: Content) {
-        if (twitterManager.shouldPostToTwitter) postToTwitter(content)
-    }
-
-    private fun postToTwitter(content: Content) {
-        GlobalScope.launchCatchError(Dispatchers.IO, block = {
-            twitterManager.postTweet(content.description)
-        }) { Timber.d(it) }
-    }
-
 
     private fun addFlagOnCreatePostSuccess() {
         sellerAppReviewHelper.savePostFeedFlag()
