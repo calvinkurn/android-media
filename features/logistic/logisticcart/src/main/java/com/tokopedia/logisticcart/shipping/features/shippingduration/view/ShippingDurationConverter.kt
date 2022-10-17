@@ -53,6 +53,9 @@ class ShippingDurationConverter @Inject constructor() {
 
                 // Has service / duration list
                 shippingRecommendationData.shippingDurationUiModels = convertShippingDuration(ratesData.ratesDetailData)
+
+                // Get Schedule Delivery Data
+                shippingRecommendationData.additionalDeliveryData = ratesData.ratesDetailData.additionalDeliveryData
             }
         }
         return shippingRecommendationData
