@@ -4,14 +4,14 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
@@ -223,6 +223,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModel.setShopTickerTitle(groupShop.getShop().getShopTickerTitle());
             shipmentCartItemModel.setShopTicker(groupShop.getShop().getShopTicker());
+            shipmentCartItemModel.setEnablerLabel(groupShop.getShop().getEnablerLabel());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 

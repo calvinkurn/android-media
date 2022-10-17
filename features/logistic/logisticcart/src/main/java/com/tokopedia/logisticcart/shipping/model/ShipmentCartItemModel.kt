@@ -36,6 +36,7 @@ class ShipmentCartItemModel(
     var isTokoNow: Boolean = false,
     var shopTickerTitle: String = "",
     var shopTicker: String = "",
+    var enablerLabel: String = "",
 
     // AddOns
     var addOnsOrderLevelModel: AddOnsDataModel? = null,

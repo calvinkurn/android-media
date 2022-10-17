@@ -44,6 +44,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -443,6 +444,15 @@ class ShipmentMapper @Inject constructor() {
             isTokoNow = shop.isTokoNow
             shopTickerTitle = shop.shopTickerTitle
             shopTicker = shop.shopTicker
+            enablerLabel = mapEnablerLabel(shop.enabler)
+        }
+    }
+
+    private fun mapEnablerLabel(enablerResponse: EpharmacyEnablerResponse): String {
+        return if (enablerResponse.showLabel) {
+            enablerResponse.labelName
+        } else {
+            ""
         }
     }
 
