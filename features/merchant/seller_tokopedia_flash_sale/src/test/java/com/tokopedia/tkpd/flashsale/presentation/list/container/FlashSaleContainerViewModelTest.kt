@@ -5,6 +5,8 @@ import com.tokopedia.tkpd.flashsale.domain.entity.SellerEligibility
 import com.tokopedia.tkpd.flashsale.domain.entity.TabMetadata
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerMetaUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleSellerStatusUseCase
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEffect
+import com.tokopedia.tkpd.flashsale.presentation.list.child.uimodel.FlashSaleListUiEvent
 import com.tokopedia.tkpd.flashsale.util.constant.TabConstant
 import com.tokopedia.tkpd.flashsale.util.preference.PreferenceDataStore
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
@@ -46,7 +48,7 @@ class FlashSaleContainerViewModelTest {
     }
 
     @Test
-    fun `When fetch prerequisite data success and access is eligible, should successfully receive the data`() = runBlockingTest {
+    fun `When fetch prerequisite data success, rbac rule is active and user is allowed, should successfully receive the data`() = runBlockingTest {
         //Given
         val tabsMetadata = TabMetadata(
             listOf(
@@ -86,7 +88,7 @@ class FlashSaleContainerViewModelTest {
     }
 
     @Test
-    fun `When device is not allowed to use feature, isEligibleUsingFeature should be false`() = runBlockingTest {
+    fun `When rbac rule is inactive but user is allowed, isEligibleUsingFeature should be true`() = runBlockingTest {
         //Given
         val tabsMetadata = TabMetadata(
             listOf(
@@ -99,6 +101,42 @@ class FlashSaleContainerViewModelTest {
             ), "Some ticker message"
         )
         val sellerEligibility = SellerEligibility(isDeviceAllowed = false, isUserAllowed = true)
+
+        coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
+        coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
+
+        val emittedValues = arrayListOf<FlashSaleContainerViewModel.UiState>()
+        val job = launch {
+            viewModel.uiState.toList(emittedValues)
+        }
+
+        coEvery { preferenceDataStore.isMultiLocationTickerDismissed() } returns false
+
+        //When
+        viewModel.processEvent(FlashSaleContainerViewModel.UiEvent.GetPrerequisiteData)
+
+        //Then
+        val actual = emittedValues.last()
+
+        assertEquals(true, actual.isEligibleUsingFeature)
+
+        job.cancel()
+    }
+
+    @Test
+    fun `When rbac rule is active but user is not allowed, isEligibleUsingFeature should be false`() = runBlockingTest {
+        //Given
+        val tabsMetadata = TabMetadata(
+            listOf(
+                TabMetadata.Tab(
+                    TabConstant.TAB_ID_UPCOMING,
+                    "upcoming",
+                    100,
+                    "Akan Datang"
+                )
+            ), "Some ticker message"
+        )
+        val sellerEligibility = SellerEligibility(isDeviceAllowed = true, isUserAllowed = false)
 
         coEvery { getFlashSaleSellerStatusUseCase.execute() } returns sellerEligibility
         coEvery { getFlashSaleListForSellerMetaUseCase.execute() } returns tabsMetadata
