@@ -611,8 +611,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         val items = arrayListOf<FloatingButtonItem>()
 
-        if(viewModel.isShowPostButton) items.add(createPostFab())
         if(viewModel.isShowLiveButton) items.add(createLiveFab())
+        if(viewModel.isShowPostButton) items.add(createPostFab())
 
         if (items.isNotEmpty() && userSession.isLoggedIn) {
             fabFeed.addItem(items)

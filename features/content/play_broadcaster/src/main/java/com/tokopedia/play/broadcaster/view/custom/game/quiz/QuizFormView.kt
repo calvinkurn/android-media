@@ -70,8 +70,6 @@ class QuizFormView : ConstraintLayout {
 
                 binding.viewGameHeader.maxLength = value.maxTitleLength
                 timePickerBinding.puTimer.stringData = quizConfig.eligibleStartTimeInMs.map { formatTime(it) }.toMutableList()
-
-                binding.viewQuizGift.showWithCondition(value.isGiftActive)
             }
         }
 
