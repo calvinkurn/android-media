@@ -172,7 +172,6 @@ class UiModelBuilder {
         waitingDuration: Long = 0,
         duration: Int = 0,
         choices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = ""
     ): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = id,
@@ -182,7 +181,6 @@ class UiModelBuilder {
                 add(Calendar.SECOND, duration)
             }),
             listOfChoices = choices,
-            reward = reward
         )
     }
 

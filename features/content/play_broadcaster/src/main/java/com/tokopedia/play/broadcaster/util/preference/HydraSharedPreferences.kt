@@ -110,21 +110,6 @@ class HydraSharedPreferences @Inject constructor(
             ).apply()
     }
 
-    fun isFirstQuizPrice(): Boolean {
-        return mSharedPrefs.getBoolean(
-            String.format(KEY_FIRST_QUIZ_PRIZE, userSession.shopId),
-            true
-        )
-    }
-
-    fun setNotFirstQuizPrice() {
-        mSharedPrefs.edit()
-            .putBoolean(
-                String.format(KEY_FIRST_QUIZ_PRIZE, userSession.shopId),
-                false
-            ).apply()
-    }
-
     fun isFirstSelectQuizOption(): Boolean {
         return mSharedPrefs.getBoolean(
             String.format(KEY_FIRST_SELECT_QUIZ_OPTION, userSession.shopId),
@@ -147,7 +132,6 @@ class HydraSharedPreferences @Inject constructor(
         private const val KEY_FIRST_STREAMING = "first_streaming_%s_%s"
         private const val KEY_FIRST_INTERACTIVE = "first_interactive_%s"
         private const val KEY_PERMISSION = "permission_%s"
-        private const val KEY_FIRST_QUIZ_PRIZE = "first_quiz_prize_%s"
         private const val KEY_FIRST_SELECT_QUIZ_OPTION = "first_select_quiz_option_%s"
         private const val KEY_FIRST_GAME_RESULT = "first_game_result_%s"
         private const val KEY_FIRST_SWITCH_ACCOUNT = "first_switch_account_%s"

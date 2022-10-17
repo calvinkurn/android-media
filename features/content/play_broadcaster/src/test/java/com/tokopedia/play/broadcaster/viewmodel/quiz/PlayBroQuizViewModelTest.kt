@@ -49,11 +49,7 @@ class PlayBroQuizViewModelTest {
         channelId = "123"
     )
 
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
-            showPrizeCoachMark = false,
-        )
-    )
+    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel()
 
     private val mockException = uiModelBuilder.buildException()
 
@@ -93,7 +89,6 @@ class PlayBroQuizViewModelTest {
                 any(),
                 any(),
                 any(),
-                any()
             )
         }
         coEvery { mockRepo.getCurrentInteractive(any()) } returns mockQuizUiModel
