@@ -22,14 +22,15 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.view.emailextension.adapter.EmailExtensionAdapter
 import com.tokopedia.loginregister.login.behaviour.base.LoginBase
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckData
 import com.tokopedia.loginregister.login.domain.pojo.RegisterCheckPojo
-import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.loginregister.registerinitial.view.activity.RegisterInitialActivity
+import com.tokopedia.loginregister.stub.Config
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.LoginToken
@@ -40,7 +41,6 @@ import com.tokopedia.test.application.annotations.UiTest
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 
 @UiTest
 class LoginNormalCase : LoginBase() {
@@ -99,7 +99,7 @@ class LoginNormalCase : LoginBase() {
     fun showSocialMediaBottomSheet_True() {
         runTest {
             clickSocmedButton()
-            shouldBeDisplayed(R.id.socmed_container)
+            shouldBeDisplayed(R.id.providerName)
         }
     }
 

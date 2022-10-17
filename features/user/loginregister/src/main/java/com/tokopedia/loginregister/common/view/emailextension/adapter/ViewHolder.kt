@@ -10,17 +10,17 @@ class EmailExtensionAdapter(
     private var list: List<String>,
     private val listener: ClickListener,
     private val maxShowingItems: Int,
-) : RecyclerView.Adapter<EmailExtensionAdapter.EmailExtensionAdapter>() {
+) : RecyclerView.Adapter<EmailExtensionAdapter.ViewHolder>() {
 
-    class EmailExtensionAdapter(view: View) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val viewBinding by lazy {
             LayoutListEmailExtensionBinding.bind(view)
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EmailExtensionAdapter {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutListEmailExtensionBinding.inflate(LayoutInflater.from(parent.context))
-        return EmailExtensionAdapter(view.root)
+        return ViewHolder(view.root)
     }
 
     fun updateList(list: List<String>) {
@@ -35,7 +35,7 @@ class EmailExtensionAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: EmailExtensionAdapter, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         list[position].let { item ->
             holder.viewBinding.run {
                 textEmailExtension.text = item

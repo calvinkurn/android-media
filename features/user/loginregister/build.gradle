@@ -106,8 +106,10 @@ dependencies {
     androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
     androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
+    androidTestImplementation rootProject.ext.tkpdInternalLibDependencies.cachemanager
+    androidTestImplementation rootProject.ext.testDependencies.espressoIdlingResource
+
     androidTestUtil rootProject.ext.testDependencies.orchestrator
-    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     testImplementation rootProject.ext.testDependencies.archCoreTesting
     testImplementation rootProject.ext.testDependencies.mockk

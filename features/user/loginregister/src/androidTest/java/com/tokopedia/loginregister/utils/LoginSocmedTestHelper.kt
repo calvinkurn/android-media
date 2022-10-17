@@ -14,7 +14,7 @@ class LoginSocmedTestHelper {
             Espresso.onView(ViewMatchers.withId(R.id.socmed_btn))
                     .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
                     .perform(ViewActions.click())
-            Espresso.onView(ViewMatchers.withId(R.id.socmed_container)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(ViewMatchers.withId(R.id.providerName)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         }
 
         fun clickGoogleLogin(){
