@@ -1,31 +1,23 @@
 package com.tokopedia.loginregister.common.view
 
-import android.annotation.TargetApi
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
-import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.appcompat.content.res.AppCompatResources
-import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.CustomLoginTextViewBinding
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithoutPlaceholder
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.contentdescription.TextAndContentDescriptionUtil.setTextAndContentDescription
 
 /**
  * Created by stevenfredian on 6/2/16.
  */
-class LoginTextView : LinearLayout {
+class LoginTextView : FrameLayout {
     private var customText: String? = null
     var backgroundColorCustom = 0
     var textColor = 0
@@ -35,12 +27,11 @@ class LoginTextView : LinearLayout {
     var imageEnabled = false
     var shape: GradientDrawable? = null
 
-    private val viewBinding: CustomLoginTextViewBinding = CustomLoginTextViewBinding
-        .inflate(
-            LayoutInflater.from(context)
-        ).also {
-            addView(it.root)
-        }
+    private val viewBinding: CustomLoginTextViewBinding = CustomLoginTextViewBinding.inflate(
+        LayoutInflater.from(context)
+    ).also {
+        addView(it.root)
+    }
 
     constructor(context: Context) : super(context) {
         init(context, null)
@@ -55,9 +46,11 @@ class LoginTextView : LinearLayout {
         init(context, attrs)
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context,
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
         attrs,
-        defStyleAttr) {
+        defStyleAttr
+    ) {
         init(context, attrs)
     }
 
@@ -82,9 +75,11 @@ class LoginTextView : LinearLayout {
         val resourceId: Int
         try {
             customText = attr.getString(R.styleable.LoginTextView_customText)
-            textColor = attr.getColor(R.styleable.LoginTextView_textColor, MethodChecker.getColor(
-                context,
-                com.tokopedia.unifyprinciples.R.color.Unify_N0)
+            textColor = attr.getColor(
+                R.styleable.LoginTextView_textColor, MethodChecker.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_N700_68
+                )
             )
             borderColorCustom = attr.getInt(R.styleable.LoginTextView_borderColor, 0)
             cornerSize = attr.getInt(R.styleable.LoginTextView_loginTextViewCornerSize, CORNER_SIZE)
@@ -119,27 +114,31 @@ class LoginTextView : LinearLayout {
         }
     }
 
-    fun setUp() {
+    private fun setUp() {
         background = shape
     }
 
     private fun setDefaultShape(context: Context) {
         shape?.shape = GradientDrawable.RECTANGLE
-        shape?.cornerRadii = floatArrayOf(CORNER_RADII,
+        shape?.cornerRadii = floatArrayOf(
             CORNER_RADII,
             CORNER_RADII,
             CORNER_RADII,
             CORNER_RADII,
             CORNER_RADII,
             CORNER_RADII,
-            CORNER_RADII)
+            CORNER_RADII,
+            CORNER_RADII
+        )
         shape?.setColor(backgroundColorCustom)
         if (backgroundColorCustom == MethodChecker.getColor(
                 context,
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
             )
-        ) shape?.setStroke(BORDER_SIZE,
-            MethodChecker.getColor(context,
+        ) shape?.setStroke(
+            BORDER_SIZE,
+            MethodChecker.getColor(
+                context,
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_32
             )
         )

@@ -18,11 +18,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -53,7 +51,6 @@ import com.tokopedia.graphql.util.getParamBoolean
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.common.analytics.LoginRegisterAnalytics
@@ -64,11 +61,11 @@ import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.PhoneUtils
 import com.tokopedia.loginregister.common.utils.PhoneUtils.Companion.removeSymbolPhone
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
-import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.PartialRegisterInputView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheetListener
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.ProceedWithPhoneDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
@@ -99,7 +96,6 @@ import com.tokopedia.sessioncommon.util.TokenGenerator
 import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
@@ -111,7 +107,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -123,7 +118,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
 
     private var bottomSheet: SocmedBottomSheet? = null
     private var bottomSheetOtherMethod: OtherMethodBottomSheet? = null
-    private var socmedButtonsContainer: LinearLayout? = null
     private var sharedPrefs: SharedPreferences? = null
 
     private var phoneNumber: String? = ""
@@ -361,8 +355,13 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     private fun prepareView() {
         activity?.let { act ->
             if (!isUsingRedefineRegisterEmailMandatoryOptionalVariant()) {
-                bottomSheet = SocmedBottomSheet()
-                socmedButtonsContainer = bottomSheet?.getSocmedButtonContainer()
+                bottomSheet = SocmedBottomSheet(object : SocmedBottomSheetListener {
+                    override fun onItemClick(provider: ProviderData) {
+                        if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
+                            onRegisterGoogleClick()
+                        }
+                    }
+                })
                 bottomSheet?.setCloseClickListener {
                     registerAnalytics.trackClickCloseSocmedButton()
                     bottomSheet?.dismiss()
@@ -509,14 +508,12 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
             }
         }
-        registerInitialViewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner,
-            Observer {
-                if (it != null) onGoToActivationPageAfterRelogin()
-            })
-        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner,
-            Observer {
-                if (it != null) onGoToSecurityQuestionAfterRelogin()
-            })
+        registerInitialViewModel.goToActivationPageAfterRelogin.observe(viewLifecycleOwner) {
+            if (it != null) onGoToActivationPageAfterRelogin()
+        }
+        registerInitialViewModel.goToSecurityQuestionAfterRelogin.observe(viewLifecycleOwner) {
+            if (it != null) onGoToSecurityQuestionAfterRelogin()
+        }
         registerInitialViewModel.dynamicBannerResponse.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> setDynamicBannerView(it.data)
@@ -547,33 +544,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             registerInitialViewModel.setOtherMethodState(OtherMethodState.Success(discoverData))
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         } else {
-            dismissLoadingDiscover()
-
-            val layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                requireContext().resources.getDimensionPixelSize(R.dimen.dp_52))
-            layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
-
-            socmedButtonsContainer?.removeAllViews()
-
-            discoverData.providers.forEach { provider ->
-                context?.let {
-                    val loginTextView = LoginTextView(it,
-                        MethodChecker.getColor(activity,
-                            com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    loginTextView.setText(provider.name)
-                    loginTextView.setImage(provider.image)
-                    loginTextView.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
-
-                    setDiscoverOnClickListener(provider, loginTextView)
-
-                    socmedButtonsContainer?.run {
-                        addView(loginTextView, childCount,
-                            layoutParams)
-                    }
-                }
-
-            }
+            bottomSheet?.setProviders(discoverData.providers)
         }
     }
 
@@ -584,7 +555,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             )
             bottomSheetOtherMethod?.setState(registerInitialViewModel.otherMethodState)
         }
-        dismissLoadingDiscover()
         dismissProgressBar()
         val forbiddenMessage = context?.getString(
             com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
@@ -1098,25 +1068,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     }
 
     private fun showLoadingDiscover() {
-        LetUtil.ifLet(context, socmedButtonsContainer) { (ctx, socmedButtonsContainer) ->
-            if (ctx is Context && socmedButtonsContainer is LinearLayout) {
-                val pb = LoaderUnify(ctx)
-                val lastPos = socmedButtonsContainer.childCount - 1
-                if (socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
-                    socmedButtonsContainer.addView(pb, socmedButtonsContainer.childCount)
-                }
-                viewBinding?.emailExtension?.hide()
-            }
-        }
-    }
-
-    private fun setDiscoverOnClickListener(provider: ProviderData, loginTextView: LoginTextView) {
-        when (provider.id.lowercase(Locale.getDefault())) {
-            LoginConstants.DiscoverLoginId.GPLUS -> loginTextView.setOnClickListener {
-                bottomSheet?.dismiss()
-                onRegisterGoogleClick()
-            }
-        }
+        viewBinding?.emailExtension?.hide()
     }
 
     private fun onRegisterGoogleClick() {
@@ -1137,15 +1089,6 @@ class RegisterInitialFragment : BaseDaggerFragment(),
     override fun goToRegisterGoogle() {
         val intent = mGoogleSignInClient.signInIntent
         startActivityForResult(intent, RegisterConstants.Request.REQUEST_LOGIN_GOOGLE)
-    }
-
-    private fun dismissLoadingDiscover() {
-        socmedButtonsContainer?.run {
-            val lastPos = childCount - 1
-            if (getChildAt(lastPos) is LoaderUnify) {
-                removeViewAt(childCount - 1)
-            }
-        }
     }
 
     private fun showProgressBar() {

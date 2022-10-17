@@ -19,7 +19,6 @@ import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -58,7 +57,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
-import com.tokopedia.kotlin.util.LetUtil
 import com.tokopedia.kotlin.util.getParamBoolean
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.linker.LinkerConstants
@@ -75,10 +73,10 @@ import com.tokopedia.loginregister.common.error.LoginErrorCode
 import com.tokopedia.loginregister.common.error.getMessage
 import com.tokopedia.loginregister.common.utils.RegisterUtil.removeErrorCode
 import com.tokopedia.loginregister.common.utils.SellerAppWidgetHelper
-import com.tokopedia.loginregister.common.view.LoginTextView
 import com.tokopedia.loginregister.common.view.banner.DynamicBannerConstant
 import com.tokopedia.loginregister.common.view.banner.data.DynamicBannerDataModel
 import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheet
+import com.tokopedia.loginregister.common.view.bottomsheet.SocmedBottomSheetListener
 import com.tokopedia.loginregister.common.view.dialog.PopupErrorDialog
 import com.tokopedia.loginregister.common.view.dialog.RegisteredDialog
 import com.tokopedia.loginregister.common.view.ticker.domain.pojo.TickerInfoPojo
@@ -123,10 +121,7 @@ import com.tokopedia.sessioncommon.util.TwoFactorMluHelper
 import com.tokopedia.sessioncommon.view.admin.dialog.LocationAdminDialog
 import com.tokopedia.sessioncommon.view.forbidden.activity.ForbiddenActivity
 import com.tokopedia.track.TrackApp
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -138,8 +133,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.image.ImageUtils
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Date
-import java.util.Locale
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -199,8 +193,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     private var validateToken = ""
     private var isLoginAfterSq = false
     private var isReturnHomeWhenBackPressed = false
-
-    private var socmedButtonsContainer: LinearLayout? = null
     private var socmedBottomSheet: SocmedBottomSheet? = null
 
     private var currentEmail = ""
@@ -365,12 +357,14 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         if(savedInstanceState == null) {
             clearData()
         }
+
+        initObserver()
         prepareView()
         setupToolbar()
         checkSeamless()
-
         prepareArgData()
-        initObserver()
+        viewModel.discoverLogin()
+
         if (!GlobalConfig.isSellerApp()) {
             if (isShowBanner) {
                 viewModel.getDynamicBannerData(DynamicBannerConstant.Page.LOGIN)
@@ -667,31 +661,16 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
         }
     }
 
-    override fun showLoadingDiscover() {
-        LetUtil.ifLet(context, socmedButtonsContainer) { (context, socmedButtonsContainer) ->
-            if (context is Context && socmedButtonsContainer is LinearLayout) {
-                val pb = LoaderUnify(context)
-                val lastPos = socmedButtonsContainer.childCount - 1
-                if (socmedButtonsContainer.childCount >= 1 && socmedButtonsContainer.getChildAt(lastPos) !is LoaderUnify) {
-                    socmedButtonsContainer.addView(pb, lastPos)
-                }
-            }
-        }
-    }
-
-    override fun dismissLoadingDiscover() {
-        socmedButtonsContainer?.let {
-            val lastPos = it.childCount - 2
-            if (it.childCount >= 2 && it.getChildAt(lastPos) is LoaderUnify) {
-                it.removeViewAt(lastPos)
-            }
-        }
-    }
-
     private fun prepareView() {
         viewBinding?.loginInputView?.showForgotPassword()
-        socmedBottomSheet = SocmedBottomSheet()
-        socmedButtonsContainer = socmedBottomSheet?.getSocmedButtonContainer()
+        socmedBottomSheet = SocmedBottomSheet(object : SocmedBottomSheetListener {
+            override fun onItemClick(provider: ProviderData) {
+                if (provider.id.contains(LoginConstants.DiscoverLoginId.GPLUS)) {
+                    onLoginGoogleClick()
+                }
+            }
+        })
+
         socmedBottomSheet?.setCloseClickListener {
             analytics.eventClickCloseSocmedButton()
             socmedBottomSheet?.dismiss()
@@ -699,7 +678,7 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         viewBinding?.socmedBtn?.setOnClickListener {
             analytics.eventClickSocmedButton()
-            socmedBottomSheet?.show(parentFragmentManager, getString(R.string.bottom_sheet_show))
+            socmedBottomSheet?.show(parentFragmentManager, context?.resources?.getString(R.string.bottom_sheet_show))
         }
 
         checkFingerprintAvailability()
@@ -745,11 +724,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
                 goToRegisterInitial(source)
             }
             setUpRollenceNeedHelpView()
-        }
-
-        showLoadingDiscover()
-        context?.run {
-            viewModel.discoverLogin()
         }
     }
 
@@ -936,48 +910,27 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onSuccessDiscoverLogin(discoverData: DiscoverData) {
         stopTrace()
-        dismissLoadingDiscover()
+
         if (discoverData.providers.isNotEmpty()) {
-            val layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
-
-            layoutParams.setMargins(0, SOCMED_BUTTON_MARGIN_SIZE, 0, SOCMED_BUTTON_MARGIN_SIZE)
-            socmedButtonsContainer?.removeAllViews()
-            discoverData.providers.forEach { provider ->
-                context?.let { context ->
-                    val tv = LoginTextView(context, MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                    tv.setText(provider.name)
-                    if (userSession.name.isNotEmpty()) {
-                        var name = userSession.name
-                        if (name.split("\\s".toRegex()).size > 1)
-                            name = name.substring(0, name.indexOf(" "))
-                        if ((provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE)) {
-                            tv.setText("${provider.name} ${getString(R.string.socmed_account_as)} $name")
-                        }
-                    }
-                    if (!TextUtils.isEmpty(provider.image)) {
-                        tv.setImage(provider.image)
-                    }
-                    tv.setRoundCorner(SOCMED_BUTTON_CORNER_SIZE)
-
-                    setDiscoverListener(provider, tv)
-
-                    socmedButtonsContainer?.childCount?.let { childCount ->
-                        socmedButtonsContainer?.addView(tv, childCount, layoutParams)
+            discoverData.providers.onEach { provider ->
+                if (userSession.name.isNotEmpty()) {
+                    var name = userSession.name
+                    if (name.split("\\s".toRegex()).size > 1)
+                        name = name.substring(0, name.indexOf(" "))
+                    if (provider.id.equals(
+                            LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true
+                        ) && userSession.loginMethod == UserSessionInterface.LOGIN_METHOD_GOOGLE
+                    ) {
+                        provider.name = "${provider.name} ${getString(R.string.socmed_account_as)} $name"
                     }
                 }
+            }.also {
+                socmedBottomSheet?.setProviders(it)
             }
         } else {
             onErrorDiscoverLogin(MessageErrorException(ErrorHandlerSession.getDefaultErrorCodeMessage(
                     ErrorHandlerSession.ErrorCode.UNSUPPORTED_FLOW,
                     context)))
-        }
-
-    }
-
-    private fun setDiscoverListener(provider: ProviderData, tv: LoginTextView) {
-        if (provider.id.equals(LoginConstants.DiscoverLoginId.GPLUS, ignoreCase = true)) {
-            tv.setOnClickListener { onLoginGoogleClick() }
         }
     }
 
@@ -1077,7 +1030,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
     override fun onErrorDiscoverLogin(throwable: Throwable) {
         stopTrace()
-        dismissLoadingDiscover()
         val forbiddenMessage = context?.getString(
                 com.tokopedia.sessioncommon.R.string.default_request_error_forbidden_auth)
         val errorMessage = throwable.getMessage(requireActivity())
@@ -2014,7 +1966,6 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
 
         private const val PASSWORD_MIN_LENGTH = 4
 
-        private const val SOCMED_BUTTON_MARGIN_SIZE = 10
         private const val SOCMED_BUTTON_CORNER_SIZE = 10
 
         fun createInstance(bundle: Bundle): Fragment {

@@ -4,9 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.loginregister.R
 import com.tokopedia.loginregister.databinding.LayoutSocmedBottomsheetBinding
+import com.tokopedia.loginregister.discover.pojo.ProviderData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
@@ -15,24 +16,51 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
  * Copyright (c) 2020 PT. Tokopedia All rights reserved.
  */
 
-class SocmedBottomSheet: BottomSheetUnify() {
+interface SocmedBottomSheetListener {
+    fun onItemClick(provider: ProviderData)
+}
+
+class SocmedBottomSheet(
+    private val listener: SocmedBottomSheetListener
+): BottomSheetUnify() {
 
     private var viewBinding by autoClearedNullable<LayoutSocmedBottomsheetBinding>()
+    private var socmedAdapter: SocmedBottomSheetAdapter? = null
+    private var providers: MutableList<ProviderData> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        initBottomSheet()
+        viewBinding = LayoutSocmedBottomsheetBinding.inflate(
+            inflater
+        ).also {
+            setChild(it.root)
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun initBottomSheet() {
-        viewBinding = LayoutSocmedBottomsheetBinding.inflate(LayoutInflater.from(context))
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setTitle(context?.getString(R.string.choose_social_media) ?: "")
-        setChild(viewBinding?.root)
+
+        socmedAdapter = SocmedBottomSheetAdapter(providers, listener)
+        viewBinding?.socmedList?.run {
+            layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            adapter = socmedAdapter
+        }
     }
 
-    fun getSocmedButtonContainer(): LinearLayout? = viewBinding?.socmedContainer
+    fun setProviders(providers: List<ProviderData>) {
+        this.providers.clear()
+        this.providers.addAll(providers)
+        socmedAdapter?.notifyDataSetChanged()
+    }
+
+    fun setProvider(provider: ProviderData) {
+        this.providers.add(provider)
+        socmedAdapter?.notifyDataSetChanged()
+    }
 }

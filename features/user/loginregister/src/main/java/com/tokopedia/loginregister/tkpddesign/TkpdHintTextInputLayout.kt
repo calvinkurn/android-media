@@ -80,7 +80,9 @@ class TkpdHintTextInputLayout : LinearLayout {
 
     private val viewBinding: LegacyTextInputHintLayoutBinding = LegacyTextInputHintLayoutBinding
         .inflate(
-            LayoutInflater.from(context)
+            LayoutInflater.from(context),
+            this,
+            false
         ).also {
             addView(it.root)
         }
