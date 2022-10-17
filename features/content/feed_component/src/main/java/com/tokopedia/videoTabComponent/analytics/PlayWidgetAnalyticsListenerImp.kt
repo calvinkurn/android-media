@@ -7,7 +7,6 @@ import com.tokopedia.play.widget.ui.PlayWidgetMediumView
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetConfigUiModel
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.analytics.tracker.PlayAnalyticsTracker
 import javax.inject.Inject
 
@@ -15,7 +14,6 @@ import javax.inject.Inject
 
 class PlayWidgetAnalyticsListenerImp @Inject constructor(
     private val tracker: PlayAnalyticsTracker,
-    private val userSession: UserSessionInterface
 ) : PlayWidgetAnalyticListener {
 
     var filterCategory: String = ""
@@ -170,7 +168,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
     ) {
         super.onClickToggleReminderChannel(view, item, channelPositionInList, isRemindMe)
 
-
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
             if (isRemindMe) {
                 tracker.clickOnRemindMeButtonOnPlayCardInUpcomingCarousel(
@@ -195,12 +192,6 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
                     item.channelId, item.partner.id, item.channelType.toString().lowercase(), filterCategory
             )
         }
-    }
-
-    override fun onClickViewAll(view: PlayWidgetMediumView) {
-        super.onClickViewAll(view)
-
-
     }
 
     companion object {
