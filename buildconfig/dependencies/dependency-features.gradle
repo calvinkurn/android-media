@@ -30,6 +30,7 @@ ext {
             exploreCategory                 : ":features:category:explore_category",
             categoryNavBottomSheet          : ":features:category:category_navbottomsheet",
 
+            contentCommon                   : ":features:content:content_common",
             feed                            : ":features:content:feed",
             feedComponent                   : ":features:content:feed_component",
             explore                         : ":features:content:explore",
