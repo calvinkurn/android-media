@@ -17,6 +17,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
@@ -228,7 +229,9 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
                     mapper.setFirstTicker(ticker)
 
                     // If the ticker is not in list, manually add ticker
-                    if (adapter.getItems()[adapter.itemCount-1] !is TokochatReminderTickerUiModel) {
+                    if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
+                            !is TokochatReminderTickerUiModel
+                    ) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
