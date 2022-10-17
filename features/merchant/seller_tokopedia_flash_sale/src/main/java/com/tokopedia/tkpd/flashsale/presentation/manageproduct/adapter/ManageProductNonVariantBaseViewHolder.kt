@@ -4,6 +4,8 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
+import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
+import com.tokopedia.campaign.utils.extension.disable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -101,5 +103,21 @@ open class ManageProductNonVariantBaseViewHolder(
         textFieldPriceDiscountNominal.editText.setModeToNumberDelimitedInput()
         textFieldPriceDiscountPercentage.editText.setModeToNumberDelimitedInput()
         setupInitialFieldMessage(criteria)
+    }
+
+    protected fun LayoutCampaignManageProductDetailParentBinding.setupIneligibleLocation(
+        warehouse: ReservedProduct.Product.Warehouse
+    ) {
+        if (warehouse.isDisabled) {
+            textParentErrorMessage.visible()
+            textParentErrorMessage.text = root.context.getString(R.string.stfs_warning_location_not_in_criteria)
+            tvCheckDetail.visible()
+            tvCheckDetail.setOnClickListener { listener?.showDetailCriteria(adapterPosition) }
+            warehouse.isToggleOn = false
+            switcherToggleParent.disable()
+            switcherToggleParent.isChecked = false
+        } else {
+            switcherToggleParent.isChecked = warehouse.isToggleOn
+        }
     }
 }
