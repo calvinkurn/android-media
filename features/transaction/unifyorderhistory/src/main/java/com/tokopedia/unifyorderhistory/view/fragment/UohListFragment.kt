@@ -531,7 +531,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
                     )
-                    uohItemAdapter.appendPmsButton(data)
+                    uohItemAdapter.appendPmsButton(data) { position ->
+                        binding?.rvOrderList?.smoothScrollToPosition(position)
+                    }
                 }
             }
         }
@@ -1660,7 +1662,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 uohListViewModel.getUohPmsCounterResult.value?.let {
                     if (it is Success) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                        uohItemAdapter.appendPmsButton(data)
+                        uohItemAdapter.appendPmsButton(data) { position ->
+                            binding?.rvOrderList?.smoothScrollToPosition(position)
+                        }
                     }
                 }
             } else {
