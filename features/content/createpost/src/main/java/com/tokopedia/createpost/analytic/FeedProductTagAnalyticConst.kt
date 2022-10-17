@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.producttag.analytic
+package com.tokopedia.createpost.analytic
 
 /**
  * Created By : Jonathan Darwin on May 23, 2022
@@ -45,7 +45,6 @@ internal const val EVENT_PROMO_CLICK = "promoClick"
 internal const val EVENT_PRODUCT_CLICK = "productClick"
 internal const val EVENT_PRODUCT_VIEW = "productView"
 
-internal const val VAL_PHYSICAL_GOODS = "physical goods"
 internal const val VAL_CONTENT = "content"
 internal const val VAL_CURRENT_SITE = "tokopediamarketplace"
 internal const val VAL_EVENT_CATEGORY = "content feed post creation - product tagging"

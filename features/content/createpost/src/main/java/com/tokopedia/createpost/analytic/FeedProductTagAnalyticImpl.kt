@@ -1,15 +1,7 @@
-package com.tokopedia.createpost.producttag.analytic.product
+package com.tokopedia.createpost.analytic
 
-import com.tokopedia.createpost.producttag.analytic.*
-import com.tokopedia.createpost.producttag.analytic.KEY_BUSINESS_UNIT
-import com.tokopedia.createpost.producttag.analytic.KEY_CURRENT_SITE
-import com.tokopedia.createpost.producttag.analytic.KEY_EVENT
-import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_ACTION
-import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_CATEGORY
-import com.tokopedia.createpost.producttag.analytic.KEY_EVENT_LABEL
-import com.tokopedia.createpost.producttag.analytic.KEY_SESSION_IRIS
-import com.tokopedia.createpost.producttag.analytic.VAL_CURRENT_SITE
-import com.tokopedia.createpost.producttag.view.uimodel.*
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
+import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
@@ -19,10 +11,10 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on May 23, 2022
  */
-class ProductTagAnalyticImpl @Inject constructor(
+class FeedProductTagAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
     private val trackingQueue: TrackingQueue,
-) : ProductTagAnalytic {
+) : ContentProductTagAnalytic {
 
     override fun trackGlobalSearchProduct(
         header: SearchHeaderUiModel,
@@ -236,6 +228,18 @@ class ProductTagAnalyticImpl @Inject constructor(
                 KEY_BUSINESS_UNIT to VAL_CONTENT
             )
         )
+    }
+
+    override fun clickSaveProduct(source: ProductTagSource) {
+    }
+
+    override fun clickAdvancedProductFilter() {
+    }
+
+    override fun clickSaveAdvancedProductFilter() {
+    }
+
+    override fun clickProductFilterChips() {
     }
 
     override fun sendAll() {
