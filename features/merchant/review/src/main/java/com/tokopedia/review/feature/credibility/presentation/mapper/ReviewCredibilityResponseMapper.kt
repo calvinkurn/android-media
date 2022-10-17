@@ -61,9 +61,11 @@ object ReviewCredibilityResponseMapper {
         response: ReviewerCredibilityStatsWrapper
     ): ReviewCredibilityHeaderUiModel {
         return ReviewCredibilityHeaderUiModel(
-            reviewerName = response.label.userName,
-            reviewerJoinDate = response.label.joinDate,
-            showReviewerJoinDate = response.label.achievements.isNullOrEmpty()
+            reviewerProfilePicture = response.userProfile?.profilePicture.orEmpty(),
+            reviewerName = response.userProfile?.firstName.orEmpty(),
+            reviewerJoinDate = response.userProfile?.joinDate.orEmpty(),
+            reviewerProfileButtonText = response.userProfile?.buttonProfileText.orEmpty(),
+            reviewerProfileButtonUrl = response.userProfile?.buttonProfileLink.orEmpty()
         )
     }
 
