@@ -2137,9 +2137,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(courierItemData.getShipperProductId());
                     ordersItem.setShippingId(courierItemData.getShipperId());
                     ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
-                    ordersItem.setSpId(courierItemData.getShipperProductId());
-                    ordersItem.setShippingId(courierItemData.getShipperId());
-                    ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
                     ordersItem.setShopId(shipmentCartItemModel.getShopId());
                     ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
                     ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
