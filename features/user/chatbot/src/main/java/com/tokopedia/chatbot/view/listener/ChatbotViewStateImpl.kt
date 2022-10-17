@@ -261,27 +261,6 @@ class ChatbotViewStateImpl(
         }
     }
 
-    private fun showReasonBottomSheet(
-        element: SendRatingPojo,
-        activity: Activity,
-        onClickReasonRating: (String) -> Unit
-    ) {
-        if (!::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet = ReasonBottomSheet.createInstance(
-                activity,
-                element.postRatingV2.data.listReason,
-                onClickReasonRating
-            )
-        }
-        reasonBottomSheet.show()
-    }
-
-    override fun onClickReasonRating() {
-        if (::reasonBottomSheet.isInitialized) {
-            reasonBottomSheet.dismiss()
-        }
-    }
-
     override fun onImageUpload(it: ImageUploadUiModel) {
         getAdapter().addElement(it)
         scrollDownWhenInBottom()
