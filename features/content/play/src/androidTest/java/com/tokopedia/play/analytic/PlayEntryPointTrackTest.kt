@@ -7,12 +7,14 @@ import com.tokopedia.play.PLAY_KEY_SOURCE_ID
 import com.tokopedia.play.PLAY_KEY_SOURCE_TYPE
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.play.view.type.PlaySource
+import com.tokopedia.test.application.annotations.UiTest
 import org.junit.Rule
 import org.junit.Test
 
 /**
  * @author by astidhiyaa on 11/08/22
  */
+@UiTest
 class PlayEntryPointTrackTest {
     private val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
 
