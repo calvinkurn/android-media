@@ -577,6 +577,7 @@ class PlayFragment @Inject constructor(
         if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
+    @Throws(IndexOutOfBoundsException::class)
     private fun sendSwipeRoomAnalytic() {
         try {
             val nextId = playParentViewModel.getNextChannel(channelId)
