@@ -237,4 +237,6 @@
     <string name="btn_text_following">Following</string>
     <string name="empty_page_title">Belum ada postingan</string>
     <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+    <string name="up_error_unfollow">Gagal unfollow. Coba lagi ya."</string>
+    <string name="up_error_follow">Gagal follow. Coba lagi ya."</string>
 </resources>
