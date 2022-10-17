@@ -50,7 +50,6 @@ sealed interface InteractiveUiModel {
         override val waitingDuration: Long,
         val status: Status,
         val listOfChoices: List<QuizChoicesUiModel>,
-        val reward: String,
     ) : InteractiveUiModel {
 
         sealed interface Status {

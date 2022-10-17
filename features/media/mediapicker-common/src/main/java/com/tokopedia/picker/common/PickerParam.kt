@@ -27,6 +27,7 @@ data class PickerParam(
     @SerializedName("pageSource") private var pageSource: PageSource = PageSource.Unknown,
     @SerializedName("includeMedias") private var includeMedias: List<File> = emptyList(),
     @SerializedName("excludedMedias") private var excludedMedias: List<File> = emptyList(),
+    @SerializedName("previewActionText") private var previewActionText: String = ""
 ) : Parcelable {
 
     // getter
@@ -54,6 +55,16 @@ data class PickerParam(
     fun maxImageFileSize() = maxImageFileSize
     fun minStorageThreshold() = minStorageThreshold
     fun isEditorEnabled() = withEditor
+    fun previewActionText(): String {
+        return if (previewActionText.length > CUSTOM_ACTION_TEXT_LIMIT) {
+            previewActionText.substring(IntRange(
+                SUBSTRING_START_INDEX,
+                SUBSTRING_END_INDEX
+            )) + SUBSTRING_ELLIPSIZE_APPEND
+        } else {
+            previewActionText
+        }
+    }
 
     // setter
     fun pageSource(value: PageSource) = apply { pageSource = value }
@@ -75,6 +86,13 @@ data class PickerParam(
     fun modeType(@ModeType value: Int) = apply { modeType = value }
     fun multipleSelectionMode() = apply { isMultipleSelection = true }
     fun singleSelectionMode() = apply { isMultipleSelection = false }
+
+    companion object {
+        private const val CUSTOM_ACTION_TEXT_LIMIT = 10
+        private const val SUBSTRING_START_INDEX = 0
+        private const val SUBSTRING_END_INDEX = 9
+        private const val SUBSTRING_ELLIPSIZE_APPEND = "..."
+    }
 }
 
 enum class CameraRatio(val value: Int) {

@@ -3,6 +3,7 @@ package com.tokopedia.homenav.mainnav.view.datamodel.account
 import com.tokopedia.homenav.mainnav.view.adapter.typefactory.MainNavTypeFactory
 import com.tokopedia.homenav.mainnav.view.datamodel.MainNavVisitable
 import com.tokopedia.navigation_common.usecase.pojo.walletapp.WalletAppData
+import com.tokopedia.sessioncommon.data.admin.AdminData
 import com.tokopedia.topads.sdk.domain.model.ImpressHolder
 import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusParam
 
@@ -116,9 +117,13 @@ data class AccountHeaderDataModel(
         this.profileAffiliateDataModel.isGetAffiliateLoading = isLoading
     }
 
-    fun setAdminData(adminRoleText: String?, canGoToSellerAccount: Boolean) {
+    fun setAdminData(adminData: AdminData?) {
+        val isLocationAdmin: Boolean = adminData?.detail?.roleType?.isLocationAdmin == true
+        val adminRoleText: String? = adminData?.adminTypeText
+
         this.profileSellerDataModel.adminRoleText = adminRoleText
-        this.profileSellerDataModel.canGoToSellerAccount = canGoToSellerAccount
+        this.profileSellerDataModel.isLocationAdmin = isLocationAdmin
+        this.profileSellerDataModel.adminStatus = adminData?.status.orEmpty()
     }
 
     fun setWalletAppData(walletAppData: WalletAppData) {
