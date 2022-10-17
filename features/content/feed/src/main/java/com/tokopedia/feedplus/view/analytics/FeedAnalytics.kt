@@ -405,7 +405,7 @@ class FeedAnalytics @Inject constructor(
 
     fun eventDetailProductClick(
         product: ProductEcommerce,
-        userId: Int,
+        userId: String,
         shopId: String,
         activityId: String,
         type: String,
