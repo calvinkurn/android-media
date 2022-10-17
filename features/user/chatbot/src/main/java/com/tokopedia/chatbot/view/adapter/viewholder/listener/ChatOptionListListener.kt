@@ -1,9 +1,8 @@
 package com.tokopedia.chatbot.view.adapter.viewholder.listener
 
-import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
-import com.tokopedia.chatbot.domain.pojo.helpfullquestion.HelpFullQuestionPojo
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
 
 interface ChatOptionListListener {
-    fun chatOptionListSelected(selected: ChatOptionListViewModel, model: HelpFullQuestionsViewModel?)
+    fun chatOptionListSelected(selected: ChatOptionListUiModel, model: HelpFullQuestionsUiModel?)
 }

@@ -16,7 +16,6 @@ private const val searchProductWithTopAdsResponseJSON = "searchproduct/with-topa
 internal class SearchProductHandleProductImpressionTest: ProductListPresenterTestFixtures() {
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
-    private val className = "SearchClassName"
     private val capturedProductItemViewModel = slot<ProductItemDataView>()
     private var suggestedRelatedKeyword = ""
     private val suggestedRelatedKeywordSlot = slot<String>()

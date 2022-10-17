@@ -228,8 +228,8 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
     val initialVariantData: LiveData<List<VariantCategory>?>
         get() = _initialVariantData
 
-    private val _singleVariantData = MutableLiveData<VariantCategory>()
-    val singleVariantData: LiveData<VariantCategory>
+    private val _singleVariantData = MutableLiveData<VariantCategory?>()
+    val singleVariantData: LiveData<VariantCategory?>
         get() = _singleVariantData
 
     private val _onVariantClickedData = MutableLiveData<List<VariantCategory>?>()
@@ -1004,7 +1004,7 @@ open class DynamicProductDetailViewModel @Inject constructor(private val dispatc
         })
     }
 
-    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean = false, recomItem: RecommendationItem = RecommendationItem()) {
+    private fun updateMiniCartAfterATCRecomTokonow(message: String, isAtc: Boolean, recomItem: RecommendationItem) {
         _atcRecomTokonow.value = message.asSuccess()
         if (isAtc) {
             _atcRecomTokonowSendTracker.value = recomItem.asSuccess()

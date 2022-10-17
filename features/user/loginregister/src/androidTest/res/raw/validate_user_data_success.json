@@ -1,0 +1,11 @@
+{
+  "validate_user_data": {
+    "error": "",
+    "error_email": "",
+    "error_password": "",
+    "error_fullname": "",
+    "error_phone": "",
+    "is_valid": true,
+    "is_exist": false
+  }
+}
