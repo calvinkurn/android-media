@@ -65,7 +65,7 @@
             app:layout_constraintBottom_toBottomOf="@id/tokochat_tp_order_visibility"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/tokochat_cl_description_container"
+            android:id="@+id/tokochat_cl_order_name_container"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:paddingStart="12dp"
