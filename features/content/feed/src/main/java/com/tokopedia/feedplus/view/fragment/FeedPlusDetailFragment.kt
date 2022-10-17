@@ -489,6 +489,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         } else{
             url
         }
+
+        /** TODO 2: show sharing experience bottom sheet here */
+
         activity?.let {
             val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
                     .setName(title)
