@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerhomecommon.presentation.adapter.factory.PostListAdapterTypeFactory
+import java.util.Date
 
 /**
  * Created By @ilhamsuaib on 20/05/20
@@ -30,7 +31,8 @@ sealed class PostItemUiModel(
         override val textEmphasizeType: Int = PostListDataUiModel.IMAGE_EMPHASIZED,
         override val isPinned: Boolean = false,
         override var isChecked: Boolean = false,
-        override var postItemId: String = String.EMPTY
+        override var postItemId: String = String.EMPTY,
+        val countdownDate: Date? = null
     ) : PostItemUiModel(
         title,
         appLink,

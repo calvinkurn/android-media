@@ -1,7 +1,9 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhomecommon.data.WidgetLastUpdatedSharedPrefInterface
 import com.tokopedia.sellerhomecommon.domain.model.DataKeyModel
 import com.tokopedia.sellerhomecommon.domain.model.GetPostDataResponse
@@ -10,6 +12,8 @@ import com.tokopedia.sellerhomecommon.presentation.model.PostCtaDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.PostListPagerUiModel
+import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -24,6 +28,7 @@ class PostMapper @Inject constructor(
 
     companion object {
         const val MAX_ITEM_PER_PAGE = 3
+        private const val MILLIS_1000 = 1000
     }
 
     private var dataKeys: List<DataKeyModel> = emptyList()
@@ -101,7 +106,19 @@ class PostMapper @Inject constructor(
                             featuredMediaUrl = postItem.featuredMediaURL,
                             subtitle = postItem.subtitle,
                             textEmphasizeType = PostListDataUiModel.IMAGE_EMPHASIZED,
-                            isPinned = postItem.isPinned
+                            isPinned = postItem.isPinned,
+                            countdownDate = try {
+                                if (postItem.countdownDate.isNullOrBlank()) {
+                                    null
+                                } else {
+                                    val timeMillis =
+                                        postItem.countdownDate.toLongOrZero().times(MILLIS_1000)
+                                    Date(timeMillis)
+                                }
+                            } catch (e: Exception) {
+                                Timber.e(e)
+                                null
+                            }
                         )
                     }
                 }

@@ -14,6 +14,7 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_FLASH_SALE_ID
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
@@ -27,10 +28,11 @@ class ManageProductNonVariantFragment :
     companion object {
         private const val MULTILOC_FRAGMENT_TAG = "multiloc"
         @JvmStatic
-        fun newInstance(product: ReservedProduct.Product?): ManageProductNonVariantFragment {
+        fun newInstance(product: ReservedProduct.Product?, campaignId: Long): ManageProductNonVariantFragment {
             val fragment = ManageProductNonVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
+            bundle.putLong(BUNDLE_FLASH_SALE_ID, campaignId)
             fragment.arguments = bundle
             return fragment
         }
@@ -40,6 +42,9 @@ class ManageProductNonVariantFragment :
     lateinit var viewModel: ManageProductNonVariantViewModel
     private val product by lazy {
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+    }
+    private val campaignId by lazy {
+        arguments?.getLong(BUNDLE_FLASH_SALE_ID).orZero()
     }
 
     override fun getScreenName(): String = ManageProductNonVariantFragment::class.java.canonicalName.orEmpty()
@@ -99,6 +104,8 @@ class ManageProductNonVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
+    override fun showDetailCriteria(position: Int) { return /* Only Needed For Multi-Location */ }
+
     private fun setupObserver() {
         viewModel.isMultiloc.observe(viewLifecycleOwner) {
             if (it) moveToMultilocPage()
@@ -109,7 +116,7 @@ class ManageProductNonVariantFragment :
     }
 
     private fun moveToMultilocPage() {
-        val multilocPage = ManageProductNonVariantMultilocFragment.newInstance(product)
+        val multilocPage = ManageProductNonVariantMultilocFragment.newInstance(product, campaignId)
         parentFragmentManager.beginTransaction()
             .replace(R.id.container, multilocPage, MULTILOC_FRAGMENT_TAG)
             .commit()

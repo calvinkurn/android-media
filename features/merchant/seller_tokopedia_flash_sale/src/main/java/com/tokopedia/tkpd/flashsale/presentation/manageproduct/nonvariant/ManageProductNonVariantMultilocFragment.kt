@@ -15,6 +15,8 @@ import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleCompone
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
+import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.LocationCriteriaCheckBottomSheet
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
@@ -31,9 +33,10 @@ class ManageProductNonVariantMultilocFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(product: ReservedProduct.Product?): ManageProductNonVariantMultilocFragment {
+        fun newInstance(product: ReservedProduct.Product?, campaignId: Long): ManageProductNonVariantMultilocFragment {
             val fragment = ManageProductNonVariantMultilocFragment()
             val bundle = Bundle()
+            bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, campaignId)
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
             fragment.arguments = bundle
             return fragment
@@ -44,6 +47,9 @@ class ManageProductNonVariantMultilocFragment :
     lateinit var viewModel: ManageProductNonVariantViewModel
     private val product by lazy {
         arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+    }
+    private val campaignId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
     }
     var inputAdapter = ManageProductNonVariantMultilocAdapter()
 
@@ -66,6 +72,7 @@ class ManageProductNonVariantMultilocFragment :
 
     private fun setupProductInput() {
         viewModel.setProduct(product ?: return)
+        viewModel.checkCriteria(product ?: return, campaignId = campaignId)
     }
 
     override fun createAdapterInstance() = inputAdapter.apply {
@@ -97,6 +104,13 @@ class ManageProductNonVariantMultilocFragment :
             viewModel.setProduct(newProduct)
         }
         return viewModel.validateInput(criteria, discountSetup)
+    }
+
+    override fun showDetailCriteria(position: Int) {
+        val bottomSheetLocation = LocationCriteriaCheckBottomSheet()
+        bottomSheetLocation.show(
+            listOf(viewModel.getCriteria()?.locationResult?.get(position) ?: return),
+            childFragmentManager, "")
     }
 
     override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {

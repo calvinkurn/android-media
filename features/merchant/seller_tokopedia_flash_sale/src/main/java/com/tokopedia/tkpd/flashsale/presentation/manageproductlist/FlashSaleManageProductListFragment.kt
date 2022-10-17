@@ -542,7 +542,7 @@ class FlashSaleManageProductListFragment :
 
     private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product) {
         context?.let {
-            ManageProductNonVariantActivity.createIntent(it, productData).apply {
+            ManageProductNonVariantActivity.createIntent(it, productData, campaignId.toLongOrZero()).apply {
                 startActivityForResult(
                     this,
                     REQUEST_CODE_MANAGE_PRODUCT_NON_VARIANT

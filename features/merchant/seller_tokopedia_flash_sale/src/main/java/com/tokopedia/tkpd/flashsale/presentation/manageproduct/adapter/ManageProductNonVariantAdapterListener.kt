@@ -13,4 +13,6 @@ interface ManageProductNonVariantAdapterListener {
     fun calculatePrice(percentInput: Long, adapterPosition: Int): String
 
     fun calculatePercent(priceInput: Long, adapterPosition: Int): String
+
+    fun showDetailCriteria(position: Int)
 }
