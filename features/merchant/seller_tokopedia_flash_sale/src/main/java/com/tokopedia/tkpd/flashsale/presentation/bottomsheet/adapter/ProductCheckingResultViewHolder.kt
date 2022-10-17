@@ -118,7 +118,7 @@ class ProductCheckingResultViewHolder(private val binding: StfsItemProductCheckR
             labelStatus.setLabelType(statusType)
             labelStatus.isVisible = !item.isMultiloc && statusText.isNotEmpty()
             tfSubsidy.text = MethodChecker.fromHtml(subsidyText)
-            tfSubsidy.isVisible = item.checkingDetailResult.isSubsidy
+            tfSubsidy.isVisible = !item.isMultiloc && item.checkingDetailResult.isSubsidy
             tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
             tfSoldCount.isVisible = !item.isMultiloc && item.soldCount != null
             tfRefused.text = MethodChecker.fromHtml(refusedText)
