@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources tools:ignore="UnusedResources"
+    xmlns:tools="http://schemas.android.com/tools">
     <string name="host_user" translatable="false">user</string>
 
     <!--Home Account-->
