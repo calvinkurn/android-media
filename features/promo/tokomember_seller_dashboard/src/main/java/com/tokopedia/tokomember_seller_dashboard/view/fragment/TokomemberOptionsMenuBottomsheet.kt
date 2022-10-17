@@ -131,7 +131,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
             parentFragment?.let{
                 if(it is ProgramActions){
                     if(type == EXTEND){
-                        tmTracker.clickProgramBsExtension(shopId.toString(), programId.toString())
+                        tmTracker?.clickProgramBsExtension(shopId.toString(), programId.toString())
                     }
                     it.option(type, shopId = shopId, programId = programId)
                 }
@@ -156,7 +156,7 @@ class TokomemberOptionsMenuBottomsheet: BottomSheetUnify() {
 
         const val TAG = "TM_DASH_OPTIONS_MENU_BOTTOM_SHEET"
         private lateinit var programActions: ProgramActions
-        private lateinit var tmTracker: TmTracker
+        private var tmTracker: TmTracker? = null
         private lateinit var tmCouponActions: TmCouponActions
 
         fun show(

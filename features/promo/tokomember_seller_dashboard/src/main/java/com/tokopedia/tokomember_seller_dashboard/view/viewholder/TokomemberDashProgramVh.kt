@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
@@ -86,7 +87,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         itemView.setOnClickListener {
-            item.id?.toInt()?.let { it1 ->
+            item.id?.toIntOrZero()?.let { it1 ->
             tmTracker?.clickProgramItemButton(shopId.toString(), it1.toString())
                 homeFragmentCallback.openDetailFragment(shopId, it1)
             }
@@ -97,7 +98,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         optionMenu.setOnClickListener {
-            item.id?.toInt()?.let { it1 ->
+            item.id?.toIntOrZero()?.let { it1 ->
                 if(item.status == WAITING){
                     tmTracker?.clickProgramWaitingThreeDot(shopId.toString(), it1.toString())
                 }
@@ -110,7 +111,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
         }
 
         btn_edit.setOnClickListener {
-            item.id?.toInt()?.let { it1 ->
+            item.id?.toIntOrZero()?.let { it1 ->
                 tmTracker?.clickProgramEdit(shopId.toString(), it1.toString())
                 programActions.option(EDIT, programId = it1, shopId = shopId)
             }
@@ -142,7 +143,7 @@ class TokomemberDashProgramVh(itemView: View, val fragmentManager: FragmentManag
                 btn_edit.show()
                 btn_edit.text = "Perpanjang Program"
                 btn_edit.setOnClickListener {
-                    item.id?.toInt()?.let { it1 ->
+                    item.id?.toIntOrZero()?.let { it1 ->
                         tmTracker?.clickProgramExtensionButton(it1.toString(), shopId.toString())
                         programActions.option(EXTEND, programId = it1, shopId = shopId)
                     }

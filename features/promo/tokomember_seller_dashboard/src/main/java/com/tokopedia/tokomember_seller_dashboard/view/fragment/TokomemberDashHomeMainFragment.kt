@@ -26,6 +26,7 @@ import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_PROGRAM_ACTION
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_SHOP_ID
 import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_COUPON_LIST
 import com.tokopedia.tokomember_seller_dashboard.util.PATH_TOKOMEMBER_PROGRAM_LIST
+import com.tokopedia.tokomember_seller_dashboard.util.TM_FEEDBACK_URL
 import com.tokopedia.tokomember_seller_dashboard.util.TOKOMEMBER_SCREEN
 import com.tokopedia.tokomember_seller_dashboard.view.adapter.TokomemberDashHomeViewpagerAdapter
 import com.tokopedia.unifycomponents.TabsUnify
@@ -89,7 +90,7 @@ class TokomemberDashHomeMainFragment : BaseDaggerFragment() {
             )
             feedbackIcon.setOnClickListener {
                 tmTracker?.clickHomeFeedback(shopId = arguments?.getInt(BUNDLE_SHOP_ID).toString())
-                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://docs.google.com/forms/d/e/1FAIpQLSf5deaECcXAlznho4PuP6lnMvCDMeVbuieAWpDrJ83f-bX3vA/viewform?usp=sf_link"))
+                RouteManager.route(context,String.format("%s?url=%s", ApplinkConst.WEBVIEW, TM_FEEDBACK_URL))
             }
 
         }

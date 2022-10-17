@@ -11,8 +11,8 @@ class TokomemberMultiTextView @JvmOverloads constructor(context:Context,
                                                         defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
     private var attrArray : TypedArray? = null
-    lateinit var descriptionTv:Typography
-    lateinit var valueTv:Typography
+    var descriptionTv: Typography? = null
+    var valueTv:Typography? = null
 
     init{
         inflate(context,R.layout.tm_multi_text_view,this)
@@ -28,8 +28,8 @@ class TokomemberMultiTextView @JvmOverloads constructor(context:Context,
     private fun initSetup(context: Context,attrs:AttributeSet?){
         attrs.let {
             attrArray = context.obtainStyledAttributes(it,R.styleable.TokomemberMultiTextView)
-            descriptionTv.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_descriptionText) ?: ""
-            valueTv.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_valueText) ?: ""
+            descriptionTv?.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_descriptionText) ?: ""
+            valueTv?.text= attrArray?.getString(R.styleable.TokomemberMultiTextView_valueText) ?: ""
         }
     }
 }

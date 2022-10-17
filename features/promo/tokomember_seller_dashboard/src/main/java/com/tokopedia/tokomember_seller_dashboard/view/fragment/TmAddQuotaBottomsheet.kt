@@ -171,11 +171,12 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             else {
                 val quota = textFieldQuota.editText.text.toString().toIntOrZero()
                 if(quota >= voucherQuota) {
-                    if(callingFragment is TmDashCouponDetailFragment){
-                        tmTracker.clickSimpanQuotaCouponDetail(userSession.shopId)
-                    }
-                    else{
-                        tmTracker.clickAddQuotaCTA(userSession.shopId)
+                    callingFragment?.let {
+                        if (it is TmDashCouponDetailFragment) {
+                            tmTracker.clickSimpanQuotaCouponDetail(userSession.shopId)
+                        } else {
+                            tmTracker.clickAddQuotaCTA(userSession.shopId)
+                        }
                     }
                     tmCouponViewModel.updateQuota(
                         quota = quota,
@@ -207,7 +208,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
         const val TAG = "TM_ADD_QUOTA_BOTTOM_SHEET"
         lateinit var tmCouponListRefreshCallback: TmCouponListRefreshCallback
-        lateinit var callingFragment: Fragment
+        private var callingFragment: Fragment? = null
 
         fun show(
             childFragmentManager: FragmentManager,
