@@ -128,6 +128,11 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
         return super.onFragmentBackPressed()
     }
 
+    private fun getVariant(): String {
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
+        return PHONE_VARIANT
+    }
+
     companion object {
         private const val GOTO_SEAMLESS_SCREEN_NAME = "gotoSeamlessLandingScreen"
         const val RESULT_OTHER_ACCS = 235
