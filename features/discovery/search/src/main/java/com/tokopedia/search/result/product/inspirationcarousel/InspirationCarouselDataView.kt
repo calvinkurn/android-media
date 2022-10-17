@@ -2,6 +2,8 @@ package com.tokopedia.search.result.product.inspirationcarousel
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.discovery.common.analytics.SearchComponentTracking
+import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel.LABEL_INTEGRITY
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking.getInspirationCarouselUnificationListName
@@ -51,7 +53,8 @@ class InspirationCarouselDataView(
         val dimension90: String = "",
         val cardButton: CardButton = CardButton(),
         val bundle: Bundle = Bundle(),
-    ): Visitable<InspirationCarouselOptionTypeFactory>{
+        val keyword: String = "",
+    ): Visitable<InspirationCarouselOptionTypeFactory> {
 
         override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
             return typeFactory.type(layout)
@@ -95,6 +98,7 @@ class InspirationCarouselDataView(
             val discountPercentage: Int = 0,
             val position: Int = 0,
             val optionTitle: String = "",
+            val shopId: String = "",
             val shopLocation: String = "",
             val shopName: String = "",
             val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
@@ -111,7 +115,15 @@ class InspirationCarouselDataView(
             val discount : String = "",
             val label: String = "",
             val bundleId: String = "",
-        ): ImpressHolder(), Visitable<InspirationCarouselOptionTypeFactory> {
+            val parentId: String = "",
+            val minOrder: String = "",
+            val trackingOption: Int = 0,
+        ): ImpressHolder(),
+            Visitable<InspirationCarouselOptionTypeFactory> {
+
+            companion object {
+                private const val ZERO_PARENT_ID = "0"
+            }
 
             override fun type(typeFactory: InspirationCarouselOptionTypeFactory): Int {
                 return typeFactory.type(layout)
@@ -129,9 +141,12 @@ class InspirationCarouselDataView(
                 return labelGroupDataList.find { it.position == position }
             }
 
-            fun willShowRating(): Boolean{
+            fun willShowRating(): Boolean {
                 return ratingAverage.isNotEmpty()
             }
+
+            fun shouldOpenVariantBottomSheet(): Boolean =
+                parentId != "" && parentId != ZERO_PARENT_ID
 
             fun getInspirationCarouselListProductAsObjectDataLayer(): Any {
                 return DataLayer.mapOf(
@@ -200,6 +215,41 @@ class InspirationCarouselDataView(
                     "dimension131", externalReference.orNone(),
                 )
             }
+
+            fun asUnificationAtcObjectDataLayer(
+                filterSortParams: String,
+                cartId: String,
+                quantity: Int,
+            ): Any {
+                return DataLayer.mapOf(
+                    "item_name", name,
+                    "item_id", id,
+                    "price", price,
+                    "item_brand", "none / other",
+                    "item_category", "none / other",
+                    "list", getInspirationCarouselUnificationListName(inspirationCarouselType, componentId),
+                    "position", optionPosition,
+                    "dimension115", labelGroupDataList.getFormattedPositionName(),
+                    "dimension61", filterSortParams,
+                    "dimension90", dimension90,
+                    "dimension131", externalReference.orNone(),
+                    "dimension45", cartId,
+                    "quantity", quantity,
+                    "shop_id", shopId,
+                    "shop_name", shopName,
+                )
+            }
+
+            fun asSearchComponentTracking(keyword: String): SearchComponentTracking =
+                searchComponentTracking(
+                    trackingOption = trackingOption,
+                    keyword = keyword,
+                    valueId = id,
+                    valueName = name,
+                    componentId = componentId,
+                    applink = applink,
+                    dimension90 = dimension90
+                )
         }
     }
 

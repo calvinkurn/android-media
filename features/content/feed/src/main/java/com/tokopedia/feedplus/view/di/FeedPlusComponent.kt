@@ -34,6 +34,5 @@ interface FeedPlusComponent {
     fun userSessionUserSessionInterface(): UserSessionInterface
     fun inject(feedPlusFragment: FeedPlusFragment)
     fun inject(feedPlusDetailFragment: FeedPlusDetailFragment)
-    fun inject(dynamicFeedFragment: DynamicFeedFragment)
     fun inject(feedSeeMoreFragment: PlayFeedSeeMoreFragment)
 }
