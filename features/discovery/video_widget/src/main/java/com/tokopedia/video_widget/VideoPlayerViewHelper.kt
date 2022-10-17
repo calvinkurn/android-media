@@ -148,7 +148,7 @@ class VideoPlayerViewHelper(
     }
 
     private fun resumePlayer() {
-        val videoPlayer = exoPlayer?: return
+        val videoPlayer = exoPlayer ?: return
         if (videoPlayer.playbackState == ExoPlayer.STATE_ENDED) resetPlayer()
         videoPlayer.playWhenReady = true
     }
