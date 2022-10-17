@@ -13,7 +13,7 @@ import androidx.annotation.StringDef
 //    DtLayoutType.CATEGORY,
 //    DtLayoutType.LEGO_3_IMAGE,
     DtLayoutType.LEGO_6_IMAGE,
-    DtLayoutType.PRODUCT_RECOM,
+    DtLayoutType.MIX_TOP_CAROUSEL,
 //    DtLayoutType.REPURCHASE_PRODUCT,
 //    DtLayoutType.EDUCATIONAL_INFORMATION,
 //    DtLayoutType.SHARING_EDUCATION,
@@ -38,9 +38,8 @@ annotation class DtLayoutType {
 
 
         const val BANNER_CAROUSEL = "banner_carousel_v2"
-
-        //        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
-        const val PRODUCT_RECOM = "top_carousel"
+                const val EDUCATIONAL_INFORMATION = "page_usp"
+        const val MIX_TOP_CAROUSEL = "top_carousel"
         const val LEGO_6_IMAGE = "6_image"
         const val FEATURED_SHOP = "shop_widget"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
