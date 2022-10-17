@@ -1,7 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
