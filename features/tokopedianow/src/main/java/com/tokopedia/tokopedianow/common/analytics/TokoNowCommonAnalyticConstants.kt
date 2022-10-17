@@ -11,14 +11,20 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
+        const val EVENT_PRODUCT_VIEW = "productView"
+        const val EVENT_PRODUCT_CLICK = "productClick"
+        const val EVENT_ATC = "addToCart"
         const val EVENT_ADD_TO_CART = "add_to_cart"
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
+        const val EVENT_VIEW_PG_IRIS = "viewPGIris"
         const val EVENT_VIEW_GROWTH_IRIS = "viewGrowthIris"
         const val EVENT_CLICK_GROWTH = "clickGrowth"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_CAMPAIGN_CODE = "campaignCode"
         const val EVENT_WAREHOUSE_ID = "warehouseId"
+        const val EVENT_PROMO_VIEW = "promoView"
+        const val EVENT_PROMO_CLICK = "promoClick"
     }
 
     object CATEGORY{
@@ -75,6 +81,7 @@ object TokoNowCommonAnalyticConstants {
         const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
+        const val DEFAULT_EMPTY_VALUE = ""
     }
 
     object ACTION{
