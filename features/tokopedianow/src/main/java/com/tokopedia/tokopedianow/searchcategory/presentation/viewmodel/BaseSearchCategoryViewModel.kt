@@ -249,6 +249,9 @@ abstract class BaseSearchCategoryViewModel(
     protected val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
     val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
 
+    private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
+    val updateToolbarNotification: LiveData<Boolean> = updateToolbarNotificationLiveData
+
     init {
         updateQueryParams()
 
@@ -1146,15 +1149,18 @@ abstract class BaseSearchCategoryViewModel(
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                updateToolbarNotification()
             },
             onSuccessUpdateCart = {
                 sendTrackingUpdateQuantity(quantity, productItem)
                 onAddToCartSuccess(productItem, quantity)
+                updateToolbarNotification()
             },
             onSuccessDeleteCart = {
                 sendDeleteCartTracking(productItem)
                 onAddToCartSuccess(productItem, 0)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                updateToolbarNotification()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
@@ -1369,19 +1375,26 @@ abstract class BaseSearchCategoryViewModel(
                 )
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onAddToCartSuccessRecommendationItem(recommendationItem, it.data.quantity)
+                updateToolbarNotification()
             },
             onSuccessUpdateCart = {
                 onAddToCartSuccessRecommendationItem(recommendationItem, quantity)
+                updateToolbarNotification()
             },
             onSuccessDeleteCart = {
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onAddToCartSuccessRecommendationItem(recommendationItem, 0)
+                updateToolbarNotification()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
                 handleAddToCartEventNonLogin(adapterPosition)
             },
         )
+    }
+
+    fun updateToolbarNotification() {
+        updateToolbarNotificationLiveData.postValue(true)
     }
 
     private fun onAddToCartSuccessRecommendationItem(
@@ -1408,13 +1421,16 @@ abstract class BaseSearchCategoryViewModel(
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
                 sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
+                updateToolbarNotification()
             },
             onSuccessUpdateCart = {
                 onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
+                updateToolbarNotification()
             },
             onSuccessDeleteCart = {
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
+                updateToolbarNotification()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
