@@ -21,6 +21,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoCleared
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import com.tokopedia.logisticCommon.R
+import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.databinding.BottomsheetShareAddressBinding
 import com.tokopedia.logisticCommon.di.DaggerRequestShareAddressComponent
 import com.tokopedia.logisticCommon.di.RequestShareAddressComponent
@@ -86,14 +87,24 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     }
 
     private fun onSuccessRequestAddress() {
+        trackOnClickBottomSheetSendButton(isSuccess = true)
         mRequestAddressListener?.onSuccessRequestAddress()
     }
 
+    private fun trackOnClickBottomSheetSendButton(isSuccess: Boolean) {
+        ShareAddressAnalytics.onClickBottomSheetSendButton(
+            isRequestAddress = isRequestAddress,
+            isSuccess = isSuccess
+        )
+    }
+
     private fun onSuccessCheckingShareAddress() {
+        trackOnClickBottomSheetSendButton(isSuccess = true)
         mShareAddressListener?.onClickShareAddress(binding.etInputEmailNoHp.editText.text.toString())
     }
 
     private fun showInputError(errorMessage: String) {
+        trackOnClickBottomSheetSendButton(isSuccess = false)
         binding.etInputEmailNoHp.isInputError = true
         binding.etInputEmailNoHp.setMessage(errorMessage)
     }
@@ -220,6 +231,7 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
             Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         )
         try {
+            ShareAddressAnalytics.onClickPhoneBookToGetContact(isRequestAddress)
             startActivityForResult(contactPickerIntent, REQUEST_CODE_CONTACT_PICKER)
         } catch (e: Exception) {
             showToaster(getString(R.string.contact_not_found))

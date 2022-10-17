@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.domain.model.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
@@ -69,11 +70,43 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
     private fun initObserver() {
         viewModel.shareAddressResponse.observe(viewLifecycleOwner, Observer {
             when (it) {
-                is ShareAddressBottomSheetState.Success -> mListener?.onSuccessConfirmShareAddress(viewModel.isApprove)
-                is ShareAddressBottomSheetState.Fail -> mListener?.onFailedShareAddress(it.errorMessage)
+                is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
+                is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
                 is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
             }
         })
+    }
+
+    private fun onSuccessShareAddress() {
+        if (viewModel.isApprove) {
+            trackOnAgreeShareAddress(isSuccess = true)
+        } else {
+            trackOnDisagreeShareAddress(isSuccess = true)
+        }
+        mListener?.onSuccessConfirmShareAddress(viewModel.isApprove)
+    }
+
+    private fun onFailedShareAddress(errorMessage: String) {
+        if (viewModel.isApprove) {
+            trackOnAgreeShareAddress(isSuccess = false)
+        } else {
+            trackOnDisagreeShareAddress(isSuccess = false)
+        }
+        mListener?.onFailedShareAddress(errorMessage)
+    }
+
+    private fun trackOnAgreeShareAddress(isSuccess: Boolean) {
+        ShareAddressAnalytics.onAgreeSendAddress(
+            isDirectShare = isFromNotif().not(),
+            isSuccess = isSuccess
+        )
+    }
+
+    private fun trackOnDisagreeShareAddress(isSuccess: Boolean) {
+        ShareAddressAnalytics.onDisagreeSendAddress(
+            isDirectShare = isFromNotif().not(),
+            isSuccess = isSuccess
+        )
     }
 
     private fun onLoadingShareAddress(isShowLoading: Boolean) {
@@ -158,6 +191,7 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
                 )
             )
         } else {
+            trackOnDisagreeShareAddress(isSuccess = true)
             dismiss()
         }
     }

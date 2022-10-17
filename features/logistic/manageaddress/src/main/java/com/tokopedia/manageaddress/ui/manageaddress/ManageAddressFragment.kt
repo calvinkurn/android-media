@@ -13,11 +13,13 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.manageaddress.R
 import com.tokopedia.manageaddress.databinding.FragmentManageAddressBinding
@@ -70,6 +72,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     private var manageAddressListener: ManageAddressListener? = null
 
     private var tabAdapter: ManageAddressViewPagerAdapter? = null
+
+    private var isFirstLoad = true
 
     override fun getScreenName(): String = ""
 
@@ -159,7 +163,24 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
                     tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
                 }
 
+                vpManageAddress.registerOnPageChangeCallback(onPageChangeCallback())
                 doCheckIsReceiveShareAddress()
+            }
+        }
+    }
+
+    private fun onPageChangeCallback(): ViewPager2.OnPageChangeCallback {
+        return object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                if (isFirstLoad) {
+                    isFirstLoad = false
+                } else {
+                    if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                        ShareAddressAnalytics.onClickMainTab()
+                    } else {
+                        ShareAddressAnalytics.onClickFromFriendTab()
+                    }
+                }
             }
         }
     }

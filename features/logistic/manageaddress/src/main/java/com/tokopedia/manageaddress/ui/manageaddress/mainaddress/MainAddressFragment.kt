@@ -23,6 +23,7 @@ import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMap
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressConstant
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EXTRA_EDIT_ADDRESS
@@ -713,6 +714,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     override fun onAddressItemSelected(peopleAddress: RecipientAddressModel) {
+        ShareAddressAnalytics.onChooseAddressList()
         setButtonEnabled(true)
         _selectedAddressItem = peopleAddress
         if (isLocalization == true) ChooseAddressTracking.onClickAvailableAddressAddressList(userSession.userId)
@@ -731,6 +733,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
                 }
             } else if (viewModel.isNeedToShareAddress) {
                 addressData?.apply {
+                    ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(
                         senderAddressId = id,
                         receiverUserId = viewModel.receiverUserId
@@ -812,6 +815,7 @@ class MainAddressFragment : BaseDaggerFragment(), ManageAddressItemAdapter.MainA
     }
 
     override fun onShareAddressClicked(peopleAddress: RecipientAddressModel) {
+        ShareAddressAnalytics.onClickDirectShareButton()
         showShareAddressBottomSheet(peopleAddress.id)
     }
 

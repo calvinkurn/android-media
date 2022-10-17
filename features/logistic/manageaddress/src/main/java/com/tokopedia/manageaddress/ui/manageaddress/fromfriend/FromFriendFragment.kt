@@ -14,6 +14,7 @@ import com.tokopedia.globalerror.ReponseStatus
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.logisticCommon.data.analytics.ShareAddressAnalytics
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet
 import com.tokopedia.logisticCommon.ui.shareaddress.ShareAddressBottomSheet.Companion.TAG_SHARE_ADDRESS
 import com.tokopedia.manageaddress.di.ManageAddressComponent
@@ -86,6 +87,7 @@ class FromFriendFragment : BaseDaggerFragment(),
     private fun initCbAllAddress() {
         binding?.cbAllAddress?.setOnCheckedChangeListener { _, isChecked ->
             if (viewModel.isNeedUpdateAllList) {
+                ShareAddressAnalytics.onCheckAllAddress(isChecked)
                 viewModel.setAllListSelected(isChecked)
                 refreshListAndButton()
             } else {
@@ -96,6 +98,7 @@ class FromFriendFragment : BaseDaggerFragment(),
 
     private fun initRequestAddressView() {
         binding?.cardRequestAddress?.clRequestAddress?.setOnClickListener {
+            ShareAddressAnalytics.onClickRequestAddress()
             showRequestAddressBottomSheet()
         }
     }
@@ -124,7 +127,10 @@ class FromFriendFragment : BaseDaggerFragment(),
         viewModel.saveAddressState.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is FromFriendAddressActionState.Success -> onSuccessSaveAddress(it.message)
-                is FromFriendAddressActionState.Fail -> showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                is FromFriendAddressActionState.Fail -> {
+                    trackOnClickSaveButton(isSuccess = false)
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                }
                 is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
             }
         })
@@ -202,6 +208,7 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun onSuccessSaveAddress(message: String) {
+        trackOnClickSaveButton(isSuccess = true)
         showToaster(message)
         mListener?.apply {
             removeArgumentsFromNotif()
@@ -209,11 +216,20 @@ class FromFriendFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun trackOnClickSaveButton(isSuccess: Boolean) {
+        ShareAddressAnalytics.onClickSaveButton(isSuccess)
+    }
+
+    private fun trackOnClickDeleteButton(isSuccess: Boolean) {
+        ShareAddressAnalytics.onClickDeleteButton(isSuccess)
+    }
+
     private fun onLoadingSaveAddress(isLoading: Boolean) {
         binding?.btnSave?.isLoading = isLoading
     }
 
     private fun onSuccessDeleteAddress() {
+        trackOnClickDeleteButton(isSuccess = true)
         if (viewModel.isShareAddressFromNotif) {
             viewModel.isShareAddressFromNotif = false
             mListener?.removeArgumentsFromNotif()
@@ -222,6 +238,7 @@ class FromFriendFragment : BaseDaggerFragment(),
     }
 
     private fun onFailedDeleteAddress(errorMessage: String) {
+        trackOnClickDeleteButton(isSuccess = false)
         refreshListAndButton()
         showToaster(errorMessage, Toaster.TYPE_ERROR)
     }
