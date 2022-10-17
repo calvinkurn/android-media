@@ -69,9 +69,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
     lateinit var userSession: UserSessionInterface
 
-    @Inject
-    lateinit var viewModel: TokopediaWatchViewModel
-
     override fun onResume() {
         super.onResume()
         dataClient.addListener(this)
@@ -87,7 +84,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         binding = ActivityTokopediaWatchBinding.inflate(layoutInflater)
         setContentView(binding?.root)
-        initInjector()
 
         userSession = UserSession(this)
 
@@ -102,10 +98,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
 //            sendMessageToWatch()
 //        }
 
-        binding?.btnAcceptBulkOrder?.setOnClickListener {
-//            viewModel.acceptBulkOrder()
-        }
-
         binding?.btnSendData?.setOnClickListener {
             sendDataToWatch()
         }
@@ -117,24 +109,10 @@ class TokopediaWatchActivity : AppCompatActivity(),
                 binding?.tvLog?.text = it.joinToString("\n\n")
             }
         }
-        observeData()
 
-        getOrderList()
         checkIfPhoneHasApp()
 
         showWearAppDialogIfMeetCondition()
-
-
-        try {
-            val orderIds = intent.getStringExtra("order_ids")
-            val listType = object : TypeToken<List<String>>() {}.type
-            val list : List<String> = Gson().fromJson(orderIds, listType)
-            if (list.isNotEmpty()) {
-                viewModel.acceptBulkOrder(list)
-            }
-        }catch (e: Exception) {
-
-        }
     }
 
     private fun showWearAppDialogIfMeetCondition() {
@@ -225,42 +203,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
         }
     }
 
-    private fun getOrderList() {
-        if (!userSession.isLoggedIn) {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), 123)
-        }
-
-        viewModel.getOrderList()
-    }
-
-    private fun observeData() {
-        observe(viewModel.bulkAcceptOrderResult) {
-            when (it) {
-                is Success -> {
-                    sendMessageToWatch(
-                        DataLayerServiceListener.MESSAGE_CLIENT_ACCEPT_BULK_ORDER_PATH,
-                        Gson().toJson(it.data)
-                    )
-                    Toaster.build(view = binding!!.root, text = it.data.data.message).show()
-                }
-                is Fail -> {
-
-                }
-            }
-        }
-
-//        observe(viewModel.orderListModel) {
-//            when (it) {
-//                is Success -> {
-//                    sendMessageToWatch(
-//                        DataLayerServiceListener.GET_ORDER_LIST_PATH,
-//                        Gson().toJson(it.data)
-//                    )
-//                }
-//            }
-//        }
-    }
-
     private fun sendDataToWatch() {
         val message = binding?.etData?.editText?.text.toString()
         lifecycleScope.launch {
@@ -281,35 +223,6 @@ class TokopediaWatchActivity : AppCompatActivity(),
             } catch (exception: Exception) {
                 sendLog("Failed, while send data to watch: $message")
                 Log.d(TAG, "Saving DataItem failed: $exception")
-            }
-        }
-    }
-
-    private fun sendMessageToWatch(key: String, message: String) {
-        lifecycleScope.launch {
-            try {
-                val nodes = nodeClient.connectedNodes.await()
-
-                // Send a message to all nodes in parallel
-                nodes.map { node ->
-                    async {
-                        messageClient.sendMessage(
-                            node.id,
-                            key,
-                            message.toByteArray()
-                        )
-                            .await()
-                    }
-                }.awaitAll()
-
-                sendLog("Send data to watch success: $message")
-                Log.d(TAG, "Send data to watch success: $message")
-            } catch (cancellationException: CancellationException) {
-                sendLog("Failed: CancellationException, while send data to watch: $message")
-                throw cancellationException
-            } catch (exception: Exception) {
-                sendLog("Failed, while send data to watch: $message")
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -407,11 +320,5 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
             }
         }
-    }
-    private fun initInjector() {
-        DaggerTokopediaWatchComponent.builder()
-            .baseAppComponent((this.applicationContext as BaseMainApplication).baseAppComponent)
-            .build()
-            .inject(this)
     }
 }

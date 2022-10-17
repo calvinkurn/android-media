@@ -51,9 +51,6 @@ class SharedViewModel @Inject constructor(
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_ORDER_LIST)
             clientMessageDatasource.sendMessagesToNodes(Action.GET_SUMMARY)
-            //            newOrderUseCase.getAcceptBulkOrder().collectLatest {
-//                _acceptBulkOrder.value = UiState.Success(data = it)
-//            }
         }
     }
 

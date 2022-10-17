@@ -11,8 +11,6 @@ interface BaseRepository<T> {
 
     fun getCachedDataCount(params: Array<String> = arrayOf()) : Flow<Int> = flowOf()
 
-    fun getAcceptBulkOrder(): Flow<AcceptBulkOrderModel> = flowOf()
-
     suspend fun sendMessagesToNodes(action: Action) { }
 
 }
