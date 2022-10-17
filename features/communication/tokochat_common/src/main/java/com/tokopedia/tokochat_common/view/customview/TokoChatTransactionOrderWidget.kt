@@ -56,6 +56,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     fun showTransactionWidget() {
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
         partialOrderStatusWidgetBinding?.root?.show()
+        setupPartialOrderStatusBinding()
     }
 
     fun render(listener: Listener?, orderProgressUiModel: TokoChatOrderProgressUiModel?) {
@@ -99,21 +100,6 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
     }
 
-    private fun renderStateDescription() {
-        doWhenState(
-            isOpen = { showContainerDescription() },
-            isClose = { hideContainerDescription() }
-        )
-    }
-
-    private fun showContainerDescription() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.show()
-    }
-
-    private fun hideContainerDescription() {
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
-    }
-
     private fun setupShimmeringOrderStatusBinding() {
         binding?.run {
             val shimmerOrderStatusVs =
@@ -128,6 +114,21 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 shimmerOrderStatusVs.show()
             }
         }
+    }
+
+    private fun renderStateDescription() {
+        doWhenState(
+            isOpen = { showContainerDescription() },
+            isClose = { hideContainerDescription() }
+        )
+    }
+
+    private fun showContainerDescription() {
+        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.show()
+    }
+
+    private fun hideContainerDescription() {
+        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
     }
 
     private fun loadPreviousState() {
