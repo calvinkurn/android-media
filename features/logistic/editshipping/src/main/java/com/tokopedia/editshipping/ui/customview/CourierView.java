@@ -2,7 +2,6 @@ package com.tokopedia.editshipping.ui.customview;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
@@ -12,8 +11,6 @@ import com.tokopedia.abstraction.common.utils.image.ImageHandler;
 import com.tokopedia.editshipping.R;
 import com.tokopedia.editshipping.domain.model.editshipping.Courier;
 import com.tokopedia.editshipping.ui.EditShippingViewListener;
-import com.tokopedia.editshipping.util.EditShippingConstant;
-import com.tokopedia.iconunify.IconUnify;
 import com.tokopedia.unifyprinciples.Typography;
 
 /**
@@ -57,7 +54,7 @@ public class CourierView extends EditShippingCourierView<Courier,
 
     @Override
     public void renderData(@NonNull final Courier courier, final int courierIndex) {
-        if (isWhitelabelService(courier)) {
+        if (courier.isWhitelabelService()) {
             courierNameText.setVisibility(View.GONE);
             courierImageHolder.setVisibility(View.GONE);
         } else {
@@ -110,10 +107,6 @@ public class CourierView extends EditShippingCourierView<Courier,
                     weightInformationVisibility(currentCourier.weightPolicy));
         } else setCourierInformation(mainView.getMainContext().getString(R.string.info_shipping_unavailable),
                 currentCourier.name, View.GONE);
-    }
-
-    private boolean isWhitelabelService(Courier courier) {
-        return EditShippingConstant.INSTANCE.getWHITELABEL_SHIPPER_ID().contains(Long.parseLong(courier.id));
     }
 
     private void setCourierInformation(final String information, final String courierName,
