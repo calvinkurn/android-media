@@ -104,7 +104,6 @@ class FlashSaleManageProductListFragment :
         }
     }
     private var currentOffset: Int = 0
-    private var shopId: String = ""
     private val flashSaleAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleManageProductListItemDelegate(this))
@@ -120,13 +119,8 @@ class FlashSaleManageProductListFragment :
         configRecyclerView()
         getCampaignDetailBottomSheetData()
         getReservedProductList()
-        getShopId()
         observeUiState()
         observeUiEffect()
-    }
-
-    private fun getShopId() {
-        viewModel.processEvent(FlashSaleManageProductListUiEvent.GetShopId)
     }
 
     private fun configRecyclerView() {
@@ -230,16 +224,9 @@ class FlashSaleManageProductListFragment :
                     is FlashSaleManageProductListUiEffect.ClearProductList -> {
                         clearProductList()
                     }
-                    is FlashSaleManageProductListUiEffect.SetShopId -> {
-                        setShopId(it.shopId)
-                    }
                 }
             }
         }
-    }
-
-    private fun setShopId(shopId: String) {
-        this.shopId = shopId
     }
 
     private fun clearProductList() {
@@ -518,7 +505,7 @@ class FlashSaleManageProductListFragment :
     }
 
     private fun sendClickApplyProductDiscountTracker() {
-        tracker.sendClickApplyManageDiscountEvent(campaignId, shopId)
+        tracker.sendClickApplyManageDiscountEvent(campaignId)
     }
 
     private fun submitDiscountedProduct() {
@@ -546,8 +533,7 @@ class FlashSaleManageProductListFragment :
     private fun sendClickManageProductDiscountTracker(productData: ReservedProduct.Product) {
         tracker.sendClickManageProductDiscountEvent(
             campaignId,
-            productData.productId.toString(),
-            shopId
+            productData.productId.toString()
         )
     }
 

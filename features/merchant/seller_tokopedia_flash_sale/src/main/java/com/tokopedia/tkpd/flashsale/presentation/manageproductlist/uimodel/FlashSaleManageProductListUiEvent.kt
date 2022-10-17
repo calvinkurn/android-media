@@ -34,5 +34,4 @@ sealed class FlashSaleManageProductListUiEvent {
         val productData: ReservedProduct.Product
     ) : FlashSaleManageProductListUiEvent()
 
-    object GetShopId : FlashSaleManageProductListUiEvent()
 }
