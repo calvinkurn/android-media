@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 
 internal class FeedDiffUtilCallback(
         private val oldList: List<Visitable<*>> = listOf(),
@@ -45,11 +46,13 @@ internal class FeedDiffUtilCallback(
         val newItem = newList[newPosition]
 
         return if (oldItem is DynamicPostUiModel && newItem is DynamicPostUiModel) oldItem == newItem
+        else if (oldItem is ShopRecomWidgetViewModel && newItem is ShopRecomWidgetViewModel) oldItem == newItem
         else !(oldItem is CarouselPlayCardViewModel && newItem is CarouselPlayCardViewModel)
     }
 
     override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
         return if (oldList[oldItemPosition] is CarouselPlayCardViewModel && newList[newItemPosition] is CarouselPlayCardViewModel) Unit
+        else if (oldList[oldItemPosition] is ShopRecomWidgetViewModel && newList[newItemPosition] is ShopRecomWidgetViewModel) Unit
         else super.getChangePayload(oldItemPosition, newItemPosition)
     }
 }
