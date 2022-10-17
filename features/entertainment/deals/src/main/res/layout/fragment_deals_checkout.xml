@@ -409,11 +409,12 @@
         android:focusable="true"
         android:visibility="gone">
 
-        <com.tokopedia.unifycomponents.ProgressBarUnify
+        <com.tokopedia.unifycomponents.LoaderUnify
             android:id="@+id/prog_bar"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center" />
+
     </FrameLayout>
 
 </FrameLayout>
