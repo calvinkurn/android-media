@@ -9,47 +9,47 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.model.PromoSA
 import com.tokopedia.purchase_platform.common.feature.tickerannouncement.Ticker
 
 class GetOccCartData(
-    @SerializedName("cart_data")
+        @SerializedName("cart_data")
         val cartData: String = "",
-    @SerializedName("errors")
+        @SerializedName("errors")
         val errors: List<String> = emptyList(),
-    @SerializedName("error_code")
+        @SerializedName("error_code")
         val errorCode: String = "",
-    @SerializedName("pop_up_message")
+        @SerializedName("pop_up_message")
         val popUpMessage: String = "",
-    @SerializedName("max_char_note")
+        @SerializedName("max_char_note")
         val maxCharNote: Int = 0,
-    @SerializedName("placeholder_note")
+        @SerializedName("placeholder_note")
         val placeholderNote: String = "",
-    @SerializedName("kero_token")
+        @SerializedName("kero_token")
         val keroToken: String = "",
-    @SerializedName("kero_unix_time")
+        @SerializedName("kero_unix_time")
         val keroUnixTime: String = "",
-    @SerializedName("kero_discom_token")
+        @SerializedName("kero_discom_token")
         val keroDiscomToken: String = "",
-    @SerializedName("tickers")
+        @SerializedName("tickers")
         val tickers: List<Ticker> = emptyList(),
-    @SerializedName("occ_main_onboarding")
+        @SerializedName("occ_main_onboarding")
         val occMainOnboarding: OccMainOnboardingResponse = OccMainOnboardingResponse(),
-    @SerializedName("group_shop_occ")
+        @SerializedName("group_shop_occ")
         val groupShop: List<GroupShopOccResponse> = emptyList(),
-    @SerializedName("profile")
+        @SerializedName("profile")
         val profileResponse: ProfileResponse = ProfileResponse(),
-    @SerializedName("promo")
+        @SerializedName("promo")
         val promo: PromoSAFResponse = PromoSAFResponse(),
-    @SerializedName("customer_data")
+        @SerializedName("customer_data")
         val customerData: CustomerData = CustomerData(),
-    @SerializedName("payment_additional_data")
+        @SerializedName("payment_additional_data")
         val paymentAdditionalData: PaymentAdditionalData = PaymentAdditionalData(),
-    @SerializedName("image_upload")
+        @SerializedName("image_upload")
         val imageUpload: ImageUploadResponse = ImageUploadResponse(),
-    @SerializedName("prompt")
+        @SerializedName("prompt")
         val prompt: OccPromptResponse = OccPromptResponse(),
-    @SerializedName("total_product_price")
+        @SerializedName("total_product_price")
         val totalProductPrice: String = "",
-    @SerializedName("pop_up")
+        @SerializedName("pop_up")
         val popUp: PopUp = PopUp(),
-    @SerializedName("add_on_wording")
+        @SerializedName("add_on_wording")
         val addOnWording: AddOnWording = AddOnWording()
 )
 
