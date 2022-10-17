@@ -168,6 +168,11 @@ interface DynamicProductDetailListener {
     )
 
     /**
+     * [ProductShopAdditionalDataModel]
+     */
+    fun onShopAdditionalSeeMore()
+
+    /**
      * ProductRecommendationAnnotationChipViewHolder
      */
     fun onChipFilterClicked(

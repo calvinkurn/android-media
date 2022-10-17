@@ -1088,6 +1088,18 @@ open class DynamicProductDetailFragment :
         onImpressComponent(componentTrackDataModel)
     }
 
+    override fun onShopAdditionalSeeMore() {
+        context?.let {
+            val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
+            if (uspUrl.isNotBlank()) {
+                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
+                    context = it,
+                    uspTokoCabangImgUrl = uspUrl
+                )
+            }
+        }
+    }
+
     /**
      * ProductShopInfoViewHolder
      */
