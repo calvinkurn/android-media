@@ -140,6 +140,22 @@ open class ManageProductNonVariantBaseViewHolder(
         tickerPriceError.requestLayout()
     }
 
+    protected fun LayoutCampaignManageProductDetailParentBinding.setupIneligibleLocation(
+        warehouse: ReservedProduct.Product.Warehouse
+    ) {
+        if (warehouse.isDisabled) {
+            textParentErrorMessage.visible()
+            textParentErrorMessage.text = root.context.getString(R.string.stfs_warning_location_not_in_criteria)
+            tvCheckDetail.visible()
+            tvCheckDetail.setOnClickListener { listener?.showDetailCriteria(adapterPosition) }
+            warehouse.isToggleOn = false
+            switcherToggleParent.disable()
+            switcherToggleParent.isChecked = false
+        } else {
+            switcherToggleParent.isChecked = warehouse.isToggleOn
+        }
+    }
+
     // TODO: tidy up this
     private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
         val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat

@@ -20,5 +20,14 @@ interface ManageProductVariantListener {
 
     fun calculatePercent(priceInput: Long, adapterPosition: Int): String
 
-    fun onMultiWarehouseClicked(adapterPosition: Int)
+    fun onMultiWarehouseClicked(
+        adapterPosition: Int,
+        selectedProduct: ReservedProduct.Product.ChildProduct
+    )
+
+    fun onIneligibleProductWithSingleWarehouseClicked(
+        index: Int,
+        selectedProduct: ReservedProduct.Product.ChildProduct,
+        productCriteria: ReservedProduct.Product.ProductCriteria
+    )
 }

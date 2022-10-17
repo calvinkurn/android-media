@@ -6,6 +6,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSale
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleCategory
 import com.tokopedia.tkpd.flashsale.domain.entity.FlashSaleData
+import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleListPageTab
 import com.tokopedia.tkpd.flashsale.domain.entity.enums.FlashSaleStatus
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerCategoryUseCase
 import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleListForSellerUseCase
@@ -222,7 +223,8 @@ class FlashSaleListViewModelTest {
             false,
             FlashSale.FormattedDate("", ""),
             FlashSaleStatus.UPCOMING,
-            emptyList()
+            emptyList(),
+            FlashSaleListPageTab.UPCOMING
         )
         val expected = listOf(
             UpcomingFlashSaleItem(
@@ -312,7 +314,8 @@ class FlashSaleListViewModelTest {
             false,
             FlashSale.FormattedDate("", ""),
             FlashSaleStatus.FINISHED,
-            emptyList()
+            emptyList(),
+            FlashSaleListPageTab.FINISHED
         )
         val expected = listOf(
             FinishedFlashSaleItem(
@@ -402,7 +405,8 @@ class FlashSaleListViewModelTest {
             false,
             FlashSale.FormattedDate("", ""),
             FlashSaleStatus.WAITING_FOR_SELECTION,
-            emptyList()
+            emptyList(),
+            FlashSaleListPageTab.REGISTERED
         )
 
         val expected = listOf(
@@ -495,7 +499,8 @@ class FlashSaleListViewModelTest {
             false,
             FlashSale.FormattedDate("", ""),
             FlashSaleStatus.ONGOING,
-            emptyList()
+            emptyList(),
+            FlashSaleListPageTab.ONGOING
         )
         val expected = listOf(
             OngoingFlashSaleItem(
@@ -584,7 +589,8 @@ class FlashSaleListViewModelTest {
             false,
             FlashSale.FormattedDate("", ""),
             FlashSaleStatus.UPCOMING,
-            emptyList()
+            emptyList(),
+            FlashSaleListPageTab.UPCOMING
         )
 
         val expected = listOf(

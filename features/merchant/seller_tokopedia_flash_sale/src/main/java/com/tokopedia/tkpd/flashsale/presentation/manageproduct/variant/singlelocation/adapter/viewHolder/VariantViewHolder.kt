@@ -1,4 +1,4 @@
-package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.ViewHolder
+package com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.singlelocation.adapter.viewHolder
 
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -37,17 +37,32 @@ class VariantViewHolder(
                 R.string.manageproductnonvar_stock_total_format,
                 selectedChildProduct.stock
             )
-            switcherToggleParent.isChecked = selectedChildProduct.isToggleOn
-            switcherToggleParent.setOnClickListener {
-                selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
-                binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
-                listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
-                discount?.let { disc ->
-                    listener?.onDataInputChanged(
-                        adapterPosition,
-                        product, disc
-                    )
+            switcherToggleParent.apply {
+                isChecked = selectedChildProduct.isToggleOn
+                setOnClickListener {
+                    selectedChildProduct.isToggleOn = switcherToggleParent.isChecked
+                    binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
+                    listener?.onToggleSwitch(adapterPosition, switcherToggleParent.isChecked)
+                    discount?.let { disc ->
+                        listener?.onDataInputChanged(
+                            adapterPosition,
+                            product, disc
+                        )
+                    }
                 }
+                isEnabled = !selectedChildProduct.isDisabled
+            }
+            if (selectedChildProduct.isDisabled) {
+                groupVariantNotEligibleErrorMessage.visible()
+            } else {
+                groupVariantNotEligibleErrorMessage.gone()
+            }
+            textCheckDetail.setOnClickListener {
+                listener?.onIneligibleProductWithSingleWarehouseClicked(
+                    absoluteAdapterPosition,
+                    selectedChildProduct,
+                    product.productCriteria
+                )
             }
             binding.containerProductChild.isVisible = selectedChildProduct.isToggleOn
             binding.containerLayoutProductInformation.apply {
@@ -90,7 +105,7 @@ class VariantViewHolder(
                     listener?.onDiscountChange(
                         adapterPosition,
                         it.digitsOnly(),
-                        discountPercent.toInt()
+                        discountPercent.toIntOrZero()
                     )
                     triggerListener(product, discount)
                 }

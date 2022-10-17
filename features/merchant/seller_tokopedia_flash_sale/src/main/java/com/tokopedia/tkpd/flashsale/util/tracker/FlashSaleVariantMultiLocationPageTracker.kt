@@ -5,15 +5,15 @@ import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class ManageProductVariantTracker @Inject constructor(private val userSession: UserSessionInterface) {
+class FlashSaleVariantMultiLocationPageTracker @Inject constructor(private val userSession: UserSessionInterface) {
 
-    fun sendClickManageAllEvent(eventLabel: String) {
+    fun sendClickAturSekaligusEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click atur sekaligus")
-            .setEventCategory("flash sale - atur varian")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37224")
+            .setCustomProperty("trackerId", "37234")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -21,13 +21,13 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendAdjustToggleVariantEvent(eventLabel: String) {
+    fun sendAdjustToggleLokasiEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click adjust toggle variant")
-            .setEventCategory("flash sale - atur varian")
+            .setEventAction("click adjust toggle lokasi")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37225")
+            .setCustomProperty("trackerId", "37235")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -35,13 +35,13 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendClickFillInCampaignPriceEvent(eventLabel: String) {
+    fun sendFillinCampaignPriceEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click fill in campaign price")
-            .setEventCategory("flash sale - atur varian")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37228")
+            .setCustomProperty("trackerId", "37236")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -49,13 +49,13 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendClickFillInDiscountPercentageEvent(eventLabel: String) {
+    fun sendFillinCampaignDiscountEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click fill in campaign discount percentage")
-            .setEventCategory("flash sale - atur varian")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37229")
+            .setCustomProperty("trackerId", "37237")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -63,13 +63,27 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendClickSaveEvent(eventLabel: String) {
+    fun sendEditCampaignStockEvent(eventLabel: String) {
+        Tracker.Builder()
+            .setEvent(TrackerConstant.EVENT)
+            .setEventAction("click edit campaign stock")
+            .setEventCategory("flash sale - atur lokasi")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "37240")
+            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
+            .setCurrentSite(TrackerConstant.CURRENT_SITE)
+            .setShopId(userSession.shopId)
+            .build()
+            .send()
+    }
+
+    fun sendEditCampaignSimpanDiscountEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
             .setEventAction("click simpan")
-            .setEventCategory("flash sale - atur varian")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37231")
+            .setCustomProperty("trackerId", "37241")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
@@ -77,27 +91,13 @@ class ManageProductVariantTracker @Inject constructor(private val userSession: U
             .send()
     }
 
-    fun sendClickCheckDetailEvent(eventLabel: String) {
+    fun sendDetailPartialIneligibleDiscountEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click cek detail - partial ineligible variant")
-            .setEventCategory("flash sale - atur varian")
+            .setEventAction("click cek detail - partial ineligible location")
+            .setEventCategory("flash sale - atur lokasi")
             .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37232")
-            .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
-            .setCurrentSite(TrackerConstant.CURRENT_SITE)
-            .setShopId(userSession.shopId)
-            .build()
-            .send()
-    }
-
-    fun sendClickManageAllLocationEvent(eventLabel: String) {
-        Tracker.Builder()
-            .setEvent(TrackerConstant.EVENT)
-            .setEventAction("click atur diskon tiap lokasi")
-            .setEventCategory("flash sale - atur varian")
-            .setEventLabel(eventLabel)
-            .setCustomProperty("trackerId", "37233")
+            .setCustomProperty("trackerId", "37243")
             .setBusinessUnit(TrackerConstant.BUSINESS_UNIT)
             .setCurrentSite(TrackerConstant.CURRENT_SITE)
             .setShopId(userSession.shopId)
