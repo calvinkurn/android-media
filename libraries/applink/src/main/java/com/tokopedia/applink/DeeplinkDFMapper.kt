@@ -627,10 +627,20 @@ object DeeplinkDFMapper : CoroutineScope {
                     it.startsWith(TokopediaNow.CATEGORY) ||
                     it.startsWith(TokopediaNow.SEARCH) ||
                     it.startsWith(TokopediaNow.REPURCHASE) ||
+                    it.startsWithPattern(TokopediaNow.RECIPE_DETAIL) ||
+                    it.startsWith(TokopediaNow.RECIPE_BOOKMARK) ||
+                    it.startsWith(TokopediaNow.RECIPE_HOME) ||
+                    it.startsWith(TokopediaNow.RECIPE_SEARCH) ||
+                    it.startsWith(TokopediaNow.RECIPE_AUTO_COMPLETE) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.HOME) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.CATEGORY) ||
                     it.startsWith(ApplinkConstInternalTokopediaNow.SEARCH) ||
-                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE)
+                    it.startsWith(ApplinkConstInternalTokopediaNow.REPURCHASE) ||
+                    it.startsWithPattern(ApplinkConstInternalTokopediaNow.RECIPE_DETAIL) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_BOOKMARK) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_HOME) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_SEARCH) ||
+                    it.startsWith(ApplinkConstInternalTokopediaNow.RECIPE_AUTO_COMPLETE)
             }, DF_TOKOPEDIA_NOW, R.string.title_tokopedia_now))
 
             // Tokofood
