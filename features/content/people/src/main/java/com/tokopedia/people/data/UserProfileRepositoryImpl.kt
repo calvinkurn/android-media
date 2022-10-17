@@ -34,6 +34,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val mapper: UserProfileUiMapper,
     private val shopRecomMapper: ShopRecomUiMapper,
+    private val profileMutationMapper: ProfileMutationMapper,
     private val userDetailsUseCase: UserDetailsUseCase,
     private val playVodUseCase: PlayPostContentUseCase,
     private val doFollowUseCase: ProfileFollowUseCase,
@@ -75,7 +76,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return withContext(dispatcher.io) {
             val result = doFollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapFollow(result)
+            profileMutationMapper.mapFollow(result)
         }
     }
 
@@ -83,7 +84,7 @@ class UserProfileRepositoryImpl @Inject constructor(
         return withContext(dispatcher.io) {
             val result = doUnfollowUseCase.executeOnBackground(encryptedUserId)
 
-            mapper.mapUnfollow(result)
+            profileMutationMapper.mapUnfollow(result)
         }
     }
 
@@ -125,7 +126,7 @@ class UserProfileRepositoryImpl @Inject constructor(
             action = action,
         )
 
-        return@withContext mapper.mapShopFollow(result)
+        return@withContext shopRecomMapper.mapShopFollow(result)
     }
 
     override suspend fun getFollowerList(

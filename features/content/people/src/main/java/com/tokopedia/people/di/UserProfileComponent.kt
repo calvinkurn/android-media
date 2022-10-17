@@ -6,6 +6,7 @@ import com.tokopedia.feedcomponent.di.FeedFragmentFactoryModule
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.feedcomponent.onboarding.di.FeedUGCOnboardingModule
+import com.tokopedia.feedcomponent.people.di.PeopleModule
 import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 import dagger.Component
 
@@ -19,6 +20,7 @@ import dagger.Component
     FeedFragmentFactoryModule::class,
     FeedFloatingButtonManagerModule::class,
     ShopRecomModule::class,
+    PeopleModule::class
 ], dependencies = [BaseAppComponent::class])
 interface UserProfileComponent {
 
