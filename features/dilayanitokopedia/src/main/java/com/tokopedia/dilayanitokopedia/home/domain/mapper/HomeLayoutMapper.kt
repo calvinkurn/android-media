@@ -4,6 +4,7 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.BA
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.FEATURED_SHOP
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_LEFT_CAROUSEL
+import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.PRODUCT_RECOM
 import com.tokopedia.dilayanitokopedia.common.model.DtChooseAddressWidgetUiModel
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
@@ -11,6 +12,7 @@ import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companio
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.FeaturedShopMapper.mapToFeaturedShop
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.ProductRecomMapper.mapProductRecomDataModel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
@@ -30,7 +32,7 @@ object HomeLayoutMapper {
 //        LEGO_3_IMAGE,
         LEGO_6_IMAGE,
         BANNER_CAROUSEL,
-//        PRODUCT_RECOM,
+        PRODUCT_RECOM,
 //        REPURCHASE_PRODUCT,
 //        EDUCATIONAL_INFORMATION,
 //        SHARING_EDUCATION,
@@ -134,7 +136,7 @@ object HomeLayoutMapper {
             //TODO - need to recheck what wrong at banner carousel
 //            BANNER_CAROUSEL -> mapSliderBannerModel(response, loadedState)
 
-//                PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState, miniCartData)
+                PRODUCT_RECOM -> mapProductRecomDataModel(response, loadedState)
 //                EDUCATIONAL_INFORMATION  -> mapEducationalInformationUiModel(response, loadedState, serviceType)
 //                MIX_LEFT_CAROUSEL_ATC -> mapToLeftCarouselAtc(response, loadedState, miniCartData)
 //                // endregion

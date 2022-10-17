@@ -13,7 +13,7 @@ import androidx.annotation.StringDef
 //    DtLayoutType.CATEGORY,
 //    DtLayoutType.LEGO_3_IMAGE,
     DtLayoutType.LEGO_6_IMAGE,
-//    DtLayoutType.PRODUCT_RECOM,
+    DtLayoutType.PRODUCT_RECOM,
 //    DtLayoutType.REPURCHASE_PRODUCT,
 //    DtLayoutType.EDUCATIONAL_INFORMATION,
 //    DtLayoutType.SHARING_EDUCATION,
@@ -26,7 +26,7 @@ import androidx.annotation.StringDef
 annotation class DtLayoutType {
     companion object {
 
-    //list supported by BE
+        //list supported by BE
 //        "
 //        banner_carousel_v2,
 //        page_usp,
@@ -38,13 +38,12 @@ annotation class DtLayoutType {
 
 
         const val BANNER_CAROUSEL = "banner_carousel_v2"
-        //        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
-        //        const val PRODUCT_RECOM = "top_carousel_tokonow"
 
+        //        const val EDUCATIONAL_INFORMATION = "tokonow_usp"
+        const val PRODUCT_RECOM = "top_carousel"
         const val LEGO_6_IMAGE = "6_image"
         const val FEATURED_SHOP = "shop_widget"
         const val MIX_LEFT_CAROUSEL = "left_carousel"
-
 
 
         //        const val CATEGORY = "category_tokonow"

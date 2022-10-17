@@ -175,6 +175,7 @@ class DtHomeAdapterTypeFactory(
 
             FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopListener, null)
 
+            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view,null,null)
             // endregion
             else -> {
                 //TODO - should handle biar gak crash
