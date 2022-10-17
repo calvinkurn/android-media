@@ -219,6 +219,7 @@ class TokoNowRepurchaseFragment:
         } else {
             getMiniCart()
         }
+        updateToolbarNotification()
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {

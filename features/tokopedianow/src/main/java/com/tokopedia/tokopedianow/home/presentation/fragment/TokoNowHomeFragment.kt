@@ -353,6 +353,7 @@ class TokoNowHomeFragment: Fragment(),
             getMiniCart()
         }
         screenshotDetector?.start()
+        updateToolbarNotification()
     }
 
     override fun onStop() {

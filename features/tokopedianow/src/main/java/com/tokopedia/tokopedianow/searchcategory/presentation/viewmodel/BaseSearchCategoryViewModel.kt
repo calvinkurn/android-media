@@ -1021,6 +1021,7 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewResumed() {
         refreshMiniCart()
+        updateToolbarNotification()
 
         val isChooseAddressUpdated = getIsChooseAddressUpdated()
         if (isChooseAddressUpdated)
