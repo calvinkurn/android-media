@@ -51,8 +51,11 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
+import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
@@ -66,6 +69,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
+import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
+import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -89,6 +94,7 @@ import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryI
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedEnhancedTracking
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
+import com.tokopedia.feedplus.view.analytics.shoprecom.FeedShopRecomWidgetAnalytic
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_CURSOR
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.KEY_FEED_FIRST_PAGE_LAST_CURSOR
@@ -101,6 +107,7 @@ import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
@@ -109,6 +116,7 @@ import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
@@ -129,6 +137,7 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -228,6 +237,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
     @Inject
     lateinit var feedFloatingButtonManager: FeedFloatingButtonManager
+
+    @Inject
+    lateinit var feedShopRecomWidgetAnalytics: FeedShopRecomWidgetAnalytic
+
+    @Inject
+    lateinit var shopRecomImpression: ShopRecomImpressCoordinator
 
     private lateinit var productTagBS: ProductItemInfoBottomSheet
     private val userIdLong: Long
@@ -1018,6 +1033,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         unRegisterDynamicPostReceiver()
         analytics.sendPendingAnalytics()
         feedAnalytics.sendPendingAnalytics()
+        shopRecomImpression.sendTracker { feedShopRecomWidgetAnalytics.sendPendingAnalytics() }
     }
 
     private fun resetImagePostWhenFragmentNotVisible() {
@@ -3138,7 +3154,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 cpmModel.data[0].cpm.cpmImage.fullUrl,
                 cpmModel.data[0].cpm.cpmShop.id,
                 cpmModel.data[0].cpm.uri,
-                cpmModel.data[0].cpm?.cpmImage?.fullEcs
+                cpmModel.data[0].cpm.cpmImage.fullEcs
             )
         }
         analytics.sendFeedTopAdsHeadlineAdsImpression(
@@ -3434,12 +3450,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {
+        feedShopRecomWidgetAnalytics.sendClickXShopRecommendationEvent(itemID.toString())
         feedViewModel.handleClickRemoveButtonShopRecom(itemID)
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
-        if (userSession.isLoggedIn) feedViewModel.handleClickFollowButtonShopRecom(itemID)
-        else RouteManager.getIntent(activity, ApplinkConst.LOGIN)
+        if (userSession.isLoggedIn) {
+            feedShopRecomWidgetAnalytics.sendClickFollowShopRecommendationEvent(itemID.toString())
+            feedViewModel.handleClickFollowButtonShopRecom(itemID)
+        } else RouteManager.getIntent(activity, ApplinkConst.LOGIN)
     }
 
     override fun onShopRecomItemClicked(
@@ -3448,11 +3467,23 @@ class FeedPlusFragment : BaseDaggerFragment(),
         imageUrl: String,
         postPosition: Int
     ) {
+        feedShopRecomWidgetAnalytics.sendClickShopRecommendationEvent(
+            eventLabel = itemID.toString(),
+            shopId = itemID.toString(),
+            shopsImageUrl = imageUrl,
+            postPosition = postPosition + 1
+        )
         RouteManager.route(requireContext(), appLink)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        Timber.d("$item $postPosition")
+        shopRecomImpression.initiateShopImpress(item) { shopImpress ->
+            feedShopRecomWidgetAnalytics.sendImpressionShopRecommendationEvent(
+                item.id.toString(),
+                shopImpress,
+                postPosition + 1
+            )
+        }
     }
 
 }
