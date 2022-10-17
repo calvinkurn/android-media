@@ -118,13 +118,13 @@ import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
-        protected val baseDispatcher: CoroutineDispatchers,
+        private val baseDispatcher: CoroutineDispatchers,
         queryParamMap: Map<String, String>,
         protected val getFilterUseCase: UseCase<DynamicFilterModel>,
         protected val getProductCountUseCase: UseCase<String>,
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val cartService: CartService,
-        protected val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
+        private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
         protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
@@ -137,18 +137,19 @@ abstract class BaseSearchCategoryViewModel(
         private const val LABEL_GROUP_POSITION_STATUS = "status"
     }
 
-    protected val filterController = FilterController()
     protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
     protected val visitableList = mutableListOf<Visitable<*>>()
     protected val queryParamMutable = queryParamMap.toMutableMap()
     protected var totalData = 0
-    protected var totalFetchedData = 0
-    protected var nextPage = 1
     protected var chooseAddressData: LocalCacheModel? = null
-    protected var currentProductPosition: Int = 1
-    protected var recommendationPositionInVisitableList = -1
-    protected val recommendationList = mutableListOf<RecommendationWidget>()
+
+    private val filterController = FilterController()
+    private var totalFetchedData = 0
+    private var nextPage = 1
+    private var currentProductPosition: Int = 1
+    private var recommendationPositionInVisitableList = -1
+    private val recommendationList = mutableListOf<RecommendationWidget>()
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -157,96 +158,96 @@ abstract class BaseSearchCategoryViewModel(
     var autoCompleteApplink = ""
         private set
 
-    protected val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
+    private val visitableListMutableLiveData = MutableLiveData<List<Visitable<*>>>(visitableList)
     val visitableListLiveData: LiveData<List<Visitable<*>>> = visitableListMutableLiveData
 
-    protected val hasNextPageMutableLiveData = MutableLiveData(false)
+    private val hasNextPageMutableLiveData = MutableLiveData(false)
     val hasNextPageLiveData: LiveData<Boolean> = hasNextPageMutableLiveData
 
-    protected val isFilterPageOpenMutableLiveData = MutableLiveData(false)
+    private val isFilterPageOpenMutableLiveData = MutableLiveData(false)
     val isFilterPageOpenLiveData: LiveData<Boolean> = isFilterPageOpenMutableLiveData
 
-    protected val dynamicFilterModelMutableLiveData = MutableLiveData<DynamicFilterModel?>(null)
+    private val dynamicFilterModelMutableLiveData = MutableLiveData<DynamicFilterModel?>(null)
     val dynamicFilterModelLiveData: LiveData<DynamicFilterModel?> = dynamicFilterModelMutableLiveData
 
-    protected val productCountAfterFilterMutableLiveData = MutableLiveData("")
+    private val productCountAfterFilterMutableLiveData = MutableLiveData("")
     val productCountAfterFilterLiveData: LiveData<String> = productCountAfterFilterMutableLiveData
 
-    protected val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
+    private val isL3FilterPageOpenMutableLiveData = MutableLiveData<Filter?>(null)
     val isL3FilterPageOpenLiveData: LiveData<Filter?> = isL3FilterPageOpenMutableLiveData
 
-    protected val isShowMiniCartMutableLiveData = MutableLiveData<Boolean?>(null)
+    private val isShowMiniCartMutableLiveData = MutableLiveData<Boolean?>(null)
     val isShowMiniCartLiveData: LiveData<Boolean?> = isShowMiniCartMutableLiveData
 
-    protected val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
+    private val miniCartWidgetMutableLiveData = MutableLiveData<MiniCartSimplifiedData?>(null)
     val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
 
-    protected val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
+    private val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
     val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
             updatedVisitableIndicesMutableLiveData
 
-    protected val successATCMessageMutableLiveData = SingleLiveEvent<String>()
+    private val successATCMessageMutableLiveData = SingleLiveEvent<String>()
     val successATCMessageLiveData: LiveData<String> = successATCMessageMutableLiveData
 
-    protected val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
+    private val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
     val errorATCMessageLiveData: LiveData<String> = errorATCMessageMutableLiveData
 
-    protected val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
+    private val isHeaderBackgroundVisibleMutableLiveData = MutableLiveData(true)
     val isHeaderBackgroundVisibleLiveData: LiveData<Boolean> = isHeaderBackgroundVisibleMutableLiveData
 
-    protected val isContentLoadingMutableLiveData = MutableLiveData(true)
+    private val isContentLoadingMutableLiveData = MutableLiveData(true)
     val isContentLoadingLiveData: LiveData<Boolean> = isContentLoadingMutableLiveData
 
-    protected val shopIdMutableLiveData = MutableLiveData("")
+    private val shopIdMutableLiveData = MutableLiveData("")
     val shopIdLiveData: LiveData<String> = shopIdMutableLiveData
 
     var miniCartSource: MiniCartSource = MiniCartSource.TokonowSRP
 
-    protected val addToCartTrackingMutableLiveData =
+    private val addToCartTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, ProductItemDataView>>()
     val addToCartTrackingLiveData: LiveData<Triple<Int, String, ProductItemDataView>> =
             addToCartTrackingMutableLiveData
 
-    protected val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
+    private val decreaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val decreaseQtyTrackingLiveData: LiveData<String> = decreaseQtyTrackingMutableLiveData
 
-    protected val increaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
+    private val increaseQtyTrackingMutableLiveData = SingleLiveEvent<String>()
     val increaseQtyTrackingLiveData: LiveData<String> = increaseQtyTrackingMutableLiveData
 
-    protected val quickFilterTrackingMutableLiveData = SingleLiveEvent<Pair<Option, Boolean>>()
+    private val quickFilterTrackingMutableLiveData = SingleLiveEvent<Pair<Option, Boolean>>()
     val quickFilterTrackingLiveData: LiveData<Pair<Option, Boolean>> = quickFilterTrackingMutableLiveData
 
-    protected val isShowErrorMutableLiveData = SingleLiveEvent<Throwable?>()
+    private val isShowErrorMutableLiveData = SingleLiveEvent<Throwable?>()
     val isShowErrorLiveData: LiveData<Throwable?> = isShowErrorMutableLiveData
 
-    protected val routeApplinkMutableLiveData = SingleLiveEvent<String>()
+    private val routeApplinkMutableLiveData = SingleLiveEvent<String>()
     val routeApplinkLiveData: LiveData<String> = routeApplinkMutableLiveData
 
-    protected val deleteCartTrackingMutableLiveData = SingleLiveEvent<String>()
+    private val deleteCartTrackingMutableLiveData = SingleLiveEvent<String>()
     val deleteCartTrackingLiveData: LiveData<String> = deleteCartTrackingMutableLiveData
 
-    protected val addToCartRecommendationTrackingMutableLiveData =
+    private val addToCartRecommendationTrackingMutableLiveData =
             SingleLiveEvent<Triple<Int, String, RecommendationItem>>()
     val addToCartRecommendationItemTrackingLiveData: LiveData<Triple<Int, String, RecommendationItem>> =
             addToCartRecommendationTrackingMutableLiveData
 
-    protected val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
+    private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
-    protected val addToCartRepurchaseWidgetTrackingMutableLiveData =
+    private val addToCartRepurchaseWidgetTrackingMutableLiveData =
         SingleLiveEvent<Triple<Int, String, TokoNowProductCardUiModel>>()
 
     val addToCartRepurchaseWidgetTrackingLiveData:
         LiveData<Triple<Int, String, TokoNowProductCardUiModel>> =
         addToCartRepurchaseWidgetTrackingMutableLiveData
 
-    protected val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
+    private val oocOpenScreenTrackingMutableEvent = SingleLiveEvent<Boolean>()
     val oocOpenScreenTrackingEvent: LiveData<Boolean> = oocOpenScreenTrackingMutableEvent
 
-    protected val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
+    private val setUserPreferenceMutableLiveData = SingleLiveEvent<Result<SetUserPreference.SetUserPreferenceData>>()
     val setUserPreferenceLiveData: LiveData<Result<SetUserPreference.SetUserPreferenceData>> = setUserPreferenceMutableLiveData
 
-    protected val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
+    private val querySafeMutableLiveData = SingleLiveEvent<QuerySafeModel>()
     val querySafeLiveData: LiveData<QuerySafeModel> = querySafeMutableLiveData
 
     private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
