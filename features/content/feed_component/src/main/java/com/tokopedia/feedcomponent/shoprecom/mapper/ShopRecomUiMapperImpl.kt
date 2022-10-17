@@ -1,5 +1,7 @@
 package com.tokopedia.feedcomponent.shoprecom.mapper
 
+import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
@@ -8,6 +10,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
  * created by fachrizalmrsln on 14/10/22
  **/
 class ShopRecomUiMapperImpl: ShopRecomUiMapper {
+
     override fun mapShopRecom(response: UserShopRecomModel): ShopRecomUiModel {
         return with(response.feedXRecomWidget) {
             ShopRecomUiModel(
@@ -29,4 +32,13 @@ class ShopRecomUiMapperImpl: ShopRecomUiMapper {
             )
         }
     }
+
+
+    override fun mapShopFollow(response: ShopFollowModel): MutationUiModel {
+        return with(response.followShop) {
+            if (success) MutationUiModel.Success()
+            else MutationUiModel.Error(message)
+        }
+    }
+
 }

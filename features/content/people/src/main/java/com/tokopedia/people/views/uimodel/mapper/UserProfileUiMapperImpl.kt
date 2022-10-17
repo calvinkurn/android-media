@@ -1,25 +1,16 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import android.content.Context
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.feedcomponent.data.pojo.shopmutation.ShopFollowModel
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.people.R
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
-import com.tokopedia.feedcomponent.shoprecom.model.UserShopRecomModel
-import com.tokopedia.people.views.uimodel.MutationUiModel
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on June 29, 2022
  */
-class UserProfileUiMapperImpl @Inject constructor(
-    @ApplicationContext private val context: Context,
-) : UserProfileUiMapper {
+class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapUserProfile(response: ProfileHeaderBase): ProfileUiModel {
         return ProfileUiModel(
@@ -68,31 +59,10 @@ class UserProfileUiMapperImpl @Inject constructor(
         )
     }
 
-    override fun mapFollow(response: ProfileDoFollowModelBase): MutationUiModel {
-        return with(response.profileFollowers) {
-            if(errorCode.isEmpty()) MutationUiModel.Success()
-            else MutationUiModel.Error(messages.firstOrNull() ?: context.getString(R.string.up_error_follow))
-        }
-    }
-
-    override fun mapUnfollow(response: ProfileDoUnFollowModelBase): MutationUiModel {
-        return with(response.profileFollowers) {
-            if(data.isSuccess == SUCCESS_UNFOLLOW_CODE) MutationUiModel.Success()
-            else MutationUiModel.Error(messages.firstOrNull() ?: context.getString(R.string.up_error_unfollow))
-        }
-    }
-
     override fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
         return with(response.playToggleChannelReminder) {
             if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
             else MutationUiModel.Error(header.message)
-        }
-    }
-
-    override fun mapShopFollow(response: ShopFollowModel): MutationUiModel {
-        return with(response.followShop) {
-            if (success) MutationUiModel.Success()
-            else MutationUiModel.Error(message)
         }
     }
 

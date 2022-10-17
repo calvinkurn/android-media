@@ -9,7 +9,7 @@ import com.tokopedia.people.di.UserProfileScope
 import com.tokopedia.people.model.*
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.domains.repository.UserProfileRepository
-import com.tokopedia.people.views.uimodel.MutationUiModel
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
