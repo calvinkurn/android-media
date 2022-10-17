@@ -113,7 +113,8 @@ const val SHIPMENT_ADDRESS_FORM_V3_QUERY =
                   sp_id
                   scheduled_delivery {
                     timeslot_id
-                    scheduled_dates
+                    schedule_date
+                    validation_metadata
                   }
                   bo_code
                   is_insurance
