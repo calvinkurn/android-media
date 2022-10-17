@@ -29,6 +29,7 @@ import com.tkpd.atcvariant.view.activity.AtcVariantActivity
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapter
 import com.tkpd.atcvariant.view.adapter.AtcVariantAdapterTypeFactoryImpl
 import com.tkpd.atcvariant.view.adapter.AtcVariantDiffutil
+import com.tkpd.atcvariant.view.viewholder.item.ItemContainerChipGroupViewHolder
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantSharedViewModel
 import com.tkpd.atcvariant.view.viewmodel.AtcVariantViewModel
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -68,6 +69,7 @@ import com.tokopedia.product.detail.common.view.ProductDetailCommonBottomSheetBu
 import com.tokopedia.product.detail.common.view.ProductDetailGalleryActivity
 import com.tokopedia.product.detail.common.view.ProductDetailRestrictionHelper
 import com.tokopedia.purchase_platform.common.feature.checkout.ShipmentFormRequest
+import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersListener
 import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -102,6 +104,9 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(AtcVariantViewModel::class.java)
@@ -707,6 +712,13 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
                 VariantPageSource.SHOP_COUPON_PAGESOURCE.source
     }
 
+    /**
+     * please remove this function if [ItemContainerChipGroupViewHolder] has stable
+     */
+    override fun showVariantWithChipGroup(): Boolean {
+        return remoteConfig.getBoolean(REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP)
+    }
+
     private fun onSaveButtonClicked() {
         val productId = adapter.getHeaderDataModel()?.productId ?: ""
         val selectedChild = viewModel.getVariantData()?.getChildByProductId(productId)
@@ -992,6 +1004,14 @@ class AtcVariantBottomSheet : BottomSheetUnify(),
 
             ProductTrackingCommon.onTokoCabangClicked(productId, pageSource)
         }
+    }
+
+    companion object {
+
+        /**
+         * please remove this variable if [ItemContainerChipGroupViewHolder] has stable
+         */
+        private const val REMOTE_CONFIG_SHOW_VARIANT_CHIP_GROUP = "android_pdp_show_variant_with_chip_group"
     }
 }
 
