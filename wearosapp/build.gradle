@@ -22,6 +22,15 @@ buildscript {
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.42"
     }
 }
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : project.defaultVersionName;
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : project.defaultVersionCode;
+}
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -62,8 +71,8 @@ android {
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
         applicationId "com.tokopedia.tkpd"
-        versionCode 391100000
-        versionName "3.150"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"
