@@ -5,12 +5,12 @@ import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListViewModel
+import com.tokopedia.chatbot.data.helpfullquestion.ChatOptionListUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifyprinciples.Typography
 
 const val OPTION_TYPE_CSAT = "csat"
-class ChatOptionListViewHolder(itemView: View, private val onOptionListSelected: (ChatOptionListViewModel) -> Unit) : RecyclerView.ViewHolder(itemView) {
+class ChatOptionListViewHolder(itemView: View, private val onOptionListSelected: (ChatOptionListUiModel) -> Unit) : RecyclerView.ViewHolder(itemView) {
     private val chatActionMessage: Typography
     private val chatRaing: ImageView
 
@@ -19,7 +19,7 @@ class ChatOptionListViewHolder(itemView: View, private val onOptionListSelected:
         chatRaing = itemView.findViewById(R.id.chat_rating)
     }
 
-    fun bind(element: ChatOptionListViewModel) {
+    fun bind(element: ChatOptionListUiModel) {
         chatActionMessage.text = element.text
         if (element.type == OPTION_TYPE_CSAT){
             setChatRating(element.value)
