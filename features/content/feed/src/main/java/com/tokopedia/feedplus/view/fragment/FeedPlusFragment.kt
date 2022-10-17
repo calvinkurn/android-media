@@ -141,6 +141,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * @author by nisie on 5/15/17.
@@ -572,12 +573,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 }
             })
 
-            shopRecomWidget.observe(lifecycleOwner, Observer {
-                when(it) {
-                    is Fail -> adapter.removeShopRecomWidget()
-                    is Success -> adapter.updateShopRecomWidget(it.data)
+            viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                shopRecom.collectLatest {
+                    if (it.shopRecomUiModel.items.isEmpty()) {
+                        adapter.removeShopRecomWidget()
+                        return@collectLatest
+                    }
+                    if (it.onError.isNotEmpty()) showToast(message = it.onError, type = Toaster.TYPE_ERROR)
+                    adapter.updateShopRecomWidget(it)
                 }
-            })
+            }
 
             viewTrackResponse.observe(lifecycleOwner, Observer {
                 when (it) {
@@ -3429,11 +3434,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {
-        Timber.d(itemID.toString())
+        feedViewModel.handleClickRemoveButtonShopRecom(itemID)
     }
 
     override fun onShopRecomFollowClicked(itemID: Long) {
-        Timber.d(itemID.toString())
+        feedViewModel.handleClickFollowButtonShopRecom(itemID)
     }
 
     override fun onShopRecomItemClicked(

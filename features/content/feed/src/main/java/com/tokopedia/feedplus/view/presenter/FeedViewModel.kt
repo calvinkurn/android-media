@@ -14,21 +14,31 @@ import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_FEED_UPDATE
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
@@ -39,6 +49,7 @@ import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.ViewsKolModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.domain.PlayWidgetUseCase
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
@@ -47,11 +58,13 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
-import kotlinx.coroutines.withContext
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -81,8 +94,11 @@ class FeedViewModel @Inject constructor(
     private val sendReportUseCase: SendReportUseCase,
     private val addToWishlistV2UseCase: AddToWishlistV2UseCase,
     private val trackVisitChannelBroadcasterUseCase: FeedBroadcastTrackerUseCase,
-    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase
-
+    private val feedXTrackViewerUseCase: FeedXTrackViewerUseCase,
+    private val shopFollowUseCase: ShopFollowUseCase,
+    private val doFollowUseCase: ProfileFollowUseCase,
+    private val doUnfollowUseCase: ProfileUnfollowedUseCase,
+    private val profileMutationMapper: ProfileMutationMapper
 ) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
@@ -91,6 +107,8 @@ class FeedViewModel @Inject constructor(
         const val PARAM_SOURCE_RECOM_PROFILE_CLICK = "click_recom_profile"
         const val PARAM_SOURCE_SEE_ALL_CLICK = "click_see_all"
         private const val ERROR_CUSTOM_MESSAGE = "Terjadi kesalahan koneksi. Silakan coba lagi."
+        private const val FOLLOW_TYPE_SHOP = 2
+        private const val FOLLOW_TYPE_BUYER = 3
     }
 
     private val userId: String
@@ -114,9 +132,9 @@ class FeedViewModel @Inject constructor(
     val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
         get() = _playWidgetModel
 
-    private val _shopRecomWidget = MutableLiveData<Result<ShopRecomWidgetViewModel>>()
-    val shopRecomWidget: LiveData<Result<ShopRecomWidgetViewModel>>
-        get() = _shopRecomWidget
+    private val _shopRecom = MutableStateFlow(ShopRecomWidgetViewModel())
+    val shopRecom: StateFlow<ShopRecomWidgetViewModel>
+        get() = _shopRecom
 
     private var currentCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
@@ -700,9 +718,9 @@ class FeedViewModel @Inject constructor(
         if (!shouldGetShopRecomWidget(model)) return
         launchCatchError(block = {
             val request = requestShopRecomWidget()
-            _shopRecomWidget.value = Success(request)
+            _shopRecom.value = request
         }, onError = {
-            _shopRecomWidget.value = Fail(it)
+            _shopRecom.value = ShopRecomWidgetViewModel()
         })
     }
 
@@ -718,6 +736,101 @@ class FeedViewModel @Inject constructor(
         )
         val uiModel = shopRecomMapper.mapShopRecom(response)
         return ShopRecomWidgetViewModel(uiModel)
+    }
+
+    fun handleClickFollowButtonShopRecom(itemId: Long) {
+        val currentItem = _shopRecom.value.shopRecomUiModel.items.find { it.id == itemId } ?: return
+        val currentState =
+            if (currentItem.state == LOADING_FOLLOW || currentItem.state == LOADING_UNFOLLOW) return
+            else currentItem.state
+        val isCurrentStateFollow = currentState == FOLLOW
+        val loadingState = if (isCurrentStateFollow) LOADING_FOLLOW else LOADING_UNFOLLOW
+
+        viewModelScope.launchCatchError(block = {
+            updateLoadingStateFollowShopRecom(itemId, loadingState)
+
+            val result = when (currentItem.type) {
+                FOLLOW_TYPE_SHOP -> {
+                    val request = shopFollowUseCase.executeOnBackground(
+                        shopId = currentItem.id.toString(),
+                        action = if (currentState == FOLLOW) UnFollow else Follow
+                    )
+                    shopRecomMapper.mapShopFollow(request)
+                }
+                FOLLOW_TYPE_BUYER -> {
+                    if (currentState == FOLLOW) {
+                        val request = doUnfollowUseCase.executeOnBackground(currentItem.encryptedID)
+                        profileMutationMapper.mapUnfollow(request)
+                    } else {
+                        val request = doFollowUseCase.executeOnBackground(currentItem.encryptedID)
+                        profileMutationMapper.mapFollow(request)
+                    }
+                }
+                else -> return@launchCatchError
+            }
+
+            when (result) {
+                is MutationUiModel.Success -> {
+                    updateItemFollowStatusShopRecom(currentItem, currentState)
+                }
+                is MutationUiModel.Error -> throw Throwable(result.message)
+            }
+        }, onError = {
+            updateLoadingStateFollowShopRecom(itemId, currentState)
+            _shopRecom.update { data ->
+                data.copy(onError = it.message.orEmpty())
+            }
+        })
+    }
+
+    fun handleClickRemoveButtonShopRecom(itemID: Long) {
+        removeItemShopRecom(itemID)
+    }
+
+    private fun updateItemFollowStatusShopRecom(
+        currentItem: ShopRecomUiModelItem,
+        currentState: ShopRecomFollowState
+    ) {
+        _shopRecom.update { data ->
+            data.copy(
+                shopRecomUiModel = data.shopRecomUiModel.copy(
+                    items = data.shopRecomUiModel.items.map {
+                        if (currentItem.id == it.id) {
+                            it.copy(state = if (currentState == FOLLOW) UNFOLLOW else FOLLOW)
+                        } else it
+                    }),
+                onError = ""
+            )
+        }
+
+    }
+
+    private fun updateLoadingStateFollowShopRecom(
+        itemID: Long,
+        state: ShopRecomFollowState
+    ) {
+        _shopRecom.update { data ->
+            data.copy(
+                shopRecomUiModel = data.shopRecomUiModel.copy(
+                    items = data.shopRecomUiModel.items.map {
+                    if (itemID == it.id) it.copy(state = state)
+                    else it
+                    }
+                ),
+                onError = ""
+            )
+        }
+    }
+
+    private fun removeItemShopRecom(itemID: Long) {
+        _shopRecom.update { data ->
+            data.copy(
+                shopRecomUiModel = data.shopRecomUiModel.copy(
+                    items = data.shopRecomUiModel.items.filterNot { it.id == itemID }
+                ),
+                onError = ""
+            )
+        }
     }
 
 }

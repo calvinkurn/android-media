@@ -3,13 +3,13 @@ package com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
-import com.tokopedia.play.widget.ui.PlayWidgetState
 
 /**
  * created by fachrizalmrsln on 14/10/22
  */
 data class ShopRecomWidgetViewModel(
-    val shopRecomUiModel: ShopRecomUiModel = ShopRecomUiModel()
+    val shopRecomUiModel: ShopRecomUiModel = ShopRecomUiModel(),
+    val onError: String = ""
 ) : Visitable<DynamicFeedTypeFactory> {
 
     override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
