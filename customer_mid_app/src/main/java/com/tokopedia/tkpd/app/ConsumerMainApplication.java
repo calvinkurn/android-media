@@ -38,6 +38,7 @@ import com.tokopedia.abstraction.newrelic.NewRelicInteractionActCall;
 import com.tokopedia.additional_check.subscriber.TwoFactorCheckerSubscriber;
 import com.tokopedia.analytics.mapper.model.EmbraceConfig;
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring;
+import com.tokopedia.analyticsdebugger.cassava.Cassava;
 import com.tokopedia.analyticsdebugger.debugger.FpmLogger;
 import com.tokopedia.applink.RouteManager;
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo;
@@ -89,6 +90,7 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -106,6 +108,8 @@ import kotlin.jvm.functions.Function0;
 import kotlin.jvm.functions.Function1;
 import kotlin.jvm.functions.Function2;
 import timber.log.Timber;
+
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -147,6 +151,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         TokopediaUrl.Companion.init(this); // generate base url
         initCacheManager();
 
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            new Cassava.Builder(this).initialize();
+        }
         TrackApp.initTrackApp(this);
         TrackApp.getInstance().registerImplementation(TrackApp.GTM, GTMAnalytics.class);
         TrackApp.getInstance().registerImplementation(TrackApp.APPSFLYER, AppsflyerAnalytics.class);
@@ -155,6 +162,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
+        TokoPatch.init(this);
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -171,6 +179,8 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         Typography.Companion.setFontTypeOpenSauceOne(true);
+
+        showDevOptNotification();
     }
 
     private void initializationNewRelic() {
@@ -661,6 +671,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         } else {
             return false;
         }
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
     }
 
     @Override

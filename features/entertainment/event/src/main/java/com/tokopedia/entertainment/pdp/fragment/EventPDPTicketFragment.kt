@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.DateFormatUtils
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.accordion.AccordionUnify
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -65,25 +66,27 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
-import java.util.Date
-import java.util.TimeZone
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import javax.inject.Inject
-import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtDate
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.loaderUbah
+import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtDate
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtUbah
 import kotlinx.android.synthetic.main.ent_ticket_listing_activity.txtPlaceHolderTglKunjungan
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.txtTotalHarga
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.rvEventTicketList
+import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_layout
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.containerEventBottom
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.pilihTicketBtn
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.rvEventTicketList
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.scroll_ticket_pdp
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.swipe_refresh_layout
-import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.txtTotalHarga
 import kotlinx.android.synthetic.main.ent_ticket_listing_fragment.viewBottom
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket.accordionEventPDPTicket
 import kotlinx.android.synthetic.main.item_event_pdp_parent_ticket_banner.tgEventTicketRecommendationTitle
 import kotlinx.android.synthetic.main.widget_event_pdp_calendar.view.bottom_sheet_calendar
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import java.util.TimeZone
+import java.util.Date
+import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFactory>(),
         OnBindItemTicketListener, OnCoachmarkListener {
@@ -386,7 +389,7 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     private fun showViewBottom(state: Boolean) {
         viewBottom?.visibility = if (state) View.VISIBLE else View.GONE
         containerEventBottom?.visibility = if (state) View.VISIBLE else View.GONE
-        if (!state) txtTotalHarga.text = String.format(resources.getString(R.string.ent_default_totalPrice))
+        if (!state) txtTotalHarga.text = String.format(context?.resources?.getString(R.string.ent_default_totalPrice) ?: "")
     }
 
     private fun setupUbahButton() {
@@ -477,6 +480,10 @@ class EventPDPTicketFragment : BaseListFragment<EventPDPTicket, PackageTypeFacto
     override fun clickRecommendation(list: List<String>) {
         setupBottomSheet(list)
         showUpBottomSheet()
+    }
+
+    override fun onCollapseAccordion() {
+        KeyboardHandler.hideSoftKeyboard(activity)
     }
 
     private fun showUpBottomSheet() {

@@ -29,12 +29,12 @@ class RechargeHomepageViewModelTest {
     val rule = InstantTaskExecutorRule()
 
     private val mapParams = mapOf<String, String>()
-    lateinit var gqlResponseFail: GraphqlResponse
 
     @MockK
     lateinit var graphqlRepository: GraphqlRepository
 
-    lateinit var rechargeHomepageViewModel: RechargeHomepageViewModel
+    private lateinit var gqlResponseFail: GraphqlResponse
+    private lateinit var rechargeHomepageViewModel: RechargeHomepageViewModel
 
     @Before
     fun setUp() {
@@ -457,7 +457,6 @@ class RechargeHomepageViewModelTest {
     @Test
     fun createRechargeHomepageTickerParams() {
         with(RechargeHomepageViewModel.Companion) {
-            val enablePersonalize = true
             val actual = rechargeHomepageViewModel.createRechargeHomepageTickerParams(listOf(1), 31)
             assertEquals(
                 actual, mapOf(

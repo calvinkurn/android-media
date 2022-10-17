@@ -30,8 +30,6 @@ class CreateReviewProgressBar @JvmOverloads constructor(
         private const val QUARTER_PROGRESS = 25
         private const val PARTIALLY_COMPLETE_PROGRESS = 66
         private const val EMPTY_PROGRESS = 33
-
-        private const val TRANSITION_DURATION = 300L
     }
 
     private val transitionHandler = TransitionHandler()
@@ -202,7 +200,7 @@ class CreateReviewProgressBar @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutProgressBar.root)
                 addTarget(binding.layoutProgressBarLoading.root)
                 interpolator = AccelerateInterpolator()

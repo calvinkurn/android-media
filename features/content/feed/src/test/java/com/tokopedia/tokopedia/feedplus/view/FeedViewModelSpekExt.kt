@@ -18,7 +18,6 @@ import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.shop.common.domain.interactor.ToggleFavouriteShopUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -40,7 +39,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val playWidgetTools by memoized<PlayWidgetTools>()
     val getDynamicFeedNewUseCase by memoized<GetDynamicFeedNewUseCase>()
     val getWhitelistNewUseCase by memoized<GetWhitelistNewUseCase>()
-    val addWishListUseCase by memoized<AddWishListUseCase>()
     val addToWishlistV2UseCase by memoized<AddToWishlistV2UseCase>()
     val sendReportUseCase by memoized<SendReportUseCase>()
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
@@ -60,11 +58,9 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
         getDynamicFeedNewUseCase,
         getWhitelistNewUseCase,
         sendReportUseCase,
-        addWishListUseCase,
         addToWishlistV2UseCase,
         feedBroadcastTrackerUseCase,
         feedXTrackViewerUseCase
-
     )
 }
 
@@ -115,9 +111,6 @@ fun FeatureBody.createFeedTestInstance() {
     }
     val getDynamicFeedNewUseCase by memoized {
         mockk<GetDynamicFeedNewUseCase>(relaxed = true)
-    }
-    val addWishListUseCase by memoized {
-        mockk<AddWishListUseCase>(relaxed = true)
     }
     val addWishListV2UseCase by memoized {
         mockk<AddToWishlistV2UseCase>(relaxed = true)

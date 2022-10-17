@@ -15,12 +15,12 @@ import java.util.ArrayList
  * @author by alifa on 5/16/17.
  */
 
-class WholesaleAdapter(private val context: Context) : RecyclerView.Adapter<WholesaleAdapter.WholeSaleViewHolder>() {
+class WholesaleAdapter : RecyclerView.Adapter<WholesaleAdapter.WholeSaleViewHolder>() {
 
     private var wholesalePrices = ArrayList<Wholesale>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WholeSaleViewHolder {
-        return WholeSaleViewHolder(LayoutInflater.from(context).inflate(
+        return WholeSaleViewHolder(LayoutInflater.from(parent.context).inflate(
             R.layout.item_wholesale_detail, parent, false))
     }
 
