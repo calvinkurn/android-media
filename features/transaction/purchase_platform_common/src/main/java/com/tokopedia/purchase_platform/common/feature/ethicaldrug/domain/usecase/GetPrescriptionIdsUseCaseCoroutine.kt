@@ -1,6 +1,7 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -24,13 +25,15 @@ class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
 
     @GqlQuery(QUERY_PRESCRIPTION_IDS, GET_PRESCRIPTION_IDS_QUERY)
     override suspend fun executeOnBackground(): GetPrescriptionIdsResponse {
-        val request = GraphqlRequest(
-            PrescriptionIdsQuery(),
-            GetPrescriptionIdsResponse::class.java,
-            params
-        )
-        return graphqlRepository.response(listOf(request))
-            .getSuccessData()
+        params?.let{
+            val request = GraphqlRequest(
+                PrescriptionIdsQuery(),
+                GetPrescriptionIdsResponse::class.java,
+                params
+            )
+            return graphqlRepository.response(listOf(request))
+                .getSuccessData()
+        } ?: throw RuntimeException("Param must be initialized")
     }
 
     companion object {
