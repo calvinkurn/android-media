@@ -155,13 +155,13 @@ open class SubmitPostUseCase @Inject constructor(
     private fun getMediumList(media: List<Pair<String, String>>, mediaList: List<MediaModel>): List<SubmitPostMedium> {
         val mediumList = mutableListOf<SubmitPostMedium>()
         media.forEachIndexed { index, pair ->
-            val tags = mapTagLIst(index, mediaList[index].tags, mediaList[index].products)
+            val tags = mapTagList(index, mediaList[index].tags, mediaList[index].products)
             mediumList.add(SubmitPostMedium(pair.first, index, tags, pair.second))
         }
         return mediumList
     }
 
-    private fun mapTagLIst(index: Int, tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
+    private fun mapTagList(index: Int, tags: List<FeedXMediaTagging>, productItem: List<RelatedProductItem>): List<MediaTag> {
         var tagList : MutableList<MediaTag> = arrayListOf()
         tags.forEach {
             val position: MutableList<Double> = arrayListOf()
