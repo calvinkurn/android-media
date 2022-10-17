@@ -13,7 +13,6 @@ import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -152,7 +151,8 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     }
 
     private fun getVariant(): String {
-        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
+//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
+        return PHONE_VARIANT
     }
 
     companion object {
