@@ -107,6 +107,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
+import java.util.*
 import javax.inject.Inject
 
 /**
@@ -630,7 +631,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         registerAnalytics.trackClickLinkTicker(linkUrl.toString())
                         RouteManager.route(context,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -649,7 +650,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
                         registerAnalytics.trackClickLinkTicker(linkUrl.toString())
                         RouteManager.route(context,
-                            String.format("%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
+                            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, linkUrl))
                     }
 
                     override fun onDismiss() {
@@ -990,7 +991,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
                 }
                 onErrorRegister(message)
             } catch (e: ApiException) {
-                val message = String.format(getString(R.string.loginregister_failed_login_google),
+                val message = String.format(Locale.getDefault(), getString(R.string.loginregister_failed_login_google),
                     e.statusCode.toString())
                 if (isUsingRedefineRegisterEmailMandatoryOptionalVariant() || isUsingRedefineRegisterEmailControlVariant()) {
                     redefineRegisterInitialAnalytics.sendClickOnButtonGoogleEvent(
@@ -1391,7 +1392,7 @@ class RegisterInitialFragment : BaseDaggerFragment(),
             if (isFromAtc() && isShowTicker) {
                 viewBinding?.tickerAnnouncement?.visibility = View.VISIBLE
                 viewBinding?.tickerAnnouncement?.tickerTitle = getString(R.string.title_ticker_from_atc)
-                viewBinding?.tickerAnnouncement?.setTextDescription(String.format(getString(R.string.desc_ticker_from_atc)))
+                viewBinding?.tickerAnnouncement?.setTextDescription(String.format(Locale.getDefault(), getString(R.string.desc_ticker_from_atc)))
                 viewBinding?.tickerAnnouncement?.tickerShape = Ticker.TYPE_ANNOUNCEMENT
                 viewBinding?.tickerAnnouncement?.setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {}

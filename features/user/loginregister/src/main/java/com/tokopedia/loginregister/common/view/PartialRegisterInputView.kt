@@ -28,6 +28,7 @@ import com.tokopedia.loginregister.databinding.LayoutPartialRegisterInputBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 
 /**
  * @author by alvinatin on 11/06/18.
@@ -284,9 +285,10 @@ class PartialRegisterInputView : BaseCustomView {
                         val textInput = editText.text
                         val charEmail: Array<String> = textInput.split("@").toTypedArray()
                         if (charEmail.isNotEmpty()) {
-                            editText.setText(String.format("%s@%s", charEmail[0], extension))
+                            editText.setText(String.format(Locale.getDefault(), "%s@%s", charEmail[0], extension))
                         } else {
                             editText.setText(String.format(
+                                Locale.getDefault(),
                                 "%s@%s",
                                 textInput.toString().replace("@", ""),
                                 extension)

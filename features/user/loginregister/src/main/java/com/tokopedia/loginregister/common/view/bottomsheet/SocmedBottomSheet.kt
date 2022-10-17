@@ -56,11 +56,6 @@ class SocmedBottomSheet(
     fun setProviders(providers: List<ProviderData>) {
         this.providers.clear()
         this.providers.addAll(providers)
-        socmedAdapter?.notifyDataSetChanged()
-    }
-
-    fun setProvider(provider: ProviderData) {
-        this.providers.add(provider)
-        socmedAdapter?.notifyDataSetChanged()
+        socmedAdapter?.notifyItemRangeInserted(0, providers.size)
     }
 }
