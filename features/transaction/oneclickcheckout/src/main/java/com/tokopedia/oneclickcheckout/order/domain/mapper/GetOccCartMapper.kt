@@ -585,7 +585,7 @@ class GetOccCartMapper @Inject constructor() {
         )
     }
 
-    private  fun mapImageUpload(imageUploadResponse: ImageUploadResponse): ImageUploadDataModel {
+    private fun mapImageUpload(imageUploadResponse: ImageUploadResponse): ImageUploadDataModel {
         return ImageUploadDataModel(
             showImageUpload = imageUploadResponse.showImageUpload,
             text = imageUploadResponse.text,

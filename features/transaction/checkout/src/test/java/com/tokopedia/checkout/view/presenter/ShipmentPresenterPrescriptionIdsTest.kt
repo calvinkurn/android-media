@@ -15,6 +15,7 @@ import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -119,8 +120,15 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
         presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+            UploadPrescriptionUiModel(
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf(),
+                0,
+                ""
+            )
         )
 
         // When
@@ -162,8 +170,15 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
         presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+            UploadPrescriptionUiModel(
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf(),
+                0,
+                ""
+            )
         )
 
         // When
@@ -179,8 +194,15 @@ class ShipmentPresenterPrescriptionIdsTest {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
         presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(false, "", "",
-            checkoutId = CHECKOUT_ID, arrayListOf(), 0, "")
+            UploadPrescriptionUiModel(
+                false,
+                "",
+                "",
+                checkoutId = CHECKOUT_ID,
+                arrayListOf(),
+                0,
+                ""
+            )
         )
 
         // Then

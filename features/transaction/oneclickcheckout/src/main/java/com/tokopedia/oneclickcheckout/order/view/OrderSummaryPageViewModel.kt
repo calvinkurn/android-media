@@ -183,13 +183,13 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             }
             var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
             uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
-                showImageUpload  = result.imageUpload.showImageUpload,
-                uploadImageText  = result.imageUpload.text,
-                leftIconUrl  = result.imageUpload.leftIconUrl,
-                checkoutId  = result.imageUpload.checkoutId,
+                showImageUpload = result.imageUpload.showImageUpload,
+                uploadImageText = result.imageUpload.text,
+                leftIconUrl = result.imageUpload.leftIconUrl,
+                checkoutId = result.imageUpload.checkoutId,
 
-                prescriptionIds  = prescriptionIds.prescriptions?.map { prescription -> prescription.toString() } as ArrayList<String>,
-                uploadedImageCount  = prescriptionIds.prescriptions?.size?:0,
+                prescriptionIds = prescriptionIds.prescriptions?.map { prescription -> prescription.toString() } as ArrayList<String>,
+                uploadedImageCount = prescriptionIds.prescriptions?.size?:0,
                 isError = false,
                 frontEndValidation = result.imageUpload.frontEndValidation,
                 isOcc = true,

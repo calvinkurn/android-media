@@ -99,16 +99,18 @@ class OrderSummaryPageCartProcessor @Inject constructor(
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                val res = getPrescriptionIdsUseCase.setParams(checkoutId).executeOnBackground()
+                val prescriptionIds =
+                    getPrescriptionIdsUseCase.setParams(checkoutId).executeOnBackground()
                 return@withContext EpharmacyPrescriptionDataModel(
-                    checkoutId = res.detailData?.prescriptionData?.checkoutId,
-                    prescriptions = res.detailData?.prescriptionData?.prescriptions?.map { prescription ->
+                    checkoutId = prescriptionIds.detailData?.prescriptionData?.checkoutId,
+                    prescriptions = prescriptionIds.detailData?.prescriptionData?.prescriptions?.map { prescription ->
                         EpharmacyPrescriptionDataModel.Prescription(
                             prescription?.prescriptionId
                         )
                     }
                 )
             } catch (t: Throwable) {
+                Timber.d(t)
                 return@withContext EpharmacyPrescriptionDataModel()
             }
         }

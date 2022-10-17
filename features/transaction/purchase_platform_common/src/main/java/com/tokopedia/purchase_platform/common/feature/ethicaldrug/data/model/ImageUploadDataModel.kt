@@ -1,6 +1,6 @@
 package com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model
 
-data class ImageUploadDataModel (
+data class ImageUploadDataModel(
     var showImageUpload: Boolean = false,
     var text: String = "",
     var leftIconUrl: String = "",

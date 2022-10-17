@@ -24,7 +24,7 @@ class GetPrescriptionIdsUseCaseCoroutine @Inject constructor(
 
     @GqlQuery(QUERY_PRESCRIPTION_IDS, GET_PRESCRIPTION_IDS_QUERY)
     override suspend fun executeOnBackground(): GetPrescriptionIdsResponse {
-        params?.let{
+        params?.let {
             val request = GraphqlRequest(
                 PrescriptionIdsQuery(),
                 GetPrescriptionIdsResponse::class.java,
