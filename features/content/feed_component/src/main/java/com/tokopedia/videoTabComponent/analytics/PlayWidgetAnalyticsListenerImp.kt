@@ -108,21 +108,37 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         channelPositionInList: Int,
     ) {
         if (item.channelType == PlayWidgetChannelType.Upcoming) {
-            if (channelPositionInList == 0)
-                tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
+            impressMediumUpcomingWidget(channelPositionInList)
             tracker.impressOnUpcomingCarouselContentCards(
                 item.channelId, item.partner.id, listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), filterCategory, channelPositionInList
             )
         } else if (item.channelType == PlayWidgetChannelType.Live) {
-            if (channelPositionInList == 0)
-                tracker.impressOnLagiLiveContentCarouselWidget()
+            impressMediumLiveWidget(channelPositionInList)
             tracker.impressOnLagiLiveCarouselContentCards(
                 item.channelId,
                 item.partner.id,
                 listOf(item.video.coverUrl),
                 item.channelType.toString().lowercase(), channelPositionInList
             )
+        }
+    }
+
+    /**
+     * only send impression when the very first card is upcoming
+     */
+    private fun impressMediumUpcomingWidget(channelPositionInList: Int) {
+        if (channelPositionInList == FIRST_CHANNEL_POSITION_IN_LIST) {
+            tracker.impressOnUpcomingContentCarouselWidget(filterCategory)
+        }
+    }
+
+    /**
+     * only send impression when the very first card is live
+     */
+    private fun impressMediumLiveWidget(channelPositionInList: Int) {
+        if (channelPositionInList == FIRST_CHANNEL_POSITION_IN_LIST) {
+            tracker.impressOnLagiLiveContentCarouselWidget()
         }
     }
 
@@ -185,5 +201,9 @@ class PlayWidgetAnalyticsListenerImp @Inject constructor(
         super.onClickViewAll(view)
 
 
+    }
+
+    companion object {
+        private const val FIRST_CHANNEL_POSITION_IN_LIST = 1
     }
 }
