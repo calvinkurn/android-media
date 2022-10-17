@@ -176,6 +176,7 @@ class ShipmentCartItemModel(
             newShipmentCartItemModel.isShowScheduleDelivery = shipmentCartItemModel.isShowScheduleDelivery
             newShipmentCartItemModel.timeslotId = shipmentCartItemModel.timeslotId
             newShipmentCartItemModel.scheduleDate = shipmentCartItemModel.scheduleDate
+            newShipmentCartItemModel.validationMetadata = shipmentCartItemModel.validationMetadata
             return newShipmentCartItemModel
         }
     }
