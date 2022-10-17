@@ -487,6 +487,8 @@ class TokoNowRepurchaseFragment:
 
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
+            viewLifecycleOwner.lifecycle.addObserver(toolbar)
+
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(
                     activity = it,
