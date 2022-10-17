@@ -123,7 +123,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int) {
         analytics.impressViewTopKeyword(
-            keyword,
+            item.title,
             localCacheModel?.district_id.orEmpty(),
             position,
         )
