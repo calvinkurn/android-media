@@ -199,6 +199,7 @@ import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -2973,6 +2974,10 @@ class NewShopPageFragment :
                 UniversalShareBottomSheet.getUserType()
             )
         }
+
+        // activate contextual image
+        universalShareBottomSheet?.getImageFromMedia(true)
+        universalShareBottomSheet?.setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE)
 
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
             val inputShare = AffiliatePDPInput().apply {

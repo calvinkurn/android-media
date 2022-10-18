@@ -33,9 +33,9 @@ import com.bumptech.glide.Glide
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.linker.LinkerManager
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -45,9 +45,9 @@ import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.universal_sharing.R
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
-import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
@@ -69,7 +69,6 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
@@ -77,7 +76,6 @@ import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
@@ -1017,8 +1015,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     fun executeShareOptionClick(shareModel: ShareModel) {
         if (getImageFromMedia) {
             when (sourceId) {
-                ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
-                    executePdpContextualImage(shareModel)
+                ImageGeneratorConstants.ImageGeneratorSourceId.PDP,
+                ImageGeneratorConstants.ImageGeneratorSourceId.SHOP_PAGE -> {
+                    executeContextualImage(shareModel)
                 }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
@@ -1032,7 +1031,7 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun executePdpContextualImage(shareModel: ShareModel) {
+    private fun executeContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null) return
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform
