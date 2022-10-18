@@ -319,7 +319,6 @@ class FeedViewModel @Inject constructor(
         }) {
         }
     }
-
     fun doToggleFavoriteShop(
         rowNumber: Int,
         adapterPosition: Int,
@@ -356,7 +355,6 @@ class FeedViewModel @Inject constructor(
     }
 
     fun doAutoRefreshPlayWidget() {
-
         launchCatchError(block = {
             val newCarouselModel = processPlayWidget(isAutoRefresh = true)
             _playWidgetModel.value = Success(newCarouselModel)
