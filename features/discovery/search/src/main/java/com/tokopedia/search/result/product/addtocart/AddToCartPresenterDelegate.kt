@@ -49,8 +49,8 @@ class AddToCartPresenterDelegate @Inject constructor(
         val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
         addToCartView.openAddToCartToaster(message, true)
 
-        addToCartTracking.trackItemClick(productAddedToCart)
-        addToCartTracking.trackAddToCartSuccess(productAddedToCart)
+//        addToCartTracking.trackItemClick(productAddedToCart)
+//        addToCartTracking.trackAddToCartSuccess(productAddedToCart)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {

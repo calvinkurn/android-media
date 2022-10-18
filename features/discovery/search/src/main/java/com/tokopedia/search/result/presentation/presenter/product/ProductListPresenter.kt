@@ -5,6 +5,9 @@ import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
+import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE
@@ -24,6 +27,8 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -67,7 +72,6 @@ import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
-import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcDataView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
@@ -152,6 +156,7 @@ class ProductListPresenter @Inject constructor(
     private val sameSessionRecommendationPresenterDelegate: SameSessionRecommendationPresenterDelegate,
     private val bannedProductsPresenterDelegate: BannedProductsPresenterDelegate,
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
+    private val addToCartUseCase: AddToCartUseCase,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -227,6 +232,8 @@ class ProductListPresenter @Inject constructor(
         private set
     private val adsInjector = AdsInjector()
     private val postProcessingFilter = PostProcessingFilter()
+    override var productSelectedAddToCart: ProductItemDataView? = null
+        private set
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -1614,12 +1621,6 @@ class ProductListPresenter @Inject constructor(
         view.trackEventApplyDropdownQuickFilter(optionList)
     }
 
-    override val suggestedRelatedKeyword: String = when (responseCode) {
-        RESPONSE_CODE_RELATED -> relatedKeyword
-        RESPONSE_CODE_SUGGESTION -> suggestionKeyword
-        else -> ""
-    }
-
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
         if (isViewNotAttached) return
 
@@ -1915,7 +1916,13 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendProductImpressionTrackingEvent(item, suggestedRelatedKeyword)
+        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword())
+    }
+
+    private fun getSuggestedRelatedKeyword(): String = when (responseCode) {
+        RESPONSE_CODE_RELATED -> relatedKeyword
+        RESPONSE_CODE_SUGGESTION -> suggestionKeyword
+        else -> ""
     }
 
     private fun checkShouldShowBOELabelOnBoarding(position: Int) {
@@ -1936,6 +1943,8 @@ class ProductListPresenter @Inject constructor(
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
+        trackProductClick(item)
+
         sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
             item,
             adapterPosition,
@@ -1944,6 +1953,41 @@ class ProductListPresenter @Inject constructor(
         )
 
         view.routeToProductDetail(item, adapterPosition)
+    }
+
+    override fun trackProductClick(item: ProductItemDataView?) {
+        if (item == null) return
+
+        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
+        else getViewToTrackOnClickOrganicProduct(item)
+    }
+
+    private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
+        topAdsUrlHitter.hitClickUrl(
+            view.className,
+            item.topadsClickUrl,
+            item.productID,
+            item.productName,
+            item.imageUrl,
+            SearchConstant.TopAdsComponent.TOP_ADS
+        )
+
+        view.sendTopAdsGTMTrackingProductClick(item)
+    }
+
+    private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
+        if (item.isOrganicAds) {
+            topAdsUrlHitter.hitClickUrl(
+                view.className,
+                item.topadsClickUrl,
+                item.productID,
+                item.productName,
+                item.imageUrl,
+                SearchConstant.TopAdsComponent.ORGANIC_ADS
+            )
+        }
+
+        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
@@ -2396,5 +2440,55 @@ class ProductListPresenter @Inject constructor(
     private fun unsubscribeCompositeSubscription() {
         compositeSubscription?.unsubscribe()
         compositeSubscription = null
+    }
+
+    override fun addToCart(data: ProductItemDataView?) {
+        data ?: return
+        productSelectedAddToCart = data
+
+        if (data.shouldOpenVariantBottomSheet()) {
+            //should insert unification tracking of product item here
+            view.openVariantBottomSheet(data, "")
+
+        } else {
+            executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, data)
+        }
+    }
+
+    private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
+        view.updateSearchBarNotification()
+
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        view.openAddToCartToaster(message, true)
+
+        view.trackItemClick(productSelectedAddToCart)
+        view.trackAddToCartSuccess(productSelectedAddToCart)
+    }
+
+    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
+        val message = throwable?.message ?: ""
+        view.openAddToCartToaster(message, false)
+    }
+
+    private fun executeAtcCommon(
+        onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit,
+        onAddToCartUseCaseFailed: (Throwable) -> Unit,
+        data: ProductItemDataView,
+    ) {
+        val requestParams = data.createAddToCartRequestParams()
+
+        addToCartUseCase.setParams(requestParams)
+        addToCartUseCase.execute(onAddToCartUseCaseSuccess, onAddToCartUseCaseFailed)
+    }
+
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
+            productName = productName,
+            price = price,
+            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+        )
     }
 }

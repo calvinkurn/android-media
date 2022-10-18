@@ -23,8 +23,8 @@ class AddToCartHandleActivityResult @Inject constructor(
                 val product = addToCartPresenter.productAddedToCart
 
                 product.let {
-                    addToCartTracking.trackItemClick(product)
-                    addToCartTracking.trackAddToCartSuccess(product)
+//                    addToCartTracking.trackItemClick(product)
+//                    addToCartTracking.trackAddToCartSuccess(product)
                 }
             }
         }

@@ -16,8 +16,4 @@ abstract class AddToCartModule {
     @SearchScope
     @Binds
     abstract fun provideAddToCartPresenter(provider: AddToCartPresenterDelegate): AddToCartPresenter
-
-    @SearchScope
-    @Binds
-    abstract fun provideAddToCartTracking(provider: ProductListFragment): AddToCartTracking
 }
