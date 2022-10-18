@@ -2,6 +2,7 @@ package com.tokopedia.home_recom.generator
 
 import android.content.Context
 import com.tokopedia.instrumentation.test.R
+import com.tokopedia.home_recom.R as homeRecomR
 import com.tokopedia.test.application.environment.interceptor.mock.MockModelConfig
 import com.tokopedia.test.application.util.InstrumentationMockHelper.getRawString
 
@@ -17,7 +18,7 @@ class RecommendationPageMockResponseConfig: MockModelConfig() {
                 FIND_BY_CONTAINS)
         addMockResponse(
                 KEY_QUERY_WIDGET_RECOM,
-                getRawString(context, R.raw.response_mock_data_recom_page),
+                getRawString(context, homeRecomR.raw.response_mock_data_recom_page),
                 FIND_BY_CONTAINS)
 
         return this

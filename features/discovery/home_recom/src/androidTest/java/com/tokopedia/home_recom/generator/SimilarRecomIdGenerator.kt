@@ -1,6 +1,6 @@
 package com.tokopedia.home_recom.generator
 
-import android.net.Uri
+import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +9,8 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
-import com.tokopedia.home_recom.HomeRecommendationActivity
+import com.tokopedia.home_recom.SimilarProductRecommendationActivity
+import com.tokopedia.home_recom.test.R
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
@@ -19,13 +20,12 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import com.tokopedia.home_recom.test.R
 
 /**
  * Created by dhaba
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
-class HomeRecomIdGenerator {
+class SimilarRecomIdGenerator {
     companion object{
         private const val PACKAGE = "com.tokopedia.home_recom"
     }
@@ -64,30 +64,26 @@ class HomeRecomIdGenerator {
     private val fileWriter = FileWriter()
 
     @get:Rule
-    var activityRule = ActivityTestRule(HomeRecommendationActivity::class.java, false, false)
+    var activityRule = ActivityTestRule<SimilarProductRecommendationActivity>(SimilarProductRecommendationActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
     @Before
     fun setup() {
-        setupGraphqlMockResponse(RecommendationPageMockResponseConfig())
-        activityRule.launchActivity(
-                HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
-                    data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
-                }
-        )
+        setupGraphqlMockResponse(SimilarRecommendationPageMockResponseConfig())
+        activityRule.launchActivity(Intent(InstrumentationRegistry.getInstrumentation().targetContext, SimilarProductRecommendationActivity::class.java))
     }
 
     @Test
-    fun printResourceRecom() {
+    fun printResourceSimilarRecom() {
         Thread.sleep(10000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val homeFragment = parentViewPrinter.printAsCSV(
-                view = activityRule.activity.findViewById(R.id.container_home_recom)
+                view = activityRule.activity.findViewById(R.id.container_similar_recom)
             )
             fileWriter.writeGeneratedViewIds(
-                fileName = "home_recom_fragment.csv",
+                fileName = "similar_recom_fragment.csv",
                 text = homeFragment
             )
         }
@@ -102,7 +98,7 @@ class HomeRecomIdGenerator {
     }
 
     private fun printResourceIdForEachViewHolder() {
-        val screenshotModelList = HomeRecomScreenshotTestHelper.getWidgetScreenshotList()
+        val screenshotModelList = SimilarRecomScreenshotTestHelper.getWidgetScreenshotList()
         printViewHolders(screenshotModelList)
     }
 
@@ -110,11 +106,11 @@ class HomeRecomIdGenerator {
         screenshotModelList: List<ScreenshotModel>
     ) {
         screenshotModelList.forEachIndexed { index, screenshotModel ->
-            printHomeRecomViewHolderResourceIdAtPosition(index, screenshotModel.name)
+            printSimilarRecomViewHolderResourceIdAtPosition(index, screenshotModel.name)
         }
     }
 
-    private fun printHomeRecomViewHolderResourceIdAtPosition(
+    private fun printSimilarRecomViewHolderResourceIdAtPosition(
         position: Int,
         fileNamePostFix: String
     ) {
@@ -123,7 +119,7 @@ class HomeRecomIdGenerator {
                 view = it.itemView
             )
             fileWriter.writeGeneratedViewIds(
-                fileName = "home_recom_fragment_$fileNamePostFix.csv",
+                fileName = "similar_recom_fragment_$fileNamePostFix.csv",
                 text = homeViewHolder
             )
         }
@@ -133,21 +129,21 @@ class HomeRecomIdGenerator {
         position: Int,
         action: (viewHolder: RecyclerView.ViewHolder) -> Unit
     ) {
-        val homeRecomRecyclerView =
+        val similarRecomRecyclerView =
             activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
-        scrollHomeRecomRecyclerViewToPosition(homeRecomRecyclerView, position)
+        scrollSimilarRecomRecyclerViewToPosition(similarRecomRecyclerView, position)
         Thread.sleep(1750)
-        val viewHolder = homeRecomRecyclerView.findViewHolderForAdapterPosition(position)
+        val viewHolder = similarRecomRecyclerView.findViewHolderForAdapterPosition(position)
         viewHolder?.let {
             action.invoke(viewHolder)
         }
     }
 
-    private fun scrollHomeRecomRecyclerViewToPosition(
-        homeRecomRecyclerView: RecyclerView,
+    private fun scrollSimilarRecomRecyclerViewToPosition(
+        similarRecomRecyclerView: RecyclerView,
         position: Int
     ) {
-        val layoutManager = homeRecomRecyclerView.layoutManager as StaggeredGridLayoutManager
+        val layoutManager = similarRecomRecyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPosition(position) }
     }
 }
