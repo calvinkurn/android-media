@@ -142,7 +142,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:fbType="group"
-        android:background="@color/Unify_N0"
         app:layout_constraintBottom_toTopOf="@+id/shadow_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
