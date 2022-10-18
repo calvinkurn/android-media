@@ -11,6 +11,7 @@ import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
@@ -53,14 +54,39 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         setupShimmeringOrderStatusBinding()
     }
 
-    fun showTransactionWidget() {
+    fun showTransactionWidget(
+        listener: Listener?,
+        orderProgressUiModel: TokoChatOrderProgressUiModel?
+    ) {
+        assignFields(listener, orderProgressUiModel)
         binding?.tokochatLocalloadErrorTransactionWidget?.hide()
         partialOrderStatusWidgetBinding?.root?.show()
         setupPartialOrderStatusBinding()
+        render()
     }
 
-    fun render(listener: Listener?, orderProgressUiModel: TokoChatOrderProgressUiModel?) {
+    fun showLocalLoadTransaction(
+        listener: Listener?,
+        orderProgressUiModel: TokoChatOrderProgressUiModel?
+    ) {
         assignFields(listener, orderProgressUiModel)
+        partialOrderStatusWidgetBinding?.root?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
+        binding?.tokochatLocalloadErrorTransactionWidget?.show()
+        setupLocalLoadTransaction()
+    }
+
+    private fun setupLocalLoadTransaction() {
+        binding?.tokochatLocalloadErrorTransactionWidget?.run {
+            progressState = false
+            refreshBtn?.setOnClickListener {
+                progressState = true
+                listener?.onLocalLoadRetryClicked()
+            }
+        }
+    }
+
+    private fun render() {
         loadPreviousState()
         renderOrderNameContainer()
         renderBackgroundColor()
@@ -81,7 +107,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     private fun setupViewBinding() {
-        partialOrderStatusWidgetBinding = PartialOrderStatusWidgetBinding.inflate(LayoutInflater.from(context), this)
+        binding = TokochatTransactionWidgetBinding.inflate(LayoutInflater.from(context), this)
     }
 
     private fun setupPartialOrderStatusBinding() {
@@ -153,22 +179,22 @@ class TokoChatTransactionOrderWidget : LinearLayout {
      * 2. if tutup text, will closed order name container
      */
     private fun renderStateChangerButton() {
-        if (state?.hasSeen == true) {
-            renderOpenCloseStateChangerButton()
+        if (state?.bodyVisibility == State.OPEN) {
             bindClickOpenCloseState()
             bindClickCardContainer()
             showOrderNameContainer()
+            renderOpenCloseText()
             renderImageThumbnail()
             renderProductName()
             renderEstimation()
         } else {
             hideOrderNameContainer()
-            renderCloseStateChangerButton()
         }
     }
 
     private fun renderOrderStatus() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text = tokoChatOrderProgressUiModel?.status
+        partialOrderStatusWidgetBinding?.tokochatTpOrderStatus?.text =
+            tokoChatOrderProgressUiModel?.status
     }
 
     private fun renderLayoutVisibility() {
@@ -210,43 +236,53 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun bindClickCardContainer() {
         partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.setOnClickListener {
-            RouteManager.route(context, tokoChatOrderProgressUiModel?.appLink)
+            listener?.onTransactionWidgetClicked()
         }
     }
 
     private fun renderImageThumbnail() {
-        partialOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(tokoChatOrderProgressUiModel?.imageUrl)
+        partialOrderStatusWidgetBinding?.tokochatIvOrderThumbnail?.loadImage(
+            tokoChatOrderProgressUiModel?.imageUrl
+        )
     }
 
     private fun renderProductName() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderName?.text = MethodChecker.fromHtml(tokoChatOrderProgressUiModel?.name)
+        partialOrderStatusWidgetBinding?.tokochatTpOrderName?.text =
+            MethodChecker.fromHtml(tokoChatOrderProgressUiModel?.name)
     }
 
     private fun renderEstimation() {
         partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
             StringBuilder(tokoChatOrderProgressUiModel?.labelTitle.orEmpty()).append(":")
-        partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text = tokoChatOrderProgressUiModel?.labelValue.orEmpty()
-    }
-    private fun renderCloseStateChangerButton() {
-        renderChangerButtonText()
-        renderChangerButtonCompoundDrawable(null)
+        partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
+            tokoChatOrderProgressUiModel?.labelValue.orEmpty()
     }
 
     private fun renderFirstTimeSeen() {
         state?.seen()
     }
 
-    private fun renderOpenCloseStateChangerButton() {
-        renderChangerButtonText()
-        renderChangerButtonCompoundDrawable()
+    private fun renderToggleStateChangerButton(desiredState: String?) {
+        renderChangerButtonText(desiredState)
+        renderChangerIconArrow(desiredState)
     }
 
-    private fun renderChangerButtonCompoundDrawable(@DrawableRes customIcon: Int? = null) {
-
+    private fun renderChangerIconArrow(desiredState: String?) {
+        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text =
+            if (desiredState == State.OPEN) {
+                State.CLOSE
+            } else {
+                State.OPEN
+            }
     }
 
-    private fun renderChangerButtonText() {
+    private fun renderOpenCloseText() {
+        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text = State.CLOSE
+    }
 
+    private fun renderChangerButtonText(desiredState: String?) {
+        partialOrderStatusWidgetBinding?.tokochatIcOrderVisibility?.isVisible =
+            desiredState != State.OPEN
     }
 
     private fun getPref(): SharedPreferences? {
@@ -270,7 +306,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     private fun changeState(desiredState: String) {
         if (state?.bodyVisibility == desiredState) return
         state?.bodyVisibility = desiredState
-        renderOpenCloseStateChangerButton()
+        renderToggleStateChangerButton(desiredState)
         renderOrderNameContainer()
     }
 
@@ -303,18 +339,12 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
     }
 
-    sealed class ViewState {
-        object TransactionOrderWidget: ViewState()
-        object OrderShimmeringState: ViewState()
-        object OrderErrorState: ViewState()
-    }
-
     interface Listener {
-        fun onRetryClicked()
+        fun onLocalLoadRetryClicked()
+        fun onTransactionWidgetClicked()
     }
 
     companion object {
-        private val LAYOUT = R.layout.partial_order_status_widget
         private val DEFAULT_STATE = CommonUtil.toJson(State())
         private const val PREF_NAME = "TokoChat_TransactionOrderWidgetPreference"
     }
