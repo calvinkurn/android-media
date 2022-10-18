@@ -1,6 +1,5 @@
 package com.tokopedia.tkpd.flashsale.presentation.detail.adapter.ongoing
 
-import android.graphics.Paint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +52,11 @@ class OngoingDelegateAdapter(
                 tpgSubsidy.setSubsidy(item)
                 tpgProductSold.setSoldCount(item)
                 tpgVariantStockLocation.setStock(item)
+                if (item.isMultiwarehouse && item.totalChild.isZero()) {
+                    tpgRejectionReason.gone()
+                } else {
+                    tpgRejectionReason.setRejectReason(item)
+                }
             }
         }
 
@@ -144,6 +148,28 @@ class OngoingDelegateAdapter(
                     item.soldCount
                 )
             )
+        }
+
+        private fun Typography.setRejectReason(item: OngoingItem) {
+            val isWarehouseAvailable = item.warehouses.size.isMoreThanZero()
+            val isRejectReasonAvailable = if (isWarehouseAvailable) {
+                item.warehouses[Int.ZERO].rejectionReason.isNotEmpty()
+            } else {
+                false
+            }
+            this.run {
+                if (isWarehouseAvailable && isRejectReasonAvailable) {
+                    visible()
+                    text = MethodChecker.fromHtml(
+                        context.getString(
+                            R.string.stfs_rejection_reason_placeholder,
+                            item.warehouses[Int.ZERO].rejectionReason
+                        )
+                    )
+                } else {
+                    gone()
+                }
+            }
         }
     }
 }
