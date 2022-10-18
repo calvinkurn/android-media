@@ -128,12 +128,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
 
         requireView().findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        requireView().findViewById<View>(R.id.button_continue).setOnClickListener { view12 ->
+        requireView().findViewById<View>(R.id.button_continue).setOnClickListener {
             val bundle = Bundle()
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0)
             startActivity(CatalogListingActivity.getCallingIntent(activityContext, bundle))
         }
-        requireView().findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
+        requireView().findViewById<View>(R.id.text_empty_action).setOnClickListener { RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
 
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()

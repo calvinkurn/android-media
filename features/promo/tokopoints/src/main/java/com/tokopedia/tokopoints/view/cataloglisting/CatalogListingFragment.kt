@@ -19,7 +19,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.di.TokopointBundleComponent
 import com.tokopedia.tokopoints.view.couponlisting.CouponListingStackedActivity.Companion.getCallingIntent
@@ -56,7 +55,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var mContainerPointDetail: ConstraintLayout? = null
     private var appBarCollapseListener: onAppBarCollapseListener? = null
     private var isPointsAvailable = false
-    private var menuItemFilter: MenuItem? = null
     private var serverErrorView: ServerErrorView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
@@ -178,7 +176,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     }
 
     override fun onSuccessPoints(rewardStr: String, rewardValue: Int, membership: String, eggUrl: String) {
-        if (!rewardStr.isEmpty()) mTextPoints!!.text = rewardStr
+        if (rewardStr.isNotEmpty()) mTextPoints!!.text = rewardStr
         mTextPointsBottom!!.text = CurrencyHelper.convertPriceValue(rewardValue.toDouble(), false)
         isPointsAvailable = true
         mAppBarHeader!!.addOnOffsetChangedListener(offsetChangedListenerAppBarElevation)
@@ -189,7 +187,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     override fun onSuccessFilter(filters: CatalogFilterBase) {
         hideLoader()
         //Setting up subcategories types tabs
-        if (filters == null || filters.categories == null || filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
+        if (filters.categories.isEmpty()) { //To ensure get data loaded for very first time for first fragment(Providing a small to ensure fragment get displayed).
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter!!.setPointsAvailable(isPointsAvailable)
             //TODO please replace with
@@ -197,8 +195,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.currentSubCategoryId = 0
             mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
             mTabSortType!!.visibility = View.GONE
-        } else if (filters.categories[0] != null
-                && (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory == null || filters.categories[0].subCategory.isEmpty())) {
+        } else if (filters.categories[0].isHideSubCategory || filters.categories[0].subCategory.isEmpty()) {
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, null)
             mViewPagerAdapter!!.setPointsAvailable(isPointsAvailable)
             mPagerSortType!!.adapter = mViewPagerAdapter
@@ -212,8 +209,7 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
             mViewModel.currentCategoryId = filters.categories[0].id
             mViewModel.currentSubCategoryId = 0
             mPagerSortType!!.postDelayed({ refreshTab() }, CommonConstant.TAB_SETUP_DELAY_MS.toLong())
-        } else if (filters.categories[0] != null
-                && filters.categories[0].subCategory != null) {
+        } else {
             mTabSortType!!.visibility = View.VISIBLE
             updateToolbarTitle(filters.categories[0].name)
             mViewPagerAdapter = CatalogSortTypePagerAdapter(childFragmentManager, filters.categories[0].id, filters.categories[0].subCategory)

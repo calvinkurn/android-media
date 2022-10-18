@@ -40,10 +40,10 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
 
     override fun getNewFragment(): Fragment? {
         return if (mUserSession.isLoggedIn) {
-            CatalogListingFragment.newInstance(bundle);
+            CatalogListingFragment.newInstance(bundle)
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            null;
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            null
         }
     }
 
@@ -61,9 +61,9 @@ class CatalogListingActivity : BaseSimpleActivity(), HasComponent<TokopointBundl
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK) {
-            inflateFragment();
+            inflateFragment()
         } else {
-            finish();
+            finish()
         }
     }
 

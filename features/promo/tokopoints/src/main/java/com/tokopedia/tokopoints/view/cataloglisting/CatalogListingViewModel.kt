@@ -22,14 +22,14 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
             filterLiveData.value = Loading()
             val graphqlResponse = repository.getHomePageData(slugCategory,slugSubCategory, isBannerRequire)
             val outer = graphqlResponse.getData<CatalogBannerOuter>(CatalogBannerOuter::class.java)
-            if (outer == null || outer.bannerData == null || outer.bannerData.banners == null) {
+            if (outer == null) {
                 bannerLiveDate.value = ErrorMessage("")
             } else {
                 bannerLiveDate.value = Success(outer.bannerData)
             }
             //handling the catalog listing and tabs
             val catalogFilterOuter = graphqlResponse.getData<CatalogFilterOuter>(CatalogFilterOuter::class.java)
-            if (catalogFilterOuter == null || catalogFilterOuter.filter == null) {
+            if (catalogFilterOuter == null) {
                 filterLiveData.value = ErrorMessage("")
             } else {
                 filterLiveData.value = Success(catalogFilterOuter.filter)
@@ -42,7 +42,7 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
     override fun getPointData() {
         launchCatchError(block = {
            val  pointDetailEntity = repository.getPointData()
-            if ( pointDetailEntity.tokoPoints == null || pointDetailEntity.tokoPoints.resultStatus == null || pointDetailEntity.tokoPoints.status == null || pointDetailEntity.tokoPoints.status.points == null) {
+            if (pointDetailEntity==null) {
                 pointLiveData.value = ErrorMessage("")
             } else {
                 if (pointDetailEntity.tokoPoints.resultStatus.code == CommonConstant.CouponRedemptionCode.SUCCESS) {

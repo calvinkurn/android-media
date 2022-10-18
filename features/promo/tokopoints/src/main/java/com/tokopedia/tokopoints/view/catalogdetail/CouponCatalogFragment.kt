@@ -24,7 +24,6 @@ import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -292,7 +291,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         if (view == null || mSubscriptionCouponTimer == null) {
             return
         }
-        if (realCode != null && !realCode.isEmpty()) {
+        if (realCode.isNotEmpty()) {
             btnAction2?.setText(R.string.tp_label_use)
             btnAction2?.isEnabled = true
             mSubscriptionCouponTimer.unsubscribe()
@@ -340,7 +339,7 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         dialogUnify?.setTitle(title)
         dialogUnify?.setDescription(message)
         context?.let {
-            dialogUnify?.setPrimaryCTAText(it?.getString(R.string.tp_label_ok))
+            dialogUnify?.setPrimaryCTAText(it.getString(R.string.tp_label_ok))
         }
         dialogUnify?.setPrimaryCTAClickListener {
             dialogUnify.dismiss()
