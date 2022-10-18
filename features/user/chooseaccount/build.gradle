@@ -9,11 +9,6 @@ kapt {
     useBuildCache = true
 }
 
-repositories {
-    maven { url 'https://maven-hansel.tokopedia.com/maven' }
-    mavenCentral()
-}
-
 android {
     buildFeatures {
         viewBinding true
@@ -32,14 +27,10 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.libraries.linker)
-    implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
     implementation projectOrAar(rootProject.ext.features.sessioncommon)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.libraries.utils)
@@ -54,7 +45,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation projectOrAar(rootProject.ext.libraries.usersession)
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     kapt rootProject.ext.miscDependencies.lifeCycleRuntime
@@ -64,7 +54,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.miscDependencies.dagger
     annotationProcessor rootProject.ext.miscDependencies.daggerCompiler
-    implementation rootProject.ext.debugToolsDependencies.chuck
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk
@@ -80,7 +69,6 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.loggingInterceptor
     implementation rootProject.ext.networkDependencies.retrofit
@@ -88,7 +76,6 @@ dependencies {
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
     implementation rootProject.ext.supportLibDependencies.design
 
-    implementation rootProject.ext.miscDependencies.rxAndroid
     implementation rootProject.ext.miscDependencies.rxJava
 }
 

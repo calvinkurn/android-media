@@ -44,7 +44,8 @@ data class RatesParam(
         var po_time: Int = 0,
         var is_fulfillment: Boolean = false,
         var mvc: String = "",
-        var bo_metadata: String = ""
+        var bo_metadata: String = "",
+        private var cart_data: String = ""
 ) {
 
     private constructor(builder: Builder) : this(
@@ -74,7 +75,9 @@ data class RatesParam(
             is_fulfillment = builder.is_fulfillment,
             po_time = builder.po_time,
             mvc = builder.mvc,
-            bo_metadata = builder.bo_metadata)
+            bo_metadata = builder.bo_metadata,
+            cart_data = builder.cart_data
+    )
 
     fun toMap(): Map<String, Any?> = mapOf(
             "spids" to spids,
@@ -108,6 +111,10 @@ data class RatesParam(
             "po_time" to po_time,
             "is_fulfillment" to is_fulfillment,
             "bo_metadata" to bo_metadata
+    )
+
+    fun toMetadata(): Map<String, Any?> = mapOf(
+            "cart_data" to cart_data
     )
 
     fun toBoAffordabilityMap(appVersion: String): Map<String, Any?> = mapOf(
@@ -185,6 +192,8 @@ data class RatesParam(
         var mvc: String = ""
         var bo_metadata: String = RatesParamHelper.generateBoMetadata(shipping.boMetadata)
             private set
+        var cart_data: String = ""
+            private set
 
         fun isCorner(is_corner: Boolean) = apply { this.is_corner = if (is_corner) 1 else 0 }
 
@@ -195,6 +204,8 @@ data class RatesParam(
         fun promoCode(code: String?) = apply { this.psl_code = code ?: "" }
 
         fun mvc(mvc: String?) = apply { this.mvc = mvc ?: "" }
+
+        fun cartData(cart_data: String) = apply { this.cart_data = cart_data }
 
         fun build() = RatesParam(this)
 

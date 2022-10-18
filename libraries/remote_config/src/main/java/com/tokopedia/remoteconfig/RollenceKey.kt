@@ -41,9 +41,6 @@ object RollenceKey {
     const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
 
-    // Logistic
-    const val LCA_REFRESH = "android_lca_refresh"
-
     // Video Carousel Widget
     const val SEARCH_VIDEO_WIDGET = "VideoWidget"
     const val SEARCH_VIDEO_WIDGET_VARIANT = "experiment_variant"
@@ -58,6 +55,7 @@ object RollenceKey {
 
     // Food
     const val KEY_ROLLENCE_FOOD = "m1_gofood"
+    const val KEY_GOFOOD_SEARCH = "gofood_search"
 
     // PDP
     const val PDP_CAROUSEL_ANDROID = "pdp_carousel_android"
@@ -69,6 +67,9 @@ object RollenceKey {
 
     // Review
     const val CREATE_REVIEW_REVIEW_INSPIRATION_EXPERIMENT_NAME = "review_inspiration"
+
+    //Play
+    const val SWIPE_LIVE_ROOM = "play_sc"
 
     object PdpToolbar {
         const val key = "pdp_dyn_container"

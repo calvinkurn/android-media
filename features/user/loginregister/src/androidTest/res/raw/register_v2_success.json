@@ -1,0 +1,18 @@
+{
+  "register_v2": {
+    "user_id": 219039651,
+    "is_active": 1,
+    "access_token": "cM9TdWoDeg",
+    "refresh_token": "fWormA",
+    "token_type": "Bearer",
+    "sid": "pG-pMmqzn5H",
+    "enable_2fa": true,
+    "enable_skip_2fa": false,
+    "errors": [],
+    "popup_error": {
+      "header": "",
+      "body": "",
+      "action": ""
+    }
+  }
+}

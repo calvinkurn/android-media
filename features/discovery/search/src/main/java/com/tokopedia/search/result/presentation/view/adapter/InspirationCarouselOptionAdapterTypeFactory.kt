@@ -27,10 +27,14 @@ class InspirationCarouselOptionAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InspirationCarouselOptionListViewHolder.LAYOUT -> InspirationCarouselOptionListViewHolder(parent, listener)
-            InspirationCarouselOptionInfoViewHolder.LAYOUT -> InspirationCarouselOptionInfoViewHolder(parent, listener)
-            InspirationCarouselOptionGridViewHolder.LAYOUT -> InspirationCarouselOptionGridViewHolder(parent, listener)
-            InspirationCarouselOptionGridBannerViewHolder.LAYOUT -> InspirationCarouselOptionGridBannerViewHolder(parent, listener)
+            InspirationCarouselOptionListViewHolder.LAYOUT ->
+                InspirationCarouselOptionListViewHolder(parent, listener)
+            InspirationCarouselOptionInfoViewHolder.LAYOUT ->
+                InspirationCarouselOptionInfoViewHolder(parent, listener)
+            InspirationCarouselOptionGridViewHolder.LAYOUT ->
+                InspirationCarouselOptionGridViewHolder(parent, listener)
+            InspirationCarouselOptionGridBannerViewHolder.LAYOUT ->
+                InspirationCarouselOptionGridBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

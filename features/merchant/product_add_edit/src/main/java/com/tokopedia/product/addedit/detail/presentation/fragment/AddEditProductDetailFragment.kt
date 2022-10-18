@@ -124,6 +124,7 @@ import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_BUNDLE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.EXTRA_PICKER_SELECTED_SHOWCASE
 import com.tokopedia.shop.common.constant.ShopShowcaseParamConstant.SHOWCASE_PICKER_RESULT_REQUEST_CODE
+import com.tokopedia.shop.common.constant.ShopStatusLevelDef
 import com.tokopedia.shop.common.constant.ShowcasePickerType
 import com.tokopedia.shop.common.data.model.ShowcaseItemPicker
 import com.tokopedia.unifycomponents.*
@@ -1153,7 +1154,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 viewModel.isFreeOfServiceFee = viewModel.isFreeOfServiceFee(totalTxSuccess, viewModel.shopTier)
                 if (viewModel.isFreeOfServiceFee) {
                     setupCommissionInfoTips(commissionInfoTipsView, viewModel.isFreeOfServiceFee)
-                    commissionInfoTipsView?.show()
+                    if (viewModel.shopTier == ShopStatusLevelDef.LEVEL_OFFICIAL_STORE) {
+                        commissionInfoTipsView?.hide()
+                    } else { commissionInfoTipsView?.show() }
                 } else {
                     // display commission info tips when drafting or editing
                     val categoryIdStr = viewModel.productInputModel.detailInputModel.categoryId
@@ -1279,6 +1282,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 if (isCompetitive) {
                     priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                     priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+                } else {
+                    priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
+                    priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
                 }
             }
         }
@@ -1311,6 +1317,9 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
             if (isCompetitive) {
                 priceSuggestionStatusView?.setImageUrl(ROUND_GREEN_CHECK_MARK_ICON)
                 priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_is_competitive)
+            } else {
+                priceSuggestionStatusView?.setImageUrl(LIGHT_BULB_ICON)
+                priceSuggestionLabelView?.setText(com.tokopedia.product.addedit.R.string.label_price_suggestion_range)
             }
         }
         viewModel.productPriceRecommendationError.observe(viewLifecycleOwner) {

@@ -82,7 +82,8 @@ class DeveloperOptionActivity : BaseActivity() {
             typeFactory = DeveloperOptionTypeFactoryImpl(
                 accessTokenListener = clickAccessTokenBtn(),
                 resetOnBoardingListener = clickResetOnBoarding(),
-                urlEnvironmentListener = selectUrlEnvironment()
+                urlEnvironmentListener = selectUrlEnvironment(),
+                homeAndNavigationRevampListener = homeAndNavigationListener()
             ),
             differ = DeveloperOptionDiffer()
         )
@@ -232,6 +233,13 @@ class DeveloperOptionActivity : BaseActivity() {
             val editor = sharedPref.edit().clear()
             editor.apply()
             Toast.makeText(this@DeveloperOptionActivity,getString(R.string.reset_onboarding), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun homeAndNavigationListener() = object : HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener {
+        override fun onClickSkipOnBoardingBtn() {
+            userSession?.setFirstTimeUserOnboarding(false)
+            Toast.makeText(this@DeveloperOptionActivity,getString(com.tokopedia.developer_options.R.string.skip_onboarding_user_session), Toast.LENGTH_SHORT).show()
         }
     }
 

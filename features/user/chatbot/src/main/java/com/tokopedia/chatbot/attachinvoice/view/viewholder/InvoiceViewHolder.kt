@@ -4,17 +4,16 @@ import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
+import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceUiModel
 
 /**
  * Created by Hendri on 22/03/18.
  */
 
-class InvoiceViewHolder(itemView: View) : AbstractViewHolder<InvoiceViewModel>(itemView) {
+class InvoiceViewHolder(itemView: View) : AbstractViewHolder<InvoiceUiModel>(itemView) {
     private val invoiceNo: TextView
     private val invoiceDate: TextView
     private val productName: TextView
@@ -33,8 +32,7 @@ class InvoiceViewHolder(itemView: View) : AbstractViewHolder<InvoiceViewModel>(i
         productImage = itemView.findViewById(R.id.attach_invoice_item_product_image)
     }
 
-
-    override fun bind(element: InvoiceViewModel) {
+    override fun bind(element: InvoiceUiModel) {
         invoiceNo.text = element.invoiceNumber
         if (element.productTopImage != null && !TextUtils.isEmpty(element.productTopImage)) {
             productImage.visibility = View.VISIBLE

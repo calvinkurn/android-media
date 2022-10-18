@@ -31,6 +31,7 @@ import com.tokopedia.common.topupbills.data.prefix_select.TelcoCatalogPrefixSele
 import com.tokopedia.common.topupbills.favoritepage.util.FavoriteNumberDataMapper
 import com.tokopedia.common.topupbills.favoritepage.view.activity.TopupBillsPersoSavedNumberActivity
 import com.tokopedia.common.topupbills.favoritepage.view.model.TopupBillsSavedNumber
+import com.tokopedia.common.topupbills.favoritepage.view.util.FavoriteNumberPageConfig
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsGqlQuery
 import com.tokopedia.common.topupbills.utils.CommonTopupBillsUtil.Companion.isFavoriteNumberRevamp
 import com.tokopedia.common.topupbills.utils.covertContactUriToContactData
@@ -211,7 +212,8 @@ abstract class DigitalBaseTelcoFragment : BaseTopupBillsFragment() {
                     arrayListOf(),
                     categoryName,
                     isSwitchChecked,
-                    loyaltyStatus
+                    loyaltyStatus,
+                    FavoriteNumberPageConfig.TELCO,
                 )
             } else {
                 val favoriteNumbers = FavoriteNumberDataMapper
