@@ -35,11 +35,11 @@ class AffiliatePromotionShopItemVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_promotion_shop_card_item_layout
 
-        const val COMMISSION_AMOUNT_TYPE = 1
-        const val DISCOUNT_PERCENTAGE_TYPE = 2
-        const val PER_GOOD_SOLD = 6
-        const val ITEM_SOLD = 3
-        const val LOCATION = 4
+        private const val COMMISSION_AMOUNT_TYPE = 1
+        private const val DISCOUNT_PERCENTAGE_TYPE = 2
+        private const val PER_GOOD_SOLD = 6
+        private const val ITEM_SOLD = 3
+        private const val LOCATION = 4
     }
 
     override fun bind(element: AffiliatePromotionShopModel?) {
@@ -142,7 +142,7 @@ class AffiliatePromotionShopItemVH(
                     promotionItem.title ?: "",
                     promotionItem.image?.androidURL ?: "",
                     promotionItem.cardUrl ?: "",
-                    adapterPosition, commission,
+                    bindingAdapterPosition, commission,
                     getStatus(promotionItem),
                     promotionItem.type
                 )
@@ -161,7 +161,7 @@ class AffiliatePromotionShopItemVH(
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             UserSession(itemView.context).userId,
             item?.itemId,
-            adapterPosition + 1,
+            bindingAdapterPosition + 1,
             item?.title,
             "${item?.itemId} - ${item?.commission?.amount} - ${getStatus(item)}",
             AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_SHOP_CLICK
