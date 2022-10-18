@@ -23,7 +23,7 @@ class FeedProductTagSharingHelper(
     private val fragmentManager: FragmentManager,
     private val fragment: Fragment,
 ) {
-    private var productPost: ProductPostTagViewModelNew? = null
+    private var productTagShareModel: Model? = null
     private var shareData: LinkerData? = null
 
     private val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -35,18 +35,18 @@ class FeedProductTagSharingHelper(
                     LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
 
-                            val productPost = productPost
+                            val productTagShareModel = productTagShareModel
                             val shareData = shareData
 
-                            if(productPost == null || shareData == null) return
+                            if(productTagShareModel == null || shareData == null) return
 
                             val shareLink = linkerShareData?.shareUri.orEmpty()
                             val shareString = getString(
                                 R.string.feed_product_tag_share_template,
-                                productPost.product.name,
+                                productTagShareModel.productName,
                                 shareLink,
-                                productPost.shopName,
-                                productPost.priceFmt
+                                productTagShareModel.shopName,
+                                productTagShareModel.priceFmt
                             )
 
                             SharingUtil.executeShareIntent(
@@ -74,18 +74,36 @@ class FeedProductTagSharingHelper(
     }
 
     fun show(
-        productPost: ProductPostTagViewModelNew,
+        productTagShareModel: Model,
         shareData: LinkerData,
     ) {
-        this.productPost = productPost
+        this.productTagShareModel = productTagShareModel
         this.shareData = shareData
 
         if(!universalShareBottomSheet.isAdded) {
             universalShareBottomSheet.setMetaData(
-                tnTitle = productPost.text,
-                tnImage = productPost.imgUrl,
+                tnTitle = productTagShareModel.title,
+                tnImage = productTagShareModel.imageUrl,
             )
             universalShareBottomSheet.show(fragmentManager, fragment)
+        }
+    }
+
+    data class Model(
+        val title: String,
+        val imageUrl: String,
+        val productName: String,
+        val shopName: String,
+        val priceFmt: String,
+    ) {
+        companion object {
+            fun map(item: ProductPostTagViewModelNew) = Model(
+                title = item.text,
+                imageUrl = item.imgUrl,
+                productName = item.product.productName,
+                shopName = item.shopName,
+                priceFmt = item.priceFmt,
+            )
         }
     }
 }
