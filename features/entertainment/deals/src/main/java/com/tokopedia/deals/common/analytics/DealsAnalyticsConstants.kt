@@ -204,4 +204,8 @@ object DealsAnalyticsConstants {
     const val ITEM_BRAND = "item_brand"
     const val ITEM_VARIANT = "item_variant"
     const val ITEM_CATEGORY = "item_category"
+    const val ZERO_STRING = "0"
+    const val DASH_STRING = "-"
+    const val PROMO = "promo"
+    const val NON_PROMO = "non promo"
 }

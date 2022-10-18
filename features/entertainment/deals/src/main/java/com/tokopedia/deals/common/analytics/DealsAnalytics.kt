@@ -18,6 +18,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CATEGORY_ID
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_OPTION
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CHECKOUT_STEP
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DASH_STRING
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.DIMENSION_40
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Event.BEGIN_CHECKOUT
@@ -35,8 +36,10 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Item.none
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.FOUR_STRING_PATTERN
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.THREE_STRING_PATTERN
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.Label.TWO_STRING_PATTERN
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.NON_PROMO
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRICE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PRODUCT_CARD
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.PROMO
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.QUANTITY
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_CHECKOUT
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SCREEN_NAME_DEALS_PDP
@@ -46,6 +49,7 @@ import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SHOP_TYPE
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.SLASH_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TOKOPEDIA_DIGITAL_DEALS
 import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.TRAVELENTERTAINMENT_BU
+import com.tokopedia.deals.common.analytics.DealsAnalyticsConstants.ZERO_STRING
 import com.tokopedia.deals.common.model.response.Brand
 import com.tokopedia.deals.common.model.response.EventProductDetail
 import com.tokopedia.deals.common.ui.dataview.CuratedProductCategoryDataView
@@ -1159,7 +1163,7 @@ class DealsAnalytics @Inject constructor(
     }
 
     fun checkoutPromoClick(brandName: String, promoApplied: Boolean) {
-        val promo =  if (promoApplied) "promo" else "non promo"
+        val promo = getPromoStatus(promoApplied)
         val label = String.format(TWO_STRING_PATTERN, brandName, promo)
         val eventDataLayer = Bundle()
         eventDataLayer.generalBusiness()
@@ -1186,15 +1190,15 @@ class DealsAnalytics @Inject constructor(
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.add(
             Bundle().apply {
-                putString(CART_ID, "0")
-                putString(SHOP_ID, "-")
+                putString(CART_ID, ZERO_STRING)
+                putString(SHOP_ID, DASH_STRING)
                 putInt(QUANTITY, quantity)
                 putString(CATEGORY_ID, categoryId)
                 putString(ITEM_ID, itemId)
                 putLong(PRICE, price.toIntSafely().toLong())
-                putString(SHOP_TYPE, "-")
+                putString(SHOP_TYPE, DASH_STRING)
                 putString(ITEM_NAME, itemName)
-                putString(SHOP_NAME, "-")
+                putString(SHOP_NAME, DASH_STRING)
                 putString(ITEM_BRAND, "")
                 putString(ITEM_VARIANT, "")
                 putString(ITEM_CATEGORY, DEALS)
@@ -1206,7 +1210,7 @@ class DealsAnalytics @Inject constructor(
 
     fun checkoutProceedPaymentClick(quantity: Int, categoryId: String, itemId: String, itemName: String,
                                     brandName: String, promoApplied: Boolean, price: String) {
-        val promo =  if (promoApplied) "promo" else "non promo"
+        val promo = getPromoStatus(promoApplied)
         val label = String.format(TWO_STRING_PATTERN, brandName, promo)
         val eventDataLayer = Bundle()
         eventDataLayer.generalBusiness()
@@ -1220,14 +1224,14 @@ class DealsAnalytics @Inject constructor(
         val itemBundles = arrayListOf<Bundle>()
         itemBundles.add(
             Bundle().apply {
-                putString(CART_ID, "0")
-                putString(SHOP_ID, "-")
+                putString(CART_ID, ZERO_STRING)
+                putString(SHOP_ID, DASH_STRING)
                 putInt(QUANTITY, quantity)
                 putString(CATEGORY_ID, categoryId)
                 putString(ITEM_ID, itemId)
-                putString(SHOP_TYPE, "-")
+                putString(SHOP_TYPE, DASH_STRING)
                 putString(ITEM_NAME, itemName)
-                putString(SHOP_NAME, "-")
+                putString(SHOP_NAME, DASH_STRING)
                 putString(ITEM_BRAND, "")
                 putString(ITEM_VARIANT, "")
                 putString(ITEM_CATEGORY, DEALS)
@@ -1250,5 +1254,9 @@ class DealsAnalytics @Inject constructor(
         this.putString(BUSINESS_UNIT, TRAVELENTERTAINMENT_BU)
         this.putString(CURRENT_SITE, TOKOPEDIA_DIGITAL_DEALS)
         return this
+    }
+
+    private fun getPromoStatus(promoApplied: Boolean): String {
+        return if (promoApplied) PROMO else NON_PROMO
     }
 }
