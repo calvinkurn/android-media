@@ -6,13 +6,13 @@ import com.tokopedia.common_entertainment.data.DealCheckoutGeneral
 import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstant
 import com.tokopedia.common_entertainment.data.DealCheckoutGeneralInstantNoPromo
 import com.tokopedia.common_entertainment.data.DealCheckoutGeneralNoPromo
-import com.tokopedia.common_entertainment.data.DealsDetailsResponse
 import com.tokopedia.common_entertainment.data.DealsMetaDataCheckout
 import com.tokopedia.common_entertainment.data.EventVerifyResponse
 import com.tokopedia.common_entertainment.data.ItemMapCheckout
 import com.tokopedia.common_entertainment.data.ItemMapResponse
 import com.tokopedia.common_entertainment.data.MetaDataResponse
 import com.tokopedia.deals.pdp.data.ProductDetailData
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 object DealsCheckoutMapper {
@@ -23,11 +23,10 @@ object DealsCheckoutMapper {
         DealCheckoutGeneral {
         val checkoutGeneral = DealCheckoutGeneral()
         val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
-            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
-            else dealsDetail.checkoutDataType
+            dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
-        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
-        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(Int.ZERO, cartInfo)
         checkoutGeneral.carts.promoCodes = promoCodes
         return checkoutGeneral
     }
@@ -35,11 +34,10 @@ object DealsCheckoutMapper {
     fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
         val checkoutGeneral = DealCheckoutGeneralNoPromo()
         val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
-            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
-            else dealsDetail.checkoutDataType
+            dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
-        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
-        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(Int.ZERO, cartInfo)
         return checkoutGeneral
     }
 
@@ -47,11 +45,10 @@ object DealsCheckoutMapper {
         DealCheckoutGeneralInstant {
         val checkoutGeneral = DealCheckoutGeneralInstant()
         val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
-            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
-            else dealsDetail.checkoutDataType
+            dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
-        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
-        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(Int.ZERO, cartInfo)
         checkoutGeneral.carts.promoCodes = promoCodes
         checkoutGeneral.gatewayCode = verify.gatewayCode
         return checkoutGeneral
@@ -60,11 +57,10 @@ object DealsCheckoutMapper {
     fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
         val checkoutGeneral = DealCheckoutGeneralInstantNoPromo()
         val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
-            if(dealsDetail.checkoutDataType.isNullOrEmpty()) DEFAULT_CHECKOUT_DATA_TYPE
-            else dealsDetail.checkoutDataType
+            dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
-        checkoutGeneral.carts.businessType = dealsDetail?.checkoutBusinessType
-        checkoutGeneral.carts.cartInfo.add(0, cartInfo)
+        checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
+        checkoutGeneral.carts.cartInfo.add(Int.ZERO, cartInfo)
         checkoutGeneral.gatewayCode = verify.gatewayCode
         return checkoutGeneral
     }
@@ -82,9 +78,9 @@ object DealsCheckoutMapper {
                 orderSubTitle = orderSubTitle,
                 quantity = quantity,
                 totalPrice = totalPrice,
-                itemIds = convertStringListtoIntList(itemIds),
+                itemIds = convertStringListToIntList(itemIds),
                 productNames = productNames,
-                productIds = convertStringListtoIntList(productIds),
+                productIds = convertStringListToIntList(productIds),
                 itemMap = mapToItemMapCheckout(itemMap)
             )
         }
@@ -136,7 +132,7 @@ object DealsCheckoutMapper {
         }
     }
 
-    private fun convertStringListtoIntList(listString: List<String>): List<Int> {
+    private fun convertStringListToIntList(listString: List<String>): List<Int> {
         return listString.map {
             it.toIntSafely()
         }

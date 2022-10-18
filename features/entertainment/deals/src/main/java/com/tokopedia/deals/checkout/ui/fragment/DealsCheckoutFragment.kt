@@ -1,7 +1,6 @@
 package com.tokopedia.deals.checkout.ui.fragment
 
 import android.app.Activity
-import android.app.TaskStackBuilder
 import android.content.Intent
 import android.graphics.Paint
 import android.os.Bundle
@@ -15,9 +14,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalDeals
 import com.tokopedia.applink.internal.ApplinkConstInternalPayment
 import com.tokopedia.applink.internal.ApplinkConstInternalPromo
 import com.tokopedia.common.payment.PaymentConstant.EXTRA_PARAMETER_TOP_PAY_DATA
@@ -39,6 +36,7 @@ import com.tokopedia.deals.common.utils.DealsUtils
 import com.tokopedia.deals.databinding.FragmentDealsCheckoutBinding
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -148,7 +146,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                 VOUCHER_RESULT_CODE -> {
                     val code = data?.extras?.getString(VOUCHER_CODE) ?: ""
                     val message = data?.extras?.getString(VOUCHER_MESSAGE) ?: ""
-                    val amount = data?.extras?.getInt(VOUCHER_DISCOUNT_AMOUNT) ?: 0
+                    val amount = data?.extras?.getInt(VOUCHER_DISCOUNT_AMOUNT) ?: Int.ZERO
                     val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
                     voucherCode = code
                     promoCode = code
@@ -158,7 +156,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                 COUPON_RESULT_CODE -> {
                     val code = data?.extras?.getString(COUPON_CODE) ?: ""
                     val message = data?.extras?.getString(COUPON_MESSAGE) ?: ""
-                    val amount = data?.extras?.getInt(COUPON_DISCOUNT_AMOUNT) ?: 0
+                    val amount = data?.extras?.getInt(COUPON_DISCOUNT_AMOUNT) ?: Int.ZERO
                     val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
                     couponCode = code
                     promoCode = code
@@ -180,22 +178,12 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                     is Success -> {
                         context?.let { context ->
                             hideProgressBar()
-                            if (it.data.checkout.data.success == 0) {
-                                view?.let { view ->
-                                    Toaster.build(
-                                        view,
-                                        it.data.checkout.data.message,
-                                        Snackbar.LENGTH_LONG,
-                                        Toaster.TYPE_ERROR,
-                                        view.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
-                                    ).show()
-                                }
+                            if (it.data.checkout.data.success == Int.ZERO) {
+                                showErrorToaster(it.data.checkout.data.message)
                             } else {
                                 val paymentData = it.data.checkout.data.data.queryString
                                 val paymentURL: String = it.data.checkout.data.data.redirectUrl
-
                                 if (!paymentData.isNullOrEmpty() || !paymentURL.isNullOrEmpty()) {
-
                                     val checkoutResultData = PaymentPassData()
                                     checkoutResultData.queryString = paymentData
                                     checkoutResultData.redirectUrl = paymentURL
@@ -210,34 +198,16 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                                         checkoutResultData
                                     )
                                     startActivityForResult(intent, PAYMENT_SUCCESS)
-
                                 } else {
-                                    view?.let { view ->
-                                        Toaster.build(
-                                            view,
-                                            it.data.checkout.data.error,
-                                            Snackbar.LENGTH_LONG,
-                                            Toaster.TYPE_ERROR,
-                                            context.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
-                                        ).show()
-                                    }
+                                    showErrorToaster(it.data.checkout.data.error)
                                 }
                             }
                         }
                     }
 
                     is Fail -> {
-                        view?.let { view ->
-                            hideProgressBar()
-                            Toaster.build(
-                                view,
-                                ErrorHandler.getErrorMessage(context, it.throwable),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_ERROR,
-                                context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
-                                    ?: ""
-                            ).show()
-                        }
+                        hideProgressBar()
+                        showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable))
                     }
                 }
             }
@@ -251,11 +221,8 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                     is Success -> {
                         context?.let { context ->
                             hideProgressBar()
-                            if (it.data.checkout.data.success == 0) {
-                                view?.let { view ->
-                                    Toaster.build(view, it.data.checkout.data.message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
-                                        context.resources.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)).show()
-                                }
+                            if (it.data.checkout.data.success == Int.ZERO) {
+                                showErrorToaster(it.data.checkout.data.message)
                             } else {
                                 RouteManager.route(context, it.data.checkout.data.data.redirectUrl)
                             }
@@ -263,17 +230,8 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                     }
 
                     is Fail -> {
-                        view?.let { view ->
-                            hideProgressBar()
-                            Toaster.build(
-                                view,
-                                ErrorHandler.getErrorMessage(context, it.throwable),
-                                Snackbar.LENGTH_LONG,
-                                Toaster.TYPE_ERROR,
-                                context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster)
-                                    ?: ""
-                            ).show()
-                        }
+                        hideProgressBar()
+                        showErrorToaster(ErrorHandler.getErrorMessage(context, it.throwable))
                     }
                 }
             }
@@ -313,7 +271,23 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun showUI() {
         analytics.checkoutSendScreenName()
-        (activity as DealsCheckoutActivity).supportActionBar?.title = "Checkout"
+        showHeader()
+        showOutlets()
+        showEmail()
+        showPrice()
+        showPromo()
+        showPayment()
+    }
+
+    private fun showErrorToaster(message: String) {
+        view?.let { view ->
+            Toaster.build(view, message, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR,
+                context?.resources?.getString(com.tokopedia.deals.R.string.deals_checkout_error_toaster).orEmpty()
+            ).show()
+        }
+    }
+
+    private fun showHeader() {
         imgBrand?.loadImage(dealsDetail.imageApp)
         tgBrandName?.text = dealsDetail.brand.title
         tgTitle?.text = dealsDetail.displayName
@@ -325,7 +299,9 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                 )
             )
         )
+    }
 
+    private fun showOutlets() {
         if (dealsDetail.outlets.isNullOrEmpty()) {
             tgAllLocation?.text = context?.resources?.getString(
                 com.tokopedia.deals.R.string.deals_checkout_all_indonesia
@@ -343,11 +319,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                 dealsCheckoutCallbacks?.onShowAllLocation(dealsDetail.outlets)
             }
         }
+    }
 
+    private fun showEmail() {
         etEmail?.textFieldInput?.setText(userSession.email)
-        etEmail?.textFieldInput?.setKeyListener(null)
+        etEmail?.textFieldInput?.keyListener = null
+    }
 
-        if (dealsDetail.mrp.toIntSafely() != 0 && dealsDetail.mrp != dealsDetail.salesPrice) {
+    private fun showPrice() {
+        if (dealsDetail.mrp.toIntSafely() != Int.ZERO && dealsDetail.mrp != dealsDetail.salesPrice) {
             tgMrpPerQuantity?.apply {
                 show()
                 text = DealsUtils.convertToCurrencyString(dealsDetail.mrp.toIntSafely().toLong())
@@ -361,7 +341,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         tgSalesPriceAllQty?.text =
             DealsUtils.convertToCurrencyString(dealsItemMap.price * dealsItemMap.quantity)
 
-        if (dealsItemMap.commission <= 0) {
+        if (dealsItemMap.commission <= Int.ZERO) {
             tgServiceFee?.gone()
             tgServiceFeeAmount?.gone()
         } else {
@@ -370,12 +350,14 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         }
 
         tgTotalAmount?.text =
-            DealsUtils.convertToCurrencyString(dealsItemMap.price.toLong() * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong())
+            DealsUtils.convertToCurrencyString(dealsItemMap.price * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong())
         tgNumberVoucher?.text = context?.resources?.getString(
             com.tokopedia.deals.R.string.deals_checkout_number_of_vouchers,
             dealsItemMap.quantity
         )
+    }
 
+    private fun showPromo() {
         tickerPromoCode?.apply {
             enableView()
             actionListener = object : TickerPromoStackingCheckoutView.ActionListener {
@@ -387,7 +369,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
                 override fun onResetPromoDiscount() {
                     setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
-                    showPromoSuccess("", "", 0, true)
+                    showPromoSuccess("", "", ZERO_LONG, true)
                     promoApplied = false
                     promoCode = ""
                 }
@@ -402,13 +384,15 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
                 override fun onDisablePromoDiscount() {
                     setupPromoTicker(TickerCheckoutView.State.EMPTY, "", "")
-                    showPromoSuccess("", "", 0, true)
+                    showPromoSuccess("", "", ZERO_LONG, true)
                     promoApplied = false
                     promoCode = ""
                 }
             }
         }
+    }
 
+    private fun showPayment() {
         btnPayment?.setOnClickListener {
             analytics.checkoutProceedPaymentClick(dealsVerify.metadata.quantity, dealsDetail.categoryId,
                 dealsDetail.id, dealsDetail.displayName, dealsDetail.brand.title, promoApplied, dealsDetail.salesPrice)
@@ -451,7 +435,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
             promoApplied = true
         }
 
-        if (discountAmount != 0L) {
+        if (discountAmount != ZERO_LONG) {
             clPromoDiscount?.show()
             tgPromoDiscount?.text = DealsUtils.convertToCurrencyString(discountAmount)
         } else {
@@ -463,12 +447,12 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun updateAmount(discountAmount: Long) {
         tgTotalAmount?.text =
-            DealsUtils.convertToCurrencyString(dealsItemMap.price.toLong() * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong() - discountAmount)
+            DealsUtils.convertToCurrencyString(dealsItemMap.price * dealsItemMap.quantity.toLong() + dealsItemMap.commission.toLong() - discountAmount)
     }
 
     private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(
+            if (promoCodes.first().isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(
                 dealsDetail,
                 dealsVerify,
                 listOf(promoCode)
@@ -481,7 +465,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes[0].isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(
+            if (promoCodes.first().isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(
                 dealsDetail,
                 dealsVerify,
                 listOf(promoCode)
@@ -555,6 +539,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
         private const val LOYALTY_ACTIVITY_REQUEST_CODE = 12345
         private const val VOUCHER_RESULT_CODE = 12
         private const val COUPON_RESULT_CODE = 15
+        private const val ZERO_LONG = 0L
 
         fun createInstance(
             productDetailData: ProductDetailData?,

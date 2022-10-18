@@ -78,16 +78,7 @@ class DealsCheckoutLocationsFragment: BaseDaggerFragment() {
             })
             recycleView?.adapter = adapter
             recycleView?.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            outlets.let {
-                adapter.addOutlets(it)
-            }
-
-            recycleView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-                    KeyboardHandler.hideSoftKeyboard(activity)
-                }
-            })
+            adapter.addOutlets(outlets)
         }
     }
 
