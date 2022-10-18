@@ -52,6 +52,7 @@ class ProductSummaryRobot(
                         setupCoverAnalytic = mockk(relaxed = true),
                         summaryAnalytic = mockk(relaxed = true),
                         scheduleAnalytic = mockk(relaxed = true),
+                        pinProductAnalytic = mockk(relaxed = true),
                     )
                 )
             }
