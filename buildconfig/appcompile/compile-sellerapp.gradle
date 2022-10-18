@@ -73,6 +73,7 @@ includeIfEnabled("features:media:live-broadcaster")
 
 includeIfEnabled("features:merchant:gold_merchant_common")
 includeIfEnabled("features:merchant:power_merchant_subscribe")
+includeIfEnabled("features:merchant:product_service_widget")
 includeIfEnabled("features:merchant:product_detail")
 includeIfEnabled("features:merchant:product_detail_common")
 includeIfEnabled("features:merchant:product_detail_additional_info")

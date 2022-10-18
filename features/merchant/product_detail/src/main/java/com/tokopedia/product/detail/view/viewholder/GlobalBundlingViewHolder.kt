@@ -38,7 +38,7 @@ class GlobalBundlingViewHolder(
 
         val param = GetBundleParamBuilder()
             .setProductId(data.productId)
-//            .setWarehouseId(data.whId)
+            .setWarehouseId(data.whId)
 //            .setWidgetType(widgetType) - belum bisa terima literal int
             .setWidgetType(WidgetType.TYPE_2)
             .setPageSource(BundlingPageSource.PRODUCT_DETAIL_PAGE)
