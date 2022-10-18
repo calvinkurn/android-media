@@ -1,0 +1,69 @@
+package com.tokopedia.manageaddress.shareaddress.shareaddressfromnotif
+
+import android.content.Intent
+import androidx.test.espresso.Espresso
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.rule.ActivityTestRule
+import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.cassavatest.hasAllSuccess
+import com.tokopedia.manageaddress.ui.manageaddress.ManageAddressActivity
+import com.tokopedia.manageaddress.util.ManageAddressConstant
+import org.hamcrest.MatcherAssert.assertThat
+import com.tokopedia.manageaddress.R
+import com.tokopedia.test.application.matcher.RecyclerViewMatcher
+
+fun shareAddress(func: ShareAddressRobot.() -> Unit) = ShareAddressRobot().apply(func)
+
+class ShareAddressRobot {
+
+    fun launchFrom(rule: ActivityTestRule<ManageAddressActivity>, paramRuid: String) {
+        val i = Intent()
+        i.putExtra(ManageAddressConstant.QUERY_PARAM_RUID, paramRuid)
+        rule.launchActivity(i)
+        waitForData()
+    }
+
+    fun selectFirstAddress() {
+        Espresso.onView(
+            RecyclerViewMatcher(R.id.address_list)
+                .atPositionOnView(0, R.id.card_address)
+        ).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+        waitForData()
+    }
+
+    fun clickShareAddressButton() {
+        Espresso.onView(ViewMatchers.withId(R.id.btn_choose_address))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+        waitForData()
+    }
+
+    fun clickDisagreeButton() {
+        Espresso.onView(ViewMatchers.withId(R.id.btn_disagree))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+    }
+
+    fun clickAgreeButton() {
+        Espresso.onView(ViewMatchers.withId(R.id.btn_agree))
+            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .perform(ViewActions.click())
+    }
+
+    private fun waitForData(millis: Long = 1000L) {
+        Thread.sleep(millis)
+    }
+
+    infix fun validateAnalytics(func: ResultRobot.() -> Unit): ResultRobot {
+        return ResultRobot().apply(func)
+    }
+}
+
+class ResultRobot {
+    fun hasPassedAnalytics(cassavaTestRule: CassavaTestRule, queryId: String) {
+        assertThat(cassavaTestRule.validate(queryId), hasAllSuccess())
+    }
+}

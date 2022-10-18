@@ -1,11 +1,13 @@
 package com.tokopedia.logisticCommon.data.analytics
 
-import com.tokopedia.track.builder.BaseTrackerBuilder
+import com.tokopedia.track.builder.Tracker
 import com.tokopedia.track.builder.util.BaseTrackerConst
 
 object ShareAddressAnalytics : BaseTrackerConst() {
     private const val BUSINESS_UNIT_LOGISTIC = "logistic"
     private const val EVENT_CLICK_LOGISTIC = "clickLogistic"
+
+    private const val KEY_TRACKER_ID = "trackerId"
 
     private const val CATEGORY_ADDRESS_LIST_PAGE = "address list page"
     private const val CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY = "bottom sheet inserting identity"
@@ -34,223 +36,192 @@ object ShareAddressAnalytics : BaseTrackerConst() {
     private const val LABEL_CHECK = "check"
     private const val LABEL_UNCHECK = "uncheck"
 
+    private const val TRACKER_ID_CLICKING_TAB_UTAMA = "36673"
+    private const val TRACKER_ID_CLICKING_TAB_FROM_FRIEND = "36674"
+    private const val TRACKER_ID_CLICKING_PHONE_BOOK_TO_GET_CONTACT = "36675"
+    private const val TRACKER_ID_CLICKING_KIRIM_BUTTON = "36676"
+    private const val TRACKER_ID_CLICKING_SAVE_BUTTON = "36679"
+    private const val TRACKER_ID_CHOOSE_ONE_OF_ADDRESS_LIST = "36680"
+    private const val TRACKER_ID_AGREE_TO_SEND_ADDRESS = "36681"
+    private const val TRACKER_ID_DISAGREE_TO_SEND_ADDRESS = "36682"
+    private const val TRACKER_ID_CLICKING_DELETE_BUTTON = "36683"
+    private const val TRACKER_ID_CLICKING_REQUEST_TO_FRIEND_BUTTON = "37108"
+    private const val TRACKER_ID_CLICKING_SHARE_ADDRESS_BUTTON = "37111"
+    private const val TRACKER_ID_DIRECT_SHARE_CLICKING_SHARE_BUTTON = "37170"
+    private const val TRACKER_ID_DIRECT_SHARE_CLICKING_PHONE_BOOK_TO_GET_CONTACT = "37171"
+    private const val TRACKER_ID_DIRECT_SHARE_USERS_CLICKING_KIRIM_BUTTON = "37172"
+    private const val TRACKER_ID_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS = "37173"
+    private const val TRACKER_ID_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS = "37174"
+    private const val TRACKER_ID_CLICKING_SELECT_ALL_BUTTON = "37197"
+
+    private fun sendTracker(
+        action: String,
+        category: String,
+        label: String,
+        trackerId: String,
+    ) {
+        Tracker.Builder()
+            .setEvent(EVENT_CLICK_LOGISTIC)
+            .setEventAction(action)
+            .setEventCategory(category)
+            .setEventLabel(label)
+            .setCustomProperty(KEY_TRACKER_ID, trackerId)
+            .setBusinessUnit(BUSINESS_UNIT_LOGISTIC)
+            .setCurrentSite(CurrentSite.DEFAULT)
+            .build()
+            .send()
+    }
+
     fun onClickMainTab() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_TAB_UTAMA)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_TAB_UTAMA,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_CLICKING_TAB_UTAMA
         )
     }
 
     fun onClickFromFriendTab() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_TAB_FROM_FRIEND)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_TAB_FROM_FRIEND,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_CLICKING_TAB_FROM_FRIEND
         )
     }
 
     fun onClickPhoneBookToGetContact(isRequestAddress: Boolean) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY)
-                .appendEventAction(
-                    if (isRequestAddress) {
-                        ACTION_CLICKING_PHONE_BOOK_TO_GET_CONTACT
-                    } else {
-                        ACTION_DIRECT_SHARE_CLICKING_PHONE_BOOK_TO_GET_CONTACT
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
-        )
+        if (isRequestAddress) {
+            sendTracker(
+                action = ACTION_CLICKING_PHONE_BOOK_TO_GET_CONTACT,
+                category = CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY,
+                label = "",
+                trackerId = TRACKER_ID_CLICKING_PHONE_BOOK_TO_GET_CONTACT
+            )
+        } else {
+            sendTracker(
+                action = ACTION_DIRECT_SHARE_CLICKING_PHONE_BOOK_TO_GET_CONTACT,
+                category = CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY,
+                label = "",
+                trackerId = TRACKER_ID_DIRECT_SHARE_CLICKING_PHONE_BOOK_TO_GET_CONTACT
+            )
+        }
     }
 
     fun onClickBottomSheetSendButton(isRequestAddress: Boolean, isSuccess: Boolean) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY)
-                .appendEventAction(
-                    if (isRequestAddress) {
-                        ACTION_CLICKING_KIRIM_BUTTON
-                    } else {
-                        ACTION_DIRECT_SHARE_USERS_CLICKING_KIRIM_BUTTON
-                    }
-                )
-                .appendEventLabel(if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
-        )
+        if (isRequestAddress) {
+            sendTracker(
+                action = ACTION_CLICKING_KIRIM_BUTTON,
+                category = CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY,
+                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+                trackerId = TRACKER_ID_CLICKING_KIRIM_BUTTON
+            )
+        } else {
+            sendTracker(
+                action = ACTION_DIRECT_SHARE_USERS_CLICKING_KIRIM_BUTTON,
+                category = CATEGORY_BOTTOM_SHEET_INSERTING_IDENTITY,
+                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+                trackerId = TRACKER_ID_DIRECT_SHARE_USERS_CLICKING_KIRIM_BUTTON
+            )
+        }
     }
 
     fun onClickSaveButton(isSuccess: Boolean) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_SAVE_BUTTON)
-                .appendEventLabel(
-                    if (isSuccess) {
-                        LABEL_SUCCESS
-                    } else {
-                        LABEL_NOT_SUCCESS
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_SAVE_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+            trackerId = TRACKER_ID_CLICKING_SAVE_BUTTON
         )
     }
 
     fun onClickDeleteButton(isSuccess: Boolean) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_DELETE_BUTTON)
-                .appendEventLabel(
-                    if (isSuccess) {
-                        LABEL_SUCCESS
-                    } else {
-                        LABEL_NOT_SUCCESS
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_DELETE_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+            trackerId = TRACKER_ID_CLICKING_DELETE_BUTTON
         )
     }
 
     fun onChooseAddressList() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CHOOSE_ONE_OF_ADDRESS_LIST)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CHOOSE_ONE_OF_ADDRESS_LIST,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_CHOOSE_ONE_OF_ADDRESS_LIST
         )
     }
 
     fun onAgreeSendAddress(isDirectShare: Boolean, isSuccess: Boolean = false) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_CONSENT_BOTTOM_SHEET)
-                .appendEventAction(
-                    if (isDirectShare) {
-                        ACTION_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS
-                    } else {
-                        ACTION_AGREE_TO_SEND_ADDRESS
-                    }
-                )
-                .appendEventLabel(
-                    if (isSuccess) {
-                        LABEL_SUCCESS
-                    } else {
-                        LABEL_NOT_SUCCESS
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
-        )
+        if (isDirectShare) {
+            sendTracker(
+                action = ACTION_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS,
+                category = CATEGORY_CONSENT_BOTTOM_SHEET,
+                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+                trackerId = TRACKER_ID_DIRECT_SHARE_AGREE_TO_SEND_ADDRESS
+            )
+        } else {
+            sendTracker(
+                action = ACTION_AGREE_TO_SEND_ADDRESS,
+                category = CATEGORY_CONSENT_BOTTOM_SHEET,
+                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+                trackerId = TRACKER_ID_AGREE_TO_SEND_ADDRESS
+            )
+        }
     }
 
     fun onDisagreeSendAddress(isDirectShare: Boolean, isSuccess: Boolean = false) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_CONSENT_BOTTOM_SHEET)
-                .appendEventAction(
-                    if (isDirectShare) {
-                        ACTION_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS
-                    } else {
-                        ACTION_DISAGREE_TO_SEND_ADDRESS
-                    }
-                )
-                .appendEventLabel(
-                    if (isDirectShare) {
-                        ""
-                    } else {
-                        if (isSuccess) {
-                            LABEL_SUCCESS
-                        } else {
-                            LABEL_NOT_SUCCESS
-                        }
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
-        )
+        if (isDirectShare) {
+            sendTracker(
+                action = ACTION_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS,
+                category = CATEGORY_CONSENT_BOTTOM_SHEET,
+                label = "",
+                trackerId = TRACKER_ID_DIRECT_SHARE_DISAGREE_TO_SEND_ADDRESS
+            )
+        } else {
+            sendTracker(
+                action = ACTION_DISAGREE_TO_SEND_ADDRESS,
+                category = CATEGORY_CONSENT_BOTTOM_SHEET,
+                label = if (isSuccess) LABEL_SUCCESS else LABEL_NOT_SUCCESS,
+                trackerId = TRACKER_ID_DISAGREE_TO_SEND_ADDRESS
+            )
+        }
     }
 
     fun onClickRequestAddress() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_REQUEST_TO_FRIEND_BUTTON)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_REQUEST_TO_FRIEND_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_CLICKING_REQUEST_TO_FRIEND_BUTTON
         )
     }
 
     fun onClickShareAddress() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_SHARE_ADDRESS_BUTTON)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_SHARE_ADDRESS_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_CLICKING_SHARE_ADDRESS_BUTTON
         )
     }
 
     fun onClickDirectShareButton() {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_DIRECT_SHARE_CLICKING_SHARE_BUTTON)
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_DIRECT_SHARE_CLICKING_SHARE_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = "",
+            trackerId = TRACKER_ID_DIRECT_SHARE_CLICKING_SHARE_BUTTON
         )
     }
 
     fun onCheckAllAddress(isChecked: Boolean) {
-        getTracker().sendGeneralEvent(
-            BaseTrackerBuilder()
-                .appendEvent(EVENT_CLICK_LOGISTIC)
-                .appendEventCategory(CATEGORY_ADDRESS_LIST_PAGE)
-                .appendEventAction(ACTION_CLICKING_SELECT_ALL_BUTTON)
-                .appendEventLabel(
-                    if(isChecked) {
-                        LABEL_CHECK
-                    } else {
-                        LABEL_UNCHECK
-                    }
-                )
-                .appendBusinessUnit(BUSINESS_UNIT_LOGISTIC)
-                .appendCurrentSite(CurrentSite.DEFAULT)
-                .build()
+        sendTracker(
+            action = ACTION_CLICKING_SELECT_ALL_BUTTON,
+            category = CATEGORY_ADDRESS_LIST_PAGE,
+            label = if (isChecked) LABEL_CHECK else LABEL_UNCHECK,
+            trackerId = TRACKER_ID_CLICKING_SELECT_ALL_BUTTON
         )
     }
 }

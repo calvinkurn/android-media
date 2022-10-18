@@ -162,10 +162,10 @@ class ManageAddressViewModel @Inject constructor(
                 isClearData = true
                 getStateChosenAddress("address")
             } else {
-                _addressList.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
+                _resultRemovedAddress.value = ManageAddressState.Fail(MessageErrorException(DEFAULT_ERROR_MESSAGE), "")
             }
         }, onError = {
-            _addressList.value = ManageAddressState.Fail(it, it.message.orEmpty())
+            _resultRemovedAddress.value = ManageAddressState.Fail(it, it.message.orEmpty())
         })
     }
 

@@ -1,0 +1,10 @@
+{
+  "KeroAddrValidateShareAddressRequestAsSender": {
+    "is_valid": true,
+    "receiver_user_name": "test",
+    "kero_addr_error": {
+      "code": 0,
+      "detail": ""
+    }
+  }
+}

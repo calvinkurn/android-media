@@ -9,6 +9,7 @@ import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAdd
 import com.tokopedia.localizationchooseaddress.domain.response.SetStateChosenAddressQqlResponse
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.ANA_REVAMP_FEATURE_ID
 import com.tokopedia.logisticCommon.data.constant.AddressConstant.EDIT_ADDRESS_REVAMP_FEATURE_ID
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.response.KeroAddrIsEligibleForAddressFeatureData
 import com.tokopedia.logisticCommon.domain.model.AddressListModel
@@ -33,7 +34,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.setMain
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -178,7 +178,7 @@ class ManageAddressViewModelTest {
     fun `Delete Address Fail`() {
         coEvery { deletePeopleAddressUseCase.invoke(any()) } throws mockThrowable
         manageAddressViewModel.deletePeopleAddress("1")
-        verify { observerManageAddressStateAddressList.onChanged(match { it is ManageAddressState.Fail }) }
+        verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
     }
 
     @Test
@@ -383,6 +383,73 @@ class ManageAddressViewModelTest {
 
         verify {
             observerValidateShareAddressState.onChanged(ValidateShareAddressState.Fail)
+        }
+    }
+
+    @Test
+    fun `verify when delete address is not success`() {
+        // Given
+        val mockResponseDeletePeopleAddressGqlResponse = DeletePeopleAddressGqlResponse(
+            DeletePeopleAddressResponse(
+                data = DeletePeopleAddressData(success = 0)
+            )
+        )
+        coEvery { deletePeopleAddressUseCase.invoke(any()) } returns mockResponseDeletePeopleAddressGqlResponse
+
+        // When
+        manageAddressViewModel.deletePeopleAddress("1")
+
+        // Then
+        verify { observerResultRemovedAddress.onChanged(match { it is ManageAddressState.Fail }) }
+    }
+
+    @Test
+    fun `verify when set default address is not success`() {
+        // Given
+        val mockDefaultPeopleAddressGqlResponse = spyk(
+            SetDefaultPeopleAddressGqlResponse(
+                SetDefaultPeopleAddressResponse(
+                    data = DefaultPeopleAddressData(success = 0)
+                )
+            )
+        )
+        coEvery { setDefaultPeopleAddressUseCase.invoke(any()) } returns mockDefaultPeopleAddressGqlResponse
+
+        // When
+        manageAddressViewModel.setDefaultPeopleAddress("1", true, -1, -1, true)
+
+        // Then
+        verify { observerManageAddressState.onChanged(match { it is ManageAddressState.Fail }) }
+    }
+
+    @Test
+    fun `verify when validate share address as receiver from tokonow is success`() {
+        // Given
+        val source = ManageAddressSource.TOKONOW.source
+        val mockResponse = spyk(
+            ValidateShareAddressAsReceiverResponse(
+                keroValidateShareAddressAsReceiver = spyk(
+                    ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
+                        isValid = true
+                    )
+                )
+            )
+        )
+        coEvery {
+            validateShareAddressAsReceiverUseCase.invoke(any())
+        } returns mockResponse
+        manageAddressViewModel.source = source
+        manageAddressViewModel.senderUserId = "1"
+
+        // When
+        manageAddressViewModel.doValidateShareAddress()
+
+        // Then
+        assertEquals(manageAddressViewModel.source, source)
+        assertTrue(manageAddressViewModel.isReceiveShareAddress)
+        assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
+        verify {
+            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success)
         }
     }
 }

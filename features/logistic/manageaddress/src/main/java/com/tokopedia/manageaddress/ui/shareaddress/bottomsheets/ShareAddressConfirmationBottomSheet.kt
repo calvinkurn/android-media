@@ -111,9 +111,9 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
 
     private fun onLoadingShareAddress(isShowLoading: Boolean) {
         if (viewModel.isApprove) {
-            binding.btnShare.isLoading = isShowLoading
+            binding.btnAgree.isLoading = isShowLoading
         } else {
-            binding.btnCancel.isLoading = isShowLoading
+            binding.btnDisagree.isLoading = isShowLoading
         }
     }
 
@@ -146,10 +146,10 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
             txtTermsShareAddress.addLinkText(getString(R.string.share_address_confirmation_tnc_link)) {
                 RouteManager.route(requireContext(), PRIVACY_POLICY_URL)
             }
-            btnShare.setOnClickListener {
+            btnAgree.setOnClickListener {
                 onClickBtnShare()
             }
-            btnCancel.setOnClickListener {
+            btnDisagree.setOnClickListener {
                 onClickBtnCancel()
             }
         }
@@ -218,7 +218,6 @@ class ShareAddressConfirmationBottomSheet : BottomSheetUnify(),
                         context,
                         com.tokopedia.unifyprinciples.R.color.Unify_G500
                     )
-                    this@addLinkText.invalidate()
                 }
             }, 0, linkText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
