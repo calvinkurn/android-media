@@ -119,7 +119,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
 import com.tokopedia.play.widget.analytic.impression.DefaultImpressionValidator
 import com.tokopedia.play.widget.analytic.impression.ImpressionHelper
-import com.tokopedia.play.widget.analytic.global.model.PlayWidgetFeedsAnalyticModel
 import com.tokopedia.play.widget.ui.PlayWidgetView
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.play.widget.ui.listener.PlayWidgetListener
@@ -145,12 +144,6 @@ import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
-import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
-import kotlinx.coroutines.flow.collectLatest
 
 /**
  * @author by nisie on 5/15/17.
