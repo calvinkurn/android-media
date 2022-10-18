@@ -106,6 +106,19 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         )
     }
 
+    fun getAtcObjectDataLayer(
+        filterSortParams: String,
+        componentId: String,
+    ): Map<String, Any> {
+        val dataLayerMap = getProductAsObjectDataLayer(filterSortParams, componentId) as Map<String, Any>
+        val dataLayerMutableMap = dataLayerMap.toMutableMap()
+        dataLayerMutableMap["quantity"] = minOrder
+        dataLayerMutableMap["shop_id"] = shopID
+        dataLayerMutableMap["shop_name"] = shopName
+
+        return dataLayerMutableMap
+    }
+
     fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != "0"
 
     private fun getDimension81(): String {

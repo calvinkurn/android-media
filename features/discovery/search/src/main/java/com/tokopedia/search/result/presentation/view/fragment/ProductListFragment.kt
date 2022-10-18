@@ -87,6 +87,7 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.addtocart.AddToCartHandleActivityResult
 import com.tokopedia.search.result.product.addtocart.AddToCartPresenter
 import com.tokopedia.search.result.product.addtocart.AddToCartPresenterDelegate
 import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
@@ -223,6 +224,9 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var inspirationListAtcActivityResult: InspirationListAtcActivityResult
+
+    @Inject
+    lateinit var addToCartHandleActivityResult: AddToCartHandleActivityResult
 
     @Inject
     lateinit var addToCartPresenterDelegate: AddToCartPresenterDelegate
@@ -663,6 +667,7 @@ class ProductListFragment: BaseDaggerFragment(),
             )
 
             inspirationListAtcActivityResult.handleOnActivityResult(it, requestCode, data)
+            addToCartHandleActivityResult.handleOnActivityResult(it, requestCode, data)
         }
     }
 
@@ -1725,6 +1730,20 @@ class ProductListFragment: BaseDaggerFragment(),
 
     override fun trackItemClick(productItemDataView: ProductItemDataView) {
         trackProductClick(productItemDataView)
+    }
+
+    override fun trackAddToCartSuccess(productItemDataView: ProductItemDataView) {
+        AddToCartTracking.trackEventClickAddToCart(
+            queryKey,
+            if (productItemDataView.isOrganicAds)
+                AddToCartTracking.ADD_TO_CART_PRODUCT_TOPADS
+            else
+                AddToCartTracking.ADD_TO_CART_PRODUCT,
+            arrayListOf(productItemDataView.getAtcObjectDataLayer(
+                getSortFilterParamsString(getSearchParameter()?.getSearchParameterMap() as Map<String?, Any?>),
+                ""
+            ))
+        )
     }
 
     private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {

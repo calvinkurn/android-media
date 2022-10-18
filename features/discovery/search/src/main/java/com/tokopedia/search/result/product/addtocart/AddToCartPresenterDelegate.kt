@@ -33,8 +33,6 @@ class AddToCartPresenterDelegate @Inject constructor(
         data ?: return
         productAddedToCart = data
 
-        addToCartTracking.trackItemClick(productAddedToCart)
-
         if (data.shouldOpenVariantBottomSheet()) {
 //            inspirationListAtcView.trackAddToCartVariant(product)
 //
@@ -52,20 +50,7 @@ class AddToCartPresenterDelegate @Inject constructor(
         addToCartView.openAddToCartToaster(message, true)
 
         addToCartTracking.trackItemClick(productAddedToCart)
-
-        val product = productAddedToCart
-        val cartId = addToCartDataModel?.data?.cartId ?: ""
-        val quantity = addToCartDataModel?.data?.quantity ?: 0
-
-//        val trackingData =
-//            InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData(
-//                product,
-//                getSearchParameter(),
-//                cartId,
-//                quantity
-//            )
-//        inspirationListAtcView.trackItemClick(trackingData)
-//        inspirationListAtcView.trackAddToCart(trackingData)
+        addToCartTracking.trackAddToCartSuccess(productAddedToCart)
     }
 
     private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
