@@ -58,7 +58,13 @@ class FeedPlusTopAdsShopTestCase {
                 trackVisitChannelBroadcasterUseCase = mockk(),
                 feedXTrackViewerUseCase = mockk(),
                 checkUpcomingCampaignReminderUseCase = mockk(),
-                postUpcomingCampaignReminderUseCase = mockk()
+                postUpcomingCampaignReminderUseCase = mockk(),
+                shopRecomUseCase = mockk(),
+                shopRecomMapper = mockk(),
+                shopFollowUseCase = mockk(),
+                doFollowUseCase = mockk(),
+                doUnfollowUseCase = mockk(),
+                profileMutationMapper = mockk()
             )
         )
     }

@@ -10,6 +10,12 @@ import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
+import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
+import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
+import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedplus.domain.usecase.GetDynamicFeedFirstPageUseCase
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
@@ -44,27 +50,39 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     val feedBroadcastTrackerUseCase by memoized<FeedBroadcastTrackerUseCase>()
     val feedXTrackViewerUseCase by memoized<FeedXTrackViewerUseCase>()
     val feedXCheckUpcomingCapaignReminderUseCase by memoized<CheckUpcomingCampaignReminderUseCase>()
-    val feedXPostUpcomingCampaignReminderUseCase by memoized<PostUpcomingCampaignReminderUseCase>()
+    val postUpcomingCampaignReminderUseCase by memoized<PostUpcomingCampaignReminderUseCase>()
+    val shopRecomUseCase by memoized<ShopRecomUseCase>()
+    val shopRecomMapper by memoized<ShopRecomUiMapper>()
+    val shopFollowUseCase by memoized<ShopFollowUseCase>()
+    val doFollowUseCase by memoized<ProfileUnfollowedUseCase>()
+    val doUnfollowUseCase by memoized<ProfileFollowUseCase>()
+    val profileMutationMapper by memoized<ProfileMutationMapper>()
 
     return FeedViewModel(
-        CoroutineTestDispatchersProvider,
-        userSession,
-        doFavoriteShopUseCase,
-        followKolPostGqlUseCase,
-        likeKolPostUseCase,
-        atcUseCase,
-        trackAffiliateClickUseCase,
-        deletePostUseCase,
-        sendTopAdsUseCase,
-        playWidgetTools,
-        getDynamicFeedNewUseCase,
-        getWhitelistNewUseCase,
-        sendReportUseCase,
-        addToWishlistV2UseCase,
-        feedBroadcastTrackerUseCase,
-        feedXTrackViewerUseCase,
-        feedXCheckUpcomingCapaignReminderUseCase,
-        feedXPostUpcomingCampaignReminderUseCase
+        baseDispatcher = CoroutineTestDispatchersProvider,
+        userSession = userSession,
+        doFavoriteShopUseCase = doFavoriteShopUseCase,
+        followKolPostGqlUseCase = followKolPostGqlUseCase,
+        likeKolPostUseCase = likeKolPostUseCase,
+        addToCartUseCase = atcUseCase,
+        trackAffiliateClickUseCase = trackAffiliateClickUseCase,
+        deletePostUseCase = deletePostUseCase,
+        sendReportUseCase = sendReportUseCase,
+        playWidgetTools = playWidgetTools,
+        trackVisitChannelBroadcasterUseCase = feedBroadcastTrackerUseCase,
+        getDynamicFeedNewUseCase = getDynamicFeedNewUseCase,
+        getWhitelistNewUseCase = getWhitelistNewUseCase,
+        addToWishlistV2UseCase = addToWishlistV2UseCase,
+        feedXTrackViewerUseCase = feedXTrackViewerUseCase,
+        sendTopAdsUseCase = sendTopAdsUseCase,
+        shopRecomUseCase = shopRecomUseCase,
+        shopRecomMapper = shopRecomMapper,
+        checkUpcomingCampaignReminderUseCase = feedXCheckUpcomingCapaignReminderUseCase,
+        postUpcomingCampaignReminderUseCase = postUpcomingCampaignReminderUseCase,
+        shopFollowUseCase = shopFollowUseCase,
+        doUnfollowUseCase = doFollowUseCase,
+        profileMutationMapper = profileMutationMapper,
+        doFollowUseCase = doUnfollowUseCase
     )
 }
 
