@@ -13,10 +13,10 @@ data class DealsMetaDataCheckout(
     val error: String = "",
     @SerializedName("item_ids")
     @Expose
-    val itemIds: List<Int> = arrayListOf(),
+    val itemIds: List<Int> = emptyList(),
     @SerializedName("item_map")
     @Expose
-    val itemMap: List<ItemMapCheckout> = arrayListOf(),
+    val itemMap: List<ItemMapCheckout> = emptyList(),
     @SerializedName("order_subTitle")
     @Expose
     val orderSubTitle: String = "",
@@ -25,13 +25,13 @@ data class DealsMetaDataCheckout(
     val orderTitle: String = "",
     @SerializedName("product_ids")
     @Expose
-    val productIds: List<Int> = arrayListOf(),
+    val productIds: List<Int> = emptyList(),
     @SerializedName("product_names")
     @Expose
-    val productNames: List<String> = arrayListOf(),
+    val productNames: List<String> = emptyList(),
     @SerializedName("provider_ids")
     @Expose
-    val providerIds: List<Int> = arrayListOf(),
+    val providerIds: List<Int> = emptyList(),
     @SerializedName("quantity")
     @Expose
     val quantity: Int = 0,

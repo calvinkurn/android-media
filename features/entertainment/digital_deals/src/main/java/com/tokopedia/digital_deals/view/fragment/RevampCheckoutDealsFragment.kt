@@ -315,7 +315,7 @@ class RevampCheckoutDealsFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
+    private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant{
         return if (promoCodes.isNotEmpty()){
             if (promoCodes[0].isNotEmpty()) viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData, listOf(promoCode))
             else viewModel.mapCheckoutDealsInstant(dealsDetail, verifyData)
