@@ -532,7 +532,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
                     )
-                    uohItemAdapter.appendPmsButton(data)
+                    uohItemAdapter.appendPmsButton(data) { position ->
+                        binding?.rvOrderList?.smoothScrollToPosition(position)
+                    }
                 }
             }
         }
@@ -1661,7 +1663,9 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 uohListViewModel.getUohPmsCounterResult.value?.let {
                     if (it is Success) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                        uohItemAdapter.appendPmsButton(data)
+                        uohItemAdapter.appendPmsButton(data) { position ->
+                            binding?.rvOrderList?.smoothScrollToPosition(position)
+                        }
                     }
                 }
             } else {
@@ -1678,7 +1682,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
             val searchBarIsNotEmpty = searchQuery.isNotEmpty()
-            var pmsButton: UohTypeData? = null
+            var pmsButtonData: UohTypeData? = null
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
@@ -1699,7 +1703,21 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 else -> {
-                    pmsButton = UohTypeData(PmsNotification(), UohConsts.TYPE_PMS_BUTTON)
+                    if (!paramUohOrder.hasActiveFilter()) {
+                        val uohPmsCounterResult = uohListViewModel.getUohPmsCounterResult.value
+                        pmsButtonData =
+                            if (uohPmsCounterResult != null && uohPmsCounterResult is Success) {
+                                UohTypeData(
+                                    dataObject = uohPmsCounterResult.data,
+                                    typeLayout = UohConsts.TYPE_PMS_BUTTON
+                                )
+                            } else {
+                                UohTypeData(
+                                    dataObject = PmsNotification(),
+                                    typeLayout = UohConsts.TYPE_PMS_BUTTON
+                                )
+                            }
+                    }
                     emptyStatus = activity?.resources?.let { resource ->
                         UohEmptyState(
                             URL_IMG_EMPTY_ORDER_LIST,
@@ -1709,7 +1727,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             }
-            pmsButton?.let { listRecomm.add(pmsButton) }
+            pmsButtonData?.let { listRecomm.add(pmsButtonData) }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
             recommendationList.firstOrNull()?.recommendationItemList?.forEachIndexed { index, recommendationItem ->
