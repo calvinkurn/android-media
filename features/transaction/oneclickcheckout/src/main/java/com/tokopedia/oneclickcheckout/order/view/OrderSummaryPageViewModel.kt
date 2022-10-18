@@ -189,7 +189,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 checkoutId = result.imageUpload.checkoutId,
 
                 prescriptionIds = prescriptionIds.prescriptions?.map { prescription -> prescription.toString() } as ArrayList<String>,
-                uploadedImageCount = prescriptionIds.prescriptions?.size?:0,
+                uploadedImageCount = prescriptionIds.prescriptions?.size ?: 0,
                 isError = false,
                 frontEndValidation = result.imageUpload.frontEndValidation,
                 isOcc = true,
