@@ -100,7 +100,7 @@ class FeedProductTagSharingHelper(
             fun map(item: ProductPostTagViewModelNew) = Model(
                 title = item.text,
                 imageUrl = item.imgUrl,
-                productName = item.product.productName,
+                productName = item.product.name,
                 shopName = item.shopName,
                 priceFmt = item.priceFmt,
             )
