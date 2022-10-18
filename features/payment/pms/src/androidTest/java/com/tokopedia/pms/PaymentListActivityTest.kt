@@ -92,19 +92,22 @@ class PaymentListActivityTest {
     fun validatePaymentListEvents() {
         actionTest {
             testChevronClick(0)
+            Thread.sleep(5000)
             clickItemOnActionBottomSheet(0)
+            Thread.sleep(5000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.tvCancelTransaction)
+            Thread.sleep(5000)
             clickDialogButton(false)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
 
             testCardClick(0)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.goToHowToPay)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             pressBack()
 
             clickHtpTest(0)
-            Thread.sleep(3000)
+            Thread.sleep(5000)
             pressBack()
 
         } assertTest {
@@ -112,34 +115,6 @@ class PaymentListActivityTest {
             finishTest()
         }
     }
-
-    @Test
-    fun validateChangeBankAccountEvents() {
-        actionTest {
-            // change klic bca id
-            testChevronClick(1)
-            clickItemOnActionBottomSheet(0)
-            Thread.sleep(3000)
-            actionClickView(R.id.button_use)
-            Thread.sleep(3000)
-
-            // change bank account details
-            testChevronClick(2)
-            clickItemOnActionBottomSheet(0)
-            Thread.sleep(3000)
-            actionClickView(R.id.button_use)
-            Thread.sleep(3000)
-
-            testChevronClick(2)
-            clickItemOnActionBottomSheet(1)
-            pressBack()
-
-        } assertTest {
-            validate(cassavaTestRule, PAYMENT_EDIT_TRACKER_PATH)
-            finishTest()
-        }
-    }
-
 
     private fun login() = InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
