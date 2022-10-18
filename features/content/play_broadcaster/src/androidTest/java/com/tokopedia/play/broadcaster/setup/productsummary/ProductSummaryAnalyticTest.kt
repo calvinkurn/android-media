@@ -21,6 +21,7 @@ import org.junit.runner.RunWith
  */
 @CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class ProductSummaryAnalyticTest {
 
     private val mockSelectedProducts = List(3) {

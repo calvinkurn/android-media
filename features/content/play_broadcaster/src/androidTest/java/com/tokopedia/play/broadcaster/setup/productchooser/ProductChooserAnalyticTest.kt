@@ -12,6 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.test.espresso.delay
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -22,8 +23,8 @@ import org.junit.runner.RunWith
 /**
  * Created by kenny.hadisaputra on 04/03/22
  */
-@CassavaTest
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class ProductChooserAnalyticTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -113,8 +114,7 @@ class ProductChooserAnalyticTest {
     fun testAnalytic_saveProduct() {
         val robot = createRobot()
 
-        robot
-            .selectProduct(0)
+        robot.selectProduct(0)
             .saveProducts()
 
         assertThat(

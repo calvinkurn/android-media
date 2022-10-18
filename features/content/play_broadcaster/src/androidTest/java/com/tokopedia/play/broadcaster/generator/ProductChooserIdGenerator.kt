@@ -130,6 +130,7 @@ class ProductChooserIdGenerator {
             return PlayBroProductSetupViewModel(
                 productSectionList = mockProductSections,
                 savedStateHandle = savedStateHandle,
+                isEligibleForPin = isEligibleForPin,
                 repo = repo,
                 configStore = configStore,
                 userSession = userSession,

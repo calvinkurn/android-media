@@ -30,6 +30,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -44,6 +45,7 @@ import org.junit.runner.RunWith
  */
 //TODO("Add more cases especially cases when pinned product has variant")
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayPinnedProductAnalyticTest {
 
     @get:Rule

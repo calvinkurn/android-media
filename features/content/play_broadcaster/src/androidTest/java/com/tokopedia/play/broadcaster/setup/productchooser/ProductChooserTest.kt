@@ -18,8 +18,8 @@ import org.junit.runner.RunWith
 /**
  * Created by kenny.hadisaputra on 02/03/22
  */
-@UiTest
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class ProductChooserTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
@@ -75,6 +75,8 @@ class ProductChooserTest {
         }
 
         robot.close()
+        robot.assertExitDialog(isShown = false)
+        robot.assertBottomSheet(isOpened = false)
         robot.assertExitDialog(isShown = false)
         robot.assertBottomSheet(isOpened = false)
     }
