@@ -160,4 +160,15 @@
         <item>Sangat Memuaskan</item>
     </string-array>
 
+    <!-- Content Descriptions -->
+    <string name="contact_us_image_viewer">Image Viewer </string>
+    <string name="contact_us_image_uploader">Success Create Reso</string>
+    <string name="contact_us_image_uploader_delete_button">Success Create Reso</string>
+    <string name="contact_us_attachment">Success Create Reso</string>
+    <string name="contact_us_delete">Success Create Reso</string>
+    <string name="contact_us_filter">Success Create Reso</string>
+    <string name="contact_us_priority_image">Success Create Reso</string>
+    <string name="contact_us_post_item">Success Create Reso</string>
+    <string name="contact_us_reply_button_gradient">Success Create Reso</string>
+
 </resources>

@@ -24,6 +24,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close_white" />
+        app:srcCompat="@drawable/ic_close_white"
+        android:contentDescription="@string/contact_us_image_viewer"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
