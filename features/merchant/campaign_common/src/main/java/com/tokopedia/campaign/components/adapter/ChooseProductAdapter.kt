@@ -19,7 +19,7 @@ class ChooseProductAdapter {
     fun getRecyclerViewAdapter() = compositeAdapter
 
     private fun refresh() {
-        getItems().onEach {
+        getProductItems().onEach {
             it.enableSelection = enableSelection
             it.errorMessage = errorMessage
         }
@@ -56,7 +56,7 @@ class ChooseProductAdapter {
         forceEnableProduct(forceEnabledProductIds)
     }
 
-    fun getItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductDelegateAdapter.AdapterParam>()
+    fun getProductItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductDelegateAdapter.AdapterParam>()
 
     fun disable(errorMessage: String) {
         enableSelection = false
@@ -74,10 +74,10 @@ class ChooseProductAdapter {
     fun disableByCriteria(disabledCriteriaIds: List<Long>, errorMessage: String) {
         this.errorMessageCriteria = errorMessage
         this.disabledCriteriaIds = disabledCriteriaIds
-        getItems().onEachIndexed { index, item ->
-            if (disabledCriteriaIds.any { item.item.criteriaId == it }) {
-                item.enableSelection = false
-                item.errorMessage = errorMessage
+        getProductItems().onEachIndexed { index, product ->
+            if (disabledCriteriaIds.any { product.item.criteriaId == it }) {
+                product.enableSelection = false
+                product.errorMessage = errorMessage
                 compositeAdapter.notifyItemChanged(index)
             }
         }
@@ -85,10 +85,10 @@ class ChooseProductAdapter {
 
     fun forceEnableProduct(forceEnabledProductIds: List<String>) {
         this.forceEnabledProductIds = forceEnabledProductIds
-        getItems().onEachIndexed { index, item ->
-            if (forceEnabledProductIds.any { item.item.productId == it }) {
-                item.enableSelection = true
-                item.errorMessage = ""
+        getProductItems().onEachIndexed { index, product ->
+            if (forceEnabledProductIds.any { product.item.productId == it }) {
+                product.enableSelection = true
+                product.errorMessage = ""
                 compositeAdapter.notifyItemChanged(index)
             }
         }
