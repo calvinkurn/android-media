@@ -237,4 +237,7 @@
     <string name="btn_text_following">Following</string>
     <string name="empty_page_title">Belum ada postingan</string>
     <string name="empty_page_desc">Ayo buat postingan dulu, siapa tahu nanti banyak yang suka!</string>
+
+    <!-- Product Sharing Experience -->
+    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
 </resources>

@@ -140,8 +140,4 @@ dari Feed.</string>
 
     <!-- User Profile Entry Point -->
     <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
-
-    <!-- Sharing Experience -->
-    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
-    <string name="feed_product_tag_share_title">%s post</string>
 </resources>

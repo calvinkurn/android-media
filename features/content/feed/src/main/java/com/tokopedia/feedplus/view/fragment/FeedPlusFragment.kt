@@ -140,10 +140,7 @@ import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
-import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 
 /**
  * @author by nisie on 5/15/17.
@@ -236,47 +233,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
             return userSession.userId.toLongOrZero()
         }
 
-    private val universalShareBottomSheet: UniversalShareBottomSheet by lazy(LazyThreadSafetyMode.NONE) {
-        UniversalShareBottomSheet.createInstance().apply {
-            init(object: ShareBottomsheetListener {
-                override fun onShareOptionClicked(shareModel: ShareModel) {
-                    val linkerShareData = DataMapper().getLinkerShareData(shareData)
-                    LinkerManager.getInstance().executeShareRequest(
-                        LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
-                            override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                                let {
-
-                                    var shareString =
-                                        if (shareData.description.contains("%s")) String.format(
-                                            shareData.description,
-                                            linkerShareData?.shareUri ?: ""
-                                        ) else
-                                            shareData.description + "\n" + (linkerShareData?.shareUri?:"")
-
-                                    SharingUtil.executeShareIntent(
-                                        shareModel,
-                                        linkerShareData,
-                                        activity,
-                                        view,
-                                        shareString
-                                    )
-
-                                    universalShareBottomSheet.dismiss()
-                                }
-                            }
-
-                            override fun onError(linkerError: LinkerError?) {
-                                //error handling cases are described here
-                            }
-                        })
-                    )
-                }
-
-                override fun onCloseOptionClicked() {
-                    /** TODO 4 : handle this */
-                }
-            })
-        }
+    private val feedProductTagSharingHelper by lazy(LazyThreadSafetyMode.NONE) {
+        FeedProductTagSharingHelper(
+            fragmentManager = childFragmentManager,
+            fragment = this
+        )
     }
 
     companion object {
@@ -2444,14 +2405,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
                 .setId(item.id)
                 .setName(item.text)
-                .setDescription(
-                    getString(R.string.feed_product_tag_share_template).format(
-                        item.product.name,
-                        "%s",
-                        item.shopName,
-                        item.priceFmt
-                    )
-                )
+                .setDescription(item.description)
                 .setImgUri(item.imgUrl)
                 .setUri(item.weblink)
                 .setDeepLink(item.applink)
@@ -2466,13 +2420,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
 
         /** TODO 1: show sharing experience bottom sheet here */
-        if(!universalShareBottomSheet.isAdded) {
-            universalShareBottomSheet.setMetaData(
-                tnTitle = item.text,
-                tnImage = item.imgUrl
-            )
-            universalShareBottomSheet.show(childFragmentManager, this)
-        }
+        feedProductTagSharingHelper.show(
+            productPost = item,
+            shareData = shareData
+        )
     }
 
     override fun muteUnmuteVideo(
