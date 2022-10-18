@@ -93,7 +93,8 @@ ext {
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
-    conversationsVersion = '7.3.2'
+    conversationsVersion = '7.6.0'
+    gojekCourierVersion = '0.0.9'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.2.0'
@@ -313,7 +314,13 @@ ext {
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
             playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
-            conversation          : "com.gojek.android:conversations:$conversationsVersion"
+            conversation          : "com.gojek.android:conversations:$conversationsVersion",
+            chuckMqtt             : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
+            timerPingSender       : "com.gojek.courier:timer-pingsender:$gojekCourierVersion",
+            courierMessageAdapter : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
+            courierStreamAdapter  : "com.gojek.courier:courier-stream-adapter-rxjava:$gojekCourierVersion",
+            courierAuth           : "com.gojek.courier:courier-auth-http:$gojekCourierVersion",
+            courierClient         : "com.gojek.courier:courier-client:0.0.4.1@aar"
     ]
 
     testDependencies = [

@@ -92,7 +92,15 @@ dependencies {
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
 
+    // Gojek dependencies
     implementation rootProject.ext.miscDependencies.conversation
+    implementation rootProject.ext.miscDependencies.timerPingSender
+    implementation rootProject.ext.miscDependencies.courierMessageAdapter
+    implementation rootProject.ext.miscDependencies.courierStreamAdapter
+    implementation rootProject.ext.miscDependencies.courierAuth
+    implementation rootProject.ext.miscDependencies.courierClient
+    implementation rootProject.ext.miscDependencies.chuckMqtt
+
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx

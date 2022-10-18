@@ -1,3 +1,8 @@
+Properties properties = new Properties()
+if (rootProject.file("local.properties").exists()) {
+    properties.load(rootProject.file("local.properties").newDataInputStream())
+}
+
 allprojects {
     project.apply from: rootProject.file('buildconfig/dependencies/dependencies.gradle')
     repositories {
@@ -22,6 +27,15 @@ allprojects {
                 password = "${artifactory_password}"
             }
             allowInsecureProtocol = true
+        }
+        maven {
+            name = "courier-client"
+            url = uri("https://maven.pkg.github.com/Tokopedia-GoTo/android-courier-connection")
+
+            credentials {
+                username = properties.getProperty("gpr.usr") ?: System.getenv("GPR_USER")
+                password = properties.getProperty("gpr.key") ?: System.getenv("GPR_API_KEY")
+            }
         }
         maven {
             url "https://jitpack.io"

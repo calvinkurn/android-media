@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat_common.view.adapter.viewholder.common
+package com.tokopedia.tokochat_common.view.adapter.viewholder.binder
 
 import android.graphics.drawable.Drawable
 import android.view.Gravity
@@ -9,7 +9,6 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil
-import com.tokopedia.tokochat_common.util.TokoChatValueUtil.MILLISECONDS
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.ONE_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWENTY_DP
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.TWO_DP
@@ -94,26 +93,24 @@ object TokoChatMessageBubbleViewHolderBinder {
         chat: TokoChatMessageBubbleBaseUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
-        val htmlMessage = MethodChecker.fromHtml(chat.message)
+        val htmlMessage = MethodChecker.fromHtml(chat.messageText)
         tokoChatMessageChatLayout?.setMessageTypeFace(chat)
-        tokoChatMessageChatLayout?.setMessage(chat, htmlMessage)
+        tokoChatMessageChatLayout?.setMessage(htmlMessage)
     }
 
     fun bindHour(
         uiModel: TokoChatMessageBubbleBaseUiModel,
         tokoChatMessageChatLayout: TokoChatMessageChatLayout?
     ) {
-        val hourTime = getHourTime(uiModel.replyTime)
+        val hourTime = getHourTime(uiModel.messageTime)
         tokoChatMessageChatLayout?.setHourTime(hourTime)
     }
 
-    private fun getHourTime(replyTime: String?): String {
+    private fun getHourTime(replyTime: Long): String {
         return try {
-            replyTime?.let {
-                TokoChatTimeConverter.formatTime(replyTime.toLong() / MILLISECONDS)
-            } ?: ""
-        } catch (e: NumberFormatException) {
-            replyTime ?: ""
+            TokoChatTimeConverter.formatTime(replyTime)
+        } catch (error: Throwable) {
+            ""
         }
     }
 
@@ -127,11 +124,11 @@ object TokoChatMessageBubbleViewHolderBinder {
     }
 
     private fun bindChatReadStatus(element: TokoChatMessageBubbleBaseUiModel, checkMark: ImageUnify) {
-        if (element.isShowTime && element.isSender && !element.isDeleted()) {
+        if (element.isSender) {
             checkMark.show()
             val imageResource = when {
                 element.isDummy -> R.drawable.tokochat_ic_check_rounded_grey
-                !element.isRead -> R.drawable.tokochat_ic_check_sent_rounded_grey
+                !element.isRead() -> R.drawable.tokochat_ic_check_sent_rounded_grey
                 else -> R.drawable.tokochat_ic_check_read_rounded_green
             }
             val drawable = MethodChecker.getDrawable(checkMark.context, imageResource)
@@ -140,5 +137,4 @@ object TokoChatMessageBubbleViewHolderBinder {
             checkMark.gone()
         }
     }
-
 }

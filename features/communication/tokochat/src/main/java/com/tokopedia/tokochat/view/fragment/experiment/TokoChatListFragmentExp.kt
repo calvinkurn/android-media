@@ -9,15 +9,18 @@ import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
+import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import javax.inject.Inject
 
 //TODO: Delete this after experiment
-class TokoChatListFragmentExp: TokoChatBaseFragment<FragmentTokoChatListExpBinding>() {
+class TokoChatListFragmentExp: TokoChatBaseFragment<FragmentTokoChatListExpBinding>(),
+    TokochatReminderTickerListener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
 
-    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter()
+    override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
 
     override fun getScreenName(): String = TAG
 
@@ -64,5 +67,24 @@ class TokoChatListFragmentExp: TokoChatBaseFragment<FragmentTokoChatListExpBindi
                 arguments = bundle
             } as TokoChatListFragmentExp
         }
+    }
+
+    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+
+    }
+
+    override fun onClickLinkReminderTicker(
+        element: TokochatReminderTickerUiModel,
+        linkUrl: String
+    ) {
+
+    }
+
+    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+
+    }
+
+    override fun onLoadMore() {
+
     }
 }

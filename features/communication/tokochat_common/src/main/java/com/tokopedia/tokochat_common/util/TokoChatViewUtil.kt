@@ -19,10 +19,13 @@ import android.view.View
 import androidx.annotation.ColorRes
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.getBitmap
 import com.tokopedia.kotlin.extensions.view.toPx
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.toPx
 
 object TokoChatViewUtil {
@@ -238,5 +241,13 @@ object TokoChatViewUtil {
                 navigationIcon = newDrawable
             }
         }
+    }
+
+    fun loadGif(imageUnify: ImageUnify, gifUrl: String) {
+        Glide.with(imageUnify.context)
+            .asGif()
+            .load(gifUrl)
+            .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+            .into(imageUnify)
     }
 }

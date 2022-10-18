@@ -56,7 +56,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         SplitCompat.installActivity(this)
     }
 
-    private fun initializeChatServiceComponent(): TokoChatComponent {
+    private fun initializeTokoChatComponent(): TokoChatComponent {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .tokoChatContextModule(TokoChatContextModule(this))
@@ -66,7 +66,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getComponent(): TokoChatComponent {
-        return tokoChatComponent?: initializeChatServiceComponent()
+        return tokoChatComponent?: initializeTokoChatComponent()
     }
 
     override fun getNewFragment(): Fragment {
@@ -87,11 +87,12 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun setupTokoChatHeader() {
-        val mInflater = LayoutInflater.from(this)
-        val mCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        super.setupTokoChatHeader()
         getHeaderUnify()?.run {
             isShowBackButton = true
-            customView(mCustomView)
+            headerCustomView?.let {
+                customView(it)
+            }
             setSupportActionBar(this)
             setBackIconUnify()
             contentInsetStartWithNavigation = Int.ZERO
@@ -101,8 +102,10 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     private fun getFragmentBundle(): Bundle {
         val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
+        val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK)?: ""
         return Bundle().apply {
             putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
+            putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
         }
     }
 }

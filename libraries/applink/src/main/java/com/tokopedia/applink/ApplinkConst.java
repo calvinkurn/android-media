@@ -734,11 +734,11 @@ public interface ApplinkConst {
 
     interface TokoChat {
         String PARAM_SOURCE = "source";
-        String ORDER_ID_GOJEK = "order_id_gojek";
-        String ORDER_ID_TKPD = "order_id_tokopedia";
+        String ORDER_ID_GOJEK = "orderIdGojek";
+        String ORDER_ID_TKPD = "orderIdTkpd";
         String SERVICE_TYPE = "service_type";
 
-        String ORDER_CHAT_TYPE = "order_chat_type";
+        String ORDER_CHAT_TYPE = "orderChatType";
         String ORDER_CHAT_TYPE_DRIVER = "driver";
         String ORDER_CHAT_TYPE_SHOP = "shopper";
         String ORDER_CHAT_TYPE_MERCHANT = "merchant";
