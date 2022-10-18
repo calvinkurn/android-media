@@ -9,8 +9,10 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
 
-class AffiliateDateFilterVH(itemView: View,private val onDateRangeClickInterface : AffiliateDatePickerRangeChangeInterface?)
-    : AbstractViewHolder<AffiliateDateFilterModel>(itemView) {
+class AffiliateDateFilterVH(
+    itemView: View,
+    private val onDateRangeClickInterface: AffiliateDatePickerRangeChangeInterface?
+) : AbstractViewHolder<AffiliateDateFilterModel>(itemView) {
 
     companion object {
         @JvmField
@@ -19,7 +21,12 @@ class AffiliateDateFilterVH(itemView: View,private val onDateRangeClickInterface
     }
 
     override fun bind(element: AffiliateDateFilterModel?) {
-        itemView.findViewById<Typography>(R.id.text).text = element?.data?.title
+        itemView.findViewById<Typography>(R.id.text).text = buildString {
+            append(element?.data?.title)
+            append(" (")
+            append(element?.data?.message)
+            append(")")
+        }
         itemView.findViewById<Typography>(R.id.filter_message)?.apply {
             text = element?.data?.message
         }
