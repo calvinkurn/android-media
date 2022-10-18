@@ -2401,23 +2401,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
             item.weblink
         }
 
-        activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
-                .setId(item.id)
-                .setName(item.text)
-                .setDescription(item.description)
-                .setImgUri(item.imgUrl)
-                .setUri(item.weblink)
-                .setDeepLink(item.applink)
-                .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(urlString)
+        val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+            .setId(item.id)
+            .setName(item.text)
+            .setDescription(item.description)
+            .setImgUri(item.imgUrl)
+            .setUri(item.weblink)
+            .setDeepLink(item.applink)
+            .setType(LinkerData.FEED_TYPE)
+            .setDesktopUrl(urlString)
 
-            if (item.isTopads) {
-                linkerBuilder.setOgImageUrl(item.imgUrl)
-                linkerBuilder.setDesktopUrl(item.weblink)
-            }
-            shareData = linkerBuilder.build()
+        if (item.isTopads) {
+            linkerBuilder.setOgImageUrl(item.imgUrl)
+            linkerBuilder.setDesktopUrl(item.weblink)
         }
+        shareData = linkerBuilder.build()
 
         /** TODO 1: show sharing experience bottom sheet here */
         feedProductTagSharingHelper.show(
