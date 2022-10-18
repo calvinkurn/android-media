@@ -70,8 +70,6 @@ interface ChatbotContract {
 
         fun onSuccessSubmitChatCsat(msg: String)
 
-        fun replyBubbleStateHandler(state: Boolean)
-
         fun visibilityReplyBubble(state: Boolean)
 
         fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel)

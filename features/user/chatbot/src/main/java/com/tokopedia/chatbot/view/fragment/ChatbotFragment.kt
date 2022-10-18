@@ -135,6 +135,7 @@ import com.tokopedia.chatbot.view.attachmentmenu.ChatbotImageMenu
 import com.tokopedia.chatbot.view.customview.ChatbotFloatingInvoice
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleOnBoarding
+import com.tokopedia.chatbot.view.customview.video_onboarding.VideoUploadOnBoarding
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
 import com.tokopedia.chatbot.view.listener.ChatbotViewState
@@ -262,6 +263,8 @@ class ChatbotFragment :
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+    @Inject
+    lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
     private var recyclerView: RecyclerView? = null
     private var isArticleDataSent: Boolean = false
 
@@ -804,6 +807,7 @@ class ChatbotFragment :
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
+            checkVideoUploadOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
         }
     }
@@ -1229,6 +1233,7 @@ class ChatbotFragment :
         )
 
         replyBubbleOnBoarding.dismiss()
+        videoUploadOnBoarding.dismiss()
         visibilityReplyBubble(false)
         clearChatText()
     }
@@ -1366,6 +1371,7 @@ class ChatbotFragment :
     override fun onDestroy() {
         super.onDestroy()
         replyBubbleOnBoarding.flush()
+        videoUploadOnBoarding.flush()
         presenter.detachView()
     }
 
@@ -1641,6 +1647,7 @@ class ChatbotFragment :
             when (it) {
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
+                    videoUploadOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
                     setGuidelineForReplyBubble(true)
                     replyBubbleContainer?.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
@@ -1660,11 +1667,6 @@ class ChatbotFragment :
             guideline?.layoutParams = params
         }
     }
-    
-    override fun replyBubbleStateHandler(state: Boolean) {
-        replyBubbleEnabled = state
-        checkReplyBubbleOnboardingStatus()
-    }
 
     private fun checkReplyBubbleOnboardingStatus() {
         val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
@@ -1677,6 +1679,23 @@ class ChatbotFragment :
                     it,
                     chatbotAdapter,
                     reply_box,
+                    context
+                )
+            }
+        }
+    }
+
+    private fun checkVideoUploadOnboardingStatus() {
+        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
+        if (!isConnectedToAgent) {
+            return
+        }
+        recyclerView?.let {
+            if (!hasBeenShown) {
+                videoUploadOnBoarding.showVideoBubbleOnBoarding(
+                    it,
+                    chatbotAdapter,
+                    iv_chat_menu,
                     context
                 )
             }
@@ -1924,6 +1943,7 @@ class ChatbotFragment :
         isConnectedToAgent = state
         replyBubbleEnabled = state
         checkReplyBubbleOnboardingStatus()
+        checkVideoUploadOnboardingStatus()
         createAttachmentMenus()
     }
 
