@@ -214,19 +214,21 @@ class DealsPDPSelectDealsQuantityFragment : BaseDaggerFragment() {
                 when (it) {
                     is Success -> {
                         context?.let { context ->
-                            val remoteConfig = FirebaseRemoteConfigImpl(context)
-                            if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_CHECKOUT)){
-                                val intent = Intent(context, DealsCheckoutActivity::class.java)
-                                intent.putExtra(EXTRA_DEAL_DETAIL,productDetailData)
-                                intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
-                                startActivity(intent)
-                            } else {
-                                val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
-                                productDetailData?.let { productDetailData ->
-                                    intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED, DealsPDPMapper.mapOldProductDetailData(productDetailData))
+                            productDetailData?.let { productDetailData ->
+                                val remoteConfig = FirebaseRemoteConfigImpl(context)
+                                if (remoteConfig.getBoolean(RemoteConfigKey.MAINAPP_DEALS_ENABLE_CHECKOUT)){
+                                    val intent = Intent(context, DealsCheckoutActivity::class.java)
+                                    intent.putExtra(EXTRA_DEAL_DETAIL,productDetailData)
+                                    intent.putExtra(EXTRA_DEAL_VERIFY, it.data.eventVerify)
+                                    startActivity(intent)
+                                } else {
+                                    val intent = RouteManager.getIntent(context,
+                                        ApplinkConstInternalGlobal.GLOBAL_INTERNAL_DIGITAL_DEAL_CHECKOUT)
+                                    intent.putExtra(EXTRA_DEAL_DETAIL_REVAMPED,
+                                        DealsPDPMapper.mapOldProductDetailData(productDetailData))
+                                    intent.putExtra(EXTRA_VERIFY_REVAMPED, it.data.eventVerify)
+                                    startActivity(intent)
                                 }
-                                intent.putExtra(EXTRA_VERIFY_REVAMPED, it.data.eventVerify)
-                                startActivity(intent)
                             }
                         }
                     }
