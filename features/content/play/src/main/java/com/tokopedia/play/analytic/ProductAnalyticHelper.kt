@@ -14,6 +14,7 @@ class ProductAnalyticHelper(
     private val newAnalytic: PlayNewAnalytic,
 ) {
 
+    //different product bcs it might be diff add new
     @TrackingField
     private val impressedProducts = mutableListOf<Pair<PlayProductUiModel.Product, Int>>()
 
@@ -51,13 +52,17 @@ class ProductAnalyticHelper(
         clearProducts()
     }
 
+    fun sendImpressedBottomSheet(partner: PartnerType){
+        if(partner == PartnerType.TokoNow) else clearProducts()
+    }
+
     private fun sendImpressedPrivateVoucher() {
         val voucher = impressedVouchers.distinctBy { it.id }.firstOrNull { it.highlighted }
         voucher?.let { analytic.impressionPrivateVoucher(it) }
         impressedVouchers.clear()
     }
 
-    private fun getFinalProducts() = impressedProducts.distinctBy { it.first.id }
+    private fun getFinalProducts() = impressedProducts
 
     private fun clearProducts() {
         impressedProducts.clear()
