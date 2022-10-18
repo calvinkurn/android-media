@@ -5,35 +5,41 @@
     <Transition
         motion:constraintSetEnd="@+id/end"
         motion:constraintSetStart="@id/start"
-        motion:duration="500">
+        motion:duration="300">
     </Transition>
     <Transition
         motion:constraintSetStart="@+id/end"
         motion:constraintSetEnd="@+id/start"
-        motion:duration="500"/>
+        motion:duration="300"/>
     <Transition
         motion:constraintSetStart="@+id/startWithValue"
         motion:constraintSetEnd="@+id/end"
-        motion:duration="500">
+        motion:duration="300">
         <KeyFrameSet>
             <KeyAttribute
                 android:alpha="0"
                 motion:framePosition="0"
-                motion:motionTarget="@id/add_button" />
-            <KeyAttribute
-                android:alpha="0.5"
-                motion:framePosition="50"
                 motion:motionTarget="@id/add_button" />
             <KeyAttribute
                 android:alpha="1"
                 motion:framePosition="100"
                 motion:motionTarget="@id/add_button" />
         </KeyFrameSet>
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="0"
+                motion:motionTarget="@id/sub_button" />
+            <KeyAttribute
+                android:alpha="1"
+                motion:framePosition="100"
+                motion:motionTarget="@id/sub_button" />
+        </KeyFrameSet>
     </Transition>
     <Transition
         motion:constraintSetStart="@+id/end"
         motion:constraintSetEnd="@+id/startWithValue"
-        motion:duration="500">
+        motion:duration="300">
         <KeyFrameSet>
             <KeyAttribute
                 android:alpha="1"
@@ -47,6 +53,20 @@
                 android:alpha="0"
                 motion:framePosition="100"
                 motion:motionTarget="@id/add_button" />
+        </KeyFrameSet>
+        <KeyFrameSet>
+            <KeyAttribute
+                android:alpha="1"
+                motion:framePosition="0"
+                motion:motionTarget="@id/sub_button" />
+            <KeyAttribute
+                android:alpha="0.5"
+                motion:framePosition="50"
+                motion:motionTarget="@id/sub_button" />
+            <KeyAttribute
+                android:alpha="0"
+                motion:framePosition="100"
+                motion:motionTarget="@id/sub_button" />
         </KeyFrameSet>
     </Transition>
 
@@ -82,7 +102,7 @@
             android:id="@+id/edit_text"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:translationZ="2dp"
+            android:translationZ="3dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
@@ -94,7 +114,7 @@
             android:layout_height="46dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
-            android:translationZ="3dp"/>
+            android:translationZ="4dp"/>
     </ConstraintSet>
 
     <ConstraintSet android:id="@+id/end">
@@ -103,18 +123,18 @@
             android:layout_width="46dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
-            android:translationZ="2dp"
+            android:translationZ="3dp"
             android:id="@+id/sub_button"
             motion:layout_constraintStart_toStartOf="parent" />
         <Constraint
             android:id="@+id/edit_text"
-            motion:layout_constraintEnd_toStartOf="@+id/add_button"
-            motion:layout_constraintStart_toEndOf="@+id/sub_button"
             android:layout_width="0dp"
             android:layout_height="30dp"
             android:translationZ="2dp"
             motion:layout_constraintBottom_toBottomOf="parent"
-            motion:layout_constraintTop_toTopOf="parent" />
+            motion:layout_constraintTop_toTopOf="parent"
+            motion:layout_constraintEnd_toEndOf="@+id/background"
+            motion:layout_constraintStart_toStartOf="@+id/background" />
         <Constraint
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="46dp"

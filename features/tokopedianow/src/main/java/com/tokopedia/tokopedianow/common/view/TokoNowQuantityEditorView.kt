@@ -13,7 +13,7 @@ import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.setDimenAsTextSize
-import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorCustomViewBinding
+import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import java.util.Timer
 import java.util.TimerTask
@@ -32,7 +32,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         private const val NO_PROGRESS_ANIMATION = 0F
     }
 
-    private var binding: LayoutTokopedianowQuantityEditorCustomViewBinding
+    private var binding: LayoutTokopedianowQuantityEditorViewBinding
 
     private var timer: Timer? = null
     private var timerTask: TimerTask? = null
@@ -56,7 +56,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
 
     init {
-        binding = LayoutTokopedianowQuantityEditorCustomViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
+        binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context),this, true).apply {
             setupAddButton()
             setupSubButton()
             setupEditText()
@@ -136,7 +136,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun getResourceColor(id: Int): Int = ContextCompat.getColor(context, id)
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.onAnimationStarted(
+    private fun LayoutTokopedianowQuantityEditorViewBinding.onAnimationStarted(
         currentState: Int
     ) {
         if (currentState == R.id.startWithValue) {
@@ -144,7 +144,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.onAnimationFinished(
+    private fun LayoutTokopedianowQuantityEditorViewBinding.onAnimationFinished(
         currentState: Int
     ) {
         if (currentState == R.id.end) {
@@ -156,7 +156,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setCounter() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setCounter() {
         val currentCounter = text.getCounterOrDefaultValue()
         counter = if (text.isBlank()) {
             editText.text?.clear()
@@ -184,7 +184,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupAddButton() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
             if (counter < maxQuantity) {
                 if (root.progress == NO_PROGRESS_ANIMATION) {
@@ -204,7 +204,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupSubButton() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setupSubButton() {
         subButton.setOnClickListener {
             if (counter > minQuantity) {
                 counter--
@@ -213,7 +213,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setupEditText() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setupEditText() {
         editText.focusChangedListener = { isFocused ->
             if (!isFocused) backToTheStartState()
         }
@@ -227,13 +227,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.changeViewDisplayAndRestartTimer() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.changeViewDisplayAndRestartTimer() {
         setCounter()
         cancelTimer()
         startTimer()
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.backToTheStartState() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.backToTheStartState() {
         if (text.isBlank() && counter == DEFAULT_NUMBER) {
             root.setTransition(R.id.end, R.id.start)
         } else {
@@ -244,7 +244,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         cancelTimer()
     }
 
-    private fun LayoutTokopedianowQuantityEditorCustomViewBinding.setEditTextWhenStartingWithValueAnimation() {
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWhenStartingWithValueAnimation() {
         editText.apply {
             layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
             setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
