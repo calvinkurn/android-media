@@ -89,6 +89,7 @@ import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.addtocart.AddToCartPresenter
 import com.tokopedia.search.result.product.addtocart.AddToCartPresenterDelegate
+import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.changeview.ChangeView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
@@ -152,7 +153,8 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchParameterProvider,
     FragmentProvider,
     ClassNameProvider,
-    ScreenNameProvider {
+    ScreenNameProvider,
+    AddToCartTracking {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"
@@ -773,6 +775,8 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onItemClicked(item: ProductItemDataView?, adapterPosition: Int) {
+        trackProductClick(item)
+
         presenter?.onProductClick(item, adapterPosition)
     }
 
@@ -861,7 +865,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun onAddToCartClick(item: ProductItemDataView?) {
-        addToCartPresenterDelegate.addToCart(item?.getAddToCartData())
+        addToCartPresenterDelegate.addToCart(item)
     }
     //endregion
 
@@ -1716,5 +1720,50 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?) {
         SearchTracking.trackEventApplyDropdownQuickFilter(optionList)
     }
+
     //endregion
+
+    override fun trackItemClick(productItemDataView: ProductItemDataView) {
+        trackProductClick(productItemDataView)
+    }
+
+    private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
+        context?.let {
+            TopAdsUrlHitter(it).hitClickUrl(
+                className,
+                item.topadsClickUrl,
+                item.productID,
+                item.productName,
+                item.imageUrl,
+                SearchConstant.TopAdsComponent.TOP_ADS
+            )
+        }
+
+        sendTopAdsGTMTrackingProductClick(item)
+    }
+
+    private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
+        if (item.isOrganicAds) {
+            context?.let {
+                TopAdsUrlHitter(it).hitClickUrl(
+                    className,
+                    item.topadsClickUrl,
+                    item.productID,
+                    item.productName,
+                    item.imageUrl,
+                    SearchConstant.TopAdsComponent.ORGANIC_ADS
+                )
+            }
+        }
+
+        sendGTMTrackingProductClick(item, getUserId(), presenter?.suggestedRelatedKeyword ?: "")
+    }
+
+    private fun trackProductClick(item: ProductItemDataView?) {
+        if (item == null) return
+
+        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
+        else getViewToTrackOnClickOrganicProduct(item)
+    }
+
 }

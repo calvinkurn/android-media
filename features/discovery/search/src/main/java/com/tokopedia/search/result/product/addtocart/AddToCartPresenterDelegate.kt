@@ -6,7 +6,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.SearchParameterProvider
+import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
@@ -18,25 +20,28 @@ class AddToCartPresenterDelegate @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val userSession: UserSessionInterface,
     private val addToCartView: AddToCartView,
+    private val addToCartTracking: AddToCartTracking,
     searchParameterProvider: SearchParameterProvider,
 ): AddToCartPresenter,
     SearchParameterProvider by searchParameterProvider {
 
     @Suppress("LateinitUsage")
-    override lateinit var productAddedToCart: AddToCartData
+    override lateinit var productAddedToCart: ProductItemDataView
         private set
 
-    override fun addToCart(addToCartData: AddToCartData?) {
-        addToCartData ?: return
-        productAddedToCart = addToCartData
+    override fun addToCart(data: ProductItemDataView?) {
+        data ?: return
+        productAddedToCart = data
 
-        if (addToCartData.shouldOpenVariantBottomSheet()) {
+        addToCartTracking.trackItemClick(productAddedToCart)
+
+        if (data.shouldOpenVariantBottomSheet()) {
 //            inspirationListAtcView.trackAddToCartVariant(product)
 //
-            addToCartView.openVariantBottomSheet(addToCartData, "")
+            addToCartView.openVariantBottomSheet(data, "")
 
         } else {
-            executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, addToCartData)
+            executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, data)
         }
     }
 
@@ -45,6 +50,8 @@ class AddToCartPresenterDelegate @Inject constructor(
 
         val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
         addToCartView.openAddToCartToaster(message, true)
+
+        addToCartTracking.trackItemClick(productAddedToCart)
 
         val product = productAddedToCart
         val cartId = addToCartDataModel?.data?.cartId ?: ""
@@ -69,22 +76,22 @@ class AddToCartPresenterDelegate @Inject constructor(
     private fun executeAtcCommon(
         onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit,
         onAddToCartUseCaseFailed: (Throwable) -> Unit,
-        addToCartData: AddToCartData,
+        data: ProductItemDataView,
     ) {
-        val requestParams = addToCartData.createAddToCartRequestParams()
+        val requestParams = data.createAddToCartRequestParams()
 
         addToCartUseCase.setParams(requestParams)
         addToCartUseCase.execute(onAddToCartUseCaseSuccess, onAddToCartUseCaseFailed)
     }
 
 
-    private fun AddToCartData.createAddToCartRequestParams(): AddToCartRequestParams {
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = productId.toLongOrZero(),
-            shopId = shopId.toIntOrZero(),
-            quantity = quantity,
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
             productName = productName,
-            price = priceStr,
+            price = price,
             userId = if (userSession.isLoggedIn) userSession.userId else "0"
         )
     }

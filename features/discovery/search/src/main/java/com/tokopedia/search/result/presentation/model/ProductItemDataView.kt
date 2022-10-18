@@ -7,7 +7,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.ProductCardLabel
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
-import com.tokopedia.search.result.product.addtocart.AddToCartData
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.DEFAULT_KEYWORD_INTENT
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationConstant.KEYWORD_INTENT_LOW
 import com.tokopedia.search.utils.getFormattedPositionName
@@ -107,21 +106,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
         )
     }
 
-    fun getAddToCartData(): AddToCartData {
-        return AddToCartData(
-            productID,
-            productName,
-            minOrder,
-            price,
-            "",
-            shopID,
-            parentId = parentId,
-            componentId = "",
-            topadsClickUrl ?: "",
-            topadsImpressionUrl ?: "",
-            imageUrl,
-        )
-    }
+    fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != "0"
 
     private fun getDimension81(): String {
         val shopType = badgesList?.find { it.isShown && it.imageUrl.isNotEmpty() && it.title.isNotEmpty() }

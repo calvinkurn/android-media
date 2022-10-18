@@ -150,5 +150,6 @@ interface ProductListSectionContract {
             searchParameter: Map<String, Any>
         )
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
+        val suggestedRelatedKeyword: String
     }
 }

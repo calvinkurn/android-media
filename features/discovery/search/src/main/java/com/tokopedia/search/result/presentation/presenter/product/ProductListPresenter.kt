@@ -1614,6 +1614,12 @@ class ProductListPresenter @Inject constructor(
         view.trackEventApplyDropdownQuickFilter(optionList)
     }
 
+    override val suggestedRelatedKeyword: String = when (responseCode) {
+        RESPONSE_CODE_RELATED -> relatedKeyword
+        RESPONSE_CODE_SUGGESTION -> suggestionKeyword
+        else -> ""
+    }
+
     private fun getViewToSendTrackingSearchAttempt(productDataView: ProductDataView) {
         if (isViewNotAttached) return
 
@@ -1909,13 +1915,7 @@ class ProductListPresenter @Inject constructor(
             )
         }
 
-        view.sendProductImpressionTrackingEvent(item, getSuggestedRelatedKeyword())
-    }
-
-    private fun getSuggestedRelatedKeyword(): String = when (responseCode) {
-        RESPONSE_CODE_RELATED -> relatedKeyword
-        RESPONSE_CODE_SUGGESTION -> suggestionKeyword
-        else -> ""
+        view.sendProductImpressionTrackingEvent(item, suggestedRelatedKeyword)
     }
 
     private fun checkShouldShowBOELabelOnBoarding(position: Int) {
@@ -1936,9 +1936,6 @@ class ProductListPresenter @Inject constructor(
     override fun onProductClick(item: ProductItemDataView?, adapterPosition: Int) {
         if (isViewNotAttached || item == null) return
 
-        if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
-        else getViewToTrackOnClickOrganicProduct(item)
-
         sameSessionRecommendationPresenterDelegate.requestSameSessionRecommendation(
             item,
             adapterPosition,
@@ -1947,34 +1944,6 @@ class ProductListPresenter @Inject constructor(
         )
 
         view.routeToProductDetail(item, adapterPosition)
-    }
-
-    private fun getViewToTrackOnClickTopAdsProduct(item: ProductItemDataView) {
-        topAdsUrlHitter.hitClickUrl(
-                view.className,
-                item.topadsClickUrl,
-                item.productID,
-                item.productName,
-                item.imageUrl,
-                SearchConstant.TopAdsComponent.TOP_ADS
-        )
-
-        view.sendTopAdsGTMTrackingProductClick(item)
-    }
-
-    private fun getViewToTrackOnClickOrganicProduct(item: ProductItemDataView) {
-        if (item.isOrganicAds) {
-            topAdsUrlHitter.hitClickUrl(
-                    view.className,
-                    item.topadsClickUrl,
-                    item.productID,
-                    item.productName,
-                    item.imageUrl,
-                    SearchConstant.TopAdsComponent.ORGANIC_ADS
-            )
-        }
-
-        view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {

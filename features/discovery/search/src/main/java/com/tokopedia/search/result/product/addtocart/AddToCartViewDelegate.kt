@@ -10,6 +10,7 @@ import com.tokopedia.search.R
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
@@ -61,18 +62,18 @@ class AddToCartViewDelegate @Inject constructor(
     }
 
     override fun openVariantBottomSheet(
-        addToCartData: AddToCartData,
+        data: ProductItemDataView,
         type: String
     ) {
         context?.let {
             AtcVariantHelper.goToAtcVariant(
                 it,
-                productId = addToCartData.productId,
+                productId = data.productID,
                 pageSource = VariantPageSource.SRP_PAGESOURCE,
-                shopId = addToCartData.shopId,
+                shopId = data.shopID,
                 trackerCdListName = SearchTracking.getInspirationCarouselUnificationListName(
                     type,
-                    addToCartData.componentId,
+                    "",
                 ),
                 startActivitResult = { intent, reqCode ->
                     getFragment().startActivityForResult(intent, reqCode)

@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.product.addtocart
 
 import com.tokopedia.search.di.scope.SearchScope
+import com.tokopedia.search.result.presentation.view.fragment.ProductListFragment
+import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import dagger.Binds
 import dagger.Module
 
@@ -14,4 +16,8 @@ abstract class AddToCartModule {
     @SearchScope
     @Binds
     abstract fun provideAddToCartPresenter(provider: AddToCartPresenterDelegate): AddToCartPresenter
+
+    @SearchScope
+    @Binds
+    abstract fun provideAddToCartTracking(provider: ProductListFragment): AddToCartTracking
 }

@@ -1,9 +1,9 @@
 package com.tokopedia.search.result.product.addtocart
 
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.presentation.model.ProductItemDataView
 
 interface AddToCartPresenter {
-    val productAddedToCart: AddToCartData
+    val productAddedToCart: ProductItemDataView
 
-    fun addToCart(addToCartData: AddToCartData?)
+    fun addToCart(data: ProductItemDataView?)
 }
