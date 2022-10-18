@@ -27,7 +27,6 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
-import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
