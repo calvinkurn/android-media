@@ -2,7 +2,6 @@ package com.tokopedia.feedplus.view.di
 
 import com.tokopedia.feedplus.data.repository.FeedPlusRepositoryImpl
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
-import com.tokopedia.feedplus.view.analytics.shoprecom.FeedShopRecomWidgetAnalytic
 import dagger.Binds
 import dagger.Module
 
@@ -15,9 +14,5 @@ abstract class FeedContainerBindModule {
     @Binds
     @FeedContainerScope
     abstract fun bindFeedPlusRepository(feedPlusRepository: FeedPlusRepositoryImpl): FeedPlusRepository
-
-    @Binds
-    @FeedContainerScope
-    abstract fun bindUserProfileTracker(feedShopRecomWidgetAnalytic: FeedShopRecomWidgetAnalytic): FeedShopRecomWidgetAnalytic
 
 }
