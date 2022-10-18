@@ -22,6 +22,7 @@ object ShippingEditorQuery {
                   shipper_product {
                     shipper_product_id
                     shipper_product_name
+                    shipper_product_desc
                     is_active
                   }
                 }
@@ -38,6 +39,7 @@ object ShippingEditorQuery {
                   shipper_product {
                     shipper_product_id
                     shipper_product_name
+                    shipper_product_desc
                     is_active
                   }
                 }

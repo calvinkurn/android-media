@@ -78,7 +78,6 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
     }
 
     inner class ShippingEditorOnDemandViewHolder(itemView: View, private val listener: ShippingEditorItemAdapterListener, private val productItemListener: ShipperProductItemAdapter.ShipperProductItemListener): RecyclerView.ViewHolder(itemView) {
-        lateinit var onDemandModel: OnDemandModel
         private val productItemAdapter = ShipperProductItemAdapter(productItemListener)
         private val featureItemAdapter = ShipperFeatureAdapter()
         private val shipmentItemImage = itemView.findViewById<ImageView>(R.id.img_shipment_item)
@@ -95,25 +94,54 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
         private val labelInformation = itemView.findViewById<IconUnify>(R.id.btn_information)
 
         fun bindData(data: OnDemandModel) {
-            onDemandModel = data
             setItemData(data)
-            setAdapterData(data)
-            setItemChecked(data)
+            if (data.isWhitelabel) {
+                hideShipperServices()
+                setWhitelabelCheckListener(data)
+            } else {
+                setAdapterData(data)
+                setItemChecked(data)
+            }
+        }
+
+        private fun setWhitelabelCheckListener(data: OnDemandModel) {
+            setCheckboxEnableState(data)
+
+            shipmentItemCb.isChecked = data.isActive
+
+            shipmentItemCb.setOnCheckedChangeListener { _, isChecked ->
+                data.isActive = isChecked
+                data.shipperProduct.forEach { it.isActive = isChecked }
+            }
+        }
+
+        private fun setCheckboxEnableState(data: OnDemandModel) {
+            if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
+                data.isActive = false
+                shipmentItemCb.isEnabled = false
+            } else {
+                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
+                shipmentItemCb.isEnabled = true
+            }
+        }
+
+        private fun hideShipperServices() {
+            childLayout.gone()
         }
 
         private fun setItemData(data: OnDemandModel) {
-            val shipperName = data.shipperProduct
-            var sb = StringBuilder()
-
             shipmentName.text = data.shipperName
-            shipmentItemImage?.let {
-                ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
+            shipmentCategory.text = data.description
+
+            if (data.image.isNotEmpty()) {
+                shipmentItemImage?.let {
+                    ImageHandler.loadImageFitCenter(itemView.context, it, data.image)
+                }
+            } else {
+                shipmentItemImage.gone()
             }
 
-            for (x in shipperName.indices) {
-                sb.append(shipperName[x].shipperProductName).append(" | ")
-            }
-            shipmentCategory.text = sb.substring(0, sb.length - 2)
 
             if(data.textPromo.isEmpty()) {
                 couponLayout.visibility = View.GONE
@@ -148,14 +176,24 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
                 }
             }
 
-            if (data.featureInfo.isEmpty()) {
+            setFeatureInfo(data.featureInfo)
+        }
+
+        private fun setFeatureInfo(featureInfo: List<FeatureInfoModel>) {
+            if (featureInfo.isEmpty()) {
                 shipmentFeatureRv?.gone()
                 labelInformation?.gone()
             } else {
                 shipmentFeatureRv?.visible()
+                shipmentFeatureRv?.layoutManager = FlexboxLayoutManager(itemView.context).apply {
+                    alignItems = AlignItems.FLEX_START
+                }
+                shipmentFeatureRv?.adapter = featureItemAdapter
+                featureItemAdapter.setData(featureInfo)
+
                 labelInformation?.visible()
                 labelInformation?.setOnClickListener {
-                    listener.onFeatureInfoOnDemandClicked(data.featureInfo)
+                    listener.onFeatureInfoOnDemandClicked(featureInfo)
                 }
             }
         }
@@ -168,25 +206,13 @@ class ShippingEditorOnDemandItemAdapter(private val listener: ShippingEditorItem
 
             productItemAdapter.addData(data.shipperProduct)
 
-            shipmentFeatureRv?.layoutManager = FlexboxLayoutManager(itemView.context).apply {
-                    alignItems = AlignItems.FLEX_START
-                }
-            shipmentFeatureRv?.adapter = featureItemAdapter
-
-            featureItemAdapter.setData(data.featureInfo)
-
             initUncheckedListener()
         }
 
         private fun setItemChecked(data: OnDemandModel) {
+            setCheckboxEnableState(data)
             if (data.tickerState == EditShippingConstant.TICKER_STATE_UNAVAILABLE) {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_disabled_item_log)
-                data.isActive = false
                 productItemAdapter?.updateChecked(data.isActive)
-                shipmentItemCb.isEnabled = false
-            } else {
-                flDisableContainer.foreground = ContextCompat.getDrawable(itemView.context, R.drawable.fg_enabled_item_log)
-                shipmentItemCb.isEnabled = true
             }
 
             shipmentItemCb.isChecked = data.isActive

@@ -54,11 +54,17 @@ public class CourierView extends EditShippingCourierView<Courier,
 
     @Override
     public void renderData(@NonNull final Courier courier, final int courierIndex) {
-        courierNameText.setText(courier.name);
-        ImageHandler.LoadImage(courierImageHolder, courier.logo);
+        if (courier.isWhitelabelService()) {
+            courierNameText.setVisibility(View.GONE);
+            courierImageHolder.setVisibility(View.GONE);
+        } else {
+            courierNameText.setText(courier.name);
+            ImageHandler.LoadImage(courierImageHolder, courier.logo);
+            courierImageHolder.setVisibility(View.VISIBLE);
+        }
         packageView.setViewListener(mainView);
-        setCourierWeightPolicy(courier);
         setPackageAvailability(courierIndex, courier);
+        setCourierWeightPolicy(courier);
         shipmentSettings.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
