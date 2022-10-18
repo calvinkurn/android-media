@@ -16,6 +16,7 @@ import io.mockk.mockk
 fun productSetupViewModel(
     productSectionList: List<ProductTagSectionUiModel> = emptyList(),
     handle: SavedStateHandle = SavedStateHandle(),
+    isEligibleForPin: Boolean = false,
     repo: PlayBroadcastRepository = mockk(relaxed = true),
     configStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
@@ -24,6 +25,7 @@ fun productSetupViewModel(
     return PlayBroProductSetupViewModel(
         productSectionList = productSectionList,
         savedStateHandle = handle,
+        isEligibleForPin = isEligibleForPin,
         repo = repo,
         configStore = configStore,
         userSession = userSession,

@@ -13,4 +13,5 @@ interface ViewUpdater {
     fun removeFirstItemWithCondition(condition: (Visitable<*>) -> Boolean)
     fun insertItemAfter(item: Visitable<*>, previousItem: Visitable<*>)
     fun requestRelayout()
+    fun backToTop()
 }
