@@ -52,7 +52,7 @@ class NegKeywordItemViewHolder(
                     color.Unify_NN0))
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    color.topads_select_color))
+                    color.Unify_B400_20))
             }
             itemCard.setOnClickListener {
                 if (selectMode) {
@@ -60,7 +60,7 @@ class NegKeywordItemViewHolder(
                     item.isChecked = checkBox.isChecked
                     if (checkBox.isChecked)
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            color.topads_select_color))
+                            color.Unify_B400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
                             color.Unify_NN0))
@@ -70,7 +70,7 @@ class NegKeywordItemViewHolder(
                 item.isChecked = true
                 checkBox.isChecked = true
                 cardView.setBackgroundColor(ContextCompat.getColor(
-                    view.context, color.topads_select_color))
+                    view.context, color.Unify_B400_20))
                 onSelectMode.invoke(true)
                 true
             }

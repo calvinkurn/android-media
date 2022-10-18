@@ -114,7 +114,7 @@ class GroupItemsItemViewHolder(
                 ))
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
             }
             when (it.data.groupStatusDesc) {
                 ACTIVE -> label.setLabelType(Label.GENERAL_DARK_GREEN)
@@ -149,7 +149,7 @@ class GroupItemsItemViewHolder(
                     it.isChecked = checkBox.isChecked
                     if (checkBox.isChecked)
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_select_color))
+                            com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
                             Unify_NN0))
@@ -159,7 +159,7 @@ class GroupItemsItemViewHolder(
                 item.isChecked = true
                 checkBox.isChecked = true
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                 selectMode.invoke(true)
                 true
             }

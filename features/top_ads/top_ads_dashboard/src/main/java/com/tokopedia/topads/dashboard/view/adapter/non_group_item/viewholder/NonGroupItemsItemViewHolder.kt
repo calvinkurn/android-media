@@ -117,7 +117,7 @@ class NonGroupItemsItemViewHolder(
                     Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
             }
         }
 
@@ -127,7 +127,7 @@ class NonGroupItemsItemViewHolder(
                 item.isChecked = checkBox?.isChecked == true
                 if (item.isChecked)
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                        R.color.topads_select_color))
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                 else
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
                         Unify_NN0))
@@ -161,7 +161,7 @@ class NonGroupItemsItemViewHolder(
             item.isChecked = true
             checkBox?.isChecked = true
             cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                R.color.topads_select_color))
+                com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
             selectMode.invoke(true)
             true
         }
