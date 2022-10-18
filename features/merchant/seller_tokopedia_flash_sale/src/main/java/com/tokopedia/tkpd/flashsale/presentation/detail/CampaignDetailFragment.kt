@@ -15,7 +15,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
@@ -46,6 +45,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Waiti
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
+import com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess.IneligibleAccessActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -61,7 +61,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
         private const val DELAY = 1000L
-        private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -317,7 +316,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 showGlobalError()
             }
             CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
-                showIneligibleAccessBottomSheet()
+                navigateToIneligibleAccessPage()
             }
         }
     }
@@ -682,6 +681,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             context ?: return, flashSaleId,
             viewModel.getTabName()
         )
+    }
+
+    private fun navigateToIneligibleAccessPage() {
+        activity?.finish()
+        IneligibleAccessActivity.start(context ?: return)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
@@ -1435,16 +1439,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 flashSale
             )
         ).show(activity.supportFragmentManager, "")
-    }
-
-    private fun showIneligibleAccessBottomSheet() {
-        val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setCloseClickListener { activity?.finish() }
-        bottomSheet.setOnButtonClicked {
-            routeToUrl(FEATURE_LEARN_MORE_ARTICLE_URL)
-            activity?.finish()
-        }
-        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onProductClicked(itemPosition: Int) {

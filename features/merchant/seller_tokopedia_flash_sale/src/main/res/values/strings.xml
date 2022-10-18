@@ -284,5 +284,8 @@
     <string name="stfs_toaster_ok">Oke</string>
 
     <string name="stfs_warning_location_not_in_criteria">Lokasi ini belum memenuhi kriteria.</string>
+    <string name="stfs_title_ineligible_access">Yah, kamu belum bisa akses ke Flash Sale Tokopedia</string>
+    <string name="stfs_desc_ineligible_access">Pelajari dulu agar tokomu bisa pakai Flash Sale Tokopedia, yuk!</string>
+    <string name="stfs_btn_go_to_learn_voucher_text">Pelajari Flash Sale Tokopedia</string>
 
 </resources>
