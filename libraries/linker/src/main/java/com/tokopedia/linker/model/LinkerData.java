@@ -26,6 +26,7 @@ public class LinkerData implements Parcelable {
     public static final String NOW_TYPE = "Now";
     public static final String FOOD_TYPE = "Food";
     public static final String WEBVIEW_TYPE = "Webview";
+    public static final String WISHLIST_COLLECTION_TYPE = "Wishlist Collection";
 
     public static final String ARG_UTM_MEDIUM = "Share";
     private static final String DEFAULT_EMPTY_FIELD = "";

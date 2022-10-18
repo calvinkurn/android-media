@@ -23,9 +23,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
@@ -37,15 +37,13 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareData
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.loaderdialog.LoaderDialog
@@ -58,6 +56,7 @@ import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_WISHLIST
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -72,6 +71,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
@@ -104,11 +105,10 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
-import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
-import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionsBottomSheetResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
@@ -117,10 +117,10 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
-import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.PARAM_INSIDE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
+import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetAddCollectionWishlist
@@ -134,6 +134,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIV
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.io.File
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -162,7 +163,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var isBulkDeleteShow = false
     private var isBulkAddShow = false
     private var listSelectedProductIds = arrayListOf<String>()
-    private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
     private lateinit var trackingQueue: TrackingQueue
     private var wishlistItemOnAtc = WishlistV2UiModel.Item()
@@ -191,6 +191,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var collectionIdDestination = ""
     private var collectionNameDestination = ""
     private var isAturMode = false
+    private var collectionShareBottomSheet: UniversalShareBottomSheet? = null
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -340,6 +341,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         observingAtc()
         observeSavingItemToCollections()
         observeUpdateAccessWishlistCollection()
+        observeGetCollectionSharingData()
     }
 
     private fun observingDeleteProgress() {
@@ -722,8 +724,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
         wishlistCollectionDetailViewModel.updateWishlistCollectionResult.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    if (result.data.data.success) {
-                        // TODO: open bottomsheet sharing
+                    if (result.data.data.success && result.data.status == OK && result.data.errorMessage.isEmpty()) {
+                        getCollectionSharingData()
+                    } else if (result.data.errorMessage.isNotEmpty()) {
+                        showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                    } else {
+                        context?.getString(Rv2.string.wishlist_v2_common_error_msg)
+                            ?.let { showToasterActionOke(it, Toaster.TYPE_ERROR) }
                     }
                 }
                 is Fail -> {
@@ -732,6 +739,102 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
         }
+    }
+
+    private fun observeGetCollectionSharingData() {
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == OK) {
+                        if (result.data.errorMessage.isNotEmpty()) {
+                            if (result.data.errorMessage[0].isNotEmpty()) {
+                                showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                            } else {
+                                showUniversalShareWithMediaBottomSheet(result.data.data, WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data))
+                            }
+                        } else {
+                            showUniversalShareWithMediaBottomSheet(result.data.data, WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data))
+                        }
+                    } else {
+                        val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
+                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
+    private fun showUniversalShareWithMediaBottomSheet(
+        data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data,
+        paramImageGenerator: WishlistCollectionParamModel
+    ) {
+        val shareListener = object : ShareBottomsheetListener {
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
+                    type = LinkerData.WISHLIST_COLLECTION_TYPE
+                    uri = data.shareLink.redirectionUrl
+                    id = data.collection.id.toString()
+                    feature = shareModel.feature
+                    channel = shareModel.channel
+                    campaign = shareModel.campaign
+                    ogTitle = "Wishlist ${data.totalItem}"
+                    ogDescription = data.collection.owner.name
+                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                        ogImageUrl = shareModel.ogImgUrl
+                    }
+                })
+
+                LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
+                        override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                            val shareString = getString(Rv2.string.sharing_collection_desc) + "\n${linkerShareResult?.url}"
+                            shareModel.subjectName = data.collection.owner.name
+                            SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareResult,
+                                activity,
+                                view,
+                                shareString
+                            )
+                            collectionShareBottomSheet?.dismiss()
+                        }
+
+                        override fun onError(linkerError: LinkerError?) {
+                            context?.let {
+                                WishlistCollectionSharingUtils().openIntentShareDefaultUniversalSharing(
+                                    file = null,
+                                    shareProductName = data.collection.name,
+                                    shareDescription = data.collection.owner.name,
+                                    shareUrl = data.shareLink.redirectionUrl,
+                                    context = it
+                                )
+                            }
+                        }
+                    })
+                )
+            }
+
+            override fun onCloseOptionClicked() {
+                // analytics?
+            }
+        }
+        collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            getImageFromMedia(true)
+            setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION)
+            setImageGeneratorParam(paramImageGenerator)
+            init(shareListener)
+            setUtmCampaignData("WISHLIST_COLLECTION", userSession.userId, data.collection.id.toString(), "share")
+            val imgUrl = if (data.items.isNotEmpty()) data.items[0].imageUrl else data.emptyWishlistImageUrl
+            setMetaData(
+                tnTitle = data.collection.name,
+                tnImage = imgUrl
+            )
+        }
+        collectionShareBottomSheet?.show(childFragmentManager, this@WishlistCollectionDetailFragment)
     }
 
     private fun showRvWishlist() {
@@ -993,7 +1096,13 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun handleCollectionSharing() {
         if (collectionType == TYPE_COLLECTION_PRIVATE_SELF) {
             showDialogSharePermission()
+        } else {
+            getCollectionSharingData()
         }
+    }
+
+    private fun getCollectionSharingData() {
+        wishlistCollectionDetailViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
     }
 
     private fun showDialogSharePermission() {
@@ -1015,9 +1124,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
 
     private fun updateCollectionAccess() {
         val params = UpdateWishlistCollectionParams(
-            id = collectionId,
+            id = collectionId.toLongOrZero(),
             name = collectionName,
-            access = TYPE_COLLECTION_SHARE
+            access = TYPE_COLLECTION_SHARE.toLongOrZero()
         )
         wishlistCollectionDetailViewModel.updateAccessWishlistCollection(params)
     }
@@ -1845,6 +1954,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showShareBottomSheet(wishlistItem: WishlistV2UiModel.Item) {
+        var universalShareBottomSheet: UniversalShareBottomSheet? = null
         val shareListener = object : ShareBottomsheetListener {
 
             override fun onShareOptionClicked(shareModel: ShareModel) {
@@ -1909,7 +2019,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 wishlistItem.imageUrl
             )
         }
-        universalShareBottomSheet?.show(childFragmentManager, this@WishlistCollectionDetailFragment)
+        universalShareBottomSheet.show(childFragmentManager, this@WishlistCollectionDetailFragment)
         WishlistV2Analytics.viewOnSharingChannel(
             wishlistId = wishlistItem.wishlistId,
             productId = wishlistItem.id, userId = userSession.userId

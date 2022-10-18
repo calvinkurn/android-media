@@ -23,13 +23,16 @@ class UpdateWishlistCollectionUseCase @Inject constructor(
     }
 
     private fun createVariables(params: UpdateWishlistCollectionParams): Map<String, Any> {
+        val collectionParams = mutableMapOf<String, Any>()
+        collectionParams[KEY_COLLECTION] = params
         val variables = mutableMapOf<String, Any>()
-        variables[KEY_PARAMS] = params
+        variables[KEY_PARAMS] = collectionParams
         return variables
     }
 
     companion object {
         private const val KEY_PARAMS = "params"
+        private const val KEY_COLLECTION = "collection"
         const val query = """
             mutation UpdateWishlistCollection(${'$'}params:UpdateWishlistCollectionParams) {
                  update_wishlist_collection(params:${'$'}params){

@@ -1010,6 +1010,9 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
                     executePdpContextualImage(shareModel)
                 }
+                ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
+                    executeWishlistCollectionContextualImage(shareModel)
+                }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
@@ -1023,6 +1026,18 @@ class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null) return
+        imageGeneratorParam?.apply {
+            this.platform = shareModel.platform
+        }
+        lifecycleScope.launch {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+        }
+    }
+
+    private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null) return
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform

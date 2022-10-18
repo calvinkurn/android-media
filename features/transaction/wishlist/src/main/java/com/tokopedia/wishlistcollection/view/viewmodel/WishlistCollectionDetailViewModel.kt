@@ -32,6 +32,7 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProd
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionSharingDataParams
 import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
 import com.tokopedia.wishlistcollection.data.response.*
 import com.tokopedia.wishlistcollection.domain.*
@@ -52,7 +53,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
     private val atcUseCase: AddToCartUseCase,
     private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase,
-    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase
+    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
+    private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -100,6 +102,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val _updateWishlistCollectionResult = MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
     val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
         get() = _updateWishlistCollectionResult
+
+    private val _getWishlistCollectionSharingDataResult = MutableLiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>()
+    val getWishlistCollectionSharingDataResult: LiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>
+        get() = _getWishlistCollectionSharingDataResult
 
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
@@ -276,6 +282,19 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             }
         }, onError = {
             _updateWishlistCollectionResult.value = Fail(it)
+        })
+    }
+
+    fun getWishlistCollectionSharingData(collectionId: Long) {
+        launchCatchError(block = {
+            val result = getWishlistCollectionSharingDataUseCase(collectionId)
+            if (result.getWishlistCollectionSharingData.status == WishlistV2CommonConsts.OK) {
+                _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
+            } else {
+                _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _getWishlistCollectionSharingDataResult.value = Fail(it)
         })
     }
 
