@@ -146,6 +146,9 @@ query ThanksPageData($paymentIDStr : String!, $merchant: String!){
     fee_details{
         name
         amount
+        show_tooltip
+        tooltip_title
+        tooltip_desc
     }
     thanks_summaries {
         key

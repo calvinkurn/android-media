@@ -57,7 +57,7 @@ class PlayViewerTagItemsRepositoryTest {
 
     private val modelBuilder = ModelBuilder()
 
-    private val campaignId: Long = 105L
+    private val campaignId: String = 105L.toString()
 
     @Before
     fun setUp(){
@@ -198,18 +198,23 @@ class PlayViewerTagItemsRepositoryTest {
     }
 
     @Test
-    fun  `when upco campaign is exist when user click reminder return true if success`(){
+    fun `when upco campaign is exist when user click reminder return true if success`(){
         testDispatcher.coroutineDispatcher.runBlockingTest {
+            val successResponse = UpcomingCampaignResponse(isAvailable = true)
             val mockResponse = PostUpcomingCampaign(
-                response = UpcomingCampaignResponse(success = true)
+                response = successResponse
             )
             coEvery { mockPostUpcomingCampaignReminderUseCase.executeOnBackground() } returns mockResponse
+            coEvery { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() } returns CheckUpcomingCampaign(
+                response = successResponse
+            )
 
-            val result = tagItemRepo.subscribeUpcomingCampaign(campaignId, PlayUpcomingBellStatus.On(campaignId))
+            val result = tagItemRepo.subscribeUpcomingCampaign(campaignId, true)
 
             coVerify { mockPostUpcomingCampaignReminderUseCase.executeOnBackground() }
+            coVerify { mockCheckUpcomingCampaignReminderUseCase.executeOnBackground() }
 
-            result.first.assertEqualTo(mockResponse.response.success)
+            result.isReminded.assertEqualTo(mockResponse.response.isAvailable)
         }
     }
 

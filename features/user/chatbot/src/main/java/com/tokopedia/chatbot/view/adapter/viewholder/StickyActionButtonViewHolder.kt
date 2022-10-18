@@ -9,17 +9,19 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.chat_common.util.ChatLinkHandlerMovementMethod
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
 import com.tokopedia.chatbot.R
-import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonViewModel
+import com.tokopedia.chatbot.data.stickyactionbutton.StickyActionButtonUiModel
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.adapter.viewholder.binder.ChatbotMessageViewHolderBinder
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.ChatbotAdapterListener
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.StickyActionButtonClickListener
 import com.tokopedia.unifycomponents.UnifyButton
 
-class StickyActionButtonViewHolder(itemView: View,
-                                   private val chatLinkHandlerListener: ChatLinkHandlerListener,
-                                   private val chatbotAdapterListener: ChatbotAdapterListener,
-                                   private val actionButtonClickListener: StickyActionButtonClickListener) : BaseChatBotViewHolder<StickyActionButtonViewModel>(itemView) {
+class StickyActionButtonViewHolder(
+    itemView: View,
+    private val chatLinkHandlerListener: ChatLinkHandlerListener,
+    private val chatbotAdapterListener: ChatbotAdapterListener,
+    private val actionButtonClickListener: StickyActionButtonClickListener
+) : BaseChatBotViewHolder<StickyActionButtonUiModel>(itemView) {
 
     private val customChatLayoutContainer: LinearLayout = itemView.findViewById(R.id.custom_chat_layout_container)
     private val movementMethod = ChatLinkHandlerMovementMethod(chatLinkHandlerListener)
@@ -27,7 +29,7 @@ class StickyActionButtonViewHolder(itemView: View,
 
     private val bg = ViewUtil.generateBackgroundWithShadow(
             customChatLayoutContainer,
-            com.tokopedia.unifyprinciples.R.color.Unify_N0,
+            R.color.chatbot_dms_left_message_bg,
             R.dimen.dp_chatbot_0,
             R.dimen.dp_chatbot_20,
             R.dimen.dp_chatbot_20,
@@ -38,7 +40,7 @@ class StickyActionButtonViewHolder(itemView: View,
             Gravity.CENTER
     )
 
-    override fun bind(viewModel: StickyActionButtonViewModel) {
+    override fun bind(viewModel: StickyActionButtonUiModel) {
         bindBackGround()
         verifyReplyTime(viewModel)
         ChatbotMessageViewHolderBinder.bindHour(viewModel.replyTime, customChatLayout)
@@ -52,13 +54,16 @@ class StickyActionButtonViewHolder(itemView: View,
         setActionButtonTextAndListener(viewModel)
     }
 
-    private fun setActionButtonTextAndListener(viewModel: StickyActionButtonViewModel) {
+    private fun setActionButtonTextAndListener(viewModel: StickyActionButtonUiModel) {
         actionButton.text = viewModel.stickyActionButton?.firstOrNull()?.text
         actionButton.setOnClickListener {
             val stickyActionButton = viewModel.stickyActionButton?.firstOrNull()
             stickyActionButton?.invoiceRefNum?.let { invoiceRefNum ->
-                actionButtonClickListener.onStickyActionButtonClicked(invoiceRefNum, stickyActionButton.replyText
-                        ?: "")
+                actionButtonClickListener.onStickyActionButtonClicked(
+                    invoiceRefNum,
+                    stickyActionButton.replyText
+                        ?: ""
+                )
             }
         }
     }

@@ -7,6 +7,8 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import java.math.BigDecimal
@@ -74,5 +76,18 @@ object BuyerUtils {
         }
         val values = CurrencyFormatHelper.convertToRupiah(value.toString())
         return "$CURRENCY_RUPIAH$values"
+    }
+
+    inline fun clickActionButton(
+        context: Context,
+        uri: String,
+        isDownloadable: Boolean,
+        onDownloadable: (String) -> Unit
+    ){
+        if (isUridownloadable(uri, isDownloadable)){
+            onDownloadable.invoke(uri)
+        } else {
+            RouteManager.route(context, ApplinkConstInternalGlobal.WEBVIEW, uri)
+        }
     }
 }

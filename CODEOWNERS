@@ -148,6 +148,7 @@
 /features/entertainment/deals               	        @tokopedia/android-minionmark-dev
 /features/entertainment/digital_deals         			@tokopedia/android-minionmark-dev
 /features/entertainment/event                 			@tokopedia/android-minionmark-dev
+/features/entertainment/common_entertainment            @tokopedia/android-minionmark-dev
 
 /features/travel/common_travel                          @tokopedia/android-minionmark-dev
 /features/travel/flight/                                @tokopedia/android-minionmark-dev
@@ -189,8 +190,7 @@
 /features/logistic/localizationchooseaddress/           @tokopedia/android-minionbob-dev
 /features/logistic/localizationchooseaddress_common/    @tokopedia/android-minionbob-dev
 /features/logistic/logisticseller/                      @tokopedia/android-minionbob-dev
-/features/discovery/home_wishlist/                     	@tokopedia/android-minionbob-dev
-/features/discovery/wishlist_common/                	@tokopedia/android-minionbob-dev
+                  	                                    @tokopedia/android-minionbob-dev
 /features/dilayanitokopedia/                            @tokopedia/android-minionbob-dev
 
 /features/media/mediauploader/			                @tokopedia/android-minionkevin-dev
@@ -219,8 +219,6 @@
 /features/user/onboarding                       		@tokopedia/android-minionkevin-dev
 /features/user/updateinactivephone              		@tokopedia/android-minionkevin-dev
 /features/user/user_identification/             		@tokopedia/android-minionkevin-dev
-/features/user/user_identification_common/      		@tokopedia/android-minionkevin-dev
-/features/user/user_identification_no_op/       		@tokopedia/android-minionkevin-dev
 /features/user/seamless_login/                          @tokopedia/android-minionkevin-dev
 /features/user/seamless_login_common/                   @tokopedia/android-minionkevin-dev
 /features/user/kyc_centralized/                         @tokopedia/android-minionkevin-dev
@@ -372,6 +370,7 @@
 /libraries/tokopatch                                    @tokopedia/android-core-dev
 /libraries/macrobenchmark/								@tokopedia/android-core-dev
 /libraries/universal_sharing/							@tokopedia/android-core-dev
+/libraries/sse/                                         @tokopedia/android-core-dev @tokopedia/android-minionlance-dev
 
 /buildconfig/                                           @tokopedia/android-core-dev
 /dynamic-features/                                      @tokopedia/android-core-dev

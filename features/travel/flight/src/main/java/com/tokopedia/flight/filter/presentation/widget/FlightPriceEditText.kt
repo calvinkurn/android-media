@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatEditText
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 
 
 /**
@@ -42,7 +43,7 @@ class FlightPriceEditText @JvmOverloads constructor(
                 textWidth += w
             }
             originalLeftPadding = compoundPaddingLeft
-            setPadding((textWidth + originalLeftPadding).toInt(),
+            setPadding((textWidth + originalLeftPadding).toIntSafely(),
                     paddingRight, paddingTop,
                     paddingBottom)
         }

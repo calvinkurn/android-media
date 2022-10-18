@@ -17,6 +17,11 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VI
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics.EVENT_ACTION_VIEW_LEGO_SIX
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.BEGIN_CHECKOUT
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.BUSSINESS_UNIT
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.CLICK_PG
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.CLICK_SEARCH_BAR_TOKOFOOD
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.CURRENT_SITE
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.DESTINATION_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.EMPTY_DATA
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.GOFOOD_PAGENAME
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.HOME_PAGE
@@ -24,17 +29,24 @@ import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.IS_LOG
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.NO_PIN_POIN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OPEN_SCREEN
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.OUT_OF_COVERAGE
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.PAGE_SOURCE
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.PHYSICAL_GOODS
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.PRODUCT_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.SCREEN_NAME
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TOKOFOOD_HOME
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKER_ID
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.TRACKER_ID_35766
+import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.USER_ID
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants.VIEW_ITEM
 import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.addGeneralTracker
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getItemATC
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getProductIds
 import com.tokopedia.tokofood.feature.home.analytics.TokoFoodHomeCategoryCommonAnalytics.getPromotionMerchant
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType
 import com.tokopedia.tokofood.feature.home.domain.data.DynamicIcon
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.util.BaseTrackerConst
@@ -192,6 +204,22 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         eventDataLayer.putParcelableArrayList(TokoFoodAnalytics.KEY_ITEMS, items)
         eventDataLayer.addToCart(userId, destinationId, data.shop.shopId, data)
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(BEGIN_CHECKOUT, eventDataLayer)
+    }
+
+    fun clickSearchBar(userId: String?, destinationId: String?) {
+        val eventData = mapOf(
+            TrackAppUtils.EVENT to CLICK_PG,
+            TrackAppUtils.EVENT_ACTION to CLICK_SEARCH_BAR_TOKOFOOD,
+            TrackAppUtils.EVENT_CATEGORY to TOKOFOOD_HOME,
+            TrackAppUtils.EVENT_LABEL to "",
+            TRACKER_ID to TRACKER_ID_35766,
+            BUSSINESS_UNIT to PHYSICAL_GOODS,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            DESTINATION_ID to destinationId.orEmpty(),
+            PAGE_SOURCE to TOKOFOOD_HOME,
+            USER_ID to userId.orEmpty()
+        )
+        TrackApp.getInstance().gtm.sendGeneralEvent(eventData)
     }
 
     private fun getPromotionItemIcon(data: List<DynamicIcon>, horizontalPosition: Int = -Int.ONE, verticalPosition: Int): ArrayList<Bundle> {

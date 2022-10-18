@@ -33,7 +33,7 @@ import com.tokopedia.review.feature.createreputation.model.CreateReviewTemplate
 import com.tokopedia.review.feature.createreputation.model.ProductRevGetForm
 import com.tokopedia.review.feature.createreputation.model.ProductrevGetPostSubmitBottomSheetResponse
 import com.tokopedia.review.feature.createreputation.model.ProductrevSubmitReviewResponseWrapper
-import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.old.CreateReviewBottomSheet
+import com.tokopedia.review.feature.createreputation.presentation.bottomsheet.CreateReviewBottomSheet
 import com.tokopedia.review.feature.createreputation.presentation.fragment.CreateReviewFragment
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewMediaUploadResult
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewProgressBarState
@@ -152,6 +152,8 @@ class CreateReviewViewModel @Inject constructor(
         private const val CACHE_KEY_IS_REVIEW_TOPICS_PEEK_ANIMATION_ALREADY_RUN = "cacheKeyIsReviewTopicsPeekAnimationAlreadyRun"
 
         private const val REVIEW_INSPIRATION_ENABLED = "experiment_variant"
+
+        private const val MEDIA_UPLOAD_ERROR_MESSAGE = "Error when uploading %s. Cause: %s"
     }
 
     // region state that need to be saved and restored
@@ -685,17 +687,19 @@ class CreateReviewViewModel @Inject constructor(
                     )
                 }
             } else if (mediaItems.any { it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED }) {
+                val concatenatedErrorMessage = mediaItems.filter {
+                    it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
+                }.joinToString("|") {
+                    String.format(MEDIA_UPLOAD_ERROR_MESSAGE, it.uri, it.message)
+                }
+                val errorCode = ErrorHandler.getErrorMessagePair(
+                    context = null,
+                    e = MessageErrorException(concatenatedErrorMessage),
+                    builder = ErrorHandler.Builder()
+                ).second
                 if (currentMediaPickerUiState is CreateReviewMediaPickerUiState.FailedUpload) {
                     currentMediaPickerUiState.copy(mediaItems = mediaItems)
                 } else {
-                    val concatenatedErrorMessage = mediaItems.filter {
-                        it.state == CreateReviewMediaUiModel.State.UPLOAD_FAILED
-                    }.joinToString("|") { it.message }
-                    val errorCode = ErrorHandler.getErrorMessagePair(
-                        context = null,
-                        e = MessageErrorException(concatenatedErrorMessage),
-                        builder = ErrorHandler.Builder()
-                    ).second
                     if (currentMediaPickerUiState.failedOccurrenceCount.isMoreThanZero()) {
                         enqueueErrorUploadMediaToaster(errorCode)
                     }

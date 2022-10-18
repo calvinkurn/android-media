@@ -1,7 +1,0 @@
-mutation addWishlist($productID: SuperInteger!, $userID: SuperInteger!) {
-    wishlist_add_v2(productID: $productID, userID: $userID) {
-        id
-        success
-        __typename
-    }
- }

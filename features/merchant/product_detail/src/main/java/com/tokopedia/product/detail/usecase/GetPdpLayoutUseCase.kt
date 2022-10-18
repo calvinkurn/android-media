@@ -112,6 +112,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         videoURLAndroid
                         isAutoplay
                         variantOptionID
+                        URLMaxRes
                       }
                       videos {
                         source
@@ -192,6 +193,7 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                       }
                     }
                     ... on pdpDataProductDetail {
+                      title
                       content {
                         title
                         subtitle
@@ -200,6 +202,17 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                         icon
                         showAtFront
                         isAnnotation
+                        showAtBottomsheet
+                      }
+                      catalogBottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
+                      }
+                      bottomsheet {
+                        actionTitle
+                        bottomSheetTitle
+                        param
                       }
                     }
                     ... on pdpDataSocialProof {

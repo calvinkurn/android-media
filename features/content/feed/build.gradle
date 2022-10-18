@@ -2,9 +2,11 @@ apply plugin: 'com.android.library'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: 'de.mannodermaus.android-junit5'
+apply from: "../../../compile-instrument-test.gradle"
 
 android {
     testOptions {
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
         }
@@ -18,6 +20,10 @@ android {
     }
     packagingOptions {
         exclude 'META-INF/**'
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
@@ -57,7 +63,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.topAdsSdk)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.features.wishlistCommonV2)
     implementation projectOrAar(rootProject.ext.features.navigationCommon)
     implementation projectOrAar(rootProject.ext.features.searchbar)
@@ -141,8 +146,20 @@ dependencies {
     testImplementation rootProject.ext.testDependencies.json
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
-    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation rootProject.ext.testDependencies.assertJCore
+    androidTestImplementation rootProject.ext.miscDependencies.coroutineTest
+    androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
+    androidTestImplementation rootProject.ext.testDependencies.espressoCore
+    androidTestImplementation rootProject.ext.testDependencies.espressoIntents
+    androidTestImplementation rootProject.ext.testDependencies.androidxTest
+    androidTestImplementation rootProject.ext.testDependencies.mockkAndroid
+    androidTestImplementation rootProject.ext.miscDependencies.dagger
+
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.instrumentation_test)
+    androidTestImplementation projectOrAar(rootProject.ext.libraries.cassavaTest)
+
+    kaptAndroidTest rootProject.ext.miscDependencies.daggerCompiler
 }
 
 project.ext {
