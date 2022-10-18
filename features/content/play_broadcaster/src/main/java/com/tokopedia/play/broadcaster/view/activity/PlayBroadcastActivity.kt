@@ -107,7 +107,6 @@ class PlayBroadcastActivity : BaseActivity(),
     private var isRecreated = false
     private var isResultAfterAskPermission = false
     private var channelType = ChannelStatus.Unknown
-    var channelEnded = false
 
     private var toasterBottomMargin = 0
 
@@ -152,7 +151,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
-        if (!channelEnded) getConfiguration()
+        if (viewModel.getConfigUi(savedInstanceState) == null) getConfiguration()
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
@@ -195,9 +194,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
     override fun onSaveInstanceState(outState: Bundle) {
         try {
+            viewModel.saveConfigUi(outState)
             outState.putString(CHANNEL_ID, viewModel.channelId)
             outState.putString(CHANNEL_TYPE, channelType.value)
-            outState.putBoolean(CHANNEL_ENDED, channelEnded)
         } catch (e: Throwable) {}
         super.onSaveInstanceState(outState)
     }
@@ -299,7 +298,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun populateSavedState(savedInstanceState: Bundle) {
         val channelId = savedInstanceState.getString(CHANNEL_ID)
         val channelType = savedInstanceState.getString(CHANNEL_TYPE)
-        channelEnded = savedInstanceState.getBoolean(CHANNEL_ENDED)
+        viewModel.restoreConfigUi(savedInstanceState)
         channelId?.let { viewModel.setChannelId(it) }
         channelType?.let {
             this.channelType = ChannelStatus.getByValue(it)
@@ -718,7 +717,6 @@ class PlayBroadcastActivity : BaseActivity(),
     companion object {
         private const val CHANNEL_ID = "channel_id"
         private const val CHANNEL_TYPE = "channel_type"
-        private const val CHANNEL_ENDED = "channel_ended"
         private const val REQUEST_PERMISSION_CODE = 3298
         const val RESULT_PERMISSION_CODE = 3297
 

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.view.viewmodel
 
+import android.os.Bundle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.SavedStateHandle
@@ -342,6 +343,18 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _observableChatList.value = mutableListOf()
 
 
+    }
+
+    fun saveConfigUi(outState: Bundle) {
+        outState.putParcelable(KEY_CONFIG, _configInfo.value)
+    }
+
+    fun getConfigUi(savedInstanceState: Bundle?): ConfigurationUiModel? {
+        return savedInstanceState?.getParcelable(KEY_CONFIG)
+    }
+
+    fun restoreConfigUi(savedInstanceState: Bundle) {
+        _configInfo.value = getConfigUi(savedInstanceState)
     }
 
     override fun onCleared() {
@@ -1558,6 +1571,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         private const val UI_STATE_STOP_TIMEOUT = 5000L
 
         private const val KEY_TITLE = "title"
+        private const val KEY_CONFIG = "config_ui_model"
 
         private const val INTERACTIVE_GQL_CREATE_DELAY = 3000L
         private const val INTERACTIVE_GQL_LEADERBOARD_DELAY = 3000L
