@@ -28,7 +28,6 @@
     <string name="affiliate_still_buy_products">Kalau udah ada produk yang mau dipromosikan, segera salin link-nya, lalu tempel di sini.</string>
     <string name="affiliate_paste_link">Tempel Link</string>
     <string name="affiliate_paste_product_link">Tempel link produk atau toko di Tokopedia yang kamu suka, ya.</string>
-    <string name="affiliate_paste_product_link_desc">Tempel link &amp; cek buat mulai promosikan</string>
     <string name="affiliate_active">Aktif</string>
     <string name="affiliate_inactive">Tidak Aktif</string>
     <string name="affiliate_how_to_promote">Gimana cara promosikannya?</string>
@@ -134,7 +133,6 @@
     <string name="affiliate_coacher_desc2">Kamu bisa tempel link produk atau pilih rekomendasi dari kami, lalu salin link affiliate-nya.</string>
     <string name="affiliate_coacher_desc3">Kamu bisa dapatkan link produk yang diinginkan dari aplikasi Tokopedia.</string>
     <string name="terkhir_text">update terakhir</string>
-    <string name="affiliate_income_blacklisted_ticker_desc">Supaya kamu lebih nyaman menggunakan Tokopedia Affiliate. Kembali lagi nanti, ya!</string>
     <string name="affiliate_blacklisted_ticker_title">Saldo Affiliate sedang dioptimalisasi ⚙️</string>
     <string name="affiliate_withdrwal_title_terms">%s yang dikunjungi</string>
     <string name="affiliate_traffic_hari_ini_ticker">Komisi kunjungan akan masuk pada H+1 dan tidak akan muncul pada filter “Hari Ini”.</string>

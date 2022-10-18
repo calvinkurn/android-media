@@ -47,8 +47,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewModel>(),
-    AffiliateLinkTextFieldInterface,
-    PromotionClickInterface {
+    AffiliateLinkTextFieldInterface, PromotionClickInterface {
 
     @Inject
     lateinit var viewModelProvider: ViewModelProvider.Factory
@@ -79,8 +78,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_affiliate_promo_search, container, false)
     }
@@ -93,15 +91,11 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     private fun afterViewCreated() {
         view?.findViewById<NavToolbar>(R.id.promo_search_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
-            setIcon(
-                IconBuilder()
-                    .addIcon(IconList.ID_INFORMATION) {
-                        AffiliateHowToPromoteBottomSheet.newInstance(
-                            AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
-                        ).show(childFragmentManager, "")
-                    }
-                    .addIcon(IconList.ID_NAV_GLOBAL) {}
-            )
+            setIcon(IconBuilder().addIcon(IconList.ID_INFORMATION) {
+                    AffiliateHowToPromoteBottomSheet.newInstance(
+                        AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
+                    ).show(childFragmentManager, "")
+                }.addIcon(IconList.ID_NAV_GLOBAL) {})
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_promo)
             setOnBackButtonClickListener {
@@ -142,10 +136,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         val twoStepDesc = getString(R.string.paste_info_step_two)
         val promosikanIndex = twoStepDesc.indexOf("Promosikan")
         view?.findViewById<Typography>(R.id.paste_info_step_two)?.setBoldSpannedText(
-            twoStepDesc,
-            promosikanIndex - 1,
-            TWO_STEP_BOLD_SPAN_LENGTH,
-            Typography.DISPLAY_3
+            twoStepDesc, promosikanIndex - 1, TWO_STEP_BOLD_SPAN_LENGTH, Typography.DISPLAY_3
         )
 
     }
@@ -154,8 +145,10 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
             view?.rootView?.let {
                 Toaster.build(
-                    it, getString(R.string.affiliate_product_link_invalid),
-                    Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
+                    it,
+                    getString(R.string.affiliate_product_link_invalid),
+                    Snackbar.LENGTH_LONG,
+                    Toaster.TYPE_ERROR
                 ).show()
             }
             view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.editingState(true)
@@ -175,8 +168,10 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             if (affiliateSearchData.searchAffiliate?.data?.error?.errorType == 1) {
                 view?.rootView?.let {
                     Toaster.build(
-                        it, getString(R.string.affiliate_product_link_invalid),
-                        Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR
+                        it,
+                        getString(R.string.affiliate_product_link_invalid),
+                        Snackbar.LENGTH_LONG,
+                        Toaster.TYPE_ERROR
                     ).show()
                 }
                 view?.findViewById<Group>(R.id.view_initial_info)?.show()
@@ -187,12 +182,9 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
                 }
                 val errorLabel =
                     when (affiliateSearchData.searchAffiliate?.data?.error?.errorStatus) {
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND ->
-                            AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
-                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE ->
-                            AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
-                        AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS ->
-                            AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
+                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_FOUND -> AffiliateAnalytics.LabelKeys.PRDOUCT_URL_NOT_FOUND
+                        AffiliatePromotionErrorCardItemVH.ERROR_STATUS_NOT_ELIGIBLE -> AffiliateAnalytics.LabelKeys.NON_WHITELISTED_CATEGORIES
+                        AffiliatePromotionErrorCardItemVH.ERROR_NON_PM_OS -> AffiliateAnalytics.LabelKeys.NON_PM_OS_SHOP
                         else -> AffiliateAnalytics.LabelKeys.NOT_URL
                     }
                 sendSearchEvent(errorLabel)
@@ -232,7 +224,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             AffiliateAnalytics.EventKeys.CLICK_PG,
             AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            eventLabel, userSessionInterface.userId
+            eventLabel,
+            userSessionInterface.userId
         )
     }
 
@@ -248,7 +241,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             AffiliateAnalytics.EventKeys.CLICK_PG,
             AffiliateAnalytics.ActionKeys.CLICK_SEARCH_BOX,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
-            "", userSessionInterface.userId
+            "",
+            userSessionInterface.userId
         )
     }
 
@@ -331,11 +325,8 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         getComponent().injectPromoSearchFragment(this)
     }
 
-    private fun getComponent(): AffiliateComponent =
-        DaggerAffiliateComponent
-            .builder()
-            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
+    private fun getComponent(): AffiliateComponent = DaggerAffiliateComponent.builder()
+        .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build()
 
     override fun getViewModelType(): Class<AffiliatePromoViewModel> {
         return AffiliatePromoViewModel::class.java

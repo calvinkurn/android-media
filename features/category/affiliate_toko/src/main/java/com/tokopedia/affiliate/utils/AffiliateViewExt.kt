@@ -9,8 +9,7 @@ import android.text.style.MetricAffectingSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.unifyprinciples.Typography
 
-private class BoldTypefaceSpan(private val typeface: Typeface?) :
-    MetricAffectingSpan() {
+private class BoldTypefaceSpan(private val typeface: Typeface?) : MetricAffectingSpan() {
     override fun updateDrawState(paint: TextPaint) {
         paint.typeface = typeface
     }
@@ -21,10 +20,7 @@ private class BoldTypefaceSpan(private val typeface: Typeface?) :
 }
 
 fun Typography.setBoldSpannedText(
-    str: String,
-    start: Int,
-    end: Int,
-    boldTypography: Int
+    str: String, start: Int, end: Int, boldTypography: Int
 ) {
     val sb = SpannableString(str)
     val endSpan = start + end
@@ -32,18 +28,17 @@ fun Typography.setBoldSpannedText(
         context?.let { ctx ->
             val boldFont = Typography.getFontType(ctx, true, boldTypography)
             sb.setSpan(
-                BoldTypefaceSpan(boldFont!!),
-                start,
-                endSpan,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                BoldTypefaceSpan(boldFont!!), start, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             sb.setSpan(
                 ForegroundColorSpan(
                     MethodChecker.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                        context, com.tokopedia.unifyprinciples.R.color.Unify_NN950
                     )
-                ), start, endSpan, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                ),
+                start,
+                endSpan,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
     }

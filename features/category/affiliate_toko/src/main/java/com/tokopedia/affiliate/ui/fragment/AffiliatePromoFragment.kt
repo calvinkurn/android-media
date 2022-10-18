@@ -91,7 +91,6 @@ class AffiliatePromoFragment : AffiliateBaseFragment<AffiliatePromoViewModel>() 
     }
 
     private fun afterViewCreated() {
-
         view?.findViewById<NavToolbar>(R.id.promo_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(
