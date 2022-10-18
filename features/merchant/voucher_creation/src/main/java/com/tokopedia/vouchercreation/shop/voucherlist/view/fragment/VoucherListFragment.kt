@@ -22,11 +22,20 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
 import com.tokopedia.abstraction.base.view.fragment.BaseListFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.datepicker.toZeroIfNull
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.kotlin.util.DownloadHelper
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
@@ -35,6 +44,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.ticker.TickerCallback
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -158,6 +171,8 @@ class VoucherListFragment :
 
     private var shopBasicData: ShopBasicDataResult? = null
 
+    private var universalBottomSheet: UniversalShareBottomSheet? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -207,6 +222,57 @@ class VoucherListFragment :
 
         setupView()
         observeLiveData()
+    }
+
+    private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
+        universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            init(object: ShareBottomsheetListener {
+                override fun onShareOptionClicked(shareModel: ShareModel) {
+                    context?.let {
+                        onItemShareClick(shareModel, voucherUiModel, shopBasicData?.shopDomain ?: "", userSession.userId)
+                    }
+
+                }
+
+                override fun onCloseOptionClicked() {
+                }
+
+            })
+            setMetaData(voucherUiModel.name, voucherUiModel.imageSquare)
+        }
+        universalBottomSheet?.show(childFragmentManager, "")
+    }
+
+    private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String, userId: String) {
+        val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
+        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+            type = LinkerData.MERCHANT_VOUCHER
+            uri = shareUrl
+            id = voucher.id.toString()
+            deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
+        })
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+                override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                    linkerShareData?.url?.let { url ->
+                        context?.let { context ->
+                            shareModel.subjectName = voucher.name
+                            val shareMessage = getShareMessage(context, voucher, userSession.shopName, url)
+                            com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil.executeShareIntent(shareModel, linkerShareData, activity, view, shareMessage)
+                            universalBottomSheet?.dismiss()
+                        }
+                    }
+                }
+
+                override fun onError(linkerError: LinkerError?) {}
+            })
+        )
+        val socmedType = convertToSocmedType(shareModel)
+        VoucherCreationTracking.sendShareClickTracking(
+            socmedType = socmedType,
+            userId = userId,
+            isDetail = true
+        )
     }
 
     private fun setupShareBottomSheet(status: Int = 0, promo: Int = 0): ShareVoucherBottomSheet {
@@ -644,19 +710,20 @@ class VoucherListFragment :
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
-        if (!isAdded) return
-        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
-            context?.run {
-                shopBasicData?.shareVoucher(
-                    context = this,
-                    socmedType = socmedType,
-                    voucher = voucher,
-                    userId = userSession.userId,
-                    shopId = userSession.shopId
-                )
-            }
-        }
-        shareVoucherBottomSheet?.show(childFragmentManager)
+        showUniversalBottomSheet(voucher)
+//        if (!isAdded) return
+//        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
+//            context?.run {
+//                shopBasicData?.shareVoucher(
+//                    context = this,
+//                    socmedType = socmedType,
+//                    voucher = voucher,
+//                    userId = userSession.userId,
+//                    shopId = userSession.shopId
+//                )
+//            }
+//        }
+//        shareVoucherBottomSheet?.show(childFragmentManager)
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
@@ -1083,10 +1150,18 @@ class VoucherListFragment :
             when (it) {
                 is Success -> {
                     val voucherList = it.data
-                    voucherList.forEach { voucherUiModel ->
-                        voucherUiModel.showNewBc = true
+//                    voucherList.map { voucherUiModel ->
+//                        voucherUiModel.showNewBc = true
+//                    }
+
+                    /* Changes temporarily */
+                    val temporarilyList = voucherList.map { voucherUiModel ->
+                        /* Changes temporarily */
+                        val newModel = voucherUiModel.copy(status = VoucherStatusConst.ONGOING)
+                        newModel.showNewBc = true
+                        newModel
                     }
-                    setOnSuccessGetVoucherList(voucherList)
+                    setOnSuccessGetVoucherList(temporarilyList)
                     binding?.rvVoucherList?.setOnLayoutListenerReady()
                 }
                 is Fail -> setOnErrorGetVoucherList(it.throwable)

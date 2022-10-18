@@ -25,5 +25,6 @@ annotation class SocmedType {
         const val TWITTER = 6
         const val BROADCAST = 7
         const val LAINNYA = 8
+        const val TELEGRAM = 9
     }
 }

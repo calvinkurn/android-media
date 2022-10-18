@@ -13,6 +13,7 @@ import com.tokopedia.vouchercreation.common.consts.VoucherStatusConst
 import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.utils.DateTimeUtils
 import com.tokopedia.vouchercreation.databinding.ItemMvcVoucherListBinding
+import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.VoucherStatus
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
 import timber.log.Timber
 import kotlin.reflect.KFunction1

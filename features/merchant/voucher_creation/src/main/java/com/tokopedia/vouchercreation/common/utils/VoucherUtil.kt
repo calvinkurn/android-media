@@ -1,5 +1,6 @@
 package com.tokopedia.vouchercreation.common.utils
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.text.InputType
@@ -27,6 +28,7 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.vouchercreation.R
 import com.tokopedia.vouchercreation.common.analytics.VoucherCreationTracking
@@ -168,6 +170,19 @@ fun ShopBasicDataResult.shareVoucher(context: Context,
     )
 }
 
+fun convertToSocmedType(shareModel: ShareModel): Int {
+    return when (shareModel) {
+        is ShareModel.CopyLink -> SocmedType.COPY_LINK
+        is ShareModel.Facebook -> SocmedType.FACEBOOK
+        is ShareModel.Instagram -> SocmedType.INSTAGRAM
+        is ShareModel.Whatsapp -> SocmedType.WHATSAPP
+        is ShareModel.Line -> SocmedType.LINE
+        is ShareModel.Twitter -> SocmedType.TWITTER
+        is ShareModel.Others -> SocmedType.LAINNYA
+        else -> -1
+    }
+}
+
 private fun shareVoucherByType(context: Context,
                                @SocmedType socmedType: Int,
                                voucher: VoucherUiModel,
@@ -221,6 +236,32 @@ private fun shareVoucherByType(context: Context,
             SharingUtil.otherShare(context, shareMessage)
         }
     }
+}
+
+fun getShareMessage(context: Context, voucher: VoucherUiModel,shopName: String, shareUrl: String): String {
+    val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+    val shareMessage =
+        if (voucher.isPublic) {
+            StringBuilder().apply {
+                append(String.format(
+                    context.getString(R.string.mvc_share_message_public).toBlankOrString(),
+                    voucher.typeFormatted,
+                    formattedShopName))
+                append("\n")
+                append(shareUrl)
+            }.toString()
+        } else {
+            StringBuilder().apply {
+                append(String.format(
+                    context.getString(R.string.mvc_share_message_private).toBlankOrString(),
+                    voucher.typeFormatted,
+                    voucher.code,
+                    formattedShopName))
+                append("\n")
+                append(shareUrl)
+            }.toString()
+        }
+    return shareMessage
 }
 
 internal fun getTextSizeFromDimens(context: Context, @DimenRes dimensResId : Int): Float {
