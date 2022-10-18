@@ -119,17 +119,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `WHEN upload prescription then should hit upload prescription use case with checkout id`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false,
-                "",
-                "",
-                checkoutId = CHECKOUT_ID,
-                arrayListOf(),
-                0,
-                ""
-            )
-        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
 
         // When
         presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
@@ -169,17 +160,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `GIVEN error item WHEN upload prescription THEN should not hit upload prescription use case`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false,
-                "",
-                "",
-                checkoutId = CHECKOUT_ID,
-                arrayListOf(),
-                0,
-                ""
-            )
-        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
 
         // When
         presenter.fetchPrescriptionIds(true, CHECKOUT_ID)
@@ -193,17 +175,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `CHECK upload prescription data initialization`() {
         // Given
         every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(mockk<GetPrescriptionIdsResponse>(relaxed = true))
-        presenter.setUploadPrescriptionData(
-            UploadPrescriptionUiModel(
-                false,
-                "",
-                "",
-                checkoutId = CHECKOUT_ID,
-                arrayListOf(),
-                0,
-                ""
-            )
-        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(false, "", "",
+            checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""))
 
         // Then
         assert(presenter.uploadPrescriptionUiModel != null)
