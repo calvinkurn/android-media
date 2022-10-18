@@ -27,7 +27,6 @@ internal class SearchProductHandleInspirationCarouselClickTest :
 
     private val visitableListSlot = slot<List<Visitable<*>>>()
     private val visitableList: List<Visitable<*>> by lazy { visitableListSlot.captured }
-    private val className = "SearchClassName"
 
     @Test
     fun `Click top ads inspiration carousel list`() {

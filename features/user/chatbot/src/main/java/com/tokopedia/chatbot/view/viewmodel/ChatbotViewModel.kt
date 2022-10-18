@@ -8,17 +8,16 @@ import com.tokopedia.chatbot.data.inboxTicketList.InboxTicketListResponse
 import com.tokopedia.chatbot.domain.usecase.TicketListContactUsUsecase
 import javax.inject.Inject
 
-
 class ChatbotViewModel @Inject constructor(
-    private val ticketListContactUsUseCase : TicketListContactUsUsecase,
-    dispatcher: CoroutineDispatchers,
+    private val ticketListContactUsUseCase: TicketListContactUsUsecase,
+    dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     private val _ticketList = MutableLiveData<TicketListState>()
-    val ticketList : LiveData<TicketListState>
+    val ticketList: LiveData<TicketListState>
         get() = _ticketList
 
-    fun getTicketList(){
+    fun getTicketList() {
         ticketListContactUsUseCase.cancelJobs()
         ticketListContactUsUseCase.getTicketList(
             ::onTicketListDataSuccess,
@@ -28,11 +27,12 @@ class ChatbotViewModel @Inject constructor(
 
     private fun onTicketListDataSuccess(inboxTicketListResponse: InboxTicketListResponse) {
         inboxTicketListResponse.ticket?.TicketData?.notice?.let {
-            if (it.isActive)
+            if (it.isActive) {
                 _ticketList.postValue(TicketListState.BottomSheetData(it))
-            else
+            } else {
                 _ticketList.postValue(TicketListState.ShowContactUs)
-        }?: kotlin.run {
+            }
+        } ?: kotlin.run {
             _ticketList.postValue(TicketListState.ShowContactUs)
         }
     }
@@ -45,11 +45,5 @@ class ChatbotViewModel @Inject constructor(
         ticketListContactUsUseCase.cancelJobs()
         super.onCleared()
     }
-
 }
 
-sealed class TicketListState {
-    object ShowContactUs : TicketListState()
-    data class BottomSheetData(val noticeData: InboxTicketListResponse.Ticket.Data.NoticeItem) :
-        TicketListState()
-}

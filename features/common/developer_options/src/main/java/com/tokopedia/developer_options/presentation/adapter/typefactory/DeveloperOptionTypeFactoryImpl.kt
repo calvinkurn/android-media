@@ -16,7 +16,8 @@ import com.tokopedia.developer_options.presentation.viewholder.*
 class DeveloperOptionTypeFactoryImpl(
     private val accessTokenListener: AccessTokenViewHolder.AccessTokenListener,
     private val resetOnBoardingListener: ResetOnBoardingViewHolder.ResetOnBoardingListener,
-    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener
+    private val urlEnvironmentListener: UrlEnvironmentViewHolder.UrlEnvironmentListener,
+    private val homeAndNavigationRevampListener: HomeAndNavigationRevampSwitcherViewHolder.HomeAndNavigationRevampListener
 ):  BaseAdapterTypeFactory(), DeveloperOptionTypeFactory {
 
     override fun type(uiModel: DeveloperOptionsOnNotificationUiModel): Int = DeveloperOptionsOnNotificationViewHolder.LAYOUT
@@ -99,7 +100,7 @@ class DeveloperOptionTypeFactoryImpl(
             UrlEnvironmentViewHolder.LAYOUT -> UrlEnvironmentViewHolder(view, urlEnvironmentListener)
             FakeResponseActivityViewHolder.LAYOUT -> FakeResponseActivityViewHolder(view)
             DataExplorerActivityViewHolder.LAYOUT -> DataExplorerActivityViewHolder(view)
-            HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view)
+            HomeAndNavigationRevampSwitcherViewHolder.LAYOUT -> HomeAndNavigationRevampSwitcherViewHolder(view, homeAndNavigationRevampListener)
             RollenceAbTestingManualSwitcherViewHolder.LAYOUT -> RollenceAbTestingManualSwitcherViewHolder(view)
             RequestNewFcmTokenViewHolder.LAYOUT -> RequestNewFcmTokenViewHolder(view)
             ResetOnBoardingNavigationViewHolder.LAYOUT -> ResetOnBoardingNavigationViewHolder(view)

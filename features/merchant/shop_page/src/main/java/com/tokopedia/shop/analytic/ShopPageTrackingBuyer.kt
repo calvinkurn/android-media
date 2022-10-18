@@ -30,6 +30,7 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_CATEGORY
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_NAME
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.ITEM_VARIANT
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.NONE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PHYSICAL_GOODS
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRICE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.PRODUCT_ID
@@ -1097,12 +1098,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun clickShareBottomSheetOption(socialMediaName: String, customDimensionShopPage: CustomDimensionShopPage, userId: String, userType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.CLICK_COMMUNICATION,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.CLICK_SHARE_BOTTOM_SHEET_OPTION,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - ${UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE}",
+                ShopPageTrackingConstant.EVENT_LABEL to "$socialMediaName - ${customDimensionShopPage.shopId.orEmpty()} - ${UniversalShareBottomSheet.Companion.KEY_CONTEXTUAL_IMAGE} - $userType",
                 ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_CLICK_SHARING_CHANNEL,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1127,12 +1128,12 @@ class ShopPageTrackingBuyer(
         sendDataLayerEvent(eventMap)
     }
 
-    fun onImpressionShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String) {
+    fun onImpressionShareBottomSheet(customDimensionShopPage: CustomDimensionShopPage, userId: String, userType: String) {
         val eventMap: MutableMap<String, Any> = mutableMapOf(
                 ShopPageTrackingConstant.EVENT to ShopPageTrackingConstant.VIEW_COMMUNICATION_IRIS,
                 ShopPageTrackingConstant.EVENT_ACTION to ShopPageTrackingConstant.VIEW_SHARE_BOTTOM_SHEET,
                 ShopPageTrackingConstant.EVENT_CATEGORY to ShopPageTrackingConstant.SHOP_PAGE,
-                ShopPageTrackingConstant.EVENT_LABEL to customDimensionShopPage.shopId.orEmpty(),
+                ShopPageTrackingConstant.EVENT_LABEL to "${customDimensionShopPage.shopId.orEmpty()} - $userType",
                 ShopPageTrackingConstant.TRACKER_ID to ShopPageTrackingConstant.TRACKER_ID_VIEW_ON_SHARING_CHANNEL,
                 ShopPageTrackingConstant.BUSINESS_UNIT to ShopPageTrackingConstant.SHARING_EXPERIENCE,
                 ShopPageTrackingConstant.CURRENT_SITE to ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE,
@@ -1316,7 +1317,7 @@ class ShopPageTrackingBuyer(
             putString(SHOP_ID, shopId)
             putString(USER_ID, userId)
         }
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(CLICK_PRODUCT_ATC, eventBundle)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(DIRECT_PURCHASE_ADD_TO_CART, eventBundle)
     }
 
     private fun createClickProductAtcDirectPurchaseButtonItems(
@@ -1326,10 +1327,10 @@ class ShopPageTrackingBuyer(
         shopType: String
     ): Bundle {
         return Bundle().apply {
-            putString(CATEGORY_ID, "")
+            putString(CATEGORY_ID, NONE)
             putString(DIMENSION_45, atcTrackerModel.cartId)
-            putString(ITEM_BRAND, "")
-            putString(ITEM_CATEGORY, "")
+            putString(ITEM_BRAND, NONE)
+            putString(ITEM_CATEGORY, NONE)
             putString(ITEM_ID, atcTrackerModel.productId)
             putString(ITEM_NAME, atcTrackerModel.productName)
             putString(ITEM_VARIANT, atcTrackerModel.isVariant.toString())

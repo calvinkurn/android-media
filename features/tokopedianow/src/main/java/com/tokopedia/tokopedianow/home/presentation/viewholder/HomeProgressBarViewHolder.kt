@@ -12,7 +12,7 @@ class HomeProgressBarViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_search_category_loading_more
+        val LAYOUT = R.layout.item_tokopedianow_loading_more
     }
 
     override fun bind(element: HomeProgressBarUiModel) {

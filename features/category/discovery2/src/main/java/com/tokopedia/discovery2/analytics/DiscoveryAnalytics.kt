@@ -676,7 +676,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         componentsItems.data?.get(0)?.let {
             val productTypeName = getProductName(it.typeProductCard)
             productCardImpressionLabel = "$login - $productTypeName"
-            productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
             productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -684,7 +683,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
             productMap[KEY_POSITION] = componentsItems.position + 1
-            productMap[LIST] = productCardItemList
+            productMap[LIST] = it.gtmItemName?.replace("#POSITION",(getParentPosition(componentsItems)+1).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
             productMap[DIMENSION83] = getProductDime83(it)
             productMap[DIMENSION90] = sourceIdentifier
             productMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -705,9 +704,9 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[USER_ID] = (userSession.userId ?: "")
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[KEY_E_COMMERCE] = eCommerce
+
         trackingQueue.putEETracking(map as HashMap<String, Any>)
         productCardImpressionLabel = EMPTY_STRING
-        productCardItemList = EMPTY_STRING
     }
 
     private fun getLabelCampaign(it: DataItem) =
@@ -788,7 +787,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productMap[KEY_ATC_SHOP_ID] = it.shopId ?: ""
             productMap[KEY_SHOP_NAME] = it.shopName?:""
             productMap[KEY_SHOP_TYPE] = ""
-            productMap[DIMENSION40] = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - ${userSession.isLoggedIn} - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
+            productMap[DIMENSION40] = it.gtmItemName?.replace("#POSITION",(getParentPosition(componentsItems)+1).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
             productMap[DIMENSION45] = cartID
         }
         list.add(productMap)
@@ -851,10 +850,11 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val login = if (isLogin) LOGIN else NON_LOGIN
             val list = ArrayList<Map<String, Any>>()
             val listMap = HashMap<String, Any>()
+            var productItemList = ""
             componentsItems.data?.get(0)?.let {
                 val productTypeName = getProductName(it.typeProductCard)
+                productItemList = it.gtmItemName?.replace("#POSITION",(getParentPosition(componentsItems)+1).toString())?.replace("#MEGA_TAB_VALUE",it.tabName ?: "").toString()
                 productCardImpressionLabel = "$login - $productTypeName"
-                productCardItemList = "/${removeDashPageIdentifier(pagePath)} - $pageType - ${getParentPosition(componentsItems)+1} - $login - $productTypeName - - ${if (it.isTopads == true) TOPADS else NON_TOPADS} - ${if (it.creativeName.isNullOrEmpty()) "" else it.creativeName} - ${if (it.tabName.isNullOrEmpty()) "" else it.tabName}"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
                 listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
@@ -862,7 +862,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
                 listMap[KEY_VARIANT] = NONE_OTHER
                 listMap[KEY_POSITION] = componentsItems.position + 1
-                listMap[LIST] = productCardItemList
+                listMap[LIST] = productItemList
                 listMap[DIMENSION83] = getProductDime83(it)
                 listMap[DIMENSION90] = sourceIdentifier
                 listMap[DIMENSION96] = " - ${if (it.notifyMeCount.toIntOrZero() > 0) it.notifyMeCount else " "} - ${if (it.pdpView.toIntOrZero() > 0) it.pdpView else 0} - " +
@@ -875,7 +875,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             val eCommerce = mapOf(
                     CLICK to mapOf(
                             ACTION_FIELD to mapOf(
-                                    LIST to productCardItemList
+                                    LIST to productItemList
                             ),
                             PRODUCTS to list
                     )
@@ -890,7 +890,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             map[KEY_E_COMMERCE] = eCommerce
             getTracker().sendEnhanceEcommerceEvent(map)
             productCardImpressionLabel = EMPTY_STRING
-            productCardItemList = EMPTY_STRING
         }
     }
 
