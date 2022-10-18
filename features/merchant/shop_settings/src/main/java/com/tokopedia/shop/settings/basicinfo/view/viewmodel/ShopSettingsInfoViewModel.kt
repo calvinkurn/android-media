@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.gm.common.data.source.local.model.PMStatusUiModel
 import com.tokopedia.gm.common.domain.interactor.GetPMStatusUseCase
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.constant.ShopScheduleActionDef
@@ -72,33 +73,64 @@ class ShopSettingsInfoViewModel @Inject constructor (
     }
 
     fun getShopData(shopId: String, includeOS: Boolean) {
-        getShopInfo(shopId)
-        getShopBasicData()
-        getShopStatus(shopId, includeOS)
+        launchCatchError(block = {
+            val shopBasicData = asyncCatchError(
+                dispatchers.io,
+                block = {
+                    getShopBasicData()
+                },
+                onError = {
+                    _shopBasicData.postValue(Fail(it))
+                    null
+                }
+            )
+
+            val shopInfoData = asyncCatchError(
+                dispatchers.io,
+                block = {
+                    getShopInfo(shopId)
+                },
+                onError = {
+                    _shopInfoData.postValue(Fail(it))
+                    null
+                }
+            )
+
+            val shopStatusData = asyncCatchError(
+                dispatchers.io,
+                block = {
+                    getShopStatus(shopId, includeOS)
+                },
+                onError = {
+                    _shopStatusData.postValue(Fail(it))
+                    null
+                }
+            )
+
+            shopBasicData.await()?.let { basicData ->
+                _shopBasicData.postValue(Success(basicData))
+                shopInfoData.await()?.let { shopInfoData ->
+                    _shopInfoData.postValue(Success(shopInfoData))
+                    shopStatusData.await()?.let { shopStatusData ->
+                        _shopStatusData.postValue(Success(shopStatusData))
+                    }
+                }
+            }
+        }) {}
     }
 
-    private fun getShopInfo(shopId: String) {
-        launchCatchError(
-            context = dispatchers.io,
-            block = {
-                withContext(dispatchers.io) {
-                    getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
-                        listOf(shopId.toIntOrZero()),
-                        "",
-                        source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
-                        fields = listOf(
-                                GQLGetShopInfoUseCase.FIELD_CLOSED_INFO,
-                                GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS
-                        )
-                    )
-                    getShopInfoUseCase.isFromCacheFirst = false
-                    val data = getShopInfoUseCase.executeOnBackground()
-                    _shopInfoData.postValue(Success(data))
-                }
-            },
-            onError = {
-                _shopInfoData.postValue(Fail(it))
-            })
+    private suspend fun getShopInfo(shopId: String): ShopInfo {
+        getShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(
+            listOf(shopId.toIntOrZero()),
+            "",
+            source = GQLGetShopInfoUseCase.SHOP_PAGE_SOURCE,
+            fields = listOf(
+                    GQLGetShopInfoUseCase.FIELD_CLOSED_INFO,
+                    GQLGetShopInfoUseCase.FIELD_OTHER_GOLD_OS
+            )
+        )
+        getShopInfoUseCase.isFromCacheFirst = false
+        return getShopInfoUseCase.executeOnBackground()
     }
 
     fun getOperationalHoursList(shopId: String) {
@@ -138,28 +170,13 @@ class ShopSettingsInfoViewModel @Inject constructor (
             })
     }
 
-    private fun getShopBasicData() {
-        launchCatchError(
-            context = dispatchers.io,
-            block = {
-                val shopBasicData = getShopBasicDataUseCase.getData(RequestParams.EMPTY)
-                _shopBasicData.postValue(Success(shopBasicData))
-            }, onError = {
-                _shopBasicData.postValue(Fail(it))
-            })
+    private fun getShopBasicData(): ShopBasicDataModel {
+        return getShopBasicDataUseCase.getData(RequestParams.EMPTY)
     }
 
-    private fun getShopStatus(shopId: String, includeOS: Boolean) {
-        launchCatchError(
-            context = dispatchers.io,
-            block = {
-                getShopStatusUseCase.params = GetPMStatusUseCase.createParams(shopId, includeOS)
-                val shopStatus = getShopStatusUseCase.executeOnBackground()
-                _shopStatusData.postValue(Success(shopStatus))
-            }, onError = {
-                _shopStatusData.postValue(Fail(it))
-                PMStatusUiModel()
-            })
+    private suspend fun getShopStatus(shopId: String, includeOS: Boolean): PMStatusUiModel {
+        getShopStatusUseCase.params = GetPMStatusUseCase.createParams(shopId, includeOS)
+        return getShopStatusUseCase.executeOnBackground()
     }
 
     fun validateOsMerchantType(shopId: Int) {
