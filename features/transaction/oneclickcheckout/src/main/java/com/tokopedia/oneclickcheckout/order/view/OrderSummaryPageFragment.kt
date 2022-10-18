@@ -1661,10 +1661,10 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun onUploadPrescriptionResult(data: Intent?) {
-        if (data != null
-            && data.extras != null
-            && data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)
-            && activity != null
+        if (data != null &&
+            data.extras != null &&
+            data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) &&
+            activity != null
         ) {
             viewModel.fetchAndUpdatePrescriptionIds()
         }
