@@ -74,13 +74,16 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
     override fun onMessageReceived(messageEvent: MessageEvent) {
         super.onMessageReceived(messageEvent)
         when (messageEvent.path) {
-            MESSAGE_CLIENT_ACCEPT_BULK_ORDER_PATH -> {
+            ACCEPT_BULK_ORDER_PATH -> {
                 runBlocking {
-                    val jsonListOrderId = messageEvent.data.decodeToString()
-                    val listType  = object: TypeToken<List<String>>(){}.type
-                    val listOrderId = Gson().fromJson<List<String>>(jsonListOrderId, listType)
-                    listOrderId?.let {
-                        acceptOrder(it)
+                    try {
+                        val jsonListOrderId = messageEvent.data.decodeToString()
+                        val listType = object : TypeToken<List<String>>() {}.type
+                        val listOrderId = Gson().fromJson<List<String>>(jsonListOrderId, listType)
+                        listOrderId?.let {
+                            acceptOrder(it)
+                        }
+                    } catch (_: Exception) {
                     }
                 }
             }
@@ -303,7 +306,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
         const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
-        const val MESSAGE_CLIENT_ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
         private val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 }
