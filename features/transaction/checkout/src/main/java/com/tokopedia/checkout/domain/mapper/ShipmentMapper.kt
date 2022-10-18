@@ -9,6 +9,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellO
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
+import com.tokopedia.checkout.data.model.response.shipmentaddressform.ImageUpload
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
@@ -22,6 +23,7 @@ import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
 import com.tokopedia.checkout.domain.model.cartshipmentform.CourierSelectionErrorData
 import com.tokopedia.checkout.domain.model.cartshipmentform.Donation
+import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingData
 import com.tokopedia.checkout.domain.model.cartshipmentform.FreeShippingGeneralData
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress
@@ -108,11 +110,7 @@ class ShipmentMapper @Inject constructor() {
                     DISABLED_CROSS_SELL -> isDisableCrossSell = true
                 }
             }
-            prescriptionShowImageUpload = shipmentAddressFormDataResponse.imageUpload.showImageUpload
-            prescriptionUploadText = shipmentAddressFormDataResponse.imageUpload.text
-            prescriptionLeftIconUrl = shipmentAddressFormDataResponse.imageUpload.leftIconUrl
-            prescriptionCheckoutId = shipmentAddressFormDataResponse.imageUpload.checkoutId
-            prescriptionFrontEndValidation = shipmentAddressFormDataResponse.imageUpload.frontEndValidation
+            epharmacyData = mapEpharmacyData(shipmentAddressFormDataResponse.imageUpload)
             keroDiscomToken = shipmentAddressFormDataResponse.keroDiscomToken
             keroToken = shipmentAddressFormDataResponse.keroToken
             keroUnixTime = shipmentAddressFormDataResponse.keroUnixTime
@@ -152,6 +150,18 @@ class ShipmentMapper @Inject constructor() {
             newUpsell = mapUpsell(shipmentAddressFormDataResponse.newUpsell)
             cartData = shipmentAddressFormDataResponse.cartData
         }
+    }
+
+    private fun mapEpharmacyData(imageUpload: ImageUpload): EpharmacyData {
+        return EpharmacyData(
+            showImageUpload = imageUpload.showImageUpload,
+            uploadText = imageUpload.text,
+            leftIconUrl = imageUpload.leftIconUrl,
+            checkoutId = imageUpload.checkoutId,
+            frontEndValidation = imageUpload.frontEndValidation,
+            consultationFlow = imageUpload.consultationFlow,
+            rejectedWording = imageUpload.rejectedWording
+        )
     }
 
     private fun mapTickerData(it: Ticker): TickerData {

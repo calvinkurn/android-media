@@ -3404,7 +3404,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 for (int i = 0; i < shipmentDataList.size(); i++) {
                     if (shipmentDataList.get(i) instanceof ShipmentCartItemModel) {
                         ShipmentCartItemModel shipmentCartItemModel = (ShipmentCartItemModel) shipmentDataList.get(i);
-                        if (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null) {
+                        if (!shipmentCartItemModel.isError() && (shipmentCartItemModel.getSelectedShipmentDetailData() == null || shipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() == null)) {
                             if (firstFoundPosition == 0) {
                                 firstFoundPosition = i;
                             }

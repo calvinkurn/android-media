@@ -312,6 +312,13 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setCartItemModels(cartItemModels);
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
 
+        for (Product product : products) {
+            if (product.getEthicalDrugs().getNeedPrescription()) {
+                shipmentCartItemModel.setHasEthicalProducts(true);
+                break;
+            }
+        }
+
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));
     }

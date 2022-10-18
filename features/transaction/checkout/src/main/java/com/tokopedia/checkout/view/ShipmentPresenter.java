@@ -37,7 +37,10 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
-import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
+import com.tokopedia.checkout.data.model.response.prescription.EpharmacyGroup;
+import com.tokopedia.checkout.data.model.response.prescription.PrepareProductGroupData;
+import com.tokopedia.checkout.data.model.response.prescription.PrepareProductGroupResponse;
+import com.tokopedia.checkout.data.model.response.prescription.ProductInfo;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -159,12 +162,15 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -764,14 +770,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         isIneligiblePromoDialogEnabled = cartShipmentAddressFormData.isIneligiblePromoDialogEnabled();
 
         setUploadPrescriptionData(new UploadPrescriptionUiModel(
-                cartShipmentAddressFormData.getPrescriptionShowImageUpload(),
-                cartShipmentAddressFormData.getPrescriptionUploadText(),
-                cartShipmentAddressFormData.getPrescriptionLeftIconUrl(),
-                cartShipmentAddressFormData.getPrescriptionCheckoutId(),
+                cartShipmentAddressFormData.getEpharmacyData().getShowImageUpload(),
+                cartShipmentAddressFormData.getEpharmacyData().getUploadText(),
+                cartShipmentAddressFormData.getEpharmacyData().getLeftIconUrl(),
+                cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
                 new ArrayList<>(), 0, "", false,
-                cartShipmentAddressFormData.getPrescriptionFrontEndValidation()
+                cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
+                cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
+                "cartShipmentAddressFormData.getEpharmacyData().getRejectedWording()"
         ));
-        fetchPrescriptionIds(cartShipmentAddressFormData.getPrescriptionShowImageUpload(), cartShipmentAddressFormData.getPrescriptionCheckoutId());
+        fetchPrescriptionIds(cartShipmentAddressFormData.getEpharmacyData().getShowImageUpload(), cartShipmentAddressFormData.getEpharmacyData().getCheckoutId());
 
         cartData = cartShipmentAddressFormData.getCartData();
     }
@@ -2389,10 +2397,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
         if (!checkoutId.isEmpty() && isUploadPrescriptionNeeded) {
             compositeSubscription.add(prescriptionIdsUseCase
-                    .execute(checkoutId)
-                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
+                    .execute()
+                    // delay to prevent racing condition
+                    .delay(1, TimeUnit.SECONDS)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<PrepareProductGroupResponse>() {
                         @Override
                         public void onCompleted() {
+
                         }
 
                         @Override
@@ -2401,14 +2414,68 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         }
 
                         @Override
-                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
-                            if (getPrescriptionIdsResponse.getDetailData() != null &&
-                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
-                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
-                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
+                        public void onNext(PrepareProductGroupResponse prepareProductGroupResponse) {
+                            PrepareProductGroupData data = prepareProductGroupResponse.getData();
+                            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                                if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
+                                    boolean updated = false;
+                                    int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
+                                    if (position > 0) {
+                                        for (EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
+                                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                                                for (ProductInfo productInfo : epharmacyGroup.getProductsInfo()) {
+                                                    if (productInfo.getShopId() == shipmentCartItemModel.getShopId()) {
+                                                        for (com.tokopedia.checkout.data.model.response.prescription.Product product : productInfo.getProducts()) {
+                                                            if (cartItemModel.getProductId() == product.getProductId()) {
+                                                                if (epharmacyGroup.getConsultationData().getTokoConsultationId() > 0) {
+                                                                    if (epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
+                                                                        shipmentCartItemModel.setError(true);
+                                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                                                        getView().resetCourier(shipmentCartItemModel);
+                                                                        updated = true;
+                                                                        break;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    if (updated) {
+                                                        break;
+                                                    }
+                                                }
+                                                if (updated) {
+                                                    break;
+                                                }
+                                            }
+                                            if (updated) {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }));
+//                    .execute(checkoutId)
+//                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
+//                        @Override
+//                        public void onCompleted() {
+//                        }
+//
+//                        @Override
+//                        public void onError(Throwable e) {
+//                            Timber.d(e);
+//                        }
+//
+//                        @Override
+//                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
+//                            if (getPrescriptionIdsResponse.getDetailData() != null &&
+//                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
+//                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
+//                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
+//                            }
+//                        }
+//                    }));
         }
     }
 
