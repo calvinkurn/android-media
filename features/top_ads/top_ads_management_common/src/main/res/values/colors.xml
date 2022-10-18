@@ -17,4 +17,8 @@
     <color name="topads_common_neutral">#EFF3F9</color>
     <color name="topads_item_selected">#EBFFEF</color>
     <color name="topads_common_text_disabled">#5231353B</color>
+
+    <color name="top_ads_management_common_dms_blue_bg">#C24998E3</color>
+    <color name="top_ads_management_common_dms_green_bg">#82EF95</color>
+    <color name="top_ads_management_common_dms_orange_bg">#FDCD4C</color>
 </resources>
