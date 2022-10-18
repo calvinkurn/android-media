@@ -104,6 +104,9 @@ class GetProductUseCase @Inject constructor(
                       minQty
                       price
                     }
+                    cpl{
+                      shipperServices
+                    }
                     campaign{
                       campaignID
                       campaignType

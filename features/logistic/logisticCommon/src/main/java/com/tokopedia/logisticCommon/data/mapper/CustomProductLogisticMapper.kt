@@ -57,8 +57,7 @@ class CustomProductLogisticMapper @Inject constructor() {
         val allShipper = mutableListOf<ShipperListCPLModel>()
         response.forEach {
             val allShipperService = mutableListOf<ShipperCPLModel>()
-            val whitelabelShipper = mapWhitelabelShipper(it.whitelabelShipper)
-            allShipperService.addAll(whitelabelShipper)
+            allShipperService.addAll(mapWhitelabelShipper(it.whitelabelShipper))
             allShipperService.addAll(mapShipperData(it.shipper))
             allShipper.add(
                 ShipperListCPLModel(
@@ -102,7 +101,7 @@ class CustomProductLogisticMapper @Inject constructor() {
                 shipperName = it.shipperName,
                 logo = it.logo,
                 description = description,
-                shipperProduct = mapShipperProduct(shipperProductData)
+                shipperProduct = mapShipperProduct(shipperProductData),
             )
             allShipperData.add(shipperCplModel)
         }
@@ -114,7 +113,7 @@ class CustomProductLogisticMapper @Inject constructor() {
             ShipperProductCPLModel(
                 it.shipperProductId,
                 it.shipperProductName,
-                it.uiHidden
+                it.uiHidden,
             )
         }
     }

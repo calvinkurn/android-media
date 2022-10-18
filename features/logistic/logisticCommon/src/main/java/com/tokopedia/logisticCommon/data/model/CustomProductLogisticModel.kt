@@ -1,6 +1,7 @@
 package com.tokopedia.logisticCommon.data.model
 
 data class CustomProductLogisticModel (
+    @Deprecated("use ShipperCPLModel.isActive")
     var cplProduct: List<CPLProductModel> = listOf(),
     var shipperList: List<ShipperListCPLModel> = listOf()
 )

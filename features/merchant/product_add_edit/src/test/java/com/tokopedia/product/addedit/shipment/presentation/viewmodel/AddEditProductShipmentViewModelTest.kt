@@ -113,12 +113,12 @@ class AddEditProductShipmentViewModelTest {
         val testData = CustomProductLogisticModel()
 
         coEvery {
-            customProductLogisticRepository.getCPLList(any(), any())
+            customProductLogisticRepository.getCPLList(any(), any(), listOf<Long>())
         } returns OngkirGetCPLQGLResponse()
         every {
             customProductLogisticMapper.mapCPLData(OngkirGetCPLQGLResponse().response.data, any(), any())
         } returns testData
-        viewModel.getCPLList(1234, "9876", null)
+        viewModel.getCPLList(1234, "9876", null, null)
         verify { cplListObserver.onChanged(Success(testData)) }
     }
 
@@ -126,9 +126,9 @@ class AddEditProductShipmentViewModelTest {
     fun `Get CPL List failed`() {
         val testError = Throwable("test error")
         coEvery {
-            customProductLogisticRepository.getCPLList(any(), any())
+            customProductLogisticRepository.getCPLList(any(), any(), listOf<Long>())
         } throws testError
-        viewModel.getCPLList(1234, "9876", null)
+        viewModel.getCPLList(1234, "9876", null, null)
         verify {
             cplListObserver.onChanged(Fail(testError))
             customProductLogisticMapper wasNot Called

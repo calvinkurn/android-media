@@ -3,18 +3,19 @@ package com.tokopedia.logisticCommon.data.query
 object CustomProductLogisticQuery {
 
     val getCPL = """
-        query ongkirGetCPL(${'$'}input: OngkirGetCPLInput!){
-          ongkirGetCPL (input:${'$'}input) {
+        query ongkirGetCPLEditor(${'$'}input: OngkirGetCPLEditorInput!){
+          ongkirGetCPLEditor (input:${'$'}input) {
             data {
-              cpl_product {
-                product_id
-                cpl_status
-                shipper_services
-              }
               shipper_list {
                 header
                 description
-                shipper {
+                whitelabels {
+                  title
+                  description
+                  shipper_product_ids
+                  is_active
+                }
+                shippers {
                   shipper_id
                   shipper_name
                   logo
@@ -22,6 +23,7 @@ object CustomProductLogisticQuery {
                     shipper_product_id
                     shipper_product_name
                     ui_hidden
+                    is_active
                   }
                 }
               }

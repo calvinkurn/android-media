@@ -353,7 +353,8 @@ class AddEditProductShipmentFragment:
         shipmentViewModel.getCPLList(
             shopId = shopId.toLong(),
             productId = productId,
-            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds
+            shipmentServicesIds = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.shipmentServicesIds,
+            cplParam = shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam
         )
     }
 

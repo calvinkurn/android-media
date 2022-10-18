@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class OngkirGetCPLQGLResponse (
-    @SerializedName("ongkirGetCPL")
+    @SerializedName("ongkirGetCPLEditor")
     var response: OngkirGetCPLResponse = OngkirGetCPLResponse()
 )
 
@@ -15,11 +15,13 @@ data class OngkirGetCPLResponse (
 
 data class GetCPLData (
     @SerializedName("cpl_product")
+    @Deprecated("use shipper_product.is_active")
     var cplProduct: List<CPLProduct> = listOf(),
     @SerializedName("shipper_list")
     var shipperList: List<ShipperList> = listOf()
 )
 
+@Deprecated("use shipper_product.is_active")
 data class CPLProduct(
     @SuppressLint("Invalid Data Type")
     @SerializedName("product_id")
@@ -35,7 +37,7 @@ data class ShipperList(
     var header: String = "",
     @SerializedName("description")
     var description: String = "",
-    @SerializedName("shipper")
+    @SerializedName("shippers")
     var shipper: List<Shipper> = listOf(),
     @SerializedName("whitelabels")
     var whitelabelShipper: List<WhitelabelShipper> = listOf()
@@ -71,5 +73,7 @@ data class ShipperProduct(
     @SerializedName("shipper_product_name")
     var shipperProductName: String = "",
     @SerializedName("ui_hidden")
-    var uiHidden: Boolean = false
+    var uiHidden: Boolean = false,
+    @SerializedName("is_active")
+    var isActive: Boolean = false
 )

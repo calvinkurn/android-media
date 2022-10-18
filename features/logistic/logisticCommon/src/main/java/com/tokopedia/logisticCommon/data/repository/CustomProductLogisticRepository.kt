@@ -10,10 +10,10 @@ import javax.inject.Inject
 
 class CustomProductLogisticRepository @Inject constructor(@ApplicationContext private val gql: GraphqlRepository) {
 
-    suspend fun getCPLList(shopId: Long, productId: String): OngkirGetCPLQGLResponse {
+    suspend fun getCPLList(shopId: Long, productId: String, cplParam: List<Long>): OngkirGetCPLQGLResponse {
         val param = mapOf(
             "input" to mapOf(
-                "shop_id" to shopId,"product_ids" to productId
+                "shop_id" to shopId,"product_ids" to productId, "product_cpls" to cplParam
             )
         )
         val request = GraphqlRequest(

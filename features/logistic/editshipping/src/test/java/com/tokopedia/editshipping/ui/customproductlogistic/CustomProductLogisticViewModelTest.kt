@@ -62,14 +62,14 @@ class CustomProductLogisticViewModelTest {
         val mockOngkirGetCPLResponse = spyk(OngkirGetCPLResponse(data = mockGetCPLData))
         val mockResponse = spyk(OngkirGetCPLQGLResponse(response = mockOngkirGetCPLResponse))
 
-        coEvery { repo.getCPLList(any(), any()) } returns mockResponse
+        coEvery { repo.getCPLList(any(), any(), listOf<Long>()) } returns mockResponse
         customProductLogisticViewModel.getCPLList(1234, "9876", arrayListOf(shipperServicesId))
         verify { cplListObserver.onChanged(match { it is Success }) }
     }
 
     @Test
     fun `Get CPL List failed`() {
-        coEvery { repo.getCPLList(any(), any()) } throws defaultThrowable
+        coEvery { repo.getCPLList(any(), any(), listOf<Long>()) } throws defaultThrowable
         customProductLogisticViewModel.getCPLList(1234, "9876", null)
         verify { cplListObserver.onChanged(match { it is Fail }) }
     }
