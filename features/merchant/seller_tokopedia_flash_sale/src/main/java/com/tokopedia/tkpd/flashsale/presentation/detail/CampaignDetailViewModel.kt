@@ -167,7 +167,7 @@ class CampaignDetailViewModel @Inject constructor(
                 )
                 _submittedProductVariant.postValue(
                     ProductCheckingResultMapper.map(result.productList, displayProductSold,
-                        fallbackProductImage))
+                        fallbackProductImage, getTabName()))
             },
             onError = { error ->
                 _error.postValue(error)
