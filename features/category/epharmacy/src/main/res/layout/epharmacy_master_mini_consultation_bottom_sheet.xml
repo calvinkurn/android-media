@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/spacing_lvl3"
+    android:paddingBottom="@dimen/spacing_lvl3"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/close_icon"
+        android:layout_width="@dimen/unify_space_24"
+        android:layout_height="@dimen/unify_space_24"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:src="@drawable/iconunify_close"
+        android:tint="@color/Unify_NN1000"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/heading_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/close_icon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginStart="@dimen/spacing_lvl3"
+        app:typographyType="heading_3"
+        tools:text="Apotek Century Meruya Raden Saleh"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/para_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/heading_title"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="body_1"
+        tools:text="Obat keras memerlukan resep karena berpotensi membahayakan jika tidak digunakan di bawah pengawasan dokter."
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/heading_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/para_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:paddingHorizontal="@dimen/spacing_lvl4"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        tools:text="3 Langkah membeli obat keras"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/step_list_rv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/heading_subtitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:listitem="@layout/epharmacy_item_master_mini_consultation_bs"/>
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/bottom_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/step_list_rv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:scaleType="fitXY"
+        android:visibility="gone"
+        />
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

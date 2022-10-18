@@ -68,3 +68,26 @@ const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
       }
     }
 """
+const val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
+    query getEpharmacyStaticData(${'$'}data_type: String,${'$'}enabler: String ) {
+    getEpharmacyStaticData(data_type: ${'$'}data_type, enabler: ${'$'}enabler) {
+        header {
+            server_process_time
+            code
+        }
+        data {
+            info_title
+            info_text
+            step_title
+            steps [
+              {
+                image_url
+                title
+                subtitle
+              }
+            ]
+            logo_url
+        }
+    }
+}
+"""

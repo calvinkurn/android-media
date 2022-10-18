@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/step_icon"
+        android:layout_width="@dimen/unify_space_48"
+        android:layout_height="@dimen/unify_space_48"
+        android:layout_marginStart="@dimen/spacing_lvl4"
+        tools:src="@drawable/iconunify_close"
+        android:tint="@color/Unify_NN1000"
+        app:layout_constraintBottom_toBottomOf="@id/text_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_parent" />
+
+    <LinearLayout
+        android:id="@+id/text_parent"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/unify_space_2"
+        app:layout_constraintStart_toEndOf="@+id/step_icon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/heading_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_NN950"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:text="Tambah barang ke Keranjang" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/para_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lvl2"
+            android:paddingHorizontal="@dimen/spacing_lvl4"
+            android:textColor="@color/Unify_NN600"
+            app:typographyType="paragraph_3"
+            tools:text="Atau kamu juga bisa Beli Langsung biar lebih cepat prosesnya." />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
