@@ -289,6 +289,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
      */
     private var isTickerNotShownYet = true
 
+    /*
+    * Bubble Flag
+     */
+    private var isFromBubble = false
+
     var chatRoomFlexModeListener: TopChatRoomFlexModeListener? = null
     var chatBoxPadding: View? = null
 
@@ -772,6 +777,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             getParamString(ApplinkConst.Chat.SEARCH_CREATE_TIME, arguments, savedInstanceState)
         searchQuery =
             getParamString(ApplinkConst.Chat.SEARCH_PRODUCT_KEYWORD, arguments, savedInstanceState)
+
+        isFromBubble =
+            getParamString(Constant.EXTRA_IS_FROM_BUBBLE, arguments, savedInstanceState) == Constant.EXTRA_BUBBLE_SOURCE
     }
 
     private fun setupAttachmentsPreview(savedInstanceState: Bundle?) {
@@ -1903,7 +1911,11 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onVoucherClicked(data: TopChatVoucherUiModel, source: String) {
-        TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickVoucherFromBubble(session.shopId, data.voucher.voucherId)
+        } else {
+            TopChatAnalyticsKt.eventVoucherThumbnailClicked(source, data.voucher.voucherId)
+        }
         if (data.isLockToProduct()) {
             goToMvcPage(data.applink)
         } else {
@@ -2056,24 +2068,40 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onClickAttachProduct(menu: AttachmentMenu) {
-        analytics.eventAttachProduct()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentProductFromBubble(session.shopId)
+        } else {
+            analytics.eventAttachProduct()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         onAttachProductClicked()
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
-        analytics.eventPickImage()
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentImageFromBubble(session.shopId)
+        } else {
+            analytics.eventPickImage()
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickImageToUpload()
     }
 
     override fun onClickAttachVoucher(voucherMenu: VoucherMenu) {
-        analytics.trackChatMenuClicked(voucherMenu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentVoucherFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(voucherMenu.label)
+        }
         pickVoucherToUpload()
     }
 
     override fun onClickAttachInvoice(menu: AttachmentMenu) {
-        analytics.trackChatMenuClicked(menu.label)
+        if (isFromBubble) {
+            TopChatAnalyticsKt.clickAddAttachmentInvoiceFromBubble(session.shopId)
+        } else {
+            analytics.trackChatMenuClicked(menu.label)
+        }
         pickInvoiceToUpload()
     }
 

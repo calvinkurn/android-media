@@ -43,6 +43,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_ALLOW_PROMO
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
@@ -57,6 +58,7 @@ import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.Locale
 
 /**
@@ -74,7 +76,8 @@ open class TopChatViewStateImpl constructor(
     private val headerMenuListener: HeaderMenuListener,
     private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
     toolbar: Toolbar,
-    val analytics: TopChatAnalytics
+    val analytics: TopChatAnalytics,
+    private val userSession: UserSessionInterface,
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
@@ -180,6 +183,9 @@ open class TopChatViewStateImpl constructor(
     override fun setupChatMenu() {
         chatMenu?.setupAttachmentMenu(attachmentMenuListener)
         chatMenuButton.setOnClickListener {
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickAddAttachmentFromBubble(userSession.shopId)
+            }
             chatMenu?.toggleAttachmentMenu()
         }
     }
