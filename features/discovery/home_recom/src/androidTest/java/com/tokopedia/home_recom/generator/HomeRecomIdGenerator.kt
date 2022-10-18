@@ -3,7 +3,9 @@ package com.tokopedia.home_recom.generator
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
@@ -100,5 +102,62 @@ class HomeRecomIdGenerator {
             )
         }
         activityRule.activity.finishAndRemoveTask()
+    }
+
+    @Test
+    fun printEachViewHoldersResourceId() {
+        Thread.sleep(10000)
+        printResourceIdForEachViewHolder()
+        activityRule.activity.finishAndRemoveTask()
+    }
+
+    private fun printResourceIdForEachViewHolder() {
+        val screenshotModelList = HomeRecomScreenshotTestHelper.getWidgetScreenshotList()
+        printViewHolders(screenshotModelList)
+    }
+
+    private fun printViewHolders(
+        screenshotModelList: List<HomeRecomScreenshotTestHelper.ScreenshotModel>
+    ) {
+        screenshotModelList.forEachIndexed { index, screenshotModel ->
+            printHomeRecomViewHolderResourceIdAtPosition(index, screenshotModel.name)
+        }
+    }
+
+    private fun printHomeRecomViewHolderResourceIdAtPosition(
+        position: Int,
+        fileNamePostFix: String
+    ) {
+        doActivityTest(position) {
+            val homeViewHolder = viewPrinter.printAsCSV(
+                view = it.itemView
+            )
+            fileWriter.writeGeneratedViewIds(
+                fileName = "home_recom_fragment_$fileNamePostFix.csv",
+                text = homeViewHolder
+            )
+        }
+    }
+
+    private fun doActivityTest(
+        position: Int,
+        action: (viewHolder: RecyclerView.ViewHolder) -> Unit
+    ) {
+        val homeRecomRecyclerView =
+            activityRule.activity.findViewById<RecyclerView>(R.id.recycler_view)
+        scrollHomeRecomRecyclerViewToPosition(homeRecomRecyclerView, position)
+        Thread.sleep(1750)
+        val viewHolder = homeRecomRecyclerView.findViewHolderForAdapterPosition(position)
+        viewHolder?.let {
+            action.invoke(viewHolder)
+        }
+    }
+
+    private fun scrollHomeRecomRecyclerViewToPosition(
+        homeRecyclerView: RecyclerView,
+        position: Int
+    ) {
+        val layoutManager = homeRecyclerView.layoutManager as StaggeredGridLayoutManager
+        activityRule.runOnUiThread { layoutManager.scrollToPosition(position) }
     }
 }
