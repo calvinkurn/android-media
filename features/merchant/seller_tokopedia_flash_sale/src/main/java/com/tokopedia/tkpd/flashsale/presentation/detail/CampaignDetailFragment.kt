@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -14,15 +15,13 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.components.bottomsheet.rbac.IneligibleAccessWarningBottomSheet
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_MONTH_ONLY
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECISION_WITH_TIMEZONE_ID_FORMAT
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
-import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
-import com.tokopedia.campaign.utils.extension.doOnDelayFinished
-import com.tokopedia.campaign.utils.extension.showToaster
-import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -53,6 +52,7 @@ import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class CampaignDetailFragment : BaseDaggerFragment() {
@@ -61,6 +61,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         private const val PAGE_SIZE = 10
         private const val APPLINK_SEGMENTS_SIZE = 2
         private const val DELAY = 1000L
+        private const val FEATURE_LEARN_MORE_ARTICLE_URL = "https://seller.tokopedia.com/edu/fitur-admin-toko/"
         private const val IMAGE_PRODUCT_ELIGIBLE_URL =
             "https://images.tokopedia.net/img/android/campaign/fs-tkpd/seller_toped.png"
         private const val EMPTY_SUBMITTED_PRODUCT_URL =
@@ -172,6 +173,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupChooseProductRedirection()
         observeCampaignDetail()
+        observeUiEffect()
         observeProductReserveResult()
         observeDeletedProductResult()
         observeCampaignRegistrationResult()
@@ -300,6 +302,23 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun observeSubmittedProductVariant() {
         viewModel.submittedProductVariant.observe(viewLifecycleOwner) {
             checkProductBottomSheet.show(it, childFragmentManager, "")
+        }
+    }
+
+    private fun observeUiEffect() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
+        }
+    }
+
+    private fun handleEffect(effect: CampaignDetailViewModel.UiEffect) {
+        when (effect) {
+            is CampaignDetailViewModel.UiEffect.ShowGlobalError -> {
+                showGlobalError()
+            }
+            CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
+                showIneligibleAccessBottomSheet()
+            }
         }
     }
 
@@ -1416,6 +1435,16 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 flashSale
             )
         ).show(activity.supportFragmentManager, "")
+    }
+
+    private fun showIneligibleAccessBottomSheet() {
+        val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
+        bottomSheet.setCloseClickListener { activity?.finish() }
+        bottomSheet.setOnButtonClicked {
+            routeToUrl(FEATURE_LEARN_MORE_ARTICLE_URL)
+            activity?.finish()
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
     private fun onProductClicked(itemPosition: Int) {
