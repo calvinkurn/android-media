@@ -22,6 +22,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 class FeedProductTagSharingHelper(
     private val fragmentManager: FragmentManager,
     private val fragment: Fragment,
+    private val listener: Listener,
 ) {
     private var productTagShareModel: Model? = null
     private var shareData: LinkerData? = null
@@ -34,13 +35,12 @@ class FeedProductTagSharingHelper(
                 LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
                         override fun urlCreated(linkerShareData: LinkerShareResult?) {
-
                             val productTagShareModel = productTagShareModel
                             val shareData = shareData
 
                             if(productTagShareModel == null || shareData == null) return
 
-                            val shareLink = linkerShareData?.shareUri.orEmpty()
+                            val shareLink = linkerShareData?.url ?: shareData.uri
                             val shareString = getString(
                                 R.string.feed_product_tag_share_template,
                                 productTagShareModel.productName,
@@ -61,7 +61,8 @@ class FeedProductTagSharingHelper(
                         }
 
                         override fun onError(linkerError: LinkerError?) {
-                            /** TODO : handle this */
+                            listener.onErrorCreatingUrl(linkerError)
+                            dismiss()
                         }
                     })
                 )
@@ -105,5 +106,9 @@ class FeedProductTagSharingHelper(
                 priceFmt = item.priceFmt,
             )
         }
+    }
+
+    interface Listener {
+        fun onErrorCreatingUrl(linkerError: LinkerError?)
     }
 }

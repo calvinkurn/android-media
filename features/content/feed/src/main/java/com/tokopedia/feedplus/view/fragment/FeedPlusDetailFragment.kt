@@ -120,7 +120,15 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private val feedProductTagSharingHelper by lazy(LazyThreadSafetyMode.NONE) {
         FeedProductTagSharingHelper(
             fragmentManager = childFragmentManager,
-            fragment = this
+            fragment = this,
+            listener = object : FeedProductTagSharingHelper.Listener {
+                override fun onErrorCreatingUrl(linkerError: LinkerError?) {
+                    showToast(
+                        message = linkerError?.errorMessage ?: getString(R.string.default_request_error_unknown),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
         )
     }
 
@@ -606,7 +614,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type, actionText).show()
         else {
             Toaster.build(requireView(), message, Toaster.LENGTH_LONG, type).show()
-
         }
     }
 
