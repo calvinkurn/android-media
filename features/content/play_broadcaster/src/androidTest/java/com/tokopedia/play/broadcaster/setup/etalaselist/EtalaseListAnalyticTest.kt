@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatusUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignUiModel
 import com.tokopedia.play.broadcaster.ui.model.etalase.EtalaseUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.Rule
@@ -21,6 +22,7 @@ import org.junit.runner.RunWith
  * Created by kenny.hadisaputra on 08/03/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class EtalaseListAnalyticTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)

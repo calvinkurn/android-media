@@ -346,9 +346,11 @@ class UploadPrescriptionViewModel @Inject constructor(
 
     fun removePrescriptionImageAt(index : Int){
         _prescriptionImages.value?.let {
-            it.removeAt(index)
-            _prescriptionImages.postValue(it)
-            checkPrescriptionImages()
+            if(index < it.size){
+                it.removeAt(index)
+                _prescriptionImages.postValue(it)
+                checkPrescriptionImages()
+            }
         }
     }
 

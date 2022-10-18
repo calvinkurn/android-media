@@ -248,18 +248,18 @@ class NavigationTab(
         }
 
         private fun scrollToContent(tabPosition: Int) {
+            val position = items.getOrNull(tabPosition)?.position ?: -1
+            if (position == -1) return
+
+            enableTouchScroll(false)
             selectTabJob?.cancel()
             selectTabJob = launch(Dispatchers.IO) {
-                val position = items.getOrNull(tabPosition)?.position ?: -1
                 smoothScrollToPosition(position)
             }
         }
 
         private suspend fun smoothScrollToPosition(position: Int) {
-            if (position == -1) return
-
             recyclerView?.apply {
-                enableTouchScroll(false)
                 smoothScroller.targetPosition = position
                 layoutManager?.startSmoothScroll(smoothScroller)
                 if (position == 0) {
