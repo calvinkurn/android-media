@@ -9,46 +9,46 @@ import java.util.*
  */
 @Parcelize
 data class ConfigurationUiModel(
-        val streamAllowed: Boolean,
-        val channelId: String,
-        val channelStatus: ChannelStatus,
-        val durationConfig: DurationConfigUiModel,
-        val productTagConfig: ProductTagConfigUiModel,
-        val coverConfig: CoverConfigUiModel,
-        val countDown: Long, // second
-        val scheduleConfig: BroadcastScheduleConfigUiModel,
-        val tnc: List<TermsAndConditionUiModel>,
-): Parcelable
+    val streamAllowed: Boolean,
+    val channelId: String,
+    val channelStatus: ChannelStatus,
+    val durationConfig: DurationConfigUiModel,
+    val productTagConfig: ProductTagConfigUiModel,
+    val coverConfig: CoverConfigUiModel,
+    val countDown: Long, // second
+    val scheduleConfig: BroadcastScheduleConfigUiModel,
+    val tnc: List<TermsAndConditionUiModel>,
+) : Parcelable
 
 @Parcelize
 data class DurationConfigUiModel(
-        val remainingDuration: Long, // millis
-        val maxDuration: Long, // millis
-        val pauseDuration: Long, // millis
-        val maxDurationDesc: String,
-): Parcelable
+    val remainingDuration: Long, // millis
+    val maxDuration: Long, // millis
+    val pauseDuration: Long, // millis
+    val maxDurationDesc: String,
+) : Parcelable
 
 @Parcelize
 data class ProductTagConfigUiModel(
-        val maxProduct: Int,
-        val minProduct: Int,
-        val maxProductDesc: String,
-        val errorMessage: String
-): Parcelable
+    val maxProduct: Int,
+    val minProduct: Int,
+    val maxProductDesc: String,
+    val errorMessage: String
+) : Parcelable
 
 @Parcelize
 data class CoverConfigUiModel(
-        val maxChars: Int
-): Parcelable
+    val maxChars: Int
+) : Parcelable
 
 @Parcelize
 data class BroadcastScheduleConfigUiModel(
-        val minimum: Date,
-        val maximum: Date,
-        val default: Date
-): Parcelable
+    val minimum: Date,
+    val maximum: Date,
+    val default: Date
+) : Parcelable
 
 @Parcelize
 data class TermsAndConditionUiModel(
-        val desc: String,
-): Parcelable
+    val desc: String,
+) : Parcelable
