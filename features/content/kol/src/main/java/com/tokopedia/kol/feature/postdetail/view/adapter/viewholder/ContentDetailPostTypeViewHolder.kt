@@ -42,7 +42,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.kol.R as kolR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
