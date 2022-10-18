@@ -28,9 +28,9 @@ open class ManageProductNonVariantBaseViewHolder(
     private val listener: ManageProductNonVariantAdapterListener?
 ): RecyclerView.ViewHolder(view) {
 
-    var isEditing = false
-    var listenerNumberFormatDiscountNominal : TextWatcher? = null
-    var listenerNumberFormatDiscountPercent : TextWatcher? = null
+    private var isEditing = false
+    private var listenerNumberFormatDiscountNominal : TextWatcher? = null
+    private var listenerNumberFormatDiscountPercent : TextWatcher? = null
 
     private fun Number?.toStringOrEmpty() =
         if (this == null || this.toLong() == Int.ZERO.toLong()) "" else getNumberFormatted()
