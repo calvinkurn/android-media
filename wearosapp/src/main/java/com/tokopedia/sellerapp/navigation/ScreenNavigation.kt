@@ -1,13 +1,14 @@
 package com.tokopedia.sellerapp.navigation
 
 import androidx.navigation.NavController
+import com.tokopedia.sellerapp.util.ScreenConstant.ACCEPT_ORDER_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.APP_NOT_INSTALLED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.CONNECTION_FAILED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_DETAIL_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_LIST_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NEW_ORDER_SUMMARY_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_DETAIL_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_LIST_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_SUMMARY_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 
 class ScreenNavigation(navController: NavController) {
@@ -18,19 +19,19 @@ class ScreenNavigation(navController: NavController) {
             }
         }
     }
-    val toNewOrderSummaryScreen: (dataKey: String) -> Unit = {
+    val toOrderSummaryScreen: (dataKey: String) -> Unit = {
         navController.navigate(
-            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_SUMMARY_SCREEN, it)
+            route = FORMAT_NAVIGATION_PATH.format(ORDER_SUMMARY_SCREEN, it)
         )
     }
-    val toNewOrderListScreen: (dataKey: String) -> Unit = {
+    val toOrderListScreen: (dataKey: String) -> Unit = {
         navController.navigate(
-            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_LIST_SCREEN, it)
+            route = FORMAT_NAVIGATION_PATH.format(ORDER_LIST_SCREEN, it)
         )
     }
-    val toNewOrderDetailScreen: (dataKey: String) -> Unit = {
+    val toOrderDetailScreen: (dataKey: String) -> Unit = {
         navController.navigate(
-            route = FORMAT_NAVIGATION_PATH.format(NEW_ORDER_DETAIL_SCREEN, it)
+            route = FORMAT_NAVIGATION_PATH.format(ORDER_DETAIL_SCREEN, it)
         )
     }
     val toAppNotInstalledScreen: () -> Unit = {
@@ -46,5 +47,13 @@ class ScreenNavigation(navController: NavController) {
                 inclusive = true
             }
         }
+    }
+    val toAcceptOrderScreen: (listOrderId: List<String>) -> Unit = {
+        navController.navigate(
+            route = FORMAT_NAVIGATION_PATH.format(
+                ACCEPT_ORDER_SCREEN,
+                it.joinToString(",")
+            )
+        )
     }
 }

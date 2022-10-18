@@ -120,7 +120,7 @@ private fun menuClickNavigation(
 ) {
     when(menuItem.title){
         TITLE_NEW_ORDER,
-        TITLE_READY_TO_SHIP -> navigation.toNewOrderSummaryScreen(menuItem.dataKey)
+        TITLE_READY_TO_SHIP -> navigation.toOrderSummaryScreen(menuItem.dataKey)
         else -> { }
     }
 }

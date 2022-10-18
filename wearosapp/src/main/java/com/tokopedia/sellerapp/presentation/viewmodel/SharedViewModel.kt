@@ -2,20 +2,18 @@ package com.tokopedia.sellerapp.presentation.viewmodel
 
 import android.content.Intent
 import android.net.Uri
-import android.util.Log
-import androidx.compose.runtime.State
+import androidx.lifecycle.viewModelScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.CapabilityClient
-import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.domain.interactor.GetSummaryUseCase
-import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.interactor.OrderUseCaseImpl
-import com.tokopedia.sellerapp.domain.mapper.OrderDomainMapper.STATUS_NEW_ORDER
+import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.domain.model.PhoneState
 import com.tokopedia.sellerapp.domain.model.SummaryModel
 import com.tokopedia.sellerapp.presentation.model.MenuItem
@@ -25,12 +23,12 @@ import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MarketURIConstant.MARKET_TOKOPEDIA
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.guava.await
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -71,6 +69,13 @@ class SharedViewModel @Inject constructor(
         initialValue = UiState.Idle()
     )
 
+    private val _orderSummary = MutableStateFlow<UiState<SummaryModel>>(UiState.Loading())
+    val orderSummary : StateFlow<UiState<SummaryModel>> = _orderSummary.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     private val _currentState = MutableStateFlow<UiState<PhoneState>>(UiState.Loading())
     val currentState : StateFlow<UiState<PhoneState>> = _currentState.stateIn(
         scope = viewModelScope,
@@ -89,9 +94,26 @@ class SharedViewModel @Inject constructor(
     val action: StateFlow<UiState<Boolean>>
         get() = _action
 
+    private var _acceptBulkOrder= MutableStateFlow<UiState<Unit>>(UiState.Loading())
+    val acceptBulkOrder: StateFlow<UiState<Unit>> = _acceptBulkOrder.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(FLOW_STOP_TIMEOUT),
+        initialValue = UiState.Idle()
+    )
+
     fun checkPhoneState() {
         viewModelScope.launch {
             clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+        }
+    }
+
+    fun getOrderSummary(dataKey: String) {
+        viewModelScope.launch {
+            _orderSummary.emitAll(
+                getSummaryUseCase.getOrderSummary(dataKey).map {
+                    UiState.Success(data = it)
+                }
+            )
         }
     }
 
@@ -127,6 +149,18 @@ class SharedViewModel @Inject constructor(
                 throwable = throwable
             )
         })
+    }
+
+    fun sendRequestAcceptBulkOrder(listOrderId: List<String>) {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.ACCEPT_BULK_ORDER, listOrderId)
+        }
+    }
+
+    fun resetAcceptBulkOrderState() {
+        launch {
+            _acceptBulkOrder.emit(UiState.Loading())
+        }
     }
 
     private fun getUpdatedMenuCounter(listSummary: List<SummaryModel>) : List<MenuItem> {
@@ -199,4 +233,12 @@ class SharedViewModel @Inject constructor(
             throwable.printStackTrace()
         }
     }
+
+    fun setAcceptOrderSuccess() {
+        launchCatchError(block = {
+            _acceptBulkOrder.emit(UiState.Success())
+        }){
+        }
+    }
+
 }

@@ -19,34 +19,30 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.*
-import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
-import com.tokopedia.sellerapp.presentation.theme.ChipGrayColor
-import com.tokopedia.sellerapp.presentation.theme.TextGrayColor
-import com.tokopedia.sellerapp.presentation.theme.TextYellowColor
-import com.tokopedia.sellerapp.presentation.theme.Text_DADCE0_Color
+import com.tokopedia.sellerapp.presentation.theme.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
-import com.tokopedia.sellerapp.util.OrderModelHelper.getOrderType
-import com.tokopedia.sellerapp.util.OrderType.NEW_ORDER_TYPE
+import com.tokopedia.sellerapp.util.MenuHelper
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
 import com.tokopedia.sellerapp.util.UiState
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
-
 private const val MAXIMUM_ORDER_DISPLAYED = 8
 
 @Composable
-fun NewOrderListScreen(
+fun OrderListScreen(
     screenNavigation: ScreenNavigation,
     sharedViewModel: SharedViewModel,
-    dataKey: String
+    orderType: String
 ) {
-    getNewOrderListData(sharedViewModel, dataKey)
-    CreateScreenScaffold(sharedViewModel, screenNavigation)
+    getOrderListData(sharedViewModel, orderType)
+    CreateScreenScaffold(sharedViewModel, screenNavigation, orderType)
 }
 
-private fun getNewOrderListData(
+private fun getOrderListData(
     sharedViewModel: SharedViewModel,
     dataKey: String
 ) {
@@ -54,13 +50,20 @@ private fun getNewOrderListData(
 }
 
 @Composable
-fun CreateScreenScaffold(sharedViewModel: SharedViewModel, screenNavigation: ScreenNavigation) {
+fun CreateScreenScaffold(sharedViewModel: SharedViewModel, screenNavigation: ScreenNavigation, orderType: String) {
     Scaffold {
         val orderList by sharedViewModel.orderList.collectAsState()
-        val orderType = orderList.data?.getOrderType().orEmpty()
+        val orderCount by sharedViewModel.orderSummary.collectAsState()
         when (orderList) {
             is UiState.Success -> {
-                CreateListNewOrder(orderList.data, orderType, screenNavigation)
+                CreateListNewOrder(
+                    orderList.data?.take(MAXIMUM_ORDER_DISPLAYED).orEmpty(),
+                    orderCount.data?.counter.toIntOrZero(),
+                    orderType,
+                    screenNavigation,
+                    sharedViewModel
+
+                )
             }
             else -> {}
         }
@@ -69,9 +72,11 @@ fun CreateScreenScaffold(sharedViewModel: SharedViewModel, screenNavigation: Scr
 
 @Composable
 fun CreateListNewOrder(
-    orderList: List<OrderModel>?,
+    orderList: List<OrderModel>,
+    orderCount: Int,
     orderType: String,
-    screenNavigation: ScreenNavigation
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -83,24 +88,28 @@ fun CreateListNewOrder(
             bottom = 40.dp
         )
     ) {
-        createItemTotalNewOrder(this, orderType, orderList)
-        createItemsNewOrderList(this, orderType, orderList, screenNavigation)
-        if (orderList?.size.orZero() > MAXIMUM_ORDER_DISPLAYED) {
-            createItemMoreOrder(this, orderList)
-        }
-        if (orderList?.isNotEmpty() == true) {
+        createItemTotalNewOrder(this, orderType, orderCount)
+        if (orderList.isNotEmpty()) {
+            createItemsNewOrderList(this, orderType, orderList, screenNavigation)
+            val orderLeft = orderCount-orderList.size
+            if(orderLeft > 0) {
+                createItemMoreOrder(this, orderLeft)
+            }
             createItemActionText(this)
-            if (orderType == NEW_ORDER_TYPE) {
-                createItemButtonAcceptAllOrder(this, orderList)
+            if (orderType == DATAKEY_NEW_ORDER) {
+                createItemButtonAcceptAllOrder(this, orderList, screenNavigation, sharedViewModel)
             }
             createItemOpenOnPhone(this)
         }
     }
 }
 
-fun createItemMoreOrder(scalingLazyListScope: ScalingLazyListScope, orderList: List<OrderModel>?) {
+fun createItemMoreOrder(
+    scalingLazyListScope: ScalingLazyListScope,
+    orderLeft: Int
+) {
     scalingLazyListScope.item {
-        val totalOrderLeft = orderList?.size.orZero() - MAXIMUM_ORDER_DISPLAYED
+        val totalOrderLeft = orderLeft
         UnifyTypographyCompose(
             text = stringResource(
                 id = com.tokopedia.tkpd.R.string.order_list_order_left_format,
@@ -148,7 +157,9 @@ fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
 
 fun createItemButtonAcceptAllOrder(
     scalingLazyListScope: ScalingLazyListScope,
-    orderList: List<OrderModel>?
+    orderList: List<OrderModel>?,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     scalingLazyListScope.item {
         Box(
@@ -157,7 +168,7 @@ fun createItemButtonAcceptAllOrder(
                 .fillMaxWidth()
                 .height(52.dp)
                 .clickable {
-
+                    redirectToAcceptOrderScreen(orderList, screenNavigation, sharedViewModel)
                 }
                 .background(color = ChipGrayColor),
             contentAlignment = Alignment.Center
@@ -180,6 +191,17 @@ fun createItemButtonAcceptAllOrder(
     }
 }
 
+private fun redirectToAcceptOrderScreen(
+    orderList: List<OrderModel>?,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
+) {
+    orderList?.let {
+        sharedViewModel.resetAcceptBulkOrderState()
+        screenNavigation.toAcceptOrderScreen(it.map { it.orderId })
+    }
+}
+
 fun createItemActionText(scalingLazyListScope: ScalingLazyListScope) {
     scalingLazyListScope.item {
         UnifyTypographyCompose(
@@ -196,15 +218,15 @@ fun createItemActionText(scalingLazyListScope: ScalingLazyListScope) {
 private fun createItemTotalNewOrder(
     scalingLazyListScope: ScalingLazyListScope,
     orderType: String,
-    listOrder: List<OrderModel>?
+    orderCount: Int
 ) {
-    val totalNewOrder = listOrder?.size.orZero()
-    val orderListPageTitleStringRes = getOrderListPageTitleStringRes(orderType)
+    val title = MenuHelper.getTitleByDataKey(orderType)
     scalingLazyListScope.item {
         UnifyTypographyCompose(
             text = stringResource(
-                orderListPageTitleStringRes,
-                totalNewOrder
+                com.tokopedia.tkpd.R.string.order_list_text_title,
+                title,
+                orderCount
             ),
             typographyConfig = { typography, _ ->
                 typography.setTextColor(TextGrayColor.toArgb())
@@ -215,16 +237,8 @@ private fun createItemTotalNewOrder(
     }
 }
 
-private fun getOrderListPageTitleStringRes(orderType: String): Int {
-    return if (orderType == NEW_ORDER_TYPE) {
-        com.tokopedia.tkpd.R.string.new_order_list_text_title
-    } else {
-        com.tokopedia.tkpd.R.string.ready_to_ship_order_list_text_title
-    }
-}
-
 private fun getDueDateStringRes(orderType: String): Int {
-    return if (orderType == NEW_ORDER_TYPE) {
+    return if (orderType == DATAKEY_NEW_ORDER) {
         com.tokopedia.tkpd.R.string.new_order_list_text_due_response
     } else {
         com.tokopedia.tkpd.R.string.ready_to_shop_order_list_text_due_response
@@ -234,67 +248,64 @@ private fun getDueDateStringRes(orderType: String): Int {
 fun createItemsNewOrderList(
     scalingLazyListScope: ScalingLazyListScope,
     orderType: String,
-    listNewOrder: List<OrderModel>?,
+    listNewOrder: List<OrderModel>,
     screenNavigation: ScreenNavigation
 ) {
-    listNewOrder?.let {
-        scalingLazyListScope.items(it.take(MAXIMUM_ORDER_DISPLAYED).size) { position ->
-            val newOrderData = listNewOrder[position]
-            Box(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(25.dp))
-                    .fillMaxWidth()
-                    .clickable {
-                        redirectToNewOrderDetailScreen(screenNavigation, newOrderData)
-                    }
-                    .background(color = ChipGrayColor)
+    scalingLazyListScope.items(listNewOrder) { newOrderData ->
+        Box(
+            modifier = Modifier
+                .clip(RoundedCornerShape(25.dp))
+                .fillMaxWidth()
+                .clickable {
+                    redirectToNewOrderDetailScreen(screenNavigation, newOrderData)
+                }
+                .background(color = ChipGrayColor)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+                UnifyImageCompose(imageUnifyConfig = { imageUnify, _ ->
+                    imageUnify.setImageUrl(newOrderData.products.firstOrNull()?.productImage.orEmpty())
+                    imageUnify.type = ImageUnify.TYPE_CIRCLE
+                }, modifier = Modifier.size(32.dp))
+                Column(
+                    modifier = Modifier.padding(start = 8.dp)
                 ) {
-                    UnifyImageCompose(imageUnifyConfig = { imageUnify, _ ->
-                        imageUnify.setImageUrl(newOrderData.products.firstOrNull()?.productImage.orEmpty())
-                        imageUnify.type = ImageUnify.TYPE_CIRCLE
-                    }, modifier = Modifier.size(32.dp))
-                    Column(
-                        modifier = Modifier.padding(start = 8.dp)
+                    UnifyTypographyCompose(
+                        text = newOrderData.products.firstOrNull()?.productName.orEmpty(),
+                        typographyConfig = { typography, context ->
+                            typography.setType(Typography.DISPLAY_2)
+                            typography.setWeight(Typography.BOLD)
+                            typography.maxLines = 1
+                            typography.ellipsize = TextUtils.TruncateAt.END
+                            typography.setTextColor(NestLightNN0.toArgb())
+                        })
+                    val dueDateStringRes = getDueDateStringRes(orderType)
+                    UnifyTypographyCompose(
+                        text = stringResource(id = dueDateStringRes),
+                        typographyConfig = { typography, _ ->
+                            typography.setType(Typography.DISPLAY_3)
+                            typography.setTextColor(Text_DADCE0_Color.toArgb())
+                        })
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
+                        val painter =
+                            painterResource(id = com.tokopedia.tkpd.R.drawable.ic_order_list_due_date)
+                        Icon(
+                            modifier = Modifier.size(13.dp),
+                            painter = painter,
+                            contentDescription = "",
+                        )
                         UnifyTypographyCompose(
-                            text = newOrderData.products.firstOrNull()?.productName.orEmpty(),
-                            typographyConfig = { typography, context ->
-                                typography.setType(Typography.DISPLAY_2)
-                                typography.setWeight(Typography.BOLD)
-                                typography.maxLines = 1
-                                typography.ellipsize = TextUtils.TruncateAt.END
-                                typography.setTextColor(context.getColor(com.tokopedia.unifyprinciples.R.color.Unify_NN0))
-                            })
-                        val dueDateStringRes = getDueDateStringRes(orderType)
-                        UnifyTypographyCompose(
-                            text = stringResource(id = dueDateStringRes),
+                            text = newOrderData.deadLineText,
                             typographyConfig = { typography, _ ->
                                 typography.setType(Typography.DISPLAY_3)
-                                typography.setTextColor(Text_DADCE0_Color.toArgb())
-                            })
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            val painter =
-                                painterResource(id = com.tokopedia.tkpd.R.drawable.ic_order_list_due_date)
-                            Icon(
-                                modifier = Modifier.size(13.dp),
-                                painter = painter,
-                                contentDescription = "",
-                            )
-                            UnifyTypographyCompose(
-                                text = newOrderData.deadLineText,
-                                typographyConfig = { typography, _ ->
-                                    typography.setType(Typography.DISPLAY_3)
-                                    typography.setTextColor(TextYellowColor.toArgb())
-                                },
-                                modifier = Modifier.padding(horizontal = 4.dp)
-                            )
-                        }
+                                typography.setTextColor(TextYellowColor.toArgb())
+                            },
+                            modifier = Modifier.padding(horizontal = 4.dp)
+                        )
                     }
                 }
             }
@@ -303,7 +314,7 @@ fun createItemsNewOrderList(
 }
 
 fun redirectToNewOrderDetailScreen(screenNavigation: ScreenNavigation, newOrderData: OrderModel) {
-    screenNavigation.toNewOrderDetailScreen(newOrderData.orderId)
+    screenNavigation.toOrderDetailScreen(newOrderData.orderId)
 }
 
 @Composable

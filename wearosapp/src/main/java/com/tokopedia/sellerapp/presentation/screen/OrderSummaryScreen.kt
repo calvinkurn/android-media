@@ -1,26 +1,33 @@
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.ForegroundColorSpan
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.text.HtmlCompat
 import androidx.wear.compose.material.Button
 import androidx.wear.compose.material.ButtonDefaults
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.sellerapp.presentation.theme.NestLightNN0
+import com.tokopedia.sellerapp.presentation.theme.NestLightNN1000
 import com.tokopedia.sellerapp.presentation.theme.TextBlueColor
+import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.tkpd.R
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.DISPLAY_1
 
 @Composable
-fun NewOrderSummaryScreen(
+fun OrderSummaryScreen(
     navigateToNewOrderList: (dataKey: String) -> Unit,
+    sharedViewModel: SharedViewModel,
     dataKey: String
 ) {
+    getOrderSummaryData(sharedViewModel, dataKey)
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -34,20 +41,27 @@ fun NewOrderSummaryScreen(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            //TODO implementation will be changed later
-            val totalOrder = 20
-            val orderPotential = "321.002.500"
-            CreateOrderTitle()
-            CreateOrderQuantity(totalOrder)
-            CreateOrderPotential(orderPotential)
-            CreateOpenOrder(
-                navigateToNewOrderList = navigateToNewOrderList,
-                dataKey = dataKey
-            )
+            val summary by sharedViewModel.orderSummary.collectAsState()
+            summary.data?.let {
+                CreateOrderTitle(it.title)
+                CreateOrderQuantity(it.counter.toIntOrZero())
+                CreateOrderPotential(it.description)
+                CreateOpenOrder(
+                    navigateToNewOrderList = navigateToNewOrderList,
+                    dataKey = dataKey
+                )
+            }
         }
 
     }
 
+}
+
+private fun getOrderSummaryData(
+    sharedViewModel: SharedViewModel,
+    dataKey: String
+) {
+    sharedViewModel.getOrderSummary(dataKey)
 }
 
 @Composable
@@ -60,12 +74,14 @@ fun CreateOpenOrder(
             .height(32.dp)
             .padding(PaddingValues(top = 6.dp)),
         onClick = { navigateToNewOrderList(dataKey) },
-        colors = ButtonDefaults.buttonColors(backgroundColor = TextBlueColor)
+        colors = ButtonDefaults.buttonColors(
+            backgroundColor = TextBlueColor,
+            contentColor = NestLightNN1000
+        )
     ) {
         AndroidView(factory = {
             Typography(it).apply {
                 text = it.getString(R.string.new_order_summary_text_open_order)
-                setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
                 fontType = DISPLAY_1
             }
         })
@@ -73,26 +89,18 @@ fun CreateOpenOrder(
 }
 
 @Composable
-fun CreateOrderPotential(orderPotential: String) {
-    AndroidView(factory = {
-        Typography(it).apply {
-            val textLabelPotency = it.getString(R.string.new_order_summary_text_potency)
-            val textTotalPotency = String.format(
-                it.getString(R.string.new_order_summary_text_potency_format),
-                orderPotential
-            )
-            setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-            val textPotencySpannable = SpannableString("$textLabelPotency $textTotalPotency")
-            textPotencySpannable.setSpan(
-                ForegroundColorSpan(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500)),
-                textPotencySpannable.indexOf(textTotalPotency),
-                textPotencySpannable.indexOf(textTotalPotency) + textTotalPotency.length,
-                Spannable.SPAN_INCLUSIVE_EXCLUSIVE
-            )
-            text = textPotencySpannable
-            fontType = DISPLAY_1
-        }
-    })
+fun CreateOrderPotential(orderPotential: String, modifier: Modifier = Modifier) {
+    AndroidView(
+        modifier = modifier,
+        factory = {
+            Typography(it).apply {
+                text = HtmlCompat.fromHtml(orderPotential, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                fontType = DISPLAY_1
+                setTextColor(NestLightNN0.toArgb())
+            }
+        },
+        update = { it.text = HtmlCompat.fromHtml(orderPotential, HtmlCompat.FROM_HTML_MODE_COMPACT) }
+    )
 }
 
 @Composable
@@ -109,16 +117,22 @@ fun CreateOrderQuantity(totalOrder: Int) {
                 text = totalOrder.toString()
                 textSize = 30.0f
             }
-        })
+        },
+        update = {
+            it.text = totalOrder.toString()
+        }
+    )
 }
 
 @Composable
-private fun CreateOrderTitle() {
+private fun CreateOrderTitle(title: String) {
     AndroidView(
         factory = {
             Typography(it).apply {
                 setTextColor(it.getColor(com.tokopedia.unifyprinciples.R.color.Unify_N0))
-                text = it.getString(R.string.new_order_summary_text_title)
+                text = title
             }
+        }, update = {
+            it.text = title
         })
 }

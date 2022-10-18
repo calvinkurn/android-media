@@ -2,6 +2,7 @@ package com.tokopedia.sellerapp.data.repository
 
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.model.OrderWithProduct
+import com.tokopedia.sellerapp.data.datasource.remote.AcceptBulkOrderModel
 import com.tokopedia.sellerapp.data.datasource.remote.ClientMessageDatasource
 import com.tokopedia.sellerapp.util.Action
 import kotlinx.coroutines.flow.Flow
