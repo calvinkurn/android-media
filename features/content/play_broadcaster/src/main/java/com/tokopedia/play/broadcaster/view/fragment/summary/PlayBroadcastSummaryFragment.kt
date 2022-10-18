@@ -118,6 +118,7 @@ class PlayBroadcastSummaryFragment @Inject constructor(
     }
 
     private fun setupView() {
+        parentViewModel.setIsLiveStreamEnded()
         navigateToFragment(PlayBroadcastReportFragment::class.java)
     }
 
