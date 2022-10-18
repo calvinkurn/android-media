@@ -36,6 +36,7 @@ import com.tokopedia.tokopedia.feedplus.robot.create
 import com.tokopedia.topads.sdk.domain.model.Data
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
+import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -72,6 +73,7 @@ class FeedViewModelTest {
 
     private val gqlFailed = MessageErrorException("ooPs")
     private val mockFailedRx = HashMap<Type, List<GraphqlError>>()
+    private val randomString: String = "randomUrl"
 
     /**
      * Send Report
@@ -723,11 +725,12 @@ class FeedViewModelTest {
     @Test
     fun `track affiliate - success` (){
         val expected = true
-        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
+        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
+        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
 
         create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
             .use {
-                it.vm.doTrackAffiliate("Ini")
+                it.vm.doTrackAffiliate(randomString)
                 it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertEqualTo(expected)
@@ -739,11 +742,12 @@ class FeedViewModelTest {
     @Test
     fun `track affiliate - failed from gql` (){
         val expected = false
-        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
+        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
+        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } returns expected
 
         create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
             .use {
-                it.vm.doTrackAffiliate("")
+                it.vm.doTrackAffiliate(randomString)
                 it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Success<TrackAffiliateViewModel>> {
                         dt ->
                     dt.data.isSuccess.assertEqualTo(expected)
@@ -754,11 +758,12 @@ class FeedViewModelTest {
 
     @Test
     fun `track affiliate - error from gql` (){
-        coEvery { mockTrackAffiliate.createObservable(any()).toBlocking().single() } throws gqlFailed
+        every { TrackAffiliateClickUseCase.createRequestParams(randomString) } returns RequestParams()
+        every { mockTrackAffiliate.createObservable(any()).toBlocking().single() } throws gqlFailed
 
         create(dispatcher = testDispatcher, trackAffiliateClickUseCase = mockTrackAffiliate)
             .use {
-                it.vm.doTrackAffiliate("")
+                it.vm.doTrackAffiliate(randomString)
                 it.vm.trackAffiliateResp.getOrAwaitValue().assertType<Fail> {
                         dt -> dt.throwable.assertEqualTo(gqlFailed)
                 }
