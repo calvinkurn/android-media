@@ -483,7 +483,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 ""
         )
 
-        /** TODO 2: show sharing experience bottom sheet here */
         val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
             .setId(item.id)
             .setName(item.text)

@@ -2420,7 +2420,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         shareData = linkerBuilder.build()
 
-        /** TODO 1: show sharing experience bottom sheet here */
         feedProductTagSharingHelper.show(
             productTagShareModel = FeedProductTagSharingHelper.Model.map(item),
             shareData = shareData
