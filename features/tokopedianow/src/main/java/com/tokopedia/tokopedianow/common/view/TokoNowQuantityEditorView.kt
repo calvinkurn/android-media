@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
@@ -87,7 +88,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         ).apply {
             try {
                 setQuantity(getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER))
-                maxQuantity = getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, Int.MAX_VALUE)
+                maxQuantity = getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, maxQuantity)
                 minQuantity = getInt(R.styleable.TokoNowQuantityEditorView_minQuantity, minQuantity)
             } finally {
                 recycle()
@@ -123,15 +124,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    @SuppressLint("Method Call Prohibited")
-    private fun String.getCounterOrDefaultValue(): Int {
-        return try {
-            if (isBlank()) minQuantity else toInt()
-        } catch (e: Exception) {
-            maxQuantity
-        }
-    }
-
     private fun getEnabledColor(isEnabled: Boolean): Int = if (isEnabled) getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_GN500) else getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_NN300)
 
     private fun getResourceColor(id: Int): Int = ContextCompat.getColor(context, id)
@@ -157,29 +149,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setCounter() {
-        val currentCounter = text.getCounterOrDefaultValue()
-        counter = if (text.isBlank()) {
-            editText.text?.clear()
-            subButton.setColorFilter(getEnabledColor(false))
-            currentCounter
-        } else if (maxQuantity == minQuantity) {
-            editText.setText(minQuantity.toString())
-            addButton.setColorFilter(getEnabledColor(false))
-            subButton.setColorFilter(getEnabledColor(false))
-            minQuantity
-        } else if (currentCounter >= maxQuantity) {
+        val currentCounter = text.toIntOrZero()
+        counter = if (currentCounter >= maxQuantity) {
             editText.setText(maxQuantity.toString())
             addButton.setColorFilter(getEnabledColor(false))
-            subButton.setColorFilter(getEnabledColor(true))
             maxQuantity
-        } else if (currentCounter <= minQuantity) {
-            if (currentCounter < minQuantity) editText.setText(minQuantity.toString())
+        }   else {
             addButton.setColorFilter(getEnabledColor(true))
-            subButton.setColorFilter(getEnabledColor(false))
-            minQuantity
-        }  else {
-            addButton.setColorFilter(getEnabledColor(true))
-            subButton.setColorFilter(getEnabledColor(true))
             currentCounter
         }
     }
@@ -187,14 +163,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
             if (counter < maxQuantity) {
-                if (root.progress == NO_PROGRESS_ANIMATION) {
+                if (root.currentState == R.id.start) {
                     root.setTransition(R.id.start, R.id.end)
                     root.transitionToEnd()
-                    editText.setText(counter.toString())
+                    editText.setText(minQuantity.toString())
                 } else {
                     if (root.currentState == R.id.startWithValue) {
-                        root.setTransition(R.id.startWithValue, R.id.end)
-                        root.transitionToEnd()
+                        expandAnimationWhenStartingWithValue()
                     } else {
                         counter++
                         editText.setText(counter.toString())
@@ -206,8 +181,10 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupSubButton() {
         subButton.setOnClickListener {
-            if (counter > minQuantity) {
-                counter--
+            counter--
+            if (counter < minQuantity) {
+                editText.clearFocus()
+            } else {
                 editText.setText(counter.toString())
             }
         }
@@ -234,10 +211,11 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.backToTheStartState() {
-        if (text.isBlank() && counter == DEFAULT_NUMBER) {
+        if (counter < minQuantity) {
+            binding.editText.setText("")
             root.setTransition(R.id.end, R.id.start)
         } else {
-            if (text.isBlank()) editText.setText(counter.toString())
+            editText.setText(counter.toString())
             root.setTransition(R.id.end, R.id.startWithValue)
         }
         root.transitionToEnd()
@@ -258,15 +236,19 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
             setOnTouchListener { _, motionEvent ->
                 if (motionEvent.action == KeyEvent.ACTION_DOWN) {
-                    root.setTransition(R.id.startWithValue, R.id.end)
-                    root.transitionToEnd()
-                    setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
-                    setTextColor(getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-                    setOnTouchListener(null)
+                    expandAnimationWhenStartingWithValue()
                 }
                 true
             }
         }
+    }
+
+    private fun LayoutTokopedianowQuantityEditorViewBinding.expandAnimationWhenStartingWithValue() {
+        root.setTransition(R.id.startWithValue, R.id.end)
+        root.transitionToEnd()
+        editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
+        editText.setTextColor(getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        setOnTouchListener(null)
     }
 
     fun setQuantity(quantity: Int) {
