@@ -13,7 +13,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ListProductItemViewHolder(
     itemView: View,
     productListener: ProductListener,
-    isAutoplayEnabled: Boolean,
+    isAutoplayEnabled: Boolean = false,
 ) : ProductItemViewHolder(itemView, productListener, isAutoplayEnabled) {
 
     companion object {
