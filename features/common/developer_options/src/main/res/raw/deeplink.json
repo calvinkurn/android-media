@@ -90,6 +90,11 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity", 
+          "deeplink": "tokopedia-android-internal://food/search", 
+          "deeplink_variable": "ApplinkConstInternalTokoFood.SEARCH"
+     }, 
+     {
           "destination_activity": "com.tokopedia.ordermanagement.orderhistory.purchase.detail.presentation.activity.OrderHistoryActivity", 
           "deeplink": "tokopedia-android-internal://order/track", 
           "deeplink_variable": "ApplinkConstInternalOrder.TRACK"
@@ -1090,6 +1095,11 @@
           "deeplink_variable": "ApplinkConstInternalUserPlatform.INIT_REGISTER"
      }, 
      {
+          "destination_activity": "com.tokopedia.loginregister.redefineregisteremail.view.RedefineRegisterEmailActivity", 
+          "deeplink": "tokopedia-android-internal://user/redefine-register-email", 
+          "deeplink_variable": "ApplinkConstInternalUserPlatform.REDEFINE_REGISTER_EMAIL"
+     }, 
+     {
           "destination_activity": "com.tokopedia.loginregister.registerinitial.view.activity.RegisterEmailActivity", 
           "deeplink": "tokopedia-android-internal://user/email-register", 
           "deeplink_variable": "ApplinkConstInternalUserPlatform.EMAIL_REGISTER"
@@ -1446,8 +1456,8 @@
      }, 
      {
           "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity", 
-          "deeplink": "tokopedia-android-internal://transaction/wishlist-collection-detail", 
-          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL"
+          "deeplink": "tokopedia-android-internal://transaction/wishlist/collection/.*\\/", 
+          "deeplink_variable": "ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL"
      }, 
      {
           "destination_activity": "com.tokopedia.wishlistcollection.view.activity.WishlistCollectionHostBottomSheetActivity", 
@@ -2193,6 +2203,11 @@
           "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/tokomember", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMemberListActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/member-list", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.INTERNAL_MEMBER_LIST"
      }, 
      {
           "destination_activity": "com.tokopedia.loyalty.view.activity.PromoDetailActivity", 

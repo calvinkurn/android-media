@@ -26,7 +26,6 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
     suspend fun execute(
         channelId: String,
         question: String,
-        prize: String,
         runningTime: Long,
         choices: List<Choice>
     ): PostInteractiveCreateQuizResponse {
@@ -34,7 +33,6 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
             createParams(
                 channelId = channelId,
                 question = question,
-                prize = prize,
                 runningTime = runningTime,
                 choices = choices,
             )
@@ -61,14 +59,12 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
             mutation PostInteractiveCreateQuizUseCase(
                 ${"$$PARAM_CHANNEL_ID"}: String!, 
                 ${"$$PARAM_QUESTION"}: String!, 
-                ${"$$PARAM_PRIZE"}: String, 
                 ${"$$PARAM_RUNNING_TIME"}: Int!,
                 ${"$$PARAM_CHOICES"}: [PlayInteractiveQuizChoiceInput!]!
             ) {
               playInteractiveSellerCreateQuiz(input: {
                 channelID: ${"$$PARAM_CHANNEL_ID"},
                 question: ${"$$PARAM_QUESTION"},
-                prize: ${"$$PARAM_PRIZE"},
                 runningTime: ${"$$PARAM_RUNNING_TIME"},
                 choices: ${"$$PARAM_CHOICES"}
               }){
@@ -83,13 +79,11 @@ class PostInteractiveCreateQuizUseCase @Inject constructor(
         fun createParams(
             channelId: String,
             question: String,
-            prize: String,
             runningTime: Long,
             choices: List<Choice>
         ): Map<String, Any> = mapOf(
             PARAM_CHANNEL_ID to channelId,
             PARAM_QUESTION to question,
-            PARAM_PRIZE to prize,
             PARAM_RUNNING_TIME to runningTime,
             PARAM_CHOICES to choices.map {
                  mapOf(
