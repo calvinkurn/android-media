@@ -7,9 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
-import com.tokopedia.campaign.utils.constant.LocaleConstant
 import com.tokopedia.campaign.utils.extension.disable
-import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.afterTextChanged
 import com.tokopedia.kotlin.extensions.view.digitsOnly
@@ -21,11 +19,9 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
-import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.adapter.ManageProductVariantBaseViewHolder
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.NumberTextInputUtil
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
-import java.text.DecimalFormat
-import java.text.NumberFormat
 
 open class ManageProductNonVariantBaseViewHolder(
     view: View,
@@ -87,8 +83,7 @@ open class ManageProductNonVariantBaseViewHolder(
 
     protected fun LayoutCampaignManageProductDetailInformationBinding.setupListener(
         criteria: ReservedProduct.Product.ProductCriteria,
-        discount: ReservedProduct.Product.Warehouse.DiscountSetup?,
-        product: ReservedProduct.Product? = null
+        discount: ReservedProduct.Product.Warehouse.DiscountSetup?
     ) {
         textFieldPriceDiscountNominal.editText.afterTextChanged {
             if (isEditing) return@afterTextChanged
@@ -130,8 +125,8 @@ open class ManageProductNonVariantBaseViewHolder(
         textQuantityEditorTitle.text = root.context.getString(R.string.manageproductnonvar_stock_title)
         setupInitialFieldMessage(criteria)
         isEditing = false
-        listenerNumberFormatDiscountNominal = setNumberTextChangeListener(textFieldPriceDiscountNominal)
-        listenerNumberFormatDiscountPercent = setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+        listenerNumberFormatDiscountNominal = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountNominal)
+        listenerNumberFormatDiscountPercent = NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountPercentage)
         textFieldPriceDiscountNominal.editText.addTextChangedListener(listenerNumberFormatDiscountNominal)
         textFieldPriceDiscountPercentage.editText.addTextChangedListener(listenerNumberFormatDiscountPercent)
     }
@@ -155,20 +150,6 @@ open class ManageProductNonVariantBaseViewHolder(
             switcherToggleParent.isChecked = false
         } else {
             switcherToggleParent.isChecked = warehouse.isToggleOn
-        }
-    }
-
-    // TODO: tidy up this
-    private fun setNumberTextChangeListener(editText : TextFieldUnify2): TextWatcher {
-        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern(ManageProductVariantBaseViewHolder.NUMBER_PATTERN)
-        return NumberThousandSeparatorTextWatcher(
-            editText.editText, numberFormatter
-        ) { _, formatNumber ->
-            editText.editText.setText(formatNumber)
-            editText.editText.setSelection(
-                editText.editText.text?.length.orZero()
-            )
         }
     }
 }

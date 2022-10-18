@@ -68,7 +68,7 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {
                 setupInputField(criteria, discount)
-                setupListener(criteria, discount, product)
+                setupListener(criteria, discount)
                 if (selectedWarehouse.isDilayaniTokopedia) {
                     setTicker(binding.root.context)
                 }
