@@ -1,8 +1,11 @@
 package com.tokopedia.shop.home.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.*
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeModel
 import com.tokopedia.shop.home.data.model.CheckCampaignNotifyMeRequest
@@ -25,7 +28,7 @@ class CheckCampaignNotifyMeUseCase @Inject constructor(
                 source: String = DEFAULT_SOURCE_VALUE
         ): Map<String, Any> {
             val paramsGetCampaignNotifyMe = CheckCampaignNotifyMeRequest(
-                    campaignId.toIntOrZero(),
+                    campaignId.toLongOrZero(),
                     action,
                     source,
                     DEFAULT_REQUEST_TYPE_VALUE

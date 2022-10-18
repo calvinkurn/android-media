@@ -104,7 +104,7 @@ open class NotificationFragment : BaseListFragment<Visitable<*>, NotificationTyp
     lateinit var userSession: UserSessionInterface
 
     private val topAdsHeadlineViewModel by lazy {
-        ViewModelProvider(this)[TopAdsHeadlineViewModel::class.java]
+        ViewModelProvider(this,  viewModelFactory)[TopAdsHeadlineViewModel::class.java]
     }
 
     var remoteConfig: RemoteConfig? = null

@@ -54,6 +54,7 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgument
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_VIDEO
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARG_IS_FROM_CONTENT_DETAIL_PAGE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.CONTENT_DETAIL_PAGE_SOURCE
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -445,7 +446,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         val intent = Intent()
         val arguments = arguments
         if (arguments != null && arguments.size() > 0) intent.putExtras(arguments)
-        intent.putExtra(KolCommentFragment.ARGS_TOTAL_COMMENT, totalNewComment)
+        intent.putExtra(COMMENT_ARGS_TOTAL_COMMENT, totalNewComment)
         return intent
     }
 

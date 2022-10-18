@@ -7,6 +7,7 @@ import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.utils.getUserId
 import com.tokopedia.topads.sdk.TopAdsConstants
 import com.tokopedia.topads.sdk.domain.TopAdsParams
 import com.tokopedia.usecase.RequestParams
@@ -18,12 +19,9 @@ class RequestParamsGenerator @Inject constructor(
     private val userSession: UserSessionInterface,
     private val pagination: Pagination,
 ) {
-    companion object {
-        private const val DEFAULT_USER_ID = "0"
-    }
 
     private val userId: String
-        get() = if (userSession.isLoggedIn) userSession.userId else DEFAULT_USER_ID
+        get() = getUserId(userSession)
 
     private val startFrom: Int
         get() = pagination.startFrom

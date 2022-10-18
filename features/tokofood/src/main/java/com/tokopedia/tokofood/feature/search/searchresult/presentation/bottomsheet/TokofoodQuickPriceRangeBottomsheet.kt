@@ -174,6 +174,7 @@ class TokofoodQuickPriceRangeBottomsheet : BottomSheetUnify(), QuickPriceRangeFi
 
     private fun toggleButtonLayoutVisibility(shouldShow: Boolean) {
         binding?.layoutTokofoodSearchQuickPriceRangeButton?.showWithCondition(shouldShow)
+        binding?.btnTokofoodSearchQuickPriceRangeApply?.showWithCondition(shouldShow)
     }
 
     private fun toggleResetButton(shouldShow: Boolean) {
