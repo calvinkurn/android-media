@@ -11,7 +11,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.NEW_DATE_FORMAT
+import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.TRAFFIC_TYPE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.AffiliateComponent
