@@ -1,11 +1,13 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
+import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -331,6 +333,9 @@ class DtHomeFragment : Fragment() {
 //        showOnBoarding()
 //        getLayoutComponentData()
 //        stopRenderPerformanceMonitoring()
+
+        //additional in DT
+        setupAnchorTabComponent(data)
     }
 
     private fun observeLiveData() {
@@ -567,4 +572,35 @@ class DtHomeFragment : Fragment() {
         showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
 //        }
     }
+
+
+
+//    private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {
+//        if(anchorViewHolder == null) {
+//            val view = layoutInflater.inflate(ComponentsList.AnchorTabs.id, null, false)
+//            anchorViewHolder = AnchorTabsViewHolder(view, this)
+//            val viewModel =
+//                AnchorTabsViewModel(context?.applicationContext as Application, homeLayoutListUiModel, 0)
+//            anchorViewHolder?.bindView(viewModel)
+//            viewModel.onAttachToViewHolder()
+//            anchorViewHolder?.onViewAttachedToWindow()
+//        }
+//        setupObserveAndShowAnchor()
+//    }
+//
+//    private fun setupObserveAndShowAnchor() {
+//        if (!stickyHeaderShowing)
+//            anchorViewHolder?.let {
+//                if (!it.viewModel.getCarouselItemsListData().hasActiveObservers())
+//                    anchorViewHolder?.setUpObservers(viewLifecycleOwner)
+//                if (mAnchorHeaderView.findViewById<RecyclerView>(R.id.anchor_rv) == null) {
+//                    mAnchorHeaderView.removeAllViews()
+//                    (anchorViewHolder?.itemView?.parent as? FrameLayout)?.removeView(
+//                        anchorViewHolder?.itemView
+//                    )
+//                    mAnchorHeaderView.addView(it.itemView)
+//                }
+//            }
+//    }
+
 }

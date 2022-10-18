@@ -54,6 +54,8 @@ class DtHomeViewModel @Inject constructor(
     val chooseAddress: LiveData<Result<GetStateChosenAddressResponse>>
         get() = _chooseAddress
 
+
+
     fun getEmptyState(@HomeStaticLayoutId id: String, serviceType: String) {
         launchCatchError(block = {
             homeLayoutItemList.clear()
