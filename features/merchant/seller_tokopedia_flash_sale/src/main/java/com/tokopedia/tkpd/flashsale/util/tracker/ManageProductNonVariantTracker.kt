@@ -53,7 +53,7 @@ class ManageProductNonVariantTracker @Inject constructor(private val userSession
     }
 
     // Click "Simpan" button
-    fun sendClickSimpanEvent(
+    fun sendClickSaveEvent(
         campaignId: String,
         productId: String,
         locationType: String
@@ -92,7 +92,7 @@ class ManageProductNonVariantTracker @Inject constructor(private val userSession
     }
 
     // Click "Cek Detail" Button
-    fun sendClickCekDetailPartialIneligibleLocationEvent(
+    fun sendClickDetailCheckPartialIneligibleLocationEvent(
         campaignId: String,
         productId: String,
         locationType: String,

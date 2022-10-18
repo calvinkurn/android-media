@@ -195,11 +195,11 @@ class ChooseProductViewModel @Inject constructor(
 
     // BEGIN - Tracker Functions
     fun onAddButtonClicked(campaignId: String) {
-        tracker.sendClickTambahProdukEvent(campaignId)
+        tracker.sendClickAddProductEvent(campaignId)
     }
 
     fun onCheckDetailButtonClicked(campaignId: String, productId: String) {
-        tracker.sendClickCekDetailAllIneligibleLocationOrVariantEvent(campaignId, productId)
+        tracker.sendClickDetailCheckAllIneligibleLocationOrVariantEvent(campaignId, productId)
     }
     // END - Tracker Functions
 }

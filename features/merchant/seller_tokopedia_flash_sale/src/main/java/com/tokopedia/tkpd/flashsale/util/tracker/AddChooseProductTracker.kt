@@ -15,7 +15,7 @@ class AddChooseProductTracker @Inject constructor(private val userSession: UserS
     }
 
     // Click "Tambah Produk" Event
-    fun sendClickTambahProdukEvent(campaignId: String) {
+    fun sendClickAddProductEvent(campaignId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click tambah produk")
@@ -30,7 +30,7 @@ class AddChooseProductTracker @Inject constructor(private val userSession: UserS
     }
 
     // Click "Cek Detail" Event
-    fun sendClickCekDetailAllIneligibleLocationOrVariantEvent(campaignId: String, productId: String) {
+    fun sendClickDetailCheckAllIneligibleLocationOrVariantEvent(campaignId: String, productId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click cek detail - all ineligible location or variant")

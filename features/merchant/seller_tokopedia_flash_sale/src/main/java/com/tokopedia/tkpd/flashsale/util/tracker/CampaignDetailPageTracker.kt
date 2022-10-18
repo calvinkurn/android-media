@@ -52,7 +52,7 @@ class CampaignDetailPageTracker @Inject constructor(private val userSession: Use
             .send()
     }
 
-    fun sendClickPilihSekaligusEvent(campaignId: String) {
+    fun sendClickBulkChooseEvent(campaignId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click pilih sekaligus")
@@ -66,7 +66,7 @@ class CampaignDetailPageTracker @Inject constructor(private val userSession: Use
             .send()
     }
 
-    fun sendClickTambahProdukEvent(campaignId: String) {
+    fun sendClickAddProductEvent(campaignId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click tambah produk")
@@ -80,7 +80,7 @@ class CampaignDetailPageTracker @Inject constructor(private val userSession: Use
             .send()
     }
 
-    fun sendClickHapusEvent(campaignId: String) {
+    fun sendClickDeleteEvent(campaignId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click hapus")
@@ -94,7 +94,7 @@ class CampaignDetailPageTracker @Inject constructor(private val userSession: Use
             .send()
     }
 
-    fun sendClickUbahEvent(campaignId: String) {
+    fun sendClickEditEvent(campaignId: String) {
         Tracker.Builder()
             .setEvent(EVENT)
             .setEventAction("click ubah")

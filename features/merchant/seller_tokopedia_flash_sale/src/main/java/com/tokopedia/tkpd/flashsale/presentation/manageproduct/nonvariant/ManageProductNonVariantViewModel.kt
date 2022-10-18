@@ -167,7 +167,7 @@ class ManageProductNonVariantViewModel @Inject constructor(
     }
 
     fun onSaveButtonClicked(campaignId: String, productId: String, locationType: String) {
-        tracker.sendClickSimpanEvent(
+        tracker.sendClickSaveEvent(
             campaignId = campaignId,
             productId = productId,
             locationType = locationType
@@ -184,7 +184,7 @@ class ManageProductNonVariantViewModel @Inject constructor(
     }
 
     fun onCheckDetailButtonClicked(campaignId: String, productId: String, locationType: String, warehouseId: String) {
-        tracker.sendClickCekDetailPartialIneligibleLocationEvent(
+        tracker.sendClickDetailCheckPartialIneligibleLocationEvent(
             campaignId = campaignId,
             productId = productId,
             locationType = locationType,
