@@ -120,6 +120,7 @@ data class ComponentData(
     val catalogBottomSheet: ProductDetailInfoSeeMoreData? = null,
     @SerializedName("bottomsheet")
     val bottomSheet: ProductDetailInfoSeeMoreData = ProductDetailInfoSeeMoreData(),
+    // endregion
 ) {
     companion object {
         private const val PRODUCT_IMAGE_TYPE = "image"

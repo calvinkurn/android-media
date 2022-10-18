@@ -1091,11 +1091,15 @@ open class DynamicProductDetailFragment :
     override fun onShopAdditionalSeeMore() {
         context?.let {
             val uspUrl = viewModel.p2Data.value?.uspImageUrl.orEmpty()
+            val tag = "bottom_sheet_unique_selling_point"
+
             if (uspUrl.isNotBlank()) {
-                ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
-                    context = it,
-                    uspTokoCabangImgUrl = uspUrl
-                )
+                showImmediately(childFragmentManager, tag) {
+                    ProductDetailCommonBottomSheetBuilder.getUspBottomSheet(
+                        context = it,
+                        uspTokoCabangImgUrl = uspUrl
+                    )
+                }
             }
         }
     }

@@ -108,7 +108,7 @@ class ProductShopAdditionalViewHolder(
             shopAdditionalTitle.text = element.title
         }
 
-        shopAdditionalScrollviewLable.shouldShowWithAction(element.labels.isNotEmpty()) {
+        shopAdditionalScrollviewLabel.shouldShowWithAction(element.labels.isNotEmpty()) {
             shopAdditionalContainerLabel.removeAllViews()
 
             element.labels.forEach {
@@ -120,7 +120,7 @@ class ProductShopAdditionalViewHolder(
 
     private fun renderLabels(label: String) = Label(context = context).apply {
         text = label
-        setLabelType(Label.HIGHLIGHT_LIGHT_TEAL)
+        setLabelType(Label.HIGHLIGHT_LIGHT_GREY)
     }
 
     private fun getComponentTrackData(

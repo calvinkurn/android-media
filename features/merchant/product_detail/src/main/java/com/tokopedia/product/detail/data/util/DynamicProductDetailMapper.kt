@@ -28,7 +28,6 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.ProductInfoP2Data
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -50,12 +49,13 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -77,7 +77,6 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.track.TrackApp
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
@@ -221,7 +220,6 @@ object DynamicProductDetailMapper {
                         )
                     )
                 }
-
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
                         FintechWidgetDataModel(
@@ -229,6 +227,9 @@ object DynamicProductDetailMapper {
                             name = component.componentName
                         )
                     )
+                }
+                ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
+                    listOfComponent.add(mapToShopAdditional(data = component))
                 }
             }
         }
@@ -669,6 +670,26 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
+        )
+    }
+
+    /**
+     * Shop Additional Component Mapper
+     */
+    private fun mapToShopAdditional(data: Component): ProductShopAdditionalDataModel {
+        val component = data.componentData.firstOrNull() ?: ComponentData()
+
+        return ProductShopAdditionalDataModel(
+            type = data.type,
+            name = data.componentName,
+            title = component.title,
+            icon = component.icon,
+            description = component.description,
+            appLink = component.applink,
+            linkText = component.linkText,
+            labels = component.labels.map {
+                it.value
+            }
         )
     }
 }
