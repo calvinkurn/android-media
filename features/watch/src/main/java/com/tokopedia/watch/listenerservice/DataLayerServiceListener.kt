@@ -6,15 +6,23 @@ import com.google.android.gms.wearable.MessageEvent
 import com.google.android.gms.wearable.Wearable
 import com.google.android.gms.wearable.WearableListenerService
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.watch.TokopediaWatchActivity
 import com.tokopedia.watch.di.DaggerTkpdWatchComponent
+import com.tokopedia.watch.orderlist.model.AcceptBulkOrderModel
 import com.tokopedia.watch.orderlist.model.OrderListModel
+import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderStatusUiModel
+import com.tokopedia.watch.orderlist.param.SomListGetAcceptBulkOrderStatusParam
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
+import com.tokopedia.watch.orderlist.usecase.SomListAcceptBulkOrderUseCase
+import com.tokopedia.watch.orderlist.usecase.SomListGetAcceptBulkOrderStatusUseCase
 import com.tokopedia.watch.ordersummary.model.SummaryDataModel
 import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import dagger.Lazy
@@ -22,8 +30,12 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
-class DataLayerServiceListener: WearableListenerService() {
+class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
+
+    override val coroutineContext: CoroutineContext
+        get() = Dispatchers.IO
 
     private val messageClient by lazy { Wearable.getMessageClient(this) }
 
@@ -35,6 +47,12 @@ class DataLayerServiceListener: WearableListenerService() {
 
     @Inject
     lateinit var getSummaryUseCase: Lazy<GetSummaryUseCase>
+
+    @Inject
+    lateinit var somListAcceptBulkOrderUseCase: Lazy<SomListAcceptBulkOrderUseCase>
+
+    @Inject
+    lateinit var somListGetAcceptBulkOrderStatusUseCase: Lazy<SomListGetAcceptBulkOrderStatusUseCase>
 
     @Inject
     lateinit var userSession: Lazy<UserSession>
@@ -56,6 +74,19 @@ class DataLayerServiceListener: WearableListenerService() {
     override fun onMessageReceived(messageEvent: MessageEvent) {
         super.onMessageReceived(messageEvent)
         when (messageEvent.path) {
+            ACCEPT_BULK_ORDER_PATH -> {
+                runBlocking {
+                    try {
+                        val jsonListOrderId = messageEvent.data.decodeToString()
+                        val listType = object : TypeToken<List<String>>() {}.type
+                        val listOrderId = Gson().fromJson<List<String>>(jsonListOrderId, listType)
+                        listOrderId?.let {
+                            acceptOrder(it)
+                        }
+                    } catch (_: Exception) {
+                    }
+                }
+            }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
                 startActivity(
                     Intent(this, TokopediaWatchActivity::class.java)
@@ -102,6 +133,63 @@ class DataLayerServiceListener: WearableListenerService() {
         }
     }
 
+    private fun acceptOrder(listOrderId: List<String>) {
+        launchCatchError(Dispatchers.IO,block = {
+            val doAcceptOrderResponse = doAcceptOrder(listOrderId)
+            val acceptOrderStatusResponse = getAcceptOrderStatus(
+                doAcceptOrderResponse?.data?.batchId.orEmpty()
+            )
+
+            val orderListDataAsyncData = asyncCatchError(block = {
+                getOrderListUseCase.get().createObservable(RequestParams()).toBlocking().first()
+            }){
+                null
+            }.await()
+            val orderSummaryAsyncData = asyncCatchError(block = {
+                getSummaryUseCase.get().createObservable(RequestParams()).toBlocking().first()
+            }){
+                null
+            }.await()
+            orderListDataAsyncData?.let { orderListData ->
+                sendMessageToWatch(
+                    GET_ORDER_LIST_PATH,
+                    Gson().toJson(orderListData)
+                )
+            }
+            orderSummaryAsyncData?.let { orderSummaryData ->
+                sendMessageToWatch(
+                    GET_SUMMARY_PATH,
+                    Gson().toJson(orderSummaryData)
+                )
+            }
+            sendMessageToWatch(
+                ACCEPT_BULK_ORDER_PATH,
+                ""
+            )
+        }){
+        }
+    }
+
+    private suspend fun doAcceptOrder(listOrderId: List<String>): AcceptBulkOrderModel? {
+        return somListAcceptBulkOrderUseCase.get()?.run {
+            setParams(listOrderId, userSession.get().userId)
+            executeOnBackground()
+        }
+    }
+
+    private suspend fun getAcceptOrderStatus(batchId: String): SomListAcceptBulkOrderStatusUiModel? {
+        return somListGetAcceptBulkOrderStatusUseCase.get()?.run {
+            delay(DELAY_GET_ACCEPT_ORDER_STATUS)
+            setParams(
+                SomListGetAcceptBulkOrderStatusParam(
+                    batchId = batchId,
+                    shopId = userSession.get().shopId
+                )
+            )
+            executeOnBackground()
+        }
+    }
+
     private fun getOrderList() {
         if (!userSession.get().isLoggedIn) {
             return
@@ -131,7 +219,7 @@ class DataLayerServiceListener: WearableListenerService() {
 
             override fun onNext(orderListModel: OrderListModel) {
                 sendMessageToWatch(
-                    DataLayerServiceListener.GET_ORDER_LIST_PATH,
+                    GET_ORDER_LIST_PATH,
                     Gson().toJson(orderListModel)
                 )
             }
@@ -150,7 +238,7 @@ class DataLayerServiceListener: WearableListenerService() {
 
             override fun onNext(summaryDataModel: SummaryDataModel) {
                 sendMessageToWatch(
-                    DataLayerServiceListener.GET_SUMMARY_PATH,
+                    GET_SUMMARY_PATH,
                     Gson().toJson(summaryDataModel)
                 )
             }
@@ -158,7 +246,7 @@ class DataLayerServiceListener: WearableListenerService() {
     }
 
     private fun sendMessageToWatch(key: String, message: String) {
-        scope.launch {
+        launch {
             try {
                 val nodes = nodeClient.connectedNodes.await()
 
@@ -215,9 +303,9 @@ class DataLayerServiceListener: WearableListenerService() {
         const val GET_ALL_DATA_PATH = "/get-all-data"
         const val GET_PHONE_STATE = "/get-phone-state"
 
-        const val ACCEPT_BULK_ORDER_PATH = "/accept_bulk-order"
+        const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
         const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
-
+        private val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 }

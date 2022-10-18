@@ -8,8 +8,10 @@ import androidx.wear.compose.navigation.composable
 import com.tokopedia.sellerapp.presentation.screen.*
 import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.ScreenConstant
+import com.tokopedia.sellerapp.util.ScreenConstant.ACCEPT_ORDER_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.DATAKEY_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH_PARAM
+import com.tokopedia.sellerapp.util.ScreenConstant.LIST_ORDER_ID_ARGS
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_SUMMARY_SCREEN
@@ -106,6 +108,21 @@ fun NavGraphBuilder.connectionFailedScreenComposable(
             mutableStateOf(message),
             mutableStateOf("Retry"),
             mutableStateOf({})
+        )
+    }
+}
+
+fun NavGraphBuilder.acceptOrderScreenComposable(
+    sharedViewModel: SharedViewModel,
+    screenNavigation: ScreenNavigation
+) {
+    composable(
+        route = FORMAT_NAVIGATION_PATH_PARAM.format(ACCEPT_ORDER_SCREEN, LIST_ORDER_ID_ARGS)
+    ) { backStackEntry->
+        AcceptOrderScreen(
+            sharedViewModel = sharedViewModel,
+            screenNavigation = screenNavigation,
+            listOrderId = backStackEntry.arguments?.getString(LIST_ORDER_ID_ARGS)?.split(",").orEmpty()
         )
     }
 }

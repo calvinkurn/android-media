@@ -13,10 +13,12 @@ object MenuHelper {
     const val DATAKEY_READY_TO_SHIP = "readyToShipOrder"
 
     fun List<OrderModel>.getDataKeyByOrderStatus() : String {
-        return when(this){
-            OrderDomainMapper.STATUS_NEW_ORDER -> DATAKEY_NEW_ORDER
-            OrderDomainMapper.STATUS_READY_TO_SHIP -> DATAKEY_READY_TO_SHIP
-            else -> ""
+        return if (all { it.orderStatusId in OrderDomainMapper.STATUS_NEW_ORDER }) {
+            DATAKEY_NEW_ORDER
+        } else if (all { it.orderStatusId in OrderDomainMapper.STATUS_READY_TO_SHIP }) {
+            DATAKEY_READY_TO_SHIP
+        } else {
+            ""
         }
     }
 

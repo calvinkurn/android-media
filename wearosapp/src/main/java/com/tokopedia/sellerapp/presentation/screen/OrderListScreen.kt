@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.wear.compose.material.*
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.sellerapp.domain.model.OrderModel
 import com.tokopedia.sellerapp.navigation.ScreenNavigation
@@ -61,7 +60,9 @@ fun CreateScreenScaffold(sharedViewModel: SharedViewModel, screenNavigation: Scr
                     orderList.data?.take(MAXIMUM_ORDER_DISPLAYED).orEmpty(),
                     orderCount.data?.counter.toIntOrZero(),
                     orderType,
-                    screenNavigation
+                    screenNavigation,
+                    sharedViewModel
+
                 )
             }
             else -> {}
@@ -74,7 +75,8 @@ fun CreateListNewOrder(
     orderList: List<OrderModel>,
     orderCount: Int,
     orderType: String,
-    screenNavigation: ScreenNavigation
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     ScalingLazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -95,7 +97,7 @@ fun CreateListNewOrder(
             }
             createItemActionText(this)
             if (orderType == DATAKEY_NEW_ORDER) {
-                createItemButtonAcceptAllOrder(this, orderList)
+                createItemButtonAcceptAllOrder(this, orderList, screenNavigation, sharedViewModel)
             }
             createItemOpenOnPhone(this)
         }
@@ -155,7 +157,9 @@ fun createItemOpenOnPhone(scalingLazyListScope: ScalingLazyListScope) {
 
 fun createItemButtonAcceptAllOrder(
     scalingLazyListScope: ScalingLazyListScope,
-    orderList: List<OrderModel>?
+    orderList: List<OrderModel>?,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
 ) {
     scalingLazyListScope.item {
         Box(
@@ -164,7 +168,7 @@ fun createItemButtonAcceptAllOrder(
                 .fillMaxWidth()
                 .height(52.dp)
                 .clickable {
-
+                    redirectToAcceptOrderScreen(orderList, screenNavigation, sharedViewModel)
                 }
                 .background(color = ChipGrayColor),
             contentAlignment = Alignment.Center
@@ -184,6 +188,17 @@ fun createItemButtonAcceptAllOrder(
                 )
             }
         }
+    }
+}
+
+private fun redirectToAcceptOrderScreen(
+    orderList: List<OrderModel>?,
+    screenNavigation: ScreenNavigation,
+    sharedViewModel: SharedViewModel
+) {
+    orderList?.let {
+        sharedViewModel.resetAcceptBulkOrderState()
+        screenNavigation.toAcceptOrderScreen(it.map { it.orderId })
     }
 }
 
