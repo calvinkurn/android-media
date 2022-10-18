@@ -1677,7 +1677,7 @@ class ChatbotFragment :
 //        }
 
         lifecycleScope.launch(Dispatchers.Main) {
-            delay(4000L)
+            delay(2000L)
 
             recyclerView?.let {
                 if (!hasBeenShown) {
