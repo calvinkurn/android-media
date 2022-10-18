@@ -335,7 +335,7 @@ class DtHomeFragment : Fragment() {
 //        stopRenderPerformanceMonitoring()
 
         //additional in DT
-        setupAnchorTabComponent(data)
+//        setupAnchorTabComponent(data)
     }
 
     private fun observeLiveData() {
