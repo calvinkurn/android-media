@@ -2,7 +2,6 @@ package com.tokopedia.wishlistcollection.util
 
 import android.content.Context
 import android.content.Intent
-import androidx.core.content.ContextCompat.startActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
