@@ -19,13 +19,13 @@ public class TicketDetail {
     private String userName;
     @SerializedName("user_label_id")
     @Expose
-    private int userLabelId;
+    private long userLabelId;
     @SerializedName("user_url")
     @Expose
     private String userUrl;
     @SerializedName("ticket_detail_id")
     @Expose
-    private int ticketDetailId;
+    private long ticketDetailId;
     @SerializedName("ticket_new_rating")
     @Expose
     private int ticketNewRating;
@@ -46,7 +46,7 @@ public class TicketDetail {
     private String createTimeAgo;
     @SerializedName("user_id")
     @Expose
-    private int userId;
+    private long userId;
     @SerializedName("user_pic")
     @Expose
     private String userPic;
@@ -111,7 +111,7 @@ public class TicketDetail {
      * @return
      *     The userLabelId
      */
-    public int getUserLabelId() {
+    public long getUserLabelId() {
         return userLabelId;
     }
 
@@ -157,7 +157,7 @@ public class TicketDetail {
      * @return
      *     The ticketDetailId
      */
-    public int getTicketDetailId() {
+    public long getTicketDetailId() {
         return ticketDetailId;
     }
 
@@ -295,7 +295,7 @@ public class TicketDetail {
      * @return
      *     The userId
      */
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
