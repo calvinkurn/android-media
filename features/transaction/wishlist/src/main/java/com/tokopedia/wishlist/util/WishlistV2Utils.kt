@@ -102,18 +102,14 @@ object WishlistV2Utils {
                     isAutomaticDelete
                 )
 
-                if (wishlistV2UiModel.page == 1) {
-                    mapToTopads(recommPosition, listData, topadsData)
-                } else {
-                    if (wishlistV2UiModel.items.size >= recommPosition) {
-                        if (wishlistV2UiModel.page % 2 == 0) {
-                            mapToRecommendation(recommPosition, listData, recomm)
-                        } else {
-                            mapToTopads(recommPosition, listData, topadsData)
-                        }
+                if (wishlistV2UiModel.items.size >= recommPosition) {
+                    if (wishlistV2UiModel.page % 2 == 0) {
+                        mapToRecommendation(recommPosition, listData, recomm)
                     } else {
-                        mapToRecommendation(0, listData, recomm)
+                        mapToTopads(recommPosition, listData, topadsData)
                     }
+                } else {
+                    mapToRecommendation(0, listData, recomm)
                 }
             }
         }
