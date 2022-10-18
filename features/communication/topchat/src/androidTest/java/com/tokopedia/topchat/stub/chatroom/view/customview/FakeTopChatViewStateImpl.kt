@@ -14,6 +14,7 @@ import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.user.session.UserSessionInterface
 
 class FakeTopChatViewStateImpl(
         view: View,
@@ -27,6 +28,7 @@ class FakeTopChatViewStateImpl(
         chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
         toolbar: Toolbar,
         analytics: TopChatAnalytics,
+        userSession: UserSessionInterface
 ) : TopChatViewStateImpl(
         view,
         typingListener,
@@ -38,7 +40,7 @@ class FakeTopChatViewStateImpl(
         headerMenuListener,
         chatTextAreaTabLayoutListener,
         toolbar,
-        analytics) {
+        analytics, userSession) {
 
 
     override fun showHeaderMenuBottomSheet(

@@ -750,6 +750,107 @@ object TopChatAnalyticsKt {
         )
     }
 
+    /*
+    * Bubbles Tracker
+    */
+    fun eventViewReadFromBubble(lastReplyId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.VIEW_COMMUNICATION_IRIS,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.READ_FROM_BUBBLE_CHAT_ROOM,
+                label = lastReplyId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37516,
+            )
+        )
+    }
+
+    fun clickAddAttachmentFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_BUTTON,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37517,
+            )
+        )
+    }
+
+    fun clickVoucherFromBubble(shopId: String, voucherId: Int) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_VOUCHER,
+                label = "$shopId - $voucherId",
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37518,
+            )
+        )
+    }
+
+    fun clickAddAttachmentVoucherFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_VOUCHER,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37519,
+            )
+        )
+    }
+
+    fun clickAddAttachmentProductFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_PRODUCT,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37520,
+            )
+        )
+    }
+
+    fun clickAddAttachmentImageFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_IMAGE,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37521,
+            )
+        )
+    }
+
+    fun clickAddAttachmentInvoiceFromBubble(shopId: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            createGeneralEvent(
+                event = Event.CLICK_COMMUNICATION,
+                category = Bubbles.BUBBLE_CHAT_DETAIL,
+                action = Bubbles.CLICK_ADD_ATTACHMENT_INVOICE,
+                label = shopId,
+                businessUnit = COMMUNICATION,
+                currentSite = CURRENT_SITE_TOKOPEDIA,
+                trackerId = Bubbles.TRACKER_ID_37522,
+            )
+        )
+    }
+
     private fun createGeneralEvent(
         event: String,
         category: String,
@@ -801,6 +902,27 @@ object TopChatAnalyticsKt {
         const val CHAT_DETAIL = "chat detail"
         const val INBOX_CHAT = "inbox-chat"
         const val PUSH_NOTIF_CHAT = "push notification chat"
+    }
+
+    object Bubbles {
+        const val BUBBLE_CHAT_DETAIL = "bubble chat detail"
+
+        const val READ_FROM_BUBBLE_CHAT_ROOM = "read from bubble chatroom"
+        const val CLICK_ADD_ATTACHMENT_BUTTON = "click add attachment button"
+        const val CLICK_VOUCHER = "click voucher"
+        const val CLICK_ADD_ATTACHMENT_VOUCHER = "click add attachment - voucher"
+        const val CLICK_ADD_ATTACHMENT_PRODUCT = "click add attachment - product"
+        const val CLICK_ADD_ATTACHMENT_IMAGE = "click add attachment - image"
+        const val CLICK_ADD_ATTACHMENT_INVOICE = "click add attachment - invoice"
+
+        //tracker ID
+        const val TRACKER_ID_37516 = "37516"
+        const val TRACKER_ID_37517 = "37517"
+        const val TRACKER_ID_37518 = "37518"
+        const val TRACKER_ID_37519 = "37519"
+        const val TRACKER_ID_37520 = "37520"
+        const val TRACKER_ID_37521 = "37521"
+        const val TRACKER_ID_37522 = "37522"
     }
 
     object Action {
