@@ -137,7 +137,13 @@ class ProductViewHolder(
 
         }
 
-        binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
+        if (product.isShopModerate) {
+            binding?.btnEditPrice?.isEnabled = false
+            binding?.btnEditStock?.isEnabled = false
+        } else {
+            binding?.btnEditPrice?.isEnabled = true
+            binding?.btnEditStock?.isEnabled = true
+        }
     }
 
     private fun setupButtonStyle(product: ProductUiModel) {
@@ -318,7 +324,7 @@ class ProductViewHolder(
     }
 
     private fun onClickProductItem(product: ProductUiModel) {
-        if (product.isNotViolation()) {
+        if (product.isNotViolation() || !product.isShopModerate) {
             listener.onClickProductItem(product)
         }
     }
