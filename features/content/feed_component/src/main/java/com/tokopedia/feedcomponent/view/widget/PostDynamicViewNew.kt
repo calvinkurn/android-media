@@ -496,7 +496,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             listener?.onShareClick(
                 positionInFeed,
                 feedXCard.id,
-                feedXCard.author.name + " `post",
+                feedXCard.author.name + " post",
                 desc.replace("%s", feedXCard.author.name),
                 url = url,
                 mediaUrl,
