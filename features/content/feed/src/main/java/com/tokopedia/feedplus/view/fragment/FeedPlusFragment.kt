@@ -2417,51 +2417,50 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onShareProduct(
-        id: String,
-        title: String,
-        description: String,
-        url: String,
-        applink: String,
-        imageUrl: String,
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        isTopads: Boolean = false,
-        mediaType: String
+        item: ProductPostTagViewModelNew,
+        activityId: String
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId,
-            id,
-            type,
-            isFollowed, shopId,
-            mediaType
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.mediaType
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val urlString: String = if (isTopads) {
+        val urlString: String = if (item.isTopads) {
             shareBottomSheetProduct = true
-            url
+            item.weblink
         } else {
             shareBottomSheetProduct = false
-            url
+            item.weblink
         }
 
         activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(applink)
+            val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+                .setId(item.id)
+                .setName(item.text)
+                .setDescription(
+                    getString(R.string.feed_product_tag_share_template).format(
+                        item.product.name,
+                        "%s",
+                        item.shopName,
+                        item.priceFmt
+                    )
+                )
+                .setImgUri(item.imgUrl)
+                .setUri(item.weblink)
+                .setDeepLink(item.applink)
                 .setType(LinkerData.FEED_TYPE)
                 .setDesktopUrl(urlString)
 
-            if (isTopads) {
-                linkerBuilder.setOgImageUrl(imageUrl)
-                linkerBuilder.setDesktopUrl(url)
+            if (item.isTopads) {
+                linkerBuilder.setOgImageUrl(item.imgUrl)
+                linkerBuilder.setDesktopUrl(item.weblink)
             }
             shareData = linkerBuilder.build()
         }
@@ -2469,12 +2468,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         /** TODO 1: show sharing experience bottom sheet here */
         if(!universalShareBottomSheet.isAdded) {
             universalShareBottomSheet.setMetaData(
-                tnTitle = getString(R.string.feed_product_tag_share_title).format(title),
-                tnImage = imageUrl
+                tnTitle = item.text,
+                tnImage = item.imgUrl
             )
             universalShareBottomSheet.show(childFragmentManager, this)
         }
-
     }
 
     override fun muteUnmuteVideo(
@@ -3364,20 +3362,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (!sheet.isAdded)
         sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
-            onShareProduct(
-                item.id,
-                item.text,
-                item.description,
-                item.weblink,
-                item.applink,
-                item.imgUrl,
-                finalID,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                item.isTopads,
-                item.mediaType
-            )
+            onShareProduct(item, finalID)
         }
         sheet.addToCartCB = {
             onTagSheetItemBuy(
