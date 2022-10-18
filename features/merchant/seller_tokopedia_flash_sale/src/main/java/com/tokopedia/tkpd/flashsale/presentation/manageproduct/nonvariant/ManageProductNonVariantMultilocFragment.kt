@@ -12,17 +12,19 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.bottomsheet.LocationCriteriaCheckBottomSheet
-import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
+import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_FLASH_SALE_ID
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantMultilocAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ToasterHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.mapper.BulkApplyMapper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.MULTI_LOCATION
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.unifycomponents.Toaster.TYPE_NORMAL
 import javax.inject.Inject
@@ -33,10 +35,10 @@ class ManageProductNonVariantMultilocFragment :
 
     companion object {
         @JvmStatic
-        fun newInstance(product: ReservedProduct.Product?, campaignId: Long): ManageProductNonVariantMultilocFragment {
+        fun newInstance(product: Product?, campaignId: Long): ManageProductNonVariantMultilocFragment {
             val fragment = ManageProductNonVariantMultilocFragment()
             val bundle = Bundle()
-            bundle.putLong(BundleConstant.BUNDLE_FLASH_SALE_ID, campaignId)
+            bundle.putLong(BUNDLE_FLASH_SALE_ID, campaignId)
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
             fragment.arguments = bundle
             return fragment
@@ -46,10 +48,10 @@ class ManageProductNonVariantMultilocFragment :
     @Inject
     lateinit var viewModel: ManageProductNonVariantViewModel
     private val product by lazy {
-        arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+        arguments?.getParcelable<Product>(BUNDLE_KEY_PRODUCT)
     }
     private val campaignId by lazy {
-        arguments?.getLong(BundleConstant.BUNDLE_FLASH_SALE_ID).orZero()
+        arguments?.getLong(BUNDLE_FLASH_SALE_ID).orZero()
     }
     var inputAdapter = ManageProductNonVariantMultilocAdapter()
 
@@ -100,17 +102,30 @@ class ManageProductNonVariantMultilocFragment :
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         product?.let {
             val warehouses = inputAdapter.getDataList()
+            viewModel.onEditSwitchToggled(
+                campaignId = campaignId.toString(),
+                productId = it.productId.toString(),
+                warehouseId = warehouses[index].warehouseId.toString(),
+                locationType = MULTI_LOCATION
+            )
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)
         }
         return viewModel.validateInput(criteria, discountSetup)
     }
 
-    override fun showDetailCriteria(position: Int) {
+    override fun showDetailCriteria(position: Int, warehouse: Warehouse, product: Product) {
         val bottomSheetLocation = LocationCriteriaCheckBottomSheet()
         bottomSheetLocation.show(
             listOf(viewModel.getCriteria()?.locationResult?.get(position) ?: return),
-            childFragmentManager, "")
+            childFragmentManager, ""
+        )
+        viewModel.onCheckDetailButtonClicked(
+            campaignId = campaignId.toString(),
+            productId = product.productId.toString(),
+            warehouseId = warehouse.warehouseId.toString(),
+            locationType = MULTI_LOCATION
+        )
     }
 
     override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
@@ -142,6 +157,10 @@ class ManageProductNonVariantMultilocFragment :
         bSheet.show(childFragmentManager, "")
     }
 
+    override fun trackOnClickPercent(percentInput: String) { /* Only Tracked On Single Location Product */ }
+
+    override fun trackOnClickPrice(nominalInput: String) { /* Only Tracked On Single Location Product */ }
+
     private fun setupObservers() {
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = it
@@ -167,7 +186,7 @@ class ManageProductNonVariantMultilocFragment :
         }
     }
 
-    private fun displayToaster(product: ReservedProduct.Product) {
+    private fun displayToaster(product: Product) {
         val criteria = product.productCriteria
 
         val isValid = product.warehouses.firstOrNull {

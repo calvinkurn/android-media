@@ -498,6 +498,7 @@ class CampaignDetailViewModel @Inject constructor(
             .apply()
     }
 
+    // BEGIN - Tracker Functions
     fun sendSeeCriteriaClickEvent(campaignId: Long) {
         tracker.sendClickSeeCriteriaEvent(campaignId.toString())
     }
@@ -509,4 +510,21 @@ class CampaignDetailViewModel @Inject constructor(
     fun sendCheckReasonClickEvent(campaignId: Long) {
         tracker.sendClickCheckReasonEvent(campaignId.toString())
     }
+
+    fun sendBulkChooseClickEvent(campaignId: Long) {
+        tracker.sendClickPilihSekaligusEvent(campaignId.toString())
+    }
+
+    fun sendAddProductClickEvent(campaignId: Long) {
+        tracker.sendClickTambahProdukEvent(campaignId.toString())
+    }
+
+    fun sendDeleteClickEvent(campaignId: Long) {
+        tracker.sendClickHapusEvent(campaignId.toString())
+    }
+
+    fun sendEditClickEvent(campaignId: Long) {
+        tracker.sendClickUbahEvent(campaignId.toString())
+    }
+    // END - Tracker Functions
 }

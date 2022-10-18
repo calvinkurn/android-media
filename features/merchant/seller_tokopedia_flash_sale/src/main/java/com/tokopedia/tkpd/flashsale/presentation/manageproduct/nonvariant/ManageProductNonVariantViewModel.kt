@@ -3,9 +3,12 @@ package com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.asFlow
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
+import com.tokopedia.tkpd.flashsale.util.tracker.ManageProductNonVariantTracker
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
@@ -14,13 +17,22 @@ import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.DiscountUt
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.ErrorMessageHelper
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ManageProductNonVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val errorMessageHelper: ErrorMessageHelper,
-    private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase
-) : BaseViewModel(dispatchers.main){
+    private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
+    private val tracker: ManageProductNonVariantTracker
+) : BaseViewModel(dispatchers.main) {
+
+    companion object {
+        const val DELAY_THRESHOLD = 1000L
+    }
 
     private val _product: MutableLiveData<ReservedProduct.Product> = MutableLiveData()
     val product: LiveData<ReservedProduct.Product> get() = _product
@@ -49,6 +61,49 @@ class ManageProductNonVariantViewModel @Inject constructor(
             .filter { warehouse -> warehouse.isToggleOn }
             .all { warehouse -> validateInput(criteria, warehouse.discountSetup).isAllFieldValid() }
     }
+
+    // BEGIN - Edit Text Value Change Tracker Functions
+    private val _nominalDiscountInputTracker = MutableLiveData<String>()
+    val doTrackingNominal = MutableLiveData<String>()
+
+    private val _percentDiscountInputTracker = MutableLiveData<String>()
+    val doTrackingPercent = MutableLiveData<String>()
+
+    init {
+        initNominalTrackerFlow()
+        initPercentTrackerFlow()
+    }
+
+    private fun initNominalTrackerFlow() {
+        viewModelScope.launch {
+            _nominalDiscountInputTracker.asFlow()
+                .debounce(DELAY_THRESHOLD)
+                .flowOn(dispatchers.io)
+                .collect {
+                    doTrackingNominal.value = it
+                }
+        }
+    }
+
+    private fun initPercentTrackerFlow() {
+        viewModelScope.launch {
+            _percentDiscountInputTracker.asFlow()
+                .debounce(DELAY_THRESHOLD)
+                .flowOn(dispatchers.io)
+                .collect {
+                    doTrackingPercent.postValue(it)
+                }
+        }
+    }
+
+    fun onNominalDiscountTrackerInput(nominalInput: String) {
+        _nominalDiscountInputTracker.value = nominalInput
+    }
+
+    fun onPercentDiscountTrackerInput(percentInput: String) {
+        _percentDiscountInputTracker.value = percentInput
+    }
+    // END - Edit Text Value Change Tracker Functions
 
     fun validateInput(
         criteria: ProductCriteria,
@@ -93,4 +148,48 @@ class ManageProductNonVariantViewModel @Inject constructor(
     }
 
     fun getCriteria() = criteria
+
+    // BEGIN - Tracker Functions
+    fun onDiscountPriceEdited(campaignId: String, productId: String, locationType: String) {
+        tracker.sendClickFillInCampaignPriceEvent(
+            campaignId = campaignId,
+            productId = productId,
+            locationType = locationType
+        )
+    }
+
+    fun onDiscountPercentEdited(campaignId: String, productId: String, locationType: String) {
+        tracker.sendClickFillInCampaignDiscountPercentageEvent(
+            campaignId = campaignId,
+            productId = productId,
+            locationType = locationType
+        )
+    }
+
+    fun onSaveButtonClicked(campaignId: String, productId: String, locationType: String) {
+        tracker.sendClickSimpanEvent(
+            campaignId = campaignId,
+            productId = productId,
+            locationType = locationType
+        )
+    }
+
+    fun onEditSwitchToggled(campaignId: String, productId: String, locationType: String, warehouseId: String) {
+        tracker.sendClickAdjustToggleLocationEvent(
+            campaignId = campaignId,
+            productId = productId,
+            locationType = locationType,
+            warehouseId = warehouseId
+        )
+    }
+
+    fun onCheckDetailButtonClicked(campaignId: String, productId: String, locationType: String, warehouseId: String) {
+        tracker.sendClickCekDetailPartialIneligibleLocationEvent(
+            campaignId = campaignId,
+            productId = productId,
+            locationType = locationType,
+            warehouseId = warehouseId
+        )
+    }
+    // END - Tracker Functions
 }

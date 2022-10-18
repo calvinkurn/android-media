@@ -18,4 +18,6 @@ object TrackerConstant {
         const val TRACKER_ID_CLICK_MANAGE_PRODUCT_DISCOUNT = "37216"
         const val TRACKER_ID_APPLY_MANAGE_PRODUCT_DISCOUNT = "37217"
     }
+    const val SINGLE_LOCATION = "single loc"
+    const val MULTI_LOCATION = "multilocation"
 }
