@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_60"
+    android:layout_height="60dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
   <ImageView
@@ -14,9 +14,9 @@
     <LinearLayout
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60">
+        android:layout_height="60dp">
 
-      <TextView
+      <com.tokopedia.unifyprinciples.Typography
           android:id="@+id/tv_reply_button"
           android:layout_width="match_parent"
           android:layout_height="40dp"
@@ -27,8 +27,8 @@
           android:gravity="center"
           android:text="@string/balas"
           android:textColor="@color/white"
-          android:textSize="14sp"
-          android:textStyle="bold"
+          app:typographyType="display_2"
+          app:typographyWeight="bold"
           />
 
     </LinearLayout>
