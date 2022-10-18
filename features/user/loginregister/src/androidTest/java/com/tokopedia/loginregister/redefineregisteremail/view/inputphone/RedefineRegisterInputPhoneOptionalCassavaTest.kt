@@ -42,7 +42,7 @@ class RedefineRegisterInputPhoneOptionalCassavaTest {
     )
 
     @get:Rule
-    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = false)
+    var cassavaRule = CassavaTestRule(isFromNetwork = true, sendValidationResult = true)
 
     private lateinit var bundleOptional: Bundle
 

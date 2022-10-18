@@ -381,7 +381,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.InputQuizTitle -> handleInputQuizTitle(event.title)
             is PlayBroadcastAction.InputQuizOption -> handleInputQuizOption(event.order, event.text)
             is PlayBroadcastAction.SelectQuizOption -> handleSelectQuizOption(event.order)
-            is PlayBroadcastAction.InputQuizGift -> handleInputQuizGift(event.text)
             is PlayBroadcastAction.SaveQuizData -> handleSaveQuizData(event.quizFormData)
             is PlayBroadcastAction.SelectQuizDuration -> handleSelectQuizDuration(event.duration)
             PlayBroadcastAction.SubmitQuizForm -> handleSubmitQuizForm()
@@ -551,23 +550,13 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             val gameConfig = repo.getInteractiveConfig()
 
-            _interactiveConfig.value = mergeInteractiveConfigWithPreference(gameConfig)
+            _interactiveConfig.value = gameConfig
 
             if (!gameConfig.isNoGameActive()) {
                 initQuizFormData()
                 handleActiveInteractive()
             }
         }) { }
-    }
-
-    private fun mergeInteractiveConfigWithPreference(
-        gameConfig: InteractiveConfigUiModel
-    ): InteractiveConfigUiModel {
-        return gameConfig.copy(
-            quizConfig = gameConfig.quizConfig.copy(
-                showPrizeCoachMark = sharedPref.isFirstQuizPrice(),
-            )
-        )
     }
 
     private suspend fun updateCurrentInteractiveStatus() {
@@ -1058,12 +1047,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleInputQuizGift(text: String) {
-        needUpdateQuizForm(false) {
-            _quizFormData.setValue { copy(gift = text) }
-        }
-    }
-
     private fun handleSaveQuizData(quizFormData: QuizFormDataUiModel) {
         needUpdateQuizForm(false) {
             _quizFormData.setValue { quizFormData }
@@ -1085,7 +1068,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             repo.createInteractiveQuiz(
                 channelId = channelId,
                 question = quizData.title,
-                prize = quizData.gift,
                 runningTime = durationInSecond,
                 choices = quizData.options.map { playBroadcastMapper.mapQuizOptionToChoice(it) },
             )
@@ -1094,7 +1076,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
             /** Reset Form */
             sharedPref.setNotFirstSelectQuizOption()
-            sharedPref.setNotFirstQuizPrice()
             sharedPref.setNotFirstInteractive()
             _onboarding.update {
                 it.copy(firstInteractive = sharedPref.isFirstInteractive())
@@ -1336,7 +1317,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val quizFormData = _quizFormData.value
 
         val newTitle = if(!isStateEditable) quizFormData.title.trim() else quizFormData.title
-        val newGift = if(!isStateEditable) quizFormData.gift.trim() else quizFormData.gift
 
         val options = quizFormData.options.toMutableList()
         val newOptions = if (isStateEditable) {
@@ -1350,7 +1330,6 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             it.copy(
                 title = newTitle,
                 options = newOptions,
-                gift = newGift
             )
         }
     }

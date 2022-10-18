@@ -291,6 +291,7 @@ class DeferredPaymentListFragment : BaseDaggerFragment(), SwipeRefreshLayout.OnR
 
     override fun onRefresh() {
         viewModel.refreshPage()
+        viewModel.getPaymentListCount()
         loadDeferredTransactions()
     }
 

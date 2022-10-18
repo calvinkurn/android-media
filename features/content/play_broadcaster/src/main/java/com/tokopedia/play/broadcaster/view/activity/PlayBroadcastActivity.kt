@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.idling.PlayBroadcasterIdlingResource
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -151,6 +152,7 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
+        PlayBroadcasterIdlingResource.increment()
         if (viewModel.getConfigUi(savedInstanceState) == null) getConfiguration()
         observeConfiguration()
 
@@ -340,6 +342,9 @@ class PlayBroadcastActivity : BaseActivity(),
                     if (!isRecreated) handleChannelConfiguration(result.data)
                     else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
+
+                    if(!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
+                        PlayBroadcasterIdlingResource.decrement()
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
