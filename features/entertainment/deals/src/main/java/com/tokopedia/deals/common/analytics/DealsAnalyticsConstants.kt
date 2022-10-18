@@ -73,6 +73,9 @@ object DealsAnalyticsConstants {
         const val CLICK_BELI = "click beli"
         const val CLICK_RECOMMENDATION = "click on deals recommendation"
         const val IMPRESS_RECOMMENDATION = "impression on deals recommendation"
+        const val VIEW_CHECKOUT = "view checkout"
+        const val CART_PAGE_LOADED = "cart page loaded"
+        const val CHECKOUT_STEP_1 = "1"
     }
 
     object Label {
@@ -154,6 +157,8 @@ object DealsAnalyticsConstants {
     const val SESSION_IRIS = "sessionIris"
     const val USER_ID = "userId"
     const val BUSINESS_UNIT = "businessUnit"
+    const val CHECKOUT_STEP = "checkout_step"
+    const val CHECKOUT_OPTION = "checkout_option"
     const val TOKOPEDIA_DIGITAL_DEALS = "tokopediadigitaldeals"
     const val TRAVELENTERTAINMENT_BU = "travel & entertainment"
     const val CATEGORY_LABEL = "category"
@@ -182,6 +187,9 @@ object DealsAnalyticsConstants {
     const val CATEGORY_ID = "category_id"
     const val QUANTITY = "quantity"
     const val CART_ID = "cart_id"
+    const val SHOP_ID = "shop_id"
+    const val SHOP_NAME = "shop_name"
+    const val SHOP_TYPE = "shop_type"
     const val PRICE = "price"
     const val INDEX = "index"
     const val DIMENSION_40 = "dimension40"
@@ -189,4 +197,6 @@ object DealsAnalyticsConstants {
     const val ITEM_BRAND = "item_brand"
     const val ITEM_VARIANT = "item_variant"
     const val ITEM_CATEGORY = "item_category"
+    const val ZERO_STRING = "0"
+    const val DASH_STRING = "-"
 }
