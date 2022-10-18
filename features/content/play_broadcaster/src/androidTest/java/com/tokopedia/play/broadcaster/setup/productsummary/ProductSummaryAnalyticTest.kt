@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.mockk
 import org.junit.Rule
 import org.junit.Test
@@ -19,6 +20,7 @@ import org.junit.runner.RunWith
  * Created by kenny.hadisaputra on 08/03/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class ProductSummaryAnalyticTest {
 
     private val mockSelectedProducts = List(3) {

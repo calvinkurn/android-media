@@ -108,21 +108,17 @@ class InteractiveUiModelBuilder {
         maxTitleLength: Int = 50,
         maxChoicesCount: Int = 3,
         minChoicesCount: Int = 1,
-        maxRewardLength: Int = 5,
         maxChoiceLength: Int = 5,
         availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
         eligibleStartTimeInMs: List<Long> = List(5) { it.toLong() },
-        showPrizeCoachMark: Boolean = true,
     ) = QuizConfigUiModel(
         isActive = isActive,
         maxTitleLength = maxTitleLength,
         maxChoicesCount = maxChoicesCount,
         minChoicesCount = minChoicesCount,
-        maxRewardLength = maxRewardLength,
         maxChoiceLength = maxChoiceLength,
         availableStartTimeInMs = availableStartTimeInMs,
         eligibleStartTimeInMs = eligibleStartTimeInMs,
-        showPrizeCoachMark = showPrizeCoachMark,
     )
 
     fun buildGiveaway(
@@ -143,14 +139,12 @@ class InteractiveUiModelBuilder {
         waitingDuration: Long = 200L,
         status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = "",
     ) = InteractiveUiModel.Quiz(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
         status = status,
         listOfChoices = listOfChoices,
-        reward = reward,
     )
 
     fun buildCurrentInteractiveModel(
