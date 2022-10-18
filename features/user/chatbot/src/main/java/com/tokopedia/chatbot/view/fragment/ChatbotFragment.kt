@@ -1690,7 +1690,6 @@ class ChatbotFragment :
             replyBubbleContainer?.hide()
         }else{
             setGuidelineForReplyBubble(true)
-        } else {
             replyBubbleContainer?.show()
         }
     }
