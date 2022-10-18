@@ -15,7 +15,9 @@ sealed interface OrderResolutionTicketStatusUiState {
         data class Showing(
             override val data: OrderResolutionUiModel
         ) : HasData
-    }
 
-    object Hidden : OrderResolutionTicketStatusUiState
+        object Hidden : HasData {
+            override val data: OrderResolutionUiModel = OrderResolutionUiModel()
+        }
+    }
 }

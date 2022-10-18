@@ -68,7 +68,7 @@ object OrderResolutionTicketStatusUiStateMapper {
     }
 
     private fun mapOnHidden(): OrderResolutionTicketStatusUiState {
-        return OrderResolutionTicketStatusUiState.Hidden
+        return OrderResolutionTicketStatusUiState.HasData.Hidden
     }
 
     private fun mapOrderResolutionTicketStatus(

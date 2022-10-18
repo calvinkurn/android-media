@@ -5,8 +5,6 @@ import com.tokopedia.buyerorderdetail.domain.models.AddToCartSingleRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailDataRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailRequestState
 import com.tokopedia.buyerorderdetail.domain.models.GetBuyerOrderDetailResponse
-import com.tokopedia.buyerorderdetail.domain.models.GetOrderResolutionRequestState
-import com.tokopedia.buyerorderdetail.domain.models.GetP1DataRequestState
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
@@ -19,7 +17,6 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
-        val p1DataRequestState = getBuyerOrderDetailDataRequestState.getP1DataRequestState
         val getBuyerOrderDetailRequestState = getBuyerOrderDetailDataRequestState
             .getP0DataRequestState
             .getBuyerOrderDetailRequestState
@@ -28,15 +25,11 @@ object ProductListUiStateMapper {
                 mapOnGetBuyerOrderDetailRequesting(currentState)
             }
             is GetBuyerOrderDetailRequestState.Complete.Error -> {
-                mapOnGetBuyerOrderDetailError(
-                    getBuyerOrderDetailRequestState.throwable, p1DataRequestState, currentState
-                )
+                mapOnGetBuyerOrderDetailError(getBuyerOrderDetailRequestState.throwable)
             }
             is GetBuyerOrderDetailRequestState.Complete.Success -> {
                 mapOnGetBuyerOrderDetailSuccess(
                     getBuyerOrderDetailRequestState.result,
-                    p1DataRequestState,
-                    currentState,
                     singleAtcRequestStates
                 )
             }
@@ -54,67 +47,12 @@ object ProductListUiStateMapper {
     }
 
     private fun mapOnGetBuyerOrderDetailError(
-        throwable: Throwable?,
-        p1DataRequestState: GetP1DataRequestState,
-        currentState: ProductListUiState
-    ): ProductListUiState {
-        return when (p1DataRequestState.getOrderResolutionRequestState) {
-            is GetOrderResolutionRequestState.Requesting -> {
-                mapOnGetOrderResolutionRequesting(currentState)
-            }
-            is GetOrderResolutionRequestState.Complete -> {
-                mapOnGetOrderResolutionComplete(throwable)
-            }
-        }
-    }
-
-    private fun mapOnGetBuyerOrderDetailSuccess(
-        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        p1DataRequestState: GetP1DataRequestState,
-        currentState: ProductListUiState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return when (p1DataRequestState.getOrderResolutionRequestState) {
-            is GetOrderResolutionRequestState.Requesting -> {
-                mapOnGetOrderResolutionRequesting(
-                    buyerOrderDetailData, currentState, singleAtcRequestStates
-                )
-            }
-            is GetOrderResolutionRequestState.Complete -> {
-                mapOnGetOrderResolutionComplete(buyerOrderDetailData, singleAtcRequestStates)
-            }
-        }
-    }
-
-    private fun mapOnGetOrderResolutionRequesting(
-        currentState: ProductListUiState
-    ): ProductListUiState {
-        return if (currentState is ProductListUiState.HasData) {
-            mapOnReloading(currentState)
-        } else {
-            mapOnLoading()
-        }
-    }
-
-    private fun mapOnGetOrderResolutionRequesting(
-        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        currentState: ProductListUiState,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return if (currentState is ProductListUiState.HasData) {
-            mapOnReloading(buyerOrderDetailData, singleAtcRequestStates)
-        } else {
-            mapOnLoading()
-        }
-    }
-
-    private fun mapOnGetOrderResolutionComplete(
-        throwable: Throwable?,
+        throwable: Throwable?
     ): ProductListUiState {
         return mapOnError(throwable)
     }
 
-    private fun mapOnGetOrderResolutionComplete(
+    private fun mapOnGetBuyerOrderDetailSuccess(
         buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
         singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
     ): ProductListUiState {
@@ -129,23 +67,6 @@ object ProductListUiStateMapper {
         currentState: ProductListUiState.HasData
     ): ProductListUiState {
         return ProductListUiState.HasData.Reloading(currentState.data)
-    }
-
-    private fun mapOnReloading(
-        buyerOrderDetailData: GetBuyerOrderDetailResponse.Data.BuyerOrderDetail,
-        singleAtcRequestStates: Map<String, AddToCartSingleRequestState>
-    ): ProductListUiState {
-        return ProductListUiState.HasData.Reloading(
-            mapProductListUiModel(
-                buyerOrderDetailData.details,
-                buyerOrderDetailData.details?.bundleIcon.orEmpty(),
-                buyerOrderDetailData.shop,
-                buyerOrderDetailData.addonInfo,
-                buyerOrderDetailData.orderId,
-                buyerOrderDetailData.orderStatus.id,
-                singleAtcRequestStates
-            )
-        )
     }
 
     private fun mapOnDataReady(
