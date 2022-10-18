@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.data.response.GetFlashSaleReservedProductListResponse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
@@ -33,11 +34,28 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
 
     private fun GetFlashSaleReservedProductListResponse.GetFlashSaleReservedProductList.Product.toChildProduct(): List<ReservedProduct.Product.ChildProduct> {
         return childProducts.map { childProduct ->
+            val childWarehouses = childProduct.warehouses.map { warehouse ->
+                ReservedProduct.Product.Warehouse(
+                    warehouse.warehouseId.toLongOrZero(),
+                    warehouse.name,
+                    warehouse.stock,
+                    warehouse.price.toLongOrZero(),
+                    ReservedProduct.Product.Warehouse.DiscountSetup(
+                        warehouse.discountSetup.discount,
+                        warehouse.discountSetup.price.toLongOrZero(),
+                        warehouse.discountSetup.stock
+                    ),
+                    warehouse.isDilayaniTokopedia,
+                    isToggleOn = !warehouse.discountSetup.stock.isZero(),
+                    warehouse.isDisabled,
+                    warehouse.disabledReason
+                )
+            }
             ReservedProduct.Product.ChildProduct(
                 childProduct.disabledReason,
                 childProduct.isDisabled,
                 childProduct.isMultiwarehouse,
-                isToggleOn = false,
+                isToggleOn = childWarehouses.any { it.isToggleOn },
                 childProduct.name,
                 childProduct.picture,
                 ReservedProduct.Product.Price(
@@ -60,23 +78,7 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                 childProduct.sku,
                 childProduct.stock,
                 childProduct.url,
-                childProduct.warehouses.map { warehouse ->
-                    ReservedProduct.Product.Warehouse(
-                        warehouse.warehouseId.toLongOrZero(),
-                        warehouse.name,
-                        warehouse.stock,
-                        warehouse.price.toLongOrZero(),
-                        ReservedProduct.Product.Warehouse.DiscountSetup(
-                            warehouse.discountSetup.discount,
-                            warehouse.discountSetup.price.toLongOrZero(),
-                            warehouse.discountSetup.stock
-                        ),
-                        warehouse.isDilayaniTokopedia,
-                        isToggleOn = false,
-                        warehouse.isDisabled,
-                        warehouse.disabledReason
-                    )
-                }
+                childWarehouses
             )
         }
     }
@@ -114,7 +116,7 @@ class GetFlashSaleReservedProductListMapper @Inject constructor() {
                     warehouse.discountSetup.stock
                 ),
                 warehouse.isDilayaniTokopedia,
-                isToggleOn = false,
+                isToggleOn = !warehouse.discountSetup.stock.isZero(),
                 warehouse.isDisabled,
                 warehouse.disabledReason
             )
