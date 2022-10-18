@@ -71,11 +71,12 @@ object ChooseProductUiMapper {
     fun validateSelection(
         productCount: Int,
         maxProduct: Int,
-        criteriaList: List<CriteriaSelection>
+        criteriaList: List<CriteriaSelection>,
+        selectedProductIds: List<Long>
     ): Boolean {
-        val productValidation = productCount <= maxProduct && productCount.isMoreThanZero()
+        val productValidation = productCount < maxProduct && productCount.isMoreThanZero()
         val criteriaValidation = criteriaList.validateMax()
-        return productValidation && criteriaValidation
+        return selectedProductIds.isNotEmpty() || (productValidation && criteriaValidation)
     }
 
     fun getSelectedProductList(

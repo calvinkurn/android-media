@@ -1438,7 +1438,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         } else if (isMultiloc) {
             val productCheckingResult = ProductCheckingResultMapper.mapFromAdapterItem(
                 selectedProduct,
-                displayProductSold)
+                displayProductSold,
+                viewModel.getTabName()
+            )
             checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
         }
     }

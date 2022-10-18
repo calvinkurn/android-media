@@ -86,7 +86,7 @@ class ManageProductNonVariantFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        product?.let {
+        viewModel.product.value?.let {
             val warehouses = (adapter as ManageProductNonVariantAdapter).getWarehouses()
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)

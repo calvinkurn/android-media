@@ -14,11 +14,12 @@ class ChooseProductAdapter {
     private var errorMessage = ""
     private var errorMessageCriteria = ""
     private var disabledCriteriaIds: List<Long> = emptyList()
+    private var forceEnabledProductIds: List<String> = emptyList()
 
     fun getRecyclerViewAdapter() = compositeAdapter
 
     private fun refresh() {
-        getItems().onEach {
+        getProductItems().onEach {
             it.enableSelection = enableSelection
             it.errorMessage = errorMessage
         }
@@ -44,6 +45,7 @@ class ChooseProductAdapter {
             ChooseProductDelegateAdapter.AdapterParam(it, enableSelection, errorMessage)
         })
         disableByCriteria(disabledCriteriaIds, errorMessageCriteria)
+        forceEnableProduct(forceEnabledProductIds)
     }
 
     fun addItems(newList: List<ChooseProductItem>) {
@@ -51,9 +53,10 @@ class ChooseProductAdapter {
             ChooseProductDelegateAdapter.AdapterParam(it, enableSelection, errorMessage)
         })
         disableByCriteria(disabledCriteriaIds, errorMessageCriteria)
+        forceEnableProduct(forceEnabledProductIds)
     }
 
-    fun getItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductDelegateAdapter.AdapterParam>()
+    fun getProductItems() = compositeAdapter.getItems().filterIsInstance<ChooseProductDelegateAdapter.AdapterParam>()
 
     fun disable(errorMessage: String) {
         enableSelection = false
@@ -71,10 +74,23 @@ class ChooseProductAdapter {
     fun disableByCriteria(disabledCriteriaIds: List<Long>, errorMessage: String) {
         this.errorMessageCriteria = errorMessage
         this.disabledCriteriaIds = disabledCriteriaIds
-        getItems().onEachIndexed { index, item ->
-            item.enableSelection = !disabledCriteriaIds.any { item.item.criteriaId == it }
-            item.errorMessage = if (item.enableSelection) "" else errorMessage
-            compositeAdapter.notifyItemChanged(index)
+        getProductItems().onEachIndexed { index, product ->
+            if (disabledCriteriaIds.any { product.item.criteriaId == it }) {
+                product.enableSelection = false
+                product.errorMessage = errorMessage
+                compositeAdapter.notifyItemChanged(index)
+            }
+        }
+    }
+
+    fun forceEnableProduct(forceEnabledProductIds: List<String>) {
+        this.forceEnabledProductIds = forceEnabledProductIds
+        getProductItems().onEachIndexed { index, product ->
+            if (forceEnabledProductIds.any { product.item.productId == it }) {
+                product.enableSelection = true
+                product.errorMessage = ""
+                compositeAdapter.notifyItemChanged(index)
+            }
         }
     }
 
