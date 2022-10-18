@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -88,6 +89,7 @@ import com.tokopedia.feedcomponent.R as feedComponentR
 private const val FEED_PAGE = "feed"
 private const val BROADCAST_VISIBLITY = "BROADCAST_VISIBILITY"
 
+@Keep
 class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNotificationListener, FeedMainToolbar.OnToolBarClickListener,PostProgressUpdateView.PostUpdateSwipe, FeedPlusContainerListener {
 
     private var showOldToolbar: Boolean = false

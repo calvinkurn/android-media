@@ -231,7 +231,7 @@ class OfficialStoreHomeViewModelTest {
         val categoryId = "0"
         val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
         val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(TopAdsHeadlineResponse(CpmModel().apply {
-            data = listOf(CpmData().apply {
+            data = mutableListOf(CpmData().apply {
                 cpm = Cpm().apply {
                     position = 0
                 }
