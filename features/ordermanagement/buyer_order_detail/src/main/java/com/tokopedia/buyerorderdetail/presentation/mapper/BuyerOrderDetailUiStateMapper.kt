@@ -38,7 +38,8 @@ object BuyerOrderDetailUiStateMapper {
                 productListUiState is ProductListUiState.HasData.Reloading ||
                 shipmentInfoUiState is ShipmentInfoUiState.HasData.Reloading ||
                 pgRecommendationWidgetUiState is PGRecommendationWidgetUiState.HasData.Reloading ||
-                orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading
+                orderResolutionTicketStatusUiState is OrderResolutionTicketStatusUiState.HasData.Reloading ||
+                orderInsuranceUiState is OrderInsuranceUiState.HasData.Reloading
             ) {
                 BuyerOrderDetailUiState.HasData.PullRefreshLoading(
                     actionButtonsUiState,

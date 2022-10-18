@@ -15,7 +15,9 @@ sealed interface OrderInsuranceUiState {
         data class Showing(
             override val data: OrderInsuranceUiModel
         ) : HasData
-    }
 
-    object Hidden : OrderInsuranceUiState
+        object Hidden : HasData {
+            override val data: OrderInsuranceUiModel = OrderInsuranceUiModel()
+        }
+    }
 }

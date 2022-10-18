@@ -119,7 +119,7 @@ object OrderInsuranceUiStateMapper {
     }
 
     private fun mapOnHidden(): OrderInsuranceUiState {
-        return OrderInsuranceUiState.Hidden
+        return OrderInsuranceUiState.HasData.Hidden
     }
 
     private fun mapOrderInsurance(
