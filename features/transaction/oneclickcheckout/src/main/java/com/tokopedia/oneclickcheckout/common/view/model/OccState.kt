@@ -39,6 +39,7 @@ sealed class OccGlobalEvent {
     data class PopUp(val popUp: PopUpData) : OccGlobalEvent()
     object AdjustAdminFeeError : OccGlobalEvent()
     object AdjustShippingToaster : OccGlobalEvent()
+    object UploadPrescriptionSucceed : OccGlobalEvent()
 }
 
 data class OccEvent<out T : Any>(private val data: T) {

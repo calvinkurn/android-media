@@ -13,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_QTY_NOTES
 import com.tokopedia.oneclickcheckout.order.domain.GetOccCartUseCase
 import com.tokopedia.oneclickcheckout.order.domain.UpdateCartOccUseCase
+import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EpharmacyPrescriptionDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.ImageUploadDataModel
@@ -101,14 +102,7 @@ class OrderSummaryPageCartProcessor @Inject constructor(
             try {
                 val prescriptionIds =
                     getPrescriptionIdsUseCase.setParams(checkoutId).executeOnBackground()
-                return@withContext EpharmacyPrescriptionDataModel(
-                    checkoutId = prescriptionIds.detailData?.prescriptionData?.checkoutId,
-                    prescriptions = prescriptionIds.detailData?.prescriptionData?.prescriptions?.map { prescription ->
-                        EpharmacyPrescriptionDataModel.Prescription(
-                            prescription?.prescriptionId
-                        )
-                    }
-                )
+                return@withContext PrescriptionMapper.mapPrescriptionResponse(prescriptionIds)
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext EpharmacyPrescriptionDataModel()

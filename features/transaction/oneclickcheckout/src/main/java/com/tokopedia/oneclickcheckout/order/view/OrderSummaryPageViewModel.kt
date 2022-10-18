@@ -27,6 +27,7 @@ import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_ADDRESS
 import com.tokopedia.oneclickcheckout.order.data.update.UpdateCartOccRequest.Companion.SOURCE_UPDATE_OCC_PAYMENT
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
+import com.tokopedia.oneclickcheckout.order.view.mapper.PrescriptionMapper
 import com.tokopedia.oneclickcheckout.order.view.model.AddressState
 import com.tokopedia.oneclickcheckout.order.view.model.CheckoutOccResult
 import com.tokopedia.oneclickcheckout.order.view.model.OccButtonState
@@ -117,6 +118,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
     private var dynamicPaymentFeeJob: Job? = null
+    private var fetchPrescriptionId: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -188,8 +190,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 leftIconUrl = result.imageUpload.leftIconUrl,
                 checkoutId = result.imageUpload.checkoutId,
 
-                prescriptionIds = prescriptionIds.prescriptions?.map { prescription -> prescription.toString() } as ArrayList<String>,
-                uploadedImageCount = prescriptionIds.prescriptions?.size ?: 0,
+                prescriptionIds = prescriptionIds.prescriptionIds as ArrayList<String>,
+                uploadedImageCount = prescriptionIds.prescriptionIds?.size ?: 0,
                 isError = false,
                 frontEndValidation = result.imageUpload.frontEndValidation,
                 isOcc = true,
@@ -287,6 +289,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderShipment.value = orderShipment.value.copy(isLoading = true)
             debounce()
+        }
+    }
+
+    fun fetchAndUpdatePrescriptionIds() {
+        fetchPrescriptionId?.cancel()
+        fetchPrescriptionId = launch(executorDispatchers.immediate) {
+            uploadPrescriptionUiModel.value.checkoutId?.let {
+                var prescriptionIds = cartProcessor.getPrescriptionId(it)
+                uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+                    prescriptionIds = prescriptionIds.prescriptionIds as ArrayList<String>,
+                    uploadedImageCount = prescriptionIds.prescriptionIds?.size ?: 0,
+                    isError = false,
+                    isOcc = true,
+                )
+                globalEvent.value = OccGlobalEvent.UploadPrescriptionSucceed
+            }
         }
     }
 
