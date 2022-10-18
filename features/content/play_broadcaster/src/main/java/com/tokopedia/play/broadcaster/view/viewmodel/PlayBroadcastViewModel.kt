@@ -825,7 +825,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         _quizDetailState.value = QuizDetailStateUiModel.Loading
         viewModelScope.launchCatchError(block = {
             val leaderboardSlots = repo.getSellerLeaderboardWithSlot(channelId, allowChat).map {
-                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz && !allowChat && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
+                if(it is LeaderboardGameUiModel.Header && it.leaderBoardType == LeadeboardType.Quiz &&(_interactive.value as? InteractiveUiModel.Quiz)?.status is InteractiveUiModel.Quiz.Status.Ongoing && it.id == _interactive.value.id) it.copy(endsIn = endTimeInteractive)
                 else it
             }
             _quizDetailState.value = QuizDetailStateUiModel.Success(leaderboardSlots)
