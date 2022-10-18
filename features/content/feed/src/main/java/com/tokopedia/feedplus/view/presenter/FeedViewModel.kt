@@ -66,13 +66,9 @@ import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -511,7 +507,7 @@ class FeedViewModel @Inject constructor(
         type: String,
         isFollowed: Boolean,
         onFail: (String) -> Unit,
-        onSuccess: (String, String, String, Boolean,Int,Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
+        onSuccess: (String, String, String, Boolean, Int, Int, AddToWishlistV2Response.Data.WishlistAddV2) -> Unit,
         context: Context
     ) {
         launch(baseDispatcher.main) {
