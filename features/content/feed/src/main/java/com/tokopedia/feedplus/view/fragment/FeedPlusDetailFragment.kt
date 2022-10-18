@@ -475,12 +475,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 ""
         )
 
-        val urlString: String = if (item.isTopads) {
-            String.format(getString(R.string.feed_share_pdp), item.id)
-        } else{
-            item.weblink
-        }
-
         /** TODO 2: show sharing experience bottom sheet here */
         val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
             .setId(item.id)
@@ -490,7 +484,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             .setUri(item.weblink)
             .setDeepLink(item.applink)
             .setType(LinkerData.FEED_TYPE)
-            .setDesktopUrl(urlString)
+            .setDesktopUrl(item.weblink)
 
         shareData = linkerBuilder.build()
 

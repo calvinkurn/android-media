@@ -2393,13 +2393,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val urlString: String = if (item.isTopads) {
-            shareBottomSheetProduct = true
-            item.weblink
-        } else {
-            shareBottomSheetProduct = false
-            item.weblink
-        }
+
+        shareBottomSheetProduct = item.isTopads
 
         val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
             .setId(item.id)
@@ -2409,12 +2404,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
             .setUri(item.weblink)
             .setDeepLink(item.applink)
             .setType(LinkerData.FEED_TYPE)
-            .setDesktopUrl(urlString)
+            .setDesktopUrl(item.weblink)
 
         if (item.isTopads) {
             linkerBuilder.setOgImageUrl(item.imgUrl)
-            linkerBuilder.setDesktopUrl(item.weblink)
         }
+
         shareData = linkerBuilder.build()
 
         /** TODO 1: show sharing experience bottom sheet here */
