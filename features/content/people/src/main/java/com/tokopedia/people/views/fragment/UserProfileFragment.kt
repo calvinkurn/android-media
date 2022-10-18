@@ -17,6 +17,8 @@ import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.config.GlobalConfig
+import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.onboarding.view.fragment.FeedUGCOnboardingParentFragment
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
@@ -27,6 +29,7 @@ import com.tokopedia.globalerror.GlobalError.Companion.PAGE_FULL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.globalerror.GlobalError.Companion.SERVER_ERROR
 import com.tokopedia.globalerror.ReponseStatus
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.*
@@ -608,12 +611,16 @@ class UserProfileFragment @Inject constructor(
                 userProfileTracker.viewShareChannel(userSession.userId, self = viewModel.isSelfProfile)
             }
 
-            val imgMenu = addRightIcon(0)
+            if (!GlobalConfig.isSellerApp()) addNavigationMainMenu(this)
+        }
+    }
 
-            imgMenu.clearImage()
-            imgMenu.setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
+    private fun addNavigationMainMenu(parent: HeaderUnify) {
+        parent.addRightIcon(0).apply {
+            clearImage()
+            setImageDrawable(getIconUnifyDrawable(context, IconUnify.MENU_HAMBURGER))
 
-            imgMenu.setColorFilter(
+            setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
                     com.tokopedia.unifyprinciples.R.color.Unify_NN1000
@@ -621,7 +628,7 @@ class UserProfileFragment @Inject constructor(
                 android.graphics.PorterDuff.Mode.MULTIPLY
             )
 
-            imgMenu.setOnClickListener {
+            setOnClickListener {
                 userProfileTracker.clickBurgerMenu(userSession.userId, self = viewModel.isSelfProfile)
                 RouteManager.route(activity, APPLINK_MENU)
             }

@@ -77,6 +77,7 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
@@ -576,7 +577,7 @@ object DynamicProductDetailMapper {
     fun generateAffiliateShareData(productInfo: DynamicProductInfoP1, shopInfo: ShopInfo?,
                                    variantData: ProductVariant?): AffiliatePDPInput {
         return AffiliatePDPInput(
-                pageType= "pdp",
+                pageType= PageType.PDP.value,
                 product = Product(
                         productID = productInfo.basic.productID,
                         catLevel1 = productInfo.basic.category.detail.firstOrNull()?.id ?: "0",
