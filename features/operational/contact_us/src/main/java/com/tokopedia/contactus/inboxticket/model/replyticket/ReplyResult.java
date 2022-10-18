@@ -102,7 +102,7 @@ public class ReplyResult {
      * @param ticketDetailId
      *     The ticket_detail_id
      */
-    public void setTicketDetailId(int ticketDetailId) {
+    public void setTicketDetailId(long ticketDetailId) {
         this.ticketDetailId = ticketDetailId;
     }
 
