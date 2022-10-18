@@ -103,21 +103,11 @@ class ManageProductNonVariantFragment :
 
     override fun calculatePrice(percentInput: Long, adapterPosition: Int): String {
         val originalPrice = product?.warehouses?.firstOrNull()?.price.orZero()
-//        viewModel.onDiscountPercentEdited(
-//            campaignId = campaignId.toString(),
-//            productId = product?.productId.toString(),
-//            locationType = SINGLE_LOCATION
-//        )
         return viewModel.calculatePrice(percentInput, originalPrice)
     }
 
     override fun calculatePercent(priceInput: Long, adapterPosition: Int): String {
         val originalPrice = product?.warehouses?.firstOrNull()?.price.orZero()
-//        viewModel.onDiscountPriceEdited(
-//            campaignId = campaignId.toString(),
-//            productId = product?.productId.toString(),
-//            locationType = SINGLE_LOCATION
-//        )
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
