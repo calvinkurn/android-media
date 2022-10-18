@@ -152,9 +152,10 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
-        PlayBroadcasterIdlingResource.increment()
-
-        if (!viewModel.isLiveStreamEnded()) getConfiguration()
+        if (!viewModel.isLiveStreamEnded()) {
+            PlayBroadcasterIdlingResource.increment()
+            getConfiguration()
+        }
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
