@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.fragment
+package com.tokopedia.journeydebugger.ui.fragment
 
 import android.content.ClipData
 import android.content.ClipboardManager

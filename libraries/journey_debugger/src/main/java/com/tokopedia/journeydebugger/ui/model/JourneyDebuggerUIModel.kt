@@ -1,16 +1,16 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.model
+package com.tokopedia.journeydebugger.ui.model
 
 import android.os.Parcelable
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.debugger.ui.adapter.ApplinkDebuggerTypeFactory
+import com.tokopedia.journeydebugger.ui.adapter.JourneyDebuggerTypeFactory
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class JourneyDebuggerUIModel(var id: Long = 0, var applink: String? = null,
+data class JourneyDebuggerUIModel(var id: Long = 0, var journey: String? = null,
                                   var trace: String? = null, var previewTrace: String? = null,
-                                  var timestamp: String? = null) : Visitable<ApplinkDebuggerTypeFactory>, Parcelable {
+                                  var timestamp: String? = null) : Visitable<JourneyDebuggerTypeFactory>, Parcelable {
 
-    override fun type(typeFactory: ApplinkDebuggerTypeFactory): Int {
+    override fun type(typeFactory: JourneyDebuggerTypeFactory): Int {
         return typeFactory.type(this)
     }
 

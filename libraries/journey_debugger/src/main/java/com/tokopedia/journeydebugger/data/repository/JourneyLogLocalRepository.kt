@@ -1,22 +1,20 @@
-package com.tokopedia.analyticsdebugger.debugger.data.repository
+package com.tokopedia.journeydebugger.data.repository
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.database.ApplinkLogDB
-import com.tokopedia.analyticsdebugger.debugger.data.mapper.ApplinkLogMapper
-import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
+import com.tokopedia.journeydebugger.data.mapper.JourneyLogMapper
+import com.tokopedia.journeydebugger.data.source.JourneyLogDBSource
+import com.tokopedia.journeydebugger.domain.model.JourneyLogModel
 import com.tokopedia.usecase.RequestParams
 
 import javax.inject.Inject
 
 import rx.Observable
-import rx.functions.Func1
 
 class JourneyLogLocalRepository @Inject
-internal constructor(private val applinkLogDBSource: ApplinkLogDBSource,
-                     private val applinkLogMapper: ApplinkLogMapper) : ApplinkLogRepository {
+internal constructor(private val applinkLogDBSource: JourneyLogDBSource,
+                     private val applinkLogMapper: JourneyLogMapper) : JourneyLogRepository {
 
-    override fun insert(data: ApplinkLogModel): Observable<Boolean> {
+    override fun insert(data: JourneyLogModel): Observable<Boolean> {
         return applinkLogDBSource.insertAll(data)
     }
 

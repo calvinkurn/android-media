@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.helper
+package com.tokopedia.journeydebugger.helper
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,51 +8,24 @@ import android.content.Intent
 import android.os.Build
 
 import androidx.core.app.NotificationCompat
-import com.tokopedia.analyticsdebugger.cassava.ui.debugger.AnalyticsDebuggerActivity
-
-import com.tokopedia.analyticsdebugger.debugger.domain.model.AnalyticsLogData
-import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
-import com.tokopedia.analyticsdebugger.debugger.domain.model.PerformanceLogModel
-import com.tokopedia.analyticsdebugger.debugger.domain.model.TopAdsLogModel
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.FpmDebuggerActivity
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.TopAdsDebuggerActivity
+import com.tokopedia.journeydebugger.domain.model.JourneyLogModel
+import com.tokopedia.journeydebugger.ui.activity.JourneyDebuggerActivity
 
 /**
  * @author okasurya on 6/28/18.
  */
 internal object NotificationHelper {
-    private val NOTIF_ID_ANALYTICS_DEBUGGER = 89324
-    private val NOTIF_ID_PERFORMANCE_DEBUGGER = 89325
-    private val NOTIF_ID_APPLINK_DEBUGGER = 89326
-    private val NOTIF_ID_TOPADS_DEBUGGER = 89327
 
-    private val NOTIF_TITLE_ANALYTICS_DEBUGGER = "Open Analytics Debugger"
-    private val NOTIF_TITLE_PERFORMANCE_DEBUGGER = "Open Performance Debugger"
-    private val NOTIF_TITLE_APPLINK_DEBUGGER = "Open Applink Debugger"
-    private val NOTIF_TITLE_TOPADS_DEBUGGER = "Open TopAds Debugger"
+    private val NOTIF_ID_JOURNEY_DEBUGGER = 89123
+
+    private val NOTIF_TITLE_JOURNEY_DEBUGGER = "Open Journey Debugger"
 
     private val NOTIF_CHANNEL_ID = "DEBUGGING_TOOLS_CHANNEL"
     private val NOTIF_CHANNEL_NAME = "Debugging Tools"
 
-    fun show(context: Context, data: AnalyticsLogData) {
-        showNotif(context, NOTIF_ID_ANALYTICS_DEBUGGER, NOTIF_TITLE_ANALYTICS_DEBUGGER,
-                data.name, data.data, AnalyticsDebuggerActivity.newInstance(context))
-    }
-
-    fun show(context: Context, data: PerformanceLogModel) {
-        showNotif(context, NOTIF_ID_PERFORMANCE_DEBUGGER, NOTIF_TITLE_PERFORMANCE_DEBUGGER,
-                data.traceName, data.data, FpmDebuggerActivity.newInstance(context))
-    }
-
-    fun show(context: Context, data: ApplinkLogModel) {
-        showNotif(context, NOTIF_ID_APPLINK_DEBUGGER, NOTIF_TITLE_APPLINK_DEBUGGER,
-                data.applink, data.data, ApplinkDebuggerActivity.newInstance(context))
-    }
-
-    fun show(context: Context, data: TopAdsLogModel) {
-        showNotif(context, NOTIF_ID_TOPADS_DEBUGGER, NOTIF_TITLE_TOPADS_DEBUGGER,
-                data.sourceName, data.data, TopAdsDebuggerActivity.newInstance(context))
+    fun show(context: Context, data: JourneyLogModel) {
+        showNotif(context, NOTIF_ID_JOURNEY_DEBUGGER, NOTIF_TITLE_JOURNEY_DEBUGGER,
+                data.journey, data.data, JourneyDebuggerActivity.newInstance(context))
     }
 
     private fun showNotif(context: Context, notifId: Int, contentTitle: String,

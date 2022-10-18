@@ -1,8 +1,5 @@
 package com.tokopedia.journeydebugger.ui.presenter
 
-import android.content.Context
-import android.net.Uri
-
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.listener.CustomerView
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter

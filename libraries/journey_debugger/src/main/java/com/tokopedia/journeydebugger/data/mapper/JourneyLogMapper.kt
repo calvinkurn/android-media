@@ -1,8 +1,6 @@
 package com.tokopedia.journeydebugger.data.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.database.ApplinkLogDB
-import com.tokopedia.analyticsdebugger.debugger.ui.model.ApplinkDebuggerViewModel
 
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -12,24 +10,26 @@ import javax.inject.Inject
 import rx.Observable
 import rx.functions.Func1
 
-import com.tokopedia.analyticsdebugger.debugger.helper.formatDataExcerpt
+import com.tokopedia.journeydebugger.database.JourneyLogDB
+import com.tokopedia.journeydebugger.helper.formatDataExcerpt
+import com.tokopedia.journeydebugger.ui.model.JourneyDebuggerUIModel
 
 class JourneyLogMapper @Inject
-internal constructor() : Func1<ApplinkLogDB, Observable<Visitable<*>>> {
+internal constructor() : Func1<JourneyLogDB, Observable<Visitable<*>>> {
     private val dateFormat: SimpleDateFormat
 
     init {
         dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS")
     }
 
-    override fun call(applinkLogDB: ApplinkLogDB): Observable<Visitable<*>> {
-        val viewModel = ApplinkDebuggerViewModel()
-        viewModel.id = applinkLogDB.id
-        viewModel.applink = applinkLogDB.applink
-        viewModel.trace = applinkLogDB.traces
-        viewModel.previewTrace = formatDataExcerpt(applinkLogDB.traces)
-        viewModel.timestamp = dateFormat.format(Date(applinkLogDB.timestamp))
+    override fun call(applinkLogDB: JourneyLogDB): Observable<Visitable<*>> {
+        val uiModel = JourneyDebuggerUIModel()
+        uiModel.id = applinkLogDB.id
+        uiModel.applink = applinkLogDB.applink
+        uiModel.trace = applinkLogDB.traces
+        uiModel.previewTrace = formatDataExcerpt(applinkLogDB.traces)
+        uiModel.timestamp = dateFormat.format(Date(applinkLogDB.timestamp))
 
-        return Observable.just(viewModel as Visitable<*>)
+        return Observable.just(uiModel as Visitable<*>)
     }
 }

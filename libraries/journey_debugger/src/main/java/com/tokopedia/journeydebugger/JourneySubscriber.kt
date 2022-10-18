@@ -1,9 +1,8 @@
-package com.tokopedia.prereleaseinspector
+package com.tokopedia.journeydebugger
 
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 
 class JourneySubscriber() : Application.ActivityLifecycleCallbacks {
 
@@ -11,15 +10,10 @@ class JourneySubscriber() : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (activity is BaseActivity) {
-            activity.addListener(ViewInspectorVolumeListener(activity))
-        }
+        //log here
     }
 
     override fun onActivityPaused(activity: Activity) {
-        if (activity is BaseActivity) {
-            activity.removeDebugVolumeListener()
-        }
     }
 
     override fun onActivityDestroyed(activity: Activity) {

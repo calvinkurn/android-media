@@ -1,10 +1,10 @@
-package com.tokopedia.analyticsdebugger.debugger
+package com.tokopedia.journeydebugger
 
 interface JourneyLoggerInterface {
 
     val isNotificationEnabled: Boolean
 
-    fun startTrace(applink: String)
+    fun startTrace(journey: String)
 
     fun appendTrace(trace: String)
 

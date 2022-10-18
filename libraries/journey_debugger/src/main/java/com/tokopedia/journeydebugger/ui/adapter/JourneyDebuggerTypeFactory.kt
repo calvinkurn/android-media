@@ -1,11 +1,11 @@
-package com.tokopedia.analyticsdebugger.debugger.ui.adapter
+package com.tokopedia.journeydebugger.ui.adapter
 
 import android.view.View
 
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.analyticsdebugger.debugger.ui.model.ApplinkDebuggerViewModel
-import com.tokopedia.analyticsdebugger.debugger.ui.viewholder.ApplinkDebuggerViewHolder
+import com.tokopedia.journeydebugger.ui.model.JourneyDebuggerUIModel
+import com.tokopedia.journeydebugger.ui.viewholder.JourneyDebuggerViewHolder
 
 class JourneyDebuggerTypeFactory : BaseAdapterTypeFactory() {
 
@@ -16,7 +16,7 @@ class JourneyDebuggerTypeFactory : BaseAdapterTypeFactory() {
 
     }
 
-    fun type(journeyDebuggerViewModel: JourneyDebuggerViewModel): Int {
+    fun type(journeyDebuggerUIModel: JourneyDebuggerUIModel): Int {
         return JourneyDebuggerViewHolder.LAYOUT
     }
 }

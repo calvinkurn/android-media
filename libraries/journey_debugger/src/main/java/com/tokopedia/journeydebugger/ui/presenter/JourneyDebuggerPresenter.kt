@@ -1,15 +1,16 @@
 package com.tokopedia.journeydebugger.ui.presenter
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
-import com.tokopedia.analyticsdebugger.debugger.domain.DeleteApplinkLogUseCase
-import com.tokopedia.analyticsdebugger.debugger.domain.GetApplinkLogUseCase
+import com.tokopedia.journeydebugger.JourneyDebuggerConst
+import com.tokopedia.journeydebugger.domain.DeleteJourneyLogUseCase
+import com.tokopedia.journeydebugger.domain.GetJourneyLogUseCase
 import com.tokopedia.usecase.RequestParams
 import rx.Subscriber
 
-class JourneyDebuggerPresenter(private val getApplinkLogUseCase: GetApplinkLogUseCase,
-                               private val deleteApplinkLogUseCase: DeleteApplinkLogUseCase) : ApplinkDebugger.Presenter {
-    private var view: ApplinkDebugger.View? = null
+class JourneyDebuggerPresenter(private val getJourneyLogUseCase: GetJourneyLogUseCase,
+                               private val deleteJourneyLogUseCase: DeleteJourneyLogUseCase
+) : JourneyDebugger.Presenter {
+    private var view: JourneyDebugger.View? = null
 
     private var keyword = ""
     private var page = 0
@@ -19,37 +20,37 @@ class JourneyDebuggerPresenter(private val getApplinkLogUseCase: GetApplinkLogUs
         requestParams = RequestParams.create()
     }
 
-    override fun attachView(view: ApplinkDebugger.View) {
+    override fun attachView(view: JourneyDebugger.View) {
         this.view = view
     }
 
     override fun detachView() {
-        getApplinkLogUseCase.unsubscribe()
-        deleteApplinkLogUseCase.unsubscribe()
+        getJourneyLogUseCase.unsubscribe()
+        deleteJourneyLogUseCase.unsubscribe()
         view = null
     }
 
     override fun loadMore() {
         setRequestParams(++page, keyword)
-        getApplinkLogUseCase.execute(requestParams, loadMoreSubscriber())
+        getJourneyLogUseCase.execute(requestParams, loadMoreSubscriber())
     }
 
     override fun search(text: String) {
         page = 0
         keyword = text
         setRequestParams(page, keyword)
-        getApplinkLogUseCase.execute(requestParams, reloadSubscriber())
+        getJourneyLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun reloadData() {
         page = 0
         keyword = ""
         setRequestParams(page, keyword)
-        getApplinkLogUseCase.execute(requestParams, reloadSubscriber())
+        getJourneyLogUseCase.execute(requestParams, reloadSubscriber())
     }
 
     override fun deleteAll() {
-        deleteApplinkLogUseCase.execute(object : Subscriber<Boolean>() {
+        deleteJourneyLogUseCase.execute(object : Subscriber<Boolean>() {
             override fun onCompleted() {
 
             }
@@ -65,8 +66,8 @@ class JourneyDebuggerPresenter(private val getApplinkLogUseCase: GetApplinkLogUs
     }
 
     private fun setRequestParams(page: Int, keyword: String) {
-        requestParams.putString(AnalyticsDebuggerConst.KEYWORD, keyword)
-        requestParams.putInt(AnalyticsDebuggerConst.PAGE, page)
+        requestParams.putString(JourneyDebuggerConst.KEYWORD, keyword)
+        requestParams.putInt(JourneyDebuggerConst.PAGE, page)
     }
 
     private fun loadMoreSubscriber(): Subscriber<List<Visitable<*>>> {

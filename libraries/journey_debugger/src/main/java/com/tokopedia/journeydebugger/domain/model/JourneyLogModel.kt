@@ -1,4 +1,4 @@
-package com.tokopedia.analyticsdebugger.debugger.domain.model
+package com.tokopedia.journeydebugger.domain.model
 
 class JourneyLogModel {
     var journey: String? = null

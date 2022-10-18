@@ -1,7 +1,7 @@
-package com.tokopedia.analyticsdebugger.debugger.domain
+package com.tokopedia.journeydebugger.domain
 
-import com.tokopedia.analyticsdebugger.debugger.data.repository.ApplinkLogLocalRepository
-import com.tokopedia.analyticsdebugger.debugger.data.repository.ApplinkLogRepository
+import com.tokopedia.journeydebugger.data.repository.JourneyLogLocalRepository
+import com.tokopedia.journeydebugger.data.repository.JourneyLogRepository
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.UseCase
 
@@ -10,14 +10,14 @@ import javax.inject.Inject
 import rx.Observable
 
 class DeleteJourneyLogUseCase @Inject
-internal constructor(applinkLogRepository: ApplinkLogLocalRepository) : UseCase<Boolean>() {
-    private val applinkLogRepository: ApplinkLogRepository
+internal constructor(journeyLogRepository: JourneyLogLocalRepository) : UseCase<Boolean>() {
+    private val journeyLogRepository: JourneyLogRepository
 
     init {
-        this.applinkLogRepository = applinkLogRepository
+        this.journeyLogRepository = journeyLogRepository
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<Boolean> {
-        return applinkLogRepository.removeAll()
+        return journeyLogRepository.removeAll()
     }
 }

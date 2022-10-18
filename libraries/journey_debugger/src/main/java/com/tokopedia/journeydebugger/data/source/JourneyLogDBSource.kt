@@ -1,11 +1,8 @@
-package com.tokopedia.analyticsdebugger.debugger.data.source
+package com.tokopedia.journeydebugger.data.source
 
 import android.content.Context
-
-import com.tokopedia.analyticsdebugger.database.ApplinkLogDB
-import com.tokopedia.analyticsdebugger.database.TkpdAnalyticsDatabase
-import com.tokopedia.analyticsdebugger.debugger.AnalyticsDebuggerConst
-import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
+import com.tokopedia.journeydebugger.database.JourneyLogDB
+import com.tokopedia.journeydebugger.domain.model.JourneyLogModel
 
 import java.util.Date
 import java.util.HashMap
@@ -17,27 +14,27 @@ import rx.Observable
 class JourneyLogDBSource @Inject
 constructor(context: Context) {
 
-    private val applinkLogDao: ApplinkLogDao
+    private val journeyLogDao: JourneyLogDao
 
     init {
-        applinkLogDao = TkpdAnalyticsDatabase.getInstance(context).applinkLogDao()
+        journeyLogDao = TkpdAnalyticsDatabase.getInstance(context).applinkLogDao()
     }
 
     fun deleteAll(): Observable<Boolean> {
         return Observable.unsafeCreate { subscriber ->
-            applinkLogDao.deleteAll()
+            journeyLogDao.deleteAll()
             subscriber.onNext(true)
         }
     }
 
-    fun insertAll(data: ApplinkLogModel): Observable<Boolean> {
+    fun insertAll(data: JourneyLogModel): Observable<Boolean> {
         return Observable.just(data).map { analyticsLogData ->
-            val applinkLogDB = ApplinkLogDB()
+            val applinkLogDB = JourneyLogDB()
             applinkLogDB.applink = data.applink
             applinkLogDB.traces = data.traces
             applinkLogDB.timestamp = Date().time
 
-            applinkLogDao.insertAll(applinkLogDB)
+            journeyLogDao.insertAll(applinkLogDB)
             true
         }
     }
@@ -59,7 +56,7 @@ constructor(context: Context) {
             }
 
             val offset = 20 * page
-            applinkLogDao.getData(search, offset)
+            journeyLogDao.getData(search, offset)
         }
     }
 }

@@ -1,36 +1,36 @@
-package com.tokopedia.analyticsdebugger.debugger
+package com.tokopedia.journeydebugger
 
 import android.content.Context
 import android.text.TextUtils
 
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
-import com.tokopedia.analyticsdebugger.debugger.data.source.ApplinkLogDBSource
-import com.tokopedia.analyticsdebugger.debugger.domain.model.ApplinkLogModel
-import com.tokopedia.analyticsdebugger.debugger.helper.NotificationHelper
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerActivity
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.journeydebugger.data.source.JourneyLogDBSource
+import com.tokopedia.journeydebugger.domain.model.JourneyLogModel
+import com.tokopedia.journeydebugger.helper.NotificationHelper
+import com.tokopedia.journeydebugger.ui.activity.JourneyDebuggerActivity
 
 import rx.Subscriber
 import rx.schedulers.Schedulers
 
 
-class JourneyLogger private constructor(private val context: Context) : ApplinkLoggerInterface {
-    private val dbSource: ApplinkLogDBSource
+class JourneyLogger private constructor(private val context: Context) : JourneyLoggerInterface {
+    private val dbSource: JourneyLogDBSource
     private val cache: LocalCacheHandler
 
-    private var applink = ""
+    private var journey = ""
     private var traces = ""
 
     override val isNotificationEnabled: Boolean
         get() = cache.getBoolean(IS_APPLINK_DEBUGGER_NOTIF_ENABLED, false)!!
 
     init {
-        this.dbSource = ApplinkLogDBSource(context)
+        this.dbSource = JourneyLogDBSource(context)
         this.cache = LocalCacheHandler(context, APPLINK_DEBUGGER)
     }
 
     override fun startTrace(applink: String) {
-        this.applink = applink
+        this.journey = applink
         traces = ""
     }
 
@@ -40,13 +40,13 @@ class JourneyLogger private constructor(private val context: Context) : ApplinkL
 
     override fun save() {
 
-        if (TextUtils.isEmpty(applink)) {
+        if (TextUtils.isEmpty(journey)) {
             return
         }
 
         try {
-            val applinkLogModel = ApplinkLogModel()
-            applinkLogModel.applink = applink
+            val applinkLogModel = JourneyLogModel()
+            applinkLogModel.journey = journey
             applinkLogModel.traces = traces
 
             dbSource.insertAll(applinkLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
@@ -58,7 +58,7 @@ class JourneyLogger private constructor(private val context: Context) : ApplinkL
             e.printStackTrace()
         }
 
-        applink = ""
+        journey = ""
         traces = ""
     }
 
@@ -67,7 +67,7 @@ class JourneyLogger private constructor(private val context: Context) : ApplinkL
     }
 
     override fun openActivity() {
-        context.startActivity(ApplinkDebuggerActivity.newInstance(context))
+        context.startActivity(JourneyDebuggerActivity.newInstance(context))
     }
 
     override fun enableNotification(isEnabled: Boolean) {
@@ -95,11 +95,11 @@ class JourneyLogger private constructor(private val context: Context) : ApplinkL
         private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
         private val IS_APPLINK_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled"
 
-        var instance: ApplinkLoggerInterface? = null
+        var instance: JourneyLoggerInterface? = null
             private set
 
         @JvmStatic
-        fun getInstance(context: Context): ApplinkLoggerInterface {
+        fun getInstance(context: Context): JourneyLoggerInterface {
             if (instance == null) {
                 if (GlobalConfig.isAllowDebuggingTools()!!) {
                     instance = JourneyLogger(context.applicationContext)
@@ -107,11 +107,11 @@ class JourneyLogger private constructor(private val context: Context) : ApplinkL
                     instance = emptyInstance()
                 }
             }
-            return instance as ApplinkLoggerInterface
+            return instance as JourneyLoggerInterface
         }
 
-        private fun emptyInstance(): ApplinkLoggerInterface {
-            return object : ApplinkLoggerInterface {
+        private fun emptyInstance(): JourneyLoggerInterface {
+            return object : JourneyLoggerInterface {
 
                 override val isNotificationEnabled: Boolean
                     get() = false

@@ -1,4 +1,4 @@
-package com.tokopedia.analytics.debugger.ui.fragment
+package com.tokopedia.journeydebugger.ui.fragment
 
 import android.os.Bundle
 import android.text.TextUtils
@@ -9,17 +9,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
-import com.tokopedia.analyticsdebugger.R
-import com.tokopedia.analyticsdebugger.debugger.di.AnalyticsDebuggerComponent
-import com.tokopedia.analyticsdebugger.debugger.di.DaggerAnalyticsDebuggerComponent
-import com.tokopedia.analyticsdebugger.debugger.ui.activity.ApplinkDebuggerDetailActivity
-import com.tokopedia.analyticsdebugger.debugger.ui.adapter.ApplinkDebuggerTypeFactory
+import com.tokopedia.journeydebugger.R
+import com.tokopedia.journeydebugger.di.JourneyDebuggerComponent
+import com.tokopedia.journeydebugger.ui.adapter.JourneyDebuggerTypeFactory
+import com.tokopedia.journeydebugger.ui.presenter.JourneyDebugger
 
-class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebuggerTypeFactory>(), com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger.View {
+class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebuggerTypeFactory>(), JourneyDebugger.View {
 
     private var buttonSearch: Button? = null
 
-    var presenter: com.tokopedia.analyticsdebugger.debugger.ui.presenter.ApplinkDebugger.Presenter? = null
+    var presenter: JourneyDebugger.Presenter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
@@ -71,13 +70,13 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
     }
 
     override fun onItemClicked(visitable: Visitable<*>) {
-        if (visitable is com.tokopedia.analyticsdebugger.debugger.ui.model.ApplinkDebuggerViewModel) {
+        if (visitable is JourneyDebuggerUiModel) {
             openDetail(visitable)
         }
     }
 
     override fun initInjector() {
-        val component = DaggerAnalyticsDebuggerComponent
+        val component = DaggerJourneyDebuggerComponent
                 .builder()
                 .baseAppComponent(
                         (requireActivity().application as BaseMainApplication).baseAppComponent
@@ -87,7 +86,7 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
         presenter?.attachView(this)
     }
 
-    private fun injectToFragment(component: AnalyticsDebuggerComponent) {
+    private fun injectToFragment(component: JourneyDebuggerComponent) {
         presenter = component.applinkPresenter
     }
 
@@ -134,8 +133,8 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, ApplinkDebu
         return super.onOptionsItemSelected(item)
     }
 
-    private fun openDetail(viewModel: com.tokopedia.analyticsdebugger.debugger.ui.model.ApplinkDebuggerViewModel) {
-        startActivity(ApplinkDebuggerDetailActivity.newInstance(requireContext(), viewModel))
+    private fun openDetail(viewModel: JourneyDebuggerUiModel) {
+        startActivity(JourneyDebuggerDetailActivity.newInstance(requireContext(), viewModel))
     }
 
     companion object {
