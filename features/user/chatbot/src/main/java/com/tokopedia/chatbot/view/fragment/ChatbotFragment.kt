@@ -809,7 +809,7 @@ class ChatbotFragment :
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
-       //     checkVideoUploadOnboardingStatus()
+            checkVideoUploadOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
         }
     }
@@ -1964,7 +1964,7 @@ class ChatbotFragment :
         isConnectedToAgent = state
         replyBubbleEnabled = state
         checkReplyBubbleOnboardingStatus()
- //       checkVideoUploadOnboardingStatus()
+        checkVideoUploadOnboardingStatus()
         createAttachmentMenus()
     }
 
