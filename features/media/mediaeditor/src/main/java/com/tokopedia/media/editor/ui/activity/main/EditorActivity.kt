@@ -33,7 +33,12 @@ class EditorActivity : BaseEditorActivity() {
     @Inject
     lateinit var editorHomeAnalytics: EditorHomeAnalytics
 
-    lateinit var viewModel: EditorViewModel
+    private val viewModel: EditorViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(EditorViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initInjector()
@@ -55,12 +60,7 @@ class EditorActivity : BaseEditorActivity() {
         return fragmentProvider().editorFragment()
     }
 
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        ).get(EditorViewModel::class.java)
-    }
+    override fun initViewModel() {}
 
     override fun initBundle(savedInstanceState: Bundle?) {
         intent?.getParcelableExtra<EditorParam>(EXTRA_EDITOR_PARAM)?.also {

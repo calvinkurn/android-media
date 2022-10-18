@@ -23,7 +23,12 @@ class DetailEditorActivity : BaseEditorActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    lateinit var viewModel: DetailEditorViewModel
+    private val viewModel: DetailEditorViewModel by lazy {
+        ViewModelProvider(
+            this,
+            viewModelFactory
+        ).get(DetailEditorViewModel::class.java)
+    }
 
     private var editorIntent = EditorDetailUiModel()
     private var editorParam = EditorParam()
@@ -52,12 +57,7 @@ class DetailEditorActivity : BaseEditorActivity() {
         return fragmentProvider().editorDetailFragment()
     }
 
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactory
-        ).get(DetailEditorViewModel::class.java)
-    }
+    override fun initViewModel() {}
 
     override fun initBundle(savedInstanceState: Bundle?) {
         (savedInstanceState?.getParcelable(CACHE_EDITOR_INTENT_MODEL)
