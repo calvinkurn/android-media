@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.buyerorderdetail.R
+import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTracker
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailInsuranceBinding
 import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
@@ -26,7 +27,7 @@ class OrderInsuranceViewHolder(
             binding?.bindLogo(element.logoUrl)
             binding?.bindTitle(element.title)
             binding?.bindSubtitle(element.subtitle)
-            bindListener(element.appLink)
+            bindListener(element.appLink, element.trackerData)
         }
     }
 
@@ -47,7 +48,7 @@ class OrderInsuranceViewHolder(
                             bindSubtitle(newItem.subtitle)
                         }
                         if (oldItem.appLink != newItem.appLink) {
-                            bindListener(newItem.appLink)
+                            bindListener(newItem.appLink, newItem.trackerData)
                         }
                         root.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                         return
@@ -69,9 +70,11 @@ class OrderInsuranceViewHolder(
         tvBuyerOrderDetailInsuranceSubtitle.text = subtitle
     }
 
-    private fun bindListener(appLink: String) {
+    private fun bindListener(appLink: String, trackerData: OrderInsuranceUiModel.TrackerData) {
         itemView.setOnClickListener {
-            navigator.openAppLink(appLink, false)
+            if (navigator.openAppLink(appLink, false)) {
+                BuyerOrderDetailTracker.eventClickInsuranceWidget(trackerData)
+            }
         }
     }
 }

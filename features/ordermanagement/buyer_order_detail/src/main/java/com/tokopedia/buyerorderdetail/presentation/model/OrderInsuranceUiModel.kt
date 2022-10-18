@@ -10,7 +10,8 @@ data class OrderInsuranceUiModel(
     val logoUrl: String = "",
     val title: String = "",
     val subtitle: String = "",
-    val appLink: String = ""
+    val appLink: String = "",
+    val trackerData: TrackerData = TrackerData()
 ) : BaseVisitableUiModel, Serializable {
     override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
         return typeFactory?.type(this).orZero()
@@ -26,4 +27,9 @@ data class OrderInsuranceUiModel(
     override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
         return null
     }
+
+    data class TrackerData(
+        val orderStatusCode: String = "",
+        val orderId: String = ""
+    )
 }
