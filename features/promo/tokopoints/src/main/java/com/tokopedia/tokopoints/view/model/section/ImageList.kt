@@ -6,26 +6,26 @@ import com.google.gson.annotations.SerializedName
 data class ImageList(
     @SerializedName("imageURL")
     @Expose
-    var imageURL: String? = "",
+    var imageURL: String = "",
     @SerializedName("imageURLMobile")
     @Expose
-    var imageURLMobile: String? = "",
+    var imageURLMobile: String = "",
     @SerializedName("redirectURL")
     @Expose
-    var redirectURL: String? = "",
+    var redirectURL: String = "",
     @SerializedName("redirectAppLink")
     @Expose
-    var redirectAppLink: String? = "",
+    var redirectAppLink: String = "",
     @SerializedName("title")
     @Expose
-     var title: String? = "",
+     var title: String = "",
     @SerializedName("subTitle")
     @Expose
-    var subTitle: String? = "",
+    var subTitle: String = "",
     @SerializedName("inBannerTitle")
     @Expose
-    var inBannerTitle: String? = "",
+    var inBannerTitle: String = "",
     @SerializedName("inBannerSubTitle")
     @Expose
-    var inBannerSubTitle: String? = "",
+    var inBannerSubTitle: String = "",
 )

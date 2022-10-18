@@ -7,5 +7,5 @@ import com.tokopedia.tokopoints.view.model.TickerContainer
 data class LayoutTickerAttr(
     @SerializedName("tickerList")
     @Expose
-    var tickerList: List<TickerContainer?>? = null
+    var tickerList: List<TickerContainer> = listOf()
 )

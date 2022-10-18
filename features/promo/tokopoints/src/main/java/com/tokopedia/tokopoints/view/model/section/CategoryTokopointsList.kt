@@ -9,20 +9,20 @@ data class CategoryTokopointsList(
     var id: Int? = null,
     @SerializedName("iconImageURL")
     @Expose
-    private var iconImageURL: String? = "",
+    var iconImageURL: String = "",
     @SerializedName("text")
     @Expose
-    var text: String? = "",
+    var text: String = "",
 
     @SerializedName("url")
     @Expose
-    var url: String? = "",
+    var url: String = "",
 
     @SerializedName("appLink")
     @Expose
-    var appLink: String? = "",
+    var appLink: String = "",
 
     @SerializedName("isNewCategory")
     @Expose
-    var isNewCategory: Boolean? = false,
+    var isNewCategory: Boolean = false,
 )

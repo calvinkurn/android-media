@@ -6,11 +6,11 @@ import com.google.gson.annotations.SerializedName
 data class Text(
     @SerializedName("content")
     @Expose
-    var content: String? = "",
+    var content: String = "",
     @SerializedName("color")
     @Expose
-    var color: String? = null,
+    var color: String = "",
     @SerializedName("format")
     @Expose
-    var format: String? = "",
+    var format: String = "",
 )

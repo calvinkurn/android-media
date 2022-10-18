@@ -3,7 +3,6 @@ package com.tokopedia.tokopoints.view.validatePin;
 import android.content.Context;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CouponSwipeUpdate;
 
 public interface ValidateMerchantPinContract {

@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class CouponUpperLeftSection(
     @SerializedName("backgroundColor")
-    var backgroundColor: String? = "",
+    var backgroundColor: String = "",
     @SerializedName("textAttributes")
-    var textAttributes: List<TextAttributes?>? = null
+    var textAttributes: List<TextAttributes> = listOf()
 )

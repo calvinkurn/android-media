@@ -5,23 +5,23 @@ import com.google.gson.annotations.SerializedName
 data class CountDownInfo(
 
         @SerializedName("isShown")
-        val isShown: Boolean? = null,
+        val isShown: Boolean = false,
 
         @SerializedName("type")
-        val type: Int? = null,
+        val type: Int? = 0,
 
         @SerializedName("label")
-        val label: String? = null,
+        val label: String = "",
 
         @SerializedName("countdownUnix")
-        var countdownUnix: Long? = null,
+        var countdownUnix: Long = 0,
 
         @SerializedName("countdownStr")
-        val countdownStr: String? = null,
+        val countdownStr: String = "",
 
         @SerializedName("textColor")
-        val textColor: String? = null,
+        val textColor: String = "",
 
         @SerializedName("backgroundColor")
-        val backgroundColor: String? = null
+        val backgroundColor: String = ""
 )

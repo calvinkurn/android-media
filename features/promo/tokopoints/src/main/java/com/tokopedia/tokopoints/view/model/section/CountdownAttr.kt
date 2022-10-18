@@ -6,9 +6,9 @@ import com.google.gson.annotations.SerializedName
 data class CountdownAttr(
     @SerializedName("showTimer")
     @Expose
-    var showTimer: Boolean? = false,
+    var isShowTimer: Boolean = false,
     @SerializedName("expiredCountDown")
     @Expose
-    var expiredCountDown: Long? = 0,
+    var expiredCountDown: Long = 0,
 )
 

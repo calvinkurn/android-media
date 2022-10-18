@@ -6,8 +6,8 @@ import com.google.gson.annotations.SerializedName
 data class LayoutBannerAttr(
     @SerializedName("bannerType")
     @Expose
-    var bannerType: String? = null,
+    var bannerType: String = "",
     @SerializedName("imageList")
     @Expose
-    var imageList: List<ImageList?>? = null,
+    var imageList: List<ImageList> = listOf(),
 )

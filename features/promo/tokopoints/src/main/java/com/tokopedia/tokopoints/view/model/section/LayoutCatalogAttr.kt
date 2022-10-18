@@ -7,8 +7,8 @@ import com.tokopedia.tokopoints.view.model.CatalogsValueEntity
 data class LayoutCatalogAttr(
         @SerializedName("catalogList")
         @Expose
-        val catalogList: List<CatalogsValueEntity>? = null,
+        val catalogList: List<CatalogsValueEntity> = listOf(),
 
         @SerializedName("countdownInfo")
-        val countdownInfo: CountDownInfo? = null
+        val countdownInfo: CountDownInfo = CountDownInfo()
 )

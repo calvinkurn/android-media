@@ -7,19 +7,19 @@ import com.google.gson.annotations.SerializedName
 data class Cta(
     @SerializedName("icon")
     @Expose
-    var icon: String? = "",
+    var icon: String = "",
     @SerializedName("text")
     @Expose
-    var text: String? = "",
+    var text: String = "",
     @SerializedName("url")
     @Expose
-    var url: String? = "",
+    var url: String = "",
     @SerializedName("appLink")
     @Expose
-    var appLink: String? = "",
+    var appLink: String = "",
     @SerializedName("type")
     @Expose
-    var type: String? = null,
+    var type: String = "",
 ){
     val isEmpty:Boolean
         get() = TextUtils.isEmpty(text)

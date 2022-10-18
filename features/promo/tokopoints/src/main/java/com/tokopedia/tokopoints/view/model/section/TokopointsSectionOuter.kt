@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class TokopointsSectionOuter(
     @SerializedName("tokopointsHomepage")
-    var sectionContent: TokopointsSection? = TokopointsSection()
+    var sectionContent: TokopointsSection = TokopointsSection()
 )

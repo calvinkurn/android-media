@@ -7,5 +7,5 @@ import com.tokopedia.tokopoints.view.model.CouponValueEntity
 data class LayoutCouponAttr(
     @SerializedName("couponList")
     @Expose
-    var couponList: List<CouponValueEntity?>? = null
+    var couponList: MutableList<CouponValueEntity> = mutableListOf()
 )

@@ -6,5 +6,5 @@ import com.google.gson.annotations.SerializedName
 data class LayoutCategoryAttr(
     @SerializedName("categoryTokopointsList")
     @Expose
-    var categoryTokopointsList: List<CategoryTokopointsList?>? = null
+    var categoryTokopointsList: List<CategoryTokopointsList> = listOf()
 )

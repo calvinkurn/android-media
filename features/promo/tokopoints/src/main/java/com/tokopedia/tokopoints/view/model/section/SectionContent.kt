@@ -5,44 +5,44 @@ import com.google.gson.annotations.SerializedName
 
 data class SectionContent(
     @SerializedName("backgroundImgURLMobile")
-    var backgroundImgURLMobile: String? = "",
+    var backgroundImgURLMobile: String = "",
     @SerializedName("layoutType")
     @Expose
     var layoutType: String = "",
     @SerializedName("sectionTitle")
     @Expose
-    var sectionTitle: String? = null,
+    var sectionTitle: String = "",
     @SerializedName("sectionSubTitle")
     @Expose
-    var sectionSubTitle: String? = null,
+    var sectionSubTitle: String = "",
     @SerializedName("countdownAttr")
     @Expose
-    var countdownAttr: CountdownAttr? = null,
+    var countdownAttr: CountdownAttr = CountdownAttr(),
     @SerializedName("cta")
     @Expose
-    var cta: Cta? = null,
+    var cta: Cta = Cta(),
     @SerializedName("layoutCategoryAttr")
     @Expose
-    var layoutCategoryAttr: LayoutCategoryAttr? = null,
+    var layoutCategoryAttr: LayoutCategoryAttr = LayoutCategoryAttr(),
     @SerializedName("layoutCouponAttr")
     @Expose
-    var layoutCouponAttr: LayoutCouponAttr? = null,
+    var layoutCouponAttr: LayoutCouponAttr = LayoutCouponAttr(),
     @SerializedName("layoutBannerAttr")
     @Expose
-    var layoutBannerAttr: LayoutBannerAttr? = null,
+    var layoutBannerAttr: LayoutBannerAttr = LayoutBannerAttr(),
     @SerializedName("layoutCatalogAttr")
     @Expose
-    var layoutCatalogAttr: LayoutCatalogAttr? = null,
+    var layoutCatalogAttr: LayoutCatalogAttr = LayoutCatalogAttr(),
     @SerializedName("layoutTickerAttr")
     @Expose
-    var layoutTickerAttr: LayoutTickerAttr? = null,
+    var layoutTickerAttr: LayoutTickerAttr = LayoutTickerAttr(),
     @SerializedName("layoutTopAdsAttr")
     @Expose
-    var layoutTopAdsAttr: LayoutTopAdsAttr? = null,
+    var layoutTopAdsAttr: LayoutTopAdsAttr = LayoutTopAdsAttr(),
     @SerializedName("layoutMerchantCouponAttr")
     @Expose
-    var layoutMerchantCouponAttr: LayoutMerchantCouponAttr? = null,
+    var layoutMerchantCouponAttr: LayoutMerchantCouponAttr = LayoutMerchantCouponAttr(),
     @SerializedName("layoutQuestWidgetAttr")
     @Expose
-    var layoutQuestWidgetAttr: LayoutQuestWidgetAttr? = null,
+    var layoutQuestWidgetAttr: LayoutQuestWidgetAttr = LayoutQuestWidgetAttr(),
 )

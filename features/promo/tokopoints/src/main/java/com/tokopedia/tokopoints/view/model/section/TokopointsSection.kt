@@ -4,5 +4,5 @@ import com.google.gson.annotations.SerializedName
 
 data class TokopointsSection(
     @SerializedName("sectionContent")
-    var sectionContent: List<SectionContent?>? = null
+    var sectionContent: MutableList<SectionContent> = mutableListOf()
 )

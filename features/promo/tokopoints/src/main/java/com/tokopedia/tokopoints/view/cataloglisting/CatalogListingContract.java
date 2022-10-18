@@ -4,11 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
-import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.tokopoints.view.model.CatalogBanner;
 import com.tokopedia.tokopoints.view.model.CatalogFilterBase;
-import com.tokopedia.tokopoints.view.model.LobDetails;
-import com.tokopedia.tokopoints.view.model.LuckyEggEntity;
 
 import java.util.List;
 

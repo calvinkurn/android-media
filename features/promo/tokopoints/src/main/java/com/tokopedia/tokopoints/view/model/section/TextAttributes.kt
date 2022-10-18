@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class TextAttributes(
     @SerializedName("text")
-    var text: String? = "",
+    var text: String = "",
     @SerializedName("color")
-    var color: String? = "",
+    var color: String = "",
     @SerializedName("isBold")
-    var isBold:Boolean?= false,
+    var isBold:Boolean= false,
 )
