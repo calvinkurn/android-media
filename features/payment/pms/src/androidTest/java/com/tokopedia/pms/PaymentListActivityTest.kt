@@ -40,7 +40,6 @@ class PaymentListActivityTest {
     var cassavaTestRule = CassavaTestRule(false)
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val idlingRes = PmsIdlingResource.getIdlingResource()
 
     @Before
     fun setUp() {
@@ -52,7 +51,6 @@ class PaymentListActivityTest {
             )
         )
 
-        IdlingRegistry.getInstance().register(idlingRes)
         login()
         setupGraphqlMockResponse {
             addMockResponse(
@@ -85,12 +83,12 @@ class PaymentListActivityTest {
     @After
     fun finish() {
         Intents.release()
-        IdlingRegistry.getInstance().unregister(idlingRes)
     }
 
     @Test
     fun validatePaymentListEvents() {
         actionTest {
+            Thread.sleep(5000)
             testChevronClick(0)
             Thread.sleep(5000)
             clickItemOnActionBottomSheet(0)
@@ -99,7 +97,6 @@ class PaymentListActivityTest {
             Thread.sleep(5000)
             clickDialogButton(false)
             Thread.sleep(5000)
-
             testCardClick(0)
             Thread.sleep(5000)
             clickItemOnDetailBottomSheet(0, com.tokopedia.pms.R.id.goToHowToPay)
@@ -115,6 +112,40 @@ class PaymentListActivityTest {
             finishTest()
         }
     }
+
+    @Test
+    fun validateChangeBankAccountEvents() {
+        actionTest {
+           //  change klic bca id
+            Thread.sleep(5000)
+            testChevronClick(1)
+            Thread.sleep(5000)
+            clickItemOnActionBottomSheet(0)
+            Thread.sleep(5000)
+            actionClickString("Terapkan")
+
+            // change bank account details
+            Thread.sleep(5000)
+            testChevronClick(2)
+            Thread.sleep(5000)
+            clickItemOnActionBottomSheet(0)
+            Thread.sleep(5000)
+            actionClickString("Terapkan")
+            Thread.sleep(5000)
+
+            testChevronClick(2)
+            Thread.sleep(5000)
+            clickItemOnActionBottomSheet(1)
+            Thread.sleep(5000)
+            pressBack()
+
+
+        } assertTest {
+            validate(cassavaTestRule, PAYMENT_EDIT_TRACKER_PATH)
+            finishTest()
+        }
+    }
+
 
     private fun login() = InstrumentationAuthHelper.loginInstrumentationTestUser1()
 
