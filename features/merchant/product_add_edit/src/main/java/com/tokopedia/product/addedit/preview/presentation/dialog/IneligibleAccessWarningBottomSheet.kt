@@ -13,7 +13,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     companion object {
-        private const val DEFAULT_IMAGE_URL = "https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access.png"
+        private const val DEFAULT_IMAGE_URL = "https://images.tokopedia.net/img/android/product-service/add-edit-product/Group.png"
 
         @JvmStatic
         fun newInstance() = IneligibleAccessWarningBottomSheet()
