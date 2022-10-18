@@ -8,7 +8,6 @@ import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import java.security.cert.TrustAnchor
 import javax.inject.Inject
 
 class ReplyBubbleOnBoarding @Inject constructor(
@@ -56,7 +55,7 @@ class ReplyBubbleOnBoarding @Inject constructor(
                     anchor!!, title, description, CoachMark2.POSITION_TOP
                 )
             )
-            coachMark?.showCoachMark(coachMarkItem)
+            coachMark?.showCoachMark(coachMarkItem, null)
             coachMark?.setOnDismissListener {
                 markAsShowed()
             }

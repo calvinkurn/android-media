@@ -164,6 +164,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import javax.inject.Inject
@@ -229,7 +232,6 @@ class ChatbotFragment :
 
     lateinit var mCsatResponse: WebSocketCsatResponse
     lateinit var attribute: Attributes
-    private var isBackAllowed = true
     private lateinit var ticker: Ticker
     private lateinit var dateIndicator: Typography
     private lateinit var dateIndicatorContainer: CardView
@@ -807,7 +809,7 @@ class ChatbotFragment :
             updateHasNextAfterState(chatReplies)
             enableLoadMore()
             checkReplyBubbleOnboardingStatus()
-            checkVideoUploadOnboardingStatus()
+       //     checkVideoUploadOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
         }
     }
@@ -1667,22 +1669,35 @@ class ChatbotFragment :
             guideline?.layoutParams = params
         }
     }
-
+    var hasBeenShown = false
     private fun checkReplyBubbleOnboardingStatus() {
-        val hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
-        if (!replyBubbleEnabled) {
-            return
-        }
-        recyclerView?.let {
-            if (!hasBeenShown) {
-                replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                    it,
-                    chatbotAdapter,
-                    reply_box,
-                    context
-                )
+    //        hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+//        if (!replyBubbleEnabled) {
+//            return
+//        }
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            delay(4000L)
+
+            recyclerView?.let {
+                if (!hasBeenShown) {
+                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+                        it,
+                        chatbotAdapter,
+                        recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark()),
+                        context
+                    )
+                    hasBeenShown = true
+                }
             }
+
         }
+
+    }
+
+    private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
+        val position =  chatbotAdapter.getMostRecentTokopediaCareMessage()
+        return position
     }
 
     private fun checkVideoUploadOnboardingStatus() {
@@ -1734,6 +1749,12 @@ class ChatbotFragment :
                 showBottomLoading()
                 presenter.getBottomChat(messageId, onSuccessGetBottomChatData(), onErrorGetBottomChat(), onGetChatRatingListMessageError)
             }
+
+            override fun onScrolled() {
+                replyBubbleOnBoarding.dismiss()
+                videoUploadOnBoarding.dismiss()
+            }
+
         }.also {
             recyclerView?.addOnScrollListener(it)
         }
@@ -1943,7 +1964,7 @@ class ChatbotFragment :
         isConnectedToAgent = state
         replyBubbleEnabled = state
         checkReplyBubbleOnboardingStatus()
-        checkVideoUploadOnboardingStatus()
+ //       checkVideoUploadOnboardingStatus()
         createAttachmentMenus()
     }
 
