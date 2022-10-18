@@ -252,5 +252,4 @@
     <string name="play_bro_pinned_product_info">Pin Dipasang</string>
     <string name="play_bro_pinned_coachmark_desc">Pasang pin di produk agar penonton tahu\nkalau lagi kamu membahasnya.</string>
     <string name="play_bro_pin_product_failed">Tunggu 5 detik untuk pin produk ya</string>
-    <string name="play_bro_custom_error_handler_msg">%s. Kode Error: (%s)</string>
 </resources>
