@@ -1,17 +1,9 @@
 package com.tokopedia.home_account
 
-import android.app.Activity
-import android.app.Instrumentation
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.tokopedia.home_account.base.HomeAccountTest
-import com.tokopedia.home_account.common.ViewActionUtils
 import com.tokopedia.home_account.utils.QueryUtils
 import com.tokopedia.home_account.utils.ViewUtils
 import com.tokopedia.test.application.annotations.CassavaTest

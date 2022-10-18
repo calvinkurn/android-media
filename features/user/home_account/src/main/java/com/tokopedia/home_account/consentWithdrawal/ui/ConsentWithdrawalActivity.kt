@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
-class ConsentWithdrawalActivity: BaseSimpleActivity() {
+class ConsentWithdrawalActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
         return intent.data?.getQueryParameter(ApplinkConstInternalUserPlatform.GROUP_ID)?.let {

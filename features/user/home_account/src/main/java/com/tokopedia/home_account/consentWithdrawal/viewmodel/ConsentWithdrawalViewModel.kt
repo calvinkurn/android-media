@@ -34,9 +34,11 @@ class ConsentWithdrawalViewModel @Inject constructor(
 
     fun getConsentPurposeByGroup(groupId: Int) {
         launchCatchError(coroutineContext, {
-            val response = getConsentPurposeByGroupUseCase(mapOf(
+            val response = getConsentPurposeByGroupUseCase(
+                mapOf(
                 GetConsentPurposeByGroupUseCase.PARAM_GROUP_ID to groupId
-            ))
+            )
+            )
 
             if (response.consentGroup.isSuccess) {
                 _consentPurpose.value = Success(response.consentGroup)
@@ -55,11 +57,13 @@ class ConsentWithdrawalViewModel @Inject constructor(
     ) {
         launchCatchError(coroutineContext, {
             val response = submitConsentPreferenceUseCase(
-                SubmitConsentPurposeReq(PurposesParam(
+                SubmitConsentPurposeReq(
+                    PurposesParam(
                     purposeID = purposeID,
                     transactionType = transactionType.alias,
                     version = "1"
-                ))
+                )
+                )
             ).also {
                 it.data.position = position
             }

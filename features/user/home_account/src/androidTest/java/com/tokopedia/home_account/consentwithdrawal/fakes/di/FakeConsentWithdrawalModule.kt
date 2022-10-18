@@ -26,7 +26,7 @@ class FakeConsentWithdrawalModule {
     fun provideGetConsentGroupListUseCase(
         @ApplicationContext repositoryStub: ConsentWithdrawalRepositoryStub,
         dispatchers: CoroutineDispatchers
-    ) : GetConsentGroupListUseCase {
+    ): GetConsentGroupListUseCase {
         return GetConsentGroupListUseCase(repositoryStub, dispatchers)
     }
 
@@ -35,7 +35,7 @@ class FakeConsentWithdrawalModule {
     fun provideGetConsentPurposeByGroupUseCase(
         @ApplicationContext repositoryStub: ConsentWithdrawalRepositoryStub,
         dispatchers: CoroutineDispatchers
-    ) : GetConsentPurposeByGroupUseCase {
+    ): GetConsentPurposeByGroupUseCase {
         return GetConsentPurposeByGroupUseCase(repositoryStub, dispatchers)
     }
 
@@ -44,7 +44,7 @@ class FakeConsentWithdrawalModule {
     fun provideSubmitConsentPreferenceUseCase(
         @ApplicationContext repositoryStub: ConsentWithdrawalRepositoryStub,
         dispatchers: CoroutineDispatchers
-    ) : SubmitConsentPreferenceUseCase {
+    ): SubmitConsentPreferenceUseCase {
         return SubmitConsentPreferenceUseCase(repositoryStub, dispatchers)
     }
 }

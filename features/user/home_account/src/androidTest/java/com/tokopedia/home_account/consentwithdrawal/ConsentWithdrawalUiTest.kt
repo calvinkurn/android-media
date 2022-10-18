@@ -26,10 +26,12 @@ class ConsentWithdrawalUiTest {
 
     @get:Rule
     var activityRule = IntentsTestRule(
-        ConsentWithdrawalActivity::class.java, false, false
+        ConsentWithdrawalActivity::class.java,
+        false,
+        false
     )
 
-    private var repositoryStub : ConsentWithdrawalRepositoryStub? = null
+    private var repositoryStub: ConsentWithdrawalRepositoryStub? = null
     private val applicationContext = InstrumentationRegistry
         .getInstrumentation()
         .context
@@ -46,7 +48,8 @@ class ConsentWithdrawalUiTest {
             IntentMatchers.anyIntent()
         ).respondWith(
             Instrumentation.ActivityResult(
-                Activity.RESULT_OK, null
+                Activity.RESULT_OK,
+                null
             )
         )
     }
@@ -71,7 +74,6 @@ class ConsentWithdrawalUiTest {
         activityRule.launchActivity(intent)
 
         consentWithdrawalRobot {
-
         } validateUi {
             shouldViewMandatoryPurposeSection()
             shouldViewOptionalPurposeSection()

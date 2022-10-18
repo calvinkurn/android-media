@@ -1,6 +1,5 @@
 package com.tokopedia.home_account.consentWithdrawal.ui.adapter.viewholder
 
-import android.text.SpannableString
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.LayoutRes
@@ -34,7 +33,6 @@ class OptionalPurposeViewHolder(
 
             itemSwitch.apply {
                 isChecked = isActive
-                
                 setOnClickListener {
                     itemSwitch.isChecked = !itemSwitch.isChecked
                     listener.onToggleClicked(layoutPosition, isActive, item)

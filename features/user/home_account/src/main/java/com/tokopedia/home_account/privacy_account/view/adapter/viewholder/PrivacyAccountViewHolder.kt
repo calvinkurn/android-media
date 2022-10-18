@@ -15,7 +15,7 @@ import com.tokopedia.utils.view.binding.noreflection.viewBinding
 class PrivacyAccountViewHolder(
     private val listener: PrivacyAccountListener,
     view: View
-): RecyclerView.ViewHolder(view) {
+) : RecyclerView.ViewHolder(view) {
 
     private val itemBinding by viewBinding(ViewItemAccountPrivacyBinding::bind)
 

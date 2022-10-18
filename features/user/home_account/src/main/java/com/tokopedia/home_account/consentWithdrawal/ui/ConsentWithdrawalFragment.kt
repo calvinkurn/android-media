@@ -161,7 +161,7 @@ class ConsentWithdrawalFragment :
         isActive: Boolean,
         data: ConsentPurposeItemDataModel
     ) {
-        val intent = when(TransactionType.map(data.consentStatus)) {
+        val intent = when (TransactionType.map(data.consentStatus)) {
             TransactionType.OPT_IN -> {
                 RouteManager.getIntent(context, data.optIntAppLink)
             }

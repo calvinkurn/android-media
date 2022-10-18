@@ -8,10 +8,12 @@ import com.tokopedia.home_account.common.di.FakeAppModule
 import dagger.Component
 
 @ApplicationScope
-@Component(modules = [
+@Component(
+    modules = [
     FakeAppModule::class,
     FakeConsentWithdrawalModule::class
-])
+]
+)
 interface FakeConsentWithdrawalComponent : BaseAppComponent {
 
     @ApplicationContext

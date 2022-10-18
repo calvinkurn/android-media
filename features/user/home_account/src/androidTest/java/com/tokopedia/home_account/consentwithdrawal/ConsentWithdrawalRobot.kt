@@ -22,57 +22,71 @@ infix fun ConsentWithdrawalRobot.validateUi(
 
 class ConsentWithdrawalRobot {
     fun clickOnMandatoryPurpose() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(R.id.itemButtonLayout),
             isDisplayed()
-        )).perform(click())
+        )
+        ).perform(click())
     }
 
     fun clickOnOptionalPurpose() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(R.id.itemSwitch),
             isDisplayed()
-        )).perform(click())
+        )
+        ).perform(click())
     }
 
     fun clickAgreeOnPopup() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withText("Ya, Matikan"),
             isDisplayed()
-        )).perform(click())
+        )
+        ).perform(click())
     }
 }
 
 class ConsentWithdrawalUiValidation {
     fun shouldViewMandatoryPurposeSection() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(R.id.itemTitle),
             withText("Penggunaan data utama"),
             isDisplayed()
-        ))
+        )
+        )
     }
 
     fun shouldViewOptionalPurposeSection() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(R.id.itemTitle),
             withText("Penggunaan data tambahan"),
             isDisplayed()
-        ))
+        )
+        )
     }
 
     fun shouldViewPopupConfirmation() {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(com.tokopedia.dialog.R.id.dialog_title),
             withText("Matikan penggunaan datamu?"),
             isDisplayed()
-        ))
+        )
+        )
     }
 
     private fun isSwitchToggleActive(isActive: Boolean) {
-        waitOnView(allOf(
+        waitOnView(
+            allOf(
             withId(R.id.itemSwitch),
             isDisplayed()
-        )).check(matches(if (isActive) isNotChecked() else isChecked()))
+        )
+        ).check(matches(if (isActive) isNotChecked() else isChecked()))
     }
 
     fun shouldToggleActive() {

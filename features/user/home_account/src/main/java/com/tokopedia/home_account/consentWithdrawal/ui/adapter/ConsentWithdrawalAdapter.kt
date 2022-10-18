@@ -21,7 +21,7 @@ class ConsentWithdrawalAdapter(
             .addDelegate(OptionalPurposeAdapterDelegate(optionalListener))
     }
 
-    private fun getPurposePosition(purposeId: String) : Int {
+    private fun getPurposePosition(purposeId: String): Int {
         itemList.forEachIndexed { index, consentWithdrawalUiModel ->
             if (consentWithdrawalUiModel is MandatoryPurposeUiModel) {
                 val item = consentWithdrawalUiModel.data
@@ -48,13 +48,17 @@ class ConsentWithdrawalAdapter(
         setItems(
             itemList.mapIndexed { index, consentWithdrawalUiModel ->
                 if (consentWithdrawalUiModel is MandatoryPurposeUiModel && index == position) {
-                    consentWithdrawalUiModel.copy(data = consentWithdrawalUiModel.data.apply {
+                    consentWithdrawalUiModel.copy(
+                        data = consentWithdrawalUiModel.data.apply {
                         consentStatus = transactionType
-                    })
+                    }
+                    )
                 } else if (consentWithdrawalUiModel is OptionalPurposeUiModel && index == position) {
-                    consentWithdrawalUiModel.copy(data = consentWithdrawalUiModel.data.apply {
+                    consentWithdrawalUiModel.copy(
+                        data = consentWithdrawalUiModel.data.apply {
                         consentStatus = transactionType
-                    })
+                    }
+                    )
                 } else {
                     consentWithdrawalUiModel
                 }

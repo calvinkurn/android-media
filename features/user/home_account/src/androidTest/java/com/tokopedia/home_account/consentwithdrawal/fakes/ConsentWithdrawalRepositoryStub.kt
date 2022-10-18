@@ -28,7 +28,7 @@ class ConsentWithdrawalRepositoryStub @Inject constructor() : GraphqlRepository 
         requests: List<GraphqlRequest>,
         cacheStrategy: GraphqlCacheStrategy
     ): GraphqlResponse {
-        return when(testCase) {
+        return when (testCase) {
             ConsentWithdrawalTestCase.LOAD_CONSENT_GROUP_LIST -> {
                 GqlMockUtil.createSuccessResponse(
                     FakeGetConsentGroupListResponse.getResponse()

@@ -8,12 +8,15 @@ import com.tokopedia.home_account.consentWithdrawal.ui.ConsentWithdrawalFragment
 import dagger.Component
 
 @ActivityScope
-@Component(modules = [
+@Component(
+    modules = [
     ConsentWithdrawalModule::class,
     ConsentWithdrawalViewModelModule::class
-], dependencies = [
+],
+    dependencies = [
     BaseAppComponent::class
-])
+]
+)
 interface ConsentWithdrawalComponent {
     fun inject(fragment: ConsentWithdrawalFragment)
 }
