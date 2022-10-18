@@ -134,7 +134,6 @@ class FeedViewModel @Inject constructor(
     }
 
     fun trackVisitChannel(channelId: String,rowNumber: Int) {
-
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             trackVisitChannelBroadcasterUseCase.setRequestParams(FeedBroadcastTrackerUseCase.createParams(channelId))
             val trackResponse = trackVisitChannelBroadcasterUseCase.executeOnBackground()
@@ -147,7 +146,6 @@ class FeedViewModel @Inject constructor(
         }
     }
     fun trackLongVideoView(activityId: String, rowNumber: Int) {
-
         viewModelScope.launchCatchError(baseDispatcher.io, block = {
             feedXTrackViewerUseCase.setRequestParams(FeedXTrackViewerUseCase.createParams(activityId))
             val trackResponse = feedXTrackViewerUseCase.executeOnBackground()
