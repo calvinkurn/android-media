@@ -2,11 +2,11 @@ package com.tokopedia.feedcomponent.shoprecom
 
 import android.view.View
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
+import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
+import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetViewModel
 
 /**
  * created by fachrizalmrsln on 14/10/22
@@ -15,18 +15,15 @@ class ShopRecomWidgetCarousel(
     itemView: View,
     private val shopRecomWidgetCallback: ShopRecomWidgetCallback,
     private val lifecycleOwner: LifecycleOwner
-) : RecyclerView.ViewHolder(itemView), ShopRecomWidgetCallback {
+) : AbstractViewHolder<ShopRecomWidgetViewModel>(itemView), ShopRecomWidgetCallback {
 
     private val shopRecomWidgetCarousel = itemView as ShopRecomWidget
 
-    fun bind(data: ShopRecomUiModel) {
+    override fun bind(element: ShopRecomWidgetViewModel?) {
+        val data = element?.shopRecomUiModel ?: return
         shopRecomWidgetCarousel.setListener(lifecycleOwner, shopRecomWidgetCallback)
         shopRecomWidgetCarousel.setData(data.title, data.items)
         shopRecomWidgetCarousel.showContentShopRecom()
-    }
-
-    companion object {
-        val layout = R.layout.layout_shop_recommendation_carousel
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {
@@ -48,6 +45,10 @@ class ShopRecomWidgetCarousel(
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
         shopRecomWidgetCallback.onShopRecomItemImpress(item, postPosition)
+    }
+
+    companion object {
+        val LAYOUT = R.layout.layout_shop_recommendation_carousel
     }
 
 }

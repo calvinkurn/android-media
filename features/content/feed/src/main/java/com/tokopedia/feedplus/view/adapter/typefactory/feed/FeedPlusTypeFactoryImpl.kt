@@ -30,7 +30,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
-import com.tokopedia.feedplus.view.adapter.viewholder.shoprecomwidget.ShopRecomWidgetViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
@@ -107,7 +106,7 @@ class FeedPlusTypeFactoryImpl(
     }
 
     override fun type(shopRecomWidgetViewModel: ShopRecomWidgetViewModel): Int {
-        return ShopRecomWidgetViewHolder.LAYOUT
+        return ShopRecomWidgetCarousel.LAYOUT
     }
 
     override fun type(shimmerUiModel: ShimmerUiModel): Int {
@@ -161,10 +160,8 @@ class FeedPlusTypeFactoryImpl(
                         )
                 )
             }
-            ShopRecomWidgetViewHolder.LAYOUT -> {
-                viewHolder = ShopRecomWidgetViewHolder(
-                    ShopRecomWidgetCarousel(view, shopRecomCallback, context)
-                )
+            ShopRecomWidgetCarousel.LAYOUT -> {
+                viewHolder = ShopRecomWidgetCarousel(view, shopRecomCallback, context)
             }
             ShimmerViewHolder.LAYOUT -> {
                 viewHolder = ShimmerViewHolder(view)
