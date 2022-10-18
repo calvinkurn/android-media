@@ -402,6 +402,7 @@ class CampaignDetailViewModel @Inject constructor(
             isMultiwarehouse,
             isParentProduct,
             totalChild,
+            totalSubsidy,
             soldCount,
             mainStock,
             name,

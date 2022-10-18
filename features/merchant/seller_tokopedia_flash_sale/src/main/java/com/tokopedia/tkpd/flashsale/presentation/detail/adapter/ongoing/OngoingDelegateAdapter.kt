@@ -87,12 +87,7 @@ class OngoingDelegateAdapter(
         }
 
         private fun Typography.setSubsidy(item: OngoingItem) {
-            var subsidyAmount = 0L
-            if (item.isMultiwarehouse) {
-                item.warehouses.forEach { warehouse ->
-                    subsidyAmount += warehouse.subsidy.subsidyAmount
-                }
-            }
+            val subsidyAmount = item.totalSubsidy
             if (subsidyAmount.isMoreThanZero()) {
                 this.apply {
                     visible()

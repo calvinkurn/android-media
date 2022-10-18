@@ -9,6 +9,7 @@ data class OngoingItem(
     val isMultiwarehouse: Boolean,
     val isParentProduct: Boolean,
     val totalChild: Int,
+    val totalSubsidy: Long,
     val soldCount: Int,
     val mainStock: Int,
     val name: String,
