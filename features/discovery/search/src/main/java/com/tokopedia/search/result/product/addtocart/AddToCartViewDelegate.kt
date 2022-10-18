@@ -28,7 +28,6 @@ import javax.inject.Inject
 @SearchScope
 class AddToCartViewDelegate @Inject constructor(
     private val searchNavigationListener: SearchNavigationListener?,
-    private val topAdsUrlHitter: TopAdsUrlHitter,
     searchParameterProvider: SearchParameterProvider,
     classNameProvider: ClassNameProvider,
     @SearchContext
@@ -42,10 +41,6 @@ class AddToCartViewDelegate @Inject constructor(
     QueryKeyProvider by queryKeyProvider,
     ApplinkOpener by ApplinkOpenerDelegate,
     ClassNameProvider by classNameProvider {
-
-    override fun trackAddToCart(trackingData: InspirationCarouselTrackingUnification.Data) {
-
-    }
 
     override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
         getFragment().view?.let {
@@ -82,22 +77,7 @@ class AddToCartViewDelegate @Inject constructor(
         }
     }
 
-    override fun trackAddToCartVariant(addToCartData: AddToCartData) {
-//        product.asSearchComponentTracking(queryKey).click(TrackApp.getInstance().gtm)
-    }
-
     override fun updateSearchBarNotification() {
         searchNavigationListener?.updateSearchBarNotification()
-    }
-
-    override fun trackAdsClick(addToCartData: AddToCartData) {
-        topAdsUrlHitter.hitClickUrl(
-            className,
-            addToCartData.topAdsClickUrl,
-            addToCartData.productId,
-            addToCartData.productName,
-            addToCartData.imageUrl,
-            SearchConstant.TopAdsComponent.ORGANIC_ADS
-        )
     }
 }

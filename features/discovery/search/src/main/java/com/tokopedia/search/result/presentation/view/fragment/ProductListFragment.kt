@@ -154,8 +154,7 @@ class ProductListFragment: BaseDaggerFragment(),
     SearchParameterProvider,
     FragmentProvider,
     ClassNameProvider,
-    ScreenNameProvider,
-    AddToCartTracking {
+    ScreenNameProvider {
 
     companion object {
         private const val SCREEN_SEARCH_PAGE_PRODUCT_TAB = "Search result - Product tab"

@@ -112,6 +112,14 @@ interface ProductListSectionContract {
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
+        fun trackItemClick(productItemDataView: ProductItemDataView)
+        fun trackAddToCartSuccess(productItemDataView: ProductItemDataView)
+        fun openAddToCartToaster(message: String, isSuccess: Boolean)
+        fun openVariantBottomSheet(
+            data: ProductItemDataView,
+            type: String,
+        )
+        fun updateSearchBarNotification()
     }
 
     interface Presenter : CustomerPresenter<View>, Pagination, BannerAdsPresenter {
@@ -151,5 +159,7 @@ interface ProductListSectionContract {
         )
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
         val suggestedRelatedKeyword: String
+        val productAddedToCart: ProductItemDataView
+        fun addToCart(data: ProductItemDataView?)
     }
 }
