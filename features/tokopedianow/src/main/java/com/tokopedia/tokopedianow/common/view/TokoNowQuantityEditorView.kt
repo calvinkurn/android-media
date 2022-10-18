@@ -144,13 +144,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             cancelTimer()
             startTimer()
         } else if (currentState == R.id.startWithValue) {
-            editText.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            editText.setPadding(
-                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
-                DEFAULT_DP,
-                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
-                DEFAULT_DP
-            )
+            setEditTextWidthAndPadding()
         }
     }
 
@@ -237,6 +231,16 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWidthAndPadding() {
+        editText.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+        editText.setPadding(
+            getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+            DEFAULT_DP,
+            getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+            DEFAULT_DP
+        )
+    }
+
     private fun LayoutTokopedianowQuantityEditorViewBinding.expandAnimationWhenStartingWithValue() {
         root.setTransition(R.id.startWithValue, R.id.end)
         root.transitionToEnd()
@@ -249,6 +253,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
                 counter = quantity
                 editText.setText(counter.toString())
                 binding.root.setTransition(R.id.startWithValue, R.id.end)
+                setEditTextWidthAndPadding()
                 setEditTextWhenStartingWithValueAnimation()
             }
         }
