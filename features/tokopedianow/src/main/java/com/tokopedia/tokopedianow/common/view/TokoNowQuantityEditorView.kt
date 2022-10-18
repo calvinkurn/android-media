@@ -13,7 +13,6 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
-import com.tokopedia.tokopedianow.common.util.ViewUtil.setDimenAsTextSize
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import java.util.Timer
@@ -30,7 +29,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
         private const val DEFAULT_DP = 0
-        private const val NO_PROGRESS_ANIMATION = 0F
     }
 
     private var binding: LayoutTokopedianowQuantityEditorViewBinding
@@ -145,6 +143,14 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             editText.setSelection(text.length)
             cancelTimer()
             startTimer()
+        } else if (currentState == R.id.startWithValue) {
+            editText.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            editText.setPadding(
+                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+                DEFAULT_DP,
+                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
+                DEFAULT_DP
+            )
         }
     }
 
@@ -223,31 +229,17 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWhenStartingWithValueAnimation() {
-        editText.apply {
-            layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
-            setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
-            setTextColor(getEnabledColor(true))
-            setPadding(
-                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
-                DEFAULT_DP,
-                getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
-                DEFAULT_DP
-            )
-
-            setOnTouchListener { _, motionEvent ->
-                if (motionEvent.action == KeyEvent.ACTION_DOWN) {
-                    expandAnimationWhenStartingWithValue()
-                }
-                true
+        editText.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == KeyEvent.ACTION_DOWN) {
+                expandAnimationWhenStartingWithValue()
             }
+            true
         }
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.expandAnimationWhenStartingWithValue() {
         root.setTransition(R.id.startWithValue, R.id.end)
         root.transitionToEnd()
-        editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
-        editText.setTextColor(getResourceColor(com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         setOnTouchListener(null)
     }
 

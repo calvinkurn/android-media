@@ -133,8 +133,15 @@
             android:translationZ="2dp"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintTop_toTopOf="parent"
-            motion:layout_constraintEnd_toEndOf="@+id/background"
-            motion:layout_constraintStart_toStartOf="@+id/background" />
+            motion:layout_constraintEnd_toEndOf="@id/add_button"
+            motion:layout_constraintStart_toStartOf="@id/sub_button">
+            <CustomAttribute
+                motion:attributeName="textSize"
+                motion:customFloatValue="14"/>
+            <CustomAttribute
+                motion:attributeName="textColor"
+                motion:customColorValue="@color/Unify_NN950"/>
+        </Constraint>
         <Constraint
             motion:layout_constraintEnd_toEndOf="parent"
             android:layout_width="46dp"
@@ -195,11 +202,21 @@
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp" />
+            motion:layout_constraintHorizontal_bias="1.0"
+            motion:layout_constraintStart_toStartOf="parent"
+            android:layout_marginEnd="8dp"
+            android:layout_marginStart="8dp">
+            <CustomAttribute
+                motion:attributeName="textSize"
+                motion:customFloatValue="16"/>
+            <CustomAttribute
+                motion:attributeName="textColor"
+                motion:customColorValue="@color/Unify_GN500"/>
+        </Constraint>
         <Constraint
             android:id="@+id/add_button"
             motion:layout_constraintEnd_toEndOf="parent"
-            android:layout_width="46dp"
+            android:layout_width="wrap_content"
             android:layout_height="46dp"
             motion:layout_constraintTop_toTopOf="parent"
             motion:layout_constraintBottom_toBottomOf="parent"
