@@ -1,4 +1,4 @@
-package com.tokopedia.graphql.interceptor
+package com.tokopedia.media.loader.interceptor
 
 import android.content.Context
 import com.tokopedia.user.session.UserSession
@@ -8,14 +8,15 @@ import okhttp3.Response
 class CdnMonitoringInterceptor(private val applicationContext: Context): Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
 
-        val cdnName: String = request.headers.get("x-tkpd-cdn-name") ?: ""
+        val response = chain.proceed(chain.request())
+
+        val cdnName: String = response.header("x-tkpd-cdn-name", "") ?: ""
         if (cdnName.isNotBlank()) {
             setCdnNameUserSession(cdnName)
         }
 
-        return chain.proceed(request)
+        return response
     }
 
     private fun setCdnNameUserSession(cdnName: String) {
