@@ -52,11 +52,9 @@ class CarouselVideoPlayer(context: Context) {
 
     private var exoPlayer: ExoPlayer? = SimpleExoPlayerUtils.create(
         context,
-        playerEventListener
+        playerEventListener,
+        Player.REPEAT_MODE_ONE,
     )
-        ?.apply {
-            repeatMode = Player.REPEAT_MODE_ONE
-        }
 
     private fun whenIsPlayingChanged(isPlaying: Boolean) {
         listener?.onIsPlayingChanged(isPlaying)

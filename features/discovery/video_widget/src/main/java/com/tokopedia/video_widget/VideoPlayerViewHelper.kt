@@ -18,7 +18,7 @@ import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.video_widget.util.DimensionUtils
 
 class VideoPlayerViewHelper(
-    var exoPlayerView: VideoPlayerView?
+    private var exoPlayerView: VideoPlayerView?
 ) : ExoPlayerControl {
     companion object {
         private const val MINIMUM_DENSITY_MATRIX = 1.5f

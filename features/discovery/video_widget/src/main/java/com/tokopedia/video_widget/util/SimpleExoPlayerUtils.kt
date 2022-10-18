@@ -38,13 +38,17 @@ internal object SimpleExoPlayerUtils {
         videoPlayer.volume = 0f
     }
 
-    private fun setRepeatMode(videoPlayer: SimpleExoPlayer) = synchronized(this) {
-        videoPlayer.repeatMode = Player.REPEAT_MODE_OFF
+    private fun setRepeatMode(
+        videoPlayer: SimpleExoPlayer,
+        repeatMode: Int,
+    ) = synchronized(this) {
+        videoPlayer.repeatMode = repeatMode
     }
 
     fun create(
         context: Context?,
         playerEventListener: Player.EventListener,
+        repeatMode: Int = Player.REPEAT_MODE_OFF,
     ): ExoPlayer? {
         context ?: return null
         val trackSelector = initTrackSelector(context)
@@ -58,7 +62,7 @@ internal object SimpleExoPlayerUtils {
             }
             .also {
                 mute(it)
-                setRepeatMode(it)
+                setRepeatMode(it, repeatMode)
             }
     }
 }

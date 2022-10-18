@@ -30,13 +30,8 @@ import kotlin.reflect.KClass
 
 class VideoPlayerAutoplay(
     private val remoteConfig: RemoteConfig,
-    private val supportedViewHolderType: List<KClass<out RecyclerView.ViewHolder>>,
     private var context: Context?,
 ) : CoroutineScope, LifecycleObserver {
-    companion object {
-        private const val VISIBILITY_PERCENTAGE_THRESHOLD = 50f
-    }
-
     private var productVideoAutoPlayJob: Job? = null
     private var videoPlayer: VideoPlayer? = null
 
@@ -135,7 +130,7 @@ class VideoPlayerAutoplay(
 
     fun setUp(recyclerView: RecyclerView) {
         if (isAutoplayProductVideoEnabled) {
-            exoPlayer = SimpleExoPlayerUtils.create(context, playerEventListener)
+            this.exoPlayer = SimpleExoPlayerUtils.create(context, playerEventListener)
             this.recyclerView = recyclerView
             recyclerView.addOnScrollListener(autoPlayScrollListener)
             recyclerView.adapter?.registerAdapterDataObserver(autoPlayAdapterDataObserver)
@@ -171,8 +166,7 @@ class VideoPlayerAutoplay(
         )
         for (index in firstVisibleItemIndex..lastVisibleItemIndex) {
             val viewHolder = recyclerView?.findViewHolderForAdapterPosition(index) ?: continue
-            val isSupportedViewHolder = viewHolder::class in supportedViewHolderType
-            if (viewHolder is VideoPlayerProvider && isSupportedViewHolder) {
+            if (viewHolder is VideoPlayerProvider && viewHolder.isAutoplayEnabled) {
                 val viewVisibilityPercentage = getViewVisibilityOnRecyclerView(
                     viewHolder.itemView,
                     recyclerViewPosition,
@@ -283,5 +277,9 @@ class VideoPlayerAutoplay(
     private fun clearQueue() {
         visibleVideoPlayers = emptyList()
         videoPlayerIterator = null
+    }
+
+    companion object {
+        private const val VISIBILITY_PERCENTAGE_THRESHOLD = 50f
     }
 }

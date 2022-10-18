@@ -13,8 +13,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SmallGridProductItemViewHolder(
     itemView: View,
-    productListener: ProductListener
-) : ProductItemViewHolder(itemView, productListener) {
+    productListener: ProductListener,
+    isAutoplayEnabled: Boolean,
+) : ProductItemViewHolder(itemView, productListener, isAutoplayEnabled) {
 
     companion object {
         @LayoutRes

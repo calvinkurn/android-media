@@ -100,8 +100,6 @@ import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
-import com.tokopedia.search.result.product.video.VideoAutoplayConstants.allSupportedVideoAutoplayType
-import com.tokopedia.search.result.product.video.VideoAutoplayConstants.videoCarouselSupportedVideoAutoplayType
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
@@ -129,7 +127,6 @@ import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import org.json.JSONArray
 import javax.inject.Inject
-import kotlin.reflect.KClass
 import com.tokopedia.wishlist_common.R as Rwishlist
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -220,6 +217,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject @Suppress("LateinitUsage")
     lateinit var applinkModifier: ApplinkModifier
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var productVideoAutoplay: VideoPlayerAutoplay
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -258,21 +259,6 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
-    private val productVideoAutoplaySupportedViewHolderType: List<KClass<out RecyclerView.ViewHolder>> by lazy {
-        if (isSneakPeekEnabled) {
-            allSupportedVideoAutoplayType
-        } else {
-            videoCarouselSupportedVideoAutoplayType
-        }
-    }
-
-    private val productVideoAutoplay: VideoPlayerAutoplay by lazy {
-        VideoPlayerAutoplay(
-            remoteConfig,
-            productVideoAutoplaySupportedViewHolderType,
-            context,
-        )
-    }
     private lateinit var videoCarouselWidgetCoordinator : VideoCarouselWidgetCoordinator
     private lateinit var networkMonitor : DefaultNetworkMonitor
 
@@ -501,7 +487,8 @@ class ProductListFragment: BaseDaggerFragment(),
             networkMonitor = networkMonitor,
             isUsingViewStub = remoteConfig.getBoolean(ENABLE_PRODUCT_CARD_VIEWSTUB),
             sameSessionRecommendationListener = sameSessionRecommendationListener,
-            recycledViewPool = recycledViewPool
+            recycledViewPool = recycledViewPool,
+            isSneakPeekEnabled = isSneakPeekEnabled,
         )
     }
 
