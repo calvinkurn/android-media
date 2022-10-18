@@ -335,6 +335,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     override fun onDestroyView() {
+        tokofoodSearchFilterTab?.removeListener()
         tokofoodSearchFilterTab = null
         searchParameter = null
         sortFilterBottomSheet = null
@@ -354,6 +355,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setupLayout() {
         setupAdapter()
         setupAddressWidget()
+        setupSortFilter()
     }
 
     private fun setupAdapter() {
@@ -372,6 +374,18 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
             bindChooseAddress(this@SearchResultFragment)
             addOnImpressionListener(addressWidgetImpressHolder) {
                 analytics.sendAddressWidgetImpressionTracking(getDestinationId())
+            }
+        }
+    }
+
+    private fun setupSortFilter() {
+        if (tokofoodSearchFilterTab == null) {
+            binding?.filterTokofoodSearchResult?.let { sortFilter ->
+                tokofoodSearchFilterTab = TokofoodSearchFilterTab(
+                    sortFilter,
+                    context,
+                    this
+                )
             }
         }
     }
@@ -533,15 +547,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     }
 
     private fun applySearchFilterTab(uiModels: List<TokofoodSortFilterItemUiModel>) {
-        if (tokofoodSearchFilterTab == null && uiModels.isNotEmpty()) {
-            binding?.filterTokofoodSearchResult?.let { sortFilter ->
-                tokofoodSearchFilterTab = TokofoodSearchFilterTab(
-                    sortFilter,
-                    context,
-                    this
-                )
-            }
-        }
         tokofoodSearchFilterTab?.setQuickFilter(uiModels)
     }
 
