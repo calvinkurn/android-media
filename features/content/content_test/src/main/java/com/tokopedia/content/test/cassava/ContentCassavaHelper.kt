@@ -1,4 +1,4 @@
-package com.tokopedia.play.test.cassava
+package com.tokopedia.content.test.cassava
 
 import com.tokopedia.analyticsdebugger.cassava.core.Status
 import com.tokopedia.analyticsdebugger.cassava.core.Validator

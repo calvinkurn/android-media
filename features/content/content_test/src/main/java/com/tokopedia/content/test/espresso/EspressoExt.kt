@@ -1,4 +1,4 @@
-package com.tokopedia.play.test.espresso
+package com.tokopedia.content.test.espresso
 
 import android.view.View
 import androidx.test.espresso.Espresso
