@@ -33,7 +33,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="typographyType">body_3</item>
         <item name="typographyWeight">bold</item>
-        <item name="android:textColor">@color/topads_heading_color</item> <!--Unify_N75_96-->
+        <item name="android:textColor">@color/Unify_N700_96</item>
     </style>
 
     <style name="CardView.Text">

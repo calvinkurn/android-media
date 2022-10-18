@@ -26,9 +26,9 @@ class TabLayoutViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val white = ContextCompat.getColor(itemView.context,
             com.tokopedia.topads.common.R.color.Unify_N0)
         val black = ContextCompat.getColor(itemView.context,
-            com.tokopedia.abstraction.R.color.font_black_secondary_54)
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950)
         val blackDisabled = ContextCompat.getColor(itemView.context,
-            com.tokopedia.abstraction.R.color.font_black_disabled_38)
+            com.tokopedia.unifyprinciples.R.color.Unify_NN900)
         if (isActive) {
             baseView.background =
                 ContextCompat.getDrawable(itemView.context, R.drawable.gradient_background)
