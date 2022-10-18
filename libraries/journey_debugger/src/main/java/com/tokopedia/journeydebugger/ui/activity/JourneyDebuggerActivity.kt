@@ -14,7 +14,7 @@ class JourneyDebuggerActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_simple_toolbar)
+        setContentView(R.layout.activity_journey_debugger)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         toolbar.subtitle = "Tokopedia"
