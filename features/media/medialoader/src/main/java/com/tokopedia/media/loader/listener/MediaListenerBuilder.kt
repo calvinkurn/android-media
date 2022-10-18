@@ -10,6 +10,8 @@ import com.tokopedia.media.loader.common.Properties
 import com.tokopedia.media.loader.tracker.IsIcon
 import com.tokopedia.media.loader.tracker.MediaLoaderTracker
 import com.tokopedia.media.loader.utils.adaptiveSizeImageRequest
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.media.loader.wrapper.MediaDataSource.Companion.mapTo as dataSource
 
 object MediaListenerBuilder {
@@ -20,6 +22,7 @@ object MediaListenerBuilder {
             properties: Properties,
             startTime: Long,
             listener: MediaListener?,
+            userSession: UserSessionInterface,
     ) = object : RequestListener<Bitmap> {
         override fun onLoadFailed(
                 e: GlideException?,
@@ -34,7 +37,8 @@ object MediaListenerBuilder {
                 context = context.applicationContext,
                 url = properties.data.toString(),
                 loadTime = loadTime,
-                exception = e
+                exception = e,
+                userSession = userSession
             )
             return false
         }

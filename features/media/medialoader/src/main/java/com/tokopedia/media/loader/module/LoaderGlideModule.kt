@@ -10,6 +10,7 @@ import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokopedia.config.GlobalConfig
 import okhttp3.OkHttpClient
 import java.io.InputStream
 import java.util.concurrent.TimeUnit
@@ -27,12 +28,12 @@ class LoaderGlideModule: AppGlideModule() {
     }
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-//        super.registerComponents(context, glide, registry)
-
-        val builder = OkHttpClient.Builder()
-        builder.addInterceptor(ChuckerInterceptor(context))
-        val factory = OkHttpUrlLoader.Factory(builder.build())
-        registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            val builder = OkHttpClient.Builder()
+            builder.addInterceptor(ChuckerInterceptor(context))
+            val factory = OkHttpUrlLoader.Factory(builder.build())
+            registry.replace(GlideUrl::class.java, InputStream::class.java, factory)
+        }
     }
 
     override fun isManifestParsingEnabled(): Boolean {

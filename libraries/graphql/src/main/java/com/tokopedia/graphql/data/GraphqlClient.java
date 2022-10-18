@@ -21,6 +21,7 @@ import com.tokopedia.graphql.data.db.GraphqlDatabase;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApi;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlApiSuspend;
 import com.tokopedia.graphql.data.source.cloud.api.GraphqlUrl;
+import com.tokopedia.graphql.interceptor.CdnMonitoringInterceptor;
 import com.tokopedia.graphql.interceptor.MockInterceptor;
 import com.tokopedia.graphql.util.BrotliKotlinCustomObject;
 import com.tokopedia.grapqhl.beta.notif.BetaInterceptor;
@@ -169,6 +170,7 @@ public class GraphqlClient {
         }
         tkpdOkHttpBuilder.addInterceptor(new GqlAkamaiBotInterceptor());
         tkpdOkHttpBuilder.addInterceptor(new BetaInterceptor(context));
+        tkpdOkHttpBuilder.addInterceptor(new CdnMonitoringInterceptor(context));
 
         if (GlobalConfig.isAllowDebuggingTools()) {
             tkpdOkHttpBuilder.addInterceptor(new DeprecatedApiInterceptor(context.getApplicationContext()));

@@ -187,4 +187,8 @@ public interface UserSessionInterface {
     boolean isMultiLocationShop();
 
     void setIsMultiLocationShop(boolean isMultiLocationShop);
+
+    String getCdnName();
+
+    void setCdnName(String cdnName);
 }

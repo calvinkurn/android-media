@@ -10,6 +10,8 @@ import com.tokopedia.logger.utils.Priority
 import com.tokopedia.media.common.data.MediaSettingPreferences
 import com.tokopedia.media.common.util.NetworkManager
 import com.tokopedia.media.loader.utils.ServerIpAddressLocator
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -32,6 +34,7 @@ object MediaLoaderTracker : CoroutineScope {
     private const val NOT_AVAILABLE = "not available"
     private const val CDN_IP_MAP_KEY = "remote_server_ip"
     private const val CDN_HOST_NAME_MAP_KEY = "remote_host_name"
+    private const val CDN_NAME_KEY = "cdn_name"
     private const val CDN_ERROR_DETAIL = "error_detail"
     private const val CDN_IMG_SIZE_NOT_AVAILBLE = "n/a"
 
@@ -87,7 +90,8 @@ object MediaLoaderTracker : CoroutineScope {
         context: Context,
         url: String,
         loadTime: String = "",
-        exception: GlideException?
+        exception: GlideException?,
+        userSession: UserSessionInterface
     ) {
         val pageName = try {
             context.javaClass.name.split(".").last()
@@ -115,6 +119,7 @@ object MediaLoaderTracker : CoroutineScope {
 
             map[CDN_IP_MAP_KEY] = ipInfo
             map[CDN_HOST_NAME_MAP_KEY] = hostName
+            map[CDN_NAME_KEY] = userSession.cdnName
             map[CDN_ERROR_DETAIL] = "localizedMessage=${exception?.localizedMessage}, cause=${exception?.cause}, rootCauses=${exception?.rootCauses}"
 
             ServerLogger.log(
