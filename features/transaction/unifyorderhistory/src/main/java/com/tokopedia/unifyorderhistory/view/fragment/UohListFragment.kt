@@ -89,6 +89,7 @@ import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
 import com.tokopedia.unifyorderhistory.data.model.CancelOrderQueryParams
 import com.tokopedia.unifyorderhistory.data.model.FlightQueryParams
 import com.tokopedia.unifyorderhistory.data.model.LsPrintData
+import com.tokopedia.unifyorderhistory.data.model.PmsNotification
 import com.tokopedia.unifyorderhistory.data.model.TrainQueryParams
 import com.tokopedia.unifyorderhistory.data.model.TrainResendEmailParam
 import com.tokopedia.unifyorderhistory.data.model.UohEmptyState
@@ -531,9 +532,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         dataObject = it.data,
                         typeLayout = UohConsts.TYPE_PMS_BUTTON
                     )
-                    uohItemAdapter.appendPmsButton(data) { position ->
-                        binding?.rvOrderList?.smoothScrollToPosition(position)
-                    }
+                    uohItemAdapter.appendPmsButton(data)
                 }
             }
         }
@@ -1662,9 +1661,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                 uohListViewModel.getUohPmsCounterResult.value?.let {
                     if (it is Success) {
                         val data = UohTypeData(dataObject = it.data, typeLayout = UohConsts.TYPE_PMS_BUTTON)
-                        uohItemAdapter.appendPmsButton(data) { position ->
-                            binding?.rvOrderList?.smoothScrollToPosition(position)
-                        }
+                        uohItemAdapter.appendPmsButton(data)
                     }
                 }
             } else {
@@ -1681,6 +1678,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val listRecomm = arrayListOf<UohTypeData>()
         if (!onLoadMoreRecommendation) {
             val searchBarIsNotEmpty = searchQuery.isNotEmpty()
+            var pmsButton: UohTypeData? = null
             val emptyStatus: UohEmptyState?
             when {
                 searchBarIsNotEmpty -> {
@@ -1701,6 +1699,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
                 else -> {
+                    pmsButton = UohTypeData(PmsNotification(), UohConsts.TYPE_PMS_BUTTON)
                     emptyStatus = activity?.resources?.let { resource ->
                         UohEmptyState(
                             URL_IMG_EMPTY_ORDER_LIST,
@@ -1710,6 +1709,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                     }
                 }
             }
+            pmsButton?.let { listRecomm.add(pmsButton) }
             emptyStatus?.let { emptyState -> UohTypeData(emptyState, UohConsts.TYPE_EMPTY) }?.let { uohTypeData -> listRecomm.add(uohTypeData) }
             listRecomm.add(UohTypeData(getString(R.string.uoh_recommendation_title), UohConsts.TYPE_RECOMMENDATION_TITLE))
             recommendationList.firstOrNull()?.recommendationItemList?.forEachIndexed { index, recommendationItem ->
