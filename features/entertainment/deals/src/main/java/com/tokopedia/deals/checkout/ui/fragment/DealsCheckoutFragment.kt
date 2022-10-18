@@ -146,21 +146,21 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
                 VOUCHER_RESULT_CODE -> {
                     val code = data?.extras?.getString(VOUCHER_CODE) ?: ""
                     val message = data?.extras?.getString(VOUCHER_MESSAGE) ?: ""
-                    val amount = data?.extras?.getInt(VOUCHER_DISCOUNT_AMOUNT) ?: Int.ZERO
+                    val amount = data?.extras?.getLong(VOUCHER_DISCOUNT_AMOUNT) ?: ZERO_LONG
                     val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
                     voucherCode = code
                     promoCode = code
-                    showPromoSuccess(code, message, amount.toLong(), isCancel)
+                    showPromoSuccess(code, message, amount, isCancel)
                 }
 
                 COUPON_RESULT_CODE -> {
                     val code = data?.extras?.getString(COUPON_CODE) ?: ""
                     val message = data?.extras?.getString(COUPON_MESSAGE) ?: ""
-                    val amount = data?.extras?.getInt(COUPON_DISCOUNT_AMOUNT) ?: Int.ZERO
+                    val amount = data?.extras?.getLong(VOUCHER_DISCOUNT_AMOUNT) ?: ZERO_LONG
                     val isCancel = data?.extras?.getBoolean(IS_CANCEL) ?: false
                     couponCode = code
                     promoCode = code
-                    showPromoSuccess(code, message, amount.toLong(), isCancel)
+                    showPromoSuccess(code, message, amount, isCancel)
                 }
             }
         }
