@@ -294,7 +294,7 @@ class MerchantVoucherTargetFragment : BaseListFragment<Visitable<VoucherTargetTy
                 // Fix blank color when dark mode activated.
                 textFiedlLabelText.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
                 textFieldInput.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700))
-                (((textFieldWrapper).getChildAt(1) as ViewGroup?)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
+                (((textFieldWrapper).getChildAt(1) as? ViewGroup)?.getChildAt(2) as? TextView)?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Neutral_N700_68))
 
                 textFieldInput.clearFocus()
                 val scrollToBottomAction = {
