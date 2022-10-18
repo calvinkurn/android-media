@@ -3,7 +3,6 @@ package com.tokopedia.home_recom.generator
 import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -11,13 +10,11 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_recom.HomeRecommendationActivity
-import com.tokopedia.home_recom.tracker.RecommendationMockResponseConfig
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -30,8 +27,6 @@ import com.tokopedia.home_recom.test.R
 @RunWith(AndroidJUnit4ClassRunner::class)
 class HomeRecomIdGenerator {
     companion object{
-        private const val TAG = "RecommendationAnalyticsTest"
-        private const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME = "tracker/recom/recom.json"
         private const val PACKAGE = "com.tokopedia.home_recom"
     }
 
@@ -69,16 +64,14 @@ class HomeRecomIdGenerator {
     private val fileWriter = FileWriter()
 
     @get:Rule
-    var activityRule = ActivityTestRule<HomeRecommendationActivity>(HomeRecommendationActivity::class.java, false, false)
+    var activityRule = ActivityTestRule(HomeRecommendationActivity::class.java, false, false)
 
     @get:Rule
     var cassavaTestRule = CassavaTestRule()
 
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-
     @Before
     fun setup() {
-        setupGraphqlMockResponse(RecommendationMockResponseConfig())
+        setupGraphqlMockResponse(RecommendationPageMockResponseConfig())
         activityRule.launchActivity(
                 HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
                     data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
@@ -86,12 +79,8 @@ class HomeRecomIdGenerator {
         )
     }
 
-    @After
-    fun dispose(){
-    }
-
     @Test
-    fun printResourceIdHomeLoggedIn() {
+    fun printResourceRecom() {
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val homeFragment = parentViewPrinter.printAsCSV(
                 view = activityRule.activity.findViewById(R.id.container_home_recom)
@@ -154,10 +143,10 @@ class HomeRecomIdGenerator {
     }
 
     private fun scrollHomeRecomRecyclerViewToPosition(
-        homeRecyclerView: RecyclerView,
+        homeRecomRecyclerView: RecyclerView,
         position: Int
     ) {
-        val layoutManager = homeRecyclerView.layoutManager as StaggeredGridLayoutManager
+        val layoutManager = homeRecomRecyclerView.layoutManager as StaggeredGridLayoutManager
         activityRule.runOnUiThread { layoutManager.scrollToPosition(position) }
     }
 }

@@ -8,13 +8,10 @@ object HomeRecomScreenshotTestHelper {
 
     fun getWidgetScreenshotList(): List<ScreenshotModel> {
         return listOf(
-            ScreenshotModel(name = "Header"),
-            ScreenshotModel(name = "Ticker"),
-            ScreenshotModel(name = "ATF1-Icon"),
-            ScreenshotModel(name = "ATF2-Icon"),
-            ScreenshotModel(name = "ATF3-Icon"),
-            ScreenshotModel(name = "ATF4-Icon"),
-            ScreenshotModel(name = "ATF5-Icon"),
+            ScreenshotModel(name = "ProductInfo"),
+            ScreenshotModel(name = "TitleCarouselVertical"),
+            ScreenshotModel(name = "ProductRecommendationVertical"),
+            ScreenshotModel(name = "RecommendationCarousel"),
         )
     }
 }
