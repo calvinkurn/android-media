@@ -186,7 +186,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
         val shipperProductIds = mutableListOf<Long>()
         _cplList.value.let {
             if (it is Success) {
-                it.data.shipperList.getOrNull(shipperGroupIndex).let {
+                it.data.shipperList.getOrNull(shipperGroupIndex)?.let { shipperGroup ->
                     shipperGroup.shipper.forEach { s ->
                         s.shipperProduct.forEach { sp ->
                             if (sp.isActive) {
