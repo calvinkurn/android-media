@@ -44,6 +44,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
+            contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
             contentTest                     : ":features:content:content_test",
             commonTopupBills                : ":features:recharge:common_topup_bills",
@@ -132,6 +133,7 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 

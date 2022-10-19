@@ -10,6 +10,8 @@
     <dimen name="play_dp_20">20dp</dimen>
     <dimen name="play_dp_22">22dp</dimen>
 
+    <dimen name="play_bro_toaster_bottom_margin">48dp</dimen>
+
     <dimen name="play_search_bar_radius">8dp</dimen>
     <dimen name="play_product_preview_radius">8dp</dimen>
 

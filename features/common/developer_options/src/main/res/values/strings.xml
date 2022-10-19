@@ -118,7 +118,17 @@
     <string name="input_resource_id">Please input Resource ID after #0x prefix</string>
     <string name="prefix_resource_id">#0x</string>
     <string name="prefix_resource_name">Resource name: </string>
+    <string name="hansel_patch_list">Hansel Patch List</string>
+    <string name="placeholder_searchbar_hansel">Search by Function Name or Patch Id</string>
+    <string name="title_button_hansel_patch_list">View Hansel Patch List</string>
+    <string name="btn_title_hansel">View Hansel Patch List</string>
+    <string name="label_is_device_test">Device Hansel Test: %1$s</string>
 
     <string name="enable_developer_options_on_notification">Enable Developer Options on Notification</string>
+    <string name="label_patch_name">Patch Name:</string>
+    <string name="label_patch_id">Patch ID:</string>
+    <string name="label_function_id">Function ID:</string>
+    <string name="label_function_name">Function Name:</string>
+    <string name="label_counter">Counter:</string>
 
 </resources>
