@@ -77,6 +77,7 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val result = restRepository.getResponse(restRequest).getData<String>()
+                    delay(30*1000)
                     if (impressionListener != null) {
                         if (result != null) {
                             impressionListener!!.onSuccess()
@@ -103,7 +104,6 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val headers = restRepository.getResponse(restRequest).headers;
-                    delay(30*1000)
                     if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
                             topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
