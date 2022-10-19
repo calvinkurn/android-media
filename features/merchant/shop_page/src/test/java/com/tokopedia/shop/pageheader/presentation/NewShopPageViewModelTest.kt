@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
@@ -91,6 +92,9 @@ class NewShopPageViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
+    lateinit var sharedPreferences: SharedPreferences
+
+    @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
@@ -125,6 +129,7 @@ class NewShopPageViewModelTest {
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
+                sharedPreferences,
                 testCoroutineDispatcherProvider
         )
     }
@@ -747,4 +752,54 @@ class NewShopPageViewModelTest {
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
 
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        val mockIsAtc = true
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+        } returns Unit
+        shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        val mockIsAtc = true
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+        } throws Exception()
+        shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+    }
+
+    @Test
+    fun `when saveAffiliateTrackerId success, then shared preferences getString should return mocked value`() {
+        val mockAffiliateChannel = "channel"
+        every { sharedPreferences.getString(any(), any()) } returns mockAffiliateChannel
+        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        assert(sharedPreferences.getString("", "") == mockAffiliateChannel)
+    }
+
+    @Test
+    fun `when saveAffiliateTrackerId error, then shared preferences getString should return empty value`() {
+        val mockAffiliateChannel = "channel"
+        every { sharedPreferences.getString(any(), any()) } returns ""
+        coEvery {
+            sharedPreferences.edit().putString(any(), any())
+        } throws Exception()
+        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        assert(sharedPreferences.getString("", "")?.isEmpty() == true)
+    }
 }

@@ -1511,6 +1511,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartAdd.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+        assert(viewModelShopPageProductListViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
     }
 
     @Test
@@ -1566,6 +1567,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartRemove.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+        assert(viewModelShopPageProductListViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == null)
     }
 
     @Test
@@ -1622,6 +1624,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+        assert(viewModelShopPageProductListViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
     }
 
     @Test
@@ -1654,6 +1657,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+        assert(viewModelShopPageProductListViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == false)
     }
 
     @Test

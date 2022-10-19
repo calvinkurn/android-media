@@ -1154,6 +1154,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartAdd.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+        assert(shopPageProductListResultViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
     }
 
     @Test
@@ -1209,6 +1210,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartRemove.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+        assert(shopPageProductListResultViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == null)
     }
 
     @Test
@@ -1265,6 +1267,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+        assert(shopPageProductListResultViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
     }
 
     @Test
@@ -1297,6 +1300,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+        assert(shopPageProductListResultViewModel.isCreateAffiliateCookieAtcDirectPurchase.value == false)
     }
 
     @Test
@@ -1370,5 +1374,56 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        val mockIsAtc = true
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+        } returns Unit
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcDirectPurchase(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
+        val mockAffiliateChannel = "channel"
+        val mockShopId = "456"
+        val mockIsAtc = true
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+        } throws Exception()
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcDirectPurchase(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+    }
+
+    @Test
+    fun `when call getShopAffiliateChannel success, then shopAffiliateChannel should return mocked value`() {
+        val mockAffiliateChannel = "channel"
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } returns mockAffiliateChannel
+        shopPageProductListResultViewModel.getShopAffiliateChannel()
+        assert(shopPageProductListResultViewModel.shopAffiliateChannel.value == mockAffiliateChannel)
+    }
+
+    @Test
+    fun `when getShopAffiliateChannel error, then shopAffiliateChannel should be null`() {
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } throws Exception()
+        shopPageProductListResultViewModel.getShopAffiliateChannel()
+        assert(shopPageProductListResultViewModel.shopAffiliateChannel.value == null)
     }
 }
