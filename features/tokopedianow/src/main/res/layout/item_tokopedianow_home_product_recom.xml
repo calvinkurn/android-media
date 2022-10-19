@@ -2,6 +2,6 @@
 <com.tokopedia.tokopedianow.common.view.TokoNowProductCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="104dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    app:cardCornerRadius="10dp"
+    app:cardCornerRadius="8dp"
     android:elevation="3dp"
-    android:layout_height="400dp" />
+    android:layout_height="wrap_content" />

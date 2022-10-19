@@ -10,12 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:translationZ="1dp"
-        app:layout_constraintBottom_toBottomOf="@+id/image_view"
+        app:layout_constraintBottom_toBottomOf="@+id/image_filter_view"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/image_view" />
+        app:layout_constraintStart_toStartOf="@+id/image_filter_view" />
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/image_view"
+    <com.tokopedia.tokopedianow.common.view.TokoNowWishlistButtonView
+        android:id="@+id/wishlist_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationZ="1dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/image_filter_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/image_filter_view" />
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/image_filter_view"
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:scaleType="centerCrop"
@@ -34,10 +45,10 @@
         android:maxLines="2"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
-        android:text="Terbaru"
         android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/image_view"
+        app:layout_constraintTop_toBottomOf="@+id/image_filter_view"
         app:typographyType="small"
         app:typographyWeight="bold"
         tools:text="Terbaru" />
@@ -52,6 +63,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:textColor="@color/Unify_NN950"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/assigned_value_typography"
@@ -60,28 +72,29 @@
         tools:text="Rp1.500.000" />
 
     <com.tokopedia.unifycomponents.Label
-        android:id="@+id/discount_label"
-        style="@style/TextView"
+        android:id="@+id/promo_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
+        android:visibility="gone"
         app:labelType="highlight_light_red"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_price_typography"
         app:labelTitle="100%" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/slashed_price_typography"
+        android:id="@+id/slash_price_typography"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_NN400"
-        app:layout_constraintBottom_toBottomOf="@+id/discount_label"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/promo_label"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/discount_label"
-        app:layout_constraintTop_toTopOf="@+id/discount_label"
+        app:layout_constraintStart_toEndOf="@+id/promo_label"
+        app:layout_constraintTop_toTopOf="@+id/promo_label"
         app:typographyType="small"
         tools:text="95000" />
 
@@ -94,9 +107,11 @@
         android:layout_marginEnd="8dp"
         android:textColor="@color/Unify_NN950"
         android:maxLines="2"
+        android:visibility="gone"
+        android:ellipsize="end"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/discount_label"
+        app:layout_constraintTop_toBottomOf="@+id/promo_label"
         app:typographyType="display_3"
         tools:text="Strawberry impor" />
 
@@ -110,6 +125,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/Unify_NN600"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_name_typography"
@@ -144,15 +160,15 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/similar_product_typography"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
         android:paddingBottom="8dp"
-        android:text="Pilihan Serupa"
-        android:visibility="gone"
         android:textColor="@color/Unify_GN500"
+        android:visibility="gone"
+        android:text="@string/tokopedianow_product_card_similar_product"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -181,7 +197,6 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
-        android:text="Tesedia"
         android:visibility="gone"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="@+id/progress_bar"
@@ -189,5 +204,15 @@
         app:layout_constraintTop_toBottomOf="@+id/progress_bar"
         app:typographyType="small"
         app:typographyWeight="bold" />
+
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/oos_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="4dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
