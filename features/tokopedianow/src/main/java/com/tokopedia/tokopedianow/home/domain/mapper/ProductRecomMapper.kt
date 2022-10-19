@@ -8,6 +8,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCartQuantity
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
@@ -49,7 +50,7 @@ object ProductRecomMapper {
         miniCartData: MiniCartSimplifiedData? = null
     ): List<RecommendationItem> {
         val recommendationItems = mutableListOf<RecommendationItem>()
-        channelGrids.forEach { grid ->
+        channelGrids.forEachIndexed { index, grid ->
             val quantity = getAddToCartQuantity(grid.id, miniCartData)
 
             recommendationItems.add(
@@ -79,7 +80,8 @@ object ProductRecomMapper {
                         labelGroupList = grid.labelGroup.map {
                             RecommendationLabel(title = it.title, type = it.type, position = it.position, imageUrl = it.url)
                         },
-                        quantity = quantity
+                        quantity = quantity,
+                        position = index + ADDITIONAL_POSITION
                 )
             )
         }

@@ -149,8 +149,6 @@ class PlayCoverSetupFragment @Inject constructor(
     override fun getScreenName(): String = "Play Cover Title Setup"
 
     override fun onInterceptBackPressed(): Boolean {
-        try { Toaster.snackBar.dismiss() } catch (e: Throwable) {}
-
         val state = viewModel.cropState
         val coverChangeState = viewModel.coverChangeState()
         return when {

@@ -19,6 +19,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.searchbar.navigation_component.icons.IconList
@@ -53,6 +54,7 @@ class HomeFragmentUiTest {
             setupGraphqlMockResponse(HomeMockResponseConfig())
             enableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupDynamicChannelQueryRemoteConfig()
             super.beforeActivityLaunched()
         }
     }

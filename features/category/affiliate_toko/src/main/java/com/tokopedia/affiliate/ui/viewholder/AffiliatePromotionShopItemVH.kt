@@ -5,11 +5,9 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.ALMOST_OOS
 import com.tokopedia.affiliate.AVAILABLE
 import com.tokopedia.affiliate.AffiliateAnalytics
-import com.tokopedia.affiliate.EMPTY_STOCK
-import com.tokopedia.affiliate.PRODUCT_INACTIVE
+import com.tokopedia.affiliate.SHOP_CLOSED
 import com.tokopedia.affiliate.SHOP_INACTIVE
 import com.tokopedia.affiliate.interfaces.PromotionClickInterface
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
@@ -159,14 +157,14 @@ class AffiliatePromotionShopItemVH(
     private fun sendClickEvent(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item?) {
         AffiliateAnalytics.trackEventImpression(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
-            AffiliateAnalytics.ActionKeys.CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE,
+            AffiliateAnalytics.ActionKeys.CLICK_SHOP_SEARCH_RESULT_PAGE,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             UserSession(itemView.context).userId,
-            item?.productID,
+            item?.itemId,
             adapterPosition + 1,
             item?.title,
-            "${item?.productID} - ${item?.commission?.amount} - ${getStatus(item)}",
-            AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_PROMOSIKAN_CLICK
+            "${item?.itemId} - ${item?.commission?.amount} - ${getStatus(item)}",
+            AffiliateAnalytics.ItemKeys.AFFILIATE_SEARCH_SHOP_CLICK
         )
     }
 
@@ -174,11 +172,9 @@ class AffiliatePromotionShopItemVH(
         var status = ""
         if (item?.status?.messages?.isNotEmpty() == true) {
             when (item.status?.messages?.first()?.messageType) {
-                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.AVAILABLE
-                ALMOST_OOS -> status = AffiliateAnalytics.LabelKeys.ALMOST_OOS
-                EMPTY_STOCK -> status = AffiliateAnalytics.LabelKeys.EMPTY_STOCK
-                PRODUCT_INACTIVE -> status = AffiliateAnalytics.LabelKeys.PRODUCT_INACTIVE
+                AVAILABLE -> status = AffiliateAnalytics.LabelKeys.SHOP_ACTIVE
                 SHOP_INACTIVE -> status = AffiliateAnalytics.LabelKeys.SHOP_INACTIVE
+                SHOP_CLOSED -> status = AffiliateAnalytics.LabelKeys.SHOP_CLOSED
             }
         }
         return status

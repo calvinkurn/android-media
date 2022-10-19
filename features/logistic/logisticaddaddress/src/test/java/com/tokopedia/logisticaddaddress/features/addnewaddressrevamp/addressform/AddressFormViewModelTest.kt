@@ -2,6 +2,7 @@ package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressfor
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.repository.KeroRepository
 import com.tokopedia.logisticCommon.data.response.*
@@ -145,5 +146,13 @@ class AddressFormViewModelTest {
         addressFormViewModel.source = source
 
         Assert.assertEquals(addressFormViewModel.source, source)
+    }
+
+    @Test
+    fun `verify save edit address data success from tokonow`() {
+        coEvery { repo.editAddress(any(), any()) } returns KeroEditAddressResponse.Data()
+        addressFormViewModel.source = ManageAddressSource.TOKONOW.source
+        addressFormViewModel.saveEditAddress(saveAddressDataModel)
+        verify { editAddressObserver.onChanged(match { it is Success }) }
     }
 }

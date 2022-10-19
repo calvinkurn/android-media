@@ -21,6 +21,7 @@ import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_DYNAMIC_CHANNEL_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_HEADER_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.MOCK_RECOMMENDATION_TAB_COUNT
 import com.tokopedia.home.ui.HomeMockValueHelper.setupAbTestRemoteConfig
+import com.tokopedia.home.ui.HomeMockValueHelper.setupDynamicChannelQueryRemoteConfig
 import com.tokopedia.home.util.HomeInstrumentationTestHelper.deleteHomeDatabase
 import com.tokopedia.home.util.HomeRecyclerViewIdlingResource
 import com.tokopedia.localizationchooseaddress.domain.model.LocalWarehouseModel
@@ -94,6 +95,7 @@ class HomeFragmentRefreshTest {
             setupGraphqlMockResponse(HomeMockResponseConfig())
             disableCoachMark(context)
             setupAbTestRemoteConfig()
+            setupDynamicChannelQueryRemoteConfig()
             dataChangedCount = 0
             setToLocation1()
             super.beforeActivityLaunched()

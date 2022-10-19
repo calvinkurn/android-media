@@ -36,16 +36,11 @@ class PlayBroInteractiveStartLiveStreamViewModelTest {
     private val mockException = uiModelBuilder.buildException()
     private val mockInteractiveConfigInactiveResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
         giveawayConfig = interactiveUiModelBuilder.buildGiveawayConfig(isActive = false),
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(isActive = false, showPrizeCoachMark = false),
+        quizConfig = interactiveUiModelBuilder.buildQuizConfig(isActive = false),
     )
     private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
         streamAllowed = true,
         channelId = "123"
-    )
-    private val mockInteractiveConfigResponse = interactiveUiModelBuilder.buildInteractiveConfigModel(
-        quizConfig = interactiveUiModelBuilder.buildQuizConfig(
-            showPrizeCoachMark = false,
-        )
     )
 
     init {

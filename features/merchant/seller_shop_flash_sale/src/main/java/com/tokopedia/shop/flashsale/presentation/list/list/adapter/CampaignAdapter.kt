@@ -102,13 +102,22 @@ class CampaignAdapter(
             binding.loader.isVisible = isLoading
             binding.imgMore.isVisible = campaign.status.isActive()
             binding.timer.isVisible = campaign.status.isUpcoming()
+            binding.tpgPackageInfo.handlePackageInfo(
+                R.string.sfs_placeholder_quota_resource,
+                campaign
+            )
+            binding.tpgEventRegistered.handleEventRegistered(
+                R.string.sfs_placeholder_event_registered,
+                campaign
+            )
             handleCampaignStatusIndicator(campaign)
         }
 
         private fun handleCampaignStatusIndicator(campaign: CampaignUiModel) {
             when {
                 campaign.status.isUpcoming() -> {
-                    val statusTextResourceId = if (campaign.thematicParticipation) R.string.sfs_selection else R.string.sfs_upcoming
+                    val statusTextResourceId =
+                        if (campaign.thematicParticipation) R.string.sfs_selection else R.string.sfs_upcoming
                     binding.tpgCampaignStatus.setStatus(statusTextResourceId)
                     binding.tpgCampaignStatus.textColor(Unify_YN400)
                     binding.imgCampaignStatusIndicator.setImageResource(R.drawable.ic_sfs_campaign_indicator_upcoming)
@@ -142,7 +151,7 @@ class CampaignAdapter(
                 binding.timer.timerFormat = TimerUnifySingle.FORMAT_HOUR
                 binding.timer.targetDate = campaign.startDate.removeTimeZone().toCalendar()
             } else {
-                binding.timer.timerFormat =  TimerUnifySingle.FORMAT_MINUTE
+                binding.timer.timerFormat = TimerUnifySingle.FORMAT_MINUTE
                 binding.timer.targetDate = campaign.startDate.toCalendar()
             }
         }
@@ -155,6 +164,24 @@ class CampaignAdapter(
         private fun Typography.textColor(@ColorRes resourceId: Int) {
             val color = ContextCompat.getColor(this.context, resourceId)
             this.setTextColor(color)
+        }
+
+        private fun Typography.handlePackageInfo(
+            @StringRes resourceId: Int,
+            campaign: CampaignUiModel
+        ) {
+            val packageInfo = campaign.packageInfo.packageName
+            this.isVisible = packageInfo.isNotEmpty()
+            this.text = this.context.getString(resourceId, packageInfo)
+        }
+
+        private fun Typography.handleEventRegistered(
+            @StringRes resourceId: Int,
+            campaign: CampaignUiModel
+        ) {
+            val eventName = campaign.thematicInfo.name
+            this.isVisible = campaign.thematicParticipation
+            this.text = this.context.getString(resourceId, eventName)
         }
     }
 }

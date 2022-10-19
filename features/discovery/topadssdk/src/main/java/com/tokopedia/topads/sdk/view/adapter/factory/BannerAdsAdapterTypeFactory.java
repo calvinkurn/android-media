@@ -11,10 +11,10 @@ import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerProductShim
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopProductViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShopViewHolder;
 import com.tokopedia.topads.sdk.view.adapter.viewholder.banner.BannerShowMoreViewHolder;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewModel;
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerProductShimmerUiModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopUiModel;
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel;
 
 /**
  * Created by errysuprayogi on 4/16/18.
@@ -35,22 +35,22 @@ public class BannerAdsAdapterTypeFactory implements BannerAdsTypeFactory {
     }
 
     @Override
-    public int type(BannerShopViewModel viewModel) {
+    public int type(BannerShopUiModel viewModel) {
         return BannerShopViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BannerShopProductViewModel viewModel) {
+    public int type(BannerShopProductUiModel viewModel) {
         return BannerShopProductViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BannerShopViewMoreModel viewModel) {
+    public int type(BannerShopViewMoreUiModel viewModel) {
         return BannerShowMoreViewHolder.LAYOUT;
     }
 
     @Override
-    public int type(BannerProductShimmerViewModel viewModel) {
+    public int type(BannerProductShimmerUiModel viewModel) {
         return BannerProductShimmerViewHolder.Companion.getLAYOUT();
     }
 

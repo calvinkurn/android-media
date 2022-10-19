@@ -15,6 +15,7 @@ import com.tokopedia.home_component.visitable.BannerDataModel
 import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
+import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutItemState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodLayoutState
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeLayoutType.Companion.BANNER_CAROUSEL
@@ -31,7 +32,6 @@ import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLa
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.tokofood.feature.home.domain.constanta.TokoFoodHomeStaticLayoutId.Companion.TICKER_WIDGET_ID
 import com.tokopedia.tokofood.feature.home.domain.data.HomeLayoutResponse
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
 import com.tokopedia.tokofood.feature.home.domain.data.TickerItem
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeDynamicIconsResponse
 import com.tokopedia.tokofood.feature.home.domain.data.TokoFoodHomeTickerResponse
