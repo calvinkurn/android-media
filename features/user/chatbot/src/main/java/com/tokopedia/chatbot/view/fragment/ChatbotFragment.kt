@@ -1708,8 +1708,6 @@ class ChatbotFragment :
         recyclerView?.let {
             if (!hasBeenShown) {
                 videoUploadOnBoarding.showVideoBubbleOnBoarding(
-                    it,
-                    chatbotAdapter,
                     iv_chat_menu,
                     context
                 )
