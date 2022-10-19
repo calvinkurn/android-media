@@ -25,7 +25,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
     fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneral {
         val checkoutGeneral = DealCheckoutGeneral()
-        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
         checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
@@ -36,7 +36,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
 
     fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralNoPromo {
         val checkoutGeneral = DealCheckoutGeneralNoPromo()
-        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
         checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
@@ -47,7 +47,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
     fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneralInstant {
         val checkoutGeneral = DealCheckoutGeneralInstant()
-        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
         checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
@@ -59,7 +59,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
 
     fun mapCheckoutDealsInstant(dealsDetail: ProductDetailData, verify: EventVerifyResponse): DealCheckoutGeneralInstantNoPromo {
         val checkoutGeneral = DealCheckoutGeneralInstantNoPromo()
-        val cartInfo = CartInfo(Gson().toJson(mapToIntMetaData(verify.metadata)),
+        val cartInfo = CartInfo(gson.toJson(mapToIntMetaData(verify.metadata)),
             dealsDetail.checkoutDataType.ifEmpty { DEFAULT_CHECKOUT_DATA_TYPE }
         )
         checkoutGeneral.carts.businessType = dealsDetail.checkoutBusinessType
@@ -69,7 +69,7 @@ class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
     }
 
     fun getMetaDataString(verify: EventVerifyResponse): String {
-        return Gson().toJson(mapToIntMetaData(verify.metadata))
+        return gson.toJson(mapToIntMetaData(verify.metadata))
     }
 
     private fun mapToIntMetaData(metaDataResponse: MetaDataResponse): DealsMetaDataCheckout {
