@@ -117,10 +117,10 @@ class AffiliateTransactionHistoryItemVH(itemView: View) :
         itemView.findViewById<Typography>(R.id.transaction_history_notes).text =
             element?.transaction?.notes
         itemView.findViewById<Typography>(R.id.transaction_history_date).text =
-            element?.transaction?.createdAt.let {
+            element?.transaction?.createdAt?.let {
                 DateUtils().formatDate(
                     newFormat = NEW_DATE_FORMAT,
-                    dateString = it.toString()
+                    dateString = it
                 )
             }
         itemView.findViewById<Label>(R.id.transaction_history_label).apply {

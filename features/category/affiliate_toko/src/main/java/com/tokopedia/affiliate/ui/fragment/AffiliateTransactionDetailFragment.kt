@@ -192,8 +192,8 @@ class AffiliateTransactionDetailFragment: BaseViewModelFragment<AffiliateTransac
         view?.findViewById<Typography>(R.id.shop_name)?.text =
             commissionData?.data?.cardDetail?.shopName
         view?.findViewById<Typography>(R.id.transaction_date)?.text =
-            commissionData?.data?.createdAt.let {
-                DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it.toString())
+            commissionData?.data?.createdAt?.let {
+                DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
             }
         view?.findViewById<Typography>(R.id.promotion_link)?.text =
            when(commissionData?.data?.pageType?.uppercase()){

@@ -127,8 +127,8 @@ class AffiliateSaldoWithdrawalDetailFragment : BaseViewModelFragment<WithdrawalD
         view?.findViewById<Typography>(R.id.tvWithdrawalAmount)?.text = data.amountFormatted
         view?.findViewById<Typography>(R.id.tvBankName)?.text = data.bankName
         view?.findViewById<Typography>(R.id.tvAccountName)?.text = data.accountName
-        view?.findViewById<Typography>(R.id.tvWithdrawalDate)?.text = data.createdTime.let {
-            DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it.toString())
+        view?.findViewById<Typography>(R.id.tvWithdrawalDate)?.text = data.createdTime?.let {
+            DateUtils().formatDate(newFormat = NEW_DATE_FORMAT, dateString = it)
         }
         view?.findViewById<Label>(R.id.withdrawalStatusLabel)?.apply {
             when (data.statusLabel?.labelType) {
