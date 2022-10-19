@@ -4,6 +4,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.databinding.DiscoProductBundlingLayoutBinding
@@ -22,6 +23,9 @@ import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 
 class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoProductBundlingLayoutBinding = DiscoProductBundlingLayoutBinding.bind(itemView)
+    private var productBundleList : ArrayList<BundleUiModel>? = null
+    private var lastSentPosition: Int = 0
+    private var hasScrolled = false
     private var mProductBundleRecycleAdapter: ProductBundleWidgetAdapter
     private var linearLayoutManager: LinearLayoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
     private var mProductBundlingViewModel: ProductBundlingViewModel? = null
@@ -42,6 +46,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         }
         binding.productRv.show()
         binding.viewErrorState.hide()
+        trackCarouselImpression()
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
@@ -49,6 +54,7 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
         lifecycleOwner?.let {
             mProductBundlingViewModel?.getBundledProductDataList()?.observe(it) { bundledProductList ->
                 mProductBundleRecycleAdapter.updateDataSet(bundledProductList)
+                productBundleList = bundledProductList
             }
             mProductBundlingViewModel?.getEmptyBundleData()?.observe(it) { isBundledDataEmpty ->
                 if (isBundledDataEmpty) {
@@ -61,6 +67,30 @@ class ProductBundlingViewHolder(itemView: View, private val fragment: Fragment) 
                 if (shouldShowErrorState) handleErrorState()
             }
         }
+    }
+
+    private fun trackCarouselImpression() {
+        binding.productRv.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    val totalItemCount: Int = linearLayoutManager.itemCount
+                    val lastVisibleItemPosition: Int = linearLayoutManager.findLastVisibleItemPosition()
+                    if (hasScrolled && (lastSentPosition <= totalItemCount - 1) && (lastVisibleItemPosition > lastSentPosition || lastVisibleItemPosition == totalItemCount - 1)) {
+                        mProductBundlingViewModel?.components?.let {
+                            productBundleList?.let { bundledProductList ->
+                                (fragment as DiscoveryFragment).getDiscoveryAnalytics()
+                                    .trackEventProductBundlingCarouselImpression(it, bundledProductList, totalItemCount, lastSentPosition, lastVisibleItemPosition)
+                                lastSentPosition = lastVisibleItemPosition + 1
+                            }
+                        }
+                    }
+                }
+                if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                    hasScrolled = true
+                }
+            }
+        })
     }
 
     private fun handleErrorState() {

@@ -17,6 +17,7 @@ import com.tokopedia.product.detail.common.ProductTrackingConstant.Tracking.KEY_
 import com.tokopedia.quest_widget.tracker.Tracker
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.track.TrackApp
@@ -2315,10 +2316,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {
         val list = ArrayList<Map<String, Any>>()
         var productBundlingMap: MutableMap<String, Any>
-        val productIdArray = mutableListOf<String>()
         selectedMultipleBundle.products.forEach { bundleProductUiModel ->
             productBundlingMap = mutableMapOf()
-            productIdArray.add(bundleProductUiModel.productId)
             componentsItems.data?.firstOrNull()?.let {
                 productBundlingMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${getParentPosition(componentsItems) + 1} - ${bundleProductUiModel.productName} - - $NAME_KEY_PRODUCT_BUNDLING"
                 productBundlingMap[KEY_ID] = bundleProductUiModel.productId
@@ -2340,7 +2339,6 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_SOURCE] = sourceIdentifier
         map[BUSINESS_UNIT] = PHYSICAL_GOODS
         map[TRACKER_ID] = TRACKER_ID_PRODUCT_BUNDLING_PRODUCT_CLICK_VALUE
-        map[PRODUCT_ID] = productIdArray.joinToString()
         map[KEY_SHOP_ID] = selectedMultipleBundle.shopInfo?.shopId ?: EMPTY_STRING
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = userSession.userId
@@ -2351,10 +2349,8 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
     override fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {
         val list = ArrayList<Map<String, Any>>()
         var productBundlingMap: MutableMap<String, Any>
-        val productIdArray = mutableListOf<String>()
         selectedBundle.products.forEach { bundleProductUiModel ->
             productBundlingMap = mutableMapOf()
-            productIdArray.add(bundleProductUiModel.productId)
             componentsItems.data?.firstOrNull()?.let {
                 productBundlingMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${getParentPosition(componentsItems) + 1} - ${bundleProductUiModel.productName} - - $NAME_KEY_PRODUCT_BUNDLING"
                 productBundlingMap[KEY_ID] = bundleProductUiModel.productId
@@ -2367,7 +2363,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         }
         val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
             eventAction = ACTION_PRODUCT_BUNDLING_VIEW,
-            eventLabel = "${selectedBundle.bundleId} - ${selectedBundle.shopInfo?.shopId ?: EMPTY_STRING} - ${selectedBundle.bundleType} - ")
+            eventLabel = "${selectedBundle.bundleId} - ${selectedBundle.shopInfo?.shopId ?: EMPTY_STRING} - ${selectedBundle.bundleType} - ${selectedBundle.discountPercentage}")
         val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
             EVENT_PROMO_VIEW to mapOf(
                 KEY_PROMOTIONS to list))
@@ -2376,9 +2372,39 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[PAGE_PATH] = removedDashPageIdentifier
         map[PAGE_SOURCE] = sourceIdentifier
         map[BUSINESS_UNIT] = PHYSICAL_GOODS
-        map[TRACKER_ID] = TRACKER_ID_PRODUCT_BUNDLING_VARIANT_CHANGE_VALUE
-        map[PRODUCT_ID] = productIdArray.joinToString()
+        map[TRACKER_ID] = TRACKER_ID_PRODUCT_BUNDLING_PRODUCT_VIEW_VALUE
         map[KEY_SHOP_ID] = selectedBundle.shopInfo?.shopId ?: EMPTY_STRING
+        map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
+        map[USER_ID] = userSession.userId
+
+        trackingQueue.putEETracking(map as HashMap<String, Any>)
+    }
+
+    override fun trackEventProductBundlingCarouselImpression(componentsItems: ComponentsItem, bundledProductList: List<BundleUiModel>,totalBundlings: Int, totalBundleSeenPosition: Int, lastVisibleItemPosition: Int) {
+        val list = ArrayList<Map<String, Any>>()
+        var productBundlingMap: MutableMap<String, Any>
+        for (i in totalBundleSeenPosition until lastVisibleItemPosition + 1) {
+            productBundlingMap = mutableMapOf()
+            componentsItems.data?.firstOrNull()?.let {
+                productBundlingMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${getParentPosition(componentsItems) + 1} - - $NAME_KEY_PRODUCT_BUNDLING"
+                productBundlingMap[KEY_ID] = bundledProductList.getOrNull(i)?.bundleDetails?.firstOrNull()?.bundleId ?: ""
+                productBundlingMap[KEY_POSITION] = "${componentsItems.position + 1}"
+                productBundlingMap[KEY_CREATIVE] = (it.creativeName ?: EMPTY_STRING)
+            }
+            list.add(productBundlingMap)
+        }
+        val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
+            eventAction = ACTION_CAROUSEL_BUNDLING_VIEW,
+            eventLabel = "${lastVisibleItemPosition + 1} - $totalBundlings")
+        val eCommerce: Map<String, Map<String, ArrayList<Map<String, Any>>>> = mapOf(
+            EVENT_PROMO_VIEW to mapOf(
+                KEY_PROMOTIONS to list))
+        map[KEY_E_COMMERCE] = eCommerce
+        map[PAGE_TYPE] = pageType
+        map[PAGE_PATH] = removedDashPageIdentifier
+        map[PAGE_SOURCE] = sourceIdentifier
+        map[BUSINESS_UNIT] = PHYSICAL_GOODS
+        map[TRACKER_ID] = TRACKER_ID_PRODUCT_BUNDLING_PRODUCT_CAROUSEL_VALUE
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = userSession.userId
 
