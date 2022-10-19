@@ -133,7 +133,6 @@ import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTIO
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.ACTION.EVENT_ACTION_VIEW_SWITCHER_WIDGET
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.CATEGORY.EVENT_CATEGORY_HOME_PAGE
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.HOME_WIDGET
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.ITEM_LIST_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.LEGO_6_BANNER
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW15M
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics.VALUE.NOW2HR
@@ -236,7 +235,6 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         const val WITHOUT_VARIANT = "without variant"
         const val PRODUCT_TOPADS = "product topads"
         const val HOMEPAGE_TOKONOW = "homepage tokonow"
-        const val ITEM_LIST_LEFT_CAROUSEL = "/tokonow - left carousel - carousel"
         const val HOME_WIDGET = "homewidget"
         const val REFERRAL_STATUS = "1"
         const val NOW2HR = "now2hr"
@@ -325,12 +323,12 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_VIEW_ITEM, dataLayer)
     }
 
-    fun onClickCategory(position: Int, categoryId: String, headerName: String) {
+    fun onClickCategory(position: Int, categoryId: String, headerName: String, categoryName: String) {
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_CATEGORY_ON_CATEGORY,
             category = EVENT_CATEGORY_HOME_PAGE,
-            label = categoryId,
+            label = "category_widget - $categoryId - $categoryName",
             affinityLabel = "null",
             promotions = arrayListOf(
                 ecommerceDataLayerCategoryClicked(
@@ -727,9 +725,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             )
         )
 
-        val itemList = "$ITEM_LIST_LEFT_CAROUSEL${product.channelType} - " +
-                "${product.channelPageName} - " + headerName
-
+        val itemList = "/ - p$position - dynamic channel left carousel - carousel - $headerName"
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL,
@@ -761,9 +757,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             )
         )
 
-        val itemList = "$ITEM_LIST_LEFT_CAROUSEL${channelModel.type} - " +
-                "${channelModel.pageName} - " + headerName
-
+        val itemList = "/ - p$position - dynamic channel left carousel - carousel - $headerName"
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT_LEFT_CAROUSEL,
