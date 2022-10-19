@@ -65,7 +65,7 @@ class ChooseProductViewModel @Inject constructor(
     val validationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()
     ) { productCount, criteriaList, maxSelectedProduct ->
-        ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList)
+        ChooseProductUiMapper.validateSelection(productCount, maxSelectedProduct, criteriaList, selectedProductIds)
     }
     val selectionValidationResult = combine(
         selectedProductCount.asFlow(), criteriaList.asFlow(), maxSelectedProduct.asFlow()

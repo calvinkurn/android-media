@@ -43,6 +43,8 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 item.checkingDetailResult.subsidyAmount.getCurrencyFormatted())
             val stockText = context.getString(R.string.commonbs_product_check_stock_format,
                 item.checkingDetailResult.stock)
+            val refusedText = context.getString(R.string.stfs_rejection_reason_placeholder,
+                item.checkingDetailResult.rejectionReason)
             binding.apply {
                 tfLocationName.text = item.cityName
                 tfPrice.text = item.checkingDetailResult.discountedPrice.getCurrencyFormatted()
@@ -56,6 +58,8 @@ class ProductLocationCheckingResultAdapter: RecyclerView.Adapter<ProductLocation
                 labelStatus.setLabelType(item.checkingDetailResult.statusLabelType)
                 tfSoldCount.text = MethodChecker.fromHtml(soldCountText)
                 tfSoldCount.isVisible = item.soldCount != null
+                tfRefused.text = MethodChecker.fromHtml(refusedText)
+                tfRefused.isVisible = item.checkingDetailResult.rejectionReason.isNotEmpty()
             }
         }
     }

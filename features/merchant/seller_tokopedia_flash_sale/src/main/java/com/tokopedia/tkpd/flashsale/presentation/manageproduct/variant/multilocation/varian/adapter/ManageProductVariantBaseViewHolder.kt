@@ -14,6 +14,7 @@ import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
+import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.NumberTextInputUtil
 import java.text.DecimalFormat
 import java.text.NumberFormat
 
@@ -21,10 +22,6 @@ open class ManageProductVariantBaseViewHolder(
     view: View,
     private val listener: ManageProductVariantAdapterListener?
 ) : RecyclerView.ViewHolder(view) {
-
-    companion object {
-        const val NUMBER_PATTERN = "#,###,###"
-    }
 
     private var listenerOfEditTextDiscountNominal: TextWatcher? = null
     private var listenerOfEditTextDiscountPercent: TextWatcher? = null
@@ -103,9 +100,9 @@ open class ManageProductVariantBaseViewHolder(
         setupListenerForTracker()
 
         listenerNumberFormatDiscountNominal =
-            setNumberTextChangeListener(textFieldPriceDiscountNominal)
+            NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountNominal)
         listenerNumberFormatDiscountPercent =
-            setNumberTextChangeListener(textFieldPriceDiscountPercentage)
+            NumberTextInputUtil.setNumberTextChangeListener(textFieldPriceDiscountPercentage)
 
         listenerOfEditTextDiscountNominal = EditTextWatcher {
             discount?.price = it.digitsOnly()
@@ -209,17 +206,22 @@ open class ManageProductVariantBaseViewHolder(
         val isVariantIneligible = selectedWarehouse.isDisabled
 
         if (isVariantIneligible) {
+            groupVariantNotEligibleErrorMessage.visible()
             this.textParentErrorMessage.visible()
             this.textParentErrorMessage.text =
                 root.context.getString(R.string.stfs_warning_location_not_in_criteria)
-            this.tvCheckDetail.visible()
-            this.tvCheckDetail.setOnClickListener {
+            this.textCheckDetail.visible()
+            this.textCheckDetail.setOnClickListener {
                 listener?.showDetailCriteria(
                     selectedWarehouse
                 )
             }
             selectedWarehouse.isToggleOn = false
             this.switcherToggleParent.isEnabled = false
+        } else {
+            groupVariantNotEligibleErrorMessage.gone()
+            this.textParentErrorMessage.gone()
+            this.textCheckDetail.gone()
         }
 
         switcherToggleParent.isChecked =
@@ -254,19 +256,6 @@ open class ManageProductVariantBaseViewHolder(
     private fun Ticker.setTypeOfTicker(isFieldError: Boolean) {
         this.tickerType = if (isFieldError) Ticker.TYPE_WARNING else Ticker.TYPE_ANNOUNCEMENT
 
-    }
-
-    private fun setNumberTextChangeListener(editText: TextFieldUnify2): TextWatcher {
-        val numberFormatter = NumberFormat.getInstance(LocaleConstant.INDONESIA) as DecimalFormat
-        numberFormatter.applyPattern(NUMBER_PATTERN)
-        return NumberThousandSeparatorTextWatcher(
-            editText.editText, numberFormatter
-        ) { _, formatNumber ->
-            editText.editText.setText(formatNumber)
-            editText.editText.setSelection(
-                editText.editText.text?.length.orZero()
-            )
-        }
     }
 
     private fun initialListerForTracker() {
