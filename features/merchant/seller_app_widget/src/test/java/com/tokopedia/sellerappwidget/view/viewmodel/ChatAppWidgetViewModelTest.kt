@@ -115,28 +115,28 @@ class ChatAppWidgetViewModelTest {
             verify {
                 mView.onError(any())
             }
-        }
 
-    @Test
-    fun `given view null value when get chat list then throw Exception will not notify the UI`() {
-        coroutineTestRule.runBlockingTest {
-            val throwable = RuntimeException("")
-            getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
+            @Test
+            fun `given view null value when get chat list then throw Exception will not notify the UI`() {
+                coroutineTestRule.runBlockingTest {
+                    val exception = RuntimeException("")
+                    getChatUseCase.params = GetChatUseCase.creteParams(testShopId)
 
-            coEvery {
-                getChatUseCase.executeOnBackground()
-            } throws throwable
+                    coEvery {
+                        getChatUseCase.executeOnBackground()
+                    } throws exception
 
-            mViewModel.unbind()
-            mViewModel.getChatList(testShopId)
+                    mViewModel.unbind()
+                    mViewModel.getChatList(testShopId)
 
-            coVerify {
-                getChatUseCase.executeOnBackground()
+                    coVerify {
+                        getChatUseCase.executeOnBackground()
+                    }
+
+                    verify(inverse = true) {
+                        mView.onError(any())
+                    }
+                }
             }
-
-            verify(inverse = true) {
-                mView.onError(any())
-            }
         }
-    }
 }
