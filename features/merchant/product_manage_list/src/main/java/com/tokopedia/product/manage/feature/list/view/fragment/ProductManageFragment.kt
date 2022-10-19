@@ -2349,6 +2349,8 @@ open class ProductManageFragment :
             if (coachMarkStockReminder?.isDismissed == false) {
                 coachMarkStockReminder?.dismissCoachMark()
             }
+        }else{
+            disableOrEnableOptionMenuAddProduct(viewModel.shopStatus.value?.isOnModerationMode().orFalse())
         }
     }
 
@@ -3043,38 +3045,10 @@ open class ProductManageFragment :
             optionsMenu?.findItem(R.id.action_more_menu)?.isVisible = it
         }
     }
-// endregion
 
     private fun observeShopStatus() {
         observe(viewModel.shopStatus) { statusInfo ->
-            if (statusInfo.isOnModerationMode()) {
-                val layoutMenuAddProduct =
-                    optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
-                val iconMenuAddProduct =
-                    layoutMenuAddProduct.findViewById<IconUnify>(R.id.ivAddProduct)
-                iconMenuAddProduct.isEnabled = false
-                context?.let { context ->
-                    ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifycomponents.R.color.Unify_NN300
-                    )
-                }?.let { color ->
-                    iconMenuAddProduct.setColorFilter(
-                        color, PorterDuff.Mode.SRC_ATOP
-                    )
-                }
-
-                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
-                optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
-
-            } else {
-                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
-                optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
-                    menuItem.actionView.setOnClickListener {
-                        onOptionsItemSelected(menuItem)
-                    }
-                }
-            }
+            disableOrEnableOptionMenuAddProduct(statusInfo.isOnModerationMode())
         }
     }
 
@@ -3343,6 +3317,37 @@ open class ProductManageFragment :
     private fun getProductWithStockReminder(data: List<ProductUiModel>): Int {
         return data.indexOfFirst {
             it.hasStockAlert == HAS_STOCK_ALERT_STATUS && it.stockAlertActive != STOCK_ALERT_ACTIVE
+        }
+    }
+
+    private fun disableOrEnableOptionMenuAddProduct(isEnable:Boolean){
+        if (isEnable) {
+            val layoutMenuAddProduct =
+                optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
+            val iconMenuAddProduct =
+                layoutMenuAddProduct.findViewById<IconUnify>(R.id.ivAddProduct)
+            iconMenuAddProduct.isEnabled = false
+            context?.let { context ->
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_NN300
+                )
+            }?.let { color ->
+                iconMenuAddProduct.setColorFilter(
+                    color, PorterDuff.Mode.SRC_ATOP
+                )
+            }
+
+            optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
+            optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
+
+        } else {
+            optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
+            optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
+                menuItem.actionView.setOnClickListener {
+                    onOptionsItemSelected(menuItem)
+                }
+            }
         }
     }
 
