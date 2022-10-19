@@ -10,6 +10,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.topads.SourceConstant
+import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.common.data.internal.ParamObject.SHOP_Id
 import com.tokopedia.topads.common.data.model.AutoAdsParam
 import com.tokopedia.topads.common.data.response.AutoAdsResponse
@@ -45,7 +47,7 @@ class AdChooserViewModel @Inject constructor(
                         context.resources,
                         R.raw.query_autoads_shop_info),
                         AdCreationOption::class.java,
-                        hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
+                        hashMapOf(SHOP_Id to userSession.shopId, ParamObject.SOURCE to SourceConstant.SOURCE_ANDROID_AD_CHOOSER))
                     val cacheStrategy = RequestHelper.getCacheStrategy()
                     repository.response(listOf(request), cacheStrategy)
                 }
@@ -77,7 +79,7 @@ class AdChooserViewModel @Inject constructor(
                         context.resources,
                         R.raw.query_auto_ads_status),
                         AutoAdsResponse::class.java,
-                        hashMapOf(SHOP_Id to userSession.shopId.toIntOrZero()))
+                        hashMapOf(SHOP_Id to userSession.shopId, ParamObject.SOURCE to "android.topads_ad_chooser"))
                     val cacheStrategy = RequestHelper.getCacheStrategy()
                     repository.response(listOf(request), cacheStrategy)
                 }
