@@ -17,6 +17,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.pushNotificationCommon)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.applink)
+    implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.usersession)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 

@@ -16,13 +16,18 @@ import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import com.tokopedia.bubbles.data.model.BubbleNotificationModel
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.bubbles.analytics.BubblesTracker
 import com.tokopedia.bubbles.data.model.BubbleHistoryItemModel
 import com.tokopedia.bubbles.utils.BubblesConst
 import com.tokopedia.bubbles.utils.BubblesUtils
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
+
+    private val userSession: UserSessionInterface = UserSession(context)
 
     override fun setupBubble(
         builder: NotificationCompat.Builder,
@@ -36,6 +41,12 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         val person = getBubblePerson(icon, model.fullName)
         val messagingStyle = getMessagingStyle(user, person, model.summary, model.sentTime)
         val bubbleMetadata = getBubbleMetadata(pendingIntent, icon)
+
+        BubblesTracker.sendImpressionTracking(
+            userSession.shopId,
+            model.shortcutId,
+            model.senderId
+        )
 
         builder
             .setBubbleMetadata(bubbleMetadata)
@@ -61,6 +72,10 @@ class BubblesFactoryImpl(private val context: Context) : BubblesFactory {
         shortcuts.forEach { shortcut ->
             ShortcutManagerCompat.pushDynamicShortcut(context, shortcut)
         }
+    }
+
+    override fun sendImpressionTracking(historyModels: List<BubbleHistoryItemModel>) {
+        TODO("Not yet implemented")
     }
 
     override fun getBitmapWidth(): Int {
