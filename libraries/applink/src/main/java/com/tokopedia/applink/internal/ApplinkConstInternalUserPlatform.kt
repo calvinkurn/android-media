@@ -328,4 +328,16 @@ object ApplinkConstInternalUserPlatform {
     const val REDEFINE_REGISTER_EMAIL = "$NEW_INTERNAL_USER/redefine-register-email"
     const val PARAM_IS_REGISTER_REQUIRED_INPUT_PHONE = "register_required_input_phone"
 
+    /**
+     * com.tokopedia.troubleshooter.notification.ui.activity.TroubleshootActivity
+     * @Applink : tokopedia-android-internal://user/push-notification-troubleshooter
+     **/
+    const val PUSH_NOTIFICATION_TROUBLESHOOTER = "$NEW_INTERNAL_USER/push-notification-troubleshooter"
+
+    /**
+     * com.tokopedia.telephony_masking.view.TelephonyActivity
+     * @Applink : tokopedia-android-internal://user/telephony-masking
+     **/
+    const val TELEPHONY_MASKING = "${ApplinkConstInternalGlobal.INTERNAL_GLOBAL}/telephony-masking"
+
 }

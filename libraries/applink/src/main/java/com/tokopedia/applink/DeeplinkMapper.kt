@@ -476,7 +476,7 @@ object DeeplinkMapper {
             DLP.startWith(ApplinkConst.ACTIVATION_GOPAY, ApplinkConstInternalFintech.ACTIVATE_GOPAY),
             DLP.startWith(ApplinkConst.OPTIMIZED_CHECKOUT, ApplinkConstInternalFintech.OCC_CHECKOUT),
             DLP.exact(ApplinkConst.MERCHANT_VOUCHER_LIST, ApplinkConstInternalSellerapp.VOUCHER_LIST),
-            DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalGlobal.PUSH_NOTIFICATION_TROUBLESHOOTER),
+            DLP.exact(ApplinkConst.NOTIFICATION_TROUBLESHOOTER, ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER),
             DLP.exact(ApplinkConst.PROFILE_COMPLETION, ApplinkConstInternalUserPlatform.PROFILE_COMPLETION),
             DLP.exact(ApplinkConst.FEEDBACK_FORM, ApplinkConstInternalGlobal.FEEDBACK_FORM),
             DLP.startWith(ApplinkConst.REGISTER_INIT, ApplinkConstInternalUserPlatform.INIT_REGISTER),
@@ -495,7 +495,7 @@ object DeeplinkMapper {
             DLP.exact(ApplinkConst.TokopediaNow.RECIPE_HOME) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeHome(deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.RECIPE_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeSearch(deeplink) },
             DLP.startWith(ApplinkConst.TokopediaNow.RECIPE_AUTO_COMPLETE) { _, _, deeplink, _ -> getRegisteredNavigationTokopediaNowRecipeAutoComplete(deeplink) },
-            DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalGlobal.TELEPHONY_MASKING),
+            DLP.startWith(ApplinkConst.TELEPHONY_MASKING, ApplinkConstInternalUserPlatform.TELEPHONY_MASKING),
             DLP.startWith(ApplinkConst.SellerApp.TOPADS_CREATE_MANUAL_ADS, ApplinkConstInternalTopAds.TOPADS_AUTOADS_CREATE_MANUAL_ADS),
             DLP.matchPattern(ApplinkConst.PRODUCT_BUNDLE, targetDeeplink = { _, _, _, idList ->
                 UriUtil.buildUri(ApplinkConstInternalMechant.MERCHANT_PRODUCT_BUNDLE, idList?.getOrNull(0)) }),
