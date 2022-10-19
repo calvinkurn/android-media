@@ -38,6 +38,8 @@ dependencies {
     api rootProject.ext.composeDependencies.composeMaterial
     api rootProject.ext.composeDependencies.composeUiTooling
     api rootProject.ext.composeDependencies.composePreview
+    implementation rootProject.ext.composeDependencies.composeCoil
+
     // cause using HtmlCompat in NestTypography
     implementation rootProject.ext.composeDependencies.composeActivity
 }
