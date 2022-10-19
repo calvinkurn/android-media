@@ -2,6 +2,7 @@ package com.tokopedia.deals.checkout.ui.activity
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.deals.DealsComponentInstance
@@ -35,16 +36,16 @@ class DealsCheckoutActivity: BaseSimpleActivity(), HasComponent<DealsCheckoutCom
     }
 
     override fun onShowAllLocation(outlets: List<Outlet>) {
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.setCustomAnimations(
-            animDeals.deals_slide_in_up,
-            animDeals.deals_slide_in_down,
-            animDeals.deals_slide_out_down,
-            animDeals.deals_slide_out_up
-        )
-        transaction.add(idAbstraction.parent_view, DealsCheckoutLocationsFragment.createInstance(outlets))
-        transaction.addToBackStack(null)
-        transaction.commit()
+        supportFragmentManager.commit {
+            setCustomAnimations(
+                animDeals.deals_slide_in_up,
+                animDeals.deals_slide_in_down,
+                animDeals.deals_slide_out_down,
+                animDeals.deals_slide_out_up
+            )
+            add(idAbstraction.parent_view, DealsCheckoutLocationsFragment.createInstance(outlets))
+            addToBackStack(null)
+        }
     }
 
     companion object {
