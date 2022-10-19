@@ -88,10 +88,9 @@ class BuyerOrderDetailViewModelTest : BuyerOrderDetailViewModelTestFixture() {
             assertTrue(uiStates[0] is BuyerOrderDetailUiState.FullscreenLoading)
             assertTrue(uiStates[1] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
             assertTrue(uiStates[2] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
-            for (i in 3 until uiStates.size - 2) {
+            for (i in 3 until uiStates.size.dec()) {
                 assertTrue(uiStates[i] is BuyerOrderDetailUiState.HasData.PullRefreshLoading)
             }
-            assertTrue(uiStates[uiStates.size - 2] is BuyerOrderDetailUiState.HasData.Showing) // showing without P1 data
             assertTrue(uiStates[uiStates.size - 1] is BuyerOrderDetailUiState.HasData.Showing) // showing with P1 data
         }
 
