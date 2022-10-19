@@ -206,17 +206,22 @@ open class ManageProductVariantBaseViewHolder(
         val isVariantIneligible = selectedWarehouse.isDisabled
 
         if (isVariantIneligible) {
+            groupVariantNotEligibleErrorMessage.visible()
             this.textParentErrorMessage.visible()
             this.textParentErrorMessage.text =
                 root.context.getString(R.string.stfs_warning_location_not_in_criteria)
-            this.tvCheckDetail.visible()
-            this.tvCheckDetail.setOnClickListener {
+            this.textCheckDetail.visible()
+            this.textCheckDetail.setOnClickListener {
                 listener?.showDetailCriteria(
                     selectedWarehouse
                 )
             }
             selectedWarehouse.isToggleOn = false
             this.switcherToggleParent.isEnabled = false
+        } else {
+            groupVariantNotEligibleErrorMessage.gone()
+            this.textParentErrorMessage.gone()
+            this.textCheckDetail.gone()
         }
 
         switcherToggleParent.isChecked =
