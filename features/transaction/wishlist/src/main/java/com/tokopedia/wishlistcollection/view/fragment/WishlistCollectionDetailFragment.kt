@@ -746,10 +746,32 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                             if (result.data.errorMessage[0].isNotEmpty()) {
                                 showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
                             } else {
-                                showUniversalShareWithMediaBottomSheet(result.data.data, WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data))
+                                activity?.let { fragmentActivity ->
+                                    view?.let { view ->
+                                        WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                            activity = fragmentActivity,
+                                            data = result.data.data,
+                                            paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                            userId = userSession.userId,
+                                            view = view,
+                                            childFragmentManager = childFragmentManager,
+                                            fragment = this@WishlistCollectionDetailFragment)
+                                    }
+                                }
                             }
                         } else {
-                            showUniversalShareWithMediaBottomSheet(result.data.data, WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data))
+                            activity?.let { fragmentActivity ->
+                                view?.let { view ->
+                                    WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                        activity = fragmentActivity,
+                                        data = result.data.data,
+                                        paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                        userId = userSession.userId,
+                                        view = view,
+                                        childFragmentManager = childFragmentManager,
+                                        fragment = this@WishlistCollectionDetailFragment)
+                                }
+                            }
                         }
                     } else {
                         val errorMessage = getString(Rv2.string.wishlist_v2_common_error_msg)
@@ -762,75 +784,6 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
         }
-    }
-
-    private fun showUniversalShareWithMediaBottomSheet(
-        data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data,
-        paramImageGenerator: WishlistCollectionParamModel
-    ) {
-        val shareListener = object : ShareBottomsheetListener {
-            override fun onShareOptionClicked(shareModel: ShareModel) {
-                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
-                    type = LinkerData.WISHLIST_COLLECTION_TYPE
-                    uri = data.shareLink.redirectionUrl
-                    id = data.collection.id.toString()
-                    feature = shareModel.feature
-                    channel = shareModel.channel
-                    campaign = shareModel.campaign
-                    ogTitle = "Wishlist ${data.totalItem}"
-                    ogDescription = data.collection.owner.name
-                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
-                        ogImageUrl = shareModel.ogImgUrl
-                    }
-                })
-
-                LinkerManager.getInstance().executeShareRequest(
-                    LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
-                        override fun urlCreated(linkerShareResult: LinkerShareResult?) {
-                            val shareString = getString(Rv2.string.sharing_collection_desc) + "\n${linkerShareResult?.url}"
-                            shareModel.subjectName = data.collection.owner.name
-                            SharingUtil.executeShareIntent(
-                                shareModel,
-                                linkerShareResult,
-                                activity,
-                                view,
-                                shareString
-                            )
-                            collectionShareBottomSheet?.dismiss()
-                        }
-
-                        override fun onError(linkerError: LinkerError?) {
-                            context?.let {
-                                WishlistCollectionSharingUtils().openIntentShareDefaultUniversalSharing(
-                                    file = null,
-                                    shareProductName = data.collection.name,
-                                    shareDescription = data.collection.owner.name,
-                                    shareUrl = data.shareLink.redirectionUrl,
-                                    context = it
-                                )
-                            }
-                        }
-                    })
-                )
-            }
-
-            override fun onCloseOptionClicked() {
-                // analytics?
-            }
-        }
-        collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
-            getImageFromMedia(true)
-            setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION)
-            setImageGeneratorParam(paramImageGenerator)
-            init(shareListener)
-            setUtmCampaignData("WISHLIST_COLLECTION", userSession.userId, data.collection.id.toString(), "share")
-            val imgUrl = if (data.items.isNotEmpty()) data.items[0].imageUrl else data.emptyWishlistImageUrl
-            setMetaData(
-                tnTitle = data.collection.name,
-                tnImage = imgUrl
-            )
-        }
-        collectionShareBottomSheet?.show(childFragmentManager, this@WishlistCollectionDetailFragment)
     }
 
     private fun showRvWishlist() {

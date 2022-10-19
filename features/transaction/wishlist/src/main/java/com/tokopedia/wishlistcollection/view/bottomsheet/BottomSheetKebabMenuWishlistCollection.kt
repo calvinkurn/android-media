@@ -99,7 +99,7 @@ class BottomSheetKebabMenuWishlistCollection: BottomSheetUnify() {
     interface ActionListener {
         fun onEditCollection(collectionId: String, collectionName: String)
         fun onDeleteCollection(collectionId: String, collectionName: String)
-        fun onShareCollection()
+        fun onShareCollection(collectionId: String)
     }
 
     fun setListener(fragment: WishlistCollectionFragment) {

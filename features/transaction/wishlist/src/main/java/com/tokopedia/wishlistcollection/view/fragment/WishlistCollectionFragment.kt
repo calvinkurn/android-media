@@ -28,6 +28,7 @@ import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -61,7 +62,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionKebabMenuItemAdapter
+import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
@@ -198,6 +199,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         observingWishlistData()
         observingDeleteWishlistCollection()
         observingDeleteProgress()
+        observeGetCollectionSharingData()
     }
 
     private fun prepareLayout() {
@@ -518,6 +520,55 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
+    private fun observeGetCollectionSharingData() {
+        collectionViewModel.getWishlistCollectionSharingDataResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    if (result.data.status == OK) {
+                        if (result.data.errorMessage.isNotEmpty()) {
+                            if (result.data.errorMessage[0].isNotEmpty()) {
+                                showToasterActionOke(result.data.errorMessage[0], Toaster.TYPE_ERROR)
+                            } else {
+                                activity?.let { fragmentActivity ->
+                                    view?.let { view ->
+                                        WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                            activity = fragmentActivity,
+                                            data = result.data.data,
+                                            paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                            userId = userSession.userId,
+                                            view = view,
+                                            childFragmentManager = childFragmentManager,
+                                            fragment = this@WishlistCollectionFragment)
+                                    }
+                                }
+                            }
+                        } else {
+                            activity?.let { fragmentActivity ->
+                                view?.let { view ->
+                                    WishlistCollectionSharingUtils().showUniversalShareWithMediaBottomSheet(
+                                        activity = fragmentActivity,
+                                        data = result.data.data,
+                                        paramImageGenerator = WishlistCollectionSharingUtils().mapParamImageGenerator(result.data.data),
+                                        userId = userSession.userId,
+                                        view = view,
+                                        childFragmentManager = childFragmentManager,
+                                        fragment = this@WishlistCollectionFragment)
+                                }
+                            }
+                        }
+                    } else {
+                        val errorMessage = getString(R.string.wishlist_v2_common_error_msg)
+                        showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                    }
+                }
+                is Fail -> {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, result.throwable)
+                    showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
+                }
+            }
+        }
+    }
+
     private fun finishRefresh() {
         binding?.run {
             swipeRefreshLayout.isRefreshing = false
@@ -600,8 +651,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         showDialogDeleteCollection(collectionId, collectionName)
     }
 
-    override fun onShareCollection() {
-        TODO("Not yet implemented")
+    override fun onShareCollection(collectionId: String) {
+        collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
     }
 
     override fun onSuccessCreateNewCollection(dataCreate: CreateWishlistCollectionResponse.CreateWishlistCollection.DataCreate, newCollectionName: String) {

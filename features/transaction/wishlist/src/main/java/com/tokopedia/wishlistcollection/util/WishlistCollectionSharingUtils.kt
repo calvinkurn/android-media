@@ -2,12 +2,105 @@ package com.tokopedia.wishlistcollection.util
 
 import android.content.Context
 import android.content.Intent
+import android.view.View
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerData
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.linker.share.DataMapper
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.model.WishlistCollectionParamModel
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.wishlist.R
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionSharingDataResponse
 import java.io.File
 
 class WishlistCollectionSharingUtils() {
+    private var collectionShareBottomSheet: UniversalShareBottomSheet? = null
+
+    fun showUniversalShareWithMediaBottomSheet(
+        activity: FragmentActivity,
+        data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data,
+        paramImageGenerator: WishlistCollectionParamModel,
+        userId: String,
+        view: View,
+        childFragmentManager: FragmentManager,
+        fragment: Fragment
+    ) {
+        val shareListener = object : ShareBottomsheetListener {
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                val linkerShareResult = DataMapper.getLinkerShareData(LinkerData().apply {
+                    type = LinkerData.WISHLIST_COLLECTION_TYPE
+                    uri = data.shareLink.redirectionUrl
+                    id = data.collection.id.toString()
+                    feature = shareModel.feature
+                    channel = shareModel.channel
+                    campaign = shareModel.campaign
+                    ogTitle = "Wishlist ${data.totalItem}"
+                    ogDescription = data.collection.owner.name
+                    if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
+                        ogImageUrl = shareModel.ogImgUrl
+                    }
+                })
+
+                LinkerManager.getInstance().executeShareRequest(
+                    LinkerUtils.createShareRequest(0, linkerShareResult, object : ShareCallback {
+                        override fun urlCreated(linkerShareResult: LinkerShareResult?) {
+                            val shareString = activity.getString(R.string.sharing_collection_desc) + "\n${linkerShareResult?.url}"
+                            shareModel.subjectName = data.collection.owner.name
+                            SharingUtil.executeShareIntent(
+                                shareModel,
+                                linkerShareResult,
+                                activity,
+                                view,
+                                shareString
+                            )
+                            collectionShareBottomSheet?.dismiss()
+                        }
+
+                        override fun onError(linkerError: LinkerError?) {
+                            activity.let {
+                                WishlistCollectionSharingUtils().openIntentShareDefaultUniversalSharing(
+                                    file = null,
+                                    shareProductName = data.collection.name,
+                                    shareDescription = data.collection.owner.name,
+                                    shareUrl = data.shareLink.redirectionUrl,
+                                    context = it
+                                )
+                            }
+                        }
+                    })
+                )
+            }
+
+            override fun onCloseOptionClicked() {
+                // analytics?
+            }
+        }
+        collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            getImageFromMedia(true)
+            setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION)
+            setImageGeneratorParam(paramImageGenerator)
+            init(shareListener)
+            setUtmCampaignData("WISHLIST_COLLECTION", userId, data.collection.id.toString(), "share")
+            val imgUrl = if (data.items.isNotEmpty()) data.items[0].imageUrl else data.emptyWishlistImageUrl
+            setMetaData(
+                tnTitle = data.collection.name,
+                tnImage = imgUrl
+            )
+        }
+        collectionShareBottomSheet?.show(childFragmentManager, fragment)
+    }
+
     fun mapParamImageGenerator(data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data): WishlistCollectionParamModel {
         return WishlistCollectionParamModel(
             collectionName = data.collection.name,

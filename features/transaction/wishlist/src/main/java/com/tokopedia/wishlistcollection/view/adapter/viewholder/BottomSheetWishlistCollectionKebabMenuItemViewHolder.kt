@@ -4,7 +4,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.wishlist.databinding.BottomsheetKebabMenuWishlistCollectionItemBinding
 import com.tokopedia.wishlistcollection.data.model.BottomSheetKebabActionItemData
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.ACTION_KEBAB_DELETE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.ACTION_KEBAB_SHARE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.ACTION_KEBAB_UPDATE_COLLECTION
@@ -33,6 +32,9 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(private val binding: 
             ACTION_KEBAB_SHARE_COLLECTION -> {
                 binding.run {
                     iconKebabMenu.setImage(IconUnify.SHARE_MOBILE)
+                    root.setOnClickListener {
+                        listener?.onShareCollection(_collectionId)
+                    }
                 }
             }
             ACTION_KEBAB_DELETE_COLLECTION -> {
