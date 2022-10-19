@@ -14,7 +14,7 @@ interface ContentDetailMapper {
 
     fun mapLikeContent(rowNumber: Int, action: ContentLikeAction): LikeContentModel
 
-    fun mapShopFollow(rowNumber: Int, action: ShopFollowAction): ShopFollowModel
+    fun mapShopFollow(rowNumber: Int, action: ShopFollowAction, isFollowedFromRSRestrictionBottomSheet: Boolean = false): ShopFollowModel
 
     fun mapDeleteContent(rowNumber: Int): DeleteContentModel
 

@@ -97,7 +97,8 @@ class ContentDetailRepositoryImpl @Inject constructor(
     override suspend fun followShop(
         shopId: String,
         action: ShopFollowAction,
-        rowNumber: Int
+        rowNumber: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean
     ): ShopFollowModel {
         return withContext(dispatcher.io) {
             followShopUseCase.params = UpdateFollowStatusUseCase.createParams(
@@ -111,7 +112,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
                     else R.string.feed_unfollow_error_message
                 )
             }
-            mapper.mapShopFollow(rowNumber, action)
+            mapper.mapShopFollow(rowNumber, action, isFollowedFromRSRestrictionBottomSheet)
         }
     }
 

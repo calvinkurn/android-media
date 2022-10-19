@@ -2530,7 +2530,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 this,
                 ProductBottomSheetData(
                     products = products,
-                    postId = card.id.toIntOrZero(),
+                    postId = card.id,
                     shopId = card.author.id,
                     postType = card.typename,
                     isFollowed = card.followers.isFollowed,

@@ -31,6 +31,7 @@ interface ContentDetailRepository {
         shopId: String,
         action: ShopFollowAction,
         rowNumber: Int,
+        isFollowedFromRSRestrictionBottomSheet: Boolean
     ): ShopFollowModel
 
     suspend fun addToCart(

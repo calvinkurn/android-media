@@ -53,6 +53,7 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -450,6 +451,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         isFollowed = data.isFollowed
         campaignData = data.campaign
         productList.addAll(data.products)
+        saleType = campaignData.name
+        saleStatus = campaignData.status
         val ret = mapPostTag(data.products)
         adapter.addList(ret)
         pagingHandler.setHasNext(ret.size > 1 && data.nextCursor.isNotEmpty())
@@ -1010,8 +1013,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
                     adClickUrl = adClickUrl,
-                    saleStatus = saleStatus,
-                    saleType = saleType
+                    saleStatus = campaignData.status,
+                    saleType = campaignData.name
             )
             item.feedType = "product"
             item.postId = activityId
