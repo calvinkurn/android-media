@@ -2386,7 +2386,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         for (i in totalBundleSeenPosition until lastVisibleItemPosition + 1) {
             productBundlingMap = mutableMapOf()
             componentsItems.data?.firstOrNull()?.let {
-                productBundlingMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${getParentPosition(componentsItems) + 1} - - $NAME_KEY_PRODUCT_BUNDLING"
+                productBundlingMap[KEY_NAME] = "/discovery/${removedDashPageIdentifier} - $pageType - ${getParentPosition(componentsItems) + 1} - ${bundledProductList.getOrNull(i)?.bundleName ?: ""} - $NAME_KEY_PRODUCT_BUNDLING"
                 productBundlingMap[KEY_ID] = bundledProductList.getOrNull(i)?.bundleDetails?.firstOrNull()?.bundleId ?: ""
                 productBundlingMap[KEY_POSITION] = "${componentsItems.position + 1}"
                 productBundlingMap[KEY_CREATIVE] = (it.creativeName ?: EMPTY_STRING)
