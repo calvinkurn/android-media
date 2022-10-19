@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -58,7 +59,7 @@ import javax.inject.Inject
 @Suppress("LateinitUsage")
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
 
-    lateinit var viewModel: PickerViewModel
+    private val viewModel: PickerViewModel by viewModels()
 
     private lateinit var toolbarCommon: ContentAccountToolbar
     lateinit var rv: RecyclerView
@@ -180,7 +181,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
     private fun initDagger() {
         if (context is AppCompatActivity) {
-            viewModel = ViewModelProviders.of(this)[PickerViewModel::class.java]
             daggerComponent.inject(viewModel)
         }
     }
