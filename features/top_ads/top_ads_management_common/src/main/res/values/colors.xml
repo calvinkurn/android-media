@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="topads_heading_color">#Unify_N700_96</color>
     <color name="topads_common_select_color_unchecked">#AD31353B</color>
     <color name="topads_common_green_tab">#42b549</color>
     <color name="topads_common_line_color">#E5E7E9</color>
