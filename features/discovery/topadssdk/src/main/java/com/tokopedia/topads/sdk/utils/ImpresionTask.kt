@@ -12,6 +12,7 @@ import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -102,6 +103,7 @@ class ImpresionTask {
                     val token = object : TypeToken<DataResponse<String>>() {}.type
                     val restRequest = RestRequest.Builder(url, token).build()
                     val headers = restRepository.getResponse(restRequest).headers;
+                    delay(30*1000)
                     if (topAdsHeaderResponseListener != null) {
                         if (headers != null) {
                             topAdsHeaderResponseListener?.onSuccess(headers[RESPONSE_HEADER_KEY] ?: "")
