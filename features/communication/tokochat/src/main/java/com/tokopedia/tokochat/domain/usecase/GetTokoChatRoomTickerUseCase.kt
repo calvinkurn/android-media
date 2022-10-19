@@ -28,7 +28,6 @@ class GetTokoChatRoomTickerUseCase @Inject constructor(
 
     companion object {
         private const val PARAM_SERVICE_TYPE = "serviceType"
-        const val PARAM_TOKOFOOD = "tokofood"
     }
 
 }

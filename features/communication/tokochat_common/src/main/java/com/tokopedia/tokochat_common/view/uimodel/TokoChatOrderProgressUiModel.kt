@@ -6,7 +6,6 @@ data class TokoChatOrderProgressUiModel(
     val invoiceId: String,
     val labelTitle: String,
     val labelValue: String,
-    val isShowOrderStatus: Boolean,
     val name: String,
     val orderId: String,
     val state: String,

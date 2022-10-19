@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
@@ -26,9 +27,10 @@ import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
-import com.tokopedia.tokochat.view.uimodel.TokoChatHeaderUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderUiModel
 import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.DRIVER
@@ -36,22 +38,26 @@ import com.tokopedia.tokochat_common.util.TokoChatValueUtil.TOKOFOOD
 import com.tokopedia.tokochat_common.view.fragment.TokoChatBaseFragment
 import com.tokopedia.tokochat_common.view.adapter.TokoChatBaseAdapter
 import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
+import com.tokopedia.tokochat_common.view.customview.TokoChatTransactionOrderWidget
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
 import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
-    TokochatReminderTickerListener {
+    TokochatReminderTickerListener,
+    TokoChatTransactionOrderWidget.Listener {
 
     @Inject
     lateinit var viewModel: TokoChatViewModel
@@ -62,6 +68,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
     private var headerUiModel: TokoChatHeaderUiModel? = null
     private var channelId = ""
     private var source: String = ""
+    private var orderId: String = ""
     private var firstTimeOpen = true
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(this)
@@ -78,14 +85,16 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     override fun initViews(view: View, savedInstanceState: Bundle?) {
         super.initViews(view, savedInstanceState)
-        setDataFromArguments()
+        setDataFromArguments(savedInstanceState)
         setupBackground()
+        //todo isShowReplySection need to flag from sdk
         setupReplySection(
             true,
             getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
         )
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
+        loadTransactionWidget()
     }
 
     override fun onStart() {
@@ -104,8 +113,14 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
-    private fun setDataFromArguments() {
-        source = arguments?.getString(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
+    private fun setDataFromArguments(savedInstanceState: Bundle?) {
+        source = getParamString(ApplinkConst.TokoChat.PARAM_SOURCE, arguments,
+            savedInstanceState)
+        orderId = getParamString(
+            ApplinkConst.TokoChat.ORDER_ID_TKPD,
+            arguments,
+            savedInstanceState
+        )
     }
 
     private fun renderBackground(url: String) {
@@ -207,6 +222,39 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         viewModel.getTokoChatBackground()
     }
 
+    //todo will be moved into initObservers when the BE is ready
+    private fun observeUpdateOrderTransactionStatus() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.updateOrderTransactionStatus.collect {
+                when (it) {
+                    is Success -> {
+//                        updateAllOrderLiveTracking(it.data)
+                        viewModel.updateOrderStatusParam(Pair(orderId, source))
+                    }
+                    is Fail -> {
+//                        logExceptionToServerLogger(it.throwable)
+                        viewModel.updateOrderStatusParam(Pair(orderId, source))
+                    }
+                }
+            }
+        }
+    }
+
+    //todo will be moved into initObservers when the BE is ready
+    private fun observeLoadOrderTransactionStatus() {
+        observe(viewModel.orderTransactionStatus) {
+            when (it) {
+                is Success -> {
+                    setShowTransactionWidget(it.data.tokochatOrderProgress)
+                }
+                is Fail -> {
+                    //logExceptionToServerLogger(it.throwable)
+                    setShowTransactionLocalLoad()
+                }
+            }
+        }
+    }
+
     private fun observeTokoChatBackground() {
         observe(viewModel.chatBackground) {
             when (it) {
@@ -276,6 +324,52 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
             Log.d("MEMBER LEFT - CONV", it)
             // TODO: Add bottomsheet for not available chat
         }
+    }
+
+    private fun loadTransactionWidget() {
+        baseBinding?.tokochatTransactionOrder?.showShimmeringWidget()
+        viewModel.loadOrderCompletedStatus(orderId, source)
+    }
+
+    private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
+
+        //todo will removed, for testing only
+        val orderProgressUiModelTemp = TokoChatOrderProgressUiModel(
+            isEnable = true,
+            state = "new_order",
+            imageUrl = "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2018/9/12/2684597/2684597_49d800f6-4a88-4dc3-81ea-4f76f429bb88_431_740.jpg",
+            invoiceId = "INV/20200220/XX/II/3098",
+            labelTitle = "Estimasi Tiba",
+            labelValue = "< 10 menit",
+            name = "Resto Name - Food Name",
+            orderId = "4005593",
+            status = "Menunggu Konfirmasi",
+            statusId = 220,
+            appLink = "tokopedia://food/postpurchase/{orderId}"
+        )
+
+        val orderProgressUiModel = TokoChatOrderProgressUiModel(
+            isEnable = tokoChatOrderProgress.enable,
+            state = tokoChatOrderProgress.state,
+            imageUrl = tokoChatOrderProgress.imageUrl,
+            invoiceId = tokoChatOrderProgress.invoiceId,
+            labelTitle = tokoChatOrderProgress.label.title,
+            labelValue = tokoChatOrderProgress.label.value,
+            name = tokoChatOrderProgress.name,
+            orderId = tokoChatOrderProgress.orderId,
+            status = tokoChatOrderProgress.status,
+            statusId = tokoChatOrderProgress.statusId,
+            appLink = tokoChatOrderProgress.uri
+        )
+
+        baseBinding?.tokochatTransactionOrder?.showTransactionWidget(
+            this,
+            orderProgressUiModelTemp
+        )
+    }
+
+    private fun setShowTransactionLocalLoad() {
+        baseBinding?.tokochatTransactionOrder?.showLocalLoadTransaction()
     }
 
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
@@ -433,6 +527,17 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
     override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
         // TODO: Tracker
+    }
+
+    override fun onLocalLoadRetryClicked() {
+        loadTransactionWidget()
+    }
+
+    //todo will update later in order to proper logic
+    override fun onTransactionWidgetClicked(appLink: String) {
+        context?.let {
+            RouteManager.route(it, appLink)
+        }
     }
 
     override fun onClickLinkReminderTicker(

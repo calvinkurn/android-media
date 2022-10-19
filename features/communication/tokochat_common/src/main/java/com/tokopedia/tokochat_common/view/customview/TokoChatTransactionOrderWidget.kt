@@ -7,17 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.LinearLayout
-import androidx.annotation.DrawableRes
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.R
-import com.tokopedia.tokochat_common.databinding.ItemOrderStatusShimmerBinding
-import com.tokopedia.tokochat_common.databinding.PartialOrderStatusWidgetBinding
+import com.tokopedia.tokochat_common.databinding.TokochatItemOrderStatusShimmerBinding
+import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidgetBinding
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
 import com.tokopedia.tokochat_common.util.CommonUtil
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
@@ -32,9 +30,9 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private var binding: TokochatTransactionWidgetBinding? = null
 
-    private var partialOrderStatusWidgetBinding: PartialOrderStatusWidgetBinding? = null
+    private var partialOrderStatusWidgetBinding: TokochatPartialOrderStatusWidgetBinding? = null
 
-    private var shimmerOrderStatusWidgetBinding: ItemOrderStatusShimmerBinding? = null
+    private var shimmerOrderStatusWidgetBinding: TokochatItemOrderStatusShimmerBinding? = null
 
     constructor(context: Context?) : super(context)
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
@@ -65,11 +63,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         render()
     }
 
-    fun showLocalLoadTransaction(
-        listener: Listener?,
-        orderProgressUiModel: TokoChatOrderProgressUiModel?
-    ) {
-        assignFields(listener, orderProgressUiModel)
+    fun showLocalLoadTransaction() {
         partialOrderStatusWidgetBinding?.root?.hide()
         shimmerOrderStatusWidgetBinding?.root?.hide()
         binding?.tokochatLocalloadErrorTransactionWidget?.show()
@@ -116,10 +110,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 root.findViewById<View>(R.id.tokochat_partial_order_status_viewstub)
             if (partialOrderStatusVs is ViewStub) {
                 partialOrderStatusVs.inflate()
-                if (partialOrderStatusWidgetBinding == null) {
-                    partialOrderStatusWidgetBinding =
-                        PartialOrderStatusWidgetBinding.bind(partialOrderStatusVs)
-                }
+                bindPartialOrderStatusWidget(root)
             } else {
                 partialOrderStatusVs.show()
             }
@@ -132,13 +123,24 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 root.findViewById<View>(R.id.tokochat_shimmer_order_status_viewstub)
             if (shimmerOrderStatusVs is ViewStub) {
                 shimmerOrderStatusVs.inflate()
-                if (shimmerOrderStatusWidgetBinding == null) {
-                    shimmerOrderStatusWidgetBinding =
-                        ItemOrderStatusShimmerBinding.bind(shimmerOrderStatusVs)
-                }
+                bindShimmerOrderStatusWidget(root)
             } else {
                 shimmerOrderStatusVs.show()
             }
+        }
+    }
+
+    private fun bindPartialOrderStatusWidget(root: View) {
+        if (partialOrderStatusWidgetBinding == null) {
+            partialOrderStatusWidgetBinding =
+                TokochatPartialOrderStatusWidgetBinding.bind(root.findViewById(R.id.tokochat_partial_order_status_viewstub))
+        }
+    }
+
+    private fun bindShimmerOrderStatusWidget(root: View) {
+        if (shimmerOrderStatusWidgetBinding == null) {
+            shimmerOrderStatusWidgetBinding =
+                TokochatItemOrderStatusShimmerBinding.bind(root.findViewById(R.id.tokochat_shimmer_order_status_viewstub))
         }
     }
 
@@ -208,7 +210,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
             State.COLOR_SEEN
         }
         val color = MethodChecker.getColor(context, colorRes)
-        partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.setBackgroundColor(color)
+        partialOrderStatusWidgetBinding?.root?.setBackgroundColor(color)
     }
 
     private fun renderHasBeenSeen() {
@@ -236,7 +238,11 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun bindClickCardContainer() {
         partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.setOnClickListener {
-            listener?.onTransactionWidgetClicked()
+            tokoChatOrderProgressUiModel?.appLink?.let {
+                if (it.isNotBlank()) {
+                    listener?.onTransactionWidgetClicked(it)
+                }
+            }
         }
     }
 
@@ -268,21 +274,25 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     }
 
     private fun renderChangerIconArrow(desiredState: String?) {
+        val toggleIcon = if (desiredState == State.CLOSE) {
+            IconUnify.CHEVRON_DOWN
+        } else {
+            IconUnify.CHEVRON_UP
+        }
+        partialOrderStatusWidgetBinding?.tokochatIcOrderVisibility?.setImage(toggleIcon)
+    }
+
+    private fun renderOpenCloseText() {
+        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text = State.OPEN
+    }
+
+    private fun renderChangerButtonText(desiredState: String?) {
         partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text =
-            if (desiredState == State.OPEN) {
+            if (desiredState == State.CLOSE) {
                 State.CLOSE
             } else {
                 State.OPEN
             }
-    }
-
-    private fun renderOpenCloseText() {
-        partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.text = State.CLOSE
-    }
-
-    private fun renderChangerButtonText(desiredState: String?) {
-        partialOrderStatusWidgetBinding?.tokochatIcOrderVisibility?.isVisible =
-            desiredState != State.OPEN
     }
 
     private fun getPref(): SharedPreferences? {
@@ -318,13 +328,12 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         partialOrderStatusWidgetBinding?.tokochatClOrderNameContainer?.hide()
     }
 
-
     data class State(
         var bodyVisibility: String = DEFAULT_BODY_VISIBILITY,
-        var hasSeen: Boolean = DEFAULT_HAS_SEEN
+        var hasSeen: Boolean = NEVER_SEEN
     ) {
         fun seen() {
-            this.hasSeen = true
+            this.hasSeen = DEFAULT_HAS_SEEN
         }
 
         companion object {
@@ -336,12 +345,13 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
             private const val DEFAULT_BODY_VISIBILITY = OPEN
             private const val DEFAULT_HAS_SEEN = true
+            private const val NEVER_SEEN = false
         }
     }
 
     interface Listener {
         fun onLocalLoadRetryClicked()
-        fun onTransactionWidgetClicked()
+        fun onTransactionWidgetClicked(appLink: String)
     }
 
     companion object {

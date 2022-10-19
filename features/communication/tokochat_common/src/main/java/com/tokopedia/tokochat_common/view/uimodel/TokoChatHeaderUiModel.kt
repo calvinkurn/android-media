@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.uimodel
+package com.tokopedia.tokochat_common.view.uimodel
 
 data class TokoChatHeaderUiModel(
     val id: String,
