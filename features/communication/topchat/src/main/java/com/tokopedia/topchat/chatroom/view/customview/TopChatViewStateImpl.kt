@@ -425,6 +425,7 @@ open class TopChatViewStateImpl constructor(
             showHeaderMenuBottomSheet(
                     chatRoomViewModel, headerMenuListener
             )
+            headerMenuListener.onClickHeaderMenu()
         }
     }
 
@@ -564,6 +565,8 @@ open class TopChatViewStateImpl constructor(
             ID_REPORT_USER -> headerMenuListener.onGoToReportUser()
             ID_CHAT_SETTING -> headerMenuListener.onGoToChatSetting()
         }
+
+        headerMenuListener.onClickHeaderMenuItem(itemMenus.title)
     }
 
     override fun showConfirmationBlockChat() {
