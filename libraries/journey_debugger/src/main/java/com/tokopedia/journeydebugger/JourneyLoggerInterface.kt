@@ -4,11 +4,7 @@ interface JourneyLoggerInterface {
 
     val isNotificationEnabled: Boolean
 
-    fun startTrace(journey: String)
-
-    fun appendTrace(trace: String)
-
-    fun save()
+    fun save(journey: String)
 
     fun wipe()
 

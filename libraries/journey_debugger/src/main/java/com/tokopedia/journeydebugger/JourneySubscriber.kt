@@ -10,7 +10,7 @@ class JourneySubscriber() : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        //log here
+        JourneyLogger.getInstance(activity).save(activity::class.java.simpleName)
     }
 
     override fun onActivityPaused(activity: Activity) {

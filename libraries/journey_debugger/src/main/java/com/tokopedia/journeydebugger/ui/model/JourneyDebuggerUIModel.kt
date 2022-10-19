@@ -7,7 +7,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class JourneyDebuggerUIModel(var id: Long = 0, var journey: String? = null,
-                                  var trace: String? = null, var previewTrace: String? = null,
+                                  var previewJourney: String? = null,
                                   var timestamp: String? = null) : Visitable<JourneyDebuggerTypeFactory>, Parcelable {
 
     override fun type(typeFactory: JourneyDebuggerTypeFactory): Int {

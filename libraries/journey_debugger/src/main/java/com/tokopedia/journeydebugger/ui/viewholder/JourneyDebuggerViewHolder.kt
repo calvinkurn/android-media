@@ -12,20 +12,17 @@ import com.tokopedia.journeydebugger.ui.model.JourneyDebuggerUIModel
 class JourneyDebuggerViewHolder(itemView: View) : AbstractViewHolder<JourneyDebuggerUIModel>(itemView) {
 
     private val applinkName: TextView
-    private val traces: TextView
     private val timestamp: TextView
 
 
     init {
 
         applinkName = itemView.findViewById(R.id.journey_text_name)
-        traces = itemView.findViewById(R.id.journey_text_traces)
         timestamp = itemView.findViewById(R.id.journey_text_timestamp)
     }
 
     override fun bind(element: JourneyDebuggerUIModel) {
-        applinkName.text = element.journey
-        traces.text = element.previewTrace
+        applinkName.text = element.previewJourney
         timestamp.text = element.timestamp
     }
 

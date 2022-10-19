@@ -1,6 +1,8 @@
 package com.tokopedia.journeydebugger.data.source
 
 import android.content.Context
+import com.tokopedia.journeydebugger.JourneyDebuggerConst
+import com.tokopedia.journeydebugger.database.JourneyDatabase
 import com.tokopedia.journeydebugger.database.JourneyLogDB
 import com.tokopedia.journeydebugger.domain.model.JourneyLogModel
 
@@ -17,7 +19,7 @@ constructor(context: Context) {
     private val journeyLogDao: JourneyLogDao
 
     init {
-        journeyLogDao = TkpdAnalyticsDatabase.getInstance(context).applinkLogDao()
+        journeyLogDao = JourneyDatabase.getInstance(context).journeyLogDao()
     }
 
     fun deleteAll(): Observable<Boolean> {
@@ -30,8 +32,7 @@ constructor(context: Context) {
     fun insertAll(data: JourneyLogModel): Observable<Boolean> {
         return Observable.just(data).map { analyticsLogData ->
             val applinkLogDB = JourneyLogDB()
-            applinkLogDB.applink = data.applink
-            applinkLogDB.traces = data.traces
+            applinkLogDB.journey = data.journey
             applinkLogDB.timestamp = Date().time
 
             journeyLogDao.insertAll(applinkLogDB)
@@ -39,19 +40,19 @@ constructor(context: Context) {
         }
     }
 
-    fun getData(params: HashMap<String, Any>): Observable<List<ApplinkLogDB>> {
+    fun getData(params: HashMap<String, Any>): Observable<List<JourneyLogDB>> {
         return Observable.just(params).map { params1 ->
             val page: Int
 
-            if (params1.containsKey(AnalyticsDebuggerConst.PAGE))
-                page = params1[AnalyticsDebuggerConst.PAGE] as Int
+            if (params1.containsKey(JourneyDebuggerConst.PAGE))
+                page = params1[JourneyDebuggerConst.PAGE] as Int
             else
                 page = 0
 
             var search = "%%"
 
-            if (params1.containsKey(AnalyticsDebuggerConst.KEYWORD)) {
-                val keyword = params1[AnalyticsDebuggerConst.KEYWORD] as String?
+            if (params1.containsKey(JourneyDebuggerConst.KEYWORD)) {
+                val keyword = params1[JourneyDebuggerConst.KEYWORD] as String?
                 search = "%$keyword%"
             }
 

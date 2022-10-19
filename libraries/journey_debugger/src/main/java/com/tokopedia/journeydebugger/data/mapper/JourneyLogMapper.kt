@@ -25,9 +25,8 @@ internal constructor() : Func1<JourneyLogDB, Observable<Visitable<*>>> {
     override fun call(applinkLogDB: JourneyLogDB): Observable<Visitable<*>> {
         val uiModel = JourneyDebuggerUIModel()
         uiModel.id = applinkLogDB.id
-        uiModel.applink = applinkLogDB.applink
-        uiModel.trace = applinkLogDB.traces
-        uiModel.previewTrace = formatDataExcerpt(applinkLogDB.traces)
+        uiModel.journey = applinkLogDB.journey
+        uiModel.previewJourney = formatDataExcerpt(applinkLogDB.journey)
         uiModel.timestamp = dateFormat.format(Date(applinkLogDB.timestamp))
 
         return Observable.just(uiModel as Visitable<*>)

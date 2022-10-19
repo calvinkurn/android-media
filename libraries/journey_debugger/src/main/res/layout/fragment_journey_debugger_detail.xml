@@ -47,20 +47,5 @@
 
         </LinearLayout>
 
-        <com.tokopedia.unifyprinciples.Typography
-            app:typographyType="body_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="Traces:" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/journey_text_traces"
-            app:typographyType="small"
-            android:textColor="@color/Unify_NN600"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="{ dadfa:sdfasdfas...." />
-
     </LinearLayout>
 </ScrollView>

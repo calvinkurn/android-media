@@ -19,7 +19,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     private val cache: LocalCacheHandler
 
     private var journey = ""
-    private var traces = ""
 
     override val isNotificationEnabled: Boolean
         get() = cache.getBoolean(IS_JOURNEY_DEBUGGER_NOTIF_ENABLED, false)!!
@@ -29,16 +28,9 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
         this.cache = LocalCacheHandler(context, JOURNEY_DEBUGGER)
     }
 
-    override fun startTrace(journey: String) {
+    override fun save(journey: String) {
+
         this.journey = journey
-        traces = ""
-    }
-
-    override fun appendTrace(trace: String) {
-        traces += trace + "\n\n"
-    }
-
-    override fun save() {
 
         if (TextUtils.isEmpty(journey)) {
             return
@@ -47,7 +39,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
         try {
             val journeyLogModel = JourneyLogModel()
             journeyLogModel.journey = journey
-            journeyLogModel.traces = traces
 
             dbSource.insertAll(journeyLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
 
@@ -59,7 +50,6 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
         }
 
         journey = ""
-        traces = ""
     }
 
     override fun wipe() {
@@ -116,15 +106,7 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun startTrace(journey: String) {
-
-                }
-
-                override fun appendTrace(trace: String) {
-
-                }
-
-                override fun save() {
+                override fun save(journey: String) {
 
                 }
 

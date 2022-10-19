@@ -15,9 +15,6 @@ class JourneyLogDB {
     @ColumnInfo(name = "journey")
     var journey: String? = null
 
-    @ColumnInfo(name = "traces")
-    var traces: String? = null
-
     @ColumnInfo(name = "timestamp")
     var timestamp: Long = 0
 }

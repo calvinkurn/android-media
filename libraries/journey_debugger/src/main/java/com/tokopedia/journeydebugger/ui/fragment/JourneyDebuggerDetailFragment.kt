@@ -22,7 +22,6 @@ import com.tokopedia.unifycomponents.Toaster
 class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
     private var textJourney: TextView? = null
     private var textTimestamp: TextView? = null
-    private var textTraces: TextView? = null
     private var iconCopyJourney: IconUnify? = null
     private var uiModel: JourneyDebuggerUIModel? = null
 
@@ -34,7 +33,6 @@ class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
         val view = inflater.inflate(R.layout.fragment_journey_debugger_detail, container, false)
         textJourney = view.findViewById(R.id.journey_text_name)
         textTimestamp = view.findViewById(R.id.journey_text_timestamp)
-        textTraces = view.findViewById(R.id.journey_text_traces)
         iconCopyJourney = view.findViewById(R.id.icon_copy_journey)
 
         return view
@@ -45,7 +43,6 @@ class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
         if (uiModel != null) {
             textJourney!!.text = uiModel!!.journey
             textTimestamp!!.text = uiModel!!.timestamp
-            textTraces!!.text = uiModel!!.trace
 
             iconCopyJourney?.setOnClickListener {
                 uiModel?.let {
