@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.ProductServiceWidgetConstant.BUNDLE_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
 import com.tokopedia.product_service_widget.R
@@ -23,6 +24,10 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
+
+    companion object {
+        private const val PADDING_START_ADJUSTMENT_RV = 16
+    }
 
     @Inject
     lateinit var viewModel: ProductBundleWidgetViewModel
@@ -111,6 +116,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         tfTitle = view.findViewById(R.id.tf_title)
         setupItems(rvBundles)
         defineCustomAttributes(attrs)
+        adjustPadding(rvBundles)
         initInjector()
     }
 
@@ -120,6 +126,12 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
             adapter = bundleAdapter
             bundleAdapter.setListener(this@ProductBundleWidgetView)
         }
+    }
+
+    private fun adjustPadding(rvBundles: RecyclerView) {
+        tfTitle?.setMargin(paddingStart, paddingTop, paddingEnd, 0)
+        rvBundles.setPadding(paddingStart - PADDING_START_ADJUSTMENT_RV, 0, paddingEnd, paddingBottom)
+        setPadding(0,0,0,0)
     }
 
     private fun initInjector() {
