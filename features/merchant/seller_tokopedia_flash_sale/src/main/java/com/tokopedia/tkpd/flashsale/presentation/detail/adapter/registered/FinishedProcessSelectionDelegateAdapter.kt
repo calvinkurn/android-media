@@ -158,12 +158,12 @@ class FinishedProcessSelectionDelegateAdapter(
         private fun Typography.setRejectReason(item: FinishedProcessSelectionItem) {
             val isWarehouseAvailable = item.warehouses.size.isMoreThanZero()
             val isRejectReasonAvailable = if (isWarehouseAvailable) {
-                item.warehouses[Int.ZERO].rejectionReason.isNotEmpty()
+                item.warehouses.firstOrNull()?.rejectionReason?.isNotEmpty()
             } else {
                 false
             }
             this.run {
-                if (isWarehouseAvailable && isRejectReasonAvailable) {
+                if (isWarehouseAvailable && isRejectReasonAvailable == true) {
                     visible()
                     text = MethodChecker.fromHtml(
                         context.getString(
