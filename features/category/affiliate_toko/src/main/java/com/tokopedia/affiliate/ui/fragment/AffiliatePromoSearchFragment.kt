@@ -179,6 +179,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
                 view?.findViewById<Group>(R.id.view_initial_info)?.show()
                 sendSearchEvent(AffiliateAnalytics.LabelKeys.NOT_URL)
             } else {
+                showData(false)
                 affiliateSearchData.searchAffiliate?.data?.error?.let {
                     adapter.addElement(AffiliatePromotionErrorCardModel(it))
                 }
@@ -231,9 +232,9 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         )
     }
 
-    private fun showData(isErrorData: Boolean) {
+    private fun showData(isInitialState: Boolean) {
         view?.findViewById<Group>(R.id.view_initial_info)?.apply {
-            if (isErrorData) show() else hide()
+            if (isInitialState) show() else hide()
         }
         view?.findViewById<RecyclerView>(R.id.promotion_recycler_view)?.show()
     }
