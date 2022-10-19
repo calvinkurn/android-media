@@ -354,21 +354,13 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
                     return@itemOnClick
                 }
 
-                if (!folderData?.folderTitle.isNullOrEmpty()) {
-                    val size = imageDataList.size
-                    imageDataList.clear()
-                    imageAdapter.notifyItemRangeRemoved(0, size)
+                val folderName = folderData?.folderTitle ?: AlbumUtil.RECENTS
+                val size = imageDataList.size
+                imageDataList.clear()
+                imageAdapter.notifyItemRangeRemoved(0, size)
 
-                    updateSelectedFolderText(folderData?.folderTitle!!)
-                    refreshImages(folderData.folderTitle)
-                } else {
-                    updateSelectedFolderText(AlbumUtil.RECENTS)
-
-                    imageDataList.clear()
-                    addCameraItemInEmptyList()
-                    imageDataList.addAll(allImageDataList)
-                    imageAdapter.notifyItemRangeInserted(0, imageDataList.size)
-                }
+                updateSelectedFolderText(folderName)
+                refreshImages(folderName)
 
                 bottomSheet.dismiss()
             }
@@ -416,7 +408,10 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
     }
 
     private fun refreshImages(folderName: String) {
-        viewModel.getMediaByFolderName(folderName, queryConfiguration)
+        if(folderName == AlbumUtil.RECENTS)
+            viewModel.getPhotos(queryConfiguration)
+        else
+            viewModel.getMediaByFolderName(folderName, queryConfiguration)
     }
 
     fun setupRv() {
@@ -726,44 +721,26 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         val wasListInitiallyEmpty = imageDataList.size == 0
         val oldSize = imageDataList.size
-        val dataForAllFolders = mediaVmMData?.folderName == null
         var itemsToBeAdded = tempImageAdapterList.size
 
-        if (dataForAllFolders) {
-            allImageDataList.addAll(tempImageAdapterList)
+        if (mediaVmMData?.isNewItem == true) {
+            allImageDataList.addAll(0, tempImageAdapterList)
+        }
 
-            if (selectedFolderText.isNullOrEmpty() ||
-                selectedFolderText == noMediaAvailableText ||
-                selectedFolderText == loadingMediaText ||
-                selectedFolderText == AlbumUtil.RECENTS
-            ) {
-                imageDataList.clear()
+        if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == AlbumUtil.RECENTS) {
 
-                itemsToBeAdded += addCameraItemInEmptyList()
-                imageDataList.addAll(allImageDataList)
-            }
-
-        } else {
+            itemsToBeAdded += addCameraItemInEmptyList()
 
             if (mediaVmMData?.isNewItem == true) {
-                allImageDataList.addAll(0, tempImageAdapterList)
-            }
+                if (imageDataList.isNotEmpty()) {
+                    imageDataList.addAll(1, tempImageAdapterList)
 
-            if (tvSelectedFolder.text == mediaVmMData?.folderName || tvSelectedFolder.text == AlbumUtil.RECENTS) {
-
-                itemsToBeAdded += addCameraItemInEmptyList()
-
-                if (mediaVmMData?.isNewItem == true) {
-                    if (imageDataList.isNotEmpty()) {
-                        imageDataList.addAll(1, tempImageAdapterList)
-
-                        autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
-                        imageAdapter.notifyItemRangeInserted(1, tempImageAdapterList.size)
-                        return
-                    }
-                } else {
-                    imageDataList.addAll(tempImageAdapterList)
+                    autoSelectFirstItemWhenFolderIsChanged(tempImageAdapterList)
+                    imageAdapter.notifyItemRangeInserted(1, tempImageAdapterList.size)
+                    return
                 }
+            } else {
+                imageDataList.addAll(tempImageAdapterList)
             }
         }
 
