@@ -22,6 +22,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith
  * Created by kenny.hadisaputra on 15/07/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class PlayPinnedProductUiTest {
 
     @get:Rule

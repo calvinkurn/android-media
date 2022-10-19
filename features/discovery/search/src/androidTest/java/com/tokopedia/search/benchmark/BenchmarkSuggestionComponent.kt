@@ -6,7 +6,7 @@ import androidx.benchmark.junit4.measureRepeated
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.createSuggestionListener
 import com.tokopedia.search.mock.MockSearchProductModel.getSuggestionViewModel
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule

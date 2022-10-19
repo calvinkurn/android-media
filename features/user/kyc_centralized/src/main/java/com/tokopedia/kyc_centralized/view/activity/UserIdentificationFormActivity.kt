@@ -23,6 +23,10 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.R
+import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
+import com.tokopedia.kyc_centralized.common.KYCConstant
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.UserIdentificationCommonComponent
 import com.tokopedia.kyc_centralized.util.KycCleanupStorageWorker
@@ -33,10 +37,6 @@ import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationFormKtpFrag
 import com.tokopedia.kyc_centralized.view.model.UserIdentificationStepperModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.unifyprinciples.Typography.Companion.BODY_2
-import com.tokopedia.kyc_centralized.common.KYCConstant
-import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
-import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
-import com.tokopedia.kyc_centralized.common.KycStatus
 import com.tokopedia.utils.file.FileUtil
 import timber.log.Timber
 
@@ -203,7 +203,8 @@ class UserIdentificationFormActivity : BaseStepperActivity(),
                 if (snackbar?.isShown == true) {
                     snackbar?.hideRetrySnackbar()
                 }
-                super.onOptionsItemSelected(item)
+                onBackEvent()
+                return true
             }
             else -> super.onOptionsItemSelected(item)
         }
