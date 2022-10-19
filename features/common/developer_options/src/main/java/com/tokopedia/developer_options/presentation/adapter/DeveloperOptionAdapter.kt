@@ -86,6 +86,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_SSE_LOGGING = "View SSE Logging"
         const val KEYWORD_TYPOGRAPHY_NEW_FONT = "Switch Typography Guideline"
         const val KEYWORD_CONVERT_RESOURCE_ID = "Convert Resource ID to Resource Name"
+        const val KEYWORD_VIEW_HANSEL_PATCH_LIST = "View Hansel Patch List"
     }
 
     /**
@@ -176,7 +177,8 @@ class DeveloperOptionAdapter(
         )),
         ConvertResourceIdUiModel(
             listOf(KEYWORD_CONVERT_RESOURCE_ID)
-        )
+        ),
+        ViewHanselPatchUiModel(listOf(KEYWORD_VIEW_HANSEL_PATCH_LIST))
     )
 
     init {

@@ -13,8 +13,8 @@ import com.tokopedia.play.di.PlayTestModule
 import com.tokopedia.play.di.PlayTestRepositoryModule
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play.model.UiModelBuilder
-import com.tokopedia.play.test.cassava.containsEventAction
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.cassava.containsEventAction
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.uitest.robot.PlayActivityRobot
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.OriginalPrice
@@ -30,6 +30,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -44,6 +45,7 @@ import org.junit.runner.RunWith
  */
 //TODO("Add more cases especially cases when pinned product has variant")
 @RunWith(AndroidJUnit4ClassRunner::class)
+@CassavaTest
 class PlayPinnedProductAnalyticTest {
 
     @get:Rule
