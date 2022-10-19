@@ -258,6 +258,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendSticker: Sticker? = null
     private var delaySendSrw: QuestionUiModel? = null
     private var interlocutorShopType: String = ""
+    private var isFromBubble: Boolean = false
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -565,6 +566,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         initChatTextAreaLayout()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (isFromBubble) {
+            analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
+    }
+
     private fun setupLifecycleObserver() {
         viewLifecycleOwner.lifecycle.addObserver(viewModel)
     }
@@ -675,6 +683,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
+        val bubbleSource = getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null)
+        isFromBubble = bubbleSource == Constant.EXTRA_BUBBLE_SOURCE
+
         return TopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
