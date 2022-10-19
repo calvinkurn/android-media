@@ -153,6 +153,7 @@ const val CLICK_SHOP_TOPADS = "click - shop - topads"
 const val CLICK_PRODUCT_TOPADS = "click - product - topads"
 const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 
+@Suppress("LateinitUsage")
 class FeedPlusFragment : BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     TopAdsItemClickListener, TopAdsInfoClickListener,

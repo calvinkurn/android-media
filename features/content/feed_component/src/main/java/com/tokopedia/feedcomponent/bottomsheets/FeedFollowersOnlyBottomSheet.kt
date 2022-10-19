@@ -11,6 +11,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
+@Suppress("LateinitUsage")
 class FeedFollowersOnlyBottomSheet : BottomSheetUnify() {
 
     private var dismissedByClosing = false

@@ -32,18 +32,14 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsRespo
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
-import com.tokopedia.feedcomponent.util.util.DataMapper
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedplus.R
-import com.tokopedia.feedcomponent.R as feedComponentR
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity.Companion.PARAM_IS_FOLLOWED
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedTrackingEventLabel
@@ -54,10 +50,9 @@ import com.tokopedia.feedplus.view.presenter.FeedDetailViewModel
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
+import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
 import com.tokopedia.linker.model.LinkerError
@@ -68,10 +63,10 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
 import javax.inject.Inject
+import com.tokopedia.feedcomponent.R as feedComponentR
 
 /**
  * A simple [Fragment] subclass.
@@ -81,6 +76,7 @@ private const val ARGS_DETAIL_ID = "DETAIL_ID"
 private const val REQUEST_OPEN_PDP = 111
 private const val TYPE = "text/plain"
 
+@Suppress("LateinitUsage")
 class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, ShareCallback, FeedFollowersOnlyBottomSheet.Listener {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar

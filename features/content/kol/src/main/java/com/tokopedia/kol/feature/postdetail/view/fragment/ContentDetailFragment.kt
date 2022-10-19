@@ -96,6 +96,7 @@ import com.tokopedia.wishlist_common.R as wishlistR
  * Created by shruti agarwal on 15/06/22
  */
 
+@Suppress("LateinitUsage")
 class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.CDPListener,
     ProductItemInfoBottomSheet.Listener, ShareBottomsheetListener,
     FeedFollowersOnlyBottomSheet.Listener {
