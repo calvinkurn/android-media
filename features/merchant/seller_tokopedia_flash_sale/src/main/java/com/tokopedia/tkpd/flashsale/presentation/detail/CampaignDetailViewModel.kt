@@ -33,6 +33,9 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import java.util.*
 import javax.inject.Inject
 
@@ -40,6 +43,7 @@ class CampaignDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
     private val getFlashSaleSubmittedProductListUseCase: GetFlashSaleSubmittedProductListUseCase,
+    private val getFlashSaleSellerStatusUseCase: GetFlashSaleSellerStatusUseCase,
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val doFlashSaleProductDeleteUseCase: DoFlashSaleProductDeleteUseCase,
     private val doFlashSaleSellerRegistrationUseCase: DoFlashSaleSellerRegistrationUseCase,
@@ -86,6 +90,13 @@ class CampaignDetailViewModel @Inject constructor(
     private var isOnCheckboxState = false
     private var isTriggeredFromDelete = false
 
+    sealed class UiEffect {
+        object ShowGlobalError : UiEffect()
+        object ShowIneligibleAccessWarning : UiEffect()
+    }
+    private val _uiEffect = MutableSharedFlow<UiEffect>(replay = 1)
+    val uiEffect = this._uiEffect.asSharedFlow()
+
     companion object {
         private const val PAGE_SIZE = 10
         private const val REGISTER_PERIOD_TITLE = "Periode Pendaftaran"
@@ -114,12 +125,21 @@ class CampaignDetailViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val result = getFlashSaleDetailForSellerUseCase.execute(
-                    campaignId = campaignId
-                )
-                campaignStatus = result.status
-                tabName = result.tabName
-                _campaign.postValue(Success(result))
+                val sellerEligibilityDeferred = async { getFlashSaleSellerStatusUseCase.execute() }
+                val sellerEligibility = sellerEligibilityDeferred.await()
+                val isEligibleUsingFeature = sellerEligibility.isEligibleUsingFeature()
+
+                    val result = getFlashSaleDetailForSellerUseCase.execute(
+                        campaignId = campaignId
+                    )
+                    campaignStatus = result.status
+                    tabName = result.tabName
+                    _campaign.postValue(Success(result))
+
+                if (!isEligibleUsingFeature) {
+                    _uiEffect.emit(UiEffect.ShowIneligibleAccessWarning)
+                }
+
             },
             onError = { error ->
                 _campaign.postValue(Fail(error))
@@ -382,6 +402,7 @@ class CampaignDetailViewModel @Inject constructor(
             isMultiwarehouse,
             isParentProduct,
             totalChild,
+            totalSubsidy,
             soldCount,
             mainStock,
             name,
@@ -508,5 +529,15 @@ class CampaignDetailViewModel @Inject constructor(
 
     fun sendCheckReasonClickEvent(campaignId: Long) {
         tracker.sendClickCheckReasonEvent(campaignId.toString())
+    }
+
+    private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
+        val isRbacRuleActive = isDeviceAllowed
+
+        return when {
+            isRbacRuleActive && isUserAllowed -> true
+            !isRbacRuleActive -> true
+            else -> false
+        }
     }
 }

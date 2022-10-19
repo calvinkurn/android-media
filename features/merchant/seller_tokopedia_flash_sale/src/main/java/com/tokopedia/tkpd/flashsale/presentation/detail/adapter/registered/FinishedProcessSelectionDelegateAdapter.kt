@@ -58,6 +58,11 @@ class FinishedProcessSelectionDelegateAdapter(
                 tpgSubsidy.setSubsidy(item)
                 tpgVariantStockLocation.setStock(item)
                 labelStatus.setStatus(item)
+                if (item.isMultiwarehouse && !item.isParentProduct) {
+                    tpgRejectionReason.gone()
+                } else {
+                    tpgRejectionReason.setRejectReason(item)
+                }
             }
         }
 
@@ -148,6 +153,28 @@ class FinishedProcessSelectionDelegateAdapter(
                    }
                }
            }
+        }
+
+        private fun Typography.setRejectReason(item: FinishedProcessSelectionItem) {
+            val isWarehouseAvailable = item.warehouses.size.isMoreThanZero()
+            val isRejectReasonAvailable = if (isWarehouseAvailable) {
+                item.warehouses.firstOrNull()?.rejectionReason?.isNotEmpty()
+            } else {
+                false
+            }
+            this.run {
+                if (isWarehouseAvailable && isRejectReasonAvailable == true) {
+                    visible()
+                    text = MethodChecker.fromHtml(
+                        context.getString(
+                            R.string.stfs_rejection_reason_placeholder,
+                            item.warehouses[Int.ZERO].rejectionReason
+                        )
+                    )
+                } else {
+                    gone()
+                }
+            }
         }
     }
 }

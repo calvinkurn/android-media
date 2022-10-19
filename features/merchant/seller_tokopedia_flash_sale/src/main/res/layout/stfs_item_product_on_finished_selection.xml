@@ -129,6 +129,17 @@
         app:layout_constraintStart_toStartOf="@+id/tpg_variant_stock_location"
         app:layout_constraintTop_toBottomOf="@+id/tpg_variant_stock_location" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_rejection_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/label_status"
+        app:layout_constraintTop_toBottomOf="@+id/label_status"
+        app:typographyType="paragraph_3"
+        tools:text="@string/stfs_rejection_reason_placeholder" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
@@ -136,7 +147,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/label_status" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_rejection_reason" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStarter"

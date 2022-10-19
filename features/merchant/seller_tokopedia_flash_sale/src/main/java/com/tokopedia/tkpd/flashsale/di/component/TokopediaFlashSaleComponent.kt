@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDeta
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignProductCriteriaFragment
 import com.tokopedia.tkpd.flashsale.presentation.detail.fragment.CampaignTimelineFragment
+import com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess.IneligibleAccessFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerFragment
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity
@@ -37,6 +38,7 @@ interface TokopediaFlashSaleComponent {
     fun inject(bottomSheet: CampaignDetailBottomSheet)
 
     fun inject(fragment: CampaignDetailFragment)
+    fun inject(fragment: IneligibleAccessFragment)
 
     fun inject(fragment: ChooseProductFragment)
 

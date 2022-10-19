@@ -189,6 +189,7 @@
     <string name="stfs_sold_label">Terjual</string>
     <string name="stfs_selling_label">Penjualan</string>
     <string name="stfs_rejection_reason_placeholder"><![CDATA[<font color=#F94D63>Ditolak</font>]]> karena %s.</string>
+    <string name="stfs_normal_rejection_reason_placeholder">Ditolak karena %s.</string>
     <string name="stfs_check_another_campaign_label">Cek Campaign Lain</string>
     <string name="stfs_empty_desc_label">Yuk, cek campaign menarik lainnya yang bisa kamu ikuti!</string>
     <string name="stfs_canceled_card_title_label">Yah, campaign ini dibatalkan</string>
@@ -283,5 +284,8 @@
     <string name="stfs_toaster_ok">Oke</string>
 
     <string name="stfs_warning_location_not_in_criteria">Lokasi ini belum memenuhi kriteria.</string>
+    <string name="stfs_title_ineligible_access">Yah, kamu belum bisa akses ke Flash Sale Tokopedia</string>
+    <string name="stfs_desc_ineligible_access">Pelajari dulu agar tokomu bisa pakai Flash Sale Tokopedia, yuk!</string>
+    <string name="stfs_btn_go_to_learn_voucher_text">Pelajari Flash Sale Tokopedia</string>
 
 </resources>

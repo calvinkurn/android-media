@@ -130,6 +130,17 @@
         app:typographyType="display_3"
         tools:text="@string/stfs_product_sold_value_placeholder" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tpg_rejection_reason"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:textColor="@color/gr_700"
+        app:layout_constraintStart_toStartOf="@+id/tpg_product_sold"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_product_sold"
+        app:typographyType="display_3"
+        tools:text="@string/stfs_rejection_reason_placeholder" />
+
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider_2"
         android:layout_width="match_parent"
@@ -137,7 +148,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpg_product_sold" />
+        app:layout_constraintTop_toBottomOf="@+id/tpg_rejection_reason" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineStarter"
