@@ -1371,4 +1371,23 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
     }
+
+    @Test
+    fun `when call getShopAffiliateTrackerId success, then shopAffiliateTrackerId should return mocked value`() {
+        val mockAffiliateTrackerId = "123"
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } returns mockAffiliateTrackerId
+        shopPageProductListResultViewModel.getShopAffiliateTrackerId()
+        assert(shopPageProductListResultViewModel.shopAffiliateTrackerId.value == mockAffiliateTrackerId)
+    }
+
+    @Test
+    fun `when call getShopAffiliateTrackerId error, then should shopAffiliateTrackerId should be null`() {
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } throws Exception()
+        shopPageProductListResultViewModel.getShopAffiliateTrackerId()
+        assert(shopPageProductListResultViewModel.shopAffiliateTrackerId.value == null)
+    }
 }
