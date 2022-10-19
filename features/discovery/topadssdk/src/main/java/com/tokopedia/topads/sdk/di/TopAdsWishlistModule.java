@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
 import com.tokopedia.network.NetworkRouter;
+import com.tokopedia.topads.sdk.UrlTopAdsSdk;
 import com.tokopedia.topads.sdk.base.AuthInterceptor;
-import com.tokopedia.topads.sdk.base.Config;
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService;
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase;
 import com.tokopedia.user.session.UserSessionInterface;
@@ -35,7 +35,7 @@ public class TopAdsWishlistModule {
     @Provides
     public Retrofit provideRetrofit(OkHttpClient okHttpClient,
                                     Retrofit.Builder retrofitBuilder) {
-        return retrofitBuilder.baseUrl(Config.TOPADS_BASE_URL).client(okHttpClient).build();
+        return retrofitBuilder.baseUrl(UrlTopAdsSdk.INSTANCE.getTOP_ADS_BASE_URL()).client(okHttpClient).build();
     }
 
     @Provides

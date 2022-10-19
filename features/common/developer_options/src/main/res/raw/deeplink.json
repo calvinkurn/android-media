@@ -5,6 +5,16 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.macrobenchmark_util.env.SessionSetupActivity", 
+          "deeplink": "tokopedia-android-internal://session-setting/opt", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.macrobenchmark_util.env.MockTestActivity", 
+          "deeplink": "tokopedia-android-internal://mock-setting/opt", 
+          "deeplink_variable": ""
+     }, 
+     {
           "destination_activity": "com.tokopedia.webview.BaseSimpleWebViewActivity", 
           "deeplink": "tokopedia-android-internal://global/webview", 
           "deeplink_variable": "ApplinkConstInternalGlobal.WEBVIEW_BASE"
@@ -1633,11 +1643,6 @@
           "destination_activity": "com.tokopedia.homenav.view.activity.HomeNavActivity", 
           "deeplink": "tokopedia-android-internal://navigation/main", 
           "deeplink_variable": "ApplinkConsInternalNavigation.MAIN_NAVIGATION"
-     }, 
-     {
-          "destination_activity": "com.tokopedia.home.testenv.HomeTestSetupActivity", 
-          "deeplink": "tokopedia-android-internal://home-setting/opt", 
-          "deeplink_variable": ""
      }, 
      {
           "destination_activity": "com.tokopedia.recentview.view.activity.RecentViewActivity", 
