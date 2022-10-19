@@ -26,22 +26,15 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     private val checkboxListener = CheckboxListener()
     private val trackingHandler = TrackingHandler()
     private var trackerData: CreateReviewAnonymousUiState.Showing.TrackerData? = null
+    private var listener: Listener? = null
 
     override val binding = WidgetCreateReviewAnonymousBinding.inflate(LayoutInflater.from(context), this, true)
 
+    private val bindingAnonymous = binding.layoutAnonymous
+    private val bindingLoading = binding.layoutAnonymousLoading
+
     init {
-        binding.layoutAnonymous.root.setOnCheckedChangeListener(checkboxListener)
-    }
-
-    private fun showLoading() = transitionHandler.transitionToShowLoading()
-
-    private fun WidgetCreateReviewAnonymousBinding.showAnonymous(checked: Boolean) {
-        transitionHandler.transitionToShowAnonymous()
-        setupCheckbox(checked)
-    }
-
-    private fun WidgetCreateReviewAnonymousBinding.setupCheckbox(checked: Boolean) {
-        layoutAnonymous.root.isChecked = checked
+        bindingAnonymous.cbCreateReviewAnonymous.setOnCheckedChangeListener(checkboxListener)
     }
 
     fun updateUi(uiState: CreateReviewAnonymousUiState, continuation: Continuation<Unit>) {
@@ -54,7 +47,7 @@ class CreateReviewAnonymous @JvmOverloads constructor(
             }
             is CreateReviewAnonymousUiState.Showing -> {
                 trackerData = uiState.trackerData
-                binding.showAnonymous(uiState.checked)
+                showAnonymous(uiState.checked)
                 animateShow(onAnimationEnd = {
                     continuation.resume(Unit)
                 })
@@ -63,33 +56,51 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     }
 
     fun setListener(newCreateReviewAnonymousListener: Listener) {
-        checkboxListener.createReviewAnonymousListener = newCreateReviewAnonymousListener
+        listener = newCreateReviewAnonymousListener
+    }
+
+    private fun showLoading() = transitionHandler.transitionToShowLoading()
+
+    private fun showAnonymous(checked: Boolean) {
+        transitionHandler.transitionToShowAnonymous()
+        setupCheckbox(checked)
+        setupSeeAnonymousInfoButton()
+    }
+
+    private fun setupCheckbox(checked: Boolean) {
+        bindingAnonymous.cbCreateReviewAnonymous.isChecked = checked
+    }
+
+    private fun setupSeeAnonymousInfoButton() {
+        bindingAnonymous.icCreateReviewAnonymousInfo.setOnClickListener {
+            listener?.onClickSeeAnonymousInfo()
+        }
     }
 
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
                 duration = ANIMATION_DURATION
-                addTarget(binding.layoutAnonymous.root)
-                addTarget(binding.layoutAnonymousLoading.root)
+                addTarget(bindingAnonymous.root)
+                addTarget(bindingLoading.root)
                 interpolator = AccelerateInterpolator()
             }
         }
 
-        private fun WidgetCreateReviewAnonymousBinding.showLoadingLayout() {
-            layoutAnonymousLoading.root.show()
+        private fun showLoadingLayout() {
+            bindingLoading.root.show()
         }
 
-        private fun WidgetCreateReviewAnonymousBinding.hideLoadingLayout() {
-            layoutAnonymousLoading.root.gone()
+        private fun hideLoadingLayout() {
+            bindingLoading.root.gone()
         }
 
-        private fun WidgetCreateReviewAnonymousBinding.showAnonymousLayout() {
-            layoutAnonymous.root.show()
+        private fun showAnonymousLayout() {
+            bindingAnonymous.root.show()
         }
 
-        private fun WidgetCreateReviewAnonymousBinding.hideAnonymousLayout() {
-            layoutAnonymous.root.gone()
+        private fun hideAnonymousLayout() {
+            bindingAnonymous.root.gone()
         }
 
         private fun WidgetCreateReviewAnonymousBinding.beginDelayedTransition() {
@@ -114,9 +125,8 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     }
 
     private inner class CheckboxListener: CompoundButton.OnCheckedChangeListener {
-        var createReviewAnonymousListener: Listener? = null
         override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            createReviewAnonymousListener?.onIsAnonymousChanged(isChecked)
+            listener?.onIsAnonymousChanged(isChecked)
             trackingHandler.trackReviewOnAnonymousChecked(isChecked)
         }
     }
@@ -138,5 +148,6 @@ class CreateReviewAnonymous @JvmOverloads constructor(
 
     interface Listener {
         fun onIsAnonymousChanged(anonymous: Boolean)
+        fun onClickSeeAnonymousInfo()
     }
 }
