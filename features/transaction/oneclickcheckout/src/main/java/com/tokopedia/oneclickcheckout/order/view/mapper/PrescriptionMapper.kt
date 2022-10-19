@@ -10,7 +10,7 @@ object PrescriptionMapper {
             checkoutId = prescriptionIdsResponse.detailData?.prescriptionData?.checkoutId ?: "",
             prescriptionIds = prescriptionIdsResponse.detailData?.prescriptionData?.prescriptions?.map { prescription ->
                 prescription?.prescriptionId.toString()
-            }
+            } as ArrayList<String>
         )
     }
 }

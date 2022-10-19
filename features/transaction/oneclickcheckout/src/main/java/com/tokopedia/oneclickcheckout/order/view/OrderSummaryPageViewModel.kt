@@ -187,9 +187,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 uploadImageText = result.imageUpload.text,
                 leftIconUrl = result.imageUpload.leftIconUrl,
                 checkoutId = result.imageUpload.checkoutId,
-
-                prescriptionIds = prescriptionIds.prescriptionIds as ArrayList<String>,
-                uploadedImageCount = prescriptionIds.prescriptionIds?.size ?: 0,
+                prescriptionIds = prescriptionIds.prescriptionIds,
+                uploadedImageCount = prescriptionIds.prescriptionIds.size,
                 isError = false,
                 frontEndValidation = result.imageUpload.frontEndValidation,
                 isOcc = true,
@@ -954,8 +953,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile,
-                    orderShipment.value, orderPayment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(
+                validateUsePromoRevampUiModel,
+                orderCart,
+                products,
+                shop,
+                profile,
+                orderShipment.value,
+                orderPayment.value,
+                orderTotal.value,
+                userSession.userId,
+                generateOspEeBody(emptyList()),
+                uploadPrescriptionUiModel.value.prescriptionIds
+            )
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {

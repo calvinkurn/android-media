@@ -12,6 +12,7 @@ import com.tokopedia.oneclickcheckout.order.data.checkout.AddOnItem
 import com.tokopedia.oneclickcheckout.order.data.checkout.CheckoutOccRequest
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata
 import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.FREE_SHIPPING_METADATA
+import com.tokopedia.oneclickcheckout.order.data.checkout.OrderMetadata.Companion.PRESCRIPTION_IDS_METADATA
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamCart
 import com.tokopedia.oneclickcheckout.order.data.checkout.ParamData
 import com.tokopedia.oneclickcheckout.order.data.checkout.ProductData
@@ -67,16 +68,19 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
         return list
     }
 
-    suspend fun doCheckout(finalPromo: ValidateUsePromoRevampUiModel?,
-                           orderCart: OrderCart,
-                           products: List<OrderProduct>,
-                           shop: OrderShop,
-                           profile: OrderProfile,
-                           orderShipment: OrderShipment,
-                           orderPayment: OrderPayment,
-                           orderTotal: OrderTotal,
-                           userId: String,
-                           orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce): Pair<CheckoutOccResult?, OccGlobalEvent?> {
+    suspend fun doCheckout(
+        finalPromo: ValidateUsePromoRevampUiModel?,
+        orderCart: OrderCart,
+        products: List<OrderProduct>,
+        shop: OrderShop,
+        profile: OrderProfile,
+        orderShipment: OrderShipment,
+        orderPayment: OrderPayment,
+        orderTotal: OrderTotal,
+        userId: String,
+        orderSummaryPageEnhanceECommerce: OrderSummaryPageEnhanceECommerce,
+        prescriptionIds: List<String?>?
+    ): Pair<CheckoutOccResult?, OccGlobalEvent?> {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             val shopPromos = generateShopPromos(finalPromo, orderCart)
@@ -120,6 +124,9 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             val logisticPromoUiModel = orderShipment.logisticPromoViewModel
             if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
                 orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, logisticPromoUiModel.freeShippingMetadata))
+            }
+            prescriptionIds?.let {
+                orderMetadata.add(OrderMetadata(PRESCRIPTION_IDS_METADATA, it.toString()))
             }
             val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
                     profile.address.addressId,
