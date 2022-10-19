@@ -26,10 +26,11 @@ import com.tokopedia.home_recom.test.R
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
 class HomeRecomIdGenerator {
-    companion object{
+    companion object {
         private const val PACKAGE = "com.tokopedia.home_recom"
-        private const val HOME_RECOM_FRAGMENT = "home_recom_fragment_"
-        private const val SIMILAR_RECOM_FRAGMENT = "similar_recom_fragment_"
+        private const val HOME_RECOM_FRAGMENT = "home_recom_fragment"
+        private const val SIMILAR_RECOM_FRAGMENT = "similar_recom_fragment"
+        private const val DOT_CSV = ".csv"
     }
 
     private val printConditions = listOf(
@@ -39,7 +40,7 @@ class HomeRecomIdGenerator {
             val className = parent::class.java.name
 
             !packageName.startsWith("com.tokopedia")
-                    || !className.contains("unify", ignoreCase = true)
+                || !className.contains("unify", ignoreCase = true)
         },
         PrintCondition { view ->
             view.id != View.NO_ID || view is ViewGroup
@@ -73,22 +74,38 @@ class HomeRecomIdGenerator {
         SimilarProductRecommendationActivity::class.java, false, false
     )
 
-    @Test
-    fun printResourceRecom() {
+    private fun generateActivityRuleRecomFragment() {
         setupGraphqlMockResponse(RecommendationPageMockResponseConfig())
         activityRule.launchActivity(
-                HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
-                    data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
-                }
+            HomeRecommendationActivity.newInstance(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                "547113763"
+            ).apply {
+                data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
+            }
         )
+    }
 
+    private fun generateActivityRuleSimilarRecomFragment() {
+        setupGraphqlMockResponse(SimilarRecommendationPageMockResponseConfig())
+        activitySimilarRecomRule.launchActivity(
+            Intent(
+                InstrumentationRegistry.getInstrumentation().targetContext,
+                SimilarProductRecommendationActivity::class.java
+            )
+        )
+    }
+
+    @Test
+    fun printResourceRecom() {
+        generateActivityRuleRecomFragment()
         Thread.sleep(10000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val homeFragment = parentViewPrinter.printAsCSV(
                 view = activityRule.activity.findViewById(R.id.container_home_recom)
             )
             fileWriter.writeGeneratedViewIds(
-                fileName = "home_recom_fragment.csv",
+                fileName = "$HOME_RECOM_FRAGMENT$DOT_CSV",
                 text = homeFragment
             )
         }
@@ -97,13 +114,7 @@ class HomeRecomIdGenerator {
 
     @Test
     fun printEachViewHoldersResourceId() {
-        setupGraphqlMockResponse(RecommendationPageMockResponseConfig())
-        activityRule.launchActivity(
-                HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {
-                    data = Uri.parse("tokopedia://rekomendasi/547113763/?ref=googleshopping")
-                }
-        )
-
+        generateActivityRuleRecomFragment()
         Thread.sleep(10000)
         printResourceIdForEachViewHolder()
         activityRule.activity.finishAndRemoveTask()
@@ -111,21 +122,14 @@ class HomeRecomIdGenerator {
 
     @Test
     fun printResourceSimilarRecom() {
-        setupGraphqlMockResponse(SimilarRecommendationPageMockResponseConfig())
-        activitySimilarRecomRule.launchActivity(
-            Intent(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                SimilarProductRecommendationActivity::class.java
-            )
-        )
-
+        generateActivityRuleSimilarRecomFragment()
         Thread.sleep(10000)
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
             val homeFragment = parentViewPrinter.printAsCSV(
                 view = activitySimilarRecomRule.activity.findViewById(R.id.container_similar_recom)
             )
             fileWriter.writeGeneratedViewIds(
-                fileName = "similar_recom_fragment.csv",
+                fileName = "$SIMILAR_RECOM_FRAGMENT$DOT_CSV",
                 text = homeFragment
             )
         }
@@ -134,14 +138,7 @@ class HomeRecomIdGenerator {
 
     @Test
     fun printEachViewHoldersSimilarRecomResourceId() {
-        setupGraphqlMockResponse(SimilarRecommendationPageMockResponseConfig())
-        activitySimilarRecomRule.launchActivity(
-            Intent(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                SimilarProductRecommendationActivity::class.java
-            )
-        )
-
+        generateActivityRuleSimilarRecomFragment()
         Thread.sleep(10000)
         printResourceIdSimilarRecomForEachViewHolder()
         activitySimilarRecomRule.activity.finishAndRemoveTask()
@@ -167,7 +164,12 @@ class HomeRecomIdGenerator {
         fragmentClass: String
     ) {
         screenshotModelList.forEachIndexed { index, screenshotModel ->
-            printHomeRecomViewHolderResourceIdAtPosition(index, screenshotModel.name, recyclerView, fragmentClass)
+            printHomeRecomViewHolderResourceIdAtPosition(
+                index,
+                screenshotModel.name,
+                recyclerView,
+                fragmentClass
+            )
         }
     }
 
@@ -182,7 +184,7 @@ class HomeRecomIdGenerator {
                 view = it.itemView
             )
             fileWriter.writeGeneratedViewIds(
-                fileName = "$fragmentClass$fileNamePostFix.csv",
+                fileName = "${fragmentClass}_$fileNamePostFix$DOT_CSV",
                 text = homeViewHolder
             )
         }
