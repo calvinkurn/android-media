@@ -120,10 +120,10 @@ class ContentDetailPostViewHolder(
         fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long)
         fun onSgcVideoTapped(feedXCard: FeedXCard)
         fun sendWatchVODTracker(feedXCard: FeedXCard, duration: Long)
-        fun onIngatkanSayaBtnImpressed(card : FeedXCard, positionInFeed: Int)
-        fun onIngatkanSayaBtnClicked(card : FeedXCard, positionInFeed: Int)
-        fun changeUpcomingWidgetToOngoing(card : FeedXCard, positionInFeed: Int)
-        fun removeOngoingCampaignSaleWidget(card : FeedXCard, positionInFeed: Int)
+        fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int)
+        fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int)
+        fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int)
+        fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int)
     }
 
 }

@@ -187,6 +187,7 @@
 
     <string name="error_get_os_merchant">Error getting OS merchant type. Please retry</string>
     <string name="error_get_shop_status">Error getting shop status. Please retry</string>
+    <string name="error_get_shop_operational_hour_list">Error getting shop operational hours. Please retry</string>
     <string name="error_not_found_message">Waduh, tujuanmu ngga ada. Ayo kembali!</string>
     <string name="error_under_maintenance_message">Kami sedang melakukan perbaikan. Balik lagi nanti, ya.</string>
     <string name="error_full_visitor_message">Tokopedia lagi banyak pengunjung, nih. Balik lagi nanti, ya.</string>

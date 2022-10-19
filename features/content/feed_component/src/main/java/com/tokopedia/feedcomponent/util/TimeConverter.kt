@@ -2,6 +2,7 @@ package com.tokopedia.feedcomponent.util
 
 import android.content.Context
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -31,8 +32,6 @@ object TimeConverter {
     private const val GMT_DIVIDER = 100
     private const val GMT07 = "+0700"
     private val locale = Locale(LANGUAGE_ID, COUNTRY_ID)
-
-
 
     fun generateTime(context: Context, postTime: String): String {
         return generateTime(context, postTime, DEFAULT_FEED_FORMAT)
@@ -246,7 +245,7 @@ object TimeConverter {
                 val calendar = Calendar.getInstance()
                 calendar.time = it
 
-                val diff = (getDeviceGMT().toInt() - GMT07.toInt())
+                val diff = (getDeviceGMT().toIntOrZero() - GMT07.toIntOrZero())
                 if(diff != 0) {
                     calendar.add(Calendar.HOUR_OF_DAY, diff / GMT_DIVIDER)
                     calendar.add(Calendar.MINUTE, diff % GMT_DIVIDER)

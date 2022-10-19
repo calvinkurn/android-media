@@ -23,6 +23,7 @@ import com.tokopedia.loginregister.registerinitial.di.RegisterInitialQueryConsta
 import com.tokopedia.loginregister.registerinitial.domain.RegisterV2Query
 import com.tokopedia.loginregister.registerinitial.domain.data.ProfileInfoData
 import com.tokopedia.loginregister.registerinitial.domain.pojo.*
+import com.tokopedia.loginregister.registerinitial.view.bottomsheet.OtherMethodState
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sessioncommon.data.LoginTokenPojo
 import com.tokopedia.sessioncommon.data.PopupError
@@ -125,6 +126,13 @@ class RegisterInitialViewModel @Inject constructor(
         get() = _dynamicBannerResponse
 
     var idlingResourceProvider = TkpdIdlingResourceProvider.provideIdlingResource("REGISTER_INITIAL")
+
+    private var _otherMethodState: OtherMethodState<DiscoverData?> = OtherMethodState.Loading()
+    val otherMethodState get() = _otherMethodState
+
+    fun setOtherMethodState(state: OtherMethodState<DiscoverData?>) {
+        _otherMethodState = state
+    }
 
     fun getProvider() {
         launchCatchError(block = {

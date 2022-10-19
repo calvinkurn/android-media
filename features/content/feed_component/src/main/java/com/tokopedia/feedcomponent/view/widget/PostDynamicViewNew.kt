@@ -40,10 +40,7 @@ import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_POST
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_IMAGE
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -114,6 +111,7 @@ private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
 private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"
 
 private const val FOCUS_CTA_DELAY = 2000L
+private const val VIEWS_START_VALUE = 14
 
 
 /**
@@ -269,7 +267,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             override fun onLiked(viewHolder: CarouselImageViewHolder) {
                 listener?.onLikeClick(
                     positionInFeed,
-                    mData.id.toIntOrZero(),
+                    mData.id.toLongOrZero(),
                     mData.like.isLiked,
                     mData.typename,
                     mData.followers.isFollowed,
@@ -471,7 +469,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.comments,
             userSession.profilePicture,
             userSession.name,
-            feedXCard.id.toIntOrZero(),
+            feedXCard.id,
             feedXCard.author.type,
             feedXCard.author.id,
             feedXCard.typename,
@@ -495,7 +493,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
             listener?.onShareClick(
                 positionInFeed,
-                feedXCard.id.toIntOrZero(),
+                feedXCard.id,
                 feedXCard.author.name + " `post",
                 desc.replace("%s", feedXCard.author.name),
                 url = url,
@@ -603,7 +601,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun bindHeader(
         feedXCard: FeedXCard
     ) {
-        val activityId = feedXCard.id.toIntOrZero()
+        val activityId = feedXCard.id
         val author = feedXCard.author
         val reportable = feedXCard.reportable
         val deletable = feedXCard.deletable
@@ -615,7 +613,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val adId = feedXCard.adId
         val shopId = feedXCard.shopId
         val cpmData = feedXCard.cpmData
-        val channelId = feedXCard.playChannelID.toIntOrZero()
+        val channelId = feedXCard.playChannelID
         val isFollowed = followers.isFollowed
         val count = followers.count
         val isVideo = mediaType != TYPE_IMAGE
@@ -632,8 +630,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 ASGC_NEW_PRODUCTS -> context.getString(R.string.feeds_asgc_new_product_text)
                 ASGC_RESTOCK_PRODUCTS -> context.getString(R.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(R.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->   context.getString(R.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL ->  context.getString(R.string.feed_asgc_rilisan_special)
+                ASGC_FLASH_SALE_TOKO -> context.getString(R.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(R.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
@@ -738,7 +736,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 type,
                 mediaType,
                 caption,
-                channelId.toString())
+                channelId)
         }
     }
     private fun bindViews(feedXCard: FeedXCard){
@@ -770,7 +768,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             changeCTABtnColorAsPerWidget(feedXCard)
             listener?.onLikeClick(
                     positionInFeed,
-                    feedXCard.id.toIntOrZero(),
+                    feedXCard.id.toLongOrZero(),
                     feedXCard.like.isLiked,
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
@@ -785,7 +783,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindLikeData(feedXCard: FeedXCard) {
         val like: FeedXLike = feedXCard.like
-        val id: Int = feedXCard.id.toIntOrZero()
+        val id = feedXCard.id.toLongOrZero()
         val mediaType: String = feedXCard.media.firstOrNull()?.type?:""
 
         if (like.isLiked) {
@@ -875,7 +873,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 listener?.onAvatarClick(
                     positionInFeed,
                     caption.author.appLink,
-                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID.toIntOrZero() else caption.id.toIntOrZero(),
+                    if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
                     "",
                     followCta,
                     caption.typename,
@@ -1007,7 +1005,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         comments: FeedXComments,
         profilePicture: String,
         name: String,
-        id: Int,
+        id: String,
         authorType: Int,
         authorId: String,
         type: String,
@@ -1333,7 +1331,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             })
         }
         feedVODViewHolder.updateLikedText {
-            likedText.text = it
+            likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
+                bold {
+                    append(it, VIEWS_START_VALUE, it.length)
+                }
+            }
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute
@@ -1526,7 +1529,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             feedXCard.totalProducts,
             true,
             mutableListOf(),
-            feedXCard.id.toIntOrZero(), // just replace to String instead of return null
+            feedXCard.id, // just replace to String instead of return null
             positionInFeed,
             feedXCard.typename,
             feedXCard.followers.isFollowed,

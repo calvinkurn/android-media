@@ -17,9 +17,9 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.domain.response.Merchant
+import com.tokopedia.tokofood.common.domain.response.PriceLevel
 import com.tokopedia.tokofood.databinding.ItemTokofoodMerchantListCardBinding
-import com.tokopedia.tokofood.feature.home.domain.data.Merchant
-import com.tokopedia.tokofood.feature.home.domain.data.PriceLevel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodMerchantListUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label

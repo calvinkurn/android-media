@@ -1,7 +1,6 @@
 package com.tokopedia.feedplus.view.viewmodel.feeddetail
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 
@@ -30,7 +29,7 @@ data class FeedDetailProductModel (
         val shopName: String ,
         var feedType: String = "",
         var positionInFeed: Int = 0 ,
-        var postId: Int = 0,
+        var postId: String = "",
         var postType: String = "",
         var isFollowed:Boolean = false,
         var description:String = "",
@@ -46,15 +45,15 @@ data class FeedDetailProductModel (
         }
 
         val isUpcoming: Boolean
-                get() = saleStatus == Upcoming
+                get() = saleStatus == UPCOMING
         val isOngoing: Boolean
-                get() = saleStatus == Ongoing
+                get() = saleStatus == ONGOING
         val isRilisanSpl: Boolean
                 get() = saleType == ASGC_RILISAN_SPECIAL
 
         companion object {
-                private const val Upcoming = "upcoming"
-                private const val Ongoing = "ongoing"
+                const val UPCOMING = "upcoming"
+                private const val ONGOING = "ongoing"
                 private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
 
         }

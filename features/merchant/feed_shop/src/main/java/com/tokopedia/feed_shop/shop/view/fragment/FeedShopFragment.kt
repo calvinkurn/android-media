@@ -29,6 +29,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
+import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
@@ -41,7 +43,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -82,6 +83,8 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
@@ -129,7 +132,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         ShopPageFabConfig(
             items = arrayListOf(FloatingButtonItem(iconUnifyID = IconUnify.ADD, title = "")),
             onMainCircleButtonClicked = {
-                goToCreatePost(getSellerApplink())
+                goToCreatePost()
                 shopAnalytics.eventClickCreatePost()
             }
         )
@@ -184,6 +187,10 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         //endregion
 
         private const val PDP_APP_LINK_HOST = "product"
+
+        // Edit Post
+        private const val KEY_AUTHOR_TYPE = "author_type"
+        private const val VALUE_AUTHOR_TYPE = "content-preview-page"
 
         fun createInstance(shopId: String, createPostUrl: String): FeedShopFragment {
             val fragment = FeedShopFragment()
@@ -482,7 +489,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         reshowFloatingActionButton()
     }
 
-    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+    override fun onErrorDeletePost(errorMessage: String, id: String, rowNumber: Int) {
         view?.let {
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 presenter.deletePost(id, rowNumber)
@@ -546,7 +553,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
     }
 
-    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onLikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
@@ -554,7 +561,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    override fun onUnlikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.unlikeKol(id, rowNumber, this)
         } else {
@@ -562,15 +569,15 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
+    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Long, isLiked: Boolean) {
     }
 
-    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
+    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: String) {
     }
 
     override fun onGoToKolComment(
         rowNumber: Int,
-        id: Int,
+        id: String,
         hasMultipleContent: Boolean,
         activityType: String,
     ) {
@@ -582,7 +589,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
             ),
-            id.toString()
+            id
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
     }
 
@@ -592,7 +599,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onAvatarClick(
         positionInFeed: Int,
         redirectUrl: String,
-        activityId: Int,
+        activityId: String,
         activityName: String,
         followCta: FollowCta,
         type: String,
@@ -627,7 +634,20 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, mediaType: String, caption: String, playChannelId: String) {
+    override fun onMenuClick(
+        positionInFeed: Int,
+        postId: String,
+        reportable: Boolean,
+        deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        id: String,
+        authorType: String,
+        postType: String,
+        mediaType: String,
+        caption: String,
+        playChannelId: String
+    ) {
         context?.let {
             val menus =
                     createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
@@ -640,22 +660,32 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                         }
 
                         override fun onEditClick() {
-                            goToEditPostShop(postId)
+                            goToEditPost(caption, postId.toString(), id)
                         }
                     })
             menus.show()
         }
     }
 
-    private fun goToEditPostShop(postId: Int) {
-        context?.let { RouteManager.route(it, ApplinkConstInternalContent.SHOP_POST_EDIT, postId.toString()) }
+    private fun goToEditPost(caption: String, postId: String, authorId: String) {
+        val createPostViewModel = CreatePostViewModel()
+        createPostViewModel.caption = caption
+        createPostViewModel.postId = postId
+        createPostViewModel.editAuthorId = authorId
+
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
+            .putExtra(KEY_AUTHOR_TYPE, VALUE_AUTHOR_TYPE)
+            .putExtra(CreatePostViewModel.TAG, createPostViewModel)
+
+        startActivity(intent)
     }
 
     override fun onCaptionClick(positionInFeed: Int, redirectUrl: String) {
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, id: Long, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -663,13 +693,23 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isVideo: Boolean) {
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: String,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean,
+        mediaType: String,
+        shopId: String,
+        playChannelId: String,
+        isVideo: Boolean
+    ) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -897,7 +937,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: String, redirectLink: String, type: String, isFollowed: Boolean, shopId: String, feedXProducts: List<FeedXProduct>, index: Int) {
+    override fun onGridItemClick(
+        positionInFeed: Int,
+        productPosition: String,
+        productId: String,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        feedXProducts: List<FeedXProduct>,
+        index: Int
+    ) {
         onGoToLink(redirectLink)
     }
 
@@ -1019,35 +1069,22 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         shopFeedTabSharedViewModel.showShopPageFab()
     }
 
-    private fun getSellerApplink(): String {
-        var applink = ApplinkConst.CONTENT_CREATE_POST
-        if (whitelistDomain.authors.size != 0) {
-            for (author in whitelistDomain.authors) {
-                if (author.type.equals(Author.TYPE_SHOP)) {
-                    applink = author.link
-                }
-            }
-        }
-        return applink
-    }
-
     fun updateShopInfo(shopInfo: ShopInfo) {
         shopId = shopInfo.shopCore.shopID
         loadInitialData()
     }
 
     private fun goToCreatePost() {
-        goToCreatePost(getSellerApplink())
-    }
+        val intent = RouteManager.getIntent(context, ApplinkConst.IMAGE_PICKER_V2)
+            .putExtra(BundleData.APPLINK_AFTER_CAMERA_CAPTURE, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.MAX_MULTI_SELECT_ALLOWED, BundleData.VALUE_MAX_MULTI_SELECT_ALLOWED)
+            .putExtra(BundleData.TITLE, BundleData.VALUE_POST_SEBAGAI)
+            .putExtra(BundleData.APPLINK_FOR_GALLERY_PROCEED, ApplinkConst.AFFILIATE_DEFAULT_CREATE_POST_V2)
+            .putExtra(BundleData.KEY_IS_OPEN_FROM, BundleData.VALUE_IS_OPEN_FROM_SHOP_PAGE)
 
-    private fun goToCreatePost(link: String) {
-        startActivityForResult(
-                RouteManager.getIntent(
-                        requireContext(),
-                        link
-                ),
-                CREATE_POST
-        )
+        startActivityForResult(intent, CREATE_POST)
+
+        TrackerProvider.attachTracker(FeedTrackerImagePickerInsta(userSession.shopId))
     }
 
     private fun onGoToLink(url: String) {
@@ -1083,7 +1120,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+    private fun createDeleteDialog(rowNumber: Int, id: String): DialogUnify? {
         return context?.let{
             val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
@@ -1099,13 +1136,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun goToContentReport(contentId: Int) {
+    private fun goToContentReport(contentId: String) {
         if (context != null) {
             if (userSession.isLoggedIn) {
                 val intent = RouteManager.getIntent(
                         requireContext(),
                         ApplinkConstInternalContent.CONTENT_REPORT,
-                        contentId.toString()
+                        contentId
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
             } else {

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 
+@Suppress("LateinitUsage")
 class FeedPlusDetailActivity : BaseSimpleActivity() {
 
     private lateinit var detailId: String

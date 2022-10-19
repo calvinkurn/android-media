@@ -1,5 +1,8 @@
 package com.tokopedia.video_widget
 
+import android.app.Activity
+import android.app.Application
+import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import androidx.annotation.IdRes
@@ -13,7 +16,7 @@ class VideoPlayerController(
     private val rootView: View,
     @IdRes private val videoViewId: Int,
     @IdRes private val imageViewId: Int,
-) : ExoPlayerListener, VideoPlayer {
+) : ExoPlayerListener, VideoPlayer, Application.ActivityLifecycleCallbacks {
     private val videoView by lazy(LazyThreadSafetyMode.NONE) {
         rootView.findViewById<VideoPlayerView>(videoViewId)
     }
@@ -25,9 +28,21 @@ class VideoPlayerController(
     private var videoURL = ""
     private var videoPlayerStateFlow: MutableStateFlow<VideoPlayerState>? = null
     private val helper: VideoPlayerViewHelper by lazy(LazyThreadSafetyMode.NONE) {
-        VideoPlayerViewHelper.Builder(rootView.context, videoView)
-            .setExoPlayerEventsListener(this)
-            .create()
+        VideoPlayerViewHelper(videoView, this).also { it.init() }
+    }
+
+    init {
+        registerActivityLifecycleCallback()
+    }
+
+    private fun registerActivityLifecycleCallback() {
+        (videoView.context.applicationContext as Application)
+            .registerActivityLifecycleCallbacks(this)
+    }
+
+    private fun unregisterActivityLifecycleCallback() {
+        (videoView.context.applicationContext as Application)
+            .unregisterActivityLifecycleCallbacks(this)
     }
 
     fun setVideoURL(videoURL: String) {
@@ -81,5 +96,30 @@ class VideoPlayerController(
 
     override fun stopVideo() {
         helper.stop()
+    }
+
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+    }
+
+    override fun onActivityStopped(activity: Activity) {
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        if(videoView.context == activity) {
+            helper.onActivityDestroy()
+            unregisterActivityLifecycleCallback()
+        }
     }
 }

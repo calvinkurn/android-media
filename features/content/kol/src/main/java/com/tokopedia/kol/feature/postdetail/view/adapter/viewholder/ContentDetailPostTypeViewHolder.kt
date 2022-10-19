@@ -23,10 +23,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -373,8 +370,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
                 ASGC_RESTOCK_PRODUCTS -> context.getString(
                     feedComponentR.string.feeds_asgc_restock_text)
                 ASGC_DISCOUNT_TOKO -> context.getString(feedComponentR.string.feed_asgc_diskon_toko)
-                ASGC_FLASH_SALE_TOKO ->  context.getString(feedComponentR.string.feed_asgc_flash_sale_toko)
-                ASGC_RILISAN_SPECIAL ->  context.getString(feedComponentR.string.feed_asgc_rilisan_special)
+                ASGC_FLASH_SALE_TOKO -> context.getString(feedComponentR.string.feed_asgc_flash_sale_toko)
+                ASGC_RILISAN_SPECIAL -> context.getString(feedComponentR.string.feed_asgc_rilisan_special)
                 else -> String.EMPTY
             }
         } else {
@@ -732,7 +729,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         })
 
         feedVODViewHolder.updateLikedText {
-            likedText.text = it
+            likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
+                bold {
+                    append(it, VIEWS_START_VALUE,it.length)
+                }
+            }
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute
@@ -1052,19 +1054,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     }
 
     private fun getCTAButtonText(card: FeedXCard) =
-        if (card.isTypeProductHighlight && !card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(feedComponentR.string.feeds_check_x_products, card.totalProducts)
-        else if (card.isASGCDiscountToko && card.totalProducts > 1)
-            context.getString(
-                feedComponentR.string.feeds_asgc_disc_x_products,
-                card.totalProducts,
-                card.maximumDisPercentFmt
-            )
-        else if (card.isASGCDiscountToko && card.totalProducts == 1)
-            context.getString(
-                feedComponentR.string.feeds_asgc_disc_one_products,
-                card.maximumDisPercentFmt
-            )
+        if (card.isTypeProductHighlight) card.cta.text
         else context.getString(feedComponentR.string.feeds_cek_sekarang)
 
 
@@ -1178,6 +1168,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val DOT_SPACE = 2
         private const val MAX_CHAR = 120
         private const val CAPTION_END = 120
+        private const val VIEWS_START_VALUE = 14
 
     }
 

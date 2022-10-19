@@ -5,10 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
@@ -20,7 +16,6 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class ContentDetailViewModel @Inject constructor(
@@ -79,7 +74,6 @@ class ContentDetailViewModel @Inject constructor(
 
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
-
 
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         launchCatchError(block = {

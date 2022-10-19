@@ -33,9 +33,10 @@ import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.adapter.MediaPagerAdapter
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.ARGS_AUTHOR_TYPE
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
@@ -78,7 +79,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                     postTagItem.text,
                     postTagItem.price,
                     1,
-                    postTagItem.shop[0].shopId.toIntOrZero(),
+                    postTagItem.shop[0].shopId,
                     "")
             if (isMyShop) onGoToLink(postTagItem.applink)
             else checkAddToCart(postTagItem)
@@ -268,7 +269,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                                 tagItem.text,
                                 tagItem.price,
                                 1,
-                                tagItem.shop[0].shopId.toIntOrZero(),
+                                tagItem.shop[0].shopId,
                                 "")
                         checkAddToCart(tagItem)
                     }
@@ -320,11 +321,16 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     private fun toggleWishlist(isWishListAction: Boolean, productId: String, pos: Int){
         if (mediaPreviewViewModel.isSessionActive){
             context?.let {
-                if (WishlistV2RemoteConfigRollenceUtil.isUsingAddRemoveWishlistV2(it)) {
-                    mediaPreviewViewModel.toggleWishlistV2(isWishListAction, productId, pos, object: WishlistV2ActionListener {
+                mediaPreviewViewModel.toggleWishlistV2(
+                    isWishListAction,
+                    productId,
+                    pos,
+                    object : WishlistV2ActionListener {
                         override fun onErrorAddWishList(throwable: Throwable, productId: String) {
-                            Toaster.build(requireView(), ErrorHandler.getErrorMessage(context, throwable),
-                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show()
+                            Toaster.build(
+                                requireView(), ErrorHandler.getErrorMessage(context, throwable),
+                                Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR
+                            ).show()
                         }
 
                         override fun onSuccessAddWishlist(
@@ -333,7 +339,11 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
@@ -354,34 +364,21 @@ class MediaPreviewFragment: BaseDaggerFragment() {
                         ) {
                             context?.let { context ->
                                 view?.let { v ->
-                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(result, context, v)
+                                    AddRemoveWishlistV2Handler.showRemoveWishlistV2SuccessToaster(
+                                        result,
+                                        context,
+                                        v
+                                    )
                                 }
                             }
                         }
-                    }, it)
-                } else {
-                    mediaPreviewViewModel.toggleWishlist(isWishListAction, productId, pos, this::onErrorToggleWishlist, it) }
-                }
-
+                    },
+                    it
+                )
+            }
         } else {
             context?.let { startActivityForResult(RouteManager.getIntent(it, ApplinkConst.LOGIN), REQ_CODE_LOGIN) }
         }
-    }
-
-    private fun onErrorToggleWishlist(message: String) {
-        showToastError(message)
-    }
-
-    private fun onErrorToggleWishlistV2(message: String, ctaText: String, ctaAction: String) {
-        view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR, ctaText) {
-                if (ctaAction == OPEN_WISHLIST) goToWishList()
-            }.show()
-        }
-    }
-
-    private fun goToWishList() {
-        RouteManager.route(context, ApplinkConst.NEW_WISHLIST)
     }
 
     private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
@@ -456,9 +453,12 @@ class MediaPreviewFragment: BaseDaggerFragment() {
 
     @SuppressLint("Method Call Prohibited")
     private fun doComment() {
+        val authorId = arguments?.getString(ARGS_AUTHOR_TYPE)
+        val postType = arguments?.getString(PARAM_POST_TYPE)
+        val isFollowed = arguments?.getBoolean(PARAM_IS_POST_FOLLOWED, true)
         activity?.let {
             val (intent, reqCode) = if (mediaPreviewViewModel.isSessionActive)
-                KolCommentActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0) to REQ_CODE_COMMENT
+                KolCommentNewActivity.getCallingIntent(it, mediaPreviewViewModel.postId.toInt(), 0,authorId,isFollowed,postType) to REQ_CODE_COMMENT
             else RouteManager.getIntent(it, ApplinkConst.LOGIN) to REQ_CODE_LOGIN
 
             startActivityForResult(intent, reqCode)

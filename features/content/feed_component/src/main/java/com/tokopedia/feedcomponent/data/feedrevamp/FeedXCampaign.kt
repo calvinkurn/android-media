@@ -33,7 +33,7 @@ data class FeedXCampaign(
         get() = name == ASGC_RILISAN_SPECIAL ||  name == RILISAN_SPECIAL
 
     val isFlashSaleToko: Boolean
-        get() = name == ASGC_FLASH_SALE_TOKO
+        get() = name == ASGC_FLASH_SALE_TOKO || name == FLASH_SALE_TOKO
 
     val isRSFollowersRestrictionOn: Boolean
         get() = restrictions.firstOrNull()?.let {
@@ -44,6 +44,7 @@ data class FeedXCampaign(
         private const val ASGC_RILISAN_SPECIAL = "asgc_rilisan_spesial"//Rilisan Spesial
         private const val RILISAN_SPECIAL = "Rilisan Spesial"
         private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        private const val FLASH_SALE_TOKO = "Flash Sale Toko"
         private const val FOLLOWERS_ONLY_RESTRICTION = "followers_only"
         const val ONGOING = "ongoing"
         const val UPCOMING = "upcoming"
@@ -55,6 +56,12 @@ sealed class FeedASGCUpcomingReminderStatus {
     data class Off(val campaignId: Long) : FeedASGCUpcomingReminderStatus()
     object Unknown : FeedASGCUpcomingReminderStatus()
 }
+
+fun FeedASGCUpcomingReminderStatus.reversed(campaignId: Long): FeedASGCUpcomingReminderStatus =
+    if (this is FeedASGCUpcomingReminderStatus.Off) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(
+        campaignId
+    )
+
 
 
 

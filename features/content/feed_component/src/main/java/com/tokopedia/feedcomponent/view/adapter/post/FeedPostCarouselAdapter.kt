@@ -1,5 +1,6 @@
 package com.tokopedia.feedcomponent.view.adapter.post
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
@@ -45,6 +46,7 @@ class FeedPostCarouselAdapter(
     Using notifyDataSetChanged() here as all the reminder button in each item of carousel needs to be updated
     Also max items in a carousel can 5
     ***/
+    @SuppressLint("NotifyDataSetChanged")
     fun updateReminderStatusForAllButtonsInCarousel(){
         notifyDataSetChanged()
     }
