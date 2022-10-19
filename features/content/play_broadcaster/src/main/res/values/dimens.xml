@@ -16,6 +16,8 @@
     <dimen name="play_dp_50">50dp</dimen>
     <dimen name="play_dp_55">55dp</dimen>
 
+    <dimen name="play_bro_toaster_bottom_margin">48dp</dimen>
+
     <dimen name="play_search_bar_radius">8dp</dimen>
     <dimen name="play_product_preview_radius">8dp</dimen>
 

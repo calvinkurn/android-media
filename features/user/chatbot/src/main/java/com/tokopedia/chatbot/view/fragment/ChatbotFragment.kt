@@ -17,6 +17,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -140,6 +142,7 @@ import com.tokopedia.chatbot.view.listener.ChatbotViewStateImpl
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.imagepreview.ImagePreviewActivity
+import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -255,6 +258,7 @@ class ChatbotFragment :
     private var messageCreateTime: String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
     private var isEligibleForVideoUplaod : Boolean = false
+    private var guideline: Guideline? = null
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
@@ -266,6 +270,8 @@ class ChatbotFragment :
 
     companion object {
         private const val ONCLICK_REPLY_TIME_OFFSET_FOR_REPLY_BUBBLE = 5000
+        private const val GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 65
+        private const val DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE = 0
     }
 
     override fun initInjector() {
@@ -374,6 +380,7 @@ class ChatbotFragment :
         floatingInvoice = view.findViewById(R.id.floating_invoice)
         setUpFloatingInvoiceListeners()
         sendButton = view.findViewById(R.id.send_but)
+        guideline = view.findViewById(R.id.guideline_reply_bubble)
 
         attachmentMenuRecyclerView = view.findViewById(R.id.rv_attachment_menu)
 
@@ -1620,6 +1627,10 @@ class ChatbotFragment :
         }
     }
 
+    override fun resetGuidelineForReplyBubble() {
+        setGuidelineForReplyBubble(false)
+    }
+
     private fun loadDataOnClick(replyTime: String) {
         showTopLoading()
         presenter.getTopChat(messageId, onSuccessGetTopChatData(replyTime = replyTime, fromOnClick = true), onErrorGetTopChat(), onGetChatRatingListMessageError)
@@ -1631,13 +1642,25 @@ class ChatbotFragment :
                 REPLY -> {
                     replyBubbleOnBoarding.dismiss()
                     senderNameForReply = messageUiModel.from
-                    replyBubbleContainer?.composeReplyData(messageUiModel, "", true, getUserNameForReplyBubble.getUserName(messageUiModel))
+                    setGuidelineForReplyBubble(true)
+                    replyBubbleContainer?.composeReplyData(messageUiModel,"",true, getUserNameForReplyBubble.getUserName(messageUiModel))
                     bottomSheetPage.dismiss()
                 }
             }
         }
     }
-
+    private fun setGuidelineForReplyBubble(toSet: Boolean) {
+        if (toSet) {
+            val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
+            params.guideBegin = context?.dpToPx(GUIDELINE_VALUE_FOR_REPLY_BUBBLE)?.toInt() ?: DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
+            guideline?.layoutParams = params
+        } else {
+            val params = guideline?.layoutParams as ConstraintLayout.LayoutParams
+            params.guideBegin = DEFAULT_GUIDELINE_VALUE_FOR_REPLY_BUBBLE
+            guideline?.layoutParams = params
+        }
+    }
+    
     override fun replyBubbleStateHandler(state: Boolean) {
         replyBubbleEnabled = state
         checkReplyBubbleOnboardingStatus()
@@ -1663,8 +1686,10 @@ class ChatbotFragment :
     override fun visibilityReplyBubble(state: Boolean) {
         if (!state) {
             replyBubbleContainer?.referredMsg = null
+            setGuidelineForReplyBubble(false)
             replyBubbleContainer?.hide()
-        } else {
+        }else{
+            setGuidelineForReplyBubble(true)
             replyBubbleContainer?.show()
         }
     }
