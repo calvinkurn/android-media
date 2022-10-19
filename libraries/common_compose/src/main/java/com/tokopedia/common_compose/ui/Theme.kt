@@ -55,7 +55,7 @@ fun NestTheme(
     CompositionLocalProvider(
         LocalElevations provides elevation,
         LocalColors provides colors,
-        LocalTypography provides NestTypography()
+        LocalTypography provides NestTextStyle()
     ) {
         MaterialTheme(
             colors = themeColors,
@@ -88,7 +88,7 @@ object NestTheme {
         @ReadOnlyComposable
         get() = LocalColors.current
 
-    val typography: NestTypography
+    val typography: NestTextStyle
         @Composable
         @ReadOnlyComposable
         get() = LocalTypography.current

@@ -17,7 +17,7 @@ private val OpenSauce = FontFamily(
 
 val OpenSauceTypography = Typography(defaultFontFamily = OpenSauce)
 
-data class NestTypography(
+data class NestTextStyle(
     val display1 : TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,
@@ -35,4 +35,4 @@ data class NestTypography(
     )
 )
 
-internal val LocalTypography = staticCompositionLocalOf { NestTypography() }
+internal val LocalTypography = staticCompositionLocalOf { NestTextStyle() }
