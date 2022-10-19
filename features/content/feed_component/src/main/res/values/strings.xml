@@ -251,4 +251,7 @@
     <string name="btn_asgc_flash_remind_btn_text_disabled">Pengingat Aktif</string>
     <string name="btn_add_to_cart_text">+ Keranjang</string>
     <string name="btn_add_to_cart_text_disabled">Segera Hadir</string>
+
+    <!-- Product Sharing Experience -->
+    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
 </resources>
