@@ -32,18 +32,18 @@ import com.tokopedia.campaignlist.common.constant.CampaignStatusConstant.UPCOMIN
 import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestButton
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestImage
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabel
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestLabelType
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestSearchBar
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestSortFilter
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestTicker
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestToolbar
-import com.tokopedia.campaignlist.page.presentation.ui.components.NestTypography
-import com.tokopedia.campaignlist.page.presentation.ui.components.SortFilter
-import com.tokopedia.campaignlist.page.presentation.ui.theme.NestTheme
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.common_compose.principles.NestButton
+import com.tokopedia.common_compose.principles.NestHeader
+import com.tokopedia.common_compose.principles.NestImage
+import com.tokopedia.common_compose.principles.NestLabel
+import com.tokopedia.common_compose.principles.NestLabelType
+import com.tokopedia.common_compose.principles.NestSearchBar
+import com.tokopedia.common_compose.principles.NestSortFilter
+import com.tokopedia.common_compose.principles.NestTicker
+import com.tokopedia.common_compose.principles.NestTypography
+import com.tokopedia.common_compose.principles.SortFilter
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 @Composable
@@ -74,7 +74,7 @@ fun CampaignListScreen(
             onSearchbarCleared = onSearchbarCleared
         )
 
-        SortFilter(
+        PageSortFilter(
             modifier = Modifier.padding(horizontal = 16.dp),
             selectedCampaignStatus = uiState.value.selectedCampaignStatus?.statusText.orEmpty(),
             selectedCampaignType = uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
@@ -124,7 +124,7 @@ private fun Toolbar(
     title: String,
     onToolbarBackIconPressed: () -> Unit
 ) {
-    NestToolbar(
+    NestHeader(
         modifier = modifier,
         title = title,
         onToolbarBackIconPressed = onToolbarBackIconPressed
@@ -132,7 +132,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun SortFilter(
+private fun PageSortFilter(
     modifier: Modifier = Modifier,
     selectedCampaignStatus: String,
     selectedCampaignType: String,
