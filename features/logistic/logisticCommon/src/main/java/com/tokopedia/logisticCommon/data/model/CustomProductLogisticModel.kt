@@ -4,7 +4,11 @@ data class CustomProductLogisticModel (
     @Deprecated("use ShipperCPLModel.isActive")
     var cplProduct: List<CPLProductModel> = listOf(),
     var shipperList: List<ShipperListCPLModel> = listOf()
-)
+) {
+    fun isCpl() : Boolean {
+        return shipperList.any { it.shipper.any { s -> s.shipperProduct.any { sp -> sp.isActive} } }
+    }
+}
 
 data class CPLProductModel(
     var productId: Long = 0,
