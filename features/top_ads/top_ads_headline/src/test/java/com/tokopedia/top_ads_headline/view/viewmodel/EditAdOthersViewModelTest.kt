@@ -55,7 +55,7 @@ class EditAdOthersViewModelTest {
 
     @Test
     fun `validateGroup exception test`() {
-        every { topAdsGroupValidateNameUseCase.setParams(any()) } throws Throwable()
+        every { topAdsGroupValidateNameUseCase.setParams(any(), any()) } throws Throwable()
 
         var successCalled = false
 
