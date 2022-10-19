@@ -117,7 +117,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private var debounceJob: Job? = null
     private var finalUpdateJob: Job? = null
     private var dynamicPaymentFeeJob: Job? = null
-    private var fetchPrescriptionId: Job? = null
 
     private var hasSentViewOspEe = false
 
@@ -288,22 +287,6 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.LOADING)
             orderShipment.value = orderShipment.value.copy(isLoading = true)
             debounce()
-        }
-    }
-
-    fun fetchAndUpdatePrescriptionIds() {
-        fetchPrescriptionId?.cancel()
-        fetchPrescriptionId = launch(executorDispatchers.immediate) {
-            uploadPrescriptionUiModel.value.checkoutId?.let {
-                var prescriptionIds = cartProcessor.getPrescriptionId(it)
-                uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
-                    prescriptionIds = prescriptionIds.prescriptionIds as ArrayList<String>,
-                    uploadedImageCount = prescriptionIds.prescriptionIds?.size ?: 0,
-                    isError = false,
-                    isOcc = true,
-                )
-                globalEvent.value = OccGlobalEvent.UploadPrescriptionSucceed
-            }
         }
     }
 
@@ -1082,6 +1065,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
 
         calculateTotal()
+    }
+
+    fun updatePrescriptionIds(it: ArrayList<String>) {
+        uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+            prescriptionIds = it,
+            uploadedImageCount = it.size,
+            isError = false,
+        )
     }
 
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {

@@ -76,12 +76,7 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentReque
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
@@ -814,17 +809,6 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                 }
                 is OccGlobalEvent.PopUp -> {
                     showPopUpDialog(it.popUp)
-                }
-                is OccGlobalEvent.UploadPrescriptionSucceed -> {
-                    view?.let { v ->
-                        Toaster.build(
-                            v,
-                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text),
-                            Toaster.LENGTH_LONG,
-                            Toaster.TYPE_NORMAL,
-                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
-                        ).show()
-                    }
                 }
             }
         }
@@ -1666,7 +1650,21 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             data.extras!!.containsKey(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA) &&
             activity != null
         ) {
-            viewModel.fetchAndUpdatePrescriptionIds()
+            val prescriptions = data.extras!!.getStringArrayList(KEY_UPLOAD_PRESCRIPTION_IDS_EXTRA)
+            prescriptions?.let {
+                if (it.isNotEmpty()) {
+                    viewModel.updatePrescriptionIds(it)
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_text),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_NORMAL,
+                            getString(com.tokopedia.purchase_platform.common.R.string.checkout_flow_toaster_action_ok)
+                        ).show()
+                    }
+                }
+            }
         }
     }
 
