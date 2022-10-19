@@ -234,7 +234,7 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerformanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order != NO_UI_METRICS) {
+                if (metrics?.order != NO_UI_METRICS && metrics?.metricType != "conversion") {
                     performanceTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
