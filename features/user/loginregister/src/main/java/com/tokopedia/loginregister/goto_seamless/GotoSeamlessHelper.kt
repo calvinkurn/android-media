@@ -14,9 +14,7 @@ import javax.inject.Inject
 
 class GotoSeamlessHelper @Inject constructor(@ApplicationContext val context: Context) {
 
-    // REVERT THIS
-    private val environment = Environment.Integration
-//        if(GlobalConfig.DEBUG) Environment.Integration else Environment.Prod
+    private val environment = if(GlobalConfig.DEBUG) Environment.Integration else Environment.Prod
 
     private val appId = if(GlobalConfig.isSellerApp()) GlobalConfig.PACKAGE_SELLER_APP else GlobalConfig.PACKAGE_CONSUMER_APP
 

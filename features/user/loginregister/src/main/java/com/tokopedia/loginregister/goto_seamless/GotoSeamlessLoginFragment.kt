@@ -13,6 +13,7 @@ import com.tokopedia.loginregister.databinding.FragmentGotoSeamlessBinding
 import com.tokopedia.loginregister.goto_seamless.di.GotoSeamlessComponent
 import com.tokopedia.loginregister.goto_seamless.model.GojekProfileData
 import com.tokopedia.loginregister.goto_seamless.trackers.GotoSeamlessTracker
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -51,7 +52,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
-        GotoSeamlessTracker.viewGotoSeamlessPage()
+        GotoSeamlessTracker.viewGotoSeamlessPage(getTrackerLabel())
         viewModel.gojekProfileData.observe(viewLifecycleOwner) {
             binding?.gotoSeamlessPrimaryBtn?.isLoading = false
             when(it) {
@@ -71,14 +72,14 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
                 is Success -> {
                     if(it.data.errors.isNotEmpty()) {
                         val errorMsg = it.data.errors[0].message
-                        GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - $errorMsg")
+                        GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - $errorMsg", getTrackerLabel())
                         showGeneralErrorToaster()
                     } else {
                         successSeamlessLogin()
                     }
                 }
                 is Fail -> {
-                    GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - ${it.throwable.message}")
+                    GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - ${it.throwable.message}", getTrackerLabel())
                     showGeneralErrorToaster()
                 }
             }
@@ -93,10 +94,11 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
         context?.let {
             var description = it.getString(R.string.goto_seamless_description_text_2)
             val text = when(getVariant()) {
-                TOKO_NAME_VARIANT -> "Masuk sebagai ${data.tokopediaName}"
+                TOKO_NAME_VARIANT -> {
+                    "Masuk sebagai ${takeFirstName(data.tokopediaName)}"
+                }
                 GOJEK_NAME_VARIANT -> {
-                    val icon = MethodChecker.getDrawable(it, R.drawable.ic_gojek_small)
-                    binding?.gotoSeamlessPrimaryBtn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                    renderGojekIcon()
                     "Masuk sebagai ${data.name}"
                 }
                 else -> {
@@ -109,12 +111,27 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
         }
     }
 
+    private fun renderGojekIcon() {
+        context?.let {
+            val icon = MethodChecker.getDrawable(it, R.drawable.ic_gojek_small)
+            binding?.gotoSeamlessPrimaryBtn?.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+        }
+    }
+
+    private fun takeFirstName(name: String): String {
+        return try {
+            name.trim().split(" ")[0]
+        } catch (e: Exception) {
+            return name
+        }
+    }
+
     private fun showGeneralErrorToaster() {
         Toaster.build(requireView(), getString(R.string.goto_seamless_general_error), Toaster.TYPE_ERROR).show()
     }
 
     private fun successSeamlessLogin() {
-        GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.SUCCESS)
+        GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.SUCCESS, getTrackerLabel())
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }
@@ -131,7 +148,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
     private fun setupViews() {
         binding?.gotoSeamlessPrimaryBtn?.setOnClickListener {
-            GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.CLICK)
+            GotoSeamlessTracker.clickOnSeamlessButton(GotoSeamlessTracker.Label.CLICK, getTrackerLabel())
             val gojekProfileData = viewModel.gojekProfileData.value
             if(gojekProfileData is Success) {
                 binding?.gotoSeamlessPrimaryBtn?.isLoading = true
@@ -140,19 +157,26 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
         }
 
         binding?.gotoSeamlessSecondaryBtn?.setOnClickListener {
-            GotoSeamlessTracker.clickOnMasukAkunLain()
+            GotoSeamlessTracker.clickOnMasukAkunLain(getTrackerLabel())
             loginWithDifferentAccFlow()
         }
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        GotoSeamlessTracker.clickOnBackBtn()
+        GotoSeamlessTracker.clickOnBackBtn(getTrackerLabel())
         return super.onFragmentBackPressed()
     }
 
     private fun getVariant(): String {
-//        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
-        return PHONE_VARIANT
+        return RemoteConfigInstance.getInstance().abTestPlatform.getString(ROLLENCE_SEAMLESS_KEY)
+    }
+
+    private fun getTrackerLabel(): String {
+        return try {
+            getVariant().trim().split("_")[0]
+        } catch (e: Exception) {
+            ""
+        }
     }
 
     companion object {
