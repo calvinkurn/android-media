@@ -11,6 +11,7 @@ import com.tokopedia.tkpd.flashsale.presentation.list.child.FlashSaleListViewMod
 import com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleContainerViewModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.viewmodel.CampaignDetailBottomSheetViewModel
 import com.tokopedia.tkpd.flashsale.presentation.detail.CampaignDetailViewModel
+import com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess.IneligibleAccessViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.nonvariant.ManageProductNonVariantViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListListViewModel
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.variant.multilocation.varian.ManageProductMultiLocationVariantViewModel
@@ -68,5 +69,10 @@ abstract class TokopediaFlashSaleViewModelModule {
     @IntoMap
     @ViewModelKey(FlashSaleManageProductListListViewModel::class)
     internal abstract fun provideFlashSaleManageProductListListViewModel(viewModel: FlashSaleManageProductListListViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(IneligibleAccessViewModel::class)
+    internal abstract fun provideIneligibleAccessViewModel(viewModel: IneligibleAccessViewModel): ViewModel
 
 }

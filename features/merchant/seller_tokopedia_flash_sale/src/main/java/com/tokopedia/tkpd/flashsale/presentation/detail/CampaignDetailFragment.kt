@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -19,10 +20,7 @@ import com.tokopedia.campaign.utils.constant.DateConstant.DATE_TIME_SECOND_PRECI
 import com.tokopedia.campaign.utils.constant.DateConstant.DATE_YEAR_PRECISION
 import com.tokopedia.campaign.utils.constant.DateConstant.TIME_MINUTE_PRECISION_WITH_TIMEZONE
 import com.tokopedia.campaign.utils.constant.ImageUrlConstant
-import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
-import com.tokopedia.campaign.utils.extension.doOnDelayFinished
-import com.tokopedia.campaign.utils.extension.showToaster
-import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.dialog.DialogUnify
@@ -47,12 +45,14 @@ import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.Waiti
 import com.tokopedia.tkpd.flashsale.presentation.detail.adapter.registered.item.WaitingForSelectionItem
 import com.tokopedia.tkpd.flashsale.presentation.detail.bottomsheet.CampaignDetailBottomSheet
 import com.tokopedia.tkpd.flashsale.presentation.detail.mapper.ProductCheckingResultMapper
+import com.tokopedia.tkpd.flashsale.presentation.ineligibleaccess.IneligibleAccessActivity
 import com.tokopedia.tkpd.flashsale.presentation.list.child.adapter.LoadingDelegateAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproductlist.FlashSaleManageProductListActivity
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class CampaignDetailFragment : BaseDaggerFragment() {
@@ -172,6 +172,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupChooseProductRedirection()
         observeCampaignDetail()
+        observeUiEffect()
         observeProductReserveResult()
         observeDeletedProductResult()
         observeCampaignRegistrationResult()
@@ -300,6 +301,23 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun observeSubmittedProductVariant() {
         viewModel.submittedProductVariant.observe(viewLifecycleOwner) {
             checkProductBottomSheet.show(it, childFragmentManager, "")
+        }
+    }
+
+    private fun observeUiEffect() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
+        }
+    }
+
+    private fun handleEffect(effect: CampaignDetailViewModel.UiEffect) {
+        when (effect) {
+            is CampaignDetailViewModel.UiEffect.ShowGlobalError -> {
+                showGlobalError()
+            }
+            CampaignDetailViewModel.UiEffect.ShowIneligibleAccessWarning -> {
+                navigateToIneligibleAccessPage()
+            }
         }
     }
 
@@ -664,6 +682,11 @@ class CampaignDetailFragment : BaseDaggerFragment() {
             context ?: return, flashSaleId,
             viewModel.getTabName()
         )
+    }
+
+    private fun navigateToIneligibleAccessPage() {
+        activity?.finish()
+        IneligibleAccessActivity.start(context ?: return)
     }
 
     private fun setWaitingForSelectionMidSection(flashSale: FlashSale) {
@@ -1442,7 +1465,9 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         } else if (isMultiloc) {
             val productCheckingResult = ProductCheckingResultMapper.mapFromAdapterItem(
                 selectedProduct,
-                displayProductSold)
+                displayProductSold,
+                viewModel.getTabName()
+            )
             checkProductBottomSheet.show(listOf(productCheckingResult), childFragmentManager, "")
         }
     }

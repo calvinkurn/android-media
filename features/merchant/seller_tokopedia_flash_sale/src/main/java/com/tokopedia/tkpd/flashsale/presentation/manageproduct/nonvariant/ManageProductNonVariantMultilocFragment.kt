@@ -102,12 +102,15 @@ class ManageProductNonVariantMultilocFragment :
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
         product?.let {
             val warehouses = inputAdapter.getDataList()
-            viewModel.onEditSwitchToggled(
-                campaignId = campaignId.toString(),
-                productId = it.productId.toString(),
-                warehouseId = warehouses[index].warehouseId.toString(),
-                locationType = MULTI_LOCATION
-            )
+            warehouses.onEachIndexed { indexEdited, warehouse ->
+                if (warehouse.isDilayaniTokopedia && indexEdited != index) {
+                    warehouse.discountSetup.apply {
+                        price = discountSetup.price
+                        discount = discountSetup.discount
+                    }
+                    inputAdapter.notifyItemChanged(indexEdited)
+                }
+            }
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)
         }
@@ -160,6 +163,15 @@ class ManageProductNonVariantMultilocFragment :
     override fun trackOnClickPercent(percentInput: String) { /* Only Tracked On Single Location Product */ }
 
     override fun trackOnClickPrice(nominalInput: String) { /* Only Tracked On Single Location Product */ }
+
+    override fun trackOnSwitchToggled(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup) {
+        viewModel.onEditSwitchToggled(
+            campaignId = campaignId.toString(),
+            productId = product?.productId.toString(),
+            warehouseId = inputAdapter.getDataList()[index].warehouseId.toString(),
+            locationType = MULTI_LOCATION
+        )
+    }
 
     private fun setupObservers() {
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {

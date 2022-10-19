@@ -80,7 +80,7 @@ class ManageProductNonVariantViewModel @Inject constructor(
                 .debounce(DELAY_THRESHOLD)
                 .flowOn(dispatchers.io)
                 .collect {
-                    doTrackingNominal.value = it
+                    doTrackingNominal.postValue(it)
                 }
         }
     }

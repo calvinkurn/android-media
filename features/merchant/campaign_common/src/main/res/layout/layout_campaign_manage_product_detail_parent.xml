@@ -131,17 +131,4 @@
         android:text="@string/stfs_cek_detail_label"
         tools:visibility="visible" />
 
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tvCheckDetail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/label_cek_detail"
-        android:textColor="@color/Unify_GN500"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/text_parent_error_message"
-        app:layout_constraintTop_toBottomOf="@+id/text_parent_error_message"
-        app:typographyType="paragraph_3"
-        app:typographyWeight="bold"
-        tools:visibility="visible"/>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

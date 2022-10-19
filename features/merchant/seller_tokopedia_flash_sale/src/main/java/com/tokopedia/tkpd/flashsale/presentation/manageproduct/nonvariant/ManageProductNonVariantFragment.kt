@@ -93,7 +93,7 @@ class ManageProductNonVariantFragment :
     }
 
     override fun onDataInputChanged(index: Int, criteria: ProductCriteria, discountSetup: DiscountSetup): ValidationResult {
-        product?.let {
+        viewModel.product.value?.let {
             val warehouses = (adapter as ManageProductNonVariantAdapter).getWarehouses()
             val newProduct = it.copy(warehouses = warehouses)
             viewModel.setProduct(newProduct)
@@ -119,24 +119,14 @@ class ManageProductNonVariantFragment :
         viewModel.onNominalDiscountTrackerInput(nominalInput)
     }
 
+    override fun trackOnSwitchToggled(
+        index: Int,
+        criteria: ProductCriteria,
+        discountSetup: DiscountSetup
+    ) { /* Only Tracked On Multi Location Product */ }
+
     override fun showDetailCriteria(position: Int, warehouse: Warehouse, product: Product) {
-        return /* Only Needed For Multi-Location */
-    }
-
-    private fun doTrackOnClickPrice() {
-        viewModel.onDiscountPriceEdited(
-            campaignId = campaignId.toString(),
-            productId = product?.productId.toString(),
-            locationType = SINGLE_LOCATION
-        )
-    }
-
-    private fun doTrackOnClickPercent() {
-        viewModel.onDiscountPercentEdited(
-            campaignId = campaignId.toString(),
-            productId = product?.productId.toString(),
-            locationType = SINGLE_LOCATION
-        )
+        return /* Only Required For Multi-Location */
     }
 
     private fun setupObserver() {
@@ -147,10 +137,18 @@ class ManageProductNonVariantFragment :
             buttonSubmit?.isEnabled = it
         }
         viewModel.doTrackingNominal.observe(viewLifecycleOwner) {
-            doTrackOnClickPrice()
+            viewModel.onDiscountPriceEdited(
+                campaignId = campaignId.toString(),
+                productId = product?.productId.toString(),
+                locationType = SINGLE_LOCATION
+            )
         }
         viewModel.doTrackingPercent.observe(viewLifecycleOwner) {
-            doTrackOnClickPercent()
+            viewModel.onDiscountPercentEdited(
+                campaignId = campaignId.toString(),
+                productId = product?.productId.toString(),
+                locationType = SINGLE_LOCATION
+            )
         }
     }
 
