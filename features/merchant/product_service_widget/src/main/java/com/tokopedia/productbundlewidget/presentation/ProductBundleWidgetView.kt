@@ -11,6 +11,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common.ProductServiceWidgetConstant.BUNDLE_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.setTextAndCheckShow
 import com.tokopedia.product_bundle.common.di.DaggerProductBundleComponent
@@ -160,6 +161,13 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         lifecycleOwner?.run {
             viewModel.bundleUiModels.observe(this) {
                 bundleAdapter.updateDataSet(it)
+            }
+            viewModel.error.observe(this) {
+                listener?.onError(it)
+            }
+            viewModel.isBundleEmpty.observe(this) {
+                tfTitle?.isVisible = !it
+                if (it) listener?.onBundleEmpty()
             }
         }
     }

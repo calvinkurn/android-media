@@ -50,4 +50,8 @@ interface ProductBundleWidgetListener {
         selectedBundle: BundleDetailUiModel
     ) {
     }
+
+    fun onBundleEmpty() {}
+
+    fun onError(it: Throwable) {}
 }
