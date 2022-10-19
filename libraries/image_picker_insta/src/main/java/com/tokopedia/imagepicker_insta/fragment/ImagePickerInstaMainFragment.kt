@@ -100,6 +100,18 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             .build()
     }
 
+    private val onErrorLoadImage: (Boolean) -> Unit = { isFileNotFound ->
+        showToast(
+            message = getString(
+                if(isFileNotFound)
+                    R.string.imagepicker_media_not_found_error
+                else
+                    R.string.imagepicker_insta_smwr
+            ),
+            toasterType = Toaster.TYPE_ERROR
+        )
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         injectFragment()
         super.onCreate(savedInstanceState)
@@ -683,7 +695,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
 
         // getting original width of the new selected video
         val originalWidth =
-            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext()).width
+            originalImageAdapterData.asset.contentUri.getImageDimensions(requireContext(), onErrorLoadImage).width
         val originalHeight =
             originalImageAdapterData.asset.contentUri.getVideoDimensions(requireContext()).height
 
@@ -744,7 +756,6 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             }
 
         } else {
-
             if (mediaVmMData?.isNewItem == true) {
                 allImageDataList.addAll(0, tempImageAdapterList)
             }
@@ -849,7 +860,7 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             zoomInfo = ZoomInfo()
 
             if (imageAdapterData.asset is PhotosData) {
-                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext())
+                val size = imageAdapterData.asset.contentUri.getImageDimensions(requireContext(), onErrorLoadImage)
                 zoomInfo.bmpWidth = size.width
                 zoomInfo.bmpHeight = size.height
             } else {
