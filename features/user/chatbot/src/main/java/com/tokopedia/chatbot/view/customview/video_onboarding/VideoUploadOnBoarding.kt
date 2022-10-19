@@ -2,10 +2,8 @@ package com.tokopedia.chatbot.view.customview.video_onboarding
 
 import android.content.Context
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.cache.ChatbotCacheManager
-import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
 import javax.inject.Inject
@@ -17,27 +15,19 @@ class VideoUploadOnBoarding @Inject constructor(
     private var context: Context? = null
     private var anchor: View? = null
     private var coachMark: CoachMark2? = null
-    private var rv: RecyclerView? = null
-    private var adapter: ChatbotAdapter? = null
 
     fun showVideoBubbleOnBoarding(
-        rv: RecyclerView,
-        adapter: ChatbotAdapter,
         anchor: View?,
         context: Context? = null
     ) {
-        initializeFields(rv, adapter, anchor, context)
+        initializeFields(anchor, context)
         showVideoBubbleOnBoarding()
     }
 
     private fun initializeFields(
-        rv: RecyclerView,
-        adapter: ChatbotAdapter,
         anchor: View?,
         context: Context? = null
     ) {
-        this.rv = rv
-        this.adapter = adapter
         this.anchor = anchor
         this.context = context
     }
@@ -74,8 +64,6 @@ class VideoUploadOnBoarding @Inject constructor(
     fun flush() {
         anchor = null
         context = null
-        rv = null
-        adapter = null
     }
 
     fun dismiss() {
