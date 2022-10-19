@@ -753,7 +753,7 @@ object TopChatAnalyticsKt {
     /*
     * Bubbles Tracker
     */
-    fun eventViewReadFromBubble(lastReplyId: String) {
+    fun eventViewReadMsgFromBubble(lastReplyId: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             createGeneralEvent(
                 event = Event.VIEW_COMMUNICATION_IRIS,

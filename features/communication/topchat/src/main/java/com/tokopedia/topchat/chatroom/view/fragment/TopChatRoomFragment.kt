@@ -679,7 +679,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
             view, this, this, this,
             this, this, this,
             this, this,
-            (activity as BaseChatToolbarActivity).getToolbar(), analytics
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             it.isFromBubble = isFromBubble
             topchatViewState = it
@@ -1909,6 +1909,13 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         if (seenAttachmentVoucher.add(data.voucher.voucherId.toString())) {
             TopChatAnalyticsKt.eventViewVoucher(source, data.voucher.voucherId)
         }
+    }
+
+    /*
+     * Impress Message Chat from Bubbles
+     */
+    override fun impressReadMessageForBubbles(replyId: String) {
+        TopChatAnalyticsKt.eventViewReadMsgFromBubble(replyId)
     }
 
     private fun goToMvcPage(applink: String) {
