@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.search.createBroadMatchListener
 import com.tokopedia.search.mock.MockSearchProductModel.getBroadMatchViewModel
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
+import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.test.application.benchmark_component.BenchmarkObject
 import com.tokopedia.test.application.benchmark_component.BenchmarkViewRule
 import org.junit.Rule

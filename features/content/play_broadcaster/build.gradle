@@ -15,12 +15,12 @@ buildscript {
 
 android {
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
     }
 
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -112,6 +112,8 @@ dependencies {
 
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
 
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
+
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 
     testImplementation rootProject.ext.testDependencies.mockk
@@ -135,7 +137,7 @@ dependencies {
         exclude group: 'com.google.android.gms'
         exclude group: 'com.google.firebase'
     }
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }
 
 project.ext {

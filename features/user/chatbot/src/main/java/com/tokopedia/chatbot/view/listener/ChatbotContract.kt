@@ -11,13 +11,13 @@ import com.tokopedia.chat_common.domain.pojo.ChatReplies
 import com.tokopedia.chat_common.view.listener.BaseChatContract
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
-import com.tokopedia.chatbot.data.ConnectionDividerViewModel
 import com.tokopedia.chatbot.data.TickerData.TickerData
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsViewModel
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
-import com.tokopedia.chatbot.data.quickreply.QuickReplyViewModel
-import com.tokopedia.chatbot.data.seprator.ChatSepratorViewModel
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
+import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
+import com.tokopedia.chatbot.data.quickreply.QuickReplyUiModel
+import com.tokopedia.chatbot.data.rating.ChatRatingUiModel
+import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
 import com.tokopedia.chatbot.data.toolbarpojo.ToolbarAttributes
 import com.tokopedia.chatbot.data.videoupload.VideoUploadUiModel
 import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
@@ -40,13 +40,7 @@ interface ChatbotContract {
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
 
-        fun onReceiveConnectionEvent(connectionDividerViewModel: ConnectionDividerViewModel, quickReplyList: List<QuickReplyViewModel>)
-
-        fun onReceiveChatSepratorEvent(chatSepratorViewModel: ChatSepratorViewModel, quickReplyList: List<QuickReplyViewModel>)
-
-        fun isBackAllowed(isBackAllowed: Boolean)
-
-        fun onClickLeaveQueue()
+        fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 
         fun showErrorToast(it: Throwable)
 
@@ -68,7 +62,19 @@ interface ChatbotContract {
 
         fun sendInvoiceForArticle()
 
+        fun onSuccessGetTickerData(tickerData: TickerData)
+
+        fun onError(throwable: Throwable)
+
+        fun onSuccessSubmitCsatRating(msg: String)
+
+        fun onSuccessSubmitChatCsat(msg: String)
+
+        fun replyBubbleStateHandler(state: Boolean)
+
         fun visibilityReplyBubble(state: Boolean)
+
+        fun onSuccessSendRating(pojo: SendRatingPojo, rating: Int, element: ChatRatingUiModel)
 
         fun sessionChangeStateHandler(state : Boolean)
 
@@ -81,65 +87,62 @@ interface ChatbotContract {
 
         fun sendInvoiceAttachment(messageId: String, invoiceLinkPojo: InvoiceLinkPojo, startTime: String, opponentId: String, isArticleEntry: Boolean, usedBy: String)
 
-        fun sendQuickReply(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String)
+        fun sendQuickReply(messageId: String, quickReply: QuickReplyUiModel, startTime: String, opponentId: String)
 
-        fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyViewModel, startTime: String, opponentId: String, event:String, usedBy:String)
+        fun sendQuickReplyInvoice(messageId: String, quickReply: QuickReplyUiModel, startTime: String, opponentId: String, event: String, usedBy: String)
 
-        fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String)
-                : AttachInvoiceSentUiModel
+        fun generateInvoice(invoiceLinkPojo: InvoiceLinkPojo, senderId: String): AttachInvoiceSentUiModel
 
-        fun getExistingChat(messageId: String,
-                            onError: (Throwable) -> Unit,
-                            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
-                            onGetChatRatingListMessageError: (String) -> Unit)
+        fun getExistingChat(
+            messageId: String,
+            onError: (Throwable) -> Unit,
+            onSuccess: (ChatroomViewModel, ChatReplies) -> Unit,
+            onGetChatRatingListMessageError: (String) -> Unit
+        )
 
         fun connectWebSocket(messageId: String)
 
-        fun sendRating(messageId : String, rating: Int, timestamp : String,
-                       onError: (Throwable) -> Unit,
-                       onSuccess: (SendRatingPojo) -> Unit)
+        fun sendRating(messageId: String, rating: Int, element: ChatRatingUiModel)
 
-        fun sendReasonRating(messageId: String, reason: String, timestamp: String,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (String) -> Unit)
         fun submitCsatRating(messageId: String,
-                             inputItem: InputItem,
-                             onError: (Throwable) -> Unit,
-                             onSuccess: (String) -> Unit)
+                             inputItem: InputItem)
 
-        fun showTickerData(messageId: String,
-                           onError: (Throwable) -> Unit,
-                           onSuccesGetTickerData: (TickerData) -> Unit)
+        fun showTickerData(messageId: String)
 
-        fun sendActionBubble(messageId: String, selected: ChatActionBubbleViewModel,
-                             startTime: String,
-                             opponentId: String)
+        fun sendActionBubble(
+            messageId: String,
+            selected: ChatActionBubbleUiModel,
+            startTime: String,
+            opponentId: String
+        )
 
         fun sendReadEvent(messageId: String)
 
-        fun uploadImages(it: ImageUploadUiModel,
-                         messageId : String,
-                         opponentId : String,
-                         onError: (Throwable, ImageUploadUiModel) -> Unit)
+        fun uploadImages(
+            it: ImageUploadUiModel,
+            messageId: String,
+            opponentId: String,
+            onError: (Throwable, ImageUploadUiModel) -> Unit
+        )
 
         fun destroyWebSocket()
 
-        fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsViewModel?)
+        fun hitGqlforOptionList(messageId : String, selectedValue: Int, model: HelpFullQuestionsUiModel?)
 
         fun submitChatCsat(messageId : String,
-                           input: ChipSubmitChatCsatInput,
-                           onsubmitingChatCsatSuccess: (String) -> Unit,
-                           onError: (Throwable) -> Unit)
+                           input: ChipSubmitChatCsatInput)
 
         fun cancelImageUpload()
 
-        fun getActionBubbleforNoTrasaction(): ChatActionBubbleViewModel
+        fun getActionBubbleforNoTrasaction(): ChatActionBubbleUiModel
 
-        fun checkLinkForRedirection(messageId: String,
-                                    invoiceRefNum: String,
-                                    onGetSuccessResponse: (String) -> Unit,
-                                    setStickyButtonStatus: (Boolean) -> Unit,
-                                    onError: (Throwable) -> Unit)
+        fun checkLinkForRedirection(
+            messageId: String,
+            invoiceRefNum: String,
+            onGetSuccessResponse: (String) -> Unit,
+            setStickyButtonStatus: (Boolean) -> Unit,
+            onError: (Throwable) -> Unit
+        )
 
         fun checkForSession(messageId: String)
         fun checkUploadSecure(messageId: String, data: Intent)
@@ -152,7 +155,7 @@ interface ChatbotContract {
             context: Context?
         )
 
-        fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleViewModel
+        fun createAttachInvoiceSingleViewModel(hashMap: Map<String, String>): AttachInvoiceSingleUiModel
 
         fun getValuesForArticleEntry(uri: Uri): Map<String, String>
 
@@ -163,15 +166,17 @@ interface ChatbotContract {
         fun checkUploadVideoEligibility(msgId : String)
 
         fun sendMessage(
-            messageId: String, sendMessage: String,
-            startTime: String, opponentId: String,
+            messageId: String,
+            sendMessage: String,
+            startTime: String,
+            opponentId: String,
             parentReply: ParentReply?,
             onSendingMessage: () -> Unit
         )
 
         fun clearGetChatUseCase()
 
-        fun setBeforeReplyTime(createTime : String)
+        fun setBeforeReplyTime(createTime: String)
 
         fun getTopChat(
             messageId: String,

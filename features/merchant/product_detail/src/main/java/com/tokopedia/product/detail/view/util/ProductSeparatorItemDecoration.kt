@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.getColorChecker
 
 /**
  * Created by Yehezkiel on 26/01/21
@@ -36,7 +37,7 @@ class ProductSeparatorItemDecoration(
         context, com.tokopedia.abstraction.R.drawable.bg_line_separator_thin
     )
 
-    private fun getColor(@ColorRes colorId: Int) = ContextCompat.getColor(context, colorId)
+    private fun getColor(@ColorRes colorId: Int) = context.getColorChecker(id = colorId)
 
     override fun onDrawOver(
         c: Canvas,

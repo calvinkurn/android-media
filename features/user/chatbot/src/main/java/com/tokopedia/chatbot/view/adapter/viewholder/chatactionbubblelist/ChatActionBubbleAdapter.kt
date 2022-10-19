@@ -3,9 +3,8 @@ package com.tokopedia.chatbot.view.adapter.viewholder.chatactionbubblelist
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleViewModel
-import com.tokopedia.chatbot.databinding.ItemChatHelpfullBinding
-import com.tokopedia.chatbot.databinding.ItemReadMoreActionBubbleBinding
+import com.tokopedia.chatbot.R
+import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import java.util.*
 
 /**
@@ -15,17 +14,19 @@ const val MORE_DETAILS_TEXT = "Selengkapnya"
 private const val HIDE_TEXT = "Sembunyikan"
 
 class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener) : RecyclerView.Adapter<BaseChatActionBubbleViewHolder>() {
-    private val data = ArrayList<ChatActionBubbleViewModel>()
-    private val dataPool = ArrayList<ChatActionBubbleViewModel>()
+    private val data = ArrayList<ChatActionBubbleUiModel>()
+    private val dataPool = ArrayList<ChatActionBubbleUiModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseChatActionBubbleViewHolder {
-        var holder: BaseChatActionBubbleViewHolder?
+        val holder: BaseChatActionBubbleViewHolder?
         if (viewType == 0) {
-            val itemView = ItemChatHelpfullBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            holder = ChatActionBubbleViewHolder(itemView.root)
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_chat_helpfull, parent, false)
+            holder = ChatActionBubbleViewHolder(itemView!!)
         } else {
-            val itemView = ItemReadMoreActionBubbleBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-            holder = ChatActionBubbleReadMoreViewHolder(itemView.root)
+            val itemView = LayoutInflater.from(parent.context)
+                .inflate(R.layout.item_read_more_action_bubble, parent, false)
+            holder = ChatActionBubbleReadMoreViewHolder(itemView!!)
         }
 
         return holder
@@ -47,14 +48,13 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         if (data.last().text == MORE_DETAILS_TEXT) {
             data.clear()
             data.addAll(dataPool)
-            data.add(ChatActionBubbleViewModel(HIDE_TEXT, bubbleType = 1))
+            data.add(ChatActionBubbleUiModel(HIDE_TEXT, bubbleType = 1))
         } else {
             data.clear()
             data.addAll(getFirstFive(dataPool))
-            data.add(ChatActionBubbleViewModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
+            data.add(ChatActionBubbleUiModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
         }
         notifyDataSetChanged()
-
     }
 
     override fun getItemCount(): Int {
@@ -71,27 +71,26 @@ class ChatActionBubbleAdapter(private val listener: OnChatActionSelectedListener
         notifyItemRangeRemoved(0, size)
     }
 
-    fun setDataList(elements: List<ChatActionBubbleViewModel>) {
+    fun setDataList(elements: List<ChatActionBubbleUiModel>) {
         data.clear()
         dataPool.clear()
         dataPool.addAll(elements)
         if (elements.size > 5) {
             data.addAll(getFirstFive(elements))
-            data.add(ChatActionBubbleViewModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
-
+            data.add(ChatActionBubbleUiModel(text = MORE_DETAILS_TEXT, bubbleType = 1))
         } else {
             data.addAll(elements)
         }
         notifyDataSetChanged()
     }
 
-    private fun getFirstFive(elements: List<ChatActionBubbleViewModel>): Collection<ChatActionBubbleViewModel> {
-        val list = mutableListOf<ChatActionBubbleViewModel>()
+    private fun getFirstFive(elements: List<ChatActionBubbleUiModel>): Collection<ChatActionBubbleUiModel> {
+        val list = mutableListOf<ChatActionBubbleUiModel>()
         list.addAll(elements.subList(0, 5))
         return list
     }
 
     interface OnChatActionSelectedListener {
-        fun onChatActionSelected(selected: ChatActionBubbleViewModel)
+        fun onChatActionSelected(selected: ChatActionBubbleUiModel)
     }
 }
