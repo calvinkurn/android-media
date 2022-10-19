@@ -1,10 +1,21 @@
 package com.tokopedia.tokopedianow.common.view
 
 import android.content.Context
+import android.graphics.Typeface
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.TextUtils
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
@@ -35,6 +46,23 @@ class TokoNowProductCardView @JvmOverloads constructor(
             productNameTypography.text = "Strawberry impor korea"
             categoryInfoTypography.text = "100gr"
             ratingTypography.text = "4.5"
+
+            val weight = SpannableString("500 gr")
+            val dotSeparator = SpannableString(MethodChecker.fromHtml("&#8226;"))
+            val productInfo = SpannableString("Halal")
+            productInfo.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, productInfo.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            productInfo.setSpan(StyleSpan(Typeface.BOLD), 0, 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
+            val concanated = TextUtils.concat(weight, dotSeparator, productInfo)
+            categoryInfoTypography.setText(concanated, TextView.BufferType.SPANNABLE)
+            requestLayout()
+            categoryInfoTypography.getViewTreeObserver().addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    categoryInfoTypography.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    val params = categoryInfoTypography.getLayoutParams();
+                    params.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                    categoryInfoTypography.setLayoutParams(params);
+                }
+            });
         }
 
         type = TokoNowProductCardType.OOS
