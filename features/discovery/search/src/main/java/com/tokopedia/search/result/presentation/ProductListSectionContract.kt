@@ -103,8 +103,6 @@ interface ProductListSectionContract {
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        fun onPriceFilterTickerDismissed()
-        val isTickerHasDismissed: Boolean
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)

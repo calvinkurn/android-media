@@ -87,6 +87,7 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
@@ -150,6 +151,7 @@ class ProductListPresenter @Inject constructor(
     private val inspirationListAtcPresenterDelegate: InspirationListAtcPresenterDelegate,
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val suggestionPresenter: SuggestionPresenter,
+    private val tickerPresenter: TickerPresenter,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -157,7 +159,8 @@ class ProductListPresenter @Inject constructor(
     DynamicFilterModelProvider,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
-    BroadMatchPresenter by broadMatchDelegate {
+    BroadMatchPresenter by broadMatchDelegate,
+    TickerPresenter by tickerPresenter {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -252,15 +255,6 @@ class ProductListPresenter @Inject constructor(
 
     override val isUserLoggedIn: Boolean
         get() = userSession.isLoggedIn
-
-    //region Ticker
-    override var isTickerHasDismissed = false
-        private set
-
-    override fun onPriceFilterTickerDismissed() {
-        isTickerHasDismissed = true
-    }
-    //endregion
 
     //region Load Data / Load More / Recommendations
     override fun clearData() {

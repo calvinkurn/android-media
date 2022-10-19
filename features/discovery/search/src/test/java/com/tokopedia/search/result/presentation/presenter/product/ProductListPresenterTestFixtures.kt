@@ -33,6 +33,7 @@ import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGe
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
@@ -129,6 +130,7 @@ internal open class ProductListPresenterTestFixtures {
             inspirationListAtcView,
             searchParameterProvider,
         )
+        val tickerPresenter = TickerPresenterDelegate()
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -167,6 +169,7 @@ internal open class ProductListPresenterTestFixtures {
                 suggestionPresenter,
             ),
             suggestionPresenter,
+            tickerPresenter,
         )
         productListPresenter.attachView(productListView)
     }

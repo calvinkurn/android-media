@@ -97,9 +97,12 @@ import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetLi
 import com.tokopedia.search.result.product.lastfilter.LastFilterListenerDelegate
 import com.tokopedia.search.result.product.onboarding.OnBoardingListenerDelegate
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringModule
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
+import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
+import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
 import com.tokopedia.search.utils.FragmentProvider
@@ -131,7 +134,6 @@ import com.tokopedia.wishlist_common.R as Rwishlist
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
     ProductListener,
-    TickerListener,
     RecommendationListener,
     InspirationCarouselListener,
     QuickFilterElevation,
@@ -216,6 +218,12 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject @Suppress("LateinitUsage")
     lateinit var applinkModifier: ApplinkModifier
 
+    @Inject @Suppress("LateinitUsage")
+    lateinit var tickerPresenter: TickerPresenter
+
+    @Inject @Suppress("LateinitUsage")
+    lateinit var safeSearchPresenter: SafeSearchPresenter
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -250,6 +258,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        initSafeSearch()
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
@@ -263,7 +272,11 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
         if (searchParameterToCopy != null) {
-            searchParameter = SearchParameter(searchParameterToCopy)
+            searchParameter = SearchParameter(searchParameterToCopy).apply {
+                if(safeSearchPresenter.isShowAdult) {
+                    set(SearchApiConst.SHOW_ADULT, SearchApiConst.SHOW_ADULT_ENABLED)
+                }
+            }
         }
     }
 
@@ -278,6 +291,10 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initNetworkMonitor() {
         networkMonitor = DefaultNetworkMonitor(activity, this)
+    }
+
+    private fun initSafeSearch() {
+        safeSearchPresenter.initSafeSearch()
     }
 
     override fun initInjector() {
@@ -422,7 +439,14 @@ class ProductListFragment: BaseDaggerFragment(),
         return ProductListTypeFactoryImpl(
             fragmentProvider = this,
             productListener = this,
-            tickerListener = this,
+            tickerListener = TickerListenerDelegate(
+                iris,
+                filterController,
+                recyclerViewUpdater,
+                tickerPresenter,
+                this,
+                safeSearchPresenter,
+            ),
             suggestionListener = SuggestionListenerDelegate(iris, applinkModifier, activity),
             globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),
             bannerAdsListener = BannerAdsListenerDelegate(
@@ -905,35 +929,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
         return productCardOptionsModel
     }
-    //endregion
-
-    //region Ticker
-    override fun onTickerImpressed(tickerDataView: TickerDataView) {
-        tickerDataView.impress(iris)
-    }
-
-    override fun onTickerClicked(tickerDataView: TickerDataView) {
-        tickerDataView.click(TrackApp.getInstance().gtm)
-
-        applyParamsFromTicker(UrlParamUtils.getParamMap(tickerDataView.query))
-    }
-
-    private fun applyParamsFromTicker(tickerParams: HashMap<String?, String?>) {
-        val params = HashMap(filterController.getParameter().addFilterOrigin())
-        params.putAll(tickerParams)
-
-        refreshSearchParameter(params)
-
-        reloadData()
-    }
-
-    override fun onTickerDismissed() {
-        presenter?.onPriceFilterTickerDismissed()
-        recyclerViewUpdater.productListAdapter?.removePriceFilterTicker()
-    }
-
-    override val isTickerHasDismissed
-        get() = presenter?.isTickerHasDismissed ?: false
     //endregion
 
     //region Quick Filter
