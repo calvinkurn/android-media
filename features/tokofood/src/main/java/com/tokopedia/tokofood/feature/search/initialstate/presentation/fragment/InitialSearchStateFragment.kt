@@ -123,7 +123,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun onImpressionPopularSearch(item: ChipsPopularSearch, position: Int) {
         analytics.impressViewTopKeyword(
-            keyword,
+            item.title,
             localCacheModel?.district_id.orEmpty(),
             position,
         )
@@ -131,7 +131,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
 
     override fun setCuisineItemClicked(item: CuisineItemUiModel) {
         redirectToCategoryPage(item.appLink)
-        analytics.clickCuisineList(keyword)
+        analytics.clickCuisineList(keyword, item.title)
     }
 
     override fun onImpressCuisineItem(item: CuisineItemUiModel, position: Int) {

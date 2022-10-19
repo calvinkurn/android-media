@@ -89,6 +89,12 @@ class PmsListPageRobot {
             onView(allOf(withId(resId))).check(matches(isDisplayed()))
         viewInteraction.perform(click())
     }
+
+    fun actionClickString(buttonText: String) {
+        val viewInteraction =
+            onView(allOf(withText(buttonText))).check(matches(isDisplayed()))
+        viewInteraction.perform(click())
+    }
 }
 
 fun actionTest(action: PmsListPageRobot.() -> Unit) = PmsListPageRobot().apply(action)

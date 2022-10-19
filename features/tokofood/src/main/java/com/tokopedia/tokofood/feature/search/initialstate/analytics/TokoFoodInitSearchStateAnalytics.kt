@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.search.initialstate.analytics
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
@@ -54,7 +55,7 @@ class TokoFoodInitSearchStateAnalytics @Inject constructor(
             eventName = TokoFoodAnalyticsConstants.VIEW_ITEM,
             eventAction = TokoFoodAnalyticsConstants.VIEW_TOP_KEYWORD_TOKOFOOD,
             eventCategory = TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RECOMMENDATION,
-            eventLabel = keyword
+            eventLabel = String.EMPTY
         ).appendCustomDimensions(
             trackerId = TokoFoodAnalyticsConstants.TRACKER_ID_35769,
             userId = userSession.userId,
@@ -117,12 +118,12 @@ class TokoFoodInitSearchStateAnalytics @Inject constructor(
         eventBundle.sendEnhancedEcommerce(TokoFoodAnalyticsConstants.VIEW_ITEM)
     }
 
-    fun clickCuisineList(keyword: String) {
+    fun clickCuisineList(keyword: String, cuisineName: String) {
         val eventData = mapOf(
             TrackAppUtils.EVENT to TokoFoodAnalyticsConstants.CLICK_PG,
             TrackAppUtils.EVENT_ACTION to TokoFoodAnalyticsConstants.CLICK_CUISINE_LIST_TOKOFOOD,
             TrackAppUtils.EVENT_CATEGORY to TokoFoodAnalyticsConstants.TOKOFOOD_SEARCH_RECOMMENDATION,
-            TrackAppUtils.EVENT_LABEL to keyword,
+            TrackAppUtils.EVENT_LABEL to "$keyword - $cuisineName",
             TokoFoodAnalyticsConstants.TRACKER_ID to TokoFoodAnalyticsConstants.TRACKER_ID_35772,
             TokoFoodAnalyticsConstants.BUSSINESS_UNIT to TokoFoodAnalyticsConstants.PHYSICAL_GOODS,
             TokoFoodAnalyticsConstants.CURRENT_SITE to TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
@@ -171,7 +172,7 @@ class TokoFoodInitSearchStateAnalytics @Inject constructor(
             putString(TokoFoodAnalyticsConstants.KEY_EE_CREATIVE_NAME, "null")
             putInt(TokoFoodAnalyticsConstants.KEY_EE_CREATIVE_SLOT, position)
             putString(TokoFoodAnalyticsConstants.KEY_EE_ITEM_ID, itemId)
-            putString(TokoFoodAnalyticsConstants.KEY_EE_ITEM_NAME, itemName)
+            putString(TokoFoodAnalyticsConstants.KEY_EE_ITEM_NAME, "$itemName")
         })
 
         putParcelableArrayList(
