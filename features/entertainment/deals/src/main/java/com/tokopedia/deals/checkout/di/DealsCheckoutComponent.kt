@@ -8,6 +8,7 @@ import dagger.Component
 @DealsCheckoutScope
 @Component(
     modules = [
+        DealsCheckoutModule::class,
         DealsCheckoutViewModelModule::class
     ],
     dependencies = [

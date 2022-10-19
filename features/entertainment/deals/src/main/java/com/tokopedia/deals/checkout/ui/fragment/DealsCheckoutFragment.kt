@@ -68,6 +68,9 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
     @Inject
     lateinit var analytics: DealsAnalytics
 
+    @Inject
+    lateinit var dealsCheckoutMapper: DealsCheckoutMapper
+
     private var binding by autoClearedNullable<FragmentDealsCheckoutBinding>()
     private val viewModel by viewModels<DealsCheckoutViewModel> { viewModelFactory }
     private var dealsCheckoutCallbacks: DealsCheckoutCallbacks? = null
@@ -452,33 +455,33 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun validatePromoCodesCheckoutGeneral(promoCodes: List<String>): DealsGeneral {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes.first().isNotEmpty()) DealsCheckoutMapper.mapCheckoutDeals(
+            if (promoCodes.first().isNotEmpty()) dealsCheckoutMapper.mapCheckoutDeals(
                 dealsDetail,
                 dealsVerify,
                 listOf(promoCode)
             )
-            else DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+            else dealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
         } else {
-            DealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
+            dealsCheckoutMapper.mapCheckoutDeals(dealsDetail, dealsVerify)
         }
     }
 
     private fun validatePromoCodesCheckoutInstant(promoCodes: List<String>): DealsInstant {
         return if (promoCodes.isNotEmpty()) {
-            if (promoCodes.first().isNotEmpty()) DealsCheckoutMapper.mapCheckoutDealsInstant(
+            if (promoCodes.first().isNotEmpty()) dealsCheckoutMapper.mapCheckoutDealsInstant(
                 dealsDetail,
                 dealsVerify,
                 listOf(promoCode)
             )
-            else DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
+            else dealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
         } else {
-            DealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
+            dealsCheckoutMapper.mapCheckoutDealsInstant(dealsDetail, dealsVerify)
         }
     }
 
     private fun goToPromoListDealsActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_META_DATA, dealsCheckoutMapper.getMetaDataString(dealsVerify))
         intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
         intent.putExtra(
@@ -491,7 +494,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun goToPromoDetailDeals() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_DETAIL_DEALS)
-        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_META_DATA, dealsCheckoutMapper.getMetaDataString(dealsVerify))
         intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
         intent.putExtra(COUPON_EXTRA_IS_USE, true)
@@ -501,7 +504,7 @@ class DealsCheckoutFragment : BaseDaggerFragment() {
 
     private fun goToPromoListDealsWithVoucher() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalPromo.PROMO_LIST_DEALS)
-        intent.putExtra(EXTRA_META_DATA, DealsCheckoutMapper.getMetaDataString(dealsVerify))
+        intent.putExtra(EXTRA_META_DATA, dealsCheckoutMapper.getMetaDataString(dealsVerify))
         intent.putExtra(EXTRA_CATEGORY_NAME, dealsVerify.metadata.categoryName)
         intent.putExtra(EXTRA_GRAND_TOTAL, dealsVerify.metadata.totalPrice)
         intent.putExtra(EXTRA_CATEGORYID, dealsDetail.catalog.digitalCategoryId.toIntSafely())

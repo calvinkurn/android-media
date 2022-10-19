@@ -14,10 +14,13 @@ import com.tokopedia.common_entertainment.data.MetaDataResponse
 import com.tokopedia.deals.pdp.data.ProductDetailData
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import javax.inject.Inject
 
-object DealsCheckoutMapper {
+class DealsCheckoutMapper @Inject constructor(val gson: Gson) {
 
-    private const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
+    companion object {
+        private const val DEFAULT_CHECKOUT_DATA_TYPE = "foodvchr"
+    }
 
     fun mapCheckoutDeals(dealsDetail: ProductDetailData, verify: EventVerifyResponse, promoCodes: List<String>):
         DealCheckoutGeneral {
