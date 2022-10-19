@@ -154,12 +154,6 @@ class QuizWidgetView : ConstraintLayout {
         quizAdapter.setItemsAndAnimateChanges(listOfChoices)
     }
 
-    fun setReward(reward: String){
-        binding.viewQuizReward.root.shouldShowWithAction(reward.isNotBlank()){
-            binding.viewQuizReward.tvGameReward.text = reward
-        }
-    }
-
     fun animateAnswer(isCorrect: Boolean){
         if(isCorrect){
             animateCorrectAnswer()

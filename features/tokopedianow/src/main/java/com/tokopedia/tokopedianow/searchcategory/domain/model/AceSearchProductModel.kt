@@ -380,6 +380,10 @@ data class AceSearchProductModel(
             @SerializedName("maxOrder")
             @Expose
             val maxOrder: Int = 0,
+
+            @SerializedName("stock")
+            @Expose
+            val stock: Int = 0
     )
 
     data class ProductShop(
