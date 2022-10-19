@@ -81,7 +81,7 @@ import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCas
 import com.tokopedia.recommendation_widget_common.extension.hasLabelGroupFulfillment
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.seamless_login_common.domain.usecase.SeamlessLoginUsecase
-import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductViewModel
+import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopProductUiModel
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -1433,7 +1433,7 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
 
             val clickUrl = recommendationItem.clickUrl
             if (clickUrl.isNotEmpty()) view?.sendATCTrackingURL(recommendationItem)
-        } else if (productModel is BannerShopProductViewModel) {
+        } else if (productModel is BannerShopProductUiModel) {
             productId = productModel.productId.toLongOrZero()
             shopId = productModel.shopId.toIntOrZero()
             productName = productModel.productName
@@ -1767,13 +1767,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
         clearCacheAutoApplyStackUseCase.setParams(
             ClearPromoRequest(
-            OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = clearPromoOrderData
-        )
+            )
         )
         compositeSubscription.add(
-                // Do nothing on subscribe
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+            // Do nothing on subscribe
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
         )
     }
 
@@ -1802,21 +1802,22 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             ClearPromoRequest(
                 serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = ClearPromoOrderData(
-                        orders = listOf(
-                                ClearPromoOrder(
-                                        uniqueId = shop.cartString,
-                                        boType = shop.boMetadata.boType,
-                                        codes = mutableListOf(shop.boCode),
-                                        shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.isPo,
-                                        poDuration = shop.poDuration,
-                                        warehouseId = shop.warehouseId
-                                )
+                    orders = listOf(
+                        ClearPromoOrder(
+                            uniqueId = shop.cartString,
+                            boType = shop.boMetadata.boType,
+                            codes = mutableListOf(shop.boCode),
+                            shopId = shop.shopId.toLongOrZero(),
+                            isPo = shop.isPo,
+                            poDuration = shop.poDuration,
+                            warehouseId = shop.warehouseId
                         )
+                    )
                 )
-        )
+            )
         )
         compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
+        shop.promoCodes = ArrayList(shop.promoCodes).apply { remove(shop.boCode) }
         shop.boCode = ""
     }
 }

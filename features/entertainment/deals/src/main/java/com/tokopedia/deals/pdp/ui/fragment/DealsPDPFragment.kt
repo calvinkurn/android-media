@@ -830,11 +830,11 @@ class DealsPDPFragment : BaseDaggerFragment() {
     }
 
     private fun hideShareLoading() {
-        progressBar?.hide()
+        dealsPDPCallbacks?.onHideShareLoader()
     }
 
     private fun showShareLoading() {
-        progressBar?.show()
+        dealsPDPCallbacks?.onShowShareLoader()
     }
 
     companion object {

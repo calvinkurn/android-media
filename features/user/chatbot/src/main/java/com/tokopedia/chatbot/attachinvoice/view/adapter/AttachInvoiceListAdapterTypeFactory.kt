@@ -1,12 +1,11 @@
 package com.tokopedia.chatbot.attachinvoice.view.adapter
 
 import android.view.View
-
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.EmptyResultViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.ErrorNetworkViewHolder
-import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceViewModel
+import com.tokopedia.chatbot.attachinvoice.view.model.InvoiceUiModel
 import com.tokopedia.chatbot.attachinvoice.view.viewholder.AttachInvoiceEmptyResultViewHolder
 import com.tokopedia.chatbot.attachinvoice.view.viewholder.InvoiceViewHolder
 
@@ -16,8 +15,7 @@ import com.tokopedia.chatbot.attachinvoice.view.viewholder.InvoiceViewHolder
 
 class AttachInvoiceListAdapterTypeFactory : BaseAdapterTypeFactory() {
 
-
-    fun type(viewModel: InvoiceViewModel): Int {
+    fun type(viewModel: InvoiceUiModel): Int {
         return InvoiceViewHolder.LAYOUT
     }
 

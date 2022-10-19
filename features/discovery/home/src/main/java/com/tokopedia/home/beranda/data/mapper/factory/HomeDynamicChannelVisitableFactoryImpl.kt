@@ -56,6 +56,7 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
         private const val CUE_WIDGET_MIN_SIZE = 4
         private const val VPS_WIDGET_SIZE = 4
+        private const val LEGO_4_PRODUCT_SIZE = 4
     }
 
     override fun buildVisitableList(homeChannelData: HomeChannelData, isCache: Boolean, trackingQueue: TrackingQueue, context: Context): HomeDynamicChannelVisitableFactory {
@@ -212,6 +213,9 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MISSION_WIDGET -> {
                     createMissionWidgetChannel(channel, position)
+                }
+                DynamicHomeChannel.Channels.LAYOUT_LEGO_4_PRODUCT -> {
+                    createLego4Product(channel, position)
                 }
             }
         }
@@ -638,6 +642,20 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
+    private fun mappingLego4ProductComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
+        return Lego4ProductDataModel(
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
+        )
+    }
+
     private fun createMissionWidgetChannel(
         channel: DynamicHomeChannel.Channels,
         verticalPosition: Int
@@ -756,6 +774,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
         if (gridSize >= VPS_WIDGET_SIZE) {
             visitableList.add(
                 mappingVpsWidgetComponent(
+                    channel, isCache, verticalPosition
+                )
+            )
+        }
+    }
+
+    private fun createLego4Product(channel: DynamicHomeChannel.Channels, verticalPosition: Int) {
+        val gridSize = channel.grids.size
+        if (gridSize >= LEGO_4_PRODUCT_SIZE) {
+            visitableList.add(
+                mappingLego4ProductComponent(
                     channel, isCache, verticalPosition
                 )
             )
