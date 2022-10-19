@@ -61,7 +61,6 @@ import javax.inject.Inject;
 public class TopChatAnalytics {
 
     private String sourcePage = "";
-    private Boolean isFromBubble = false;
 
     @Inject
     public TopChatAnalytics() {
@@ -77,7 +76,6 @@ public class TopChatAnalytics {
     private static final String ECOMMERCE = "ecommerce";
     public static final String SCREEN_CHAT_LIST = "inbox-chat";
     public static final String SCREEN_CHAT_ROOM = "chatroom";
-    public static final String KEY_TRACKER_ID = "trackerId";
 
     public static final String FPM_DETAIL_CHAT = "mp_detail_chat";
     public static final String FPM_DETAIL_CHAT_SELLERAPP = "mp_detail_chat_sellerapp";
@@ -96,7 +94,6 @@ public class TopChatAnalytics {
         String INBOX_CHAT_2 = "inbox chat";
 
         String EVENT_CATEGORY_INBOX_CHAT = "inbox-chat";
-        String BUBBLE_CHAT_DETAIL = "bubble chat detail";
     }
 
     public interface Name {
@@ -115,8 +112,6 @@ public class TopChatAnalytics {
 
         String CLICK_CHAT_DETAIL = "ClickChatDetail";
         String ATC = "add_to_cart";
-
-        String CLICK_COMMUNICATION = "clickCommunication";
     }
 
     public interface Action {
@@ -159,11 +154,6 @@ public class TopChatAnalytics {
         String CLICK_SRW = "click smart reply widget";
         String CLICK_UPDATE_STOCK = "click on update stock";
         String CLICK_THREE_BULLET_MENU = "click header - three bullet";
-        String CLICK_HEADER_THREE_BULLETS = "click header three bullets";
-        String CLICK_SETTINGS_MENU_CHOICES = "click settings menu choices";
-        String CLICK_NEW_NOTIFICATION_BUBBLE_CHAT = "click on new notification bubble chat";
-        String CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT = "click dismiss new notification bubble chat";
-        String CLICK_ADD_STICKER = "click add sticker";
     }
 
     public interface Label {
@@ -182,20 +172,8 @@ public class TopChatAnalytics {
         String TokopediaMarketplace = "tokopediamarketplace";
     }
 
-    interface TrackerId {
-        String ID_37704 = "37704";
-        String ID_37705 = "37705";
-        String ID_37707 = "37707";
-        String ID_37708 = "37708";
-        String ID_38044 = "38044";
-    }
-
     public void setSourcePage(String sourcePage) {
         this.sourcePage = sourcePage;
-    }
-
-    public void setIsFromBubble(Boolean isFromBubble) {
-        this.isFromBubble = isFromBubble;
     }
 
     public void eventClickInboxChannel() {
@@ -647,88 +625,6 @@ public class TopChatAnalytics {
         );
     }
 
-    public void eventClickHeaderMenuBubble(String shopId) {
-        if (isFromBubble) {
-            Map<String, Object> bubbleEvent =
-                    createBubbleEvent(
-                            Name.CLICK_COMMUNICATION,
-                            Category.BUBBLE_CHAT_DETAIL,
-                            Action.CLICK_HEADER_THREE_BULLETS,
-                            shopId,
-                            BusinessUnit.Communication,
-                            CurrentSite.TokopediaMarketplace,
-                            TrackerId.ID_37704
-                    );
-            TrackApp.getInstance().getGTM().sendGeneralEvent(bubbleEvent);
-        }
-    }
-
-    public void eventClickHeaderMenuItemBubble(String clickedMenuTitle) {
-        if (isFromBubble) {
-            Map<String, Object> bubbleEvent =
-                    createBubbleEvent(
-                            Name.CLICK_COMMUNICATION,
-                            Category.BUBBLE_CHAT_DETAIL,
-                            Action.CLICK_SETTINGS_MENU_CHOICES,
-                            clickedMenuTitle,
-                            BusinessUnit.Communication,
-                            CurrentSite.TokopediaMarketplace,
-                            TrackerId.ID_37705
-                    );
-            TrackApp.getInstance().getGTM().sendGeneralEvent(bubbleEvent);
-        }
-    }
-
-    public void eventClickBubbleChat(String shopId, String userId, String messageId) {
-        if (isFromBubble) {
-            String eventLabel = shopId + " - " + messageId + " - " + userId;
-            Map<String, Object> bubbleEvent =
-                    createBubbleEvent(
-                            Name.CLICK_COMMUNICATION,
-                            Category.BUBBLE_CHAT_DETAIL,
-                            Action.CLICK_NEW_NOTIFICATION_BUBBLE_CHAT,
-                            eventLabel,
-                            BusinessUnit.Communication,
-                            CurrentSite.TokopediaMarketplace,
-                            TrackerId.ID_37707
-                    );
-            TrackApp.getInstance().getGTM().sendGeneralEvent(bubbleEvent);
-        }
-    }
-
-    public void eventDismissBubbleChat(String shopId, String userId, String messageId) {
-        if (isFromBubble) {
-            String eventLabel = shopId + " - " + messageId + " - " + userId;
-            Map<String, Object> bubbleEvent =
-                    createBubbleEvent(
-                            Name.CLICK_COMMUNICATION,
-                            Category.BUBBLE_CHAT_DETAIL,
-                            Action.CLICK_DISMISS_NEW_NOTIFICATION_BUBBLE_CHAT,
-                            eventLabel,
-                            BusinessUnit.Communication,
-                            CurrentSite.TokopediaMarketplace,
-                            TrackerId.ID_37708
-                    );
-            TrackApp.getInstance().getGTM().sendGeneralEvent(bubbleEvent);
-        }
-    }
-
-    public void eventClickStickerBubble() {
-        if (isFromBubble) {
-            Map<String, Object> bubbleEvent =
-                    createBubbleEvent(
-                            Name.CLICK_COMMUNICATION,
-                            Category.BUBBLE_CHAT_DETAIL,
-                            Action.CLICK_ADD_STICKER,
-                            "",
-                            BusinessUnit.Communication,
-                            CurrentSite.TokopediaMarketplace,
-                            TrackerId.ID_37708
-                    );
-            TrackApp.getInstance().getGTM().sendGeneralEvent(bubbleEvent);
-        }
-    }
-
     public void trackClickUpdateStock(ProductAttachmentUiModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +
@@ -779,25 +675,5 @@ public class TopChatAnalytics {
             data.put(USER_ID, userId);
         }
         return data;
-    }
-
-    private Map<String, Object> createBubbleEvent(
-            String event,
-            String category,
-            String action,
-            String label,
-            String businessUnit,
-            String currentSite,
-            String trackerId
-    ) {
-        return DataLayer.mapOf(
-                EVENT_NAME, event,
-                EVENT_CATEGORY, category,
-                EVENT_ACTION, action,
-                EVENT_LABEL, label,
-                KEY_BUSINESS_UNIT, businessUnit,
-                KEY_CURRENT_SITE, currentSite,
-                KEY_TRACKER_ID, trackerId
-        );
     }
 }

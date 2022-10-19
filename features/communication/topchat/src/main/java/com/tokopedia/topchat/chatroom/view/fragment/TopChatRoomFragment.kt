@@ -567,7 +567,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onResume() {
         super.onResume()
-        analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        if (isFromBubble) {
+            analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
+        }
     }
 
     private fun setupLifecycleObserver() {
@@ -680,11 +682,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
-        val bubbleSource = getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null)
-        val isFromBubble = bubbleSource == Constant.EXTRA_BUBBLE_SOURCE
-
-        analytics.setIsFromBubble(isFromBubble)
-
         return TopChatViewStateImpl(
             view, this, this, this,
             this, this, this,
