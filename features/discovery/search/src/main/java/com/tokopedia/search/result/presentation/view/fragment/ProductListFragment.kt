@@ -273,9 +273,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
         if (searchParameterToCopy != null) {
             searchParameter = SearchParameter(searchParameterToCopy).apply {
-                if(safeSearchPresenter.isShowAdult) {
-                    set(SearchApiConst.SHOW_ADULT, SearchApiConst.SHOW_ADULT_ENABLED)
-                }
+                safeSearchPresenter.modifySearchParameterIfShowAdultEnabled(this)
             }
         }
     }

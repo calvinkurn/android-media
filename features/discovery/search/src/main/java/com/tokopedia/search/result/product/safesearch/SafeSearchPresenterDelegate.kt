@@ -1,6 +1,8 @@
 package com.tokopedia.search.result.product.safesearch
 
 import androidx.lifecycle.LifecycleOwner
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.model.TickerDataView
 
 class SafeSearchPresenterDelegate(
@@ -12,6 +14,12 @@ class SafeSearchPresenterDelegate(
 
     override fun initSafeSearch() {
         SafeSearchLifecycleHelper.resetIfNoObserver(safeSearchPreference)
+    }
+
+    override fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter) {
+        if(isShowAdult) {
+            searchParameter.set(SearchApiConst.SHOW_ADULT, SearchApiConst.SHOW_ADULT_ENABLED)
+        }
     }
 
     override fun enableShowAdult() {
