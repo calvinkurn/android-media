@@ -908,6 +908,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+            if (uploadPrescriptionUiModel.value.showImageUpload == true &&
+                (uploadPrescriptionUiModel.value.uploadedImageCount ?: 0) < 1 &&
+                uploadPrescriptionUiModel.value.frontEndValidation
+            ) {
+                uploadPrescriptionUiModel.value =
+                    uploadPrescriptionUiModel.value.copy(isError = true)
+                return
+            }
             globalEvent.value = OccGlobalEvent.Loading
             val shop = orderShop.value
             if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {

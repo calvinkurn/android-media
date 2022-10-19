@@ -125,8 +125,13 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(private val checkout
             if (orderShipment.isApplyLogisticPromo && orderShipment.logisticPromoShipping != null && logisticPromoUiModel != null && logisticPromoUiModel.freeShippingMetadata.isNotBlank()) {
                 orderMetadata.add(OrderMetadata(FREE_SHIPPING_METADATA, logisticPromoUiModel.freeShippingMetadata))
             }
-            prescriptionIds?.let {
-                orderMetadata.add(OrderMetadata(PRESCRIPTION_IDS_METADATA, it.toString()))
+            if (prescriptionIds != null && prescriptionIds.isNotEmpty()) {
+                orderMetadata.add(
+                    OrderMetadata(
+                        PRESCRIPTION_IDS_METADATA,
+                        prescriptionIds.toString()
+                    )
+                )
             }
             val param = CheckoutOccRequest(Profile(profile.profileId), ParamCart(data = listOf(ParamData(
                     profile.address.addressId,

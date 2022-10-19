@@ -76,12 +76,7 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentReque
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
+import com.tokopedia.oneclickcheckout.order.view.card.*
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
@@ -486,6 +481,17 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
 
     private fun observeUploadPrescription() {
             viewModel.uploadPrescriptionUiModel.observe(viewLifecycleOwner) {
+                if (it.isError && it.frontEndValidation) {
+                    binding.rvOrderSummaryPage.smoothScrollToPosition(adapter.uploadPrescriptionIndex)
+                    view?.let { v ->
+                        Toaster.build(
+                            v,
+                            getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found),
+                            Toaster.LENGTH_LONG,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
                 if ((it.uploadedImageCount ?: 0) > 0) {
                     it.uploadImageText = requireActivity().getString(
                         com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_upload_success_title_text
@@ -495,6 +501,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         it.uploadedImageCount
                     )
                     it.leftIconUrl = UploadPrescriptionViewHolder.EPharmacyCountImageUrl
+                    it.isError = false
                 }
                 adapter.uploadPrescription = it
                 if (binding.rvOrderSummaryPage.isComputingLayout) {
