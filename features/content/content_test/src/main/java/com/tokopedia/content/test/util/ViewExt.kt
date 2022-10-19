@@ -1,4 +1,4 @@
-package com.tokopedia.play.test.util
+package com.tokopedia.content.test.util
 
 import android.view.View
 import android.view.ViewGroup

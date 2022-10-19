@@ -262,4 +262,6 @@ produk eksklusif ini.</string>
     <string name="feed_follow_bottom_sheet_desc_ongoing_text">Supaya kamu bisa beli produk eksklusif ini.</string>
     <string name="feed_asgc_campaign_toaster_action_text">Oke</string>
 
+    <!-- Product Sharing Experience -->
+    <string name="feed_product_tag_share_template">"Beli %1$s %2$s di toko %3$s %4$s di Tokopedia dengan Bebas Ongkir, Sekarang!"</string>
 </resources>

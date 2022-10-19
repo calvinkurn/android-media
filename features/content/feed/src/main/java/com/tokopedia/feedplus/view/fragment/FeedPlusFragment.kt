@@ -139,6 +139,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 
 /**
  * @author by nisie on 5/15/17.
@@ -233,6 +234,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         get() {
             return userSession.userId.toLongOrZero()
         }
+
+    private val feedProductTagSharingHelper by lazy(LazyThreadSafetyMode.NONE) {
+        FeedProductTagSharingHelper(
+            fragmentManager = childFragmentManager,
+            fragment = this,
+            listener = object : FeedProductTagSharingHelper.Listener {
+                override fun onErrorCreatingUrl(linkerError: LinkerError?) {
+                    showToast(
+                        message = linkerError?.errorMessage ?: getString(R.string.default_request_error_unknown),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        )
+    }
 
     companion object {
 
@@ -2641,64 +2657,46 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onShareProduct(
-        id: String,
-        title: String,
-        description: String,
-        url: String,
-        applink: String,
-        imageUrl: String,
+        item: ProductPostTagViewModelNew,
         activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        isTopads: Boolean = false,
-        mediaType: String,
-        trackerid: String = ""
+        trackerId: String = ""
     ) {
         feedAnalytics.eventonShareProductClicked(
             activityId,
-            id,
-            type,
-            isFollowed, shopId,
-            mediaType,
-            trackerid
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.mediaType,
+            trackerId
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
             productTagBS.dismiss()
         }
-        val urlString: String = if (isTopads) {
-            shareBottomSheetProduct = true
-            url
-        } else {
-            shareBottomSheetProduct = false
-            url
-        }
-        activity?.let {
-            val linkerBuilder = LinkerData.Builder.getLinkerBuilder().setId(id)
-                .setName(title)
-                .setDescription(description)
-                .setImgUri(imageUrl)
-                .setUri(url)
-                .setDeepLink(applink)
-                .setType(LinkerData.FEED_TYPE)
-                .setDesktopUrl(urlString)
 
-            if (isTopads) {
-                linkerBuilder.setOgImageUrl(imageUrl)
-                linkerBuilder.setDesktopUrl(url)
-            }
-            shareData = linkerBuilder.build()
-            val linkerShareData = DataMapper().getLinkerShareData(shareData)
-            LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(
-                    0,
-                    linkerShareData,
-                    this
-                )
-            )
+        shareBottomSheetProduct = item.isTopads
+
+        val linkerBuilder = LinkerData.Builder.getLinkerBuilder()
+            .setId(item.id)
+            .setName(item.text)
+            .setDescription(item.description)
+            .setImgUri(item.imgUrl)
+            .setUri(item.weblink)
+            .setDeepLink(item.applink)
+            .setType(LinkerData.FEED_TYPE)
+            .setDesktopUrl(item.weblink)
+
+        if (item.isTopads) {
+            linkerBuilder.setOgImageUrl(item.imgUrl)
         }
 
+        shareData = linkerBuilder.build()
+
+        feedProductTagSharingHelper.show(
+            productTagShareModel = FeedProductTagSharingHelper.Model.map(item),
+            shareData = shareData
+        )
     }
 
     override fun muteUnmuteVideo(
@@ -3697,21 +3695,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 trackerIdAsgcRecom = "13433",
                 trackerIdAsgc = "13447"
             )
-            onShareProduct(
-                item.id,
-                item.text,
-                item.description,
-                item.weblink,
-                item.applink,
-                item.imgUrl,
-                finalID,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                item.isTopads,
-                item.mediaType,
-                shareTrackerId
-            )
+            onShareProduct(item, finalID, shareTrackerId)
         }
         sheet.addToCartCB = {
             onTagSheetItemBuy(
