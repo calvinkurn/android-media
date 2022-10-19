@@ -644,6 +644,9 @@ open class ProductManageFragment :
             }
         }
         showHideOptionsMenu()
+        disableOrEnableOptionMenuAddProduct(
+            viewModel.shopStatus.value?.isOnModerationMode().orFalse()
+        )
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -2349,8 +2352,6 @@ open class ProductManageFragment :
             if (coachMarkStockReminder?.isDismissed == false) {
                 coachMarkStockReminder?.dismissCoachMark()
             }
-        }else{
-            disableOrEnableOptionMenuAddProduct(viewModel.shopStatus.value?.isOnModerationMode().orFalse())
         }
     }
 
@@ -3320,32 +3321,34 @@ open class ProductManageFragment :
         }
     }
 
-    private fun disableOrEnableOptionMenuAddProduct(isEnable:Boolean){
-        if (isEnable) {
-            val layoutMenuAddProduct =
-                optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
-            val iconMenuAddProduct =
-                layoutMenuAddProduct.findViewById<IconUnify>(R.id.ivAddProduct)
-            iconMenuAddProduct.isEnabled = false
-            context?.let { context ->
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifycomponents.R.color.Unify_NN300
-                )
-            }?.let { color ->
-                iconMenuAddProduct.setColorFilter(
-                    color, PorterDuff.Mode.SRC_ATOP
-                )
-            }
+    private fun disableOrEnableOptionMenuAddProduct(isEnable: Boolean) {
+        if (optionsMenu != null) {
+            if (isEnable) {
+                val layoutMenuAddProduct =
+                    optionsMenu?.findItem(R.id.add_product_menu)?.actionView as LinearLayout
+                val iconMenuAddProduct =
+                    layoutMenuAddProduct.findViewById<IconUnify>(R.id.ivAddProduct)
+                iconMenuAddProduct.isEnabled = false
+                context?.let { context ->
+                    ContextCompat.getColor(
+                        context,
+                        com.tokopedia.unifycomponents.R.color.Unify_NN300
+                    )
+                }?.let { color ->
+                    iconMenuAddProduct.setColorFilter(
+                        color, PorterDuff.Mode.SRC_ATOP
+                    )
+                }
 
-            optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
-            optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = false
+                optionsMenu?.findItem(R.id.add_product_menu)?.actionView?.setOnClickListener(null)
 
-        } else {
-            optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
-            optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
-                menuItem.actionView.setOnClickListener {
-                    onOptionsItemSelected(menuItem)
+            } else {
+                optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
+                optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
+                    menuItem.actionView.setOnClickListener {
+                        onOptionsItemSelected(menuItem)
+                    }
                 }
             }
         }
