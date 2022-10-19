@@ -258,7 +258,6 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     private var delaySendSticker: Sticker? = null
     private var delaySendSrw: QuestionUiModel? = null
     private var interlocutorShopType: String = ""
-    private var isFromBubble: Boolean = false
 
     //This used only for set extra in finish activity
     private var isFavoriteShop: Boolean? = null
@@ -568,9 +567,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onResume() {
         super.onResume()
-        if (isFromBubble) {
-            analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
-        }
+        analytics.eventClickBubbleChat(session.shopId, opponentId, messageId)
     }
 
     private fun setupLifecycleObserver() {
@@ -684,7 +681,9 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         val bubbleSource = getStringArgument(Constant.EXTRA_IS_FROM_BUBBLE, null)
-        isFromBubble = bubbleSource == Constant.EXTRA_BUBBLE_SOURCE
+        val isFromBubble = bubbleSource == Constant.EXTRA_BUBBLE_SOURCE
+
+        analytics.setIsFromBubble(isFromBubble)
 
         return TopChatViewStateImpl(
             view, this, this, this,
@@ -1886,6 +1885,14 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
         RouteManager.route(context, ApplinkConstInternalMarketplace.CHAT_SETTING)
     }
 
+    override fun onClickHeaderMenu() {
+        analytics.eventClickHeaderMenuBubble(session.shopId)
+    }
+
+    override fun onClickHeaderMenuItem(menuItemTitle: String) {
+        analytics.eventClickHeaderMenuItemBubble(menuItemTitle)
+    }
+
     private fun getChatReportUrl(): String {
         var url = "${TkpdBaseURL.CHAT_REPORT_URL}$messageId"
         if (isSeller()) {
@@ -1998,6 +2005,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     override fun onDestroy() {
         super.onDestroy()
         unregisterUploadImageReceiver()
+        sendBubbleDismissTracker()
     }
 
     override fun trackSeenProduct(element: ProductAttachmentUiModel) {
@@ -2241,6 +2249,7 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
     }
 
     override fun onStickerOpened() {
+        analytics.eventClickStickerBubble()
         topchatViewState?.onStickerOpened()
     }
 
@@ -2525,6 +2534,10 @@ open class TopChatRoomFragment : BaseChatFragment(), TopChatContract.View, Typin
                 LocalBroadcastManager.getInstance(it).unregisterReceiver(receiver)
             }
         }
+    }
+
+    private fun sendBubbleDismissTracker() {
+        analytics.eventDismissBubbleChat(session.shopId, opponentId, messageId)
     }
 
     override fun onClickSrwQuestion(question: QuestionUiModel) {
