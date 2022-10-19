@@ -80,7 +80,8 @@ class AddEditProductShipmentViewModel @Inject constructor(
         val productId = productInputModel.productId
         val productDraft = AddEditProductMapper.mapProductInputModelDetailToDraft(productInputModel)
         launchCatchError(block = {
-            saveProductDraftUseCase.params = SaveProductDraftUseCase.createRequestParams(productDraft, productId, false)
+            saveProductDraftUseCase.params =
+                SaveProductDraftUseCase.createRequestParams(productDraft, productId, false)
             withContext(dispatcher.io) {
                 saveProductDraftUseCase.executeOnBackground()
             }
@@ -102,10 +103,100 @@ class AddEditProductShipmentViewModel @Inject constructor(
                     productId,
                     cplParam ?: listOf()
                 )
-                _cplList.value = Success(customProductLogisticMapper.mapCPLData(cplList.response.data, productId, shipmentServicesIds))
+                _cplList.value = Success(
+                    customProductLogisticMapper.mapCPLData(
+                        cplList.response.data,
+                        productId,
+                        shipmentServicesIds
+                    )
+                )
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }
         }
+    }
+
+    fun setAllProductActivated() {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            sp.isActive = true
+                        }
+                        s.isActive = true
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setAllProductDeactivated() {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            sp.isActive = true
+                        }
+                        s.isActive = true
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun setProductActiveState(spIds: List<Long>) {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            sp.isActive = spIds.contains(sp.shipperProductId)
+                        }
+                        s.isActive = s.shipperProduct.all { sp -> sp.isActive }
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
+
+    fun getActivatedProductIds(): List<Long> {
+        val shipperProductIds = mutableListOf<Long>()
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            if (sp.isActive) {
+                                shipperProductIds.add(sp.shipperProductId)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return shipperProductIds
+    }
+
+    fun isShipperGroupActivated(shipperGroupIndex: Int): Boolean {
+        val shipperProductIds = mutableListOf<Long>()
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.getOrNull(shipperGroupIndex).let {
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            if (sp.isActive) {
+                                return true
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false
     }
 }

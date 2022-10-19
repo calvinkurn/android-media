@@ -145,6 +145,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
         if (isCPLActivated) {
+            // user was in standard shipment, but set cpl shipment
             if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
                 populateShipperData(data, SHIPPER_ON_DEMAND)
                 cplItemOnDemandAdapter.setAllProductIdsActivated()
@@ -157,16 +158,13 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 cplItemConventionalAdapter.setAllProductIdsActivated()
             }
         } else {
+            // user has set cpl shipment before
             if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
                 populateShipperData(data, SHIPPER_ON_DEMAND)
-                cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
             } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
                 populateShipperData(data, SHIPPER_CONVENTIONAL)
-                cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
             } else {
                 populateShipperData(data, ALL_SHIPPER_AVAILABLE)
-                cplItemOnDemandAdapter.setProductIdsActivated(data.cplProduct[0])
-                cplItemConventionalAdapter.setProductIdsActivated(data.cplProduct[0])
             }
         }
     }
