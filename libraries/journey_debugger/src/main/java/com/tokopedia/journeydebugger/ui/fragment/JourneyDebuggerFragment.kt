@@ -11,7 +11,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.fragment.BaseSearchListFragment
 import com.tokopedia.journeydebugger.R
 import com.tokopedia.journeydebugger.di.JourneyDebuggerComponent
+import com.tokopedia.journeydebugger.ui.activity.JourneyDebuggerDetailActivity
 import com.tokopedia.journeydebugger.ui.adapter.JourneyDebuggerTypeFactory
+import com.tokopedia.journeydebugger.ui.model.JourneyDebuggerUIModel
 import com.tokopedia.journeydebugger.ui.presenter.JourneyDebugger
 
 class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebuggerTypeFactory>(), JourneyDebugger.View {
@@ -21,7 +23,7 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebu
     var presenter: JourneyDebugger.Presenter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_analytics_debugger, container, false)
+        val view = inflater.inflate(R.layout.fragment_journey_debugger, container, false)
         buttonSearch = view.findViewById(R.id.button_search)
         return view
     }
@@ -65,12 +67,12 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebu
         presenter?.loadMore()
     }
 
-    override fun getAdapterTypeFactory(): ApplinkDebuggerTypeFactory {
-        return ApplinkDebuggerTypeFactory()
+    override fun getAdapterTypeFactory(): JourneyDebuggerTypeFactory {
+        return JourneyDebuggerTypeFactory()
     }
 
     override fun onItemClicked(visitable: Visitable<*>) {
-        if (visitable is JourneyDebuggerUiModel) {
+        if (visitable is JourneyDebuggerUIModel) {
             openDetail(visitable)
         }
     }
@@ -87,7 +89,7 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebu
     }
 
     private fun injectToFragment(component: JourneyDebuggerComponent) {
-        presenter = component.applinkPresenter
+        presenter = component.journeyPresenter
     }
 
     override fun getScreenName(): String {
@@ -133,7 +135,7 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebu
         return super.onOptionsItemSelected(item)
     }
 
-    private fun openDetail(viewModel: JourneyDebuggerUiModel) {
+    private fun openDetail(viewModel: JourneyDebuggerUIModel) {
         startActivity(JourneyDebuggerDetailActivity.newInstance(requireContext(), viewModel))
     }
 
