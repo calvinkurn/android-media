@@ -50,18 +50,20 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     AffiliateLinkTextFieldInterface, PromotionClickInterface {
 
     @Inject
-    lateinit var viewModelProvider: ViewModelProvider.Factory
+    @JvmField
+    var viewModelProvider: ViewModelProvider.Factory? = null
 
     @Inject
-    lateinit var userSessionInterface: UserSessionInterface
+    @JvmField
+    var userSessionInterface: UserSessionInterface? = null
 
-    private lateinit var affiliatePromoViewModel: AffiliatePromoViewModel
+    private var affiliatePromoViewModel: AffiliatePromoViewModel? = null
 
     private val adapter: AffiliateAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(null, null, this),
             source = AffiliateAdapter.SOURCE_PROMOSIKAN,
-            userId = userSessionInterface.userId
+            userId = userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -92,10 +94,10 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
         view?.findViewById<NavToolbar>(R.id.promo_search_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             setIcon(IconBuilder().addIcon(IconList.ID_INFORMATION) {
-                    AffiliateHowToPromoteBottomSheet.newInstance(
-                        AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
-                    ).show(childFragmentManager, "")
-                }.addIcon(IconList.ID_NAV_GLOBAL) {})
+                AffiliateHowToPromoteBottomSheet.newInstance(
+                    AffiliateHowToPromoteBottomSheet.STATE_HOW_TO_PROMOTE
+                ).show(childFragmentManager, "")
+            }.addIcon(IconList.ID_NAV_GLOBAL) {})
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
                 getString(R.string.affiliate_promo)
             setOnBackButtonClickListener {
@@ -113,7 +115,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             setDoneAction {
                 editText.text.let {
                     if (it.isNotEmpty()) {
-                        affiliatePromoViewModel.getSearch(it.toString())
+                        affiliatePromoViewModel?.getSearch(it.toString())
                     }
                 }
             }
@@ -123,7 +125,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.let {
                 it.editingState(false)
                 if (it.editText.text?.isNotEmpty() == true) {
-                    affiliatePromoViewModel.getSearch(it.editText.text.toString())
+                    affiliatePromoViewModel?.getSearch(it.editText.text.toString())
                 }
             }
         }
@@ -142,7 +144,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     }
 
     private fun setObservers() {
-        affiliatePromoViewModel.getErrorMessage().observe(this) { _ ->
+        affiliatePromoViewModel?.getErrorMessage()?.observe(this) { _ ->
             view?.rootView?.let {
                 Toaster.build(
                     it,
@@ -153,10 +155,10 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             }
             view?.findViewById<AffiliateLinkTextField>(R.id.product_link_et)?.editingState(true)
         }
-        affiliatePromoViewModel.getAffiliateSearchData().observe(this) { affiliateSearchData ->
+        affiliatePromoViewModel?.getAffiliateSearchData()?.observe(this) { affiliateSearchData ->
             onGetAffiliateSearchData(affiliateSearchData)
         }
-        affiliatePromoViewModel.getAffiliateSearchData().observe(this) { affiliateSearchData ->
+        affiliatePromoViewModel?.getAffiliateSearchData()?.observe(this) { affiliateSearchData ->
             onGetAffiliateSearchData(affiliateSearchData)
         }
     }
@@ -225,7 +227,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             AffiliateAnalytics.ActionKeys.CLICK_SEARCH,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             eventLabel,
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -242,7 +244,7 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
             AffiliateAnalytics.ActionKeys.CLICK_SEARCH_BOX,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_PROMOSIKAN_PAGE,
             "",
-            userSessionInterface.userId
+            userSessionInterface?.userId.orEmpty()
         )
     }
 
@@ -289,13 +291,13 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
 
     override fun onSystemDown() {
         disableSearchButton()
-        affiliatePromoViewModel.setValidateUserType(SYSTEM_DOWN)
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(SYSTEM_DOWN)
+        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onReviewed() {
-        affiliatePromoViewModel.setValidateUserType(ON_REVIEWED)
-        affiliatePromoViewModel.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(ON_REVIEWED)
+        affiliatePromoViewModel?.getAnnouncementInformation()
     }
 
     override fun onUserNotRegistered() {
@@ -313,11 +315,11 @@ class AffiliatePromoSearchFragment : AffiliateBaseFragment<AffiliatePromoViewMod
     }
 
     override fun onUserValidated() {
-        affiliatePromoViewModel.getAnnouncementInformation()
-        affiliatePromoViewModel.setValidateUserType(ON_REGISTERED)
+        affiliatePromoViewModel?.getAnnouncementInformation()
+        affiliatePromoViewModel?.setValidateUserType(ON_REGISTERED)
     }
 
-    override fun getVMFactory(): ViewModelProvider.Factory {
+    override fun getVMFactory(): ViewModelProvider.Factory? {
         return viewModelProvider
     }
 
