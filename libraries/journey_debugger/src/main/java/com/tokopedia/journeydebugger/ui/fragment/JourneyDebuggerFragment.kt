@@ -121,12 +121,12 @@ class JourneyDebuggerFragment : BaseSearchListFragment<Visitable<*>, JourneyDebu
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_applink_debugger, menu)
+        inflater.inflate(R.menu.menu_journey_debugger, menu)
         super.onCreateOptionsMenu(menu, inflater)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.applink_action_menu_delete) {
+        if (item.itemId == R.id.journey_action_menu_delete) {
             presenter?.deleteAll()
             return true
         }

@@ -21,12 +21,12 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 
 class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
-    private var textApplink: TextView? = null
+    private var textJourney: TextView? = null
     private var textMappedDeeplink: TextView? = null
     private var textTitleMappedDeeplink: TextView? = null
     private var textTimestamp: TextView? = null
     private var textTraces: TextView? = null
-    private var iconApplink: IconUnify? = null
+    private var iconCopyJourney: IconUnify? = null
     private var iconMappedDeeplink: IconUnify? = null
     private var viewModel: ApplinkDebuggerViewModel? = null
 
@@ -35,14 +35,11 @@ class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_applink_debugger_detail, container, false)
-        textApplink = view.findViewById(R.id.applink_text_name)
-        textMappedDeeplink = view.findViewById(R.id.mapped_deeplink)
-        textTitleMappedDeeplink= view.findViewById(R.id.title_mapped_deeplink)
-        textTimestamp = view.findViewById(R.id.applink_text_timestamp)
-        textTraces = view.findViewById(R.id.applink_text_traces)
-        iconApplink = view.findViewById(R.id.icon_copy_main_applink)
-        iconMappedDeeplink = view.findViewById(R.id.icon_copy_mapped_deeplink)
+        val view = inflater.inflate(R.layout.fragment_journey_debugger_detail, container, false)
+        textJourney = view.findViewById(R.id.journey_text_name)
+        textTimestamp = view.findViewById(R.id.journey_text_timestamp)
+        textTraces = view.findViewById(R.id.journey_text_traces)
+        iconCopyJourney = view.findViewById(R.id.icon_copy_journey)
 
         return view
     }
@@ -50,7 +47,7 @@ class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         viewModel = requireArguments().getParcelable(DATA_DETAIL)
         if (viewModel != null) {
-            textApplink!!.text = viewModel!!.applink
+            textJourney!!.text = viewModel!!.applink
             textTimestamp!!.text = viewModel!!.timestamp
             textTraces!!.text = viewModel!!.trace
 
@@ -65,7 +62,7 @@ class JourneyDebuggerDetailFragment : TkpdBaseV4Fragment() {
                 }
             }
 
-            iconApplink?.setOnClickListener {
+            iconCopyJourney?.setOnClickListener {
                 viewModel?.let {
                     copyToClipBoard(it.applink)
                 }

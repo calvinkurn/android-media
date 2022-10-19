@@ -18,9 +18,9 @@ class JourneyDebuggerViewHolder(itemView: View) : AbstractViewHolder<JourneyDebu
 
     init {
 
-        applinkName = itemView.findViewById(R.id.applink_text_name)
-        traces = itemView.findViewById(R.id.applink_text_traces)
-        timestamp = itemView.findViewById(R.id.applink_text_timestamp)
+        applinkName = itemView.findViewById(R.id.journey_text_name)
+        traces = itemView.findViewById(R.id.journey_text_traces)
+        timestamp = itemView.findViewById(R.id.journey_text_timestamp)
     }
 
     override fun bind(element: JourneyDebuggerUIModel) {
