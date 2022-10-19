@@ -11,6 +11,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.LifecycleObserver
 import com.tokopedia.feedcomponent.R
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.util.util.*
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -91,7 +92,8 @@ class PostTagView @JvmOverloads constructor(
         width: Int,
         height: Int,
         positionInFeed: Int,
-        bitmap: Bitmap?
+        bitmap: Bitmap?,
+        campaign: FeedXCampaign?
     ) {
         this.listener = tagBubbleListener
         this.dotMarginStart = (width * (feedXTag.posX)).toInt()
@@ -101,7 +103,10 @@ class PostTagView @JvmOverloads constructor(
         val product = products[feedXTag.tagIndex]
         productViewName.text = product.name
 
-        if (product.isDiscount) {
+        if (campaign?.isUpcoming == true) {
+            productViewPrice.text = product.priceMaskedFmt
+            setSlashedPriceText(product.priceFmt)
+        } else if (product.isDiscount) {
             productViewPrice.text = product.priceDiscountFmt
             setSlashedPriceText(product.priceOriginalFmt)
         } else {
