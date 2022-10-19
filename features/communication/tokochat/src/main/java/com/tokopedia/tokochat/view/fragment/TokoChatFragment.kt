@@ -23,7 +23,7 @@ import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.util.getParamString
 import com.tokopedia.tokochat.R
-import com.tokopedia.tokochat.util.TokoChatCourierConnectionLifecycle
+import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.tokochat.databinding.FragmentTokoChatBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet

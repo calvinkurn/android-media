@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.data.repository.courier
+package com.tokochat.tokochat_config_common.repository.courier
 
 import com.gojek.conversations.courier.BabbleCourierClient
 import com.gojek.conversations.courier.CourierState
@@ -8,8 +8,8 @@ import com.gojek.courier.CourierConnection
 import com.gojek.courier.messageadapter.gson.GsonMessageAdapterFactory
 import com.gojek.courier.streamadapter.rxjava.RxJavaStreamAdapterFactory
 import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.tokochat.util.TokoChatCourierRemoteConfigImpl.Companion.SHOULD_TRACK_MESSAGE_RECEIVE_EVENT
-import com.tokopedia.tokochat.util.TokoChatCourierStateObservable
+import com.tokochat.tokochat_config_common.util.TokoChatCourierRemoteConfigImpl.Companion.SHOULD_TRACK_MESSAGE_RECEIVE_EVENT
+import com.tokochat.tokochat_config_common.util.TokoChatCourierStateObservable
 import rx.Observable
 import javax.inject.Inject
 

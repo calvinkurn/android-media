@@ -1,11 +1,11 @@
-package com.tokopedia.tokochat.di
+package com.tokochat.tokochat_config_common.di
 
 import android.content.Context
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.tokochat.tokochat_config_common.repository.interceptor.GojekInterceptor
 import com.tokopedia.abstraction.common.data.model.response.TkpdV4ResponseError
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.network.interceptor.ErrorResponseInterceptor
-import com.tokopedia.tokochat.data.interceptor.GojekInterceptor
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.utils.OkHttpRetryPolicy
@@ -30,7 +30,7 @@ object TokoChatNetworkModule {
 
     const val RETROFIT_NAME = "retrofit_tokochat"
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     @Named(RETROFIT_NAME)
     fun provideChatRetrofit(
@@ -43,7 +43,7 @@ object TokoChatNetworkModule {
             .client(okHttpClient).build()
     }
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     fun provideOkHttpClient(
         retryPolicy: OkHttpRetryPolicy,
@@ -69,25 +69,25 @@ object TokoChatNetworkModule {
         return builder.build()
     }
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     fun provideErrorResponseInterceptor(): ErrorResponseInterceptor {
         return ErrorResponseInterceptor(TkpdV4ResponseError::class.java)
     }
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     fun provideGojekInterceptor(): GojekInterceptor {
         return GojekInterceptor()
     }
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
         return ChuckerInterceptor(context)
     }
 
-    @TokoChatScope
+    @TokoChatConfigScope
     @Provides
     fun okHttpRetryPolicy(): OkHttpRetryPolicy {
         return OkHttpRetryPolicy(NET_READ_TIMEOUT, NET_WRITE_TIMEOUT, NET_CONNECT_TIMEOUT, NET_RETRY)

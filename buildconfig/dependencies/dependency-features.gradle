@@ -264,6 +264,7 @@ ext {
             attachvoucher                   : ":features:communication:attachvoucher",
             tokochat                        : ":features:communication:tokochat",
             tokochat_common                 : ":features:communication:tokochat_common",
+            tokochat_config_common          : ":features:communication:tokochat_config_common",
 
             changePhoneNumber               : ":features:user:changephonenumber",
             chatbot                         : ":features:user:chatbot",

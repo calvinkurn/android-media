@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.util
+package com.tokochat.tokochat_config_common.util
 
 import com.gojek.conversations.courier.CourierState
 import com.gojek.courier.CourierConnection

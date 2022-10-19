@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.domain.usecase
 import androidx.lifecycle.LiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.database.chats.ConversationsMessage
-import com.tokopedia.tokochat.data.repository.TokoChatRepository
+import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import javax.inject.Inject
 
 class TokoChatGetChatHistoryUseCase @Inject constructor(
