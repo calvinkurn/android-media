@@ -1,13 +1,11 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.app.Application
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +18,7 @@ import com.tokopedia.dilayanitokopedia.R
 import com.tokopedia.dilayanitokopedia.common.constant.ConstantKey.PARAM_APPLINK_AUTOCOMPLETE
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
+import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
@@ -51,8 +50,12 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
 import javax.inject.Inject
@@ -250,8 +253,89 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun onClickShareButton() {
+//        updateShareHomeData(
+//            pageIdConstituents = listOf(PAGE_TYPE_HOME),
+//            isScreenShot = false,
+//            thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
+//            linkerType = LinkerData.NOW_TYPE
+//        )
+//
+//        shareClicked(shareHomeTokonow)
 
+        val dummyPageinfo = PageInfo(
+            path = "discovery / dilayani - tokopedia",
+            name = "Dilayani Tokopedia",
+            type = "general",
+            searchApplink = "tokopedia://search-autocomplete?hint=Cari%20di%20Dilayani%20Tokopedia&navsource=tokocabang&srp_page_id=45021&srp_page_title=Dilayani%20Tokopedia",
+            identifier = "dilayani - tokopedia",
+            id = 45021,
+//            share = Share(
+//                enabled = true,
+//                title = "Dilayani Tokopedia | Tokopedia",
+//                image = "https://images.tokopedia.net/img/QBrNqa/2022/10/12/facd6ee4-849f-4309-a3c9-69261238929a.png",
+//                url = "https://www.tokopedia.com/discovery/dilayani-tokopedia, description=Cek Dilayani Tokopedia! Belanja bebas ongkir dengan harga terbaik hanya di Tokopedia"
+//            ),
+            campaignCode = "tca00031148_dilayani tokopedia_18march22 -18 march24",
+            searchTitle = "Cari di Dilayani Tokopedia",
+            showChooseAddress = true,
+            tokonowMiniCartActive = false,
+//            additionalInfo = AdditionalInfo(category = null, categoryData = null),
+            redirectionUrl = null,
+            isAdult = 0,
+            origin = 0
+        )
+        showUniversalShareBottomSheet(dummyPageinfo)
     }
+
+    private fun showUniversalShareBottomSheet(data: PageInfo?) {
+        data?.let { pageInfo ->
+            val universalShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+                init(bottomSheetShareListener())
+                setUtmCampaignData(
+                    "Dilayani Tokopedia",
+                    if (UserSession(this@DtHomeFragment.requireContext()).userId.isNullOrEmpty()) "0"
+                    else UserSession(this@DtHomeFragment.requireContext()).userId,
+                    viewModelDtHome.getShareUTM(pageInfo),
+                    "share"
+                )
+//                setMetaData(
+//                    pageInfo.share?.title ?: "",
+//                    pageInfo.share?.image ?: ""
+//                )
+//                setOgImageUrl(pageInfo.share?.image ?: "")
+            }
+            universalShareBottomSheet?.show(fragmentManager, this)
+//            shareType = UniversalShareBottomSheet.getShareBottomSheetType()
+//            getDiscoveryAnalytics().trackUnifyShare(
+//                VIEW_DISCOVERY_IRIS,
+//                if (shareType == CUSTOM_SHARE_SHEET) VIEW_UNIFY_SHARE else VIEW_SCREENSHOT_SHARE,
+//                getUserID()
+//            )
+        }
+    }
+
+    private fun bottomSheetShareListener(): ShareBottomsheetListener {
+        return object : ShareBottomsheetListener {
+            override fun onShareOptionClicked(shareModel: ShareModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onCloseOptionClicked() {
+                TODO("Not yet implemented")
+            }
+
+        }
+    }
+
+
+//    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "", url: String = SHARE_HOME_URL) {
+//        shareHomeTokonow?.pageIdConstituents = pageIdConstituents
+//        shareHomeTokonow?.isScreenShot = isScreenShot
+//        shareHomeTokonow?.thumbNailTitle = thumbNailTitle
+//        shareHomeTokonow?.linkerType = linkerType
+//        shareHomeTokonow?.id = id
+//        shareHomeTokonow?.sharingUrl = url
+//    }
 
     private fun addNavBarScrollListener() {
 //        navBarScrollListener?.let {
@@ -572,7 +656,6 @@ class DtHomeFragment : Fragment() {
         showEmptyState(EMPTY_STATE_OUT_OF_COVERAGE)
 //        }
     }
-
 
 
 //    private fun setupAnchorTabComponent(homeLayoutListUiModel: HomeLayoutListUiModel) {

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
+import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
@@ -145,5 +146,13 @@ class DtHomeViewModel @Inject constructor(
         },{
             _chooseAddress.postValue(Fail(it))
         }, source)
+    }
+
+    fun getShareUTM(data: PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > 11){
+            campaignCode = data.campaignCode.substring(0, 11)
+        }
+        return "${data.identifier}-${campaignCode}"
     }
 }
