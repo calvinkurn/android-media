@@ -1,4 +1,4 @@
-package com.tokopedia.play.test.factory
+package com.tokopedia.content.test.factory
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
