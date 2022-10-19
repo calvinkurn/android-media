@@ -21,7 +21,7 @@
     <string name="feed_content_caption_text" tools:ignore="UnusedResources">Tulis deskripsi yang menarik, ya!</string>
     <string name="feed_content_post_sebagai" tools:ignore="UnusedResources">Post sebagai</string>
     <string name="feed_content_live_sebagai" tools:ignore="UnusedResources">Live sebagai</string>
-    <string name="feed_content_dialog_title">Yakin nggak lanjut tag produk?</string>
+    <string name="feed_content_dialog_title" tools:ignore="UnusedResources">Yakin nggak lanjut tag produk?</string>
     <string name="feed_content_dialog_desc" tools:ignore="UnusedResources">Tag produk akan hilang jika kamu keluar dari halaman ini.</string>
     <string name="feed_content_primary_cta_text" tools:ignore="UnusedResources">Lanjut Tag Produk</string>
     <string name="feed_content_sec_cta_text" tools:ignore="UnusedResources">Keluar</string>
