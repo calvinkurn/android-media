@@ -32,7 +32,7 @@
                     <com.tokopedia.unifycomponents.ImageUnify
                         android:id="@+id/img_thumbnail_brand_detail"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="80dp"
                         android:scaleType="centerCrop" />
 
                     <ImageView
@@ -81,8 +81,8 @@
 
                             <com.tokopedia.unifycomponents.LoaderUnify
                                 android:id="@+id/loader_brand_detail"
-                                android:layout_width="@dimen/spacing_lvl4"
-                                android:layout_height="@dimen/spacing_lvl4"
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
                                 android:layout_gravity="center"
                                 android:visibility="gone"
                                 app:layout_constraintBottom_toBottomOf="parent"
