@@ -62,11 +62,11 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
         setContentView(viewBinding?.root)
     }
 
-    private fun getChatHeaderLayout() = R.layout.tokochat_item_header
+    private fun getTokoChatHeaderLayout() = R.layout.tokochat_item_header
 
     protected open fun setupTokoChatHeader() {
         val mInflater = LayoutInflater.from(this)
-        headerCustomView = mInflater.inflate(getChatHeaderLayout(), null)
+        headerCustomView = mInflater.inflate(getTokoChatHeaderLayout(), null)
         headerShimmering = headerCustomView?.findViewById(R.id.tokochat_layout_header_shimmering)
         photoHeaderContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_photo_container)
         headerContainer = headerCustomView?.findViewById(R.id.tokochat_layout_header_container)
