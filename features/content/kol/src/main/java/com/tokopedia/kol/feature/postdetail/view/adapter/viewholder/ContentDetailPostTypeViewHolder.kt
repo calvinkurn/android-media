@@ -21,10 +21,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
-import com.tokopedia.feedcomponent.util.ColorUtil
-import com.tokopedia.feedcomponent.util.NestedScrollableHost
-import com.tokopedia.feedcomponent.util.TagConverter
-import com.tokopedia.feedcomponent.util.TimeConverter
+import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
@@ -42,7 +39,6 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.*
 import com.tokopedia.feedcomponent.R as feedComponentR
-import com.tokopedia.kol.R as kolR
 
 class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
     context: Context,
@@ -716,7 +712,12 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         })
 
         feedVODViewHolder.updateLikedText {
-            likedText.text = it
+            likedText.text = buildSpannedString {
+                append(it, 0, VIEWS_START_VALUE)
+                bold {
+                    append(it, VIEWS_START_VALUE,it.length)
+                }
+            }
         }
         feedVODViewHolder.setChangeVolumeStateCallback {
             GridPostAdapter.isMute = !GridPostAdapter.isMute
@@ -1090,6 +1091,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
         private const val DOT_SPACE = 2
         private const val MAX_CHAR = 120
         private const val CAPTION_END = 120
+        private const val VIEWS_START_VALUE = 14
 
     }
 

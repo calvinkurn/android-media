@@ -87,14 +87,12 @@ class PlayBroadcastInteractiveRepositoryImpl @Inject constructor(
     override suspend fun createInteractiveQuiz(
         channelId: String,
         question: String,
-        prize: String,
         runningTime: Long,
         choices: List<PostInteractiveCreateQuizUseCase.Choice>
     ) {
         createInteractiveQuizUseCase.execute(
             channelId = channelId,
             question = question,
-            prize = prize,
             runningTime = runningTime,
             choices = choices,
         )

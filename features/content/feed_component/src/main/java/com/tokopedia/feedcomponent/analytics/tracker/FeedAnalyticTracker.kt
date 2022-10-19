@@ -1161,7 +1161,7 @@ class FeedAnalyticTracker
 
     fun eventClickBSitem(
         activityId: String,
-        products: List<FeedXProduct>,
+        product: FeedXProduct,
         position: Int,
         type: String,
         isFollowed: Boolean,
@@ -1173,7 +1173,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     activityId,
                     shopId,
-                    products[position - 1].id
+                    product.id
             )
         val postType = getPostType(type, isFollowed, mediaType)
 
@@ -1191,7 +1191,7 @@ class FeedAnalyticTracker
                 "actionField" to mapOf(
                     "list" to "/feed - ${if( postType == ASGC || postType == ASGC_RECOM) "$postType detail" else postType}"
                 ),
-                "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed, mediaType)
+                "products" to getSingleProductListASGC(product, position, type, isFollowed, mediaType)
             )
             )
         )

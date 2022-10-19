@@ -33,6 +33,7 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -130,6 +131,11 @@ abstract class BaseSearchCategoryViewModel(
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
         protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
+
+    companion object {
+        private const val LABEL_GROUP_TYPE_TRANSPARENTBLACK = "transparentBlack"
+        private const val LABEL_GROUP_POSITION_STATUS = "status"
+    }
 
     protected val filterController = FilterController()
     protected var chooseAddressDataView = ChooseAddressDataView()
@@ -658,6 +664,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open fun mapToProductItemDataView(index: Int, product: Product): ProductItemDataView {
+        val isOos = product.labelGroupList.any { it.position == LABEL_GROUP_POSITION_STATUS && it.type == LABEL_GROUP_TYPE_TRANSPARENTBLACK } || product.stock.isZero()
         return ProductItemDataView(
                 id = product.id,
                 imageUrl300 = product.imageUrl300,
@@ -672,8 +679,8 @@ abstract class BaseSearchCategoryViewModel(
                         name = product.shop.name,
                 ),
                 ratingAverage = product.ratingAverage,
-                variantATC = createVariantATCDataView(product),
-                nonVariantATC = createNonVariantATCDataView(product),
+                variantATC = if (isOos) null else createVariantATCDataView(product),
+                nonVariantATC = if (isOos) null else createNonVariantATCDataView(product),
                 labelGroupDataViewList = product.labelGroupList.map(::mapToLabelGroupDataView),
                 labelGroupVariantDataViewList = product.labelGroupVariantList.map { labelGroupVariant ->
                     LabelGroupVariantDataView(

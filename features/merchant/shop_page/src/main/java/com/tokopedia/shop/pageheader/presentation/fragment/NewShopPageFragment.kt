@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -538,8 +539,9 @@ class NewShopPageFragment :
     }
 
     private fun initViewPager() {
-        viewPager?.isUserInputEnabled = false
+        @SuppressLint("WrongConstant") // Suggested constant not same with actual needed value for offscreenPageLimit
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
+        viewPager?.isUserInputEnabled = false
         viewPager?.adapter = viewPagerAdapter
     }
 
@@ -877,8 +879,8 @@ class NewShopPageFragment :
                             buttonLabel ?: ""
                     )
                     {
-                        if (!shopId.isNullOrBlank()) {
-                            showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                        if (shopId.isNotBlank()) {
+                            showMerchantVoucherCouponBottomSheet(shopId.toIntOrZero())
                             shopPageTracking?.clickCekToasterSuccess(
                                     shopId,
                                     shopViewModel?.userId
