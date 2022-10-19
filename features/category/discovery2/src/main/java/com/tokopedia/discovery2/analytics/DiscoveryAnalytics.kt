@@ -65,8 +65,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         if (banners.isNotEmpty()) {
             banners.forEachIndexed { index, banner ->
                 val componentName = banner.parentComponentName ?: EMPTY_STRING
-                val map = createGeneralEvent(eventName = EVENT_PROMO_VIEW,
-                        eventAction = IMPRESSION_DYNAMIC_BANNER)
+                val map = createGeneralEvent(
+                    eventName = EVENT_PROMO_VIEW,
+                    eventAction = IMPRESSION_DYNAMIC_BANNER,
+                    shouldSendSourceAsDestination = true
+                )
+                map[TRACKER_ID] = "2704"
                 map[PAGE_TYPE] = pageType
                 map[PAGE_PATH] = removedDashPageIdentifier
                 val list = ArrayList<Map<String, Any>>()
@@ -124,7 +128,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
 
     override fun trackBannerClick(banner: DataItem, bannerPosition: Int, userID: String?) {
         val componentName = banner.parentComponentName ?: EMPTY_STRING
-        val map = createGeneralEvent(eventName = EVENT_PROMO_CLICK, eventAction = CLICK_DYNAMIC_BANNER, eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}")
+        val map = createGeneralEvent(
+            eventName = EVENT_PROMO_CLICK,
+            eventAction = CLICK_DYNAMIC_BANNER,
+            eventLabel = "${componentName}${if (banner.action == ACTION_NOTIFIER) "-$NOTIFIER" else ""}${if (!banner.name.isNullOrEmpty()) " - ${banner.name}" else " - "}${if (!banner.applinks.isNullOrEmpty()) " - ${banner.applinks}" else " - "}",
+            shouldSendSourceAsDestination = true
+        )
         val list = ArrayList<Map<String, Any>>()
         banner.let {
             val bannerID = if(it.id.isNullOrEmpty()) 0 else it.id
@@ -145,6 +154,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[KEY_CAMPAIGN_CODE] = "${if (banner.campaignCode.isNullOrEmpty()) campaignCode else banner.campaignCode}"
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
+        map[TRACKER_ID] = "2705"
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[BUSINESS_UNIT] = HOME_BROWSE
         map[USER_ID] = userID ?: EMPTY_STRING
@@ -697,8 +707,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         val eCommerce = mapOf(
                 CURRENCY_CODE to IDR,
                 KEY_IMPRESSIONS to list)
-        val map = createGeneralEvent(eventName = EVENT_PRODUCT_VIEW,
-                eventAction = PRODUCT_LIST_IMPRESSION)
+        val map = createGeneralEvent(
+            eventName = EVENT_PRODUCT_VIEW,
+            eventAction = PRODUCT_LIST_IMPRESSION,
+            shouldSendSourceAsDestination = true
+        )
+        map[TRACKER_ID] = "2721"
         map[PAGE_TYPE] = pageType
         map[PAGE_PATH] = removedDashPageIdentifier
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
@@ -880,7 +894,13 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                             PRODUCTS to list
                     )
             )
-            val map = createGeneralEvent(eventName = EVENT_PRODUCT_CLICK, eventAction = CLICK_PRODUCT_LIST, eventLabel = productCardImpressionLabel)
+            val map = createGeneralEvent(
+                eventName = EVENT_PRODUCT_CLICK,
+                eventAction = CLICK_PRODUCT_LIST,
+                eventLabel = productCardImpressionLabel,
+                shouldSendSourceAsDestination = true
+            )
+            map[TRACKER_ID] = "2722"
             map[KEY_CAMPAIGN_CODE] = campaignCode
             map[PAGE_TYPE] = pageType
             map[PAGE_PATH] = removedDashPageIdentifier
