@@ -133,19 +133,19 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
     }
 
     private void setupBubble(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
-        updateBubblesShortcuts(notificationType, notificationId, applinkNotificationModel);
-        updateBubblesBuilder(builder, applinkNotificationModel, notificationType, notificationId);
+        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+
+        updateBubblesShortcuts(notificationType, bubbleNotificationModel);
+        updateBubblesBuilder(builder, bubbleNotificationModel);
     }
 
-    private void updateBubblesShortcuts(int notificationType, int notificationId, ApplinkNotificationModel applinkNotificationModel) {
+    private void updateBubblesShortcuts(int notificationType, BubbleNotificationModel bubbleNotificationModel) {
         listHistoryNotification = HistoryRepository.getListHistoryNotification(context, notificationType);
-        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
         List<BubbleHistoryItemModel> historyItemModels = getBubbleHistoryItems(listHistoryNotification);
         bubblesFactory.updateShorcuts(historyItemModels, bubbleNotificationModel);
     }
 
-    private void updateBubblesBuilder(NotificationCompat.Builder builder, ApplinkNotificationModel applinkNotificationModel, int notificationType, int notificationId) {
-        BubbleNotificationModel bubbleNotificationModel = getBubbleNotificationModel(applinkNotificationModel, notificationType, notificationId);
+    private void updateBubblesBuilder(NotificationCompat.Builder builder, BubbleNotificationModel bubbleNotificationModel) {
         bubblesFactory.setupBubble(builder, bubbleNotificationModel);
     }
 
@@ -173,6 +173,7 @@ public class ChatNotificationFactory extends BaseNotificationFactory {
                 notificationType,
                 notificationId,
                 shortcutId,
+                applinkNotificationModel.getSenderId(),
                 applinkNotificationModel.getApplinks(),
                 applinkNotificationModel.getFullName(),
                 applinkNotificationModel.getThumbnail(),
