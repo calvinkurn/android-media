@@ -42,7 +42,7 @@ sealed class FilterOption(val id: String) {
         private const val FEATURED_ONLY = "isFeaturedOnly"
         private const val CAMPAIGN_ONLY = "isCampaignOnly"
         private const val STOCK_ALERT_ONLY = "hasStockAlertOnly"
-        private const val NOTIFY_ME_ONLY = "haveNotifyMeOOS"
+        const val NOTIFY_ME_ONLY = "haveNotifyMeOOS"
 
     }
 }
