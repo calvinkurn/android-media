@@ -152,8 +152,6 @@ class PlayBroadcastActivity : BaseActivity(),
             requestPermission()
         }
 
-        setupObserve()
-
         PlayBroadcasterIdlingResource.increment()
         getConfiguration()
 

@@ -10,7 +10,6 @@ import com.tokopedia.abstraction.common.utils.paging.PagingHandler
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
-import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
