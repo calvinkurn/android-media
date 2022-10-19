@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.data
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.chat_common.data.MessageUiModel.Builder
 import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
+import com.tokopedia.kotlin.model.ImpressHolder
 
 /**
  * Primary constructor, use [Builder] class to create this instance.
@@ -10,6 +11,8 @@ import com.tokopedia.chat_common.view.adapter.BaseChatTypeFactory
 open class MessageUiModel protected constructor(
     builder: Builder
 ) : SendableUiModel(builder), Visitable<BaseChatTypeFactory> {
+
+    val impressHolder = ImpressHolder()
 
     var attachment: Any? = builder.attachment
         private set
