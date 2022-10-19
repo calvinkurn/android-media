@@ -13,7 +13,8 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
     var cplItem = mutableListOf<ShipperCPLModel>()
 
     interface CPLItemAdapterListener {
-        fun onCheckboxItemClicked()
+        fun onShipperCheckboxClicked(shipperId: Long, check: Boolean)
+        fun onShipperProductCheckboxClicked(spId: Long, check: Boolean)
     }
 
     var shipperServices = ""
@@ -40,64 +41,4 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         cplItem.addAll(data)
         notifyDataSetChanged()
     }
-
-    fun setProductIdsActivated(data: CPLProductModel) {
-        cplItem.forEach { courier ->
-            data.shipperServices.forEach {
-                val cplItemModel = courier.shipperProduct.find { data ->
-                    data.shipperProductId == it
-                }
-                if (cplItemModel?.shipperProductId == it) {
-                    cplItemModel.isActive = true
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun setAllProductIdsActivated() {
-        cplItem.forEach { courier ->
-            courier.isActive = true
-            courier.shipperProduct.forEach { data ->
-                data.isActive = true
-            }
-        }
-    }
-
-    fun getActivateSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return activatedListIds
-    }
-
-    fun checkActivatedSpIds(): List<Int> {
-        val activatedListIds = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return activatedListIds
-    }
-
-    fun getShownShippers(): List<Int> {
-        val listShipperShown = mutableListOf<Int>()
-        cplItem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (!product.uiHidden) {
-                    listShipperShown.add(product.shipperProductId.toInt())
-                }
-            }
-        }
-        return listShipperShown
-    }
-
 }

@@ -14,7 +14,9 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.editshipping.R
 import com.tokopedia.editshipping.databinding.FragmentCustomProductLogisticBinding
 import com.tokopedia.editshipping.di.customproductlogistic.DaggerCustomProductLogisticComponent
-import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_CPL_ACTIVATED
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.CPL_CONVENTIONAL_INDEX
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.CPL_ON_DEMAND_INDEX
+import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_CPL_PARAM
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_PRODUCT_ID
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.editshipping.util.CustomProductLogisticConstant.EXTRA_SHOP_ID
@@ -47,8 +49,8 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private var shopId: Long = 0
     private var productId: Long = 0
-    private var isCPLActivated: Boolean = false
     private var shipperServicesIds: List<Long>? = null
+    private var cplParam: List<Long>? = null
 
     private var binding by autoCleared<FragmentCustomProductLogisticBinding>()
 
@@ -65,13 +67,13 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         arguments?.let {
             shopId = it.getLong(EXTRA_SHOP_ID)
             productId = it.getLong(EXTRA_PRODUCT_ID)
-            isCPLActivated = it.getBoolean(EXTRA_CPL_ACTIVATED)
-            shipperServicesIds = it.getExtraShipperServices()
+            shipperServicesIds = it.getExtraShipperServices(EXTRA_SHIPPER_SERVICES)
+            cplParam = it.getExtraShipperServices(EXTRA_CPL_PARAM)
         }
     }
 
-    private fun Bundle.getExtraShipperServices(): List<Long>? {
-        return getIntegerArrayList(EXTRA_SHIPPER_SERVICES)?.takeIf { it.isNotEmpty() }?.map { it.toLong() }
+    private fun Bundle.getExtraShipperServices(key: String): List<Long>? {
+        return getIntegerArrayList(key)?.takeIf { it.isNotEmpty() }?.map { it.toLong() }
     }
 
     override fun onCreateView(
@@ -92,7 +94,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
+        viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds, cplParam)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -134,40 +136,25 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.svShippingEditor.visible()
         binding.btnSaveShipper.visible()
         binding.globalError.gone()
-        if (cplItemOnDemandAdapter.getShownShippers().isNotEmpty()) {
+        if (viewModel.isShipperGroupAvailable(CPL_ON_DEMAND_INDEX)) {
             binding.shippingEditorLayoutOndemand.visible()
         }
 
-        if (cplItemConventionalAdapter.getShownShippers().isNotEmpty()) {
+        if (viewModel.isShipperGroupAvailable(CPL_CONVENTIONAL_INDEX)) {
             binding.shippingEditorLayoutConventional.visible()
         }
     }
 
     private fun updateShipperData(data: CustomProductLogisticModel) {
-        if (isCPLActivated) {
-            // user was in standard shipment, but set cpl shipment
-            if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
-                populateShipperData(data, SHIPPER_ON_DEMAND)
-                cplItemOnDemandAdapter.setAllProductIdsActivated()
-            } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
-                populateShipperData(data, SHIPPER_CONVENTIONAL)
-                cplItemConventionalAdapter.setAllProductIdsActivated()
-            } else {
-                populateShipperData(data, ALL_SHIPPER_AVAILABLE)
-                cplItemOnDemandAdapter.setAllProductIdsActivated()
-                cplItemConventionalAdapter.setAllProductIdsActivated()
-            }
+        if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
+            populateShipperData(data, SHIPPER_ON_DEMAND)
+        } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
+            populateShipperData(data, SHIPPER_CONVENTIONAL)
         } else {
-            // user has set cpl shipment before
-            if (data.shipperList.size == 1 && data.shipperList[0].header == ON_DEMAND_VALIDATION) {
-                populateShipperData(data, SHIPPER_ON_DEMAND)
-            } else if (data.shipperList.size == 1 && data.shipperList[0].header == CONVENTIONAL_VALIDATION) {
-                populateShipperData(data, SHIPPER_CONVENTIONAL)
-            } else {
-                populateShipperData(data, ALL_SHIPPER_AVAILABLE)
-            }
+            populateShipperData(data, ALL_SHIPPER_AVAILABLE)
         }
     }
+
 
     private fun populateShipperData(data: CustomProductLogisticModel, shipperCase: Int) {
         when (shipperCase) {
@@ -185,10 +172,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
     }
 
     private fun validateSaveButton() {
-        val activatedSpIds = getListActivatedSpIds(
-            cplItemOnDemandAdapter.getActivateSpIds(),
-            cplItemConventionalAdapter.getActivateSpIds()
-        )
+        val activatedSpIds = viewModel.getActivatedProductIds()
         if (activatedSpIds.isEmpty()) {
             Toaster.build(
                 requireView(),
@@ -200,16 +184,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         } else {
             finishActivity(activatedSpIds)
         }
-    }
-
-    private fun getListActivatedSpIds(
-        onDemandList: List<Int>,
-        conventionalList: List<Int>
-    ): List<Int> {
-        val activatedListShipperIds = mutableListOf<Int>()
-        activatedListShipperIds.addAll(onDemandList)
-        activatedListShipperIds.addAll(conventionalList)
-        return activatedListShipperIds
     }
 
     private fun finishActivity(shipperServices: List<Int>) {
@@ -268,7 +242,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
             context?.let {
-                viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds)
+                viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds, cplParam)
             }
         }
         binding.globalError.visible()
@@ -289,15 +263,22 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 arguments = Bundle().apply {
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
-                    putBoolean(EXTRA_CPL_ACTIVATED, extra.getBoolean(EXTRA_CPL_ACTIVATED))
                     putIntegerArrayList(EXTRA_SHIPPER_SERVICES, extra.getIntegerArrayList(EXTRA_SHIPPER_SERVICES))
+                    putIntegerArrayList(EXTRA_CPL_PARAM, extra.getIntegerArrayList(EXTRA_CPL_PARAM))
                 }
             }
         }
     }
 
-    override fun onCheckboxItemClicked() {
+
+    override fun onShipperCheckboxClicked(shipperId: Long, check: Boolean) {
         binding.btnSaveShipper.isEnabled = true
+        viewModel.setAllShipperServiceState(check, shipperId)
+    }
+
+    override fun onShipperProductCheckboxClicked(spId: Long, check: Boolean) {
+        binding.btnSaveShipper.isEnabled = true
+        viewModel.setShipperServiceState(check, spId)
     }
 
 }

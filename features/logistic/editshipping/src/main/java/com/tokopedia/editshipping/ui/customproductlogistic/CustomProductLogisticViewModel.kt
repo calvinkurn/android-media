@@ -23,15 +23,84 @@ class CustomProductLogisticViewModel @Inject constructor(
     val cplList: LiveData<Result<CustomProductLogisticModel>>
         get() = _cplList
 
-    fun getCPLList(shopId: Long, productId: String, shipperServicesIds: List<Long>?) {
+    fun getCPLList(
+        shopId: Long,
+        productId: String,
+        shipperServicesIds: List<Long>?,
+        cplParam: List<Long>?
+    ) {
         viewModelScope.launch {
             try {
-                val cplList = repo.getCPLList(shopId, productId, listOf<Long>())
+                val cplList = repo.getCPLList(shopId, productId, cplParam ?: listOf())
                 _cplList.value =
                     Success(mapper.mapCPLData(cplList.response.data, productId, shipperServicesIds))
             } catch (e: Throwable) {
                 _cplList.value = Fail(e)
             }
+        }
+    }
+
+    fun isShipperGroupAvailable(shipperGroupIndex: Int): Boolean {
+        _cplList.value.let {
+            if (it is Success) {
+                return it.data.shipperList.getOrNull(shipperGroupIndex)?.shipper?.isNotEmpty()
+                    ?: false
+            }
+        }
+        return false
+    }
+
+    fun getActivatedProductIds(): List<Int> {
+        val shipperProductIds = mutableListOf<Int>()
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    shipperGroup.shipper.forEach { s ->
+                        s.shipperProduct.forEach { sp ->
+                            if (sp.isActive) {
+                                shipperProductIds.add(sp.shipperProductId.toInt())
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return shipperProductIds
+    }
+
+    fun setAllShipperServiceState(active: Boolean, shipperId: Long) {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    val selectedShipper =
+                        shipperGroup.shipper.find { s -> s.shipperId == shipperId }
+                    selectedShipper?.let { s ->
+                        selectedShipper.isActive = active
+                        s.shipperProduct.forEach { sp -> sp.isActive = active }
+                        return@forEach
+                    }
+                }
+            }
+            _cplList.value = it
+        }
+    }
+
+    fun setShipperServiceState(active: Boolean, shipperProductId: Long) {
+        _cplList.value.let {
+            if (it is Success) {
+                it.data.shipperList.forEach { shipperGroup ->
+                    for (s in shipperGroup.shipper) {
+                        for (sp in s.shipperProduct) {
+                            if (sp.shipperProductId == shipperProductId) {
+                                sp.isActive = active
+                                s.isActive = s.shipperProduct.all { allSp -> allSp.isActive }
+                                return@forEach
+                            }
+                        }
+                    }
+                }
+            }
+            _cplList.value = it
         }
     }
 }

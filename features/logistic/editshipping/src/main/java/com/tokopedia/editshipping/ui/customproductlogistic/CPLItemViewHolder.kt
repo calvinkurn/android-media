@@ -37,14 +37,8 @@ class CPLItemViewHolder(
         binding.shipmentItemList.gone()
         binding.imgShipmentItem.gone()
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            setWhitelabelShipment(data, isChecked)
+            listener.onShipperCheckboxClicked(data.shipperId, isChecked)
         }
-    }
-
-    private fun setWhitelabelShipment(data: ShipperCPLModel, checked: Boolean) {
-        data.isActive = checked
-        data.shipperProduct.forEach { sp -> sp.isActive = checked }
-        listener.onCheckboxItemClicked()
     }
 
     private fun hideUnusedLayout() {
@@ -63,19 +57,13 @@ class CPLItemViewHolder(
         cplShipperItemAdapter.addData(data.shipperProduct)
         cplShipperItemAdapter.setupListener(object :
             CPLShipperItemAdapter.CPLShipperItemAdapterListener {
-            override fun uncheckCplItem() {
-                binding.cbShipmentItem.isChecked = false
+            override fun onCheckboxProductClicked(shipperProductId: Long, checked: Boolean) {
+                listener.onShipperProductCheckboxClicked(shipperProductId, checked)
             }
         })
     }
 
     private fun setItemChecked(data: ShipperCPLModel) {
-        data.shipperProduct.forEach {
-            if (it.isActive) {
-                data.isActive = true
-            }
-        }
-
         binding.cbShipmentItem.isChecked = data.isActive
 
         if (data.isActive) {
@@ -85,13 +73,13 @@ class CPLItemViewHolder(
         }
 
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            listener.onCheckboxItemClicked()
-            cplShipperItemAdapter.updateChecked(isChecked)
-            if (isChecked) {
-                binding.itemChildLayout.visible()
-            } else {
-                binding.itemChildLayout.gone()
-            }
+            listener.onShipperCheckboxClicked(data.shipperId, isChecked)
+//            cplShipperItemAdapter.updateChecked(isChecked)
+//            if (isChecked) {
+//                binding.itemChildLayout.visible()
+//            } else {
+//                binding.itemChildLayout.gone()
+//            }
         }
     }
 

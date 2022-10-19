@@ -183,7 +183,6 @@ class AddEditProductShipmentViewModel @Inject constructor(
     }
 
     fun isShipperGroupActivated(shipperGroupIndex: Int): Boolean {
-        val shipperProductIds = mutableListOf<Long>()
         _cplList.value.let {
             if (it is Success) {
                 it.data.shipperList.getOrNull(shipperGroupIndex)?.let { shipperGroup ->
