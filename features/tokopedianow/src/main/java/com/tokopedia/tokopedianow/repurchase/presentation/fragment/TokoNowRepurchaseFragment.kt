@@ -219,12 +219,14 @@ class TokoNowRepurchaseFragment:
         } else {
             getMiniCart()
         }
+        updateToolbarNotification()
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         if (!miniCartSimplifiedData.isShowMiniCartWidget) {
             miniCartWidget?.hide()
         }
+        viewModel.updateToolbarNotification()
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
         recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
@@ -471,6 +473,10 @@ class TokoNowRepurchaseFragment:
         )
     }
 
+    private fun updateToolbarNotification() {
+        navToolbar?.updateNotification()
+    }
+
     private fun navAbTestCondition(ifNavRevamp: () -> Unit = {}, ifNavOld: () -> Unit = {}) {
         if (!isNavOld()) {
             ifNavRevamp.invoke()
@@ -481,6 +487,8 @@ class TokoNowRepurchaseFragment:
 
     private fun setupTopNavigation() {
         navToolbar?.let { toolbar ->
+            viewLifecycleOwner.lifecycle.addObserver(toolbar)
+
             activity?.let {
                 toolbar.setupToolbarWithStatusBar(
                     activity = it,
@@ -656,6 +664,12 @@ class TokoNowRepurchaseFragment:
         observe(viewModel.setUserPreference) {
             if(it is Success) {
                 onSuccessSetUserPreference(it.data)
+            }
+        }
+
+        observe(viewModel.updateToolbarNotification) { update ->
+            if(update) {
+                updateToolbarNotification()
             }
         }
     }
