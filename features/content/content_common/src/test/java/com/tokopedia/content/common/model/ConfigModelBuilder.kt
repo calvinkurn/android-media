@@ -13,6 +13,7 @@ class ConfigModelBuilder {
         maxSelectedProduct = 0,
         backButton = ContentProductTagConfig.BackButton.Back,
         isShowActionBarDivider = true,
+        appLinkAfterAutocomplete = "",
     )
 
     fun buildPlayConfig() = ContentProductTagConfig(
@@ -21,5 +22,6 @@ class ConfigModelBuilder {
         maxSelectedProduct = 5,
         backButton = ContentProductTagConfig.BackButton.Close,
         isShowActionBarDivider = false,
+        appLinkAfterAutocomplete = "",
     )
 }
