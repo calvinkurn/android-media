@@ -6,17 +6,11 @@ import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiMod
  * Primary constructor, use [Builder] class to create this instance.
  * Extend, do not edit
  */
-open class TokoChatMessageBubbleBaseUiModel protected constructor(
+open class TokoChatMessageBubbleUiModel protected constructor(
     builder: Builder
 ) : TokoChatSendableBaseUiModel(builder) {
 
     var messageText: String = builder.messageText
-        private set
-
-    /**
-     * Any attachment type : Image, Sticker, Voice Note, etc
-     */
-    var attachment: Any? = builder.attachment
         private set
 
     var isNotSupported: Boolean = builder.isNotSupported
@@ -25,19 +19,13 @@ open class TokoChatMessageBubbleBaseUiModel protected constructor(
     var label: String = builder.label
         private set
 
-    open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatMessageBubbleBaseUiModel>() {
+    open class Builder : TokoChatSendableBaseUiModel.Builder<Builder, TokoChatMessageBubbleUiModel>() {
         internal var messageText: String = ""
-        internal var attachment: Any? = null
         internal var isNotSupported: Boolean = false
         internal var label: String = ""
 
         fun withMessageText(messageText: String): Builder {
             this.messageText = messageText
-            return self()
-        }
-
-        fun withAttachment(attachment: Any): Builder {
-            this.attachment = attachment
             return self()
         }
 
@@ -51,8 +39,8 @@ open class TokoChatMessageBubbleBaseUiModel protected constructor(
             return self()
         }
 
-        override fun build(): TokoChatMessageBubbleBaseUiModel {
-            return TokoChatMessageBubbleBaseUiModel(this)
+        override fun build(): TokoChatMessageBubbleUiModel {
+            return TokoChatMessageBubbleUiModel(this)
         }
     }
 }

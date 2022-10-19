@@ -5,16 +5,12 @@ import androidx.lifecycle.MutableLiveData
 import com.gojek.conversations.babble.channel.data.ChannelType
 import com.gojek.conversations.babble.message.data.SendMessageMetaData
 import com.gojek.conversations.babble.network.data.OrderChatType
-import com.gojek.conversations.channel.ConversationsChannel
-import com.gojek.conversations.channel.GetChannelRequest
 import com.gojek.conversations.database.chats.ConversationsMessage
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
-import com.gojek.conversations.network.ConversationsNetworkError
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetAllChannelsUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
@@ -36,7 +32,6 @@ import javax.inject.Inject
 
 class TokoChatViewModel @Inject constructor(
     private val chatChannelUseCase: TokoChatChannelUseCase,
-    private val getAllChannelsUseCase: TokoChatGetAllChannelsUseCase,
     private val getChatHistoryUseCase: TokoChatGetChatHistoryUseCase,
     private val markAsReadUseCase: TokoChatMarkAsReadUseCase,
     private val registrationChannelUseCase: TokoChatRegistrationChannelUseCase,
@@ -149,30 +144,6 @@ class TokoChatViewModel @Inject constructor(
             registrationChannelUseCase.deRegisterActiveChannel(channelId)
         } catch (throwable: Throwable) {
             _error.value = throwable
-        }
-    }
-
-    fun getAllChannels(
-        getChannelRequest: GetChannelRequest,
-        onSuccess: (List<ConversationsChannel>) -> Unit,
-        onError: (ConversationsNetworkError?) -> Unit
-    ) {
-        try {
-            getAllChannelsUseCase(getChannelRequest,
-                onSuccess = onSuccess,
-                onError = onError
-            )
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
-    }
-
-    fun getAllChannels(): LiveData<List<ConversationsChannel>> {
-        return try {
-            getAllChannelsUseCase()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-            MutableLiveData()
         }
     }
 

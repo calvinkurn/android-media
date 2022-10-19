@@ -2,6 +2,7 @@ package com.tokopedia.tokochat_common.view.adapter
 
 import com.tokopedia.adapterdelegate.BaseCommonAdapter
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatHeaderDateDelegate
+import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatImageBubbleDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatMessageBubbleDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatReminderTickerDelegate
 import com.tokopedia.tokochat_common.view.adapter.delegate.TokoChatShimmerDelegate
@@ -16,5 +17,6 @@ open class TokoChatBaseAdapter(
         delegatesManager.addDelegate(TokoChatReminderTickerDelegate(reminderTickerListener))
         delegatesManager.addDelegate(TokoChatMessageBubbleDelegate())
         delegatesManager.addDelegate(TokoChatHeaderDateDelegate())
+        delegatesManager.addDelegate(TokoChatImageBubbleDelegate())
     }
 }

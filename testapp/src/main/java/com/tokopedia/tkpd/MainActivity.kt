@@ -125,6 +125,6 @@ class MainActivity : AppCompatActivity() {
         /*
          * Put your default applink here
          */
-        return ""
+        return "tokopedia://tokochat?source=tokofood&orderIdGojek=RB-101429-3716509"
     }
 }

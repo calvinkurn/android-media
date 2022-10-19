@@ -2,7 +2,6 @@ package com.tokopedia.tokochat.view.activity
 
 import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.fragment.app.Fragment
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -12,7 +11,6 @@ import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatContextModule
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
-import com.tokopedia.tokochat.view.fragment.experiment.TokoChatFragmentExp
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
@@ -70,20 +68,11 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     override fun getNewFragment(): Fragment {
-        val isExp = false
-        return if (isExp) {
-            TokoChatFragmentExp.getFragment(
-                supportFragmentManager,
-                classLoader,
-                bundle ?: Bundle()
-            )
-        } else {
-            TokoChatFragment.getFragment(
-                supportFragmentManager,
-                classLoader,
-                getFragmentBundle()
-            )
-        }
+        return TokoChatFragment.getFragment(
+            supportFragmentManager,
+            classLoader,
+            getFragmentBundle()
+        )
     }
 
     override fun setupTokoChatHeader() {

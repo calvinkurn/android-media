@@ -39,7 +39,7 @@ import com.tokopedia.tokochat_common.view.customview.TokoChatReplyMessageView
 import com.tokopedia.tokochat_common.view.listener.TokoChatReplyTextListener
 import com.tokopedia.tokochat_common.view.listener.TokoChatTypingListener
 import com.tokopedia.tokochat_common.view.listener.TokochatReminderTickerListener
-import com.tokopedia.tokochat_common.view.uimodel.TokochatReminderTickerUiModel
+import com.tokopedia.tokochat_common.view.uimodel.TokoChatReminderTickerUiModel
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -222,7 +222,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         observe(viewModel.chatRoomTicker) {
             when (it) {
                 is Success -> {
-                    val ticker = TokochatReminderTickerUiModel(
+                    val ticker = TokoChatReminderTickerUiModel(
                         it.data.tokochatRoomTicker.message,
                         it.data.tokochatRoomTicker.tickerType
                     )
@@ -230,7 +230,7 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
 
                     // If the ticker is not in list, manually add ticker
                     if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
-                            !is TokochatReminderTickerUiModel
+                            !is TokoChatReminderTickerUiModel
                     ) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
@@ -431,12 +431,12 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
      * Listeners
      */
 
-    override fun trackSeenTicker(element: TokochatReminderTickerUiModel) {
+    override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
         // TODO: Tracker
     }
 
     override fun onClickLinkReminderTicker(
-        element: TokochatReminderTickerUiModel,
+        element: TokoChatReminderTickerUiModel,
         linkUrl: String
     ) {
         if (linkUrl.isNotEmpty()) {
@@ -446,9 +446,11 @@ class TokoChatFragment : TokoChatBaseFragment<FragmentTokoChatBinding>(),
         }
     }
 
-    override fun onCloseReminderTicker(element: TokochatReminderTickerUiModel, position: Int) {
+    override fun onCloseReminderTicker(element: TokoChatReminderTickerUiModel, position: Int) {
         adapter.removeItem(element)
-        mapper.setFirstTicker(null)
+        if (position == adapter.itemCount) {
+            mapper.setFirstTicker(null)
+        }
     }
 
     companion object {
