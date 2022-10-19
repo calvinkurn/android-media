@@ -49,7 +49,7 @@ object ProductCheckingResultMapper {
     }
 
     private fun SubmittedProduct.Warehouse.getStatusText(tabName: String): String {
-        return if (statusId == PRODUCT_STATUS_REFUSED && tabName == ONGOING_TAB) {
+        return if (tabName == ONGOING_TAB) {
             ""
         } else {
             statusText
