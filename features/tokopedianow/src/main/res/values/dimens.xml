@@ -19,4 +19,7 @@
     <dimen name="tokopedianow_quantity_editor_text_size_start_with_value">16sp</dimen>
     <dimen name="tokopedianow_quantity_editor_text_size_end_with_value">14sp</dimen>
     <dimen name="tokopedianow_quantity_editor_padding_horizontal">6dp</dimen>
+    <dimen name="tokopedianow_product_card_rating_icon_start_margin_normal_state">9dp</dimen>
+    <dimen name="tokopedianow_product_card_rating_typography_start_margin_normal_state">5dp</dimen>
+    <dimen name="tokopedianow_product_card_rating_typography_bottom_margin_normal_state">8dp</dimen>
 </resources>
