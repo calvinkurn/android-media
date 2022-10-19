@@ -16,8 +16,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 const val POST_AUTO_TOPUP_QUERY = """
-    query topAdsPostAutoTopup(${'$'}shopId: Int!,${'$'}action: String!,${'$'}selectionId: Int) {
-    topAdsPostAutoTopup(shop_id:${'$'}shopId, action: ${'$'}action, tkpd_product_id: ${'$'}selectionId){
+    query topAdsPostAutoTopupV2(${'$'}shopId: String!,${'$'}action: String!,${'$'}selectionId: String!) {
+    topAdsPostAutoTopupV2(shop_id:${'$'}shopId, action: ${'$'}action, tkpd_product_id: ${'$'}selectionId){
         data{
             status
             status_desc
@@ -43,9 +43,9 @@ class TopAdsSaveSelectionUseCase @Inject constructor(graphqlRepository: GraphqlR
 
     fun setParam(isActive: Boolean, selectedItem: AutoTopUpItem) {
         val params = mutableMapOf(
-                ParamObject.SHOP_Id to userSessionInterface.shopId.toIntOrZero(),
+                ParamObject.SHOP_Id to userSessionInterface.shopId,
                 ParamObject.ACTION to (if (isActive) PARAM_TOGGLE_ON else PARAM_TOGGLE_OFF),
-                PARAM_DASH_SELECTION_ITEM to selectedItem.id)
+                PARAM_DASH_SELECTION_ITEM to selectedItem.id.toString())
 
         setRequestParams(params)
     }
