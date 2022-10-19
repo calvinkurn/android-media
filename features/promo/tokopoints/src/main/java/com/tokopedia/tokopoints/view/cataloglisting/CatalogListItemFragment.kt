@@ -1,7 +1,6 @@
 package com.tokopedia.tokopoints.view.cataloglisting
 
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
@@ -68,6 +67,26 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     lateinit var viewModel: CatalogListItemViewModel
     private var mSwipeToRefresh: SwipeToRefresh? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
+
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
+    override val currentCategoryId: Int
+        get() {
+            return if (arguments != null) {
+              requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
+            } else CommonConstant.DEFAULT_CATEGORY_TYPE
+        }
+
+    override val currentSubCategoryId: Int
+        get(){
+            return if (arguments != null) {
+                requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
+            } else CommonConstant.DEFAULT_CATEGORY_TYPE
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -178,28 +197,6 @@ class CatalogListItemFragment : BaseDaggerFragment(), CatalogListItemContract.Vi
     override fun hideLoader() {
         mContainer!!.displayedChild = CONTAINER_DATA
         mSwipeToRefresh!!.isRefreshing = false
-    }
-
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
-
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
-
-    override fun getCurrentCategoryId(): Int {
-        return if (arguments != null) {
-            requireArguments().getInt(CommonConstant.ARGS_CATEGORY_ID)
-        } else CommonConstant.DEFAULT_CATEGORY_TYPE
-        // default category id
-    }
-
-    override fun getCurrentSubCategoryId(): Int {
-        return if (arguments != null) {
-            requireArguments().getInt(CommonConstant.ARGS_SUB_CATEGORY_ID)
-        } else CommonConstant.DEFAULT_CATEGORY_TYPE
-        // default category id
     }
 
     val pointsAvailability: Boolean

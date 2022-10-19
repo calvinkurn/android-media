@@ -35,6 +35,12 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     private var mTextInfo: TextView? = null
     private var mValidatePinCallBack: ValidatePinCallBack? = null
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
     fun setmValidatePinCallBack(mValidatePinCallBack: ValidatePinCallBack) {
         this.mValidatePinCallBack = mValidatePinCallBack
     }
@@ -113,14 +119,6 @@ class ValidateMerchantPinFragment : BaseDaggerFragment(), ValidateMerchantPinCon
     override fun onError(error: String) {
         mTextError!!.visibility = View.VISIBLE
         mTextError!!.text = error
-    }
-
-    override fun getAppContext(): Context? {
-        return activity
-    }
-
-    override fun getActivityContext(): Context? {
-        return activity
     }
 
     interface ValidatePinCallBack {

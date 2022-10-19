@@ -91,6 +91,12 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
     private var mRealCode: String? = null
     private var mBottomSheetFragment: CloseableBottomSheetFragment? = null
 
+    override val activityContext: Context?
+        get() = activity
+
+    override val appContext: Context?
+        get() = activity
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -212,10 +218,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context? {
-        return activity
-    }
-
     override fun showLoader() {
         container?.displayedChild = CONTAINER_LOADER
     }
@@ -238,10 +240,6 @@ class CouponDetailFragment : BaseDaggerFragment(), CouponDetailContract.View, Vi
 
     override fun populateDetail(data: CouponValueEntity) {
         container?.postDelayed({ setCouponToUi(data) }, CommonConstant.UI_SETTLING_DELAY_MS2.toLong())
-    }
-
-    override fun getActivityContext(): Context? {
-        return activity
     }
 
     override fun getScreenName(): String {

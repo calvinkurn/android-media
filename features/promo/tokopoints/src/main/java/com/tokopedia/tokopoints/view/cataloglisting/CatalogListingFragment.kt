@@ -58,6 +58,12 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
     private var serverErrorView: ServerErrorView? = null
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -143,9 +149,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
 
     override fun refreshTab() {
            val fragment = mViewPagerAdapter!!.getRegisteredFragment(mPagerSortType!!.currentItem) as CatalogListItemFragment?
@@ -266,9 +269,6 @@ class CatalogListingFragment : BaseDaggerFragment(), CatalogListingContract.View
                 "")
     }
 
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

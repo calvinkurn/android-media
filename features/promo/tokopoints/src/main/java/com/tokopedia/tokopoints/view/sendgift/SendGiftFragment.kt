@@ -47,6 +47,12 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this, factory)[SendGiftViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override val activityContext: Context
+        get() = activity!!
+
+    override val appContext: Context
+        get() = activity!!
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -228,13 +234,6 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     override fun onSuccess() {}
     override fun onError(error: String) {}
-    override fun getAppContext(): Context {
-        return activity!!
-    }
-
-    override fun getActivityContext(): Context {
-        return activity!!
-    }
 
     override fun showPopup(title: String, message: String, success: Int) {
         val constraintLayout: ConstraintLayout = view!!.findViewById(com.tokopedia.tokopoints.R.id.pre_confirmation_parent_container)

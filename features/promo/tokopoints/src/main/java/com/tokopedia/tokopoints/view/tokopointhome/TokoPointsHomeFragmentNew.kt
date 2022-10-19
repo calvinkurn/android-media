@@ -109,6 +109,12 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
     lateinit var mUsersession: UserSession
     private var questWidgetPosition = -1
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
@@ -598,14 +604,6 @@ class TokoPointsHomeFragmentNew : BaseDaggerFragment(), TokoPointsHomeContract.V
 
     override fun hideLoading() {
         mContainerMain?.displayedChild = CONTAINER_MAIN
-    }
-
-    override fun getAppContext(): Context {
-        return requireActivity()
-    }
-
-    override fun getActivityContext(): Context {
-        return requireActivity()
     }
 
     override fun onAttach(context: Context) {

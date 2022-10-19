@@ -89,6 +89,13 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
     private var labelPoint: Typography? = null
     private var textDiscount: Typography? = null
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireContext()
+
+
     @Inject
     lateinit var factory: ViewModelFactory
 
@@ -607,10 +614,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context {
-        return requireContext()
-    }
-
     override fun showLoader() {
         mContainerMain?.displayedChild = CONTAINER_LOADER
     }
@@ -642,9 +645,6 @@ class CouponCatalogFragment : BaseDaggerFragment(), CouponCatalogContract.View, 
         setCatalogToUi(data)
     }
 
-    override fun getActivityContext(): Context {
-        return requireActivity()
-    }
 
     override fun getScreenName(): String {
         return AnalyticsTrackerUtil.ScreenKeys.COUPON_CATALOG_SCREEN_NAME

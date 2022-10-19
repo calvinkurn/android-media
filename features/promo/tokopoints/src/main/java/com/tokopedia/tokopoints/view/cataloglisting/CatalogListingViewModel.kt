@@ -9,9 +9,9 @@ import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class CatalogListingViewModel @Inject constructor(private val repository : CatalogListingRepository) : BaseViewModel(Dispatchers.Main), CatalogListingContract.Presenter {
-    private var pointRange = 0
-    private var currentCategoryId = 0
-    private var currentSubCategoryId = 0
+    override var pointRangeId: Int = 0
+    override var currentCategoryId: Int = 0
+    override var currentSubCategoryId = 0
 
     val bannerLiveDate = MutableLiveData<Resources<CatalogBannerBase>>()
     val filterLiveData = MutableLiveData<Resources<CatalogFilterBase>>()
@@ -50,30 +50,6 @@ class CatalogListingViewModel @Inject constructor(private val repository : Catal
                 }
             }
         }){}
-    }
-
-    override fun setPointRangeId(id: Int) {
-        pointRange = id
-    }
-
-    override fun getPointRangeId(): Int {
-        return pointRange
-    }
-
-    override fun setCurrentCategoryId(id: Int) {
-        currentCategoryId = id
-    }
-
-    override fun getCurrentCategoryId(): Int {
-        return currentCategoryId
-    }
-
-    override fun setCurrentSubCategoryId(id: Int) {
-        currentSubCategoryId = id
-    }
-
-    override fun getCurrentSubCategoryId(): Int {
-        return currentSubCategoryId
     }
 
 }
