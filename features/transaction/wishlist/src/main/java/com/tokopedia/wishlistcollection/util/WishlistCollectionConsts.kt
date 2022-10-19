@@ -23,4 +23,12 @@ object WishlistCollectionConsts {
     const val EXTRA_COLLECTION_NAME_DESTINATION = "EXTRA_COLLECTION_NAME_DESTINATION"
 
     const val BG_TICKER = "https://images.tokopedia.net/img/android/wishlistcollection/bg_ticker_wishlist_collection.png"
+
+    const val ACTION_KEBAB_UPDATE_COLLECTION = "UPDATE_COLLECTION"
+    const val ACTION_KEBAB_SHARE_COLLECTION = "SHARE_COLLECTION"
+    const val ACTION_KEBAB_DELETE_COLLECTION = "DELETE_COLLECTION"
+
+    const val COLLECTION_NAME = "collection_name"
+    const val COLLECTION_ID = "collection_id"
+    const val COLLECTION_ACTIONS = "collection_actions"
 }

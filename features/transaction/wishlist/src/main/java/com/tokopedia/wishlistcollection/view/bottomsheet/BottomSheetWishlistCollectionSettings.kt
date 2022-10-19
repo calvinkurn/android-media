@@ -9,10 +9,9 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.wishlist.databinding.BottomsheetWishlistCollectionSettingsBinding
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
-import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionFragment
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_ID
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.COLLECTION_NAME
 
 class BottomSheetWishlistCollectionSettings: BottomSheetUnify() {
     private var binding by autoClearedNullable<BottomsheetWishlistCollectionSettingsBinding>()

@@ -9,8 +9,6 @@ object WishlistV2CommonConsts {
     const val PRODUCT_IDs = "productIds"
     const val SOURCE = "source"
     const val PARAMS = "params"
-    const val COLLECTION_NAME = "collection_name"
-    const val COLLECTION_ID = "collection_id"
     const val IS_PRODUCT_ACTIVE = "is_product_active"
 
     const val TYPE_COLLECTION_MAIN_SECTION = "main_section"

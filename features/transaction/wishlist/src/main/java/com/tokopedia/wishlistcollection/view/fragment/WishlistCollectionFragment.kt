@@ -55,17 +55,19 @@ import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
+import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionOnboardingPreference
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionKebabMenuItemAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_DIVIDER
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter.Companion.LAYOUT_LOADER
 import com.tokopedia.wishlistcollection.view.adapter.itemdecoration.WishlistCollectionItemOffsetDecoration
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetCreateNewCollectionWishlist
-import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollectionItem
+import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetKebabMenuWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetOnboardingWishlistCollection
 import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetUpdateWishlistCollectionName
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromCollectionPage
@@ -75,7 +77,7 @@ import kotlin.math.roundToInt
 
 @Keep
 class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
-    BottomSheetKebabMenuWishlistCollectionItem.ActionListener, ActionListenerFromCollectionPage,
+    BottomSheetKebabMenuWishlistCollection.ActionListener, ActionListenerFromCollectionPage,
     BottomSheetUpdateWishlistCollectionName.ActionListener,
     BottomSheetOnboardingWishlistCollection.ActionListener {
     private var onlyAllCollection: Boolean = false
@@ -528,8 +530,12 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         WishlistCollectionAnalytics.sendClickXOnIntroductionSectionEvent()
     }
 
-    override fun onKebabMenuClicked(collectionId: String, collectionName: String) {
-        showBottomSheetKebabMenu(collectionId, collectionName)
+    override fun onKebabMenuClicked(
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>
+    ) {
+        showBottomSheetKebabMenu(collectionId, collectionName, actions)
         WishlistCollectionAnalytics.sendClickThreeDotsOnCollectionFolderEvent()
     }
 
@@ -545,9 +551,13 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         }
     }
 
-    private fun showBottomSheetKebabMenu(collectionId: String, collectionName: String) {
+    private fun showBottomSheetKebabMenu(
+        collectionId: String,
+        collectionName: String,
+        actions: List<GetWishlistCollectionResponse.GetWishlistCollections.WishlistCollectionResponseData.Action>
+    ) {
         val bottomSheetKebabMenu =
-            BottomSheetKebabMenuWishlistCollectionItem.newInstance(collectionName, collectionId)
+            BottomSheetKebabMenuWishlistCollection.newInstance(collectionName, collectionId, actions)
         bottomSheetKebabMenu.setListener(this@WishlistCollectionFragment)
         if (bottomSheetKebabMenu.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetKebabMenu.show(childFragmentManager)
@@ -574,8 +584,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_COLLECTION_DETAIL)
     }
 
-    override fun onChangeCollectionName(collectionId: String, collectionName: String) {
-        showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+    override fun onEditCollection(collectionId: String, collectionName: String) {
+        // showUpdateWishlistCollectionNameBottomSheet(collectionId, collectionName)
+        // TODO: create new activity for editing
     }
 
     private fun showUpdateWishlistCollectionNameBottomSheet(collectionId: String, collectionName: String) {
@@ -585,8 +596,12 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         bottomSheetUpdateWishlistCollectionName.show(childFragmentManager)
     }
 
-    override fun onDeleteCollectionItem(collectionId: String, collectionName: String) {
+    override fun onDeleteCollection(collectionId: String, collectionName: String) {
         showDialogDeleteCollection(collectionId, collectionName)
+    }
+
+    override fun onShareCollection() {
+        TODO("Not yet implemented")
     }
 
     override fun onSuccessCreateNewCollection(dataCreate: CreateWishlistCollectionResponse.CreateWishlistCollection.DataCreate, newCollectionName: String) {

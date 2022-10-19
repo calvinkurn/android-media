@@ -16,7 +16,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_COLLECTION_MAIN_SECTION
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TYPE_CREATE_NEW_COLLECTION
 
-class BottomSheetCollectionWishlistAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class BottomSheetWishlistCollectionAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var actionListener: ActionListener? = null
     private var listTypeData = mutableListOf<BottomSheetWishlistCollectionTypeLayoutData>()
     private var source = ""
