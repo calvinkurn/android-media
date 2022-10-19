@@ -35,62 +35,6 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         notifyDataSetChanged()
     }
 
-    fun setAllProductIdsActivated() {
-        shipmentCPLitem.forEach { courier ->
-            courier.shipperProduct.forEach { data ->
-                data.isActive = true
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun setProductIdsActivated(data: CPLProductModel) {
-        shipmentCPLitem.forEach { courier ->
-            data.shipperServices.forEach {
-                val cplItemModel = courier.shipperProduct.find { data ->
-                    data.shipperProductId == it
-                }
-                if (cplItemModel?.shipperProductId == it) {
-                    cplItemModel.isActive = true
-                }
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun setProductActiveState(shipperServices: ArrayList<Long>) {
-        shipmentCPLitem.forEach { courier ->
-            courier.shipperProduct.forEach { data ->
-                data.isActive = shipperServices.contains(data.shipperProductId)
-            }
-        }
-        notifyDataSetChanged()
-    }
-
-    fun checkActivatedSpIds(): List<Long> {
-        val activatedListIds = mutableListOf<Long>()
-        shipmentCPLitem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
-                }
-            }
-        }
-        return activatedListIds
-    }
-
-    fun getActivateSpIds(): List<Long> {
-        val activatedListIds = mutableListOf<Long>()
-        shipmentCPLitem.forEach { courier ->
-            courier.shipperProduct.forEach { product ->
-                if (product.isActive) {
-                    activatedListIds.add(product.shipperProductId)
-                }
-            }
-        }
-        return activatedListIds
-    }
-
     inner class ShipmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         private val shipmentItemImage = itemView.findViewById<ImageUnify>(R.id.img_shipment_item)
