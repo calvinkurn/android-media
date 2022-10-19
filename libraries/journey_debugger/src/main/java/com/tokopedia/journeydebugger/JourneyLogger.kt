@@ -22,15 +22,15 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     private var traces = ""
 
     override val isNotificationEnabled: Boolean
-        get() = cache.getBoolean(IS_APPLINK_DEBUGGER_NOTIF_ENABLED, false)!!
+        get() = cache.getBoolean(IS_JOURNEY_DEBUGGER_NOTIF_ENABLED, false)!!
 
     init {
         this.dbSource = JourneyLogDBSource(context)
-        this.cache = LocalCacheHandler(context, APPLINK_DEBUGGER)
+        this.cache = LocalCacheHandler(context, JOURNEY_DEBUGGER)
     }
 
-    override fun startTrace(applink: String) {
-        this.journey = applink
+    override fun startTrace(journey: String) {
+        this.journey = journey
         traces = ""
     }
 
@@ -45,14 +45,14 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
         }
 
         try {
-            val applinkLogModel = JourneyLogModel()
-            applinkLogModel.journey = journey
-            applinkLogModel.traces = traces
+            val journeyLogModel = JourneyLogModel()
+            journeyLogModel.journey = journey
+            journeyLogModel.traces = traces
 
-            dbSource.insertAll(applinkLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
+            dbSource.insertAll(journeyLogModel).subscribeOn(Schedulers.io()).unsubscribeOn(Schedulers.io()).subscribe(defaultSubscriber())
 
-            if (cache.getBoolean(IS_APPLINK_DEBUGGER_NOTIF_ENABLED, false)!!) {
-                NotificationHelper.show(context, applinkLogModel)
+            if (cache.getBoolean(IS_JOURNEY_DEBUGGER_NOTIF_ENABLED, false)!!) {
+                NotificationHelper.show(context, journeyLogModel)
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -71,7 +71,7 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     }
 
     override fun enableNotification(isEnabled: Boolean) {
-        cache.putBoolean(IS_APPLINK_DEBUGGER_NOTIF_ENABLED, isEnabled)
+        cache.putBoolean(IS_JOURNEY_DEBUGGER_NOTIF_ENABLED, isEnabled)
         cache.applyEditor()
     }
 
@@ -92,8 +92,8 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
     }
 
     companion object {
-        private val APPLINK_DEBUGGER = "APPLINK_DEBUGGER"
-        private val IS_APPLINK_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled"
+        private val JOURNEY_DEBUGGER = "JOURNEY_DEBUGGER"
+        private val IS_JOURNEY_DEBUGGER_NOTIF_ENABLED = "is_notif_enabled"
 
         var instance: JourneyLoggerInterface? = null
             private set
@@ -116,7 +116,7 @@ class JourneyLogger private constructor(private val context: Context) : JourneyL
                 override val isNotificationEnabled: Boolean
                     get() = false
 
-                override fun startTrace(applink: String) {
+                override fun startTrace(journey: String) {
 
                 }
 
