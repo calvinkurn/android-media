@@ -4,8 +4,12 @@ import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_NOT_AFFILIATE
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId.TRACKER_SHOP_PAGE_OPEN_SCREEN
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
+import com.tokopedia.shop.common.data.model.ShopAffiliateData
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_ACTION
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_BASIC_INFO
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel.WidgetType.SHOP_PERFORMANCE
@@ -129,11 +133,14 @@ open class ShopPageTracking(
         isLogin: Boolean,
         selectedTabName: String,
         campaignId: String,
-        variantId: String
+        variantId: String,
+        affiliateData: ShopAffiliateData?
     ) {
         val screenName = joinDash(SHOPPAGE, shopId)
         val loginNonLoginEventValue = if (isLogin) ShopPageTrackingConstant.LOGIN else ShopPageTrackingConstant.NON_LOGIN
-        val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName)
+        val shopAffiliateStatus = getShopAffiliateStatus(affiliateData?.affiliateUUId.orEmpty())
+        val affiliateTrackerId = getShopAffiliateTrackerId(affiliateData)
+        val pageSource = String.format(ShopPageTrackingConstant.FIRST_LANDING_PAGE, selectedTabName, shopAffiliateStatus)
         val customDimension: MutableMap<String, String> = HashMap()
         customDimension[ShopPageTrackingConstant.PAGE_TYPE] = SHOPPAGE
         customDimension[ShopPageTrackingConstant.BUSINESS_UNIT] = ShopPageTrackingConstant.PHYSICAL_GOODS
@@ -143,7 +150,28 @@ open class ShopPageTracking(
         customDimension[ShopPageTrackingConstant.SHOP_ID] = shopId
         customDimension[ShopPageTrackingConstant.Key.CAMPAIGN_ID] = campaignId
         customDimension[ShopPageTrackingConstant.Key.VARIANT_ID] = variantId
+        customDimension[ShopPageTrackingConstant.TRACKER_ID] = TRACKER_SHOP_PAGE_OPEN_SCREEN
+        customDimension[ShopPageTrackingConstant.Key.AFFILIATE_TRACKER_ID] = affiliateTrackerId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
+    }
+
+    private fun getShopAffiliateTrackerId(affiliateData: ShopAffiliateData?): String {
+        return if (affiliateData?.affiliateUUId?.isNotEmpty() == true) {
+            joinDash(
+                affiliateData.affiliateUUId,
+                affiliateData.affiliateTrackerId
+            )
+        } else {
+            ""
+        }
+    }
+
+    private fun getShopAffiliateStatus(affiliateUuid: String): String {
+        return if (affiliateUuid.isNotEmpty()) {
+            SHOP_AFFILIATE
+        } else {
+            SHOP_NOT_AFFILIATE
+        }
     }
 
     fun sendOpenScreenAddProduct(shopId: String?, shopType: String) {

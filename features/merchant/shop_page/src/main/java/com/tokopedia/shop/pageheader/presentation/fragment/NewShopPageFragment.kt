@@ -221,6 +221,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import java.net.URLEncoder
+import java.util.*
 import javax.inject.Inject
 
 
@@ -1027,7 +1028,7 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
-                    setAffiliateData(this)
+                    checkAffiliateAppLink(this)
                     getMarketingServiceQueryParamData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
@@ -1062,15 +1063,29 @@ class NewShopPageFragment :
         initAffiliateCookie()
     }
 
+    private fun checkAffiliateAppLink(uri: Uri) {
+        val isAppLinkContainAffiliateUuid = uri.queryParameterNames.contains(QUERY_AFFILIATE_UUID)
+        if(isAppLinkContainAffiliateUuid) {
+            setAffiliateData(uri)
+        }
+    }
+
+    private fun saveAffiliateTrackerId(affiliateTrackerId: String) {
+        shopViewModel?.saveAffiliateTrackerId(affiliateTrackerId)
+    }
+
     private fun getMarketingServiceQueryParamData(data: Uri) {
         campaignId = data.getQueryParameter(QUERY_CAMPAIGN_ID).orEmpty()
         variantId = data.getQueryParameter(QUERY_VARIANT_ID).orEmpty()
     }
 
     private fun setAffiliateData(uri: Uri) {
+        val affiliateTrackerId = UUID.randomUUID().toString()
+        saveAffiliateTrackerId(affiliateTrackerId)
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
-            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty(),
+            affiliateTrackerId
         )
     }
 
@@ -1625,7 +1640,7 @@ class NewShopPageFragment :
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
-                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
+                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId, affiliateData)
             }
         }
     }
@@ -3055,6 +3070,9 @@ class NewShopPageFragment :
     }
 
     fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
+        return affiliateCookieHelper.createAffiliateLink(
+            basePdpAppLink,
+            affiliateData?.affiliateTrackerId.orEmpty()
+        )
     }
 }

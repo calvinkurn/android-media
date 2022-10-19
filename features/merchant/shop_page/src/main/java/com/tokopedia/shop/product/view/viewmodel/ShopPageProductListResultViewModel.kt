@@ -1,5 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
+import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -57,6 +58,7 @@ import javax.inject.Inject
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
+import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_TRACKER_ID
 
 class ShopPageProductListResultViewModel @Inject constructor(private val userSession: UserSessionInterface,
                                                              private val getShopInfoUseCase: GQLGetShopInfoUseCase,
@@ -73,7 +75,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                                                              private val gqlShopPageGetDynamicTabUseCase: GqlShopPageGetDynamicTabUseCase,
                                                              private val addToCartUseCase: AddToCartUseCase,
                                                              private val updateCartUseCase: UpdateCartUseCase,
-                                                             private val deleteCartUseCase: DeleteCartUseCase
+                                                             private val deleteCartUseCase: DeleteCartUseCase,
+                                                             private val sharedPreferences: SharedPreferences
 ) : BaseViewModel(dispatcherProvider.main) {
 
     fun isMyShop(shopId: String) = userSession.shopId == shopId
@@ -121,6 +124,10 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     val shopPageAtcTracker: LiveData<ShopPageAtcTracker>
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
+
+    val shopAffiliateTrackerId: LiveData<String>
+        get() = _shopAffiliateTrackerId
+    private val _shopAffiliateTrackerId = MutableLiveData<String>()
 
     fun getShop(shopId: String, shopDomain: String = "", isRefresh: Boolean = false) {
         if (shopId.toIntOrZero() == 0 && shopDomain == "") return
@@ -703,5 +710,12 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             )
         }) {
         }
+    }
+
+    fun getShopAffiliateTrackerId() {
+        launchCatchError(dispatcherProvider.io, block = {
+            val shopAffiliateTrackerId = sharedPreferences.getString(SHARED_PREF_AFFILIATE_TRACKER_ID, "")
+            _shopAffiliateTrackerId.postValue(shopAffiliateTrackerId)
+        }){}
     }
 }
