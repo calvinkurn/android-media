@@ -117,6 +117,7 @@ import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
 import com.tokopedia.chatbot.view.activity.ChatBotProvideRatingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity
 import com.tokopedia.chatbot.view.activity.ChatbotActivity.Companion.DEEP_LINK_URI
+import com.tokopedia.chatbot.view.activity.ChatbotOnboardingActivity
 import com.tokopedia.chatbot.view.activity.ChatbotVideoActivity
 import com.tokopedia.chatbot.view.adapter.ChatbotAdapter
 import com.tokopedia.chatbot.view.adapter.ChatbotTypeFactoryImpl
@@ -164,12 +165,10 @@ import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.chatbot_layout_rating.view.*
 import kotlinx.android.synthetic.main.compose_message_area.*
 import kotlinx.android.synthetic.main.fragment_chatbot.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import java.io.File
 import java.util.*
 import javax.inject.Inject
+
 
 /**
  * @author by nisie on 23/11/18.
@@ -624,9 +623,23 @@ class ChatbotFragment :
         initRecyclerViewListener()
         setupBeforeReplyTime()
 
+        checkToShowCoachMark()
+
         if (savedInstanceState != null) {
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
         }
+    }
+
+    private fun checkToShowCoachMark() {
+//        activity?.let {
+//            val bottomSheetUnify = TestBottomSheet.newInstance(it)
+//            bottomSheetUnify.clearContentPadding = true
+//            bottomSheetUnify.show(childFragmentManager, "")
+//        }
+
+        val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
+        startActivity(intent)
+
     }
 
     override fun isLoadMoreEnabledByDefault(): Boolean {
@@ -1669,50 +1682,69 @@ class ChatbotFragment :
             guideline?.layoutParams = params
         }
     }
+
     var hasBeenShown = false
     private fun checkReplyBubbleOnboardingStatus() {
-    //        hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
+        //        hasBeenShown = replyBubbleOnBoarding.hasBeenShown()
 //        if (!replyBubbleEnabled) {
 //            return
 //        }
+//        recyclerView?.viewTreeObserver?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+//            override fun onGlobalLayout() {
+//
+//                val position = recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())
+//
+//                Log.d("LEVI", "checkReplyBubbleOnboardingStatus: $position")
+//
+//                if (!false) {
+//
+//                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+//                        recyclerView!!,
+//                        chatbotAdapter,
+//                        position,
+//                        context
+//                    )
+//                    hasBeenShown = true
+//                }
+//
+//                recyclerView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+//            }
+//
+//        })
 
-        lifecycleScope.launch(Dispatchers.Main) {
-            delay(2000L)
-
-            recyclerView?.let {
-                if (!hasBeenShown) {
-                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
-                        it,
-                        chatbotAdapter,
-                        recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark()),
-                        context
-                    )
-                    hasBeenShown = true
-                }
-            }
-
+//        main?.doOnLayout{
+//            let {
+//                if (!false) {
+//                    replyBubbleOnBoarding.showReplyBubbleOnBoarding(
+//                        recyclerView!!,
+//                        chatbotAdapter,
+//                        recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark()),
+//                        context
+//                    )
+//                    hasBeenShown = true
+//                }
+//            }
+//        }
         }
 
-    }
 
     private fun getPositionToAnchorReplyBubbleCoachmark(): Int {
-        val position =  chatbotAdapter.getMostRecentTokopediaCareMessage()
-        return position
+        return chatbotAdapter.getMostRecentTokopediaCareMessage()
     }
 
     private fun checkVideoUploadOnboardingStatus() {
-        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
-        if (!isConnectedToAgent) {
-            return
-        }
-        recyclerView?.let {
-            if (!hasBeenShown) {
-                videoUploadOnBoarding.showVideoBubbleOnBoarding(
-                    iv_chat_menu,
-                    context
-                )
-            }
-        }
+//        val hasBeenShown = videoUploadOnBoarding.hasBeenShown()
+//        if (!isConnectedToAgent) {
+//            return
+//        }
+//        recyclerView?.let {
+//            if (!false) {
+//                videoUploadOnBoarding.showVideoBubbleOnBoarding(
+//                    iv_chat_menu,
+//                    context
+//                )
+//            }
+//        }
     }
 
     override fun visibilityReplyBubble(state: Boolean) {
