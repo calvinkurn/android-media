@@ -27,7 +27,7 @@ class CouponCatalogDetailsActivity : BaseSimpleActivity(), HasComponent<Tokopoin
     lateinit var mUserSession: UserSession
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mUserSession = UserSession(applicationContext);
+        mUserSession = UserSession(applicationContext)
         forDeeplink()
         super.onCreate(savedInstanceState)
         updateTitle(getString(R.string.tp_title_detail))
@@ -43,10 +43,10 @@ class CouponCatalogDetailsActivity : BaseSimpleActivity(), HasComponent<Tokopoin
 
     override fun getNewFragment(): Fragment? {
         return if (mUserSession.isLoggedIn) {
-            CouponCatalogFragment.newInstance(bundle);
+            CouponCatalogFragment.newInstance(bundle)
         } else {
-            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN);
-            null;
+            startActivityForResult(RouteManager.getIntent(this, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
+            null
         }
     }
 

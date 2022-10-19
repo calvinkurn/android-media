@@ -51,6 +51,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private var redeemMessage: String = ""
 
+    override val activityContext: Context?
+        get() = activity
+
+    override val appContext: Context?
+        get() = context
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -74,10 +80,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         AnalyticsTrackerUtil.sendScreenEvent(activity, screenName)
     }
 
-    override fun getAppContext(): Context? {
-        return context
-    }
-
     override fun showLoader() {
         container?.displayedChild = CONTAINER_LOADER
         swipe_refresh_layout?.isRefreshing = false
@@ -86,10 +88,6 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
     override fun hideLoader() {
         container?.displayedChild = CONTAINER_DATA
         swipe_refresh_layout?.isRefreshing = false
-    }
-
-    override fun getActivityContext(): Context? {
-        return activity
     }
 
     override fun getScreenName(): String {
@@ -128,12 +126,12 @@ class CouponListingStackedFragment : BaseDaggerFragment(), CouponListingStackedC
         }
 
         requireView().findViewById<View>(R.id.text_failed_action).setOnClickListener(this)
-        requireView().findViewById<View>(R.id.button_continue).setOnClickListener { view12 ->
+        requireView().findViewById<View>(R.id.button_continue).setOnClickListener {
             val bundle = Bundle()
             bundle.putInt(CommonConstant.EXTRA_COUPON_COUNT, 0)
             startActivity(CatalogListingActivity.getCallingIntent(activityContext, bundle))
         }
-        requireView().findViewById<View>(R.id.text_empty_action).setOnClickListener { v -> RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
+        requireView().findViewById<View>(R.id.text_empty_action).setOnClickListener { RouteManager.route(activityContext, ApplinkConstInternalGlobal.WEBVIEW, CommonConstant.WebLink.INFO) }
 
         stopPreparePagePerformanceMonitoring()
         startNetworkRequestPerformanceMonitoring()
