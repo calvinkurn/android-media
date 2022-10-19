@@ -50,6 +50,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import rx.Observable
 import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
@@ -332,7 +333,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     }
 
     override fun showErrorMessage(error: String?) {
-        Toaster.make(getRootView(), error
+        Toaster.build(getRootView(), error
                 ?: "", Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, "")
     }
 
@@ -508,7 +509,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
                     override fun onCompleted() {}
                     override fun onError(e: Throwable) {}
                     override fun onNext(aLong: Long) {
-                        if ((rvMessageList?.layoutManager as LinearLayoutManager?)?.findFirstCompletelyVisibleItemPosition() != position) scrollToResult(position)
+                        if ((rvMessageList?.layoutManager as? LinearLayoutManager)?.findFirstCompletelyVisibleItemPosition() != position) scrollToResult(position)
                     }
                 })
     }
@@ -638,7 +639,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun showMessage(message: String) {
         super.showMessage(message)
-        rootView?.let { Toaster.make(it, message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK) }
+        Toaster.build(getRootView(), message, Snackbar.LENGTH_LONG, Toaster.TYPE_NORMAL, SNACKBAR_OK)
     }
 
     override fun onClickClose() {
@@ -647,22 +648,26 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
 
     override fun setMessageMaxLengthReached() {
 
-        with(Toaster) {
-            make(
-                getRootView(),
-                getString(R.string.contact_us_maximum_length_error_text),
-                Snackbar.LENGTH_LONG,
-                TYPE_ERROR,
-                SNACKBAR_OK)
-        }
-
+        Toaster.build(
+            getRootView(),
+            getString(R.string.contact_us_maximum_length_error_text),
+            Snackbar.LENGTH_LONG,
+            TYPE_ERROR,
+            SNACKBAR_OK
+        )
     }
 
     private fun sendMessage(isSendButtonEnabled: Boolean) {
         if (isSendButtonEnabled) {
             sendMessage()
         } else {
-            Toaster.make(getRootView(), this.getString(R.string.contact_us_minimum_length_error_text), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR, SNACKBAR_OK)
+            Toaster.build(
+                getRootView(),
+                this.getString(R.string.contact_us_minimum_length_error_text),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_ERROR,
+                SNACKBAR_OK
+            )
         }
     }
 

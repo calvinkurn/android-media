@@ -13,7 +13,6 @@
         android:drawableTint="@color/grey_730"
         android:elevation="4dp"
         android:paddingStart="15dp"
-        android:paddingLeft="15dp"
         android:drawablePadding="15dp"
         android:text="@string/survey_layanan"
         android:textColor="@color/black_70"
