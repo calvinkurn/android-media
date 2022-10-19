@@ -76,7 +76,12 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentReque
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
-import com.tokopedia.oneclickcheckout.order.view.card.*
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
 import com.tokopedia.oneclickcheckout.order.view.model.OccOnboarding.Companion.COACHMARK_TYPE_NEW_BUYER_REMOVE_PROFILE
