@@ -11,6 +11,7 @@ import com.tokopedia.content.common.producttag.analytic.product.ContentProductTa
 /**
  * Created By : Jonathan Darwin on May 10, 2022
  */
+@Suppress("LateinitUsage")
 open class BaseProductTagChildFragment : TkpdBaseV4Fragment() {
 
     protected lateinit var viewModelProvider: ViewModelProvider

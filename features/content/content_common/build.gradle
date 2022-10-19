@@ -88,6 +88,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.fragmentKtx
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.constraintLayout

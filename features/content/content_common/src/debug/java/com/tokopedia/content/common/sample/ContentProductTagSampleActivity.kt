@@ -36,13 +36,15 @@ class ContentProductTagSampleActivity : BaseActivity() {
     @Inject
     lateinit var mAnalytic: ContentProductTagAnalytic
 
-    private lateinit var binding: ActivityContentProductTagSampleBinding
+    private var _binding: ActivityContentProductTagSampleBinding? = null
+    private val binding: ActivityContentProductTagSampleBinding
+        get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         inject()
         supportFragmentManager.fragmentFactory = fragmentFactory
         super.onCreate(savedInstanceState)
-        binding = ActivityContentProductTagSampleBinding.inflate(
+        _binding = ActivityContentProductTagSampleBinding.inflate(
             layoutInflater, null, false
         )
         setContentView(binding.root)

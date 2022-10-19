@@ -23,7 +23,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
         get() = _binding!!
 
     private var mListener: Listener? = null
-    private lateinit var mWarningType: WarningType
+    private var mWarningType: WarningType? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,6 +84,7 @@ class WarningInfoBottomSheet : BottomSheetUnify() {
                 tvWarningSubtitle.text = getString(R.string.ugc_warning_both_account_live_subtitle)
                 tvCta.hide()
             }
+            else -> {}
         }
     }
 

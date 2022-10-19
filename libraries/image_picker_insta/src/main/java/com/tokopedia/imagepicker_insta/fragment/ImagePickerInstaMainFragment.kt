@@ -55,7 +55,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
+@Suppress("LateinitUsage")
 class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentContract {
 
     lateinit var viewModel: PickerViewModel

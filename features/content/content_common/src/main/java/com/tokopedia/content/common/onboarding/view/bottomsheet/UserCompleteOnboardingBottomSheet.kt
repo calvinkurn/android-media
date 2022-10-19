@@ -33,6 +33,7 @@ import android.widget.TextView
 import android.widget.EditText
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.util.hideKeyboard
 
 
@@ -48,22 +49,16 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     private val binding: BottomsheetUserCompleteOnboardingBinding
         get() = _binding!!
 
-    private lateinit var viewModel: UGCOnboardingViewModel
+    private val viewModel: UGCOnboardingViewModel by viewModels {
+        viewModelFactoryCreator.create(
+            this,
+            onboardingType,
+            strategyFactory.create(onboardingType),
+        )
+    }
 
     private val _listener: Listener?
         get() = mListener as? Listener
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactoryCreator.create(
-                this,
-                onboardingType,
-                strategyFactory.create(onboardingType),
-            )
-        )[UGCOnboardingViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
