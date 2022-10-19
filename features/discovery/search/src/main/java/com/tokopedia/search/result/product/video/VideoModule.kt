@@ -17,7 +17,7 @@ object VideoModule {
         remoteConfig: RemoteConfig,
         @SearchContext
         context: Context,
-    ) : VideoPlayerAutoplay {
+    ): VideoPlayerAutoplay {
         return VideoPlayerAutoplay(remoteConfig, context)
     }
 }
