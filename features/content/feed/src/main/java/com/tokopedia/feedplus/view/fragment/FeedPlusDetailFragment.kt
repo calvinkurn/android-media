@@ -36,6 +36,7 @@ import com.tokopedia.feedplus.view.activity.FeedPlusDetailActivity
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactory
 import com.tokopedia.feedplus.view.adapter.typefactory.feeddetail.FeedPlusDetailTypeFactoryImpl
 import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.DetailFeedAdapter
+import com.tokopedia.feedplus.view.adapter.viewholder.feeddetail.FeedDetailViewHolder
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.feedplus.view.analytics.FeedAnalytics
 import com.tokopedia.feedplus.view.analytics.FeedDetailAnalytics.Companion.feedDetailAnalytics
@@ -60,7 +61,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
-import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
@@ -88,6 +88,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var shopId: String = ""
     private var shopName: String = ""
     private var postType: String = ""
+    private var saleType: String = ""
+    private var saleStatus: String = ""
     private var isFollowed: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
@@ -96,6 +98,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     companion object {
         const val KEY_OTHER = "lainnya"
+        private const val CAMPAIGN_UPCOMING_TRACKER_SUFFIX = "pre"
+        private const val CAMPAIGN_ONGOING_TRACKER_SUFFIX = "ongoing"
 
         fun createInstance(bundle: Bundle): FeedPlusDetailFragment {
             val feedPlusDetailNavFragment = FeedPlusDetailFragment()
@@ -179,7 +183,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     is Fail -> {
                         Timber.e(it.throwable)
                         showToast(
-                                getString(R.string.default_request_error_unknown),
+                            it.throwable.message
+                                ?: getString(R.string.default_request_error_unknown),
                                 Toaster.TYPE_ERROR
                         )
                     }
@@ -230,6 +235,20 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
+        if (saleType.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_TYPE)?.let {
+                    saleType = it
+                }
+            }
+        }
+        if (saleStatus.isEmpty()) {
+            arguments?.run {
+                getString(FeedPlusDetailActivity.PARAM_SALE_STATUS)?.let {
+                    saleStatus = it
+                }
+            }
+        }
         arguments?.run {
             getBoolean(FeedPlusDetailActivity.PARAM_IS_FOLLOWED)?.let {
                 isFollowed = it
@@ -273,8 +292,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
-
-
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -317,6 +334,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
         setUpShopDataHeader()
     }
+
     private fun setUpObservers() {
         presenter.run {
             getFeedDetailLiveData().observe(viewLifecycleOwner, Observer {
@@ -363,7 +381,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         productList.addAll(products)
         val ret = mapPostTag(products)
         adapter.addList(ret)
-      pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
+        pagingHandler.setHasNext(ret.size > 1 && cursor.isNotEmpty())
         adapter.notifyDataSetChanged()
     }
     private fun onErrorGetFeedDetail(error: Throwable) {
@@ -377,35 +395,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         adapter.showEmpty()
     }
 
-
-
-
     override fun onStart() {
         super.onStart()
         analytics.trackScreen(screenName)
-    }
-
-    private fun onShareClicked(url: String,
-                               title: String,
-                               imageUrl: String,
-                               description: String): View.OnClickListener? {
-        return View.OnClickListener {
-            activity?.let {
-                shareData = LinkerData.Builder.getLinkerBuilder().setId(detailId)
-                        .setName(title)
-                        .setDescription(description)
-                        .setImgUri(imageUrl)
-                        .setUri(url)
-                        .setType(LinkerData.FEED_TYPE)
-                        .build()
-                val linkerShareData = DataMapper().getLinkerShareData(shareData)
-                LinkerManager.getInstance().executeShareRequest(LinkerUtils.createShareRequest(
-                        0,
-                        linkerShareData,
-                        this
-                ))
-            }
-        }
     }
 
     override fun onGoToShopDetail(activityId: String?, shopId: Int) {
@@ -418,10 +410,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
-
-
-
-
     override fun onBackPressed() {
         activity?.onBackPressed()
     }
@@ -433,11 +421,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     ) {
         val finalID = if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId
         feedAnalytics.eventClickBottomSheetMenu(
-                finalID,
-                item.postType,
-                item.isFollowed,
-                item.shopId,
-                ""
+            finalID,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            "",
+            trackerId = if (isFollowed) "17990" else ""
         )
         val bundle = Bundle()
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
@@ -468,6 +457,50 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         sheet.addToWIshListCB = {
             addToWishList(finalID, item.id, item.postType, item.isFollowed, item.shopId, item.playChannelId)
         }
+    }
+
+    override fun onAddToWishlistButtonClicked(item: FeedDetailProductModel, productPosition: Int) {
+        val campaignTrackerValue =
+            if (item.isFollowed && item.saleStatus.isNotEmpty()) {
+                if (item.isUpcoming)
+                   CAMPAIGN_UPCOMING_TRACKER_SUFFIX
+                else
+                    CAMPAIGN_ONGOING_TRACKER_SUFFIX
+            }
+            else ""
+        addToWishList(
+            item.postId.toString(),
+            item.id,
+            item.postType,
+            item.isFollowed,
+            item.shopId,
+            item.playChannelId,
+            productPosition,
+            campaignTrackerValue
+        )
+    }
+
+    override fun onAddToCartButtonClicked(item: FeedDetailProductModel) {
+        val campaignTrackerValue =
+            if (item.isFollowed && item.saleStatus.isNotEmpty()) {
+                if (item.isUpcoming)
+                    CAMPAIGN_UPCOMING_TRACKER_SUFFIX
+                else
+                    CAMPAIGN_ONGOING_TRACKER_SUFFIX
+            }
+            else ""
+
+        onTagSheetItemBuy(
+            item.postId.toString(),
+            item.positionInFeed,
+            item.product,
+            item.shopId,
+            item.postType,
+            item.isFollowed,
+            item.shopName,
+            item.playChannelId,
+            campaignTrackerValue
+        )
     }
 
     private fun onShareProduct(
@@ -515,14 +548,50 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             type: String,
             isFollowed: Boolean,
             shopName: String,
-            playChannelId: String
+            playChannelId: String,
+            campaignStatusValue: String = ""
     ) {
-        if (type == TYPE_FEED_X_CARD_PLAY)
-            feedAnalytics.eventAddToCartFeedVOD(playChannelId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, postTagItem.authorName, type, isFollowed,"")
-        else
-            feedAnalytics.eventAddToCartFeedVOD(activityId, postTagItem.id, postTagItem.name, postTagItem.price.toString(), 1, shopId, shopName, type, isFollowed,"")
+        if (campaignStatusValue.isEmpty()) {
+            if (type == TYPE_FEED_X_CARD_PLAY)
+                feedAnalytics.eventAddToCartFeedVOD(
+                    playChannelId,
+                    postTagItem.id,
+                    postTagItem.name,
+                    postTagItem.price.toString(),
+                    1,
+                    shopId,
+                    postTagItem.authorName,
+                    type,
+                    isFollowed,
+                    ""
+                )
+            else
+                feedAnalytics.eventAddToCartFeedVOD(
+                    activityId,
+                    postTagItem.id,
+                    postTagItem.name,
+                    postTagItem.price.toString(),
+                    1,
+                    shopId,
+                    shopName,
+                    type,
+                    isFollowed,
+                    ""
+                )
+        } else {
+            feedAnalytics.sendClickAddToCartAsgcProductDetail(
+                activityId,
+                shopId,
+                postTagItem.id,
+                campaignStatusValue,
+                postTagItem.name,
+                postTagItem.price.toString(),
+                1,
+                shopName
+            )
+        }
         if (userSession.isLoggedIn) {
-            feedViewModel.doAtc(postTagItem, shopId, type, isFollowed, activityId)
+            feedViewModel.addtoCartProduct(postTagItem, shopId, type, isFollowed, activityId)
         } else {
             onGoToLogin()
         }
@@ -533,18 +602,28 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             type: String,
             isFollowed: Boolean,
             shopId: String,
-            playChannelId: String
+            playChannelId: String,
+            productItemPostion: Int = 0,
+            campaignStatusValue: String = ""
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
 
-        feedAnalytics.eventAddToWishlistClicked(
+        if (campaignStatusValue.isEmpty())
+            feedAnalytics.eventAddToWishlistClicked(
                 finalId,
                 productId,
                 type,
                 isFollowed,
                 shopId,
                 ""
-        )
+            )
+        else
+            feedAnalytics.sendClickAddToWishlistAsgcProductDetail(
+                postId,
+                shopId,
+                productId,
+                campaignStatusValue
+            )
 
         context?.let {
             feedViewModel.addWishlistV2(
@@ -552,6 +631,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 productId,
                 shopId,
                 0,
+                productItemPostion,
                 type,
                 isFollowed,
                 ::onWishListFail,
@@ -570,14 +650,21 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             shopId: String,
             type: String,
             isFollowed: Boolean,
+            rowNumber: Int,
+            positionInFeed: Int,
             result: AddToWishlistV2Response.Data.WishlistAddV2
     ) {
-        context?.let { context ->
-            view?.let { v ->
-                AddRemoveWishlistV2Handler.showAddToWishlistV2SuccessToaster(result, context, v)
-            }
-        }
-        feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId)
+        Toaster.build(
+            requireView(),
+            getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg),
+            Toaster.LENGTH_LONG,
+            Toaster.TYPE_NORMAL,
+            getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
+            View.OnClickListener {
+                feedAnalytics.eventOnTagSheetItemBuyClicked(activityId, type, isFollowed, shopId, campaignStatus = getTrackerCampaignStatusSuffix() )
+                RouteManager.route(context, ApplinkConst.WISHLIST)
+            }).show()
+        adapter.notifyItemChanged(rowNumber, FeedDetailViewHolder.PAYLOAD_CLICK_WISHLIST)
     }
 
      private fun onGoToLogin() {
@@ -586,6 +673,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             requireActivity().startActivityForResult(intent, FeedPlusFragment.REQUEST_LOGIN)
         }
     }
+
+    private fun getTrackerCampaignStatusSuffix() = if(saleStatus == FeedDetailProductModel.UPCOMING) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -625,19 +714,6 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
-    private fun onGoToShopDetailFromButton(shopId: Int): View.OnClickListener? {
-        return View.OnClickListener {
-            arguments?.run {
-                goToShopDetail(shopId)
-                analytics.eventFeedClickShop(
-                        screenName, shopId.toString(), getString(
-                        FeedPlusDetailActivity.EXTRA_ANALYTICS_PAGE_ROW_NUMBER, "")
-                        + FeedTrackingEventLabel.Click.VISIT_SHOP)
-            }
-        }
-    }
-
-
     private fun goToShopDetail(shopId: Int) {
         if (activity != null && activity?.applicationContext != null) {
             val intent = RouteManager.getIntent(activity,
@@ -676,7 +752,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 feedDetailProductModel.shopId,
                 feedDetailProductModel.postId,
                 feedDetailProductModel.postType,
-                feedDetailProductModel.isFollowed
+                feedDetailProductModel.isFollowed,
+                if (feedDetailProductModel.saleType.isNotEmpty()) "13440" else "",
+                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
+
             )
             activity?.startActivityForResult(
                 getProductIntent(feedDetailProductModel.id),
@@ -715,13 +794,14 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
         if (impressionProductList?.size!! > 0) {
             feedAnalytics.eventImpressionProductBottomSheet(
-                    activityId,
-                    impressionProductList!!,
-                    shopId,
-                    postType,
-                    isFollowed,
-                    true,
-                    ""
+                activityId,
+                impressionProductList!!,
+                shopId,
+                postType,
+                isFollowed,
+                true,
+                "",
+                 trackerId = if (saleType.isNotEmpty()) "13439" else ""
             )
         }
     }
@@ -802,7 +882,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     isFollowed = isFollowed,
                     description = postDescription,
                     isTopads = postTagItem.isTopads,
-                    adClickUrl = adClickUrl
+                    adClickUrl = adClickUrl,
+                    saleStatus = saleStatus,
+                    saleType = saleType
             )
             item.feedType = "product"
             item.postId = activityId
