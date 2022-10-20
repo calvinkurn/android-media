@@ -295,8 +295,8 @@ class ProductBulkApplyBottomSheet : BottomSheetUnify() {
 
                 }
 
-                override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                    viewModel.onMaxPurchaseQuantityChanged(quantityEditor.getValue())
+                override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+                    viewModel.onMaxPurchaseQuantityChanged(text?.toString().toIntOrZero())
                     bottomSheetConfigModel?.let {
                         viewModel.validateInputProductStock(it)
                     }
