@@ -1,7 +1,6 @@
 package com.tokopedia.play.uitest.pinnedproduct
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
