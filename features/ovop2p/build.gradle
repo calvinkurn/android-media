@@ -49,13 +49,6 @@ dependencies {
 
 }
 
-project.ext {
-    artifactId = 'ovop2p'
-    groupId = 'com.tokopedia.ovop2p'
-    versionName = "0.0.2"
-    artifactName = "ovop2p-release"
-}
-
 apply from: '../../publish_local.gradle'
 apply from: '../../jacoco_task.gradle'
 apply plugin: 'kotlin-android'
