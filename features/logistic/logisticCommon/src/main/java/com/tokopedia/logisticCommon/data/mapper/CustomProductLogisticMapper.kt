@@ -86,7 +86,7 @@ class CustomProductLogisticMapper @Inject constructor() {
         val shipperCPLModel = mutableListOf<ShipperCPLModel>()
         whitelabelShipper.forEach {
             val shipperProducts =
-                mapWhitelabelShipperService(it.shipperProductIds, it.isActive, draftShipperServices)
+                mapWhitelabelShipperService(it.shipperProductIds, it.isActive, draftShipperServices, it.title)
             val model = ShipperCPLModel(
                 shipperName = it.title,
                 isWhitelabel = true,
@@ -102,13 +102,15 @@ class CustomProductLogisticMapper @Inject constructor() {
     private fun mapWhitelabelShipperService(
         spIds: List<Long>,
         isWhitelabelServiceActive: Boolean,
-        draftShipperServices: List<Long>?
+        draftShipperServices: List<Long>?,
+        serviceName: String
     ): List<ShipperProductCPLModel> {
         return spIds.map { id ->
             val isSpActive = draftShipperServices?.contains(id) ?: isWhitelabelServiceActive
             ShipperProductCPLModel(
                 shipperProductId = id,
-                isActive = isSpActive
+                isActive = isSpActive,
+                shipperServiceName = serviceName
             )
         }
     }
@@ -147,6 +149,7 @@ class CustomProductLogisticMapper @Inject constructor() {
                 shipperProductId = it.shipperProductId,
                 shipperProductName = it.shipperProductName,
                 uiHidden = it.uiHidden,
+                shipperServiceName = it.shipperServiceName,
                 isActive = draftShipperServices?.contains(it.shipperProductId) ?: it.isActive
             )
         }

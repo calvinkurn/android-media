@@ -22,6 +22,7 @@ object CustomProductLogisticQuery {
                   shipper_product {
                     shipper_product_id
                     shipper_product_name
+                    shipper_service_name
                     ui_hidden
                     is_active
                   }

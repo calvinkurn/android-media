@@ -72,6 +72,8 @@ data class ShipperProduct(
     var shipperProductId: Long = 0,
     @SerializedName("shipper_product_name")
     var shipperProductName: String = "",
+    @SerializedName("shipper_service_name")
+    var shipperServiceName: String = "",
     @SerializedName("ui_hidden")
     var uiHidden: Boolean = false,
     @SerializedName("is_active")
