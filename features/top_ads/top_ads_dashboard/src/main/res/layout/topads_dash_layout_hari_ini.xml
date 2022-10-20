@@ -6,7 +6,7 @@
     android:id="@+id/date"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:background="@color/Unify_NN0"
     app:layout_constraintTop_toTopOf="parent">
 
 
@@ -20,7 +20,10 @@
         android:layout_marginBottom="@dimen/dp_13"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/iconunify_calendar"
+        android:tint="@color/Unify_NN900"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/current_date"
@@ -30,7 +33,7 @@
         android:gravity="bottom"
         android:text="@string/topads_hari_ini"
         app:typographyWeight="bold"
-        android:textColor="@color/black_70"
+        android:textColor="@color/Unify_NN1000"
         app:layout_constraintBottom_toBottomOf="@id/date_image"
         app:layout_constraintStart_toEndOf="@id/date_image"
         app:layout_constraintTop_toTopOf="@id/date_image"
@@ -43,6 +46,8 @@
         android:layout_marginRight="@dimen/dp_19"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:src="@drawable/iconunify_chevron_right"
+        android:tint="@color/Unify_NN900"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
