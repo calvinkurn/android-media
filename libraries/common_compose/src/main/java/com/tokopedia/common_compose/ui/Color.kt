@@ -91,7 +91,6 @@ val NestBN950 = Color(0xFF102736)
 val NestBN950Dark = Color(0xFFD4F3FF)
 
 
-
 val NestGN50 = Color(0xFFECFEF4)
 val NestGN50Dark = Color(0xFF111C17)
 val NestGN100 = Color(0xFFC9FDE0)
@@ -126,7 +125,7 @@ val NestRN100Dark = Color(0xFF862430)
 val NestRN500 = Color(0xFFF94D63)
 val NestRN500Dark = Color(0xFFFF6577)
 
-fun populateColor(darkTheme: Boolean) : TokopediaColor {
+fun populateColor(darkTheme: Boolean): TokopediaColor {
     return if (darkTheme) {
         NestColor(
             NN0 = NestNN0Dark,
@@ -175,3 +174,63 @@ fun populateColor(darkTheme: Boolean) : TokopediaColor {
         )
     }
 }
+
+class NestColors(
+    val NN: ColorThemeTemplate = NN(),
+    val GN: ColorThemeTemplate = GN()
+)
+
+internal val LocalNestColors = staticCompositionLocalOf { NestColors() }
+
+class ColorTheme(
+    val light: Color,
+    val dark: Color
+)
+
+interface ColorThemeTemplate {
+    val _0: ColorTheme
+    val _50: ColorTheme
+    val _100: ColorTheme
+    val _200: ColorTheme
+    val _300: ColorTheme
+    val _400: ColorTheme
+    val _500: ColorTheme
+    val _600: ColorTheme
+    val _700: ColorTheme
+    val _800: ColorTheme
+    val _900: ColorTheme
+    val _950: ColorTheme
+    val _1000: ColorTheme
+}
+
+class NN(
+    override val _0: ColorTheme = ColorTheme(light = Color(0xFFFFFFFF), dark = Color(0xFF121212)),
+    override val _50: ColorTheme = ColorTheme(light = Color(0xFFF0F3F7), dark = Color(0xFF222329)),
+    override val _100: ColorTheme = ColorTheme(light = Color(0xFFE4EBF5), dark = Color(0xFF2E2F36)),
+    override val _200: ColorTheme = ColorTheme(light = Color(0xFFD6DFEB), dark = Color(0xFF3B3D45)),
+    override val _300: ColorTheme = ColorTheme(light = Color(0xFFBFC9D9), dark = Color(0xFF4F525C)),
+    override val _400: ColorTheme = ColorTheme(light = Color(0xFFAAB4C8), dark = Color(0xFF696D78)),
+    override val _500: ColorTheme = ColorTheme(light = Color(0xFF8D96AA), dark = Color(0xFF878B99)),
+    override val _600: ColorTheme = ColorTheme(light = Color(0xFF6D7588), dark = Color(0xFFAEB2BF)),
+    override val _700: ColorTheme = ColorTheme(light = Color(0xFF525867), dark = Color(0xFFC0C2CC)),
+    override val _800: ColorTheme = ColorTheme(light = Color(0xFF40444E), dark = Color(0xFFD5D8E0)),
+    override val _900: ColorTheme = ColorTheme(light = Color(0xFF2E3137), dark = Color(0xFFE9EBF5)),
+    override val _950: ColorTheme = ColorTheme(light = Color(0xFF212121), dark = Color(0xFFF5F6FF)),
+    override val _1000: ColorTheme = ColorTheme(light = Color(0xFF000000), dark = Color(0xFFFFFFFF)),
+) : ColorThemeTemplate
+
+class GN(
+    override val _0: ColorTheme = NN()._0,
+    override val _50: ColorTheme = ColorTheme(light = Color(0xFF0A260F), dark = Color(0xFF222329)),
+    override val _100: ColorTheme = ColorTheme(light = Color(0xFF005823), dark = Color(0xFF2E2F36)),
+    override val _200: ColorTheme = ColorTheme(light = Color(0xFF007335), dark = Color(0xFF3B3D45)),
+    override val _300: ColorTheme = ColorTheme(light = Color(0xFF008842), dark = Color(0xFF4F525C)),
+    override val _400: ColorTheme = ColorTheme(light = Color(0xFF009A4E), dark = Color(0xFF696D78)),
+    override val _500: ColorTheme = ColorTheme(light = Color(0xFF00A958), dark = Color(0xFF878B99)),
+    override val _600: ColorTheme = ColorTheme(light = Color(0xFF34B670), dark = Color(0xFFAEB2BF)),
+    override val _700: ColorTheme = ColorTheme(light = Color(0xFF60C289), dark = Color(0xFFC0C2CC)),
+    override val _800: ColorTheme = ColorTheme(light = Color(0xFF91D3AA), dark = Color(0xFFD5D8E0)),
+    override val _900: ColorTheme = ColorTheme(light = Color(0xFFBCE4CB), dark = Color(0xFFE9EBF5)),
+    override val _950: ColorTheme = ColorTheme(light = Color(0xFFE3F4EA), dark = Color(0xFFF5F6FF)),
+    override val _1000: ColorTheme = ColorTheme(light = Color(0xFF000000), dark = Color(0xFFFFFFFF)),
+) : ColorThemeTemplate
