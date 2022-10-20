@@ -48,8 +48,3 @@ data class BroadcastScheduleConfigUiModel(
     val maximum: Date,
     val default: Date
 ) : Parcelable
-
-@Parcelize
-data class TermsAndConditionUiModel(
-    val desc: String,
-) : Parcelable
