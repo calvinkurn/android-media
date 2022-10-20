@@ -154,6 +154,7 @@
         app:icon_color_light_enable="@color/Unify_YN300"
         app:icon_color_night_enable="@color/Unify_YN300"
         app:icon_name="STAR_FILLED"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/rating_typography"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rating_typography" />

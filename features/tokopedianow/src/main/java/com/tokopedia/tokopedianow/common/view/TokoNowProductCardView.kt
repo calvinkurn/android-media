@@ -33,18 +33,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
-        binding = LayoutTokopedianowProductCardViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
-//            productNameTypography.text = "Strawberry impor korea"
-//            categoryInfoTypography.text = "100gr"
-//            ratingTypography.text = "4.5"
-//            val weight = SpannableString("500 gr")
-//            val dotSeparator = SpannableString(MethodChecker.fromHtml("&#8226;"))
-//            val productInfo = SpannableString("Halal")
-//            productInfo.setSpan(ForegroundColorSpan(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)), 0, productInfo.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-//            productInfo.setSpan(StyleSpan(Typeface.BOLD), 0, productInfo.length, Spannable.SPAN_INCLUSIVE_INCLUSIVE)
-//            val concanated = TextUtils.concat(weight, " ", dotSeparator, " ", productInfo)
-//            categoryInfoTypography.setText(concanated, TextView.BufferType.SPANNABLE)
-        }
+        binding = LayoutTokopedianowProductCardViewBinding.inflate(LayoutInflater.from(context), this, true)
         /**
          * note :
          * - init category info
@@ -55,7 +44,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun setupUi() {
         val isNormal = false
-        val isOos = true
+        val isOos = false
         val isFlashSale = !isOos && !isNormal
         binding.apply {
             initImageFilterView(
@@ -77,7 +66,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initRatingTypography(
                 rating = "4.5",
-                isFlashSale = isFlashSale
+                isFlashSale = isFlashSale,
+                isNormal = isNormal
             )
             initOosLabel(
                 label = "terjual",
@@ -87,9 +77,6 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 isFlashSale = isFlashSale,
                 progressStatus = "Terjangkau"
             )
-            if (isNormal) {
-                adjustRatingPosition()
-            }
         }
     }
 
@@ -146,11 +133,15 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initRatingTypography(
         rating: String,
-        isFlashSale: Boolean
+        isFlashSale: Boolean,
+        isNormal: Boolean
     ) {
         ratingTypography.showIfWithBlock(rating.isNotBlank() && !isFlashSale) {
             ratingIcon.show()
             text = rating
+            if (isNormal) {
+                adjustRatingPosition()
+            }
         }
     }
 
@@ -207,6 +198,43 @@ class TokoNowProductCardView @JvmOverloads constructor(
             progressTypography.text = progressStatus
         }
     }
+
+    /**
+     * This function is used for phase 2
+     */
+//    private fun LayoutTokopedianowProductCardViewBinding.initCategoryInfo(
+//        weight: String,
+//        category: String,
+//        isBold: Boolean,
+//        color: String
+//    ) {
+//        val weightNotBlank = weight.isNotBlank()
+//        val categoryNotBlank = category.isNotBlank()
+//        categoryInfoTypography.showIfWithBlock(weightNotBlank || categoryNotBlank) {
+//            val concatenatedSpannable = SpannableStringBuilder()
+//            if (weightNotBlank) concatenatedSpannable.append(weight)
+//            if (categoryNotBlank) {
+//                concatenatedSpannable.append(MethodChecker.fromHtml("&#8226;"))
+//                val categorySpannable = SpannableString("Halal")
+//                if (isBold) {
+//                    categorySpannable.setSpan(
+//                        color,
+//                        0,
+//                        categorySpannable.length,
+//                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+//                    )
+//                    categorySpannable.setSpan(
+//                        StyleSpan(Typeface.BOLD),
+//                        0,
+//                        category.length,
+//                        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+//                    )
+//                }
+//                concatenatedSpannable.append(categorySpannable)
+//            }
+//            categoryInfoTypography.setText(concatenatedSpannable, TextView.BufferType.SPANNABLE)
+//        }
+//    }
 
     private fun LayoutTokopedianowProductCardViewBinding.adjustRatingPosition() {
         val constraintSet = ConstraintSet()
