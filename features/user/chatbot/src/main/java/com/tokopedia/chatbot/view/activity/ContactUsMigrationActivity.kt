@@ -41,9 +41,9 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
 
     private val URL_HELP = getInstance().WEB + "help?utm_source=android"
 
-    private lateinit var textSubtitle: Typography
-    private lateinit var buttonTokopediaCare: UnifyButton
-    private lateinit var contentListRV: RecyclerView
+    private var textSubtitle: Typography? = null
+    private var buttonTokopediaCare: UnifyButton? = null
+    private var contentListRV: RecyclerView? = null
     private var isDismissedCalledDirectly: Boolean = false
     private var _viewBinding: ActivityChatbotInboxMigrationBinding? = null
     private fun getBindingView() = _viewBinding!!
@@ -97,7 +97,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
         val view = BottomSheetGoToHelpBinding.inflate(LayoutInflater.from(this)).apply {
             initViews(this)
             setSubtitle(subtitle)
-            initRecyclerViewFromContentList(this@ContactUsMigrationActivity, contentListRV)
+            initRecyclerViewFromContentList(this@ContactUsMigrationActivity, contentListRV?:return@apply)
             setOnClickListener()
         }
         return view.root
@@ -110,7 +110,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun setOnClickListener() {
-        buttonTokopediaCare.setOnClickListener {
+        buttonTokopediaCare?.setOnClickListener {
             chatbotAnalytics.get().eventOnClickTokopediaCare()
             goToHelpPage()
         }
@@ -127,7 +127,7 @@ class ContactUsMigrationActivity : BaseSimpleActivity() {
     }
 
     private fun setSubtitle(subtitle: String) {
-        textSubtitle.text = SpannableString(MethodChecker.fromHtml(subtitle))
+        textSubtitle?.text = SpannableString(MethodChecker.fromHtml(subtitle))
     }
 
     private fun initRecyclerViewFromContentList(
