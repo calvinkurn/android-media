@@ -13,6 +13,7 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
@@ -61,6 +62,39 @@ fun NestTheme(
             colors = themeColors,
             typography = OpenSauceTypography,
             content = content
+        )
+    }
+}
+
+@Preview
+@Composable
+fun ThemePreview() {
+    val darkTheme = true
+    val themeColors = if (darkTheme) {
+        NestThemeDark
+    } else {
+        NestThemeLight
+    }
+    val elevation = if (darkTheme) DarkElevation else LightElevation
+    val colors = if (darkTheme) {
+        NestNightColors()
+    } else {
+        NestLightColors()
+    }
+    
+    AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
+
+    CompositionLocalProvider(
+        LocalElevations provides elevation,
+        LocalNestColors provides colors,
+        LocalTypography provides NestTextStyle()
+    ) {
+        MaterialTheme(
+            colors = themeColors,
+            typography = OpenSauceTypography,
+            content = {
+
+            }
         )
     }
 }
