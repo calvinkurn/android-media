@@ -26,4 +26,10 @@
     <dimen name="tokopedianow_product_card_similar_product_typography_height_bottom">14dp</dimen>
     <dimen name="tokopedianow_product_card_similar_product_typography_width_left">2dp</dimen>
     <dimen name="tokopedianow_product_card_similar_product_typography_height_top">1dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_width">11dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_height">13dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_margin_top">0dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_margin_end">8dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_margin_bottom">26dp</dimen>
+    <dimen name="tokopedianow_product_card_progress_bar_margin_start">8dp</dimen>
 </resources>

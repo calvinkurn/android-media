@@ -13,13 +13,16 @@ import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.unifycomponents.ProgressBarUnify
 
 class TokoNowProductCardView @JvmOverloads constructor(
     context: Context,
@@ -28,6 +31,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     companion object {
         private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 1.0f
+        private const val WORDING_SEGERA_HABIS = "Segera Habis"
     }
 
     private var binding: LayoutTokopedianowProductCardViewBinding
@@ -39,33 +43,55 @@ class TokoNowProductCardView @JvmOverloads constructor(
          * - init category info
          * - set text and background color from BE (promo label and assigned value)
          */
-        setupUi()
+        val model = TokoNowProductCardViewUiModel(
+            imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
+            minOrder = 2,
+            maxOrder = 3,
+            price = "Rp 15.000.000",
+            discount = "10%",
+            slashPrice = "12121",
+            name = "hello world",
+            rating = "4.5",
+            progressBarLabel = WORDING_SEGERA_HABIS,
+            progressBarLabelColor = "#ef144a",
+            progressBarPercentage = 20,
+            labelGroupList = listOf(),
+        )
+        setData(model)
     }
 
-    private fun setupUi() {
+    fun setData(model: TokoNowProductCardViewUiModel) {
+        setupUi(
+            model = model
+        )
+    }
+
+    private fun setupUi(
+        model: TokoNowProductCardViewUiModel
+    ) {
         val isNormal = false
-        val isOos = false
+        val isOos = true
         val isFlashSale = !isOos && !isNormal
         binding.apply {
             initImageFilterView(
-                imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
+                imageUrl = model.imageUrl,
                 brightness = if (isOos) 0.5f else 1f
             )
             initAssignedValueTypography(
                 assignedValue = "Terbaru"
             )
             initMainPriceTypography(
-                price = "1.500.000"
+                price = model.price
             )
             initPromoLabel(
-                label = "88%",
-                slashPrice = "8888"
+                label = model.discount,
+                slashPrice = model.slashPrice
             )
             initProductNameTypography(
-                productName = "product pertama ini"
+                productName = model.name
             )
             initRatingTypography(
-                rating = "4.5",
+                rating = model.rating,
                 isFlashSale = isFlashSale,
                 isNormal = isNormal
             )
@@ -75,7 +101,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initProgressBar(
                 isFlashSale = isFlashSale,
-                progressStatus = "Terjangkau"
+                progressBarLabel = model.progressBarLabel,
+                progressBarLabelColor = model.progressBarLabelColor,
+                progressBarPercentage = model.progressBarPercentage
             )
         }
     }
@@ -149,7 +177,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isOos: Boolean
     ) {
         similarProductTypography.showIfWithBlock(isOos) {
-            rightDrawable(
+            adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,
                     iconId = IconUnify.CHEVRON_DOWN,
@@ -191,13 +219,38 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initProgressBar(
         isFlashSale: Boolean,
-        progressStatus: String
+        progressBarLabel: String,
+        progressBarLabelColor: String,
+        progressBarPercentage: Int
     ) {
         progressBar.showIfWithBlock(isFlashSale) {
-            progressTypography.show()
-            progressTypography.text = progressStatus
+            setValue(progressBarPercentage, false)
+            progressBarHeight = ProgressBarUnify.SIZE_SMALL
+            progressBarColor = intArrayOf(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_RN600
+                ),
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifycomponents.R.color.Unify_RN500
+                )
+            )
+            progressTypography.showIfWithBlock(isFlashSale) {
+                text = progressBarLabel
+                if (progressBarLabelColor.isNotBlank()) {
+                    setTextColor(
+                        ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifycomponents.R.color.Unify_RN500
+                        )
+                    )
+                }
+            }
+            adjustFireIcon(progressBarLabel)
         }
     }
+
 
     /**
      * This function is used for phase 2
@@ -283,7 +336,47 @@ class TokoNowProductCardView @JvmOverloads constructor(
         constraintSet.applyTo(root)
     }
 
-    private fun TextView.rightDrawable(
+    private fun ProgressBarUnify.adjustFireIcon(
+        progressBarLabel: String
+    ) {
+        if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+            setProgressIcon(
+                icon = ContextCompat.getDrawable(
+                    context,
+                    R.drawable.tokopedianow_ic_product_card_fire_filled
+                ),
+                width = getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_width
+                ).toIntSafely(),
+                height = getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_height
+                ).toIntSafely()
+            )
+
+            setMargin(
+                getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_start
+                ).toIntSafely(),
+                getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_top
+                ).toIntSafely(),
+                getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_end
+                ).toIntSafely(),
+                getDpFromDimen(
+                    context = context,
+                    id = R.dimen.tokopedianow_product_card_progress_bar_margin_bottom
+                ).toIntSafely()
+            )
+        }
+    }
+
+    private fun TextView.adjustChevronIcon(
         drawable: Drawable?
     ) {
         val widthLeft = getDpFromDimen(
