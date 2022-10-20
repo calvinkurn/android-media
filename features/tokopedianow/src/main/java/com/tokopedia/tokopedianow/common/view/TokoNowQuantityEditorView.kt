@@ -13,6 +13,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.searchbar.navigation_component.util.getActivityFromContext
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
+import com.tokopedia.tokopedianow.common.util.ViewUtil.setDimenAsTextSize
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowQuantityEditorViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import java.util.Timer
@@ -131,6 +132,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     ) {
         if (currentState == R.id.startWithValue) {
             setEditTextWhenStartingWithValueAnimation()
+            editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_start_with_value)
+        } else if (currentState == R.id.end) {
+            editText.setDimenAsTextSize(R.dimen.tokopedianow_quantity_editor_text_size_end_with_value)
         }
     }
 
@@ -144,7 +148,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             cancelTimer()
             startTimer()
         } else if (currentState == R.id.startWithValue) {
-            setEditTextWidthAndPadding()
+            setEditTextPadding()
         }
     }
 
@@ -231,8 +235,8 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextWidthAndPadding() {
-        editText.layoutParams.width = ViewGroup.LayoutParams.WRAP_CONTENT
+    private fun LayoutTokopedianowQuantityEditorViewBinding.setEditTextPadding() {
+        editText.clearAnimation()
         editText.setPadding(
             getDpFromDimen(context, R.dimen.tokopedianow_quantity_editor_padding_horizontal).toInt(),
             DEFAULT_DP,
@@ -252,8 +256,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             if (quantity > DEFAULT_NUMBER) {
                 counter = quantity
                 editText.setText(counter.toString())
-                binding.root.setTransition(R.id.startWithValue, R.id.end)
-                setEditTextWidthAndPadding()
+                setEditTextPadding()
                 setEditTextWhenStartingWithValueAnimation()
             }
         }

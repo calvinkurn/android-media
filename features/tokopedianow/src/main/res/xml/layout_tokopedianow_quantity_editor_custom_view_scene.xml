@@ -46,10 +46,6 @@
                 motion:framePosition="0"
                 motion:motionTarget="@id/add_button" />
             <KeyAttribute
-                android:alpha="0.5"
-                motion:framePosition="50"
-                motion:motionTarget="@id/add_button" />
-            <KeyAttribute
                 android:alpha="0"
                 motion:framePosition="100"
                 motion:motionTarget="@id/add_button" />
@@ -58,10 +54,6 @@
             <KeyAttribute
                 android:alpha="1"
                 motion:framePosition="0"
-                motion:motionTarget="@id/sub_button" />
-            <KeyAttribute
-                android:alpha="0.5"
-                motion:framePosition="50"
                 motion:motionTarget="@id/sub_button" />
             <KeyAttribute
                 android:alpha="0"
@@ -136,9 +128,6 @@
             motion:layout_constraintEnd_toEndOf="@id/add_button"
             motion:layout_constraintStart_toStartOf="@id/sub_button">
             <CustomAttribute
-                motion:attributeName="textSize"
-                motion:customFloatValue="14"/>
-            <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/Unify_NN950"/>
         </Constraint>
@@ -206,9 +195,6 @@
             motion:layout_constraintStart_toStartOf="parent"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp">
-            <CustomAttribute
-                motion:attributeName="textSize"
-                motion:customFloatValue="16"/>
             <CustomAttribute
                 motion:attributeName="textColor"
                 motion:customColorValue="@color/Unify_GN500"/>
