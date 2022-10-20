@@ -156,7 +156,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
                         s.shipperProduct.forEach { sp ->
                             sp.isActive = spIds.contains(sp.shipperProductId)
                         }
-                        s.isActive = s.shipperProduct.all { sp -> sp.isActive }
+                        s.isActive = s.shipperProduct.any { sp -> sp.isActive }
                     }
                 }
                 _cplList.value = it
