@@ -90,12 +90,6 @@ data class NestTextStyle(
         fontSize = 12.sp,
         letterSpacing = 0.00833f.sp
     ),
-    val display3UpperCase: TextStyle = TextStyle(
-        fontFamily = OpenSauce,
-        fontWeight = FontWeight.Bold,
-        fontSize = 12.sp,
-        letterSpacing = 0.025f.sp
-    ),
     val paragraph1: TextStyle = TextStyle(
         fontFamily = OpenSauce,
         fontWeight = FontWeight.Normal,
