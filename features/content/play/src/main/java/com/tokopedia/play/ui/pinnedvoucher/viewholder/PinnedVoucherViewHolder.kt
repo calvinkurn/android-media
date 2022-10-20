@@ -13,11 +13,14 @@ import com.tokopedia.unifyprinciples.Typography
 /**
  * Created by mzennis on 23/02/21.
  */
-class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : BaseViewHolder(itemView) {
+class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) :
+    BaseViewHolder(itemView) {
 
-    private val ivVoucherImage = itemView.findViewById<AppCompatImageView>(R.id.iv_pinned_voucher_image)
+    private val ivVoucherImage =
+        itemView.findViewById<AppCompatImageView>(R.id.iv_pinned_voucher_image)
     private val tvVoucherTitle = itemView.findViewById<Typography>(R.id.tv_pinned_voucher_title)
-    private val tvVoucherDescription = itemView.findViewById<Typography>(R.id.tv_pinned_voucher_description)
+    private val tvVoucherDescription =
+        itemView.findViewById<Typography>(R.id.tv_pinned_voucher_description)
 
     private val childClickListener = View.OnClickListener {
         itemView.performClick()
@@ -38,11 +41,11 @@ class PinnedVoucherViewHolder(itemView: View, private val listener: Listener) : 
         tvVoucherDescription.text = item.description
 
         ivVoucherImage.setImageResource(
-                when (item.type) {
-                    MerchantVoucherType.Private -> R.drawable.ic_play_special_voucher
-                    MerchantVoucherType.Shipping -> R.drawable.ic_play_shipping_voucher
-                    else -> R.drawable.ic_play_discount_voucher
-                }
+            when {
+                item.isPrivate -> R.drawable.ic_play_special_voucher
+                item.type == MerchantVoucherType.Shipping -> R.drawable.ic_play_shipping_voucher
+                else -> R.drawable.ic_play_discount_voucher
+            }
         )
 
         itemView.setOnClickListener {

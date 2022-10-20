@@ -47,7 +47,7 @@ class PlayUiModelMapper @Inject constructor(
     @OptIn(ExperimentalStdlibApi::class)
     fun mapMerchantVouchers(input: List<Voucher>, partnerName: String): VoucherUiModel {
         val vouchers = input.map(merchantVoucherMapper::mapMerchantVoucher)
-        val eligibleForShown = vouchers.find { it.type != MerchantVoucherType.Private}
+        val eligibleForShown = vouchers.find { !it.isPrivate }
         val newVoucher = buildList {
             if(eligibleForShown != null) add(PlayVoucherUiModel.InfoHeader(partnerName))
             addAll(vouchers)

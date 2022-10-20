@@ -944,7 +944,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         when (val status = state.status) {
             is InteractiveUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.startTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
@@ -955,7 +955,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             }
             is InteractiveUiModel.Giveaway.Status.Ongoing -> {
                 interactiveActiveView?.setOngoingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.endTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayOngoingEnded)

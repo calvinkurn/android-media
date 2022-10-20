@@ -9,6 +9,7 @@ import com.google.android.gms.cast.framework.CastStateListener
 import com.google.gson.Gson
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toAmountString
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -25,6 +26,7 @@ import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.extensions.combine
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.ui.chatlist.model.PlayChat
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.ui.toolbar.model.PartnerFollowAction
 import com.tokopedia.play.ui.toolbar.model.PartnerType
 import com.tokopedia.play.util.CastPlayerHelper
@@ -52,7 +54,6 @@ import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.VoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
@@ -253,6 +254,20 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
+    private val _engagementUiState = combine(_tagItems, _interactive, _bottomInsets, _status){
+            voucher, game, bottomInsets, status -> EngagementUiState(
+        shouldShow = (voucher.voucher.voucherList.isNotEmpty() || game.interactive !is InteractiveUiModel.Unknown) && !game.isPlaying && !bottomInsets.isAnyShown && videoOrientation.isVertical && videoPlayer.isGeneral() && status.channelStatus.statusType.isActive,
+        data = buildList {
+            val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
+            if(game.interactive !is InteractiveUiModel.Unknown && isInteractiveAllowed)
+                add(EngagementUiModel.Game(interactive = game.interactive))
+            if(vouchers.isNotEmpty())
+                add(EngagementUiModel.Promo(info = vouchers.first { it.highlighted }, size = vouchers.size - 1))
+        },
+    )
+    }.flowOn(dispatchers.computation)
+
     private val _featuredProducts = _tagItems.map { tagItems ->
         /**
          * Get first found Pinned Product if any
@@ -314,10 +329,11 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
+        _engagementUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts ->
+        featuredProducts, engagement ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -335,6 +351,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
+            engagement = engagement,
         )
     }.stateIn(
         viewModelScope,
@@ -959,6 +976,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
+            OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
         }
     }
 
@@ -1516,6 +1534,8 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(interactive = giveaway)
             }
         }
+
+        if(giveaway.status is InteractiveUiModel.Giveaway.Status.Ongoing) handleAutoOpen()
     }
 
     private suspend fun handleQuizFromNetwork(quiz: InteractiveUiModel.Quiz) {
@@ -1822,8 +1842,10 @@ class PlayViewModel @AssistedInject constructor(
 
             delay(INTERACTIVE_FINISH_MESSAGE_DELAY)
 
+            val winnerStatus = _winnerStatus.value
+            val interactiveType = _interactive.value.interactive
+
             suspend fun checkWinnerStatus(): Boolean {
-                val winnerStatus = _winnerStatus.value
                 return if (winnerStatus != null) {
                     processWinnerStatus(winnerStatus, interactive.interactive)
                     true
@@ -1834,7 +1856,7 @@ class PlayViewModel @AssistedInject constructor(
                 delayTapJob?.cancel()
                 delayTapJob = viewModelScope.launch(dispatchers.computation) {
                     delay(interactive.interactive.waitingDuration)
-                    checkWinnerStatus()
+                    if(!checkWinnerStatus()) showLeaderBoard(interactiveId = interactiveType.id)
                 }
             }
 
@@ -2049,6 +2071,12 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
+    private fun openWithLogin(appLink: String, requestCode: Int? = null){
+        needLogin(requestCode) {
+            openPage(appLink)
+        }
+    }
+
     private fun handleClickPartnerName(applink: String) {
         val partnerInfo = _partnerInfo.value
         if (partnerInfo.type == PartnerType.Shop) playAnalytic.clickShop(channelId, channelType, partnerInfo.id.toString())
@@ -2073,6 +2101,7 @@ class PlayViewModel @AssistedInject constructor(
             REQUEST_CODE_USER_REPORT -> handleUserReport()
             REQUEST_CODE_LOGIN_UPCO_REMINDER -> handleSendReminder(selectedUpcomingCampaign, isFromLogin = true)
             REQUEST_CODE_LOGIN_PLAY_TOKONOW -> updateTagItems()
+            REQUEST_CODE_LOGIN_CART -> openPage(ApplinkConstInternalMarketplace.CART)
             else -> {}
         }
     }
@@ -2628,6 +2657,7 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
         private const val REQUEST_CODE_LOGIN_PLAY_TOKONOW = 577
+        private const val REQUEST_CODE_LOGIN_CART = 578
 
         private const val WEB_SOCKET_SOURCE_PLAY_VIEWER = "Viewer"
 

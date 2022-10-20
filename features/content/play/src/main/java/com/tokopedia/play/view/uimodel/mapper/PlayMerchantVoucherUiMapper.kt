@@ -17,7 +17,7 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
             id = input.id,
             title = input.title,
             description = input.subtitle,
-            type = if (input.isPrivate) MerchantVoucherType.Private else when (input.voucherType) {
+            type = when (input.voucherType) {
                 /**
                  * 1 -> Free Ongkir
                  * 2 -> **Not Used**
@@ -27,6 +27,7 @@ class PlayMerchantVoucherUiMapper @Inject constructor() {
                 2, 3 -> MerchantVoucherType.Discount
                 else -> MerchantVoucherType.Unknown
             },
+            isPrivate = input.isPrivate,
             code = input.code,
             copyable = input.isCopyable,
             highlighted = input.isHighlighted,

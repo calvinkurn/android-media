@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.play_common.R
+import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import java.util.*
 
@@ -23,26 +24,28 @@ private fun GameSmallWidgetView.setupGiveaway() {
 }
 
 fun GameSmallWidgetView.setupUpcomingGiveaway(
-    desc: String,
+    title: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
+    onTick: (Long) -> Unit = {},
 ) {
     setTimerVariant(TimerUnifySingle.VARIANT_GENERAL)
-    description = desc
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_start))
-    setTargetTime(targetTime) { onDurationEnd(this) }
+    this.title = title
+    this.description = context.getString(R.string.play_common_widget_interactive_start)
+    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(it)})
     setupGiveaway()
 }
 
 fun GameSmallWidgetView.setupOngoingGiveaway(
-    desc: String,
+    title: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
-) {
+    onTick: (Long) -> Unit = {},
+    ) {
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
-    description = desc
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_end))
-    setTargetTime(targetTime) { onDurationEnd(this) }
+    this.title = title
+    this.description = context.getString(R.string.play_common_widget_interactive_end)
+    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(it)})
     setupGiveaway()
 }
 
@@ -50,7 +53,8 @@ fun GameSmallWidgetView.setupQuiz(
     question: String,
     targetTime: Calendar,
     onDurationEnd: (GameSmallWidgetView) -> Unit,
-) {
+    onTick: (Long) -> Unit = {},
+    ) {
     getIconUnifyDrawable(
         context = context,
         iconId = IconUnify.QUIZ,
@@ -60,8 +64,25 @@ fun GameSmallWidgetView.setupQuiz(
     setContentBackground(
         MethodChecker.getDrawable(context, R.drawable.bg_play_quiz_widget)
     )
-    setTimerInfo(context.getString(R.string.play_common_widget_interactive_end))
-    setTargetTime(targetTime) { onDurationEnd(this) }
+    description = context.getString(R.string.play_common_widget_interactive_end)
+    setTargetTime(targetTime, onFinished = { onDurationEnd(this) }, onTicked = {onTick(it)})
     setTimerVariant(TimerUnifySingle.VARIANT_MAIN)
-    description = question
+    title = question
+}
+
+fun GameSmallWidgetView.setupPromo(
+    title: String,
+    description: String,
+){
+    this.title = title
+    this.description = description
+
+    getIconUnifyDrawable(
+        context = context,
+        iconId = IconUnify.DISCOUNT,
+        assetColor = MethodChecker.getColor(context, unifyR.color.Unify_GN500)
+    )?.let(::setIcon)
+    setContentBackground(
+        MethodChecker.getDrawable(context, R.drawable.bg_play_voucher_widget)
+    )
 }
