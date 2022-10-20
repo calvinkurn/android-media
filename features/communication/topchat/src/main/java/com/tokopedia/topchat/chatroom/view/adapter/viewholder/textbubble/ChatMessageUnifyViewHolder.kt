@@ -11,6 +11,7 @@ import com.tokopedia.chat_common.data.BaseChatUiModel
 import com.tokopedia.chat_common.data.MessageUiModel
 import com.tokopedia.chat_common.view.adapter.viewholder.BaseChatViewHolder
 import com.tokopedia.chat_common.view.adapter.viewholder.listener.ChatLinkHandlerListener
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
@@ -100,6 +101,13 @@ class ChatMessageUnifyViewHolder(
             bindHeaderInfo(msg)
             hide(fxChat?.checkMark)
             hide(header)
+        }
+        impressReadMessage(msg)
+    }
+
+    private fun impressReadMessage(msg: MessageUiModel) {
+        itemView.addOnImpressionListener(msg.impressHolder) {
+            commonListener.impressReadMessageForBubbles(msg.replyId)
         }
     }
 
