@@ -69,9 +69,6 @@ import kotlin.concurrent.schedule
 
 class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPharmacyListener {
 
-    private var ePharmacyToolTipText : Typography? = null
-    private var ePharmacyToolTipHyperLinkText : Typography? = null
-    private var ePharmacyToolTipGroup : Group? = null
     private var ePharmacyRecyclerView : RecyclerView? = null
     private var ePharmacyDoneButton : UnifyButton? = null
     private var ePharmacyLoader : LoaderUnify? = null
@@ -139,11 +136,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun initViews(view: View) {
         view.apply {
-            ePharmacyToolTipText = findViewById(R.id.tooltip)
-            ePharmacyToolTipHyperLinkText = findViewById(R.id.tooltip_hyperlink_text)
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyDoneButton = findViewById(R.id.done_button)
-            ePharmacyToolTipGroup = findViewById(R.id.tooltip_group)
             ePharmacyLoader = findViewById(R.id.epharmacy_loader)
             ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
         }
@@ -151,7 +145,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun initData(){
         setupRecyclerView()
-        renderToolTip()
         renderButtons()
     }
 
@@ -168,14 +161,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         ePharmacyRecyclerView?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = ePharmacyAdapter
-        }
-    }
-
-    private fun renderToolTip() {
-        ePharmacyToolTipText?.text = context?.resources?.getString(R.string.epharmacy_terms)
-        ePharmacyToolTipHyperLinkText?.text = context?.resources?.getString(R.string.epharmacy_terms_hyper_text)
-        ePharmacyToolTipHyperLinkText?.setOnClickListener {
-            showTnC()
         }
     }
 
@@ -406,17 +391,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     }
 
     private fun showDoneButtonState(){
-        ePharmacyToolTipGroup?.hide()
         ePharmacyDoneButton?.show()
     }
 
     private fun showUploadPhotoButtonState(){
-        ePharmacyToolTipGroup?.show()
         ePharmacyDoneButton?.hide()
     }
 
     private fun hideAllButtons(){
-        ePharmacyToolTipGroup?.hide()
         ePharmacyDoneButton?.hide()
     }
 
