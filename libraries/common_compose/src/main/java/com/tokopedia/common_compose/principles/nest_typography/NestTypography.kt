@@ -30,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
  * The callback can be used to add additional decoration or functionality to the text.
  * For example, to draw selection around the text.
  **/
+@Deprecated("Please use new component", ReplaceWith("com.tokopedia.common_compose.principles: NestTypography"))
 @Composable
 fun NestTypography(
     modifier: Modifier = Modifier,
@@ -91,6 +92,7 @@ fun NestTypography(
  * The callback can be used to add additional decoration or functionality to the text.
  * For example, to draw selection around the text.
  **/
+@Deprecated("Please use new component", ReplaceWith("com.tokopedia.common_compose.principles: NestTypography"))
 @Composable
 fun NestTypography(
     modifier: Modifier = Modifier,

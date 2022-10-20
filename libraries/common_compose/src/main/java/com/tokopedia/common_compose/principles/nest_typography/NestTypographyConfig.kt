@@ -19,9 +19,9 @@ internal fun getFontSize(
     type: NestTypographyType
 ): TextUnit = if (style.fontSize == TextUnit.Unspecified) {
     if (isFontTypeOpenSauceOne) {
-        type.fontSize
-    } else {
         type.openSourceSize
+    } else {
+        type.fontSize
     }
 } else {
     style.fontSize
@@ -66,7 +66,7 @@ internal fun getFontFamily(
         NestTypographyType.Heading4,
         NestTypographyType.Heading5,
         NestTypographyType.Heading6,
-        NestTypographyType.Display3
+        NestTypographyType.Display3Uppercase
     )
     val isBold = boldType.contains(type) || weight == NestTypographyWeight.Bold
 

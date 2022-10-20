@@ -12,7 +12,7 @@ enum class NestTypographyType(
     open val fontSize: TextUnit,
     open val openSourceSize: TextUnit,
 ) {
-    Heading1(fontSize = 24.sp, openSourceSize = 28.sp),
+    Heading1(fontSize = 28.sp, openSourceSize = 24.sp),
     Heading2(fontSize = 20.sp, openSourceSize = 20.sp),
     Heading3(fontSize = 18.sp, openSourceSize = 18.sp),
     Heading4(fontSize = 16.sp, openSourceSize = 16.sp),

@@ -3,21 +3,54 @@ package com.tokopedia.common_compose.principles
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.ParagraphStyle
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
 fun NestTypography(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600)
+    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600),
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
 ) {
     Text(
         text = text,
         modifier = modifier,
-        style = textStyle
+        style = textStyle,
+        maxLines = maxLines,
+        overflow = overflow,
+        onTextLayout = onTextLayout
+    )
+}
+
+@Composable
+fun NestTypography(
+    text: AnnotatedString,
+    modifier: Modifier = Modifier,
+    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN600),
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis,
+    onTextLayout: (TextLayoutResult) -> Unit = {}
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        style = textStyle,
+        maxLines = maxLines,
+        overflow = overflow,
+        onTextLayout = onTextLayout
     )
 }
 
@@ -37,5 +70,29 @@ fun NestTypographyBoldPreview() {
         text = "Flash Sale",
         Modifier,
         textStyle = NestTheme.typography.display3.copy(fontWeight = FontWeight.Bold)
+    )
+}
+
+@Preview(name = "Typography with Annotation String")
+@Composable
+fun NestTypographyAnnotationPreview() {
+    NestTypography(
+        text = buildAnnotatedString {
+            withStyle(style = ParagraphStyle(lineHeight = 30.sp)) {
+                withStyle(style = SpanStyle(color = NestTheme.colors.NN600)) {
+                    append("Hello ")
+                }
+                withStyle(
+                    style = SpanStyle(
+                        fontWeight = FontWeight.Bold,
+                        color = NestTheme.colors.GN500
+                    )
+                ) {
+                    append("World ")
+                }
+                append("Compose")
+            }
+        },
+        Modifier
     )
 }
