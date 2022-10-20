@@ -48,7 +48,7 @@ class CatalogListingRepository @Inject constructor(@Named(CommonConstant.GQLQuer
         val graphqlRequestPoints = GraphqlRequest(tp_gql_current_Point,
                 TokoPointDetailEntity::class.java, false)
         mGetPointData.addRequest(graphqlRequestPoints)
-        mGetPointData.executeOnBackground().getSuccessData<TokoPointDetailEntity>()
+        mGetPointData.executeOnBackground().getSuccessData<TokoPointDetailEntity?>()
     }
 
 }

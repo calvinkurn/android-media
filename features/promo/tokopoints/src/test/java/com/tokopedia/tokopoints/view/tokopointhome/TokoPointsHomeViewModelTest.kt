@@ -10,7 +10,7 @@ import com.tokopedia.tokopoints.view.model.rewardintro.IntroResponse
 import com.tokopedia.tokopoints.view.model.rewardintro.TokopediaRewardIntroPage
 import com.tokopedia.tokopoints.view.model.rewardtopsection.RewardResponse
 import com.tokopedia.tokopoints.view.model.rewardtopsection.TokopediaRewardTopSection
-import com.tokopedia.tokopoints.view.model.section.SectionContent
+import com.tokopedia.tokopoints.view.model.section.TokopointsSection
 import com.tokopedia.tokopoints.view.model.section.TokopointsSectionOuter
 import com.tokopedia.tokopoints.view.recommwidget.RewardsRecommUsecase
 import com.tokopedia.tokopoints.view.util.CommonConstant
@@ -61,7 +61,6 @@ class TokoPointsHomeViewModelTest {
             every { onChanged(any()) } just Runs
         }
         val data = mockk<TokopediaRewardTopSection>()
-        val dataSection = mockk<List<SectionContent>>()
         val tokenData = mockk<LuckyEggEntity> {
             every { resultStatus.code } returns CommonConstant.CouponRedemptionCode.SUCCESS
         }
@@ -70,7 +69,7 @@ class TokoPointsHomeViewModelTest {
                 every { tokopediaRewardTopSection } returns data
             }
             every { getData<TokopointsSectionOuter>(TokopointsSectionOuter::class.java) } returns mockk {
-                every { sectionContent } returns null
+                every { sectionContent } returns TokopointsSection()
             }
             every { getData<TokenDetailOuter>(TokenDetailOuter::class.java) } returns mockk {
                 every { tokenDetail } returns tokenData
