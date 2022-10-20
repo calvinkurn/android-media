@@ -161,7 +161,7 @@
     </string-array>
 
     <!-- Content Descriptions -->
-    <string name="contact_us_image_viewer">Image Viewer </string>
+    <string name="contact_us_image_viewer_placeholder">Image Viewer Placeholder</string>
     <string name="contact_us_image_uploader">Image Uploader</string>
     <string name="contact_us_image_uploader_delete_button">Image Uploader Delete Button</string>
     <string name="contact_us_attachment">Add attachment</string>
