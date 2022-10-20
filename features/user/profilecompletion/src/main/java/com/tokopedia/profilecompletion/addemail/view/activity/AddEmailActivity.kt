@@ -13,7 +13,7 @@ import com.tokopedia.profilecompletion.di.ProfileCompletionSettingModule
 
 /**
  * @author by nisie on 22/04/19.
- * For navigate: use {@link ApplinkConstInternalGlobal.ADD_EMAIL}
+ * For navigate: use {@link ApplinkConstInternalUserPlatform.ADD_EMAIL}
  */
 class AddEmailActivity : BaseSimpleActivity(), HasComponent<ProfileCompletionSettingComponent> {
 

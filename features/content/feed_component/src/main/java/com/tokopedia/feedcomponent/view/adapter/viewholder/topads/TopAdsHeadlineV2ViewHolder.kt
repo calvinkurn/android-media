@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.util.TopadsRollenceUtil
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
@@ -106,6 +107,9 @@ open class TopAdsHeadlineV2ViewHolder(
                     element.feedXCard
             )
             PAYLOAD_ANIMATE_FOLLOW -> topadsPostDynamic.bindFollow(element.feedXCard)
+            DynamicPostNewViewHolder.PAYLOAD_CTA_VISIBLE -> {
+                topadsPostDynamic.onCTAVisible(element.feedXCard)
+            }
         }
     }
 

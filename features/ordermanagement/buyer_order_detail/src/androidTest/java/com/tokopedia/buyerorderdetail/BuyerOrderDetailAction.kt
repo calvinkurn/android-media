@@ -343,6 +343,10 @@ class BuyerOrderDetailAction {
         clickSecondaryActionButtonOnFinishOrderConfirmationBottomSheet()
     }
 
+    fun testClickSecondaryActionButtonCheckPrescription(activity: BuyerOrderDetailActivityStub) {
+        clickSecondaryActionButton(activity, BuyerOrderDetailTrackerValidationConstant.ACTION_BUTTON_CHECK_PRESCRIPTION)
+    }
+
     fun testClickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet(activity: AppCompatActivity, fromPrimaryActionButton: Boolean) {
         openFinishOrderConfirmationBottomSheet(activity, fromPrimaryActionButton)
         clickPrimaryActionButtonOnFinishOrderConfirmationBottomSheet()
@@ -418,10 +422,26 @@ class BuyerOrderDetailMock {
                 )
             )
         ),
+        MOCK_RESPONSE_400_E_PHARMACY(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_epharm_400,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
         MOCK_RESPONSE_220(
             listOf(
                 BuyerOrderDetailMockResponseData(
                     com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_220,
+                    GetBuyerOrderDetailResponse.Data::class.java
+                )
+            )
+        ),
+        MOCK_RESPONSE_220_E_PHARMACY(
+            listOf(
+                BuyerOrderDetailMockResponseData(
+                    com.tokopedia.buyerorderdetail.test.R.raw.response_mock_data_order_epharm_220,
                     GetBuyerOrderDetailResponse.Data::class.java
                 )
             )

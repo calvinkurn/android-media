@@ -199,7 +199,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun setActionAfterSuccessAdminRedirection(appLink: String) {
-        if (appLink == ApplinkConstInternalGlobal.PHONE_SHOP_CREATION) {
+        if (appLink == ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION) {
             showLoading()
             if (userSession.isLoggedIn) {
                 shopCreationViewModel.getUserProfile()
@@ -339,7 +339,7 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToNameShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.NAME_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.NAME_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_NAME_SHOP_CREATION)
     }
 
@@ -350,12 +350,12 @@ class LandingShopCreationFragment : BaseShopCreationFragment(), IOnBackPressed {
     }
 
     private fun goToPhoneShopCreation() {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }
 
     private fun goToPhoneShopCreation(phone: String) {
-        val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.PHONE_SHOP_CREATION)
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.PHONE_SHOP_CREATION)
         intent.putExtra(ApplinkConstInternalGlobal.PARAM_PHONE, phone)
         startActivityForResult(intent, REQUEST_CODE_PHONE_SHOP_CREATION)
     }

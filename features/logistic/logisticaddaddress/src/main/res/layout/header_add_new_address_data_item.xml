@@ -20,12 +20,12 @@
 
     <com.tokopedia.design.component.ButtonCompat
         android:id="@+id/btn_map"
-        android:layout_width="@dimen/dp_150"
+        android:layout_width="150dp"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="@dimen/dp_27"
+        android:layout_marginBottom="27dp"
         android:foreground="?selectableItemBackground"
         android:text="@string/change_pinpoint"
         android:textAllCaps="false"
@@ -48,7 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/pointer_0"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dp_50"
+        android:layout_marginTop="50dp"
         android:contentDescription="@string/pointer"
         app:srcCompat="@drawable/ic_green_pointer" />
 

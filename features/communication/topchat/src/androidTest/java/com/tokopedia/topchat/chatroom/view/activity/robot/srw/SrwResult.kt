@@ -6,6 +6,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.topchat.R
+import com.tokopedia.topchat.matchers.atPosition
+import com.tokopedia.topchat.matchers.withIndex
 import com.tokopedia.topchat.matchers.withRecyclerView
 import org.hamcrest.Matchers.not
 
@@ -23,9 +25,8 @@ object SrwResult {
         } else {
             not(isDisplayed())
         }
-        withRecyclerView(R.id.rv_srw_partial)
-            .atPosition(position)
-            .matches(matcher)
+        onView(withIndex(withId(R.id.rv_srw_partial), 0))
+            .check(matches(atPosition(position, R.id.label_srw_question,matcher)))
     }
 
     fun assertSrwCoachMark(isVisible: Boolean, text: String) {

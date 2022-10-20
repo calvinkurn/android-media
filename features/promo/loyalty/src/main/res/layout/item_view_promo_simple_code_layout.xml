@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_white_outline_grey"
     android:orientation="vertical"
-    android:padding="@dimen/dp_15">
+    android:padding="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"

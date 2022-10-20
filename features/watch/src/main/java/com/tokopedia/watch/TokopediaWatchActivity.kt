@@ -71,7 +71,8 @@ class TokopediaWatchActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_tokopedia_watch)
+        binding = ActivityTokopediaWatchBinding.inflate(layoutInflater)
+        setContentView(binding?.root)
 
         userSession = UserSession(this)
 

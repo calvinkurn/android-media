@@ -8,6 +8,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.wishlist.data.model.WishlistV2UiModel
 import com.tokopedia.wishlist.data.model.response.WishlistV2Response
 import java.util.HashMap
 
@@ -263,7 +264,7 @@ object WishlistV2Analytics {
         TrackApp.getInstance().gtm.sendGeneralEvent(event)
     }
 
-    fun clickProductCard(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, userId: String, position: Int) {
+    fun clickProductCard(wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int) {
         val arrayWishlistItems = arrayListOf<Bundle>()
         val bundleProduct = Bundle().apply {
             putString(DIMENSION_38, "")
@@ -296,7 +297,7 @@ object WishlistV2Analytics {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
-    fun viewProductCard(trackingQueue: TrackingQueue, wishlistItem: WishlistV2Response.Data.WishlistV2.Item, userId: String, position: String) {
+    fun viewProductCard(trackingQueue: TrackingQueue, wishlistItem: WishlistV2UiModel.Item, userId: String, position: String) {
         val map = DataLayer.mapOf(
                 EVENT, PRODUCT_VIEW,
                 EVENT_CATEGORY, WISHLIST_PAGE,
@@ -312,7 +313,7 @@ object WishlistV2Analytics {
         trackingQueue.putEETracking(map as HashMap<String, Any>)
     }
 
-    private fun convertOrderItemToDataImpressionObject(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, position: String): List<Any> {
+    private fun convertOrderItemToDataImpressionObject(wishlistItem: WishlistV2UiModel.Item, position: String): List<Any> {
         return listOf(DataLayer.mapOf(
                 ITEM_NAME, wishlistItem.name,
                 ITEM_ID, wishlistItem.id,
@@ -328,7 +329,7 @@ object WishlistV2Analytics {
         ))
     }
 
-    fun clickAtcOnWishlist(wishlistItem: WishlistV2Response.Data.WishlistV2.Item, userId: String, position: Int, cartId: String) {
+    fun clickAtcOnWishlist(wishlistItem: WishlistV2UiModel.Item, userId: String, position: Int, cartId: String) {
         val arrayWishlistItems = arrayListOf<Bundle>()
         val bundleProduct = Bundle().apply {
             putString(CATEGORY_ID, "")

@@ -31,6 +31,7 @@ import com.tokopedia.cart.view.uimodel.DisabledItemHeaderHolderData
 import com.tokopedia.cart.view.uimodel.DisabledReasonHolderData
 import com.tokopedia.cart.view.uimodel.PromoSummaryData
 import com.tokopedia.cart.view.uimodel.PromoSummaryDetailData
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.BenefitSummaryInfo
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.SummariesItem
@@ -55,7 +56,7 @@ object CartUiModelMapper {
     private const val BUNDLE_NO_VARIANT_CONST = -1
 
     fun mapTickerAnnouncementUiModel(ticker: Ticker): TickerAnnouncementHolderData {
-        return TickerAnnouncementHolderData(id = ticker.id, message = ticker.message)
+        return TickerAnnouncementHolderData(id = ticker.id, title = ticker.title, message = ticker.message)
     }
 
     fun mapChooseAddressUiModel(): CartChooseAddressHolderData {
@@ -136,17 +137,8 @@ object CartUiModelMapper {
                 preOrderInfo = availableGroup.shipmentInformation.preorder.duration
                 incidentInfo = availableGroup.shop.shopAlertMessage
                 isFreeShippingExtra = availableGroup.shipmentInformation.freeShippingExtra.eligible
-                freeShippingBadgeUrl = when {
-                    availableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                        availableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                    }
-                    availableGroup.shipmentInformation.freeShipping.eligible -> {
-                        availableGroup.shipmentInformation.freeShipping.badgeUrl
-                    }
-                    else -> {
-                        ""
-                    }
-                }
+                freeShippingBadgeUrl = availableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                isFreeShippingPlus = availableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                 maximumWeightWording = availableGroup.shop.maximumWeightWording
                 maximumShippingWeight = availableGroup.shop.maximumShippingWeight
                 if (availableGroup.checkboxState) {
@@ -176,6 +168,13 @@ object CartUiModelMapper {
                 if (availableGroup.giftingAddOn.addOnIds.isNotEmpty()) {
                     addOnId = availableGroup.giftingAddOn.addOnIds[0]
                 }
+                warehouseId = availableGroup.warehouse.warehouseId.toLongOrZero()
+                isPo = availableGroup.shipmentInformation.preorder.isPreorder
+                poDuration = availableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
+                boCode = cartData.promo.lastApplyPromo.lastApplyPromoData.listVoucherOrders.firstOrNull {
+                    it.uniqueId == cartString && it.shippingId > 0 &&
+                    it.spId > 0 && it.type == "logistic"
+                }?.code ?: ""
             }
             cartShopHolderDataList.add(shopUiModel)
         }
@@ -279,17 +278,8 @@ object CartUiModelMapper {
                     preOrderInfo = unavailableGroup.shipmentInformation.preorder.duration
                     incidentInfo = unavailableGroup.shop.shopAlertMessage
                     isFreeShippingExtra = unavailableGroup.shipmentInformation.freeShippingExtra.eligible
-                    freeShippingBadgeUrl = when {
-                        unavailableGroup.shipmentInformation.freeShippingExtra.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShippingExtra.badgeUrl
-                        }
-                        unavailableGroup.shipmentInformation.freeShipping.eligible -> {
-                            unavailableGroup.shipmentInformation.freeShipping.badgeUrl
-                        }
-                        else -> {
-                            ""
-                        }
-                    }
+                    freeShippingBadgeUrl = unavailableGroup.shipmentInformation.freeShippingGeneral.badgeUrl
+                    isFreeShippingPlus = unavailableGroup.shipmentInformation.freeShippingGeneral.isBoTypePlus()
                     maximumWeightWording = unavailableGroup.shop.maximumWeightWording
                     maximumShippingWeight = unavailableGroup.shop.maximumShippingWeight
                     shopTypeInfo = unavailableGroup.shop.shopTypeInfo
@@ -298,6 +288,9 @@ object CartUiModelMapper {
                     isCollapsible = isTokoNow && cartData.availableSection.availableGroupGroups.size > 1 && productUiModelList.size > 1
                     isCollapsed = isCollapsible
                     isError = true
+                    warehouseId = unavailableGroup.warehouse.warehouseId.toLongOrZero()
+                    isPo = unavailableGroup.shipmentInformation.preorder.isPreorder
+                    poDuration = unavailableGroup.cartDetails.getOrNull(0)?.products?.getOrNull(0)?.productPreorder?.durationDay?.toString() ?: "0"
                 }
                 unavailableSectionList.add(shopUiModel)
             }
@@ -381,6 +374,9 @@ object CartUiModelMapper {
                 actionsData = cartData.availableSection.actions
                 isError = false
             }
+            needPrescription = product.ethicalDrug.needPrescription
+            butuhResepText = product.ethicalDrug.text
+            butuhResepIconUrl = product.ethicalDrug.iconUrl
             isSelected = product.isCheckboxState
             productName = product.productName
             productImage = product.productImage.imageSrc100Square
@@ -467,6 +463,7 @@ object CartUiModelMapper {
             promoDetails = promoAnalyticsData.second
             isFreeShippingExtra = product.freeShippingExtra.eligible
             isFreeShipping = product.freeShipping.eligible
+            freeShippingName = product.freeShippingGeneral.boName
             campaignId = product.campaignId
             warehouseId = product.warehouseId
         }

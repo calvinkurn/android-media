@@ -96,7 +96,7 @@ data class BenefitSummaryInfoDeals(
         val final_benefit_amount_str: String = "",
         @SerializedName("final_benefit_amount")
         @Expose
-        val final_benefit_amount: Int = 0,
+        val final_benefit_amount: Long = 0L,
         @SerializedName("summaries")
         @Expose
         val summaries: List<Summaries> = emptyList()
@@ -115,7 +115,7 @@ data class Summaries(
         val amount_str: String = "",
         @SerializedName("amount")
         @Expose
-        val amount: Int = 0,
+        val amount: Long = 0L,
         @SerializedName("details")
         @Expose
         val details: List<Details> = emptyList()
@@ -133,7 +133,7 @@ data class Details(
         val amount_str: String = "",
         @SerializedName("amount")
         @Expose
-        val amount: Int = 0,
+        val amount: Long = 0L,
         @SerializedName("points")
         @Expose
         val points: Int = 0
@@ -175,10 +175,10 @@ data class BenefitSummary(
 data class BenefitDetails(
         @SerializedName("amount_idr")
         @Expose
-        val amount_idr: Int = 0,
+        val amount_idr: Long = 0L,
         @SerializedName("amount_points")
         @Expose
-        val amount_points: Int = 0,
+        val amount_points: Long = 0L,
         @SerializedName("data_type")
         @Expose
         val data_type: String = "",
@@ -238,7 +238,7 @@ data class UsageSummaries(
         val amount_str: String = "",
         @SerializedName("amount")
         @Expose
-        val amount: Int = 0,
+        val amount: Long = 0,
         @SerializedName("currency_details_str")
         @Expose
         val currency_details_str: String = "",

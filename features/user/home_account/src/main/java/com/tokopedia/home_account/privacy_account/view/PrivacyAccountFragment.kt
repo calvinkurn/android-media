@@ -17,6 +17,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.home_account.R
 import com.tokopedia.home_account.analytics.HomeAccountAnalytics
@@ -287,7 +288,7 @@ class PrivacyAccountFragment : BaseDaggerFragment() {
     private fun onLinkAccountClicked() {
         homeAccountAnalytics.trackClickHubungkanLinkAccountPage()
         val intent =
-            RouteManager.getIntent(activity, ApplinkConstInternalGlobal.LINK_ACCOUNT_WEBVIEW)
+            RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.LINK_ACCOUNT_WEBVIEW)
                 .apply {
                     putExtra(
                         ApplinkConstInternalGlobal.PARAM_LD,

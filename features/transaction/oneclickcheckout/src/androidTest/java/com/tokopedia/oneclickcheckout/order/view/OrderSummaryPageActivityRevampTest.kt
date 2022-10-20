@@ -454,6 +454,8 @@ class OrderSummaryPageActivityRevampTest {
                 closeBottomSheet()
             }
 
+            promoInterceptor.customValidateUseResponsePath = null
+
             clickChangeCourierRevamp {
                 chooseCourierWithText("Next Day (1 hari)")
             }
@@ -538,7 +540,6 @@ class OrderSummaryPageActivityRevampTest {
         cartInterceptor.customGetOccCartThrowable = IOException()
 
         activityRule.launchActivity(null)
-        intending(anyIntent()).respondWith(ActivityResult(Activity.RESULT_OK, null))
 
         orderSummaryPage {
             assertGlobalErrorVisible()

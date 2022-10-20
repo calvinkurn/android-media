@@ -5,8 +5,25 @@ import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCan
 import com.tokopedia.flight.cancellationdetail.presentation.model.FlightOrderCancellationListModel
 import com.tokopedia.flight.common.view.enum.FlightPassengerTitle
 import com.tokopedia.flight.common.view.enum.FlightPassengerType
-import com.tokopedia.flight.orderdetail.data.*
-import com.tokopedia.flight.orderdetail.presentation.model.*
+import com.tokopedia.flight.orderdetail.data.FlightOrderDetailEntity
+import com.tokopedia.flight.orderdetail.data.OrderDetailCancellation
+import com.tokopedia.flight.orderdetail.data.OrderDetailJourney
+import com.tokopedia.flight.orderdetail.data.OrderDetailPassenger
+import com.tokopedia.flight.orderdetail.data.QueryOrderDetail
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailActionButtonModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailAmenityModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailCancellationModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailConditionalInfoModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailDataModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailFareModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailFreeAmenityModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailInsuranceModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailJourneyModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerCancelStatusModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPassengerModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailPaymentModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailRouteModel
+import com.tokopedia.flight.orderdetail.presentation.model.FlightOrderDetailWebCheckInModel
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
@@ -31,7 +48,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
+        val graphqlRequest = GraphqlRequest(QueryOrderDetail(),
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 
@@ -51,7 +68,7 @@ class FlightOrderDetailUseCase @Inject constructor(
         useCase.clearRequest()
 
         val params = mapOf(PARAM_DATA to mapOf(PARAM_INVOICE_ID to invoiceId))
-        val graphqlRequest = GraphqlRequest(FlightOrderDetailGqlConst.QUERY_ORDER_DETAIL,
+        val graphqlRequest = GraphqlRequest(QueryOrderDetail(),
                 FlightOrderDetailEntity.Response::class.java, params)
         useCase.addRequest(graphqlRequest)
 

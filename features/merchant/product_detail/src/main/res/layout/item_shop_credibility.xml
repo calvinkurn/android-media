@@ -8,7 +8,7 @@
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/shop_credibility_separator_top"
         android:layout_width="match_parent"
-        android:layout_height="8dp"/>
+        android:layout_height="2dp"/>
 
     <ViewStub
         android:id="@+id/shop_credibility_main"

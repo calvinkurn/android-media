@@ -12,7 +12,7 @@ open class MediaRepository constructor(
     , LoaderDataSource by loaderDataSource {
 
     override fun execute(param: Long): List<Media> {
-        val cursor = query(param, FIRST_LIMIT)?: error("cannot find the query")
+        val cursor = query(param, FIRST_LIMIT)?: return emptyList()
         val medias = mutableListOf<Media>()
 
         if (cursor.moveToFirst()) {

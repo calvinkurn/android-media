@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:focusable="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_corner_radius="0" />
+
+    <com.tokopedia.videoplayer.view.widget.VideoPlayerView
+        android:id="@+id/video_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/shimmer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:visibility="gone"
+        app:loader_corner_radius="0dp"
+        app:loader_type="rect" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/play_button_bg"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:alpha="0.68"
+        android:src="@color/Unify_N700"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/play_button"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="2dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/iconunify_play"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/video_duration_bg"
+        android:layout_width="48dp"
+        android:layout_height="22dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginBottom="12dp"
+        android:src="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:unify_image_corner_radius="5"
+        app:unify_image_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/video_duration_bg"
+        app:layout_constraintEnd_toEndOf="@id/video_duration_bg"
+        app:layout_constraintStart_toStartOf="@id/video_duration_bg"
+        app:layout_constraintTop_toTopOf="@id/video_duration_bg"
+        app:typographyType="display_3"
+        tools:text="01:30"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/fullscreen_button_bg"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="12dp"
+        android:src="@color/Unify_NN950"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:unify_image_corner_radius="5"
+        app:unify_image_type="rect"
+        tools:visibility="visible" />
+
+    <com.tokopedia.iconunify.IconUnify
+        android:id="@+id/fullscreen_btn"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:visibility="gone"
+        app:icon_color_light_enable="@color/Unify_NN0"
+        app:icon_name="SCREEN_FULL"
+        app:layout_constraintBottom_toBottomOf="@id/fullscreen_button_bg"
+        app:layout_constraintEnd_toEndOf="@id/fullscreen_button_bg"
+        app:layout_constraintStart_toStartOf="@id/fullscreen_button_bg"
+        app:layout_constraintTop_toTopOf="@id/fullscreen_button_bg"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>

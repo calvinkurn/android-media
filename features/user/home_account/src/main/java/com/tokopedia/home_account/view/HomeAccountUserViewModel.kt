@@ -27,6 +27,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.usercomponents.tokopediaplus.common.TokopediaPlusCons
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusDataModel
+import com.tokopedia.usercomponents.tokopediaplus.domain.TokopediaPlusUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
@@ -51,6 +54,7 @@ class HomeAccountUserViewModel @Inject constructor(
     private val getPhoneUseCase: GetUserProfile,
     private val userProfileSafeModeUseCase: UserProfileSafeModeUseCase,
     private val checkFingerprintToggleStatusUseCase: CheckFingerprintToggleStatusUseCase,
+    private val tokopediaPlusUseCase: TokopediaPlusUseCase,
     private val saveAttributeOnLocal: SaveAttributeOnLocalUseCase,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
@@ -100,6 +104,10 @@ class HomeAccountUserViewModel @Inject constructor(
     private val mutableCheckFingerprintStatus = MutableLiveData<Result<CheckFingerprintResult>>()
     val checkFingerprintStatus: LiveData<Result<CheckFingerprintResult>>
         get() = mutableCheckFingerprintStatus
+
+    private val _tokopediaPlusData = MutableLiveData<Result<TokopediaPlusDataModel>>()
+    val tokopediaPlusData: LiveData<Result<TokopediaPlusDataModel>>
+        get() = _tokopediaPlusData
 
     fun refreshPhoneNo() {
         launchCatchError(block = {
@@ -290,6 +298,22 @@ class HomeAccountUserViewModel @Inject constructor(
         } else {
             _balanceAndPoint.value = ResultBalanceAndPoint.Fail(IllegalArgumentException(), walletId)
         }
+    }
+
+    /**
+     * Tokopedia Plus (Goto Plus)
+     */
+
+    fun getTokopediaWidgetContent() {
+        launchCatchError(coroutineContext, {
+            val response = tokopediaPlusUseCase(mapOf(
+                TokopediaPlusUseCase.PARAM_SOURCE to TokopediaPlusCons.SOURCE_ACCOUNT_PAGE
+            ))
+
+            _tokopediaPlusData.value = Success(response.tokopediaPlus)
+        }, {
+            _tokopediaPlusData.value = Fail(it)
+        })
     }
 
     private fun checkFirstPage(page: Int): Boolean = page == 1

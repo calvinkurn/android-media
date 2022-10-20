@@ -20,7 +20,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -97,7 +97,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.transition
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.flexBoxLayout
-    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
     implementation rootProject.ext.miscDependencies.liveDataKtx
 
     implementation rootProject.ext.networkDependencies.glide
@@ -112,6 +111,8 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
 
     implementation rootProject.ext.tkpdInternalLibDependencies.larixBroadcaster
+
+    implementation rootProject.ext.testDependencies.espressoIdlingResource
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 

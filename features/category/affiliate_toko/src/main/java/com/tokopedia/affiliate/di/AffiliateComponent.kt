@@ -15,6 +15,7 @@ import com.tokopedia.affiliate.ui.fragment.AffiliateRecommendedProductFragment
 import com.tokopedia.affiliate.ui.activity.AffiliateSaldoWithdrawalDetailActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateTransactionDetailActivity
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
+import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateRecylerBottomSheet
 import com.tokopedia.affiliate.ui.fragment.AffiliateHelpFragment
 import com.tokopedia.affiliate.ui.fragment.AffiliateHomeFragment
@@ -68,5 +69,7 @@ interface AffiliateComponent {
     fun injectWithdrawalInfoFragment(affiliateTransactionDetailFragment: AffiliateTransactionDetailFragment)
 
     fun injectDateFilterBottomSheet(affiliateDateFilterBottomSheet: AffiliateBottomDatePicker)
+
+    fun injectHomeBottomSheetCommunication(affiliateBottomSheetInfo: AffiliateBottomSheetInfo)
 
 }

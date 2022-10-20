@@ -25,6 +25,7 @@ object CommonTopupBillsGqlMutation {
         mutation updateFavorite(${'$'}updateRequest: favoriteDetailUpdateRequest!) {
           updateFavoriteDetail(updateRequest:${'$'}updateRequest) {
             clientNumber
+            hashedClientNumber
             operatorID
             productID
             categoryID

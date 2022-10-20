@@ -25,6 +25,7 @@ object TokofoodErrorLogger {
         internal const val PURCHASE = "PURCHASE"
         internal const val PROMO = "PROMO"
         internal const val POST_PURCHASE = "POST_PURCHASE"
+        internal const val SEARCH = "SEARCH"
     }
 
     object ErrorDescription {
@@ -38,6 +39,14 @@ object TokofoodErrorLogger {
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error of get driver phone number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error of user not eligible set address"
         internal const val ERROR_LOAD_MORE_CATEGORY = "error of load more category"
+        internal const val ERROR_CHOOSE_ADDRESS_MANAGE_LOCATION = "error of choose_address in manage location"
+        internal const val ERROR_CHOOSE_ADDRESS_MERCHANT_PAGE = "error of choose_address in merchant page"
+        internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error of deliverage coverage"
+        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error of eligible for address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error load initial search state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error of remove recent search"
+        internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error load search result page"
+        internal const val ERROR_LOAD_FILTER = "error load filter"
     }
 
     object ErrorType {
@@ -51,6 +60,13 @@ object TokofoodErrorLogger {
         internal const val ERROR_DRIVER_PHONE_NUMBER = "error_driver_phone_number"
         internal const val ERROR_ELIGIBLE_SET_ADDRESS = "error_eligible_set_address"
         internal const val ERROR_LOAD_MORE_CATEGORY = "error_load_more_category"
+        internal const val ERROR_CHOOSE_ADDRESS = "error_choose_address"
+        internal const val ERROR_CHECK_DELIVERY_COVERAGE = "error_check_delivery_coverage"
+        internal const val ERROR_ELIGIBLE_FOR_ADDRESS = "error_eligible_for_address"
+        internal const val ERROR_INITIAL_SEARCH_STATE = "error_load_initial_search_state"
+        internal const val ERROR_REMOVE_RECENT_SEARCH = "error_remove_recent_search"
+        internal const val ERROR_LOAD_SEARCH_RESULT_PAGE = "error_load_srp"
+        internal const val ERROR_LOAD_FILTER = "error_load_filter"
     }
 
     fun logExceptionToServerLogger(

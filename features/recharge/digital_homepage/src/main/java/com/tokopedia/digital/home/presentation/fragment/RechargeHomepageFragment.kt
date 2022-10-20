@@ -7,7 +7,12 @@ import android.graphics.PorterDuff
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowInsets
+import android.view.WindowManager
+import android.view.WindowMetrics
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -40,12 +45,11 @@ import com.tokopedia.digital.home.presentation.listener.RechargeHomepageReminder
 import com.tokopedia.digital.home.presentation.util.RechargeHomepageSectionMapper
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel
 import com.tokopedia.digital.home.widget.RechargeSearchBarWidget
-import com.tokopedia.home_component.util.convertDpToPixel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -116,7 +120,9 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             sliceOpenApp = it.getBoolean(RECHARGE_HOME_PAGE_EXTRA, false)
         }
 
-        searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            searchBarTransitionRange = TOOLBAR_TRANSITION_RANGE_DP.dpToPx(it.resources.displayMetrics)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -168,11 +174,13 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
         while (binding.recyclerView.itemDecorationCount > 0) binding.recyclerView.removeItemDecorationAt(
             0
         )
-        binding.recyclerView.addItemDecoration(
-            RechargeHomeSectionDecoration(
-                SECTION_SPACING_DP.dpToPx(resources.displayMetrics)
+        context?.let {
+            binding.recyclerView.addItemDecoration(
+                RechargeHomeSectionDecoration(
+                    SECTION_SPACING_DP.dpToPx(it.resources.displayMetrics)
+                )
             )
-        )
+        }
         binding.recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -308,7 +316,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             viewModel.getRechargeHomepageSections(
                 viewModel.createRechargeHomepageSectionsParams(
                     platformId,
-                    listOf(sectionID.toIntOrZero()),
+                    listOf(sectionID.toIntSafely()),
                     enablePersonalize
                 )
             )
@@ -374,7 +382,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             if (toggleTracking && section != null && section.items.isNotEmpty()) {
                 viewModel.triggerRechargeSectionAction(
                     viewModel.createRechargeHomepageSectionActionParams(
-                        sectionID.toIntOrZero(),
+                        sectionID.toIntSafely(),
                         "ActionClose",
                         section.objectId,
                         section.items.first().objectId
@@ -395,7 +403,7 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
                 with(section) {
                     viewModel.triggerRechargeSectionAction(
                         viewModel.createRechargeHomepageSectionActionParams(
-                            id.toIntOrZero(),
+                            id.toIntSafely(),
                             "ActionClose",
                             objectId,
                             items.first().objectId
@@ -519,10 +527,10 @@ class RechargeHomepageFragment : BaseDaggerFragment(),
             RechargeHomepageSectionMapper.mapHomepageSections(sections, tickerList, platformId)
         val homeComponentIDs: List<Int> =
             mappedData.filterIsInstance<HomeComponentVisitable>().mapNotNull { homeComponent ->
-                homeComponent.visitableId()?.toInt()
+                homeComponent.visitableId()?.toIntSafely()
             }
         homeComponentsData =
-            sections.filter { section -> section.id.toIntOrZero() in homeComponentIDs }
+            sections.filter { section -> section.id.toIntSafely() in homeComponentIDs }
         adapter.renderList(mappedData)
     }
 

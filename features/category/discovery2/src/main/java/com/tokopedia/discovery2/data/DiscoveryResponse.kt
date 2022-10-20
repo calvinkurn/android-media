@@ -28,4 +28,5 @@ data class DiscoveryResponse(
         lateinit var componentMap: MutableMap<String, ComponentsItem>
         var cartMap: Map<MiniCartItemKey, MiniCartItem>? = null
         var sectionMap: MutableMap<String, Int>? = null
+        var queryParamMap: MutableMap<String, String?>? = null
 }

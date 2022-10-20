@@ -15,6 +15,10 @@
                     android:scheme="wear" />
                 <data
                     android:host="*"
+                    android:pathPrefix="/accept-bulk-order"
+                    android:scheme="wear" />
+                <data
+                    android:host="*"
                     android:pathPrefix="/app-detection"
                     android:scheme="wear" />
                 <data

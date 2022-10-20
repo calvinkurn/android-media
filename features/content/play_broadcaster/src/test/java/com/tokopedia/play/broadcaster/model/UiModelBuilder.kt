@@ -81,8 +81,7 @@ class UiModelBuilder {
     fun buildConfigurationUiModel(
         streamAllowed: Boolean = true,
         channelId: String = "",
-        channelType: ChannelType = ChannelType.Draft,
-        remainingTime: Long = 0L,
+        channelStatus: ChannelStatus = ChannelStatus.Draft,
         durationConfig: DurationConfigUiModel = buildDurationConfigUiModel(),
         productTagConfig: ProductTagConfigUiModel = buildProductTagConfigUiModel(),
         coverConfig: CoverConfigUiModel = buildCoverConfigUiModel(),
@@ -92,8 +91,7 @@ class UiModelBuilder {
     ) = ConfigurationUiModel(
         streamAllowed = streamAllowed,
         channelId = channelId,
-        channelType = channelType,
-        remainingTime = remainingTime,
+        channelStatus = channelStatus,
         durationConfig = durationConfig,
         productTagConfig = productTagConfig,
         coverConfig = coverConfig,
@@ -103,15 +101,15 @@ class UiModelBuilder {
     )
 
     fun buildDurationConfigUiModel(
-        duration: Long = 0L,
+        remainingDuration: Long = 0L,
         pauseDuration: Long = 0L,
-        maxDurationDesc: String = "",
-        errorMessage: String = "",
+        maxDuration: Long = 0L,
+        maxDurationDesc: String = ""
     ) = DurationConfigUiModel(
-        duration = duration,
+        remainingDuration = remainingDuration,
         pauseDuration = pauseDuration,
+        maxDuration = maxDuration,
         maxDurationDesc = maxDurationDesc,
-        errorMessage = errorMessage,
     )
 
     fun buildProductTagConfigUiModel(
@@ -168,7 +166,6 @@ class UiModelBuilder {
         waitingDuration: Long = 0,
         duration: Int = 0,
         choices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = ""
     ): InteractiveUiModel.Quiz {
         return InteractiveUiModel.Quiz(
             id = id,
@@ -178,7 +175,6 @@ class UiModelBuilder {
                 add(Calendar.SECOND, duration)
             }),
             listOfChoices = choices,
-            reward = reward
         )
     }
 }

@@ -15,7 +15,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.catalog.analytics.CatalogDetailAnalytics
@@ -51,7 +50,6 @@ class CatalogFragmentTest
     var cassavaTestRule = CassavaTestRule()
 
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
     private var idlingResource: TkpdIdlingResource? = null
 
 
@@ -65,7 +63,6 @@ class CatalogFragmentTest
 
     @After
     fun tearDown() {
-        gtmLogDBSource.deleteAll().subscribe()
         IdlingRegistry.getInstance().unregister(idlingResource?.countingIdlingResource)
     }
 
@@ -267,113 +264,6 @@ class CatalogFragmentTest
         onView(CommonMatcher.firstView(AllOf.allOf(
                 withId(R.id.search_product_quick_sort_filter),
                 ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_drag_product_listing_bottom_sheet() {
-        Thread.sleep(2000)
-        actionTest {
-            launchProductListingBottomSheet()
-            closeProductListingBottomSheet()
-            launchProductListingBottomSheet()
-        }.assertTest {
-            val query = listOf(
-                    mapOf(
-                            Event.EVENT_KEY to CatalogDetailAnalytics.EventKeys.EVENT_NAME_CATALOG_CLICK,
-                            Event.CATEGORY_KEY to CatalogDetailAnalytics.CategoryKeys.PAGE_EVENT_CATEGORY,
-                            Event.ACTION_KEY to CatalogDetailAnalytics.ActionKeys.DRAG_IMAGE_KNOB,
-                            Event.LABEL_KEY to Event.ALL_STAR
-                    )
-            )
-            assertThat(cassavaTestRule.validate(query, CassavaTestRule.MODE_SUBSET), hasAllSuccess())
-        }
-    }
-
-    @Test
-    fun check_quick_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.search_product_quick_sort_filter),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_dynamic_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.sort_filter_prefix),
-                ViewMatchers.isDisplayed()))).perform(ViewActions.click())
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.bottom_sheet_header),
-                ViewMatchers.isDisplayed())))
-    }
-
-    @Test
-    fun check_apply_quick_filter_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.sort_filter_items),
-                ViewMatchers.isDisplayed())))
-
-    }
-
-    @Test
-    fun check_click_on_product_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.product_recyclerview),
-                ViewMatchers.isDisplayed())))
-        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
-            it.adapter!!.itemCount
-        }
-        if (itemCount > 1) {
-            assert(true)
-        } else {
-            assert(false)
-        }
-
-    }
-
-    @Test
-    fun check_add_remove_wish_list_product_listing_bottom_sheet() {
-        launchProductListingBottomSheet()
-        onView(CommonMatcher.firstView(AllOf.allOf(
-                withId(R.id.product_recyclerview),
-                ViewMatchers.isDisplayed())))
-        val itemCount = activityRule.activity.findViewById<RecyclerView>(R.id.product_recyclerview).let {
-            it.adapter!!.itemCount
-        }
-        if (itemCount > 1) {
-            assert(true)
-        } else {
-            assert(false)
-        }
-    }
-
-    private fun launchProductListingBottomSheet() {
-        onView(withId(R.id.bottom_sheet_fragment_container))
-                .perform(
-                        CatalogViewActions.withCustomConstraints(
-                                GeneralSwipeAction(
-                                        Swipe.SLOW,
-                                        GeneralLocation.VISIBLE_CENTER,
-                                        { view: View -> floatArrayOf(view.width / 2.toFloat(), 0f) },
-                                        Press.FINGER),
-                                ViewMatchers.isDisplayingAtLeast(5)))
-        Thread.sleep(3000)
-    }
-
-    private fun closeProductListingBottomSheet() {
-        onView(withId(R.id.bottom_sheet_fragment_container))
-                .perform(
-                        CatalogViewActions.withCustomConstraints(
-                                GeneralSwipeAction(
-                                        Swipe.SLOW,
-                                        GeneralLocation.TOP_CENTER,
-                                        { view: View -> floatArrayOf(view.width / 2.toFloat(),view.height.toFloat()) },
-                                        Press.FINGER),
-                                ViewMatchers.isDisplayingAtLeast(5)))
-        Thread.sleep(3000)
     }
 
     private fun launchActivity() {

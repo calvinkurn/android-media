@@ -20,7 +20,7 @@ object ConnectivityUtils {
 
     fun isSilentVerificationPossible(context: Context?): Boolean {
         return if (context != null)
-            isMobileDataEnabled(context) && isSimCardReady(context) && isVpnConnectionActive()
+            isMobileDataEnabled(context) && isSimCardReady(context) && !isVpnConnectionActive()
         else false
     }
 

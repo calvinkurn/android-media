@@ -6,6 +6,7 @@ import com.tokopedia.common.travel.ticker.presentation.model.TravelTickerModel
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlError
 import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.hotel.DummyHotelGqlQueryInterfaceImpl
 import com.tokopedia.hotel.homepage.presentation.model.HotelHomepageModel
 import com.tokopedia.hotel.hoteldetail.data.entity.HotelNearbyLandmark
 import com.tokopedia.hotel.hoteldetail.data.entity.PropertyDetailData
@@ -58,6 +59,7 @@ class HotelDetailViewModelTest {
     @Test
     fun getHotelDetailData_allApiReturnSuccessData() {
         //given
+        val fakeGqlInterface = DummyHotelGqlQueryInterfaceImpl()
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
                 mapOf<Type, List<GraphqlError>>(),
@@ -77,11 +79,11 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         coEvery {
-            getHotelNearbyLandMark.execute(any() as String,any())
+            getHotelNearbyLandMark.execute(any() as DummyHotelGqlQueryInterfaceImpl ,any())
         } returns Success(HotelNearbyLandmark())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData(fakeGqlInterface, fakeGqlInterface, fakeGqlInterface, fakeGqlInterface,0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -93,6 +95,7 @@ class HotelDetailViewModelTest {
     @Test
     fun getHotelDetailData_failedToFetchHotelInfo() {
         //given
+        val fakeGqlInterface = DummyHotelGqlQueryInterfaceImpl()
         val graphqlResponse = GraphqlResponse(
                 mapOf<Type, Any>(),
                 mapOf<Type, List<GraphqlError>>(PropertyDetailData.Response::class.java to listOf(GraphqlError())),
@@ -112,11 +115,11 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         coEvery {
-            getHotelNearbyLandMark.execute(any() as String, any())
+            getHotelNearbyLandMark.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Success(HotelNearbyLandmark())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData(fakeGqlInterface, fakeGqlInterface, fakeGqlInterface, fakeGqlInterface,0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Fail)
@@ -128,6 +131,7 @@ class HotelDetailViewModelTest {
     @Test
     fun getHotelDetailData_failedToFetchReview() {
         //given
+        val fakeGqlInterface = DummyHotelGqlQueryInterfaceImpl()
         val graphqlResponse = GraphqlResponse(
                 mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
                 mapOf<Type, List<GraphqlError>>(),
@@ -147,11 +151,11 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         coEvery {
-            getHotelNearbyLandMark.execute(any() as String, any())
+            getHotelNearbyLandMark.execute(any() as DummyHotelGqlQueryInterfaceImpl, any())
         } returns Success(HotelNearbyLandmark())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData(fakeGqlInterface, fakeGqlInterface, fakeGqlInterface, fakeGqlInterface,0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -163,6 +167,7 @@ class HotelDetailViewModelTest {
     @Test
     fun getHotelDetailData_failedToFetchRoomList() {
         //given
+        val fakeGqlInterface = DummyHotelGqlQueryInterfaceImpl()
         val graphqlResponse = GraphqlResponse(
                 mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
                 mapOf<Type, List<GraphqlError>>(),
@@ -182,7 +187,7 @@ class HotelDetailViewModelTest {
         } returns Fail(Throwable())
 
         //when
-        hotelDetailViewModel.getHotelDetailData("", "", "", "",0, HotelHomepageModel(), "")
+        hotelDetailViewModel.getHotelDetailData(fakeGqlInterface, fakeGqlInterface, fakeGqlInterface, fakeGqlInterface,0, HotelHomepageModel(), "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -193,6 +198,7 @@ class HotelDetailViewModelTest {
     @Test
     fun getHotelDetailDataWithoutRoom_allApiCallSuccess() {
         //given
+        val fakeGqlInterface = DummyHotelGqlQueryInterfaceImpl()
         val graphqlSuccessResponse = GraphqlResponse(
                 mapOf<Type, Any>(PropertyDetailData.Response::class.java to PropertyDetailData.Response()),
                 mapOf<Type, List<GraphqlError>>(),
@@ -208,7 +214,7 @@ class HotelDetailViewModelTest {
         } returnsMany listOf(graphqlSuccessResponse, graphqlSuccessResponse1)
 
         //when
-        hotelDetailViewModel.getHotelDetailDataWithoutRoom("", "", "",0, "")
+        hotelDetailViewModel.getHotelDetailDataWithoutRoom(fakeGqlInterface, fakeGqlInterface, fakeGqlInterface,0, "")
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value is Success)
@@ -224,7 +230,7 @@ class HotelDetailViewModelTest {
         } returns Success(mutableListOf())
 
         //when
-        hotelDetailViewModel.getRoomWithoutHotelData("", HotelHomepageModel())
+        hotelDetailViewModel.getRoomWithoutHotelData(DummyHotelGqlQueryInterfaceImpl(), HotelHomepageModel())
 
         //then
         assert(hotelDetailViewModel.hotelInfoResult.value == null)

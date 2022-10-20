@@ -7,18 +7,51 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerorder.common.domain.model.SomRejectRequestParam
-import com.tokopedia.sellerorder.common.domain.usecase.*
+import com.tokopedia.sellerorder.common.domain.usecase.SomAcceptOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomEditRefNumUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectCancelOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomRejectOrderUseCase
+import com.tokopedia.sellerorder.common.domain.usecase.SomValidateOrderUseCase
 import com.tokopedia.sellerorder.common.presenter.viewmodel.SomOrderBaseViewModel
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
 import com.tokopedia.sellerorder.list.domain.model.SomListBulkGetBulkAcceptOrderStatusParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.model.SomListGetTickerParam
-import com.tokopedia.sellerorder.list.domain.usecases.*
-import com.tokopedia.sellerorder.list.presentation.models.*
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetHeaderIconsInfoUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
+import com.tokopedia.sellerorder.list.presentation.models.AllFailEligible
+import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
+import com.tokopedia.sellerorder.list.presentation.models.AllValidationFail
+import com.tokopedia.sellerorder.list.presentation.models.BulkRequestPickupResultState
+import com.tokopedia.sellerorder.list.presentation.models.FailRetry
+import com.tokopedia.sellerorder.list.presentation.models.MultiShippingStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.NotEligibleAndFail
+import com.tokopedia.sellerorder.list.presentation.models.OptionalOrderData
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccess
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligible
+import com.tokopedia.sellerorder.list.presentation.models.PartialSuccessNotEligibleFail
+import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
+import com.tokopedia.sellerorder.list.presentation.models.ServerFail
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
+import com.tokopedia.sellerorder.list.presentation.util.SomListFilterUtil
 import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.unifycomponents.ticker.TickerData
@@ -31,7 +64,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 class SomListViewModel @Inject constructor(
     somAcceptOrderUseCase: SomAcceptOrderUseCase,
@@ -43,7 +75,7 @@ class SomListViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val somListGetTickerUseCase: SomListGetTickerUseCase,
     private val somListGetFilterListUseCase: SomListGetFilterListUseCase,
-    private val somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase,
+    private val somListGetHeaderIconsInfoUseCase: SomListGetHeaderIconsInfoUseCase,
     private val somListGetOrderListUseCase: SomListGetOrderListUseCase,
     private val somListGetTopAdsCategoryUseCase: SomListGetTopAdsCategoryUseCase,
     private val bulkAcceptOrderStatusUseCase: SomListGetBulkAcceptOrderStatusUseCase,
@@ -83,9 +115,9 @@ class SomListViewModel @Inject constructor(
     val filterResult: LiveData<Result<SomListFilterUiModel>>
         get() = _filterResult
 
-    private val _waitingPaymentCounterResult = MutableLiveData<Result<WaitingPaymentCounter>>()
-    val waitingPaymentCounterResult: LiveData<Result<WaitingPaymentCounter>>
-        get() = _waitingPaymentCounterResult
+    private val _somListHeaderIconsInfoResult = MutableLiveData<Result<SomListHeaderIconsInfoUiModel>>()
+    val somListHeaderIconsInfoResult: LiveData<Result<SomListHeaderIconsInfoUiModel>>
+        get() = _somListHeaderIconsInfoResult
 
     private val _orderListResult = MutableLiveData<Result<List<SomListOrderUiModel>>>()
     val orderListResult: LiveData<Result<List<SomListOrderUiModel>>>
@@ -178,7 +210,9 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    private var tabActiveFromAppLink: String = ""
     private var getOrderListParams = SomListGetOrderListParam()
+    private var somFilterUiModelList: MutableList<SomFilterUiModel> = mutableListOf()
 
     var isMultiSelectEnabled: Boolean = false
     var containsFailedRefreshOrder: Boolean = false
@@ -450,6 +484,19 @@ class SomListViewModel @Inject constructor(
         }
     }
 
+    private fun getFiltersFromCloud(refreshOrders: Boolean, afterSuccessfulLoadFromCache: Boolean) {
+        launchCatchError(context = dispatcher.main, block = {
+            val newFilterData = somListGetFilterListUseCase.executeOnBackground(
+                useCache = false
+            ).apply { mergeWithCurrent(getOrderListParams, tabActiveFromAppLink) }
+            newFilterData.refreshOrder = refreshOrders && !afterSuccessfulLoadFromCache
+            setTabActiveFromAppLink("")
+            _filterResult.value = Success(newFilterData)
+        }, onError = {
+            _filterResult.value = Fail(it)
+        })
+    }
+
     fun bulkRequestPickup(orderIds: List<String>) {
         launchCatchError(block = {
             delay(DELAY_BULK_REQUEST_PICK_UP)
@@ -487,34 +534,27 @@ class SomListViewModel @Inject constructor(
     }
 
     fun getFilters(refreshOrders: Boolean) {
-        if (somListGetFilterListUseCase.isFirstLoad) {
-            somListGetFilterListUseCase.isFirstLoad = false
-            launchCatchError(context = dispatcher.main, block = {
-                if (_canShowOrderData.value == true) {
-                    val result = somListGetFilterListUseCase.executeOnBackground(true)
-                    result.refreshOrder = refreshOrders
-                    _filterResult.value = Success(result)
-                }
-            }, onError = {})
-        }
         launchCatchError(context = dispatcher.main, block = {
             if (_canShowOrderData.value == true) {
-                val result = somListGetFilterListUseCase.executeOnBackground(false)
+                val result = somListGetFilterListUseCase.executeOnBackground(true)
+                result.mergeWithCurrent(getOrderListParams, tabActiveFromAppLink)
                 result.refreshOrder = refreshOrders
+                setTabActiveFromAppLink("")
                 _filterResult.value = Success(result)
+                getFiltersFromCloud(refreshOrders, true)
             }
         }, onError = {
-            _filterResult.value = Fail(it)
+            getFiltersFromCloud(refreshOrders, false)
         })
     }
 
-    fun getWaitingPaymentCounter() {
+    fun getHeaderIconsInfo() {
         launchCatchError(block = {
             if (_canShowOrderData.value == true) {
-                _waitingPaymentCounterResult.postValue(Success(somListGetWaitingPaymentUseCase.executeOnBackground()))
+                _somListHeaderIconsInfoResult.postValue(Success(somListGetHeaderIconsInfoUseCase.executeOnBackground()))
             }
         }, onError = {
-            _waitingPaymentCounterResult.postValue(Fail(it))
+            _somListHeaderIconsInfoResult.postValue(Fail(it))
         })
     }
 
@@ -586,8 +626,9 @@ class SomListViewModel @Inject constructor(
         return (topAdsGetShopInfoSuccess == SomConsts.TOPADS_MANUAL_ADS || topAdsGetShopInfoSuccess == SomConsts.TOPADS_AUTO_ADS)
     }
 
-    fun setStatusOrderFilter(id: List<Int>) {
-        getOrderListParams.statusList = id
+    fun setStatusOrderFilter(ids: List<Int>) {
+        getOrderListParams.statusList = ids
+        SomListFilterUtil.updateStatusOrderFilter(somFilterUiModelList, ids)
         resetNextOrderId()
     }
 
@@ -611,12 +652,29 @@ class SomListViewModel @Inject constructor(
         this.getOrderListParams = getOrderListParams
     }
 
-    fun setOrderTypeFilter(orderTypes: MutableSet<Long>) {
-        this.getOrderListParams.orderTypeList = orderTypes
+    fun addOrderTypeFilter(orderType: Long) {
+        this.getOrderListParams.orderTypeList.add(orderType)
+        GetSomFilterMapper.selectOrderTypeFilters(somFilterUiModelList, listOf(orderType))
     }
 
-    fun setSortOrderBy(value: Long) {
-        this.getOrderListParams.sortBy = value
+    fun removeOrderTypeFilter(orderType: Long) {
+        this.getOrderListParams.orderTypeList.remove(orderType)
+        GetSomFilterMapper.deselectOrderTypeFilters(somFilterUiModelList, listOf(orderType))
+    }
+
+    fun addShippingFilter(shippingId: Long) {
+        this.getOrderListParams.shippingList.add(shippingId)
+        GetSomFilterMapper.selectShippingFilters(somFilterUiModelList, listOf(shippingId))
+    }
+
+    fun removeShippingFilter(shippingId: Long) {
+        this.getOrderListParams.shippingList.remove(shippingId)
+        GetSomFilterMapper.deselectShippingFilters(somFilterUiModelList, listOf(shippingId))
+    }
+
+    fun setSortOrderBy(sortId: Long) {
+        this.getOrderListParams.sortBy = sortId
+        SomListFilterUtil.selectSomFilterSortBy(somFilterUiModelList, sortId)
     }
 
     fun isRefreshingAllOrder() = getOrderListJob?.isCompleted == false
@@ -624,10 +682,6 @@ class SomListViewModel @Inject constructor(
     fun isRefreshingSelectedOrder() = refreshOrderJobs.any { !it.job.isCompleted }
 
     fun isRefreshingOrder() = isRefreshingAllOrder() || isRefreshingSelectedOrder()
-
-    fun isOrderStatusIdsChanged(orderStatusIds: List<Int>): Boolean {
-        return this.getOrderListParams.statusList != orderStatusIds
-    }
 
     fun getAdminPermission() {
         launchCatchError(
@@ -643,5 +697,24 @@ class SomListViewModel @Inject constructor(
                 _isOrderManageEligible.postValue(Fail(it))
             }
         )
+    }
+
+    fun updateSomFilterUiModelList(somFilterUiModelList: List<SomFilterUiModel>) {
+        this.somFilterUiModelList.clear()
+        this.somFilterUiModelList.addAll(somFilterUiModelList)
+    }
+
+    fun clearSomFilterUiModelList() {
+        updateSomFilterUiModelList(emptyList())
+    }
+
+    fun getSomFilterUi() = somFilterUiModelList
+
+    fun setTabActiveFromAppLink(tab: String) {
+        tabActiveFromAppLink = tab
+    }
+
+    fun getTabActive(): String {
+        return SomListFilterUtil.inferTabActive(_filterResult.value, getOrderListParams.statusList) ?: tabActiveFromAppLink
     }
 }

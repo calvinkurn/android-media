@@ -1,8 +1,10 @@
 package com.tokopedia.loginregister.registerinitial.tracker
 
+import android.text.InputType
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withInputType
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.tokopedia.cassavatest.CassavaTestRule
@@ -76,7 +78,7 @@ class RegisterInitialPhoneTest: RegisterInitialBase() {
     private fun checkRegisterPhoneNumber() {
         Thread.sleep(1000)
 
-        onView(withId(R.id.input_email_phone))
+        onView(withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
                 .perform(replaceText(""))
                 .perform(typeText(phoneNumberNotRegistered))
 

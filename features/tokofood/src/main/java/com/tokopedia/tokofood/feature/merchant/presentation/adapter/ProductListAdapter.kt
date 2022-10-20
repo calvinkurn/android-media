@@ -75,8 +75,8 @@ class ProductListAdapter(private val clickListener: OnProductCardItemClickListen
         notifyDataSetChanged()
     }
 
-    fun getProductUiModel(dataSetPosition: Int): ProductUiModel {
-        return productListItems[dataSetPosition].productUiModel
+    fun getProductUiModel(dataSetPosition: Int): ProductUiModel? {
+        return productListItems.getOrNull(dataSetPosition)?.productUiModel
     }
 
     fun updateProductUiModel(

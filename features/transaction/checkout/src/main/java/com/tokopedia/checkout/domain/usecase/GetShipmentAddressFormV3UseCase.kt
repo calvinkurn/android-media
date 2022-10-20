@@ -8,6 +8,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.data.extensions.getSuccessData
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.localizationchooseaddress.common.ChosenAddressRequestHelper
 import com.tokopedia.purchase_platform.common.constant.CartConstant
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException
@@ -15,26 +16,32 @@ import com.tokopedia.usecase.coroutines.UseCase
 import timber.log.Timber
 import javax.inject.Inject
 
-class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext private val graphqlRepository: GraphqlRepository,
-                                                          private val shipmentMapper: ShipmentMapper,
-                                                          private val chosenAddressRequestHelper: ChosenAddressRequestHelper) : UseCase<CartShipmentAddressFormData>() {
+class GetShipmentAddressFormV3UseCase @Inject constructor(
+    @ApplicationContext private val graphqlRepository: GraphqlRepository,
+    private val shipmentMapper: ShipmentMapper,
+    private val chosenAddressRequestHelper: ChosenAddressRequestHelper
+) : UseCase<CartShipmentAddressFormData>() {
 
     private var params: Map<String, Any?>? = null
 
-    fun setParams(isOneClickShipment: Boolean,
-                  isTradeIn: Boolean,
-                  isSkipUpdateOnboardingState: Boolean,
-                  cornerId: String?,
-                  deviceId: String?,
-                  leasingId: String?) {
+    fun setParams(
+        isOneClickShipment: Boolean,
+        isTradeIn: Boolean,
+        isSkipUpdateOnboardingState: Boolean,
+        cornerId: String?,
+        deviceId: String?,
+        leasingId: String?,
+        isPlusSelected: Boolean
+    ) {
         val params: MutableMap<String, Any?> = HashMap()
-        params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] = chosenAddressRequestHelper.getChosenAddress()
+        params[ChosenAddressRequestHelper.KEY_CHOSEN_ADDRESS] =
+            chosenAddressRequestHelper.getChosenAddress()
         params[PARAM_KEY_LANG] = "id"
         params[PARAM_KEY_IS_ONE_CLICK_SHIPMENT] = isOneClickShipment
         params[PARAM_KEY_SKIP_ONBOARDING_UPDATE_STATE] = if (isSkipUpdateOnboardingState) 1 else 0
         if (cornerId != null) {
             try {
-                val tmpCornerId = cornerId.toInt()
+                val tmpCornerId = cornerId.toIntOrZero()
                 params[PARAM_KEY_CORNER_ID] = tmpCornerId
             } catch (e: NumberFormatException) {
                 Timber.d(e)
@@ -42,7 +49,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         }
         if (leasingId != null && !leasingId.isEmpty()) {
             try {
-                val tmpLeasingId = leasingId.toInt()
+                val tmpLeasingId = leasingId.toIntOrZero()
                 params[PARAM_KEY_VEHICLE_LEASING_ID] = tmpLeasingId
             } catch (e: NumberFormatException) {
                 Timber.d(e)
@@ -52,9 +59,10 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
             params[PARAM_KEY_IS_TRADEIN] = true
             params[PARAM_KEY_DEVICE_ID] = deviceId ?: ""
         }
+        params[PARAM_KEY_IS_PLUS_SELECTED] = isPlusSelected
 
         this.params = mapOf(
-                "params" to params
+            "params" to params
         )
     }
 
@@ -64,8 +72,13 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
             throw RuntimeException("Parameter is null!")
         }
 
-        val request = GraphqlRequest(ShipmentAddressFormQuery(), ShipmentAddressFormGqlResponse::class.java, params)
-        val response = graphqlRepository.response(listOf(request)).getSuccessData<ShipmentAddressFormGqlResponse>()
+        val request = GraphqlRequest(
+            ShipmentAddressFormQuery(),
+            ShipmentAddressFormGqlResponse::class.java,
+            params
+        )
+        val response = graphqlRepository.response(listOf(request))
+            .getSuccessData<ShipmentAddressFormGqlResponse>()
 
         if (response.shipmentAddressFormResponse.status == "OK") {
             return shipmentMapper.convertToShipmentAddressFormData(response.shipmentAddressFormResponse.data)
@@ -86,6 +99,7 @@ class GetShipmentAddressFormV3UseCase @Inject constructor(@ApplicationContext pr
         private const val PARAM_KEY_IS_TRADEIN = "is_trade_in"
         private const val PARAM_KEY_DEVICE_ID = "dev_id"
         private const val PARAM_KEY_VEHICLE_LEASING_ID = "vehicle_leasing_id"
+        private const val PARAM_KEY_IS_PLUS_SELECTED = "is_plus_selected"
 
         private const val QUERY_SHIPMENT_ADDRESS_FORM = "ShipmentAddressFormQuery"
     }

@@ -18,6 +18,8 @@ class AdsInjector {
         searchParameter: Map<String, Any>,
         dimension90: String,
         productListType: String,
+        externalReference: String,
+        keywordIntention: Int,
     ): List<Visitable<*>> {
         val list = mutableListOf<ProductItemDataView>()
         list.addAll(productList)
@@ -37,6 +39,8 @@ class AdsInjector {
                     topAdsPosition,
                     dimension90,
                     productListType,
+                    externalReference,
+                    keywordIntention,
                 )
 
                 list.add(i, item)

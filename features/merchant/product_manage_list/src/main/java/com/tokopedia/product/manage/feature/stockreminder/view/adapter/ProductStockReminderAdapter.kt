@@ -1,6 +1,7 @@
 package com.tokopedia.product.manage.feature.stockreminder.view.adapter
 
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -82,6 +83,8 @@ class ProductStockReminderAdapter(
 
         private fun setupStockEditorText(product: ProductStockReminderUiModel) {
             binding.qeStock.editText.run {
+                val maxLength = InputFilter.LengthFilter(StockReminderConst.MAXIMUM_LENGTH)
+                filters = arrayOf(maxLength)
                 textChangeListener = createTextChangeListener(product)
                 addTextChangedListener(textChangeListener)
             }
@@ -89,7 +92,7 @@ class ProductStockReminderAdapter(
             binding.qeStock.setValue(product.stockAlertCount)
 
             binding.qeStock.run {
-                maxValue = Int.MAX_VALUE
+                maxValue = product.maxStock ?: MAXIMUM_STOCK_REMINDER
                 editText.setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         clearFocus()

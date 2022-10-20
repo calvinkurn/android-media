@@ -33,7 +33,7 @@ class PlayBroadcastSummaryViewModelTest {
 
     private val testDispatcher = rule.dispatchers
 
-    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer())
+    private val playBroadcastMapper = PlayBroadcastUiMapper(TestHtmlTextTransformer(), TestUriParser())
 
     private val mockGetChannelUseCase: GetChannelUseCase = mockk(relaxed = true)
     private val mockGetLiveStatisticsUseCase: GetLiveStatisticsUseCase = mockk(relaxed = true)

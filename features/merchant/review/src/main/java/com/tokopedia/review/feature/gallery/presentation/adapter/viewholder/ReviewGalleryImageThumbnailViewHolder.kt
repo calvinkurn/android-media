@@ -3,8 +3,11 @@ package com.tokopedia.review.feature.gallery.presentation.adapter.viewholder
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.clearImage
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.R
 import com.tokopedia.review.common.util.getReviewStar
@@ -25,7 +28,6 @@ class ReviewGalleryImageThumbnailViewHolder(
     private var element: ReviewGalleryImageThumbnailUiModel? = null
 
     init {
-        setupLayout()
         binding.root.setOnClickListener {
             element?.let { reviewGalleryMediaThumbnailListener.onThumbnailClicked(it) }
         }
@@ -42,13 +44,9 @@ class ReviewGalleryImageThumbnailViewHolder(
         }
     }
 
-    private fun setupLayout() {
-        with(binding) {
-            ivReviewGalleryImageThumbnail.onUrlLoaded = { success ->
-                reviewMediaGalleryImageThumbnailBrokenOverlay.showWithCondition(!success)
-                icReviewGalleryImageThumbnailBroken.showWithCondition(!success)
-            }
-        }
+    override fun onViewRecycled() {
+        binding.ivReviewGalleryImageThumbnail.clearImage()
+        super.onViewRecycled()
     }
 
     private fun ItemReviewGalleryImageThumbnailBinding.setupBrokenOverlay() {
@@ -57,7 +55,18 @@ class ReviewGalleryImageThumbnailViewHolder(
     }
 
     private fun ItemReviewGalleryImageThumbnailBinding.setupThumbnail(imageUrl: String) {
-        ivReviewGalleryImageThumbnail.setImageUrl(imageUrl)
+        loaderReviewGalleryImageThumbnail.show()
+        ivReviewGalleryImageThumbnail.loadImage(imageUrl) {
+            listener(onError = {
+                loaderReviewGalleryImageThumbnail.gone()
+                reviewMediaGalleryImageThumbnailBrokenOverlay.show()
+                icReviewGalleryImageThumbnailBroken.show()
+            }, onSuccess = { _, _ ->
+                loaderReviewGalleryImageThumbnail.gone()
+                reviewMediaGalleryImageThumbnailBrokenOverlay.gone()
+                icReviewGalleryImageThumbnailBroken.gone()
+            })
+        }
     }
 
     private fun ItemReviewGalleryImageThumbnailBinding.setupRating(rating: Int) {

@@ -16,6 +16,7 @@ import com.tokopedia.sellerhomecommon.presentation.view.viewholder.Recommendatio
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.SectionViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TableViewHolder
 import com.tokopedia.sellerhomecommon.presentation.view.viewholder.TickerViewHolder
+import com.tokopedia.sellerhomecommon.presentation.view.viewholder.UnificationViewHolder
 
 /**
  * Created By @ilhamsuaib on 19/05/20
@@ -26,4 +27,5 @@ interface WidgetListener : CardViewHolder.Listener, CarouselViewHolder.Listener,
     PostListViewHolder.Listener, DescriptionViewHolder.Listener, TableViewHolder.Listener,
     PieChartViewHolder.Listener, BarChartViewHolder.Listener, TickerViewHolder.Listener,
     MultiLineGraphViewHolder.Listener, AnnouncementViewHolder.Listener,
-    RecommendationViewHolder.Listener, MilestoneViewHolder.Listener, CalendarViewHolder.Listener
+    RecommendationViewHolder.Listener, MilestoneViewHolder.Listener, CalendarViewHolder.Listener,
+    UnificationViewHolder.Listener

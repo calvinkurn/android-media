@@ -1,6 +1,5 @@
 package com.tokopedia.logisticaddaddress.features.addnewaddressrevamp.addressform
 
-import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
@@ -28,17 +27,16 @@ class AddressFormActivity : BaseSimpleActivity(), HasComponent<AddNewAddressReva
     }
 
     override fun getNewFragment(): Fragment? {
+        val bundle = intent.extras
         var fragment: AddressFormFragment? = null
         if (intent.data?.lastPathSegment != null) {
             val addressId = intent.data?.lastPathSegment
             isEdit = true
-            fragment = AddressFormFragment.newInstance(addressId = addressId)
-        }
-        else if (intent.extras != null) {
-            val bundle = intent.extras
-            isPositiveFlow = bundle?.getBoolean(EXTRA_IS_POSITIVE_FLOW)
+            fragment = AddressFormFragment.newInstance(addressId = addressId, bundle)
+        } else if (bundle != null) {
+            isPositiveFlow = bundle.getBoolean(EXTRA_IS_POSITIVE_FLOW)
             isEdit = false
-            fragment = AddressFormFragment.newInstance(bundle?: Bundle())
+            fragment = AddressFormFragment.newInstance(bundle)
         }
         return fragment
     }
