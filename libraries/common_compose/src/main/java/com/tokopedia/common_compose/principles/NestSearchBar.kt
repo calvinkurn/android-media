@@ -78,7 +78,7 @@ fun NestSearchBar(
                     if (text.isEmpty()) {
                         NestTypography(
                             text = placeholderText,
-                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN600)
+                            textStyle = NestTheme.typography.display2.copy(color = NestTheme.colors.NN._600)
                         )
                     }
 

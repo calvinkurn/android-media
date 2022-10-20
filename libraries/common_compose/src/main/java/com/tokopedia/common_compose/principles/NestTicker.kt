@@ -25,10 +25,10 @@ fun NestTicker(
     onDismissed: () -> Unit = {}
 ) {
     //Implementation are specifically to cater ANNOUNCEMENT ticker type
-    val backgroundColor = NestTheme.colors.BN50
-    val strokeColor =  NestTheme.colors.BN200
-    val iconColor = NestTheme.colors.BN400
-    val closeIconColor =  NestTheme.colors.NN900
+    val backgroundColor = NestTheme.colors.BN._50
+    val strokeColor =  NestTheme.colors.BN._200
+    val iconColor = NestTheme.colors.BN._400
+    val closeIconColor =  NestTheme.colors.NN._900
 
     Surface(
         modifier = modifier,
@@ -42,7 +42,7 @@ fun NestTicker(
             NestTypography(
                 text = text.toString(),
                 modifier = Modifier.width(250.dp),
-                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN950)
+                textStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._950)
             )
             Spacer(modifier = Modifier.padding(horizontal = 10.dp))
             Icon(

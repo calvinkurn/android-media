@@ -22,7 +22,7 @@ fun NestButton(
     onClick: () -> Unit
 ) {
 
-    val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN500)
+    val backgroundColor = ButtonDefaults.buttonColors(backgroundColor = NestTheme.colors.GN._500)
 
     Button(
         modifier = modifier.height(32.dp),

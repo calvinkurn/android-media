@@ -13,24 +13,23 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 
 
 private val NestThemeLight = lightColors(
-    primary = NestNN0,
-    onPrimary = NestNN700,
-    primaryVariant = NestNN0,
-    secondary = NestNN0,
-    surface = NestNN0,
+    primary = NestNN.light._0,
+    onPrimary = NestNN.light._700,
+    primaryVariant = NestNN.light._0,
+    secondary = NestNN.light._0,
+    surface = NestNN.light._0,
 )
 
 private val NestThemeDark = darkColors(
-    primary = NestNN0Dark,
-    onPrimary = NestNN700Dark,
-    secondary = NestNN0Dark,
-    surface = NestNN0Dark
+    primary = NestNN.dark._0,
+    onPrimary = NestNN.dark._700,
+    secondary = NestNN.dark._0,
+    surface = NestNN.dark._0,
 )
 
 private val LightElevation = Elevations()
@@ -48,53 +47,19 @@ fun NestTheme(
         NestThemeLight
     }
     val elevation = if (darkTheme) DarkElevation else LightElevation
-    val colors = populateColor(darkTheme)
-
+    val colors = if (darkTheme) NestDarkColor() else NestLightColor()
 
     AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
 
     CompositionLocalProvider(
         LocalElevations provides elevation,
-        LocalColors provides colors,
+        LocalNestColor provides colors,
         LocalTypography provides NestTextStyle()
     ) {
         MaterialTheme(
             colors = themeColors,
             typography = OpenSauceTypography,
             content = content
-        )
-    }
-}
-
-@Preview
-@Composable
-fun ThemePreview() {
-    val darkTheme = true
-    val themeColors = if (darkTheme) {
-        NestThemeDark
-    } else {
-        NestThemeLight
-    }
-    val elevation = if (darkTheme) DarkElevation else LightElevation
-    val colors = if (darkTheme) {
-        NestNightColors()
-    } else {
-        NestLightColors()
-    }
-    
-    AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
-
-    CompositionLocalProvider(
-        LocalElevations provides elevation,
-        LocalNestColors provides colors,
-        LocalTypography provides NestTextStyle()
-    ) {
-        MaterialTheme(
-            colors = themeColors,
-            typography = OpenSauceTypography,
-            content = {
-
-            }
         )
     }
 }
@@ -117,10 +82,10 @@ private fun AdaptiveStatusBarColor(
 
 
 object NestTheme {
-    val colors: TokopediaColor
+    val colors: NestColor
         @Composable
         @ReadOnlyComposable
-        get() = LocalColors.current
+        get() = LocalNestColor.current
 
     val typography: NestTextStyle
         @Composable

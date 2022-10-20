@@ -43,8 +43,8 @@ fun NestSortFilter(
 @Composable
 private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
     //Implementation are specifically to cater SELECTED and NORMAL type chips only
-    val backgroundColor= NestTheme.colors.NN0
-    val borderColor = NestTheme.colors.NN200
+    val backgroundColor= NestTheme.colors.NN._0
+    val borderColor = NestTheme.colors.NN._200
     Surface(
         color = backgroundColor,
         shape = RoundedCornerShape(12.dp),
@@ -81,14 +81,14 @@ fun NestSortFilterItemPreview() {
 @Composable
 private fun NestSortFilterItem(sortFilter: SortFilter) {
     //Implementation are specifically to cater SELECTED and NORMAL type chips only
-    val textColorSelected = NestTheme.colors.GN500
-    val textColorDefault = NestTheme.colors.NN600
+    val textColorSelected = NestTheme.colors.GN._500
+    val textColorDefault = NestTheme.colors.NN._600
 
-    val borderColorSelected = NestTheme.colors.GN400
-    val borderColorDefault = NestTheme.colors.NN300
+    val borderColorSelected = NestTheme.colors.GN._400
+    val borderColorDefault = NestTheme.colors.NN._300
 
-    val backgroundColorSelected = NestTheme.colors.GN50
-    val backgroundColorDefault = NestTheme.colors.NN0
+    val backgroundColorSelected = NestTheme.colors.GN._50
+    val backgroundColorDefault = NestTheme.colors.NN._0
 
     val textColor = if (sortFilter.isSelected) {
         textColorSelected
@@ -109,9 +109,9 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
     }
 
     val chevronColor = if (sortFilter.isSelected) {
-        NestTheme.colors.GN500
+        NestTheme.colors.GN._500
     } else {
-        NestTheme.colors.NN900
+        NestTheme.colors.NN._900
     }
 
     Surface(

@@ -3,198 +3,43 @@ package com.tokopedia.common_compose.ui
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
-interface TokopediaColor {
-    val NN0: Color
-    val BN50: Color
-    val BN200: Color
-    val BN400: Color
-    val BN800: Color
-    val BN950: Color
-    val NN100: Color
-    val NN200: Color
-    val NN300: Color
-    val NN600: Color
-    val NN950: Color
-    val NN900: Color
-    val GN50: Color
-    val GN100: Color
-    val GN400: Color
-    val GN500: Color
-    val YN100: Color
-    val YN500: Color
-    val RN100: Color
-    val RN500: Color
+internal val LocalNestColor = staticCompositionLocalOf<NestColor> {
+    NestLightColor()
 }
 
-data class NestColor(
-    override val NN0: Color,
-    override val BN50: Color,
-    override val BN200: Color,
-    override val BN400: Color,
-    override val BN800: Color,
-    override val BN950: Color,
-    override val NN100: Color,
-    override val NN200: Color,
-    override val NN300: Color,
-    override val NN600: Color,
-    override val NN900: Color,
-    override val NN950: Color,
-    override val GN50: Color,
-    override val GN100: Color,
-    override val GN400: Color,
-    override val GN500: Color,
-    override val YN100: Color,
-    override val YN500: Color,
-    override val RN100: Color,
-    override val RN500: Color
-) : TokopediaColor
-
-internal val LocalColors = staticCompositionLocalOf<TokopediaColor> {
-    NestColor(
-        NN0 = NestNN0,
-        BN50 = NestBN50,
-        BN200 = NestBN200,
-        BN400 = NestBN400,
-        BN800 = NestBN800,
-        BN950 = NestBN950,
-        NN100 = NestNN100,
-        NN200 = NestNN200,
-        NN300 = NestNN300,
-        NN600 = NestNN600,
-        NN900 = NestNN900,
-        NN950 = NestNN950,
-        GN50 = NestGN50,
-        GN100 = NestGN100,
-        GN400 = NestGN400,
-        GN500 = NestGN500,
-        YN100 = NestYN100,
-        YN500 = NestYN500,
-        RN100 = NestRN100,
-        RN500 = NestRN500
-    )
-}
-
-val NestNN200 = Color(0xFFD6DFEB)
-val NestNN200Dark = Color(0xFF363B45)
-val NestNN300 = Color(0xFFBFC9D9)
-val NestNN300Dark = Color(0xFF3D444F)
-
-val NestBN50 = Color(0xFFEBFFFE)
-val NestBN50Dark = Color(0xFF012838)
-val NestBN200 = Color(0xFF70EAFA)
-val NestBN200Dark = Color(0xFF035E82)
-val NestBN400 = Color(0xFF28B9E1)
-val NestBN400Dark = Color(0xFF0E96CC)
-val NestBN800 = Color(0xFF144D73)
-val NestBN800Dark = Color(0xFF73D7FF)
-val NestBN950 = Color(0xFF102736)
-val NestBN950Dark = Color(0xFFD4F3FF)
-
-
-val NestGN50 = Color(0xFFECFEF4)
-val NestGN50Dark = Color(0xFF111C17)
-val NestGN100 = Color(0xFFC9FDE0)
-val NestGN100Dark = Color(0xFF22382E)
-val NestGN400 = Color(0xFF20CE7D)
-val NestGN400Dark = Color(0xFF289D5F)
-val NestGN500 = Color(0xFF00AA5B)
-val NestGN500Dark = Color(0xFF2ABF70)
-
-
-val NestNN0 = Color(0xFFFFFFFF)
-val NestNN0Dark = Color(0xFF1D2025)
-val NestNN100 = Color(0xFFE4EBF5)
-val NestNN100Dark = Color(0xFF2D323A)
-val NestNN600 = Color(0xFF6D7588)
-val NestNN600Dark = Color(0xFF808FA1)
-val NestNN700 = Color(0xFF31353B)
-val NestNN700Dark = Color(0xFFFFFFFF)
-val NestNN900 = Color(0xFF2E3137)
-val NestNN900Dark = Color(0xFFCBD4E1)
-val NestNN950 = Color(0xFF212121)
-val NestNN950Dark = Color(0xFFDCE4ED)
-
-
-val NestYN100 = Color(0xFFFFF1BA)
-val NestYN100Dark = Color(0xFFB33D09)
-val NestYN500 = Color(0xFFFF7F17)
-val NestYN500Dark = Color(0xFFFFA617)
-
-val NestRN100 = Color(0xFFFFDBE2)
-val NestRN100Dark = Color(0xFF862430)
-val NestRN500 = Color(0xFFF94D63)
-val NestRN500Dark = Color(0xFFFF6577)
-
-fun populateColor(darkTheme: Boolean): TokopediaColor {
-    return if (darkTheme) {
-        NestColor(
-            NN0 = NestNN0Dark,
-            BN50 = NestBN50Dark,
-            BN200 = NestBN200Dark,
-            BN400 = NestBN400Dark,
-            BN800 = NestBN800Dark,
-            BN950 = NestBN950Dark,
-            NN100 = NestNN100Dark,
-            NN200 = NestNN200Dark,
-            NN300 = NestNN300Dark,
-            NN600 = NestNN600Dark,
-            NN900 = NestNN900Dark,
-            NN950 = NestNN950Dark,
-            GN50 = NestGN50Dark,
-            GN100 = NestGN100Dark,
-            GN400 = NestGN400Dark,
-            GN500 = NestGN500Dark,
-            YN100 = NestYN100Dark,
-            YN500 = NestYN500Dark,
-            RN100 = NestRN100Dark,
-            RN500 = NestRN500Dark
-        )
-    } else {
-        NestColor(
-            NN0 = NestNN0,
-            BN50 = NestBN50,
-            BN200 = NestBN200,
-            BN400 = NestBN400,
-            BN800 = NestBN800,
-            BN950 = NestBN950,
-            NN100 = NestNN100,
-            NN200 = NestNN200,
-            NN300 = NestNN300,
-            NN600 = NestNN600,
-            NN900 = NestNN900,
-            NN950 = NestNN950,
-            GN50 = NestGN50,
-            GN100 = NestGN100,
-            GN400 = NestGN400,
-            GN500 = NestGN500,
-            YN100 = NestYN100,
-            YN500 = NestYN500,
-            RN100 = NestRN100,
-            RN500 = NestRN500
-        )
-    }
-}
-
-internal val LocalNestColors = staticCompositionLocalOf<NestColors> { NestLightColors() }
-
-interface NestColors {
+interface NestColor {
     val NN: ColorPalette
     val GN: ColorPalette
+    val RN: ColorPalette
+    val YN: ColorPalette
+    val PN: ColorPalette
+    val BN: ColorPalette
+    val TN: ColorPalette
 }
 
-class NestLightColors(
+class NestLightColor(
     override val NN: ColorPalette = NestNN.light,
-    override val GN: ColorPalette = NestGN.light
-): NestColors
+    override val GN: ColorPalette = NestGN.light,
+    override val RN: ColorPalette = NestRN.light,
+    override val YN: ColorPalette = NestYN.light,
+    override val PN: ColorPalette = NestPN.light,
+    override val BN: ColorPalette = NestBN.light,
+    override val TN: ColorPalette = NestTN.light,
+): NestColor
 
-class NestNightColors(
-    override val NN: ColorPalette = NestNN.night,
-    override val GN: ColorPalette = NestGN.night
-): NestColors
+class NestDarkColor(
+    override val NN: ColorPalette = NestNN.dark,
+    override val GN: ColorPalette = NestGN.dark,
+    override val RN: ColorPalette = NestRN.dark,
+    override val YN: ColorPalette = NestYN.dark,
+    override val PN: ColorPalette = NestPN.dark,
+    override val BN: ColorPalette = NestBN.dark,
+    override val TN: ColorPalette = NestTN.dark
+): NestColor
 
 interface ColorMode {
     val light: ColorPalette
-    val night: ColorPalette
+    val dark: ColorPalette
 }
 
 interface ColorPalette {
@@ -239,7 +84,7 @@ object NestNN: ColorMode {
         override val _950: Color = Color(0xFF212121)
     }
 
-    override val night: ColorPalette = object : DarkColorPalette() {
+    override val dark: ColorPalette = object : DarkColorPalette() {
         override val _50: Color = Color(0xFF222329)
         override val _100: Color = Color(0xFF2E2F36)
         override val _200: Color = Color(0xFF3B3D45)
@@ -270,7 +115,7 @@ object NestGN: ColorMode {
         override val _950: Color = Color(0xFF05301E)
     }
 
-    override val night: ColorPalette = object : DarkColorPalette() {
+    override val dark: ColorPalette = object : DarkColorPalette() {
         override val _50: Color = Color(0xFF0A260F)
         override val _100: Color = Color(0xFF005823)
         override val _200: Color = Color(0xFF007335)
@@ -282,5 +127,160 @@ object NestGN: ColorMode {
         override val _800: Color = Color(0xFF91D3AA)
         override val _900: Color = Color(0xFFBCE4CB)
         override val _950: Color = Color(0xFFE3F4EA)
+    }
+}
+
+object NestRN: ColorMode {
+
+    override val light: ColorPalette = object : LightColorPalette() {
+        override val _50: Color = Color(0xFFFFF5F6)
+        override val _100: Color = Color(0xFFFFDBE2)
+        override val _200: Color = Color(0xFFFFB2C2)
+        override val _300: Color = Color(0xFFFF919F)
+        override val _400: Color = Color(0xFFFF7182)
+        override val _500: Color = Color(0xFFF94D63)
+        override val _600: Color = Color(0xFFE02954)
+        override val _700: Color = Color(0xFFB31D40)
+        override val _800: Color = Color(0xFF921633)
+        override val _900: Color = Color(0xFF701027)
+        override val _950: Color = Color(0xFF51081E)
+    }
+
+    override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _50: Color = Color(0xFF430F16)
+        override val _100: Color = Color(0xFF7C1523)
+        override val _200: Color = Color(0xFF94192A)
+        override val _300: Color = Color(0xFFB21E33)
+        override val _400: Color = Color(0xFFD4263F)
+        override val _500: Color = Color(0xFFFF425D)
+        override val _600: Color = Color(0xFFFF5E71)
+        override val _700: Color = Color(0xFFFF7D8C)
+        override val _800: Color = Color(0xFFFFA3AE)
+        override val _900: Color = Color(0xFFFFC7CD)
+        override val _950: Color = Color(0xFFF9E8EC)
+    }
+}
+
+object NestYN: ColorMode {
+
+    override val light: ColorPalette = object : LightColorPalette() {
+        override val _50: Color = Color(0xFFFFFAE6)
+        override val _100: Color = Color(0xFFFFF1BA)
+        override val _200: Color = Color(0xFFFFDD7F)
+        override val _300: Color = Color(0xFFFFC400)
+        override val _400: Color = Color(0xFFFFA617)
+        override val _500: Color = Color(0xFFFF7F17)
+        override val _600: Color = Color(0xFFF36819)
+        override val _700: Color = Color(0xFFCC4C14)
+        override val _800: Color = Color(0xFF992F00)
+        override val _900: Color = Color(0xFF6B1F03)
+        override val _950: Color = Color(0xFF431403)
+    }
+
+    override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _50: Color = Color(0xFF522512)
+        override val _100: Color = Color(0xFF873C1C)
+        override val _200: Color = Color(0xFFB25025)
+        override val _300: Color = Color(0xFFC9652A)
+        override val _400: Color = Color(0xFFEB7E2A)
+        override val _500: Color = Color(0xFFF29E2B)
+        override val _600: Color = Color(0xFFFFB947)
+        override val _700: Color = Color(0xFFFFC76E)
+        override val _800: Color = Color(0xFFFFD591)
+        override val _900: Color = Color(0xFFFFE5BA)
+        override val _950: Color = Color(0xFFFFF9E4)
+    }
+}
+
+object NestPN: ColorMode {
+
+    override val light: ColorPalette = object : LightColorPalette() {
+        override val _50: Color = Color(0xFFFBF4FF)
+        override val _100: Color = Color(0xFFF0DAFF)
+        override val _200: Color = Color(0xFFDEAFFF)
+        override val _300: Color = Color(0xFFCB90FF)
+        override val _400: Color = Color(0xFFB26EF5)
+        override val _500: Color = Color(0xFF9342ED)
+        override val _600: Color = Color(0xFF7F37D7)
+        override val _700: Color = Color(0xFF7421D9)
+        override val _800: Color = Color(0xFF5D1BB4)
+        override val _900: Color = Color(0xFF441188)
+        override val _950: Color = Color(0xFF330D65)
+    }
+
+    override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _50: Color = Color(0xFF241A30)
+        override val _100: Color = Color(0xFF451575)
+        override val _200: Color = Color(0xFF631FA8)
+        override val _300: Color = Color(0xFF8035CC)
+        override val _400: Color = Color(0xFF914AD9)
+        override val _500: Color = Color(0xFFA660EB)
+        override val _600: Color = Color(0xFFBD7AFF)
+        override val _700: Color = Color(0xFFCB96FF)
+        override val _800: Color = Color(0xFFD9B2FF)
+        override val _900: Color = Color(0xFFE8D1FF)
+        override val _950: Color = Color(0xFFF3E6FF)
+    }
+}
+
+object NestBN: ColorMode {
+
+    override val light: ColorPalette = object : LightColorPalette() {
+        override val _50: Color = Color(0xFFEBFFFE)
+        override val _100: Color = Color(0xFFC5FCFF)
+        override val _200: Color = Color(0xFF70EAFA)
+        override val _300: Color = Color(0xFF46D8F1)
+        override val _400: Color = Color(0xFF28B9E1)
+        override val _500: Color = Color(0xFF0094CF)
+        override val _600: Color = Color(0xFF0479B9)
+        override val _700: Color = Color(0xFF06649E)
+        override val _800: Color = Color(0xFF144D73)
+        override val _900: Color = Color(0xFF13354F)
+        override val _950: Color = Color(0xFF102736)
+    }
+
+    override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _50: Color = Color(0xFF062236)
+        override val _100: Color = Color(0xFF1F416B)
+        override val _200: Color = Color(0xFF2A5E91)
+        override val _300: Color = Color(0xFF3A77B5)
+        override val _400: Color = Color(0xFF4490D4)
+        override val _500: Color = Color(0xFF57A3E5)
+        override val _600: Color = Color(0xFF5DB6F5)
+        override val _700: Color = Color(0xFF69C8FF)
+        override val _800: Color = Color(0xFF8FD6FF)
+        override val _900: Color = Color(0xFFC2E9FF)
+        override val _950: Color = Color(0xFFE3F5FD)
+    }
+}
+
+object NestTN: ColorMode {
+
+    override val light: ColorPalette = object : LightColorPalette() {
+        override val _50: Color = Color(0xFFEDFFF9)
+        override val _100: Color = Color(0xFFC2FFF0)
+        override val _200: Color = Color(0xFF69F2E2)
+        override val _300: Color = Color(0xFF39E5D1)
+        override val _400: Color = Color(0xFF11CEBC)
+        override val _500: Color = Color(0xFF009F92)
+        override val _600: Color = Color(0xFF04837E)
+        override val _700: Color = Color(0xFF056D6A)
+        override val _800: Color = Color(0xFF135351)
+        override val _900: Color = Color(0xFF0A3D3D)
+        override val _950: Color = Color(0xFF042F31)
+    }
+
+    override val dark: ColorPalette = object : DarkColorPalette() {
+        override val _50: Color = Color(0xFF0D2624)
+        override val _100: Color = Color(0xFF004A3F)
+        override val _200: Color = Color(0xFF005C54)
+        override val _300: Color = Color(0xFF00756C)
+        override val _400: Color = Color(0xFF00877E)
+        override val _500: Color = Color(0xFF009C93)
+        override val _600: Color = Color(0xFF00A6A0)
+        override val _700: Color = Color(0xFF34B6B1)
+        override val _800: Color = Color(0xFF76CBC8)
+        override val _900: Color = Color(0xFFADDFDE)
+        override val _950: Color = Color(0xFFDEF2F2)
     }
 }

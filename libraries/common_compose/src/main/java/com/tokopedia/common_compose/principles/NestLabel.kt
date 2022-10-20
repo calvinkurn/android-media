@@ -19,17 +19,17 @@ fun NestLabel(
     nestLabelType: NestLabelType
 ) {
     val backgroundColor = when (nestLabelType) {
-        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN100
-        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN100
-        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN100
-        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN100
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN._100
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN._100
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN._100
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN._100
     }
 
     val textColor = when (nestLabelType) {
-        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN500
-        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN500
-        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN600
-        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN500
+        NestLabelType.HIGHLIGHT_LIGHT_GREEN -> NestTheme.colors.GN._500
+        NestLabelType.HIGHLIGHT_LIGHT_ORANGE -> NestTheme.colors.YN._500
+        NestLabelType.HIGHLIGHT_LIGHT_GREY -> NestTheme.colors.NN._600
+        NestLabelType.HIGHLIGHT_LIGHT_RED -> NestTheme.colors.RN._500
     }
 
     Surface(
