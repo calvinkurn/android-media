@@ -32,15 +32,39 @@ object MediaPicker {
         return intent(
             context = context,
             appLink = INTERNAL_MEDIA_PICKER,
-            param = param
+            pickerParam = param
+        )
+    }
+
+    /**
+     * Intent builder for Picker module.
+     * @param: [PickerParam]
+     * @param: [EditorParam]
+     * @param: context
+     *
+     * this intent builder for media-picker that integrate with media-editor
+     *
+     * and you can use a normal startActivityForIntent to run it.
+     */
+    fun intent(
+        pickerParam: PickerParam.() -> Unit = {},
+        editorParam: EditorParam.() -> Unit = {},
+        context: Context
+    ): Intent {
+        return intent(
+            context = context,
+            appLink = INTERNAL_MEDIA_PICKER,
+            pickerParam = pickerParam,
+            editorParam = editorParam
         )
     }
 
     /**
      * The intent builder with a custom appLink for Picker module.
-     * @param: context
      * @param: appLink
+     * @param: context
      * @param: [PickerParam]
+     * @param: [EditorParam]
      *
      * this intent builder is similar like [MediaPicker.intent] above.
      * The differentiate is you can put a custom appLink for picker module
@@ -59,25 +83,32 @@ object MediaPicker {
      *
      */
     fun intent(
-        context: Context,
         appLink: String = INTERNAL_MEDIA_PICKER,
-        param: PickerParam.() -> Unit = {}
+        context: Context,
+        pickerParam: PickerParam.() -> Unit = {},
+        editorParam: EditorParam.() -> Unit = {}
     ): Intent {
-        val pickerParam = PickerParam().apply(param)
-
         return RouteManager.getIntent(context, appLink).apply {
-            putExtra(EXTRA_PICKER_PARAM, pickerParam)
+            putExtra(
+                EXTRA_PICKER_PARAM,
+                PickerParam().apply(pickerParam)
+            )
+            putExtra(EXTRA_EDITOR_PARAM,
+                EditorParam().apply(editorParam)
+            )
         }
     }
 
     fun intentWithGalleryFirst(
         context: Context,
-        param: PickerParam.() -> Unit = {}
+        pickerParam: PickerParam.() -> Unit = {},
+        editorParam: EditorParam.() -> Unit = {}
     ): Intent {
         return intent(
             context = context,
             appLink = "${INTERNAL_MEDIA_PICKER}?start=1",
-            param = param
+            pickerParam = pickerParam,
+            editorParam = editorParam
         )
     }
 
