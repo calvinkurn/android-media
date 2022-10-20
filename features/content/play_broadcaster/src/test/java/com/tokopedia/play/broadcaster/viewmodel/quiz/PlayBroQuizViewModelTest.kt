@@ -361,25 +361,6 @@ class PlayBroQuizViewModelTest {
     }
 
     @Test
-    fun `when user fill input gift state form must changed`(){
-        val reward = "hadiah"
-
-        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
-        val robot = PlayBroadcastViewModelRobot(
-            dispatchers = testDispatcher,
-            channelRepo = mockRepo,
-        )
-
-        robot.use {
-            val state = it.recordState {
-                getAccountConfiguration()
-                getViewModel().submitAction(PlayBroadcastAction.InputQuizGift(reward))
-            }
-            Assertions.assertThat(state.quizForm.quizFormData.gift).isEqualTo(reward)
-        }
-    }
-
-    @Test
     fun `when user fill input option data, quiz form state form data options must filled with input option value`(){
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse

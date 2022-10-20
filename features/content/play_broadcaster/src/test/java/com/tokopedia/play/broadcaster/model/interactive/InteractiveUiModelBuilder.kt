@@ -121,7 +121,6 @@ class InteractiveUiModelBuilder {
         maxChoiceLength = maxChoiceLength,
         availableStartTimeInMs = availableStartTimeInMs,
         eligibleStartTimeInMs = eligibleStartTimeInMs,
-        showPrizeCoachMark = showPrizeCoachMark,
         isGiftActive = isGiftActive,
     )
 
