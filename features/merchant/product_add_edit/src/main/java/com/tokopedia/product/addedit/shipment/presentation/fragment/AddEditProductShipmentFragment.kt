@@ -431,7 +431,7 @@ class AddEditProductShipmentFragment:
             btnCpl?.setOnClickListener {
                 goToCustomProductLogistic()
             }
-            cplShipmentGroupAdapter.updateData(data.shipperList)
+            cplShipmentGroupAdapter.updateData(data.shipperList.filter { it.getActiveServiceName().isNotEmpty() })
         }
     }
 
