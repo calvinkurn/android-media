@@ -1,6 +1,7 @@
 package com.tokopedia.play.uitest.robot
 
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.core.app.ActivityScenario
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
@@ -12,9 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.play.R
-import com.tokopedia.play.test.espresso.clickOnViewChild
-import com.tokopedia.play.test.espresso.delay
-import com.tokopedia.play.ui.productsheet.viewholder.ProductSectionViewHolder
+import com.tokopedia.content.test.espresso.clickOnViewChild
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.activity.PlayActivity
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
@@ -27,6 +27,7 @@ import org.hamcrest.CoreMatchers.not
  */
 class PlayActivityRobot(
     channelId: String,
+    initialDelay: Long = 1000,
 ) {
 
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -40,7 +41,7 @@ class PlayActivityRobot(
     init {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        delay(1000)
+        delay(initialDelay)
     }
 
     fun openProductBottomSheet() = chainable {
@@ -49,11 +50,11 @@ class PlayActivityRobot(
         ).perform(ViewActions.click())
     }
 
-    fun scrollProductBottomSheet(section: Int) = chainable {
+    fun scrollProductBottomSheet(position: Int) = chainable {
         Espresso.onView(
             withId(R.id.rv_product_list)
         ).perform(
-            RecyclerViewActions.scrollToPosition<ProductSectionViewHolder>(section)
+            RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(position)
         )
     }
 
@@ -95,6 +96,10 @@ class PlayActivityRobot(
         )
     }
 
+    fun wait(delayInMillis: Long = 500) = chainable {
+        delay(delayInMillis)
+    }
+
     /**
      * Assertion
      */
@@ -122,7 +127,7 @@ class PlayActivityRobot(
     fun assertHasPinnedItemInProductBottomSheet(hasPinned: Boolean) = chainable {
         val viewMatcher = hasDescendant(withText(containsString("Pin Dipasang")))
         Espresso.onView(
-            RecyclerViewMatcher(R.id.rv_product)
+            RecyclerViewMatcher(R.id.rv_product_list)
                 .atPosition(0)
         ).check(
             if (hasPinned) matches(viewMatcher)
@@ -138,7 +143,7 @@ class PlayActivityRobot(
 
         Espresso.onView(
             allOf(
-                withId(R.id.rv_product),
+                withId(R.id.rv_product_list),
                 hasDescendant(withText(containsString(productName)))
             )
         ).check(

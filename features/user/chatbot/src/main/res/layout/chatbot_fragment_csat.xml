@@ -8,7 +8,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:background="@color/Unify_N0"
+        android:id="@+id/parent_layout">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/toolbar_textview"
@@ -17,8 +18,8 @@
             android:elevation="4dp"
             android:gravity="center"
             android:text="@string/csat_survey_toolbar_text"
-            android:textColor="@color/black_70"
-            android:textStyle="bold"
+            android:textColor="@color/Unify_N700_68"
+            app:typographyWeight="bold"
             android:theme="?toolbarTheme"
             app:elevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,7 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/toolbar_textview" />
@@ -44,8 +45,8 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/chatbot_color_option_list_text"
-            android:textStyle="bold"
+            android:textColor="@color/Unify_N700_96"
+            app:typographyWeight="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/divider_1"
             app:typographyType="heading_3"
@@ -54,12 +55,13 @@
         <LinearLayout
             android:id="@+id/smile_layout"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_45"
+            android:layout_height="@dimen/dp_chatbot_45"
             android:layout_marginTop="16dp"
             android:weightSum="5"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txt_help_title">
+            app:layout_constraintTop_toBottomOf="@id/txt_help_title"
+            android:orientation="horizontal">
 
         </LinearLayout>
 
@@ -69,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
-            android:textColor="@color/green_300"
+            android:textColor="@color/Unify_G400"
             app:layout_constraintLeft_toLeftOf="@id/smile_layout"
             app:layout_constraintRight_toRightOf="@id/smile_layout"
             app:layout_constraintTop_toBottomOf="@id/smile_layout"
@@ -79,12 +81,12 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_1"
+            android:layout_height="@dimen/dp_chatbot_1"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/grey_300"
+            android:background="@color/Unify_N100"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/txt_smile_selected" />
@@ -96,7 +98,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginRight="16dp"
-            android:textColor="@color/black"
+            android:textColor="@color/Unify_N700"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -108,11 +110,11 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="@dimen/dp_chatbot_10"
             android:layout_marginRight="16dp"
             android:orientation="vertical"
-            android:paddingTop="6dp"
-            android:paddingBottom="6dp"
+            android:paddingTop="@dimen/dp_chatbot_6"
+            android:paddingBottom="@dimen/dp_chatbot_6"
             android:showDividers="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
@@ -128,19 +130,19 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_finished"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_50"
+            android:layout_height="@dimen/dp_chatbot_50"
             android:layout_margin="24dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/bg_button_state"
             android:gravity="center"
             android:text="@string/chatbot_csat_button_text"
-            android:textColor="@color/white"
-            android:textStyle="bold"
+            android:textColor="@color/Unify_N0"
+            app:typographyWeight="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLayout"
-            app:layout_goneMarginTop="@dimen/dp_60"
+            app:layout_goneMarginTop="@dimen/dp_chatbot_60"
             app:typographyType="heading_4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -338,7 +338,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -505,6 +506,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartAdd
             .verifySuccessEquals(Success(AddToCartDataModel()))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -589,7 +593,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                         productCard = ProductCardModel(
                             hasSimilarProductButton = true,
                             isOutOfStock = true
-                        )
+                        ),
+                        position = 2
                     )
                 )
             )
@@ -673,6 +678,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartRemove
             .verifySuccessEquals(Success(Pair(productId, "")))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -755,6 +763,9 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
 
         viewModel.miniCartUpdate
             .verifySuccessEquals(Success(updateCartResponse))
+
+        viewModel.updateToolbarNotification
+            .verifyValueEquals(true)
     }
 
     @Test
@@ -865,7 +876,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -941,7 +953,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -1017,7 +1030,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
             productCard = ProductCardModel(
                 isOutOfStock = true,
                 hasSimilarProductButton = true
-            )
+            ),
+            position = 1
         ))
 
         val expectedResult = Success(
@@ -1318,7 +1332,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             ),
             createRepurchaseProductUiModel(
                 id = "2",
@@ -1326,7 +1341,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             )
         )
 
@@ -1395,7 +1411,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                 productCard = ProductCardModel(
                     isOutOfStock = true,
                     hasSimilarProductButton = true
-                )
+                ),
+                position = 1
             ),
             createRepurchaseProductUiModel(
                 id = "2",
@@ -1405,7 +1422,8 @@ class TokoNowRepurchaseViewModelTest: TokoNowRepurchaseViewModelTestFixture() {
                         minQuantity = 0,
                         maxQuantity = 10
                     )
-                )
+                ),
+                position = 1
             )
         )
 

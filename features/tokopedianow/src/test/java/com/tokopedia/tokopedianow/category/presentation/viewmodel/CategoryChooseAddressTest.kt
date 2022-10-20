@@ -8,6 +8,7 @@ import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFrag
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
 import com.tokopedia.tokopedianow.util.SearchCategoryDummyUtils.dummyChooseAddressData
+import com.tokopedia.tokopedianow.util.TestUtils.mockSuperClassField
 import com.tokopedia.usecase.RequestParams
 import io.mockk.every
 import io.mockk.slot
@@ -183,5 +184,21 @@ class CategoryChooseAddressTest: CategoryTestFixtures() {
         verify(exactly = 1) {
             getCategoryFirstPageUseCase.execute(any(), any(), any())
         }
+    }
+
+    @Test
+    fun `onResume should not reload page when choose address is null`() {
+        `Given choose address data`()
+        `Given choose address is not updated`()
+        `Given view model setup until view created`()
+        `Given choose address data is null`()
+
+        `When view resumed`()
+
+        `Then verify get first page API is only called once from view created`()
+    }
+
+    private fun `Given choose address data is null`() {
+        tokoNowCategoryViewModel.mockSuperClassField("chooseAddressData", null)
     }
 }

@@ -6,6 +6,7 @@ import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -206,7 +207,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return emptyList()
     }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
         return BroadcastScheduleUiModel.NoSchedule
     }
 
@@ -273,11 +277,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,
-            maxRewardLength = 30,
             maxChoiceLength = 35,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
             eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-            showPrizeCoachMark = true,
         ),
     )
 
