@@ -991,7 +991,7 @@ class PlayBroadcasterViewModelTest {
     }
 
     @Test
-    fun `when shop and buyer account eligible but banned then selected account is shop with info`() {
+    fun `when shop and buyer account eligible but banned then selected account is user`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel(streamAllowed = false)
         val accountMock = uiModelBuilder.buildAccountListModel()
 
@@ -1010,9 +1010,8 @@ class PlayBroadcasterViewModelTest {
             val state = robot.recordState {
                 it.getAccountConfiguration()
             }
-            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
-            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.Banned)
-            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.Unknown)
         }
     }
 
