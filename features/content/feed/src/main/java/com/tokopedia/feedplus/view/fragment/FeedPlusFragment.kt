@@ -176,7 +176,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ShareCallback, ProductItemInfoBottomSheet.Listener,
     FeedPlusTabParentFragment {
 
+    @Suppress("LateinitUsage")
     private lateinit var feedGlobalError: GlobalError
+    @Suppress("LateinitUsage")
     private lateinit var feedContainer: RelativeLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var swipeToRefresh: SwipeToRefresh
