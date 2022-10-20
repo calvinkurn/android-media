@@ -400,13 +400,6 @@ class ChatbotPresenter @Inject constructor(
         view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
     }
 
-
-    private fun leaveQueue(messageId : String, dividerTime: String): () -> Unit {
-        return {
-            leaveQueueUseCase.execute(LeaveQueueUseCase.generateParam(chatResponse.msgId.toString(), Calendar.getInstance().timeInMillis.toString()), LeaveQueueSubscriber(messageId, onError(), onSuccess(dividerTime)))
-        }
-    }
-
     private fun onError(): (Throwable) -> Unit {
         return {
             view.showErrorToast(it)

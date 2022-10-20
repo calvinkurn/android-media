@@ -202,9 +202,6 @@ class ChatbotFragment :
     ChatbotFloatingInvoice.InvoiceListener,
     ReplyBoxClickListener {
 
-    override fun clearChatText() {
-        replyEditText.setText("")
-    }
     val SNACK_BAR_TEXT_OK = "OK"
     val BOT_OTHER_REASON_TEXT = "bot_other_reason"
     val SELECTED_ITEMS = "selected_items"
@@ -523,10 +520,6 @@ class ChatbotFragment :
         )
         smallReplyBox?.clearChatText()
         isFloatingSendButton = false
-    }
-
-    private fun emptyReplyEditText() {
-        replyEditText.setText("")
     }
 
     private fun setChatBackground() {
