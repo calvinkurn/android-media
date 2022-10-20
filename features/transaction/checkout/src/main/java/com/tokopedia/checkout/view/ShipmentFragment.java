@@ -2546,9 +2546,8 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             List<ShipmentCartItemModel> shipmentCartItemModelList = shipmentAdapter.getShipmentCartItemModelList();
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                    if (shipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                            shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
-                        if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
+                    if (shipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId())) {
+                        if (shipmentCartItemModel.getSelectedShipmentDetailData() != null && shipmentCartItemModel.getVoucherLogisticItemUiModel() != null) {
                             if (!ordersItem.getCodes().contains(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
                                 ordersItem.getCodes().add(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode());
                             }
