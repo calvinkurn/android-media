@@ -3,6 +3,7 @@ package com.tokopedia.loginregister.seamlesslogin
 import android.app.Service
 import android.content.Intent
 import android.os.Bundle
+import android.os.DeadObjectException
 import android.os.IBinder
 import androidx.lifecycle.LifecycleService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -47,6 +48,14 @@ class RemoteService : Service() {
                 .loginRegisterComponent(DaggerLoginRegisterComponent.builder().baseAppComponent((application as BaseMainApplication).baseAppComponent).build())
                 .build()
                 .inject(this)
+    }
+
+    override fun onDestroy() {
+        try {
+            super.onDestroy()
+        } catch (e: DeadObjectException) {
+            e.printStackTrace()
+        }
     }
 
     @Inject lateinit var viewModel: SeamlessLoginViewModel
