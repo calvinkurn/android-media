@@ -107,7 +107,7 @@ WaitingForSelectionItem::class.java
                     context.getString(
                         R.string.stfs_variant_stock_single_multiloc_placeholder,
                         item.campaignStock,
-                        item.warehouses?.count()
+                        item.countLocation
                     )
                 )
                 MULTI_VARIANT_SINGLE_LOCATION -> MethodChecker.fromHtml(
@@ -122,7 +122,7 @@ WaitingForSelectionItem::class.java
                         R.string.stfs_variant_stock_variant_multiloc_placeholder,
                         item.totalChild,
                         item.campaignStock,
-                        item.warehouses?.count()
+                        item.countLocation
                     )
                 )
             }

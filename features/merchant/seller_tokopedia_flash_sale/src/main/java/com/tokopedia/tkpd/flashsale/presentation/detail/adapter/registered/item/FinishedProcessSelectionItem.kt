@@ -20,6 +20,7 @@ data class FinishedProcessSelectionItem(
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<SubmittedProduct.Warehouse>,
+    val countLocation: Int,
     val totalSubsidy: Long,
     val statusText: String
 ) : DelegateAdapterItem {

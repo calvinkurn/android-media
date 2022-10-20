@@ -154,7 +154,7 @@
     <string name="stfs_campaign_detail_upcoming_coachmark_description">Kamu bisa lihat Kriteria Produk dan Kriteria Umum untuk campaign ini di sini, ya.</string>
 
     <!--    Registered CDP-->
-    <string name="stfs_remaining_quota_label">Sisa kuota!</string>
+    <string name="stfs_remaining_quota_label">Sisa kuota</string>
     <string name="stfs_remaining_quota_placeholder"><![CDATA[<b>%d</b>]]>/%2d Produk</string>
     <string name="stfs_proposed_before_label">Ajukan sebelum</string>
     <string name="product_eligible_for_selection_card_title_placeholder">%d produkmu sedang diseleksi</string>

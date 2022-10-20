@@ -24,6 +24,7 @@ class ManageProductVariantViewModel @Inject constructor(
     companion object {
         private const val LOCATION_TYPE = "single loc"
     }
+
     private lateinit var productData: ReservedProduct.Product
 
     private val _isInputPageValid: MutableLiveData<Boolean> = MutableLiveData()
@@ -82,10 +83,8 @@ class ManageProductVariantViewModel @Inject constructor(
     fun setItemToggleValue(itemPosition: Int, value: Boolean) {
         val selectedItem = productData.childProducts[itemPosition]
         selectedItem.isToggleOn = value
-        if (!selectedItem.isMultiwarehouse) {
-            selectedItem.warehouses.map {
-                it.isToggleOn = value
-            }
+        selectedItem.warehouses.map {
+            it.isToggleOn = value
         }
     }
 
@@ -111,11 +110,11 @@ class ManageProductVariantViewModel @Inject constructor(
     fun validateInputPage(
         criteria: ReservedProduct.Product.ProductCriteria
     ) {
-        if (productData.childProducts.any { it.isToggleOn && !it.isDisabled}) {
+        if (productData.childProducts.any { it.isToggleOn && !it.isDisabled }) {
             _isInputPageValid.value = productData.childProducts
                 .filter { it.isToggleOn }
                 .all { childProduct ->
-                    if (childProduct.warehouses.any { it.isToggleOn && !it.isDisabled}) {
+                    if (childProduct.warehouses.any { it.isToggleOn && !it.isDisabled }) {
                         childProduct.warehouses
                             .filter { warehouse -> warehouse.isToggleOn && !warehouse.isDisabled }
                             .all { warehouse ->

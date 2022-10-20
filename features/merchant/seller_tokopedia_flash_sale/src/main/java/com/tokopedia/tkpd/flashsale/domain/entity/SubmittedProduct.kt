@@ -20,7 +20,8 @@ data class SubmittedProduct(
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<Warehouse>,
     val totalSubsidy: Long,
-    val statusText: String
+    val statusText: String,
+    val countLocation: Int
 ) {
 
     data class Price(

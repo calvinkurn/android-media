@@ -115,7 +115,7 @@ class OngoingDelegateAdapter(
                     context.getString(
                         R.string.stfs_variant_stock_single_multiloc_placeholder,
                         item.campaignStock,
-                        item.warehouses.count()
+                        item.countLocation
                     )
                 )
                 ProductStockStatus.MULTI_VARIANT_SINGLE_LOCATION -> MethodChecker.fromHtml(
@@ -130,7 +130,7 @@ class OngoingDelegateAdapter(
                         R.string.stfs_variant_stock_variant_multiloc_placeholder,
                         item.totalChild,
                         item.campaignStock,
-                        item.warehouses.count()
+                        item.countLocation
                     )
                 )
             }

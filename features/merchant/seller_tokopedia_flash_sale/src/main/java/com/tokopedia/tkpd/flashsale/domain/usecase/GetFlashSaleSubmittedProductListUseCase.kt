@@ -45,6 +45,7 @@ class GetFlashSaleSubmittedProductListUseCase @Inject constructor(
                             sold_count
                             status_text
                             total_subsidy
+                            count_location
                             price {
                               price
                               lower_price
