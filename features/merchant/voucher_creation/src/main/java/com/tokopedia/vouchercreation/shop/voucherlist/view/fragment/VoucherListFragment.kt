@@ -39,6 +39,8 @@ import com.tokopedia.linker.share.DataMapper
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -714,20 +716,24 @@ class VoucherListFragment :
     }
 
     private fun showShareBottomSheet(voucher: VoucherUiModel) {
-        showUniversalBottomSheet(voucher)
-//        if (!isAdded) return
-//        shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
-//            context?.run {
-//                shopBasicData?.shareVoucher(
-//                    context = this,
-//                    socmedType = socmedType,
-//                    voucher = voucher,
-//                    userId = userSession.userId,
-//                    shopId = userSession.shopId
-//                )
-//            }
-//        }
-//        shareVoucherBottomSheet?.show(childFragmentManager)
+         if (!isAdded) return
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        if (remoteConfig.getBoolean(RemoteConfigKey.ENABLE_NEW_SHARE_SELLER, true)) {
+            showUniversalBottomSheet(voucher)
+        } else {
+            shareVoucherBottomSheet?.setOnItemClickListener { socmedType ->
+                context?.run {
+                    shopBasicData?.shareVoucher(
+                        context = this,
+                        socmedType = socmedType,
+                        voucher = voucher,
+                        userId = userSession.userId,
+                        shopId = userSession.shopId
+                    )
+                }
+            }
+            shareVoucherBottomSheet?.show(childFragmentManager)
+        }
     }
 
     private fun showDownloadBottomSheet(voucher: VoucherUiModel) {
