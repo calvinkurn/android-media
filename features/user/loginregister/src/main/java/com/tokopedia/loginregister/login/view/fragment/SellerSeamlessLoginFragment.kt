@@ -304,7 +304,6 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         serviceConnection?.run {
             activity?.unbindService(this)
         }
-        service = null
         super.onDestroy()
     }
 
@@ -320,9 +319,11 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
 
     internal inner class RemoteServiceConnection : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, boundService: IBinder) {
-            service = RemoteApi.Stub.asInterface(boundService)
-            getUserTaskId = UUID.randomUUID().toString()
-            getUserProfile(getUserTaskId)
+            try {
+                service = RemoteApi.Stub.asInterface(boundService)
+                getUserTaskId = UUID.randomUUID().toString()
+                getUserProfile(getUserTaskId)
+            } catch (ignored: Exception) {}
         }
 
         override fun onServiceDisconnected(name: ComponentName) {

@@ -58,12 +58,14 @@ class RemoteService : Service() {
     }
 
     private fun broadCastResult(data: Bundle, taskId: String) {
-        val intent = Intent().apply {
-            `package` = PACKAGE_SELLERAPP
-            action = taskId
-            putExtras(data)
-        }
-        sendBroadcast(intent)
+        try {
+            val intent = Intent().apply {
+                `package` = PACKAGE_SELLERAPP
+                action = taskId
+                putExtras(data)
+            }
+            sendBroadcast(intent)
+        } catch (ignored: Exception) {}
     }
 
     fun getKey(taskId: String?){
