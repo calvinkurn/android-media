@@ -232,8 +232,6 @@ class ProductListPresenter @Inject constructor(
         private set
     private val adsInjector = AdsInjector()
     private val postProcessingFilter = PostProcessingFilter()
-    override var productSelectedAddToCart: ProductItemDataView? = null
-        private set
 
     override fun attachView(view: ProductListSectionContract.View) {
         super.attachView(view)
@@ -1955,9 +1953,7 @@ class ProductListPresenter @Inject constructor(
         view.routeToProductDetail(item, adapterPosition)
     }
 
-    override fun trackProductClick(item: ProductItemDataView?) {
-        if (item == null) return
-
+    override fun trackProductClick(item: ProductItemDataView) {
         if (item.isTopAds) getViewToTrackOnClickTopAdsProduct(item)
         else getViewToTrackOnClickOrganicProduct(item)
     }
@@ -1988,6 +1984,56 @@ class ProductListPresenter @Inject constructor(
         }
 
         view.sendGTMTrackingProductClick(item, userId, getSuggestedRelatedKeyword())
+    }
+
+    override fun onProductAddToCart(item: ProductItemDataView) {
+        if (item.shouldOpenVariantBottomSheet()) {
+            //should insert unification tracking of product item here
+            view.openVariantBottomSheet(item)
+        } else {
+            executeAtcCommon(item)
+        }
+    }
+
+    private fun executeAtcCommon(data: ProductItemDataView) {
+        val requestParams = data.createAddToCartRequestParams()
+
+        addToCartUseCase.setParams(requestParams)
+        addToCartUseCase.execute(
+            {
+                onAddToCartUseCaseSuccess(it, data)
+            },
+            ::onAddToCartUseCaseFailed
+        )
+    }
+
+    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
+        return AddToCartRequestParams(
+            productId = productID.toLongOrZero(),
+            shopId = shopID.toIntOrZero(),
+            quantity = minOrder,
+            productName = productName,
+            price = price,
+            userId = if (userSession.isLoggedIn) userSession.userId else "0"
+        )
+    }
+
+    private fun onAddToCartUseCaseSuccess(
+        addToCartDataModel: AddToCartDataModel?,
+        productItemDataView: ProductItemDataView,
+    ) {
+        view.updateSearchBarNotification()
+
+        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
+        view.openAddToCartToaster(message, true)
+
+        trackProductClick(productItemDataView)
+        view.sendGTMTrackingProductATC(productItemDataView, addToCartDataModel?.data?.cartId)
+    }
+
+    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
+        val message = throwable?.message ?: ""
+        view.openAddToCartToaster(message, false)
     }
 
     override fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int) {
@@ -2440,55 +2486,5 @@ class ProductListPresenter @Inject constructor(
     private fun unsubscribeCompositeSubscription() {
         compositeSubscription?.unsubscribe()
         compositeSubscription = null
-    }
-
-    override fun addToCart(data: ProductItemDataView?) {
-        data ?: return
-        productSelectedAddToCart = data
-
-        if (data.shouldOpenVariantBottomSheet()) {
-            //should insert unification tracking of product item here
-            view.openVariantBottomSheet(data, "")
-
-        } else {
-            executeAtcCommon(::onAddToCartUseCaseSuccess, ::onAddToCartUseCaseFailed, data)
-        }
-    }
-
-    private fun onAddToCartUseCaseSuccess(addToCartDataModel: AddToCartDataModel?) {
-        view.updateSearchBarNotification()
-
-        val message = addToCartDataModel?.data?.message?.firstOrNull() ?: ""
-        view.openAddToCartToaster(message, true)
-
-        view.trackItemClick(productSelectedAddToCart)
-        view.trackAddToCartSuccess(productSelectedAddToCart)
-    }
-
-    private fun onAddToCartUseCaseFailed(throwable: Throwable?) {
-        val message = throwable?.message ?: ""
-        view.openAddToCartToaster(message, false)
-    }
-
-    private fun executeAtcCommon(
-        onAddToCartUseCaseSuccess: (addToCartDataModel: AddToCartDataModel?) -> Unit,
-        onAddToCartUseCaseFailed: (Throwable) -> Unit,
-        data: ProductItemDataView,
-    ) {
-        val requestParams = data.createAddToCartRequestParams()
-
-        addToCartUseCase.setParams(requestParams)
-        addToCartUseCase.execute(onAddToCartUseCaseSuccess, onAddToCartUseCaseFailed)
-    }
-
-    private fun ProductItemDataView.createAddToCartRequestParams(): AddToCartRequestParams {
-        return AddToCartRequestParams(
-            productId = productID.toLongOrZero(),
-            shopId = shopID.toIntOrZero(),
-            quantity = minOrder,
-            productName = productName,
-            price = price,
-            userId = if (userSession.isLoggedIn) userSession.userId else "0"
-        )
     }
 }

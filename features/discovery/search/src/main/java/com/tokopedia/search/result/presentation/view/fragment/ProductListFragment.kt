@@ -90,7 +90,7 @@ import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
-import com.tokopedia.search.result.product.addtocart.AddToCartHandleActivityResult
+import com.tokopedia.search.result.product.addtocart.AddToCartVariantBottomSheetLauncher
 import com.tokopedia.search.result.product.addtocart.analytics.AddToCartTracking
 import com.tokopedia.search.result.product.banner.BannerListenerDelegate
 import com.tokopedia.search.result.product.changeview.ChangeView
@@ -136,7 +136,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import org.json.JSONArray
 import javax.inject.Inject
 import com.tokopedia.wishlist_common.R as Rwishlist
-import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcActivityResult
 import com.tokopedia.unifycomponents.Toaster
 
 class ProductListFragment: BaseDaggerFragment(),
@@ -225,7 +224,7 @@ class ProductListFragment: BaseDaggerFragment(),
     lateinit var inspirationListAtcListenerDelegate: InspirationListAtcListenerDelegate
 
     @Inject
-    lateinit var inspirationListAtcActivityResult: InspirationListAtcActivityResult
+    lateinit var atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher
 
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
@@ -662,18 +661,7 @@ class ProductListFragment: BaseDaggerFragment(),
                     }
             )
 
-            inspirationListAtcActivityResult.handleOnActivityResult(it, requestCode, data)
-
-            AtcVariantHelper.onActivityResultAtcVariant(it, requestCode, data) {
-                if (this.requestCode == REQUEST_CODE_CHECKOUT) {
-                    val product = presenter?.productSelectedAddToCart
-
-                    product.let {
-                        trackItemClick(product)
-                        trackAddToCartSuccess(product)
-                    }
-                }
-            }
+            atcVariantBottomSheetLauncher.onActivityResult(requestCode, resultCode, data)
         }
     }
 
@@ -873,8 +861,58 @@ class ProductListFragment: BaseDaggerFragment(),
         showProductCardOptions(this, productCardOptionsModel)
     }
 
-    override fun onAddToCartClick(item: ProductItemDataView?) {
-        presenter?.addToCart(item)
+    override fun onAddToCartClick(item: ProductItemDataView) {
+        presenter?.onProductAddToCart(item)
+    }
+
+    override fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?) {
+        if (productItemDataView == null) return
+
+        val filterSortParams =
+            getSortFilterParamsString(getSearchParameter()?.getSearchParameterMap() as Map<String?, Any?>)
+
+        val products = arrayListOf(
+            productItemDataView.getAtcObjectDataLayer(
+                filterSortParams = filterSortParams,
+                componentId = presenter?.pageComponentId ?: "",
+                cartId
+            )
+        )
+
+        AddToCartTracking.trackEventClickAddToCart(
+            queryKey,
+            productItemDataView.isAds,
+            products
+        )
+    }
+
+    override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
+        view?.let {
+            Toaster.build(
+                it,
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_NORMAL,
+                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
+            ) {
+                if (isSuccess) RouteManager.route(context, ApplinkConst.CART)
+            }.show()
+        }
+    }
+
+    override fun openVariantBottomSheet(data: ProductItemDataView) {
+        atcVariantBottomSheetLauncher.launch(
+            productId = data.productID,
+            shopId = data.shopID,
+            trackerCDListName = SearchTracking.getActionFieldString(
+                data.isOrganicAds,
+                data.topadsTag,
+                presenter?.pageComponentId ?: "",
+            ),
+        ) {
+            presenter?.trackProductClick(data)
+            sendGTMTrackingProductATC(data, it.cartId)
+        }
     }
     //endregion
 
@@ -1731,58 +1769,6 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     //endregion
-
-    override fun trackItemClick(productItemDataView: ProductItemDataView?) {
-        presenter?.trackProductClick(productItemDataView)
-    }
-
-    override fun trackAddToCartSuccess(productItemDataView: ProductItemDataView?) {
-        if (productItemDataView == null) return
-
-        AddToCartTracking.trackEventClickAddToCart(
-            queryKey,
-            if (productItemDataView.isOrganicAds)
-                AddToCartTracking.ADD_TO_CART_PRODUCT_TOPADS
-            else
-                AddToCartTracking.ADD_TO_CART_PRODUCT,
-            arrayListOf(productItemDataView.getAtcObjectDataLayer(
-                getSortFilterParamsString(getSearchParameter()?.getSearchParameterMap() as Map<String?, Any?>),
-                ""
-            ))
-        )
-    }
-
-    override fun openAddToCartToaster(message: String, isSuccess: Boolean) {
-        view?.let {
-            Toaster.build(
-                it,
-                message,
-                Snackbar.LENGTH_SHORT,
-                Toaster.TYPE_NORMAL,
-                if (isSuccess) getFragment().getString(R.string.search_see_cart) else "",
-            ) {
-                if (isSuccess) redirectionListener?.startActivityWithApplink(ApplinkConst.CART)
-            }.show()
-        }
-    }
-
-    override fun openVariantBottomSheet(data: ProductItemDataView, type: String) {
-        context?.let {
-            AtcVariantHelper.goToAtcVariant(
-                it,
-                productId = data.productID,
-                pageSource = VariantPageSource.SRP_PAGESOURCE,
-                shopId = data.shopID,
-                trackerCdListName = SearchTracking.getInspirationCarouselUnificationListName(
-                    type,
-                    "",
-                ),
-                startActivitResult = { intent, reqCode ->
-                    getFragment().startActivityForResult(intent, reqCode)
-                }
-            )
-        }
-    }
 
     override fun updateSearchBarNotification() {
         searchNavigationListener?.updateSearchBarNotification()

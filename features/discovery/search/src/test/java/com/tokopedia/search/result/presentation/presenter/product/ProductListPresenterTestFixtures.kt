@@ -142,6 +142,7 @@ internal open class ProductListPresenterTestFixtures {
             sameSessionRecommendationPresenterDelegate,
             BannedProductsPresenterDelegate(bannedProductsView, viewUpdater),
             inspirationListAtcPresenterDelegate,
+            addToCartUseCase,
         )
         productListPresenter.attachView(productListView)
     }

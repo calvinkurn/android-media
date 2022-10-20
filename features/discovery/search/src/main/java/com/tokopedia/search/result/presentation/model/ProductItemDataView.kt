@@ -60,8 +60,6 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var pageTitle: String? = null
     val isAds: Boolean
         get() = isTopAds || isOrganicAds
-    val pageNumber: Int
-        get() = (position - 1) / SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS.toInt() + 1
     val categoryString: String?
         get() = if (StringUtils.isBlank(categoryName)) categoryBreadcrumb else categoryName
     var dimension90: String = ""
@@ -109,14 +107,34 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     fun getAtcObjectDataLayer(
         filterSortParams: String,
         componentId: String,
-    ): Map<String, Any> {
+        cartId: String?,
+    ): Any {
         val dataLayerMap = getProductAsObjectDataLayer(filterSortParams, componentId) as Map<String, Any>
         val dataLayerMutableMap = dataLayerMap.toMutableMap()
         dataLayerMutableMap["quantity"] = minOrder
         dataLayerMutableMap["shop_id"] = shopID
         dataLayerMutableMap["shop_name"] = shopName
 
-        return dataLayerMutableMap
+        return DataLayer.mapOf(
+            "name", productName,
+            "id", productID,
+            "price", priceInt,
+            "brand", "none / other",
+            "category", categoryBreadcrumb,
+            "variant", "none / other",
+            "list", SearchTracking.getActionFieldString(isOrganicAds, topadsTag, componentId),
+            "position", position.toString(),
+            "dimension45", cartId,
+            "dimension61", if (filterSortParams.isEmpty()) "none / other" else filterSortParams,
+            "dimension87", "search result",
+            "dimension88", "search - product",
+            "dimension115", dimension115,
+            "dimension131", dimension131.orNone(),
+            "quantity", minOrder,
+            "shop_id", shopID,
+            "shop_name", shopName,
+            "shop_type", "none / other"
+        )
     }
 
     fun shouldOpenVariantBottomSheet(): Boolean = parentId != "" && parentId != "0"

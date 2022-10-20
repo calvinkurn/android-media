@@ -65,6 +65,9 @@ interface ProductListSectionContract {
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
+        fun openAddToCartToaster(message: String, isSuccess: Boolean)
+        fun openVariantBottomSheet(data: ProductItemDataView)
+        fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
         fun trackEventImpressionBroadMatchItem(broadMatchItemDataView: BroadMatchItemDataView)
         fun trackEventImpressionBroadMatch(broadMatchDataView: BroadMatchDataView)
         fun onQuickFilterSelected(filter: Filter, option: Option)
@@ -112,13 +115,6 @@ interface ProductListSectionContract {
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
-        fun trackItemClick(productItemDataView: ProductItemDataView?)
-        fun trackAddToCartSuccess(productItemDataView: ProductItemDataView?)
-        fun openAddToCartToaster(message: String, isSuccess: Boolean)
-        fun openVariantBottomSheet(
-            data: ProductItemDataView,
-            type: String,
-        )
         fun updateSearchBarNotification()
     }
 
@@ -135,6 +131,8 @@ interface ProductListSectionContract {
         fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
+        fun trackProductClick(item: ProductItemDataView)
+        fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)
@@ -158,8 +156,5 @@ interface ProductListSectionContract {
             searchParameter: Map<String, Any>
         )
         fun onApplyDropdownQuickFilter(optionList: List<Option>?)
-        val productSelectedAddToCart: ProductItemDataView?
-        fun addToCart(data: ProductItemDataView?)
-        fun trackProductClick(data: ProductItemDataView?)
     }
 }
