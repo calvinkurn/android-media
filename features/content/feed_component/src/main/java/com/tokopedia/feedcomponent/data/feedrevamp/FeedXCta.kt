@@ -7,7 +7,7 @@ data class FeedXCta (
     val text: String = "",
     @SerializedName("subtitle")
     val subtitle:  List<String> = emptyList(),
-    @SerializedName("subtitle")
+    @SerializedName("color")
     val color: String = "",
     @SerializedName("colorGradient")
     val colorGradient: List<FeedXCtaColorGradient> = emptyList()
