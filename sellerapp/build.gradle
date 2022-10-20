@@ -417,7 +417,7 @@ dependencies {
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 }
 
 apply plugin: 'com.google.gms.google-services'
