@@ -1,12 +1,13 @@
-package com.tokopedia.feedcomponent.viewmodel
+package com.tokopedia.content.common.viewmodel.onboarding
 
-import com.tokopedia.feedcomponent.model.CommonModelBuilder
-import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCCompleteOnboardingStrategy
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.UsernameState
-import com.tokopedia.feedcomponent.robot.FeedUGCOnboardingViewModelRobot
+import com.tokopedia.content.common.model.CommonModelBuilder
+import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.onboarding.view.strategy.UGCCompleteOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
+import com.tokopedia.content.common.robot.UGCOnboardingViewModelRobot
+import com.tokopedia.content.common.util.*
 import com.tokopedia.feedcomponent.util.*
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
@@ -18,14 +19,14 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
-class FeedUGCCompleteOnboardingViewModelTest {
+class UGCCompleteOnboardingViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
 
-    private val mockRepo: FeedUGCOnboardingRepository = mockk(relaxed = true)
+    private val mockRepo: UGCOnboardingRepository = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
 
@@ -34,12 +35,12 @@ class FeedUGCCompleteOnboardingViewModelTest {
     private val mockInvalidUsername = "aa"
     private val mockErrorUsernameValidation = "Username minimal 3 karakter"
 
-    private val completeStrategy = FeedUGCCompleteOnboardingStrategy(
+    private val completeStrategy = UGCCompleteOnboardingStrategy(
         dispatcher = testDispatcher,
         repo = mockRepo,
     )
 
-    private val robot = FeedUGCOnboardingViewModelRobot(
+    private val robot = UGCOnboardingViewModelRobot(
         onboardingStrategy = completeStrategy,
         dispatcher = testDispatcher,
     )
@@ -57,7 +58,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
             } andThen {
                 usernameState equalTo UsernameState.Valid
                 username equalTo mockValidUsername
@@ -70,7 +71,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockInvalidUsername))
+                submitAction(UGCOnboardingAction.InputUsername(mockInvalidUsername))
             } andThen {
                 usernameState equalTo UsernameState.Invalid(mockErrorUsernameValidation)
                 username equalTo mockInvalidUsername
@@ -83,7 +84,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.InputUsername(""))
+                submitAction(UGCOnboardingAction.InputUsername(""))
             } andThen {
                 usernameState equalTo UsernameState.Unknown
                 username equalTo ""
@@ -98,7 +99,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
             } andThen {
                 usernameState equalTo UsernameState.Invalid("")
                 username equalTo mockValidUsername
@@ -110,7 +111,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
     fun `when user click unchecked checkbox, it should check the checkbox`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
             } andThen {
                 isCheckTnc.assertTrue()
             }
@@ -121,8 +122,8 @@ class FeedUGCCompleteOnboardingViewModelTest {
     fun `when user click checked checkbox, it should uncheck the checkbox`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
             } andThen {
                 isCheckTnc.assertFalse()
             }
@@ -133,7 +134,7 @@ class FeedUGCCompleteOnboardingViewModelTest {
     fun `when user wants to submit tnc but havent check tnc, it should not do anything`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 isSubmit.assertFalse()
                 hasAcceptTnc.assertFalse()
@@ -146,9 +147,9 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockInvalidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.InputUsername(mockInvalidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 isSubmit.assertFalse()
                 hasAcceptTnc.assertFalse()
@@ -163,12 +164,12 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.setup {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
 
                 coEvery { mockRepo.validateUsername(any()) } returns Pair(false, mockErrorUsernameExists)
             } recordState {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 usernameState equalTo UsernameState.Invalid(mockErrorUsernameExists)
                 isSubmit.assertFalse()
@@ -184,12 +185,12 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.setup {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
             } recordStateAndEvent  {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen { state, events ->
-                events.last().assertEvent(FeedUGCOnboardingUiEvent.ShowError)
+                events.last().assertEvent(UGCOnboardingUiEvent.ShowError)
 
                 state.isSubmit.assertFalse()
                 state.hasAcceptTnc.assertFalse()
@@ -204,12 +205,12 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.setup {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
             } recordStateAndEvent  {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen { state, events ->
-                events.last().assertEvent(FeedUGCOnboardingUiEvent.ShowError)
+                events.last().assertEvent(UGCOnboardingUiEvent.ShowError)
 
                 state.isSubmit.assertFalse()
                 state.hasAcceptTnc.assertFalse()
@@ -224,12 +225,12 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.setup {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
             } recordStateAndEvent  {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen { state, events ->
-                events.last().assertEvent(FeedUGCOnboardingUiEvent.ShowError)
+                events.last().assertEvent(UGCOnboardingUiEvent.ShowError)
 
                 state.isSubmit.assertFalse()
                 state.hasAcceptTnc.assertFalse()
@@ -242,10 +243,10 @@ class FeedUGCCompleteOnboardingViewModelTest {
 
         robot.use {
             it.setup {
-                submitAction(FeedUGCOnboardingAction.InputUsername(mockValidUsername))
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.InputUsername(mockValidUsername))
+                submitAction(UGCOnboardingAction.CheckTnc)
             } recordState {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 isSubmit.assertFalse()
                 hasAcceptTnc.assertTrue()

@@ -1,11 +1,13 @@
-package com.tokopedia.feedcomponent.robot
+package com.tokopedia.content.common.robot
 
 import androidx.lifecycle.viewModelScope
-import com.tokopedia.feedcomponent.onboarding.view.strategy.base.FeedUGCOnboardingStrategy
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
-import com.tokopedia.feedcomponent.onboarding.view.viewmodel.FeedUGCOnboardingViewModel
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
+import com.tokopedia.content.common.onboarding.view.strategy.base.UGCOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
+import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
@@ -15,18 +17,18 @@ import java.io.Closeable
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
-class FeedUGCOnboardingViewModelRobot(
-    private val username: String = "",
-    private val onboardingStrategy: FeedUGCOnboardingStrategy,
+class UGCOnboardingViewModelRobot(
+    username: String = "",
+    onboardingStrategy: UGCOnboardingStrategy,
     private val dispatcher: CoroutineTestDispatchers,
 ) : Closeable {
 
-    val viewModel = FeedUGCOnboardingViewModel(
-        username = username,
+    val viewModel = UGCOnboardingViewModel(
+        onboardingType = if (username.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE else VALUE_ONBOARDING_TYPE_TNC,
         onboardingStrategy = onboardingStrategy,
     )
 
-    fun setup(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit): FeedUGCOnboardingViewModelRobot {
+    fun setup(fn: suspend UGCOnboardingViewModelRobot.() -> Unit): UGCOnboardingViewModelRobot {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
 
         dispatcher.coroutineDispatcher.runBlockingTest { fn() }
@@ -36,9 +38,9 @@ class FeedUGCOnboardingViewModelRobot(
         return this
     }
 
-    infix fun recordState(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit): FeedUGCOnboardingUiState {
+    infix fun recordState(fn: suspend UGCOnboardingViewModelRobot.() -> Unit): UGCOnboardingUiState {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-        lateinit var uiState: FeedUGCOnboardingUiState
+        lateinit var uiState: UGCOnboardingUiState
         scope.launch {
             viewModel.uiState.collect {
                 uiState = it
@@ -50,9 +52,9 @@ class FeedUGCOnboardingViewModelRobot(
         return uiState
     }
 
-    infix fun recordStateAsList(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit): List<FeedUGCOnboardingUiState> {
+    infix fun recordStateAsList(fn: suspend UGCOnboardingViewModelRobot.() -> Unit): List<UGCOnboardingUiState> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-        val uiStateList = mutableListOf<FeedUGCOnboardingUiState>()
+        val uiStateList = mutableListOf<UGCOnboardingUiState>()
         scope.launch {
             viewModel.uiState.collect {
                 uiStateList.add(it)
@@ -64,9 +66,9 @@ class FeedUGCOnboardingViewModelRobot(
         return uiStateList
     }
 
-    infix fun recordEvent(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit): List<FeedUGCOnboardingUiEvent> {
+    infix fun recordEvent(fn: suspend UGCOnboardingViewModelRobot.() -> Unit): List<UGCOnboardingUiEvent> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-        val uiEventList = mutableListOf<FeedUGCOnboardingUiEvent>()
+        val uiEventList = mutableListOf<UGCOnboardingUiEvent>()
         scope.launch {
             viewModel.uiEvent.collect {
                 uiEventList.add(it)
@@ -78,10 +80,10 @@ class FeedUGCOnboardingViewModelRobot(
         return uiEventList
     }
 
-    infix fun recordStateAndEvent(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit): Pair<FeedUGCOnboardingUiState, List<FeedUGCOnboardingUiEvent>> {
+    infix fun recordStateAndEvent(fn: suspend UGCOnboardingViewModelRobot.() -> Unit): Pair<UGCOnboardingUiState, List<UGCOnboardingUiEvent>> {
         val scope = CoroutineScope(dispatcher.coroutineDispatcher)
-        lateinit var uiState: FeedUGCOnboardingUiState
-        val uiEvents = mutableListOf<FeedUGCOnboardingUiEvent>()
+        lateinit var uiState: UGCOnboardingUiState
+        val uiEvents = mutableListOf<UGCOnboardingUiEvent>()
         scope.launch {
             viewModel.uiState.collect {
                 uiState = it
@@ -98,13 +100,13 @@ class FeedUGCOnboardingViewModelRobot(
         return uiState to uiEvents
     }
 
-    fun start(fn: suspend FeedUGCOnboardingViewModelRobot.() -> Unit) {
+    fun start(fn: suspend UGCOnboardingViewModelRobot.() -> Unit) {
         use {
             runBlockingTest { fn() }
         }
     }
 
-    suspend fun submitAction(action: FeedUGCOnboardingAction) = act {
+    suspend fun submitAction(action: UGCOnboardingAction) = act {
         viewModel.submitAction(action)
     }
 

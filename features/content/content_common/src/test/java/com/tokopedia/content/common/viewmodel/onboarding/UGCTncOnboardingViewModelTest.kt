@@ -1,15 +1,15 @@
-package com.tokopedia.feedcomponent.viewmodel
+package com.tokopedia.content.common.viewmodel.onboarding
 
-import com.tokopedia.feedcomponent.model.CommonModelBuilder
-import com.tokopedia.feedcomponent.onboarding.domain.repository.FeedUGCOnboardingRepository
-import com.tokopedia.feedcomponent.onboarding.view.strategy.FeedUGCTncOnboardingStrategy
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.action.FeedUGCOnboardingAction
-import com.tokopedia.feedcomponent.onboarding.view.uimodel.event.FeedUGCOnboardingUiEvent
-import com.tokopedia.feedcomponent.robot.FeedUGCOnboardingViewModelRobot
-import com.tokopedia.feedcomponent.util.andThen
-import com.tokopedia.feedcomponent.util.assertEvent
-import com.tokopedia.feedcomponent.util.assertFalse
-import com.tokopedia.feedcomponent.util.assertTrue
+import com.tokopedia.content.common.onboarding.domain.repository.UGCOnboardingRepository
+import com.tokopedia.content.common.onboarding.view.strategy.UGCTncOnboardingStrategy
+import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
+import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
+import com.tokopedia.content.common.robot.UGCOnboardingViewModelRobot
+import com.tokopedia.content.common.model.CommonModelBuilder
+import com.tokopedia.content.common.util.andThen
+import com.tokopedia.content.common.util.assertEvent
+import com.tokopedia.content.common.util.assertFalse
+import com.tokopedia.content.common.util.assertTrue
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -20,25 +20,25 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
-class FeedUGCTncOnboardingViewModelTest {
+class UGCTncOnboardingViewModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()
 
     private val testDispatcher = rule.dispatchers
 
-    private val mockRepo: FeedUGCOnboardingRepository = mockk(relaxed = true)
+    private val mockRepo: UGCOnboardingRepository = mockk(relaxed = true)
 
     private val commonBuilder = CommonModelBuilder()
 
     private val mockException = commonBuilder.buildException()
 
-    private val tncStrategy = FeedUGCTncOnboardingStrategy(
+    private val tncStrategy = UGCTncOnboardingStrategy(
         dispatcher = testDispatcher,
         repo = mockRepo,
     )
 
-    private val robot = FeedUGCOnboardingViewModelRobot(
+    private val robot = UGCOnboardingViewModelRobot(
         onboardingStrategy = tncStrategy,
         dispatcher = testDispatcher,
     )
@@ -52,7 +52,7 @@ class FeedUGCTncOnboardingViewModelTest {
     fun `when user click unchecked checkbox, it should check the checkbox`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
             } andThen {
                 isCheckTnc.assertTrue()
             }
@@ -63,8 +63,8 @@ class FeedUGCTncOnboardingViewModelTest {
     fun `when user click checked checkbox, it should uncheck the checkbox`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.CheckTnc)
             } andThen {
                 isCheckTnc.assertFalse()
             }
@@ -75,7 +75,7 @@ class FeedUGCTncOnboardingViewModelTest {
     fun `when user wants to submit tnc but havent check tnc, it should not do anything`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 isSubmit.assertFalse()
                 hasAcceptTnc.assertFalse()
@@ -87,8 +87,8 @@ class FeedUGCTncOnboardingViewModelTest {
     fun `when user successfully to submit tnc , it should emit success state`() {
         robot.use {
             it.recordState {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen {
                 isSubmit.assertFalse()
                 hasAcceptTnc.assertTrue()
@@ -103,10 +103,10 @@ class FeedUGCTncOnboardingViewModelTest {
 
         robot.use {
             it.recordStateAndEvent {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen { state, events ->
-                events.last().assertEvent(FeedUGCOnboardingUiEvent.ShowError)
+                events.last().assertEvent(UGCOnboardingUiEvent.ShowError)
 
                 state.isSubmit.assertFalse()
                 state.hasAcceptTnc.assertFalse()
@@ -121,10 +121,10 @@ class FeedUGCTncOnboardingViewModelTest {
 
         robot.use {
             it.recordStateAndEvent {
-                submitAction(FeedUGCOnboardingAction.CheckTnc)
-                submitAction(FeedUGCOnboardingAction.ClickNext)
+                submitAction(UGCOnboardingAction.CheckTnc)
+                submitAction(UGCOnboardingAction.ClickNext)
             } andThen { state, events ->
-                events.last().assertEvent(FeedUGCOnboardingUiEvent.ShowError)
+                events.last().assertEvent(UGCOnboardingUiEvent.ShowError)
 
                 state.isSubmit.assertFalse()
                 state.hasAcceptTnc.assertFalse()
