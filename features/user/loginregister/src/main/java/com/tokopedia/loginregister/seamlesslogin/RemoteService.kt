@@ -50,14 +50,6 @@ class RemoteService : Service() {
                 .inject(this)
     }
 
-    override fun onDestroy() {
-        try {
-            super.onDestroy()
-        } catch (e: DeadObjectException) {
-            e.printStackTrace()
-        }
-    }
-
     @Inject lateinit var viewModel: SeamlessLoginViewModel
     @Inject lateinit var userSession: UserSessionInterface
 

@@ -304,6 +304,7 @@ class SellerSeamlessLoginFragment : BaseDaggerFragment() {
         serviceConnection?.run {
             activity?.unbindService(this)
         }
+        service = null
         super.onDestroy()
     }
 
