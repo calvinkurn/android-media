@@ -18,7 +18,7 @@ import kotlinx.coroutines.sync.withLock
 /**
  * Created by kenny.hadisaputra on 23/05/22
  */
-class ChatStreams @AssistedInject constructor(
+open class ChatStreams @AssistedInject constructor(
     @Assisted private val scope: CoroutineScope,
     private val dispatchers: CoroutineDispatchers,
 ) {
@@ -42,11 +42,11 @@ class ChatStreams @AssistedInject constructor(
         setLoopingTimer()
     }
 
-    fun setWaitingForHistory() {
+    open fun setWaitingForHistory() {
         isWaitingForHistory = true
     }
 
-    fun addChat(chat: PlayChatUiModel) {
+    open fun addChat(chat: PlayChatUiModel) {
         /**
          * When we get chat either from local user / web socket,
          * set isWaitingForHistory to false so the chat won't
@@ -76,7 +76,7 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
-    private fun setLoopingTimer() {
+    protected open fun setLoopingTimer() {
         scope.launch(dispatchers.computation) {
             while (isActive) {
                 delay(DELAY_PER_STREAM)
@@ -85,7 +85,7 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
-    private fun sendPendingChats(isClearAllPrevChats: Boolean = false) {
+    protected fun sendPendingChats(isClearAllPrevChats: Boolean = false) {
         if (pendingChats.isEmpty()) return
 
         _chats.update {

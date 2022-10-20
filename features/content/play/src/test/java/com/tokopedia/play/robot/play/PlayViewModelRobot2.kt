@@ -20,6 +20,7 @@ import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.uimodel.event.PlayViewerNewUiEvent
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.PlayLiveRoomMetricsCommon
 import com.tokopedia.play_common.util.PlayPreference
@@ -157,6 +158,20 @@ class PlayViewModelRobot2(
         dispatchers.coroutineDispatcher.advanceUntilIdle()
         scope.cancel()
         return uiState to uiEvents
+    }
+
+    fun recordChatState(fn: suspend PlayViewModelRobot2.() -> Unit): List<PlayChatUiModel> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var chats: List<PlayChatUiModel>
+        scope.launch {
+            viewModel.chats.collect {
+                chats = it
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return chats
     }
 
     fun cancelRemainingTasks() {
