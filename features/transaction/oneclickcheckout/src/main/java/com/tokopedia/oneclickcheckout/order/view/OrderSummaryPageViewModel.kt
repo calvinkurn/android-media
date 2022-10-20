@@ -181,18 +181,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
             }
-            var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
-            uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
-                showImageUpload = result.imageUpload.showImageUpload,
-                uploadImageText = result.imageUpload.text,
-                leftIconUrl = result.imageUpload.leftIconUrl,
-                checkoutId = result.imageUpload.checkoutId,
-                prescriptionIds = prescriptionIds.prescriptionIds,
-                uploadedImageCount = prescriptionIds.prescriptionIds.size,
-                isError = false,
-                frontEndValidation = result.imageUpload.frontEndValidation,
-                isOcc = true,
-            )
+            if (result.imageUpload.showImageUpload) {
+                var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+                uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+                    showImageUpload = result.imageUpload.showImageUpload,
+                    uploadImageText = result.imageUpload.text,
+                    leftIconUrl = result.imageUpload.leftIconUrl,
+                    checkoutId = result.imageUpload.checkoutId,
+                    prescriptionIds = prescriptionIds.prescriptionIds,
+                    uploadedImageCount = prescriptionIds.prescriptionIds.size,
+                    isError = false,
+                    frontEndValidation = result.imageUpload.frontEndValidation,
+                    isOcc = true,
+                )
+            }
         }
     }
 
