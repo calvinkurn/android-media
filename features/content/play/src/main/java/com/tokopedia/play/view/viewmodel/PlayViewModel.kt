@@ -1190,6 +1190,9 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             Log.d("<LOG>", "getChatHistory for $channelId")
             val response = repo.getChatHistory(channelId)
+
+            /** TODO: add validation before setHistoryChat */
+            setHistoryChat(response.chatList.reversed())
             Log.d("<LOG>", "getChatHistory response : $response")
         }) {
             Log.d("<LOG>", "getChatHistory error : $it")
@@ -1438,6 +1441,10 @@ class PlayViewModel @AssistedInject constructor(
         chatStreams.addChat(chat)
     }
 
+    private fun setHistoryChat(chatList: List<PlayChatUiModel>) {
+        chatStreams.addHistoryChat(chatList)
+    }
+
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
         getReportSummariesUseCase.params = GetReportSummariesUseCase.createParam(channelId)
         getReportSummariesUseCase.executeOnBackground()
@@ -1640,6 +1647,7 @@ class PlayViewModel @AssistedInject constructor(
                 }
             }
             is PlayChat -> {
+                Log.d("<LOG>", "websocket chat : ${playUiModelMapper.mapChat(result)}")
                 setNewChat(playUiModelMapper.mapChat(result))
             }
             is PinnedMessage -> {

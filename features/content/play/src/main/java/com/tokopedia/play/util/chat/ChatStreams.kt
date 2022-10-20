@@ -49,6 +49,16 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
+    fun addHistoryChat(chatList: List<PlayChatUiModel>) {
+        scope.launch(dispatchers.computation) {
+            mutex.withLock {
+                pendingChats.clear()
+                pendingChats.addAll(chatList)
+                sendPendingChats()
+            }
+        }
+    }
+
     private fun setLoopingTimer() {
         scope.launch(dispatchers.computation) {
             while (isActive) {
