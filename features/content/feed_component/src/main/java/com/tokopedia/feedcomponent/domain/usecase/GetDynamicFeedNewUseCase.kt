@@ -316,6 +316,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         cta {
           text
+          subtitle
           color
           colorGradient {
           color

@@ -447,6 +447,7 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
+        topAdsProductCampaignCopywritingText.text = feedXCard.cta.subtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&

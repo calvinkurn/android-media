@@ -537,6 +537,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         asgcCtaProductName.text = getCTAButtonText(feedXCard)
+        asgcProductCampaignCopywring.text = feedXCard.cta.subtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
