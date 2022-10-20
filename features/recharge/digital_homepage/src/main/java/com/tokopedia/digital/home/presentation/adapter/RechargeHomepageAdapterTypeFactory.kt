@@ -325,6 +325,7 @@ class RechargeHomepageAdapterTypeFactory(
                 parent,
                 listener
             )
+            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsWidgetViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
