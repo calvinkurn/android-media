@@ -11,7 +11,7 @@ import java.io.File
 
 interface CreateMediaRepository {
     fun image(captureSize: Size?, byteArray: ByteArray?): Flow<File?>
-    fun video(): File
+    fun video(): File?
 }
 
 class CreateMediaRepositoryImpl : CreateMediaRepository {
