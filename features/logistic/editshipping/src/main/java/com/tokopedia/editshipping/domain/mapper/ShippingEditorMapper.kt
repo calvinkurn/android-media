@@ -1,6 +1,7 @@
 package com.tokopedia.editshipping.domain.mapper
 
 import com.tokopedia.editshipping.domain.model.shippingEditor.*
+import com.tokopedia.editshipping.util.EditShippingConstant.WHITELABEL_SHIPPER_ID
 import com.tokopedia.logisticCommon.data.response.shippingeditor.*
 import javax.inject.Inject
 
@@ -8,8 +9,8 @@ class ShippingEditorMapper @Inject constructor() {
 
     fun mapShipperList(response: GetShipperListResponse): ShipperListModel {
         return ShipperListModel().apply {
-             shippers = mapShipper(response.ongkirShippingEditor.data)
-             ticker = mapTickerShipperList(response)
+            shippers = mapShipper(response.ongkirShippingEditor.data)
+            ticker = mapTickerShipperList(response)
         }
     }
 
@@ -29,8 +30,12 @@ class ShippingEditorMapper @Inject constructor() {
     }
 
     private fun mapShipperOnDemand(response: List<OnDemand>): List<OnDemandModel> {
-        val onDemandModelList =  ArrayList<OnDemandModel>()
+        val onDemandModelList = ArrayList<OnDemandModel>()
         response.forEach { data ->
+            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val shipperDescription =
+                if (isWhitelabelShipper) data.shipperProduct.firstOrNull()?.description
+                    ?: "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
             val onDemandUiModel = OnDemandModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
@@ -39,6 +44,8 @@ class ShippingEditorMapper @Inject constructor() {
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
                 shipperProduct = mapShipperProduct(data.shipperProduct)
+                isWhitelabel = isWhitelabelShipper
+                description = shipperDescription
             }
             onDemandModelList.add(onDemandUiModel)
         }
@@ -48,6 +55,10 @@ class ShippingEditorMapper @Inject constructor() {
     private fun mapShipperConventional(response: List<Conventional>): List<ConventionalModel> {
         val conventionalModelList = ArrayList<ConventionalModel>()
         response.forEach { data ->
+            val isWhitelabelShipper = isWhitelabelShipper(data.shipperId)
+            val shipperDescription =
+                if (isWhitelabelShipper) data.shipperProduct.firstOrNull()?.description
+                    ?: "" else data.shipperProduct.joinToString(" | ") { it.shipperProductName }
             val conventionalUiModel = ConventionalModel().apply {
                 shipperId = data.shipperId
                 shipperName = data.shipperName
@@ -56,27 +67,33 @@ class ShippingEditorMapper @Inject constructor() {
                 image = data.image
                 featureInfo = mapFeatureInfo(data.featureInfo)
                 shipperProduct = mapShipperProduct(data.shipperProduct)
+                isWhitelabel = isWhitelabelShipper
+                description = shipperDescription
             }
             conventionalModelList.add(conventionalUiModel)
         }
         return conventionalModelList
     }
 
+    private fun isWhitelabelShipper(shipperId: Long): Boolean {
+        return WHITELABEL_SHIPPER_ID.contains(shipperId)
+    }
+
     private fun mapFeatureInfo(response: List<FeatureInfo>): List<FeatureInfoModel> {
-       return response.map {
-           FeatureInfoModel(
-                   it.header,
-                   it.body
-           )
-       }
+        return response.map {
+            FeatureInfoModel(
+                it.header,
+                it.body
+            )
+        }
     }
 
     private fun mapShipperProduct(response: List<ShipperProduct>): List<ShipperProductModel> {
         return response.map {
             ShipperProductModel(
-                    it.shipperProductId,
-                    it.shipperProductName,
-                    it.isActive
+                it.shipperProductId,
+                it.shipperProductName,
+                it.isActive
             )
         }
     }
@@ -85,15 +102,18 @@ class ShippingEditorMapper @Inject constructor() {
         val data = response.ongkirShippingEditor.data.ticker
         return data.map {
             TickerModel(
-                    it.header,
-                    it.body,
-                    it.textLink,
-                    it.urlLink
+                it.header,
+                it.body,
+                it.textLink,
+                it.urlLink
             )
         }
     }
 
-    private fun mapHeaderTicker(response: HeaderTicker, warehouses: List<Warehouses>): HeaderTickerModel {
+    private fun mapHeaderTicker(
+        response: HeaderTicker,
+        warehouses: List<Warehouses>
+    ): HeaderTickerModel {
         return HeaderTickerModel().apply {
             header = response.header
             body = response.body
@@ -104,19 +124,25 @@ class ShippingEditorMapper @Inject constructor() {
         }
     }
 
-    private fun mapCourierTicker(response: List<CourierTicker>, warehouses: List<Warehouses>): List<CourierTickerModel> {
+    private fun mapCourierTicker(
+        response: List<CourierTicker>,
+        warehouses: List<Warehouses>
+    ): List<CourierTickerModel> {
         return response.map {
             CourierTickerModel(
-                    it.shipperId,
-                    mapWarehouseModelBasedOnWarehouseId(it.warehouseIds?: emptyList(), warehouses),
-                    it.tickerState,
-                    it.isAvailable,
-                    mapShipperProductTicker(it.shipperProduct)
+                it.shipperId,
+                mapWarehouseModelBasedOnWarehouseId(it.warehouseIds ?: emptyList(), warehouses),
+                it.tickerState,
+                it.isAvailable,
+                mapShipperProductTicker(it.shipperProduct)
             )
         }
     }
 
-    private fun mapWarehouseModelBasedOnWarehouseId(response: List<Long>, warehouses: List<Warehouses>): List<WarehousesModel> {
+    private fun mapWarehouseModelBasedOnWarehouseId(
+        response: List<Long>,
+        warehouses: List<Warehouses>
+    ): List<WarehousesModel> {
         return warehouses.filter {
             response.any { id ->
                 it.warehouseId == id
@@ -138,40 +164,40 @@ class ShippingEditorMapper @Inject constructor() {
         return shipperProductTickerList
     }
 
-    private fun mapWarehousesTicker(it: Warehouses) : WarehousesModel {
+    private fun mapWarehousesTicker(it: Warehouses): WarehousesModel {
         return WarehousesModel(
-                    it.warehouseId,
-                    it.warehouseName,
-                    it.districtId,
-                    it.districtName,
-                    it.cityId,
-                    it.cityName,
-                    it.provinceId,
-                    it.provinceName,
-                    it.status,
-                    it.postalCode,
-                    it.isDefault,
-                    it.latLon,
-                    it.latitude,
-                    it.longitude,
-                    it.addressDetail,
-                    it.country,
-                    it.isFulfillment,
-                    it.warehouseType,
-                    it.email,
-                    mapShopId(it.shopId),
-                    mapPartnerId(it.partnerId)
+            it.warehouseId,
+            it.warehouseName,
+            it.districtId,
+            it.districtName,
+            it.cityId,
+            it.cityName,
+            it.provinceId,
+            it.provinceName,
+            it.status,
+            it.postalCode,
+            it.isDefault,
+            it.latLon,
+            it.latitude,
+            it.longitude,
+            it.addressDetail,
+            it.country,
+            it.isFulfillment,
+            it.warehouseType,
+            it.email,
+            mapShopId(it.shopId),
+            mapPartnerId(it.partnerId)
         )
     }
 
-    private fun mapShopId(response: ShopId) : ShopIdModel {
+    private fun mapShopId(response: ShopId): ShopIdModel {
         return ShopIdModel().apply {
             int64 = response.int64
             valid = response.valid
         }
     }
 
-    private fun mapPartnerId(response: PartnerId) : PartnerIdModel {
+    private fun mapPartnerId(response: PartnerId): PartnerIdModel {
         return PartnerIdModel().apply {
             int64 = response.int64
             valid = response.valid

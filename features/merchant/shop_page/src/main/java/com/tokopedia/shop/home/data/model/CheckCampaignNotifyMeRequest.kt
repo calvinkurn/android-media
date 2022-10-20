@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
 data class CheckCampaignNotifyMeRequest (
         @SerializedName("campaign_id")
         @Expose
-        var campaignId: Int = 0,
+        var campaignId: Long = 0,
 
         @SerializedName("action")
         @Expose
