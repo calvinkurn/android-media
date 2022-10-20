@@ -1,33 +1,38 @@
 package com.tokopedia.search.result.product.safesearch
 
-import androidx.lifecycle.LifecycleOwner
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.search.result.presentation.model.TickerDataView
 
 class SafeSearchPresenterDelegate(
-    private val safeSearchPreference: SafeSearchPreference,
-    private val lifecycleOwner: LifecycleOwner?,
+    private val safeSearchPreference: MutableSafeSearchPreference,
+    private val safeSearchView: SafeSearchView,
 ) : SafeSearchPresenter {
     override val isShowAdult: Boolean
         get() = safeSearchPreference.isShowAdult
 
-    override fun initSafeSearch() {
-        SafeSearchLifecycleHelper.resetIfNoObserver(safeSearchPreference)
-    }
-
     override fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter) {
-        if(isShowAdult) {
+        if (isShowAdult) {
             searchParameter.set(SearchApiConst.SHOW_ADULT, SearchApiConst.SHOW_ADULT_ENABLED)
         }
     }
 
-    override fun enableShowAdult() {
+    private fun enableShowAdult() {
         safeSearchPreference.isShowAdult = true
-        SafeSearchLifecycleHelper.registerProcessLifecycleOwner(safeSearchPreference, lifecycleOwner)
+        safeSearchView.registerSameSessionListener(safeSearchPreference)
     }
 
-    override fun isShowAdultTicker(ticker: TickerDataView): Boolean {
+    private fun isShowAdultTicker(ticker: TickerDataView): Boolean {
         return SAFE_SEARCH_TICKER_COMPONENT_ID == ticker.componentId
+    }
+
+    override fun showAdultForAdultTicker(ticker: TickerDataView) {
+        if (isShowAdultTicker(ticker)) {
+            enableShowAdult()
+        }
+    }
+
+    override fun onSafeSearchViewDestroyed() {
+        safeSearchView.release()
     }
 }

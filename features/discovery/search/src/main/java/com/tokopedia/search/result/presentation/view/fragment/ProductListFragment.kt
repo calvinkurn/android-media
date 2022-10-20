@@ -218,12 +218,6 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject @Suppress("LateinitUsage")
     lateinit var applinkModifier: ApplinkModifier
 
-    @Inject @Suppress("LateinitUsage")
-    lateinit var tickerPresenter: TickerPresenter
-
-    @Inject @Suppress("LateinitUsage")
-    lateinit var safeSearchPresenter: SafeSearchPresenter
-
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -258,7 +252,6 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initSafeSearch()
         loadDataFromArguments()
         initProductCardLifecycleObserver()
         initNetworkMonitor()
@@ -273,7 +266,7 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun copySearchParameter(searchParameterToCopy: SearchParameter?) {
         if (searchParameterToCopy != null) {
             searchParameter = SearchParameter(searchParameterToCopy).apply {
-                safeSearchPresenter.modifySearchParameterIfShowAdultEnabled(this)
+                presenter?.modifySearchParameterIfShowAdultEnabled(this)
             }
         }
     }
@@ -289,10 +282,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     private fun initNetworkMonitor() {
         networkMonitor = DefaultNetworkMonitor(activity, this)
-    }
-
-    private fun initSafeSearch() {
-        safeSearchPresenter.initSafeSearch()
     }
 
     override fun initInjector() {
@@ -441,9 +430,9 @@ class ProductListFragment: BaseDaggerFragment(),
                 iris,
                 filterController,
                 recyclerViewUpdater,
-                tickerPresenter,
+                presenter,
                 this,
-                safeSearchPresenter,
+                presenter,
             ),
             suggestionListener = SuggestionListenerDelegate(iris, applinkModifier, activity),
             globalNavListener = GlobalNavListenerDelegate(trackingQueue, activity, iris),

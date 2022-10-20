@@ -30,6 +30,10 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegat
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
+import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
@@ -106,6 +110,8 @@ internal open class ProductListPresenterTestFixtures {
         every { className } returns this@ProductListPresenterTestFixtures.className
     }
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
+    protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -131,6 +137,10 @@ internal open class ProductListPresenterTestFixtures {
             searchParameterProvider,
         )
         val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
+        )
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -170,6 +180,7 @@ internal open class ProductListPresenterTestFixtures {
             ),
             suggestionPresenter,
             tickerPresenter,
+            safeSearchPresenter,
         )
         productListPresenter.attachView(productListView)
     }

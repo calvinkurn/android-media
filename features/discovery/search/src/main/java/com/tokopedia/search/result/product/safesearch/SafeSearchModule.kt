@@ -1,10 +1,7 @@
 package com.tokopedia.search.result.product.safesearch
 
-import android.app.Activity
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.LifecycleOwner
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.search.di.qualifier.SearchContext
 import com.tokopedia.search.di.scope.SearchScope
 import dagger.Module
@@ -12,23 +9,34 @@ import dagger.Provides
 
 @Module
 object SafeSearchModule {
+    @JvmStatic
     @Provides
     @SearchScope
-    fun provideSafeSearchPreference(
-        @SearchContext context: Context
-    ): SafeSearchPreference {
-        return SafeSearchSharedPreference(context)
+    fun provideSafeSearchPreference(): MutableSafeSearchPreference {
+        return SafeSearchMemoryPreference
     }
 
+    @JvmStatic
+    @Provides
+    @SearchScope
+    fun provideSafeSearchView(
+        @SearchContext context: Context,
+    ): SafeSearchView {
+        return SafeSearchViewDelegate(
+            context as? LifecycleOwner,
+        )
+    }
+
+    @JvmStatic
     @Provides
     @SearchScope
     fun provideSafeSearchPresenter(
-        safeSearchPreference: SafeSearchPreference,
-        @SearchContext context: Context,
-    ) : SafeSearchPresenter {
+        safeSearchPreference: MutableSafeSearchPreference,
+        safeSearchView: SafeSearchView,
+    ): SafeSearchPresenter {
         return SafeSearchPresenterDelegate(
             safeSearchPreference,
-            context as? LifecycleOwner,
+            safeSearchView,
         )
     }
 }

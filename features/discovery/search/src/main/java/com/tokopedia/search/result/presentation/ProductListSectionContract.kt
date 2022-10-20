@@ -15,6 +15,8 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 
@@ -96,7 +98,9 @@ interface ProductListSectionContract {
         CustomerPresenter<View>,
         Pagination,
         BannerAdsPresenter,
-        BroadMatchPresenter {
+        BroadMatchPresenter,
+        TickerPresenter,
+        SafeSearchPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)

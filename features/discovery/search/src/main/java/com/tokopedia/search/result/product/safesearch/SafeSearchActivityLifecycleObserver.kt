@@ -3,15 +3,13 @@ package com.tokopedia.search.result.product.safesearch
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.ProcessLifecycleOwner
 
 class SafeSearchActivityLifecycleObserver(
-    private val safeSearchPreference: SafeSearchPreference,
+    private val safeSearchPreference: MutableSafeSearchPreference,
 ) : LifecycleObserver {
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onActivityDestroyed() {
-        if(safeSearchPreference.isShowAdult) {
-            safeSearchPreference.isShowAdult = false
-            SafeSearchLifecycleHelper.unregisterLifecycleObserver()
-        }
+        safeSearchPreference.isShowAdult = false
     }
 }

@@ -6,7 +6,6 @@ import com.tokopedia.search.result.presentation.model.TickerDataView
 interface SafeSearchPresenter {
     val isShowAdult: Boolean
     fun modifySearchParameterIfShowAdultEnabled(searchParameter: SearchParameter)
-    fun initSafeSearch()
-    fun enableShowAdult()
-    fun isShowAdultTicker(ticker: TickerDataView): Boolean
+    fun showAdultForAdultTicker(ticker: TickerDataView)
+    fun onSafeSearchViewDestroyed()
 }

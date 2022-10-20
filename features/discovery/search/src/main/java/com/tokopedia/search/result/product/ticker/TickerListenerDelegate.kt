@@ -15,9 +15,9 @@ class TickerListenerDelegate(
     private val iris: Iris,
     private val filterController: FilterController,
     private val viewUpdater: ViewUpdater,
-    private val tickerPresenter: TickerPresenter,
+    private val tickerPresenter: TickerPresenter?,
     private val parameterListener: ProductListParameterListener,
-    private val safeSearchPresenter: SafeSearchPresenter,
+    private val safeSearchPresenter: SafeSearchPresenter?,
 ) : TickerListener {
     override fun onTickerImpressed(tickerDataView: TickerDataView) {
         tickerDataView.impress(iris)
@@ -26,9 +26,7 @@ class TickerListenerDelegate(
     override fun onTickerClicked(tickerDataView: TickerDataView) {
         tickerDataView.click(TrackApp.getInstance().gtm)
 
-        if (safeSearchPresenter.isShowAdultTicker(tickerDataView)) {
-            safeSearchPresenter.enableShowAdult()
-        }
+        safeSearchPresenter?.showAdultForAdultTicker(tickerDataView)
 
         applyParamsFromTicker(UrlParamUtils.getParamMap(tickerDataView.query))
     }
@@ -41,12 +39,12 @@ class TickerListenerDelegate(
     }
 
     override fun onTickerDismissed() {
-        tickerPresenter.onPriceFilterTickerDismissed()
+        tickerPresenter?.onPriceFilterTickerDismissed()
         viewUpdater.removeFirstItemWithCondition {
             it is TickerDataView
         }
     }
 
     override val isTickerHasDismissed
-        get() = tickerPresenter.isTickerHasDismissed
+        get() = tickerPresenter?.isTickerHasDismissed ?: false
 }
