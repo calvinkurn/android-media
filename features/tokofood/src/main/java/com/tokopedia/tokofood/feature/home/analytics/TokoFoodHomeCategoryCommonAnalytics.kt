@@ -9,7 +9,6 @@ import com.tokopedia.tokofood.common.domain.response.CheckoutTokoFoodData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
-import java.lang.StringBuilder
 
 object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
 
@@ -34,6 +33,10 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
             .appendCurrentSite(TokoFoodAnalytics.TOKOPEDIA_MARKETPLACE)
             .appendUserId(userId ?: EMPTY_DATA)
             .appendCustomKeyValue(TokoFoodAnalyticsConstants.DESTINATION_ID, destinationId ?: EMPTY_DATA)
+            .appendCustomKeyValue(
+                TokoFoodAnalyticsConstants.TRACKER_ID,
+                if (isHome) TokoFoodAnalyticsConstants.TRACKER_ID_31289 else TokoFoodAnalyticsConstants.TRACKER_ID_32007
+            )
             .build()
     }
 
