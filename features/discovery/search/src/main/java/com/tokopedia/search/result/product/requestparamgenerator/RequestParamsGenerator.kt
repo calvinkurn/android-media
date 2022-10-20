@@ -174,6 +174,12 @@ class RequestParamsGenerator @Inject constructor(
         requestParams.putString(SearchApiConst.Q, getSearchQuery(searchParameter).omitNewlineAndPlusSign())
         requestParams.putString(SearchApiConst.UNIQUE_ID, getUniqueId())
         requestParams.putString(SearchApiConst.USER_ID, userId)
+        requestParams.putString(SearchApiConst.SHOW_ADULT, getShowAdult(searchParameter))
+    }
+
+    private fun getShowAdult(searchParameter: Map<String, Any>) : String {
+        val showAdult = searchParameter.getValueString(SearchApiConst.SHOW_ADULT)
+        return showAdult.ifEmpty { SearchApiConst.DEFAULT_VALUE_OF_SHOW_ADULT }
     }
 
     private fun getSearchRows() = SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_ROWS

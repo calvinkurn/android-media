@@ -85,6 +85,7 @@ class SearchApiConst {
         const val PRODUCT_ID = "product_id"
         const val SHOW_ADULT = "show_adult"
         const val SHOW_ADULT_ENABLED = "true"
+        const val DEFAULT_VALUE_OF_SHOW_ADULT = "false"
 
         const val DEFAULT_VALUE_OF_PARAMETER_DEVICE = "android"
         const val DEFAULT_VALUE_OF_PARAMETER_MOBILE = "mobile"
