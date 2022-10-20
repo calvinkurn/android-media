@@ -1843,18 +1843,17 @@ class AddEditProductPreviewFragment :
 
     private fun showBottomSheet(){
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonBackClicked { activityFinish() }
+        bottomSheet.setOnButtonBackClicked { goToManageProduct() }
         bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
-        bottomSheet.setDismissListener { activityFinish() }
+        bottomSheet.setDismissListener { goToManageProduct() }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun activityFinish(){
+    private fun goToManageProduct(){
         activity?.let {
             RouteManager.route(it, PRODUCT_MANAGE)
             it.finish()
         }
-
     }
 
     private fun routeToArticle(){
