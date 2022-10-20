@@ -61,9 +61,10 @@ class ManageProductNonVariantMultilocAdapter: RecyclerView.Adapter<ManageProduct
                     selectedWarehouse.isToggleOn = switcherToggleParent.isChecked
                     binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
                     listener?.onDataInputChanged(adapterPosition, criteria, discount)
+                    listener?.trackOnSwitchToggled(adapterPosition, criteria, discount)
                 }
+                setupIneligibleLocation(selectedWarehouse, product)
                 iconTkpd.isVisible = selectedWarehouse.isDilayaniTokopedia
-                setupIneligibleLocation(selectedWarehouse)
             }
             binding.containerProductChild.isVisible = selectedWarehouse.isToggleOn
             binding.containerLayoutProductInformation.apply {

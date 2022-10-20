@@ -7,16 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailInformationBinding
 import com.tokopedia.campaign.databinding.LayoutCampaignManageProductDetailParentBinding
-import com.tokopedia.campaign.utils.constant.LocaleConstant
-import com.tokopedia.campaign.utils.textwatcher.NumberThousandSeparatorTextWatcher
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
 import com.tokopedia.unifycomponents.TextFieldUnify2
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.helper.NumberTextInputUtil
-import java.text.DecimalFormat
-import java.text.NumberFormat
 
 open class ManageProductVariantBaseViewHolder(
     view: View,

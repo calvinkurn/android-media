@@ -114,6 +114,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
         })
         binding?.btnAddProduct?.setOnClickListener {
             viewModel.reserveProduct()
+            viewModel.onAddButtonClicked(flashSaleId.toString())
         }
     }
 
@@ -125,6 +126,7 @@ class ChooseProductFragment : BaseSimpleListFragment<CompositeAdapter, ChoosePro
     override fun onDetailClicked(index: Int, item: ChooseProductItem) {
         criteriaCheckBottomSheet.setProductPreview(item.productName, item.imageUrl)
         viewModel.checkCriteria(item)
+        viewModel.onCheckDetailButtonClicked(flashSaleId.toString(), item.productId)
     }
 
     override fun createAdapter(): CompositeAdapter {

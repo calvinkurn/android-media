@@ -11,14 +11,16 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
-import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.ProductCriteria
+import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse
 import com.tokopedia.tkpd.flashsale.domain.entity.ReservedProduct.Product.Warehouse.DiscountSetup
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_FLASH_SALE_ID
 import com.tokopedia.tkpd.flashsale.presentation.common.constant.BundleConstant.BUNDLE_KEY_PRODUCT
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapter
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.adapter.ManageProductNonVariantAdapterListener
 import com.tokopedia.tkpd.flashsale.presentation.manageproduct.uimodel.ValidationResult
+import com.tokopedia.tkpd.flashsale.util.constant.TrackerConstant.SINGLE_LOCATION
 import javax.inject.Inject
 
 class ManageProductNonVariantFragment :
@@ -28,7 +30,7 @@ class ManageProductNonVariantFragment :
     companion object {
         private const val MULTILOC_FRAGMENT_TAG = "multiloc"
         @JvmStatic
-        fun newInstance(product: ReservedProduct.Product?, campaignId: Long): ManageProductNonVariantFragment {
+        fun newInstance(product: Product?, campaignId: Long): ManageProductNonVariantFragment {
             val fragment = ManageProductNonVariantFragment()
             val bundle = Bundle()
             bundle.putParcelable(BUNDLE_KEY_PRODUCT, product)
@@ -41,7 +43,7 @@ class ManageProductNonVariantFragment :
     @Inject
     lateinit var viewModel: ManageProductNonVariantViewModel
     private val product by lazy {
-        arguments?.getParcelable<ReservedProduct.Product>(BUNDLE_KEY_PRODUCT)
+        arguments?.getParcelable<Product>(BUNDLE_KEY_PRODUCT)
     }
     private val campaignId by lazy {
         arguments?.getLong(BUNDLE_FLASH_SALE_ID).orZero()
@@ -81,6 +83,11 @@ class ManageProductNonVariantFragment :
         val intent = Intent()
         bundle.putParcelable(BUNDLE_KEY_PRODUCT, viewModel.product.value)
         intent.putExtras(bundle)
+        viewModel.onSaveButtonClicked(
+            campaignId = campaignId.toString(),
+            productId = product?.productId.toString(),
+            locationType = SINGLE_LOCATION
+        )
         activity?.setResult(Activity.RESULT_OK, intent)
         activity?.finish()
     }
@@ -104,7 +111,23 @@ class ManageProductNonVariantFragment :
         return viewModel.calculatePercent(priceInput, originalPrice)
     }
 
-    override fun showDetailCriteria(position: Int) { return /* Only Needed For Multi-Location */ }
+    override fun trackOnClickPercent(percentInput: String) {
+        viewModel.onPercentDiscountTrackerInput(percentInput)
+    }
+
+    override fun trackOnClickPrice(nominalInput: String) {
+        viewModel.onNominalDiscountTrackerInput(nominalInput)
+    }
+
+    override fun trackOnSwitchToggled(
+        index: Int,
+        criteria: ProductCriteria,
+        discountSetup: DiscountSetup
+    ) { /* Only Tracked On Multi Location Product */ }
+
+    override fun showDetailCriteria(position: Int, warehouse: Warehouse, product: Product) {
+        return /* Only Required For Multi-Location */
+    }
 
     private fun setupObserver() {
         viewModel.isMultiloc.observe(viewLifecycleOwner) {
@@ -112,6 +135,20 @@ class ManageProductNonVariantFragment :
         }
         viewModel.isInputPageValid.observe(viewLifecycleOwner) {
             buttonSubmit?.isEnabled = it
+        }
+        viewModel.doTrackingNominal.observe(viewLifecycleOwner) {
+            viewModel.onDiscountPriceEdited(
+                campaignId = campaignId.toString(),
+                productId = product?.productId.toString(),
+                locationType = SINGLE_LOCATION
+            )
+        }
+        viewModel.doTrackingPercent.observe(viewLifecycleOwner) {
+            viewModel.onDiscountPercentEdited(
+                campaignId = campaignId.toString(),
+                productId = product?.productId.toString(),
+                locationType = SINGLE_LOCATION
+            )
         }
     }
 
