@@ -7,7 +7,6 @@ import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
-import androidx.core.view.size
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,7 +62,7 @@ class ShopCouponSheetViewComponent(
             if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
                 layoutManager is LinearLayoutManager
             ) {
-                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && layoutManager.findLastCompletelyVisibleItemPosition() == recyclerView.size - 1) return
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && layoutManager.findLastCompletelyVisibleItemPosition() == recyclerView.childCount - 1) return
                 listener.onVoucherScrolled(
                     this@ShopCouponSheetViewComponent,
                     layoutManager.findLastVisibleItemPosition()
