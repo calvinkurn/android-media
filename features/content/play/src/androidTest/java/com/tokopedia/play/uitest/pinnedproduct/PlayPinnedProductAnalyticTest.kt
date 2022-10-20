@@ -223,7 +223,7 @@ class PlayPinnedProductAnalyticTest {
         assertCassavaByEventAction("click - pinned lihat keranjang")
     }
 
-    private fun createRobot() = PlayActivityRobot(channelId)
+    private fun createRobot() = PlayActivityRobot(channelId, initialDelay = 3500)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,
