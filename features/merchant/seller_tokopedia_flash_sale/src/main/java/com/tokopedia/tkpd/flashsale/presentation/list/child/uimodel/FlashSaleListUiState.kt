@@ -22,5 +22,6 @@ data class FlashSaleListUiState(
     val selectedStatusIds: List<String> = emptyList(),
     val isFilterActive: Boolean = false,
     val allItems: List<DelegateAdapterItem> = emptyList(),
-    val searchResultCount: Int = 0
+    val searchResultCount: Int = 0,
+    val totalFlashOnCurrentPage: Int = 0
 )
