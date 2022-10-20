@@ -82,8 +82,8 @@ class CustomProductLogisticViewModel @Inject constructor(
                         }
                     }
                 }
+                _cplList.value = it
             }
-            _cplList.value = it
         }
     }
 
@@ -96,16 +96,15 @@ class CustomProductLogisticViewModel @Inject constructor(
                             for (sp in s.shipperProduct) {
                                 if (sp.shipperProductId == shipperProductId) {
                                     sp.isActive = active
-                                    s.isActive = s.shipperProduct.all { allSp -> allSp.isActive }
+                                    s.isActive = s.shipperProduct.any { allSp -> allSp.isActive }
                                     return@loop
                                 }
                             }
                         }
                     }
                 }
+                _cplList.value = it
             }
         }
-        _cplList.value = it
     }
-}
 }

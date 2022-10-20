@@ -90,7 +90,7 @@ class CustomProductLogisticMapper @Inject constructor() {
             val model = ShipperCPLModel(
                 shipperName = it.title,
                 isWhitelabel = true,
-                isActive = shipperProducts.all { sp -> sp.isActive },
+                isActive = shipperProducts.any { sp -> sp.isActive },
                 description = it.description,
                 shipperProduct = shipperProducts
             )
@@ -121,7 +121,7 @@ class CustomProductLogisticMapper @Inject constructor() {
         response.forEach {
             val shipperProductData = it.shipperProduct.filter { product -> !product.uiHidden }
             val shipperProducts = mapShipperProduct(shipperProductData, draftShipperServices)
-            val isShipperActive = shipperProducts.all { sp -> sp.isActive }
+            val isShipperActive = shipperProducts.any { sp -> sp.isActive }
             val description =
                 shipperProductData.joinToString(" | ") { shipperProduct -> shipperProduct.shipperProductName }
 
