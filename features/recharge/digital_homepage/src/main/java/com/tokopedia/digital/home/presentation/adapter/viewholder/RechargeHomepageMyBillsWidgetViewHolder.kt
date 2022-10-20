@@ -128,8 +128,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
             val binding = ContentRechargeHomepageLastItemBinding.bind(itemView)
-            TODO("not implemented yet")
-
+            with(binding.cardViewRechargeHomepageLastItem){
+                ctaView.text = element.items.title
+            }
         }
     }
 }
