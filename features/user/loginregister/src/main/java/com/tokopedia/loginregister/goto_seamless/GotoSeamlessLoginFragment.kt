@@ -71,7 +71,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
             when(it) {
                 is Success -> {
                     if(it.data.errors.isNotEmpty()) {
-                        val errorMsg = it.data.errors[0].message
+                        val errorMsg = it.data.errors.first().message
                         GotoSeamlessTracker.clickOnSeamlessButton("${GotoSeamlessTracker.Label.FAILED} - $errorMsg", getTrackerLabel())
                         showGeneralErrorToaster()
                     } else {
@@ -120,7 +120,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
     private fun takeFirstName(name: String): String {
         return try {
-            name.trim().split(" ")[0]
+            name.trim().split(" ").first()
         } catch (e: Exception) {
             return name
         }
@@ -173,7 +173,7 @@ class GotoSeamlessLoginFragment: BaseDaggerFragment() {
 
     private fun getTrackerLabel(): String {
         return try {
-            getVariant().trim().split("_")[0]
+            getVariant().trim().split("_").first()
         } catch (e: Exception) {
             ""
         }
