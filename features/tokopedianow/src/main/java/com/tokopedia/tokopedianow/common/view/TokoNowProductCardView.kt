@@ -32,6 +32,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     companion object {
         private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 1.0f
         private const val WORDING_SEGERA_HABIS = "Segera Habis"
+        private const val BOUND_DEFAULT_VALUE = 0
     }
 
     private var binding: LayoutTokopedianowProductCardViewBinding
@@ -379,31 +380,21 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private fun TextView.adjustChevronIcon(
         drawable: Drawable?
     ) {
-        val widthLeft = getDpFromDimen(
-            context = context,
-            id = R.dimen.tokopedianow_product_card_similar_product_typography_width_left
-        ).toIntSafely()
-
-        val heightTop = getDpFromDimen(
-            context = context,
-            id = R.dimen.tokopedianow_product_card_similar_product_typography_height_top
-        ).toIntSafely()
-
-        val width = getDpFromDimen(
+        val widthRight = getDpFromDimen(
             context = context,
             id = R.dimen.tokopedianow_product_card_similar_product_typography_width_right
         ).toIntSafely()
 
-        val height = getDpFromDimen(
+        val heightBottom = getDpFromDimen(
             context = context,
             id = R.dimen.tokopedianow_product_card_similar_product_typography_height_bottom
         ).toIntSafely()
 
         drawable?.setBounds(
-            widthLeft,
-            heightTop,
-            width,
-            height
+            BOUND_DEFAULT_VALUE,
+            BOUND_DEFAULT_VALUE,
+            widthRight,
+            heightBottom
         )
 
         setCompoundDrawables(
