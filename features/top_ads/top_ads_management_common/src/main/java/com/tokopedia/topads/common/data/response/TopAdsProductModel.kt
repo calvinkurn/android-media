@@ -35,7 +35,7 @@ data class TopAdsProductModel(
         @SerializedName("productRating")
         val productRating: Int = 0,
         @SerializedName("productReviewCount")
-        val productReviewCount: Int = 0,
+        val productReviewCount: String = "0",
         @SerializedName("productActive")
         var productActive: Int = 0,
         var isRecommended: Boolean = false,

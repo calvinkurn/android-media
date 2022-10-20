@@ -11,7 +11,7 @@ import com.tokopedia.play.broadcaster.ui.model.campaign.CampaignStatus
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.paged.PagedDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
-import com.tokopedia.play.test.espresso.delay
+import com.tokopedia.content.test.espresso.delay
 import com.tokopedia.test.application.annotations.CassavaTest
 import io.mockk.coEvery
 import io.mockk.mockk
