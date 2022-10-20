@@ -71,13 +71,15 @@ class CustomProductLogisticViewModel @Inject constructor(
     fun setAllShipperServiceState(active: Boolean, shipperId: Long) {
         _cplList.value.let {
             if (it is Success) {
-                it.data.shipperList.forEach { shipperGroup ->
-                    val selectedShipper =
-                        shipperGroup.shipper.find { s -> s.shipperId == shipperId }
-                    selectedShipper?.let { s ->
-                        selectedShipper.isActive = active
-                        s.shipperProduct.forEach { sp -> sp.isActive = active }
-                        return@forEach
+                run loop@{
+                    it.data.shipperList.forEach { shipperGroup ->
+                        val selectedShipper =
+                            shipperGroup.shipper.find { s -> s.shipperId == shipperId }
+                        selectedShipper?.let { s ->
+                            selectedShipper.isActive = active
+                            s.shipperProduct.forEach { sp -> sp.isActive = active }
+                            return@loop
+                        }
                     }
                 }
             }
@@ -88,19 +90,22 @@ class CustomProductLogisticViewModel @Inject constructor(
     fun setShipperServiceState(active: Boolean, shipperProductId: Long) {
         _cplList.value.let {
             if (it is Success) {
-                it.data.shipperList.forEach { shipperGroup ->
-                    for (s in shipperGroup.shipper) {
-                        for (sp in s.shipperProduct) {
-                            if (sp.shipperProductId == shipperProductId) {
-                                sp.isActive = active
-                                s.isActive = s.shipperProduct.all { allSp -> allSp.isActive }
-                                return@forEach
+                run loop@{
+                    it.data.shipperList.forEach { shipperGroup ->
+                        for (s in shipperGroup.shipper) {
+                            for (sp in s.shipperProduct) {
+                                if (sp.shipperProductId == shipperProductId) {
+                                    sp.isActive = active
+                                    s.isActive = s.shipperProduct.all { allSp -> allSp.isActive }
+                                    return@loop
+                                }
                             }
                         }
                     }
                 }
             }
-            _cplList.value = it
         }
+        _cplList.value = it
     }
+}
 }
