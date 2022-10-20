@@ -9,7 +9,7 @@ import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.data.model.pdplayout.OneLinersContent
@@ -56,7 +56,7 @@ class OneLinersViewHolder(
 
         renderViewImpression(element = element)
 
-        renderViewEvent(content = content)
+        renderViewEvent(element = element)
 
         renderSeparators(content = content)
 
@@ -86,13 +86,21 @@ class OneLinersViewHolder(
         }
     }
 
-    private fun renderViewEvent(content: OneLinersContent) {
+    private fun renderViewEvent(element: OneLinersDataModel) {
+        val content = element.oneLinersContent ?: OneLinersContent()
+
         if (content.applink.isNotBlank()) {
             view.setOnClickListener { listener.goToApplink(content.applink) }
         }
 
         if (content.eduLink.appLink.isNotBlank()) {
-            iconRightArrow?.setOnClickListener { listener.goToApplink(content.eduLink.appLink) }
+            iconRightArrow?.setOnClickListener {
+                listener.onClickInformationIconAtStockAssurance(
+                    componentTrackDataModel = getComponentTrackData(element = element),
+                    appLink = content.eduLink.appLink,
+                    label = content.linkText + content.linkText
+                )
+            }
             renderCoachMark()
         }
     }
@@ -157,10 +165,8 @@ class OneLinersViewHolder(
 
     private fun renderIconStart(content: OneLinersContent) {
         val iconUrl = content.icon
-        iconStart?.apply {
-            shouldShowWithAction(iconUrl.isNotBlank()) {
-                setImageUrl(iconUrl)
-            }
+        iconStart?.showIfWithBlock(iconUrl.isNotBlank()) {
+            setImageUrl(iconUrl)
         }
     }
 
@@ -171,11 +177,11 @@ class OneLinersViewHolder(
         val appLinkIsNotEmpty = content.applink.isNotBlank()
         val shouldShow = appLinkIsNotEmpty || eduLinkIsNotEmpty
 
-        iconRightArrow?.shouldShowWithAction(shouldShow = shouldShow) {
+        iconRightArrow?.showIfWithBlock(shouldShow) {
             if (eduLinkIsNotEmpty) {
-                iconRightArrow.setImage(newIconId = IconUnify.INFORMATION)
+                setImage(newIconId = IconUnify.INFORMATION)
             } else if (appLinkIsNotEmpty) {
-                iconRightArrow.setImage(newIconId = IconUnify.CHEVRON_RIGHT)
+                setImage(newIconId = IconUnify.CHEVRON_RIGHT)
             }
         }
     }
@@ -187,8 +193,8 @@ class OneLinersViewHolder(
     }
 
     private fun getComponentTrackData(element: OneLinersDataModel?) = ComponentTrackDataModel(
-        componentType = element?.type ?: "",
-        componentName = element?.name ?: "",
+        componentType = element?.type.orEmpty(),
+        componentName = element?.name.orEmpty(),
         adapterPosition = bindingAdapterPosition + Int.ONE
     )
 }
