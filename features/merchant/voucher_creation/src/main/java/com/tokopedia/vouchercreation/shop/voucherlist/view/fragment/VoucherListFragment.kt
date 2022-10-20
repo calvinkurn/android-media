@@ -250,6 +250,9 @@ class VoucherListFragment :
             type = LinkerData.MERCHANT_VOUCHER
             uri = shareUrl
             id = voucher.id.toString()
+            if (shareModel.ogImgUrl != null && shareModel.ogImgUrl!!.isNotEmpty()) {
+                ogImageUrl = shareModel.ogImgUrl
+            }
             deepLink = UriUtil.buildUri(ApplinkConst.SHOP, shopId).orEmpty()
         })
         LinkerManager.getInstance().executeShareRequest(
