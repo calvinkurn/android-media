@@ -32,13 +32,12 @@ class MerchantVoucherNewViewHolder(
         ForegroundColorSpan(
             MethodChecker.getColor(
                 itemView.context,
-                unifyR.color.Unify_NN950
+                unifyR.color.Unify_NN600
             )
         )
     }
 
     fun bind(item: PlayVoucherUiModel.Merchant) {
-        val isPrivate = item.type == MerchantVoucherType.Private
         binding.tvCouponTitle.text = item.title
         binding.tvMinTransaction.text = item.description
 
@@ -70,13 +69,9 @@ class MerchantVoucherNewViewHolder(
         binding.viewVoucherCopyable.root.showWithCondition(item.copyable)
         binding.viewVoucherCopyable.tvPlayVoucherCode.text = item.code
 
-        binding.viewVoucherCopyable.ivPlayVoucherCopy.setOnClickListener {
-            if (!isPrivate) return@setOnClickListener
-            listener.onCopyItemVoucherClicked(item)
-        }
         binding.root.setOnClickListener {
-            if (isPrivate) return@setOnClickListener
-            listener.onVoucherItemClicked(item)
+            if(item.isPrivate) listener.onCopyItemVoucherClicked(item)
+            else listener.onVoucherItemClicked(item)
         }
     }
 

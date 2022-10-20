@@ -41,6 +41,7 @@ import com.tokopedia.play.databinding.FragmentPlayInteractionBinding
 import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.util.changeConstraint
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
@@ -100,6 +101,7 @@ import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -134,9 +136,9 @@ class PlayUserInteractionFragment @Inject constructor(
         PiPViewComponent.Listener,
         CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
-        InteractiveActiveViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
-        ChooseAddressViewComponent.Listener
+        ChooseAddressViewComponent.Listener,
+        EngagementCarouselViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -168,12 +170,11 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
+    private val engagementCarouselView by viewComponent { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
 
     /**
      * Interactive
      */
-    private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
-    private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
     private val activityResultHelper by lifecycleBound({
@@ -559,16 +560,6 @@ class PlayUserInteractionFragment @Inject constructor(
         analytic.clickFeaturedProductSeeMore()
     }
 
-    /**
-     * Interactive Active Listener
-     */
-    override fun onWidgetClicked(view: InteractiveActiveViewComponent) {
-        playViewModel.submitAction(
-            PlayViewerNewAction.StartPlayingInteractive)
-            newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id, shopId = playViewModel.partnerId.toString(), interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
-    }
-    //endregion
-
     fun maxTopOnChatMode(maxTopPosition: Int) {
         mMaxTopChatMode = maxTopPosition
         if (!playViewModel.bottomInsets.isKeyboardShown) return
@@ -862,12 +853,6 @@ class PlayUserInteractionFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                renderInteractiveView(
-                    prevState?.interactive,
-                    state.interactive,
-                    prevState?.bottomInsets,
-                    state.bottomInsets
-                )
                 renderToolbarView(state.title)
                 renderShareView(state.channel, state.bottomInsets, state.status)
                 renderPartnerInfoView(prevState?.partner, state.partner)
@@ -883,6 +868,7 @@ class PlayUserInteractionFragment @Inject constructor(
                 renderWinnerBadge(state = state.winnerBadge)
 
                 handleStatus(state.status)
+                renderEngagement(prevState?.engagement, state.engagement)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                         prevState?.tagItems?.voucher != state.tagItems.voucher) {
@@ -891,6 +877,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun renderEngagement(prevState: EngagementUiState?, currState: EngagementUiState){
+        if(prevState?.shouldShow != currState.shouldShow)
+            engagementCarouselView.rootView.showWithCondition(currState.shouldShow)
+        if(prevState?.data != currState.data)
+            engagementCarouselView.setData(currState.data)
     }
 
     private fun observeUiEvent() {
@@ -1494,120 +1487,6 @@ class PlayUserInteractionFragment @Inject constructor(
         else pipView?.hide()
     }
 
-    private fun renderInteractiveView(
-        prevState: InteractiveStateUiModel?,
-        state: InteractiveStateUiModel,
-        prevBottomInsets: Map<BottomInsetsType, BottomInsetsState>?,
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-    ) {
-        if (state.isPlaying) {
-            interactiveActiveView?.hide()
-            interactiveFinishView?.hide()
-            return
-        }
-
-        val isAnyInsetsShown = bottomInsets.isAnyShown
-        /**
-         * Invisible to reduce the amount of conditions
-         * for square [com.tokopedia.unifycomponents.timer.TimerUnifySingle] to appear
-         */
-        if (isAnyInsetsShown) {
-            interactiveActiveView?.invisible()
-            interactiveFinishView?.invisible()
-            return
-        }
-
-        val prevIsAnyInsetsShown = prevBottomInsets?.isAnyShown
-
-        /**
-         * Render:
-         * - if interactive has changed <b>or</b>
-         * - if isPlaying state has changed to not playing
-         * - if any bottom insets shown state has changed to false
-         */
-        if (prevState?.interactive != state.interactive ||
-            ((prevState.isPlaying != state.isPlaying) && !state.isPlaying) ||
-            (prevIsAnyInsetsShown != isAnyInsetsShown) && !isAnyInsetsShown) {
-
-            when (state.interactive) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state.interactive)
-                is InteractiveUiModel.Quiz -> renderQuizView(state.interactive)
-                InteractiveUiModel.Unknown -> {
-                    interactiveActiveView?.hide()
-                    interactiveFinishView?.hide()
-                }
-            }
-        }
-    }
-
-    private fun renderGiveawayView(
-        state: InteractiveUiModel.Giveaway,
-    ) {
-        when (val status = state.status) {
-            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
-                interactiveActiveView?.setUpcomingGiveaway(
-                    desc = state.title,
-                    targetTime = status.startTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-            }
-            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
-                interactiveActiveView?.setOngoingGiveaway(
-                    desc = state.title,
-                    targetTime = status.endTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-
-                playViewModel.submitAction(PlayViewerNewAction.AutoOpenInteractive)
-            }
-            InteractiveUiModel.Giveaway.Status.Finished -> {
-                interactiveActiveView?.hide()
-
-                interactiveFinishView?.setupGiveaway()
-                interactiveFinishView?.show()
-            }
-            InteractiveUiModel.Giveaway.Status.Unknown -> {
-                interactiveActiveView?.hide()
-                interactiveFinishView?.hide()
-            }
-        }
-    }
-
-    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
-        when (val status = state.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing -> {
-                interactiveActiveView?.setQuiz(
-                    question = state.title,
-                    targetTime = status.endTime,
-                    onDurationEnd = {
-                        playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
-                    }
-                )
-                interactiveActiveView?.show()
-                interactiveFinishView?.hide()
-                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = state.id, channelId = playViewModel.channelId)
-            }
-            InteractiveUiModel.Quiz.Status.Finished -> {
-                interactiveActiveView?.hide()
-
-                interactiveFinishView?.setupQuiz()
-                interactiveFinishView?.show()
-            }
-            InteractiveUiModel.Quiz.Status.Unknown -> {
-                interactiveActiveView?.hide()
-                interactiveFinishView?.hide()
-            }
-        }
-    }
-
     private fun renderInteractiveDialog(
         prevState: InteractiveStateUiModel?,
         state: InteractiveStateUiModel,
@@ -1927,6 +1806,75 @@ class PlayUserInteractionFragment @Inject constructor(
         when (event) {
             KebabIconUiComponent.Event.OnClicked -> {
                 playViewModel.submitAction(OpenKebabAction)
+            }
+        }
+    }
+
+    /**
+     * Engagement Listener
+     */
+    override fun onWidgetGameEnded(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel.Game
+    ) {
+        when (engagement.interactive){
+            is InteractiveUiModel.Giveaway -> {
+                handleGiveaway(interactive = engagement.interactive)
+            }
+            is InteractiveUiModel.Quiz -> {
+                handleQuiz(interactive = engagement.interactive)
+            }
+        }
+    }
+
+    private fun handleGiveaway(interactive: InteractiveUiModel.Giveaway) {
+        when(interactive.status) {
+            is InteractiveUiModel.Giveaway.Status.Upcoming ->
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayUpcomingEnded)
+            is InteractiveUiModel.Giveaway.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.GiveawayOngoingEnded)
+        }
+    }
+
+    private fun handleQuiz(interactive: InteractiveUiModel.Quiz) {
+        when(interactive.status) {
+            is InteractiveUiModel.Quiz.Status.Ongoing ->
+                playViewModel.submitAction(PlayViewerNewAction.QuizEnded)
+        }
+    }
+
+    override fun onWidgetClicked(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {
+                playViewModel.showCouponSheet(bottomSheetMaxHeight)
+                newAnalytic.clickVoucherWidget(engagement.info.id)
+            }
+            is EngagementUiModel.Game -> {
+                playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
+                newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id,
+                    shopId = playViewModel.partnerId.toString(),
+                    interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
+            }
+        }
+    }
+
+    override fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String) {
+        newAnalytic.swipeWidget(id)
+    }
+
+    override fun onWidgetImpressed(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {
+                newAnalytic.impressVoucherWidget(engagement.info.id)
+            }
+            is EngagementUiModel.Game -> {
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.interactive.id, channelId = playViewModel.channelId)
             }
         }
     }

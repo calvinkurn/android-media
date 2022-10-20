@@ -61,8 +61,8 @@
     <!-- Interactive -->
     <dimen name="interactive_icon_radius">80dp</dimen>
     <dimen name="interactive_widget_radius">8dp</dimen>
-    <dimen name="interactive_finish_width">82dp</dimen>
-    <dimen name="interactive_finish_min_height">64dp</dimen>
+    <dimen name="interactive_finish_width">104dp</dimen>
+    <dimen name="interactive_finish_min_height">104dp</dimen>
     <dimen name="play_common_anchor_size">0.1dp</dimen>
 
     <!-- Giveaway -->
@@ -73,4 +73,5 @@
 
     <!-- Chat -->
     <dimen name="play_bro_chat_spacing">6dp</dimen>
+    <dimen name="engagement_tools_small_widget_height">104dp</dimen>
 </resources>
