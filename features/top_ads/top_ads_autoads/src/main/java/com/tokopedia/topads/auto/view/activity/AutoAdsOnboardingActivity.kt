@@ -15,8 +15,6 @@ import com.tokopedia.abstraction.base.view.widget.TouchViewPager
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.topads.auto.R
-import com.tokopedia.topads.auto.R.color.Unify_BN950
-import com.tokopedia.topads.auto.R.color.Unify_YN800
 import com.tokopedia.topads.auto.di.AutoAdsComponent
 import com.tokopedia.topads.auto.di.DaggerAutoAdsComponent
 import com.tokopedia.topads.auto.di.module.AutoAdsQueryModule
@@ -98,13 +96,11 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
         setButton(position)
         when (position) {
             0 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                Unify_BN950
-            ))
+                R.color.top_ads_autoads_dms_onboarding_color1))
             2 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                Unify_BN950))
+                R.color.top_ads_autoads_dms_onboarding_color1))
             1 -> toolbar?.setBackgroundColor(ContextCompat.getColor(this,
-                Unify_YN800
-            ))
+                R.color.top_ads_autoads_dms_onboarding_color2))
         }
     }
 
@@ -129,10 +125,10 @@ class AutoAdsOnboardingActivity : BaseActivity(), HasComponent<AutoAdsComponent>
             }
             if (position == 0 || position == 2)
                 window.statusBarColor =
-                    ContextCompat.getColor(this, Unify_BN950)
+                    ContextCompat.getColor(this, R.color.top_ads_autoads_dms_onboarding_color1)
             else
                 window.statusBarColor =
-                    ContextCompat.getColor(this, Unify_YN800)
+                    ContextCompat.getColor(this, R.color.top_ads_autoads_dms_onboarding_color2)
         }
     }
 

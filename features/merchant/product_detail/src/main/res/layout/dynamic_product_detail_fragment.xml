@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_dynamic_product_detail"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    app:layout_optimizationLevel="standard">
 
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/swipeRefreshPdp"
@@ -54,20 +55,18 @@
         app:toolbarInitialTheme="light"
         tools:visibility="visible" />
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_button_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent">
 
         <com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
             android:id="@+id/sticky_login_pdp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/partial_layout_button_action"
             app:sticky_highlight_color="@color/Unify_G500"
             app:sticky_left_icon="@drawable/ic_toped_widget_login"
             tools:visibility="visible" />
@@ -77,6 +76,7 @@
             layout="@layout/partial_layout_button_action"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
 
         <include
@@ -85,14 +85,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
             tools:visibility="visible" />
-    </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.tokopedia.product.detail.view.widget.ProductDetailNavigation
         android:id="@+id/pdp_navigation"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/pdp_button_container"
         app:layout_constraintTop_toBottomOf="@id/pdp_navtoolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

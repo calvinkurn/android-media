@@ -18,6 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/image_promo_list_header"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:adjustViewBounds="true"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintWidth_max="100dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/icon_promo_list_header"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/label_promo_list_header_title"
         android:layout_width="0dp"
@@ -26,7 +37,7 @@
         android:ellipsize="end"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icon_promo_list_header"
+        app:layout_constraintStart_toEndOf="@id/image_promo_list_header"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_5"
         app:typographyWeight="bold"

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    app:card_background_color="@color/Unify_Background"
     app:card_type="shadow">
 
     <androidx.constraintlayout.widget.ConstraintLayout

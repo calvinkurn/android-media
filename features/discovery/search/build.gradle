@@ -30,7 +30,7 @@ android {
         exclude 'META-INF/**'
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
 
     defaultConfig {
@@ -67,6 +67,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.features.productCard)
     implementation projectOrAar(rootProject.ext.features.globalNavWidget)
     implementation projectOrAar(rootProject.ext.features.shopWidget)
+    implementation projectOrAar(rootProject.ext.features.shopCommon)
     implementation projectOrAar(rootProject.ext.features.filter)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.features.recommendationWidgetCommon)
@@ -81,6 +82,9 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.deviceInfo)
     implementation projectOrAar(rootProject.ext.libraries.logger)
     implementation projectOrAar(rootProject.ext.features.localizationchooseaddress)
+    implementation projectOrAar(rootProject.ext.features.atc_common)
+    implementation projectOrAar(rootProject.ext.features.localizationchooseaddress_common)
+    implementation projectOrAar(rootProject.ext.features.productDetailCommon)
 
     implementation projectOrAar(rootProject.ext.libraries.linker)
 

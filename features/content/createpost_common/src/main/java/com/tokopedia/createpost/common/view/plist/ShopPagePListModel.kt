@@ -4,23 +4,6 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.library.baseadapter.BaseItem
 import java.io.Serializable
 
-data class GetShopProduct(
-    @field:SerializedName("GetShopProduct")
-    val productList: ShopPagePListModel
-)
-
-data class ShopPagePListModel(
-    @field:SerializedName("data")
-    val data: MutableList<ShopPageProduct>,
-
-    @field:SerializedName("links")
-    val paging: Paging
-)
-
-data class Paging(
-    @field:SerializedName("next")
-    val next: String
-)
 
 data class PrimaryImage(
     @field:SerializedName("resize300")

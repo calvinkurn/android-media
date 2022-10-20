@@ -27,14 +27,10 @@ import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.wishlist.common.listener.WishListActionListener
-import com.tokopedia.wishlist.common.usecase.AddWishListUseCase
-import com.tokopedia.wishlist.common.usecase.RemoveWishListUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
 import com.tokopedia.topads.sdk.domain.model.TopadsIsAdsQuery
-import com.tokopedia.topads.sdk.domain.model.WishlistModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingData
 import com.tokopedia.topads.sdk.domain.model.TopAdsGetDynamicSlottingDataProduct
@@ -63,8 +59,6 @@ class TestRecommendationPageViewModel {
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val getRecommendationUseCase = mockk<GetRecommendationUseCase>(relaxed = true)
-    private val addWishListUseCase = mockk<AddWishListUseCase>(relaxed = true)
-    private val removeWishListUseCase = mockk<RemoveWishListUseCase>(relaxed = true)
     private val addToWishlistV2UseCase = mockk<AddToWishlistV2UseCase>(relaxed = true)
     private val deleteWishlistV2UseCase = mockk<DeleteWishlistV2UseCase>(relaxed = true)
     private val topAdsWishlishedUseCase = mockk<TopAdsWishlishedUseCase>(relaxed = true)
@@ -81,8 +75,6 @@ class TestRecommendationPageViewModel {
             userSessionInterface = userSession,
             dispatcher = RecommendationDispatcherTest(),
             getRecommendationUseCase = getRecommendationUseCase,
-            addWishListUseCase = addWishListUseCase,
-            removeWishListUseCase = removeWishListUseCase,
             addToWishlistV2UseCase = addToWishlistV2UseCase,
             deleteWishlistV2UseCase = deleteWishlistV2UseCase,
             topAdsWishlishedUseCase = topAdsWishlishedUseCase,
@@ -145,19 +137,6 @@ class TestRecommendationPageViewModel {
     }
 
     @Test
-    fun `get success add wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessAddWishlist(recommendation.productId.toString())
-        }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds) { state, _ ->
-            status = state
-        }
-        assert(status == true)
-    }
-
-    @Test
     fun `given success when add to wishlistV2 then call onSuccessAddWishlist`(){
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
@@ -212,94 +191,6 @@ class TestRecommendationPageViewModel {
         coVerify { deleteWishlistV2UseCase.executeOnBackground() }
         verify { mockWishlistListener.onErrorRemoveWishlist(any(), any()) }
     }
-
-    @Test
-    fun `given error when add wishlist then invoke callback false`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        every { addWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorAddWishList("", recommendation.productId.toString())
-        }
-        viewModel.addWishlist(recommendation.productId.toString(), recommendation.wishlistUrl, recommendation.isTopAds) { state, _ ->
-            status = state
-        }
-        assert(status == false)
-    }
-
-    @Test
-    fun `given success when add topads wishlist then invoke callback true`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
-        val mockData = mockk<WishlistModel.Data>(relaxed = true)
-
-        every { mockWishlistModel.data } returns mockData
-        every { mockData.isSuccess } returns true
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onNext(mockWishlistModel)
-        }
-        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `given success but null when add topads wishlist then invoke callback false`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-        val mockWishlistModel = mockk<WishlistModel>(relaxed = true)
-
-        every { mockWishlistModel.data } returns null
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onNext(mockWishlistModel)
-        }
-        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
-            status = success
-        }
-        assert(status == false)
-    }
-
-    @Test
-    fun `given error when add topads wishlist then invoke callback false`(){
-        var status: Boolean? = null
-        val slot = slot<Subscriber<WishlistModel>>()
-
-        every { topAdsWishlishedUseCase.execute(any(), capture(slot)) } answers {
-            slot.captured.onError(mockk())
-        }
-        viewModel.addWishlist(recommendationTopads.productId.toString(), recommendationTopads.wishlistUrl, true) { success, _ ->
-            status = success
-        }
-        assert(status == false)
-    }
-
-    @Test
-    fun `get success remove wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onSuccessRemoveWishlist(recommendation.productId.toString())
-        }
-        viewModel.removeWishlist(recommendation.productId.toString()){ success, _ ->
-            status = success
-        }
-        assert(status == true)
-    }
-
-    @Test
-    fun `get error remove wishlist from network`(){
-        var status: Boolean? = null
-        val slot = slot<WishListActionListener>()
-        every { removeWishListUseCase.createObservable(any(), any(), capture(slot)) } answers {
-            slot.captured.onErrorRemoveWishlist("", recommendation.productId.toString())
-        }
-        viewModel.removeWishlist(recommendation.productId.toString()){ success, _ ->
-            status = success
-        }
-        assert(status == false)
-    }
-
 
     @Test
     fun `success atc`(){
@@ -420,7 +311,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -451,7 +342,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -482,7 +373,7 @@ class TestRecommendationPageViewModel {
         val queryParam = ""
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -593,7 +484,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -623,7 +515,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
@@ -658,7 +551,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
 
@@ -691,7 +585,8 @@ class TestRecommendationPageViewModel {
                 productKey = any(),
                 shopDomain = any(),
                 urlParam = queryParam,
-                pageName = any()
+                pageName = any(),
+                src = any()
             )
         } just runs
         coEvery { getTopadsIsAdsUseCase.executeOnBackground() } throws Exception()
@@ -713,7 +608,7 @@ class TestRecommendationPageViewModel {
         val queryParam = "?ref=googleshopping"
         val productId = ""
         val topAdsHeadlineResponse = TopAdsHeadlineResponse(displayAds = CpmModel().apply {
-            data = listOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
+            data = mutableListOf(CpmData().apply { id = "1" }, CpmData().apply { id = "2" })
         })
 
         every { getPrimaryProductUseCase.setParameter(any(), any()) } just runs
@@ -734,5 +629,150 @@ class TestRecommendationPageViewModel {
 
         assert(viewModel.recommendationListLiveData.value!=null)
         assert(viewModel.recommendationListLiveData.value?.filterIsInstance<RecommendationCPMDataModel>()?.isNotEmpty()==true)
+    }
+
+    @Test
+    fun `given success response when get topads status with empty topads then topads product still false`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel(
+            ProductDetailData()
+        ))
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == false)
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == false)
+    }
+
+    @Test
+    fun `given product info with null product detail when get topads data then product detail still null`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel())
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData == null)
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData == null)
+    }
+
+    @Test
+    fun `given empty recommendation list when get topads data then recommendation list still empty`() {
+        val productId = ""
+        val queryParam = ""
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf()
+
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.isEmpty() == true)
+    }
+
+    @Test
+    fun `given something`() {
+        val queryParam = "?ref=${RecommendationPageViewModel.PARAM_RECOMPUSH}"
+        val productId = ""
+        val isChargeTopAds = true
+        val clickUrlTopAds = "url_test"
+        val productImageUrl = "image_url_test"
+        val errorCode = 200
+        val topadsIsAdsQuery = TopadsIsAdsQuery(
+            TopAdsGetDynamicSlottingData(
+                productList = listOf(
+                    TopAdsGetDynamicSlottingDataProduct(
+                        isCharge = isChargeTopAds,
+                        clickUrl = clickUrlTopAds,
+                        product = TopadsProduct(image = Image(m_url = productImageUrl))
+                    )),
+                status = TopadsStatus(error_code = errorCode)
+            )
+        )
+
+        every { remoteConfig.getLong(any(),any()) } returns 5000L
+        coEvery { viewModel.recommendationListLiveData.value } returns listOf(ProductInfoDataModel(
+            ProductDetailData()
+        ))
+        every {
+            getTopadsIsAdsUseCase.setParams(
+                productId = productId,
+                productKey = any(),
+                shopDomain = any(),
+                urlParam = queryParam,
+                pageName = any(),
+                src = any()
+            )
+        } just runs
+        coEvery { getTopadsIsAdsUseCase.executeOnBackground() } returns topadsIsAdsQuery
+
+        viewModel.getProductTopadsStatus(productId, queryParam)
+
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.isTopads == isChargeTopAds)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.clickUrl == clickUrlTopAds)
+        assert(viewModel.recommendationListLiveData.value?.filterIsInstance<ProductInfoDataModel>()?.first()?.productDetailData?.trackerImageUrl == productImageUrl)
     }
 }

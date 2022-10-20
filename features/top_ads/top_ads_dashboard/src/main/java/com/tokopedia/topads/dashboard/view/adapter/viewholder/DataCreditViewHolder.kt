@@ -31,7 +31,7 @@ class DataCreditViewHolder(
                 AppCompatResources.getDrawable(itemView.context, R.drawable.topads_credit_item_bg)
         } else {
             radioButton.setTextColor(ContextCompat.getColor(itemView.context,
-                com.tokopedia.topads.common.R.color.black))
+                com.tokopedia.unifyprinciples.R.color.Unify_NN1000))
             itemView.background = null
         }
     }

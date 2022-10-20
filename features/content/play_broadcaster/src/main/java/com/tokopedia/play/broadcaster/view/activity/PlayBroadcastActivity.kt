@@ -42,6 +42,7 @@ import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
 import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play.broadcaster.util.extension.getDialog
 import com.tokopedia.play.broadcaster.util.extension.showErrorToaster
+import com.tokopedia.play.broadcaster.util.idling.PlayBroadcasterIdlingResource
 import com.tokopedia.play.broadcaster.util.permission.PermissionHelperImpl
 import com.tokopedia.play.broadcaster.util.permission.PermissionResultListener
 import com.tokopedia.play.broadcaster.util.permission.PermissionStatusHandler
@@ -59,6 +60,7 @@ import com.tokopedia.play_common.util.extension.awaitResume
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import org.jetbrains.annotations.TestOnly
@@ -150,7 +152,9 @@ class PlayBroadcastActivity : BaseActivity(),
 
         setupObserve()
 
+        PlayBroadcasterIdlingResource.increment()
         getConfiguration()
+
         observeConfiguration()
 
         if (GlobalConfig.DEBUG) setupDebugView()
@@ -337,6 +341,9 @@ class PlayBroadcastActivity : BaseActivity(),
                     if (!isRecreated) handleChannelConfiguration(result.data)
                     else if (result.data.channelStatus == ChannelStatus.Pause) showDialogContinueLiveStreaming()
                     stopPageMonitoring()
+
+                    if(!PlayBroadcasterIdlingResource.idlingResource.isIdleNow)
+                        PlayBroadcasterIdlingResource.decrement()
                 }
                 is NetworkResult.Fail -> {
                     invalidatePerformanceData()
@@ -355,7 +362,7 @@ class PlayBroadcastActivity : BaseActivity(),
     private fun handleChannelConfiguration(config: ConfigurationUiModel) {
         if (config.streamAllowed) {
             this.channelType = config.channelStatus
-            if (channelType == ChannelStatus.Live) {
+            if (channelType.isLive) {
                 showDialogWhenActiveOnOtherDevices()
                 analytic.viewDialogViolation(config.channelId)
             } else {
@@ -642,9 +649,19 @@ class PlayBroadcastActivity : BaseActivity(),
         if (isRequiredPermissionGranted()) {
             val holder = surfaceHolder ?: return
             val surfaceSize = Broadcaster.Size(surfaceView.width, surfaceView.height)
-            broadcaster.create(holder, surfaceSize)
+            initBroadcasterWithDelay(holder, surfaceSize)
         }
         else showPermissionPage()
+    }
+
+    private fun initBroadcasterWithDelay(
+        holder: SurfaceHolder,
+        surfaceSize: Broadcaster.Size,
+    ) {
+        lifecycleScope.launch(dispatcher.main) {
+            delay(INIT_BROADCASTER_DELAY)
+            broadcaster.create(holder, surfaceSize)
+        }
     }
 
     private fun releaseBroadcaster() {
@@ -708,5 +725,6 @@ class PlayBroadcastActivity : BaseActivity(),
         const val RESULT_PERMISSION_CODE = 3297
 
         private const val TERMS_AND_CONDITION_TAG = "TNC_BOTTOM_SHEET"
+        private const val INIT_BROADCASTER_DELAY = 500L
     }
 }

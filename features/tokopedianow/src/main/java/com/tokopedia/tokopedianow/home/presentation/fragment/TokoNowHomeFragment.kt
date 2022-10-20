@@ -83,6 +83,7 @@ import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.REMOTE_CONFIG_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_SEARCH
 import com.tokopedia.tokopedianow.common.constant.ConstantKey.SHARED_PREFERENCES_KEY_FIRST_INSTALL_TIME_SEARCH
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.constant.RequestCode.REQUEST_CODE_LOGIN
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
@@ -270,7 +271,6 @@ class TokoNowHomeFragment: Fragment(),
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
     private var movingPosition = 0
-    private var isRefreshed = true
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
@@ -282,6 +282,7 @@ class TokoNowHomeFragment: Fragment(),
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
     private var playWidgetCoordinator: PlayWidgetCoordinator? = null
+    private var bannerComponentCallback: BannerComponentCallback? = null
 
     private val homeMainToolbarHeight: Int
         get() {
@@ -352,6 +353,7 @@ class TokoNowHomeFragment: Fragment(),
             getMiniCart()
         }
         screenshotDetector?.start()
+        updateToolbarNotification()
     }
 
     override fun onStop() {
@@ -391,6 +393,7 @@ class TokoNowHomeFragment: Fragment(),
             miniCartWidget?.hide()
             miniCartWidget?.hideCoachMark()
         }
+        viewModelTokoNow.updateToolbarNotification()
         viewModelTokoNow.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
     }
@@ -433,8 +436,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String) {
-        analytics.onClickCategory(position, categoryId)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
+        analytics.onClickCategory(position, categoryId, headerName)
     }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
@@ -462,21 +465,18 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     override fun onRecomProductCardImpressed(
-        recomItems: List<RecommendationItem>,
+        recomItem: RecommendationItem,
         channelId: String,
         headerName: String,
         pageName: String,
         isOoc: Boolean
     ) {
-        if (isRefreshed) {
-            isRefreshed = false
-            analytics.onImpressProductRecom(
-                channelId = channelId,
-                headerName = headerName,
-                recomItems = recomItems,
-                isOoc = isOoc
-            )
-        }
+        analytics.onImpressProductRecom(
+            channelId = channelId,
+            headerName = headerName,
+            recomItem = recomItem,
+            isOoc = isOoc
+        )
     }
 
     override fun onSeeAllBannerClicked(channelId: String, headerName: String, isOoc: Boolean, applink: String) {
@@ -538,7 +538,7 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun onProductCardImpressed(position: Int, data: TokoNowProductCardUiModel) {
         when(data.type) {
-            REPURCHASE_PRODUCT -> trackRepurchaseImpression(data)
+            REPURCHASE_PRODUCT -> trackRepurchaseImpression(position, data)
         }
     }
 
@@ -860,7 +860,7 @@ class TokoNowHomeFragment: Fragment(),
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
         carouselParallaxState.clear()
-        isRefreshed = true
+        bannerComponentCallback?.resetImpression()
         loadLayout()
     }
 
@@ -925,6 +925,10 @@ class TokoNowHomeFragment: Fragment(),
                 .addIcon(IconList.ID_SHARE, onClick = ::onClickShareButton, disableDefaultGtmTracker = true)
                 .addIcon(IconList.ID_CART, onClick = ::onClickCartButton)
         navToolbar?.setIcon(icons)
+    }
+
+    private fun updateToolbarNotification() {
+        navToolbar?.updateNotification()
     }
 
     private fun onClickCartButton() {
@@ -1186,6 +1190,10 @@ class TokoNowHomeFragment: Fragment(),
                 playWidgetImpressionValidator.invalidate()
             }
         }
+
+        observe(viewModelTokoNow.updateToolbarNotification) { update ->
+            if(update) updateToolbarNotification()
+        }
     }
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
@@ -1221,7 +1229,7 @@ class TokoNowHomeFragment: Fragment(),
             channelId = productRecomModel.id,
             headerName = productRecomModel.recomWidget.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
             position = position.toString(),
             cartId = cartId
         )
@@ -1232,7 +1240,7 @@ class TokoNowHomeFragment: Fragment(),
             channelId = productRecomModel.id,
             headerName = productRecomModel.recomWidget.title,
             quantity = quantity.toString(),
-            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position],
+            recommendationItem = productRecomModel.recomWidget.recommendationItemList[position - ADDITIONAL_POSITION],
             position = position.toString()
         )
     }
@@ -1315,9 +1323,8 @@ class TokoNowHomeFragment: Fragment(),
         }
     }
 
-    private fun trackRepurchaseImpression(data: TokoNowProductCardUiModel) {
-        val productList = viewModelTokoNow.getRepurchaseProducts()
-        analytics.onImpressRepurchase(data, productList)
+    private fun trackRepurchaseImpression(position: Int, data: TokoNowProductCardUiModel) {
+        analytics.onImpressRepurchase(position, data)
     }
 
     private fun trackRepurchaseClick(position: Int, data: TokoNowProductCardUiModel) {
@@ -1878,8 +1885,9 @@ class TokoNowHomeFragment: Fragment(),
         return QuestWidgetCallback(this, viewModelTokoNow, analytics)
     }
 
-    private fun createSlideBannerCallback(): BannerComponentCallback {
-        return BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
+    private fun createSlideBannerCallback(): BannerComponentCallback? {
+        bannerComponentCallback = BannerComponentCallback(this, viewModelTokoNow, userSession, analytics)
+        return bannerComponentCallback
     }
 
     private fun createLegoBannerCallback(): DynamicLegoBannerCallback {
@@ -1923,7 +1931,7 @@ class TokoNowHomeFragment: Fragment(),
 
         shareOptionRequest(
             shareModel = shareModel,
-            shareHomeTokonow = shareHomeTokonow,
+            shareTokoNowData = shareHomeTokonow,
             activity = activity,
             view = view,
             onSuccess = {

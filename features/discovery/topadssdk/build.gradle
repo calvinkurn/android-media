@@ -27,7 +27,6 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
     implementation projectOrAar(rootProject.ext.features.goldMerchantCommon)
-    implementation projectOrAar(rootProject.ext.features.wishlistCommon)
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation rootProject.ext.firebase.core
@@ -79,6 +78,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
+
+    //test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -88,4 +95,6 @@ project.ext {
     artifactName ="topadssdk-release"
 }
 
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
 apply from: '../../../publish_local.gradle'

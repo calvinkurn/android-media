@@ -97,7 +97,7 @@ class KeywordItemViewHolder(
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_select_color
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                     )
                 )
             }
@@ -116,7 +116,7 @@ class KeywordItemViewHolder(
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                R.color.topads_select_color
+                                com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                             )
                         )
                     else
@@ -135,7 +135,7 @@ class KeywordItemViewHolder(
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_select_color
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                     )
                 )
                 onSelectMode.invoke(true)

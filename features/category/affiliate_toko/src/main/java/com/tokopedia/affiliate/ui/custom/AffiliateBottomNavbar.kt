@@ -2,12 +2,12 @@ package com.tokopedia.affiliate.ui.custom
 
 import android.content.Context
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.kotlin.extensions.view.show
 
 class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
                             private val menuListener : IBottomClickListener,
-                            private val context : Context) {
+                            private val context : Context,
+                            private val defaultSelectedTab: Int) {
 
     private var menu: ArrayList<BottomMenu> = ArrayList()
     private val isNewNavigation = false
@@ -28,7 +28,7 @@ class AffiliateBottomNavbar(private val bottomNavigation: LottieBottomNavbar?,
                 com.tokopedia.unifyprinciples.R.color.Unify_G500,com.tokopedia.unifyprinciples.R.color.Unify_NN600, true, ANIM_SPEED, ANIM_TO_ENABLED_SPEED))
         bottomNavigation?.setMenu(menu, isNewNavigation)
         bottomNavigation?.setMenuClickListener(menuListener)
-        setSelected(AffiliateActivity.HOME_MENU,true)
+        setSelected(defaultSelectedTab,true)
     }
 
     fun setSelected(position : Int, isNotFromBottom : Boolean = false){
