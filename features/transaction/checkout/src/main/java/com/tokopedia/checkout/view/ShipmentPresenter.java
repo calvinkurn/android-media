@@ -37,10 +37,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
-import com.tokopedia.checkout.data.model.response.prescription.EpharmacyGroup;
-import com.tokopedia.checkout.data.model.response.prescription.PrepareProductGroupData;
-import com.tokopedia.checkout.data.model.response.prescription.PrepareProductGroupResponse;
-import com.tokopedia.checkout.data.model.response.prescription.ProductInfo;
+import com.tokopedia.checkout.data.model.response.prescription.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -73,6 +70,8 @@ import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentTickerErrorModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData;
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo;
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase;
 import com.tokopedia.fingerprint.util.FingerPrintUtil;
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel;
@@ -163,15 +162,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
 import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -2401,15 +2397,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
         if (!checkoutId.isEmpty() && isUploadPrescriptionNeeded) {
             compositeSubscription.add(prescriptionIdsUseCase
-                    .execute()
-                    // delay to prevent racing condition
-                    .delay(1, TimeUnit.SECONDS)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<PrepareProductGroupResponse>() {
+                    .execute(checkoutId)
+                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
                         @Override
                         public void onCompleted() {
-
                         }
 
                         @Override
@@ -2418,69 +2409,63 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                         }
 
                         @Override
-                        public void onNext(PrepareProductGroupResponse prepareProductGroupResponse) {
-                            PrepareProductGroupData data = prepareProductGroupResponse.getData();
-                            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
-                                if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
-                                    boolean updated = false;
-                                    int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
-                                    if (position > 0) {
-                                        for (EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
-                                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                                for (ProductInfo productInfo : epharmacyGroup.getProductsInfo()) {
-                                                    if (productInfo.getShopId() == shipmentCartItemModel.getShopId()) {
-                                                        for (com.tokopedia.checkout.data.model.response.prescription.Product product : productInfo.getProducts()) {
-                                                            if (cartItemModel.getProductId() == product.getProductId()) {
-                                                                if (epharmacyGroup.getConsultationData().getTokoConsultationId() > 0) {
-                                                                    if (epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
-                                                                        shipmentCartItemModel.setError(true);
-                                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
-                                                                        getView().resetCourier(shipmentCartItemModel);
-                                                                        updated = true;
-                                                                        break;
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    if (updated) {
-                                                        break;
-                                                    }
-                                                }
-                                                if (updated) {
-                                                    break;
-                                                }
-                                            }
-                                            if (updated) {
-                                                break;
-                                            }
-                                        }
-                                    }
-                                }
+                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
+                            if (getPrescriptionIdsResponse.getDetailData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
+                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
                             }
                         }
                     }));
-//                    .execute(checkoutId)
-//                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
-//                        @Override
-//                        public void onCompleted() {
-//                        }
-//
-//                        @Override
-//                        public void onError(Throwable e) {
-//                            Timber.d(e);
-//                        }
-//
-//                        @Override
-//                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
-//                            if (getPrescriptionIdsResponse.getDetailData() != null &&
-//                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
-//                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
-//                                getView().updatePrescriptionIds(getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions());
-//                            }
-//                        }
-//                    }));
         }
+    }
+
+    public void fetchEpharmacyData() {
+        epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
+            GroupData data = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
+            for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
+                if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
+                    boolean updated = false;
+                    int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
+                    if (position > 0) {
+                        for (GroupData.EpharmacyGroup epharmacyGroup : data.getEpharmacyGroups()) {
+                            for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                                for (ProductsInfo productInfo : epharmacyGroup.getProductsInfo()) {
+                                    if (Long.parseLong(productInfo.getShopId()) == shipmentCartItemModel.getShopId()) {
+                                        for (ProductsInfo.Product product : productInfo.getProducts()) {
+                                            if (cartItemModel.getProductId() == product.getProductId()) {
+                                                if (Long.parseLong(epharmacyGroup.getConsultationData().getTokoConsultationId()) > 0) {
+                                                    if (epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
+                                                        shipmentCartItemModel.setError(true);
+                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                                        getView().resetCourier(shipmentCartItemModel);
+                                                        updated = true;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (updated) {
+                                        break;
+                                    }
+                                }
+                                if (updated) {
+                                    break;
+                                }
+                            }
+                            if (updated) {
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            return Unit.INSTANCE;
+        }, throwable -> {
+            Timber.d(throwable);
+            return Unit.INSTANCE;
+        });
     }
 
     @Override
