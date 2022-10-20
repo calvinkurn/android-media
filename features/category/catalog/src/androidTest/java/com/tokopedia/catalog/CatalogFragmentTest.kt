@@ -138,6 +138,7 @@ class CatalogFragmentTest
             onView(withId(R.id.catalog_images_rv)).perform(CatalogViewActions.ScrollToBottomAction())
             Thread.sleep(3000)
         } else {
+
             assert(false)
         }
     }
@@ -251,6 +252,7 @@ class CatalogFragmentTest
         if (itemCount > 0) {
             assert(true)
         } else {
+
             assert(false)
         }
     }
