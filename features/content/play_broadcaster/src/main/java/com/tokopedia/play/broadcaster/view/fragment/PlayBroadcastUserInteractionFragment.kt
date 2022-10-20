@@ -27,6 +27,7 @@ import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerState
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.manager.PlayBroadcastToasterManager
 import com.tokopedia.play.broadcaster.ui.model.PlayMetricUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalLikeUiModel
 import com.tokopedia.play.broadcaster.ui.model.TotalViewUiModel
@@ -188,11 +189,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private val fragmentViewContainer = FragmentViewContainer()
 
-    private var toasterBottomMargin = 0
-
     private lateinit var productTagAnalyticHelper: ProductTagAnalyticHelper
 
     private var isPausedFragment = false
+
+    private val toasterManager = PlayBroadcastToasterManager(this)
 
     override fun getScreenName(): String = "Play Broadcast Interaction"
 
@@ -300,7 +301,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         is QuizFormView.Event.TitleChanged -> PlayBroadcastAction.InputQuizTitle(it.title)
                         is QuizFormView.Event.OptionChanged -> PlayBroadcastAction.InputQuizOption(it.order, it.text)
                         is QuizFormView.Event.SelectQuizOption -> PlayBroadcastAction.SelectQuizOption(it.order)
-                        is QuizFormView.Event.GiftChanged -> PlayBroadcastAction.InputQuizGift(it.gift)
                         is QuizFormView.Event.SaveQuizData -> PlayBroadcastAction.SaveQuizData(it.quizFormData)
                         is QuizFormView.Event.SelectDuration -> PlayBroadcastAction.SelectQuizDuration(it.duration)
                         QuizFormView.Event.Submit -> PlayBroadcastAction.SubmitQuizForm
@@ -313,16 +313,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun trackQuizFormEvent(event: QuizFormView.Event) {
         when (event) {
-            QuizFormView.Event.GiftClicked ->
-                analytic.onClickQuizGift(
-                    parentViewModel.channelId,
-                    parentViewModel.channelTitle,
-                )
-            QuizFormView.Event.GiftClosed ->
-                analytic.onClickCloseQuizGift(
-                    parentViewModel.channelId,
-                    parentViewModel.channelTitle,
-                )
             QuizFormView.Event.Submit ->
                 analytic.onClickStartQuiz(
                     parentViewModel.channelId,
@@ -382,7 +372,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onResume() {
         super.onResume()
         if (isPausedFragment) {
-            resumeBroadcast()
+            resumeBroadcast(false)
             isPausedFragment = false
         }
     }
@@ -394,11 +384,6 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         productTagAnalyticHelper.sendTrackingProduct()
     }
 
-    override fun onDestroy() {
-        try { Toaster.snackBar.dismiss() } catch (e: Exception) {}
-        super.onDestroy()
-    }
-
     /**
      * Dismissing all dialog -> not ideal because the it doesn't eliminate the root cause
      * Need to revamp the flow of stopping live stream and all
@@ -406,6 +391,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     override fun onDestroyView() {
         if (::exitDialog.isInitialized) getExitDialog().dismiss()
         if (::forceStopDialog.isInitialized) forceStopDialog.dismiss()
+
+        toasterManager.dismissActiveToaster()
 
         super.onDestroyView()
     }
@@ -502,6 +489,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         if (!forceStopDialog.isShowing) {
             analytic.viewDialogSeeReportOnLivePage(parentViewModel.channelId, parentViewModel.channelTitle)
             forceStopDialog.show()
+            dismissPauseDialog()
         }
     }
 
@@ -518,7 +506,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         parentViewModel.channelId,
                         parentViewModel.channelTitle
                     )
-                    broadcaster.resume(shouldContinue = true)
+                    resumeBroadcast(shouldContinue = true)
                 },
                 secondaryCta = getString(R.string.play_broadcast_end),
                 secondaryListener = { dialog ->
@@ -535,6 +523,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
+    private fun dismissPauseDialog() {
+        if (pauseLiveDialog?.isShowing == true) pauseLiveDialog?.dismiss()
+    }
+
     private fun showErrorToaster(
         err: Throwable,
         customErrMessage: String? = null,
@@ -542,25 +534,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         actionLabel: String = "",
         actionListener: View.OnClickListener = View.OnClickListener {  }
     ) {
-        val errMessage = if (customErrMessage == null) {
-            ErrorHandler.getErrorMessage(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-        } else {
-            val (_, errCode) = ErrorHandler.getErrorMessagePair(
-                context, err, ErrorHandler.Builder()
-                    .className(this::class.java.simpleName)
-                    .build()
-            )
-            getString(
-                commonR.string.play_custom_error_handler_msg,
-                customErrMessage,
-                errCode
-            )
-        }
-        showToaster(errMessage, Toaster.TYPE_ERROR, duration, actionLabel, actionListener)
+        toasterManager.showErrorToaster(
+            err = err,
+            customErrMessage = customErrMessage,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
+        )
     }
 
     @SuppressLint("ResourceFragmentDetector")
@@ -571,19 +551,12 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             actionLabel: String = "",
             actionListener: View.OnClickListener = View.OnClickListener { }
     ) {
-        if (toasterBottomMargin == 0) {
-            val offset24 = resources.getDimensionPixelOffset(
-                com.tokopedia.unifyprinciples.R.dimen.spacing_lvl5
-            )
-            toasterBottomMargin = ivShareLink.height + offset24
-        }
-        view?.showToaster(
-                message = message,
-                duration = duration,
-                type = type,
-                actionLabel = actionLabel,
-                actionListener = actionListener,
-                bottomMargin = toasterBottomMargin
+        toasterManager.showToaster(
+            message = message,
+            type = type,
+            duration = duration,
+            actionLabel = actionLabel,
+            actionListener = actionListener,
         )
     }
 
@@ -772,7 +745,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                         else showErrorToaster(event.throwable)
                     }
                     PlayBroadcastEvent.ShowLoading -> showLoading(true)
-                    PlayBroadcastEvent.ShowLiveEndedDialog -> showForceStopDialog()
+                    PlayBroadcastEvent.ShowLiveEndedDialog -> {
+                        stopBroadcast()
+                        showForceStopDialog()
+                    }
                     PlayBroadcastEvent.ShowResumeLiveDialog -> showDialogContinueLive()
                     is PlayBroadcastEvent.ShowError -> {
                         if (event.onRetry == null) showErrorToaster(event.error)
@@ -1150,8 +1126,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         broadcaster.pause()
     }
 
-    private fun resumeBroadcast() {
-        broadcaster.resume(shouldContinue = false)
+    private fun resumeBroadcast(shouldContinue: Boolean) {
+        if (parentViewModel.isBroadcastStopped) return
+        broadcaster.resume(shouldContinue)
     }
 
     private fun reconnectLiveStreaming() {

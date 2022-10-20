@@ -14,7 +14,8 @@ import javax.inject.Inject
 
 @GqlQuery("GyroRecommendationQuery", GQL_GYRO_RECOMMENDATION)
 class GyroEngineRequestUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface
+    graphqlRepository: GraphqlRepository, val userSession: UserSessionInterface,
+    val gson: Gson
 ) : GraphqlUseCase<FeatureEngineResponse>(graphqlRepository) {
 
     fun getFeatureEngineData(
@@ -54,18 +55,30 @@ class GyroEngineRequestUseCase @Inject constructor(
     }
 
     private fun computeJsonFromFeatureEngine(thanksPageData: ThanksPageData, mainGatewayCode: String) =
-        Gson().toJson(
+        gson.toJson(
             FeatureEngineRequest(
                 thanksPageData.merchantCode, thanksPageData.profileCode, 1, 5,
-                FeatureEngineRequestParameters(true.toString(), thanksPageData.amount.toString(),
-                        mainGatewayCode, isEGoldPurchased(thanksPageData).toString(),
-                        isDonation(thanksPageData).toString(), userSession.userId,
-                        isMarketplace(thanksPageData).toString(), isGoldMerchant(thanksPageData).toString(),
-                        isOfficialStore(thanksPageData).toString(),thanksPageData.customDataOther?.isEnjoyPLus?:"false"),
+                concatMap(thanksPageData,mainGatewayCode),
                 FeatureEngineRequestOperators(),
                 FeatureEngineRequestThresholds()
             )
         )
+
+    private fun concatMap(thanksPageData: ThanksPageData, mainGatewayCode: String): MutableMap<String, Any?>? {
+        thanksPageData.gyroData?.put(IS_STATIC, "true")
+        thanksPageData.gyroData?.put(AMOUNT, thanksPageData.amount.toString())
+        thanksPageData.gyroData?.put(GATEWAY_CODE, mainGatewayCode)
+        thanksPageData.gyroData?.put(EGOLD, isEGoldPurchased(thanksPageData).toString())
+        thanksPageData.gyroData?.put(DONATION, isDonation(thanksPageData).toString())
+        thanksPageData.gyroData?.put(USER_ID, userSession.userId)
+        thanksPageData.gyroData?.put(IS_RM, isMarketplace(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_PM, isGoldMerchant(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_0S, isOfficialStore(thanksPageData).toString())
+        thanksPageData.gyroData?.put(IS_ENJOY_PLUS_BENEFIT, thanksPageData.customDataOther?.isEnjoyPLus ?: "false")
+        thanksPageData.gyroData?.put(IS_PLUS_TRANSACTION, thanksPageData.customDataOther?.isPlusTransaction ?: "false")
+        return thanksPageData.gyroData
+
+    }
 
     private fun addWalletParameters(jsonStr: String, walletBalance: WalletBalance?): String {
         return walletBalance?.let {
@@ -117,5 +130,17 @@ class GyroEngineRequestUseCase @Inject constructor(
     companion object {
         const val PARAM_REQUEST = "request"
         const val PARAM_WALLET_PARAMETERS = "parameters"
+        const val IS_STATIC = "static"
+        const val AMOUNT = "amount"
+        const val GATEWAY_CODE = "gateway_code"
+        const val EGOLD = "egold"
+        const val DONATION = "donation"
+        const val USER_ID = "user_id"
+        const val IS_RM = "is_RM"
+        const val IS_PM = "is_PM"
+        const val IS_0S = "is_OS"
+        const val IS_ENJOY_PLUS_BENEFIT = "is_enjoy_plus_benefit"
+        const val IS_PLUS_TRANSACTION = "is_plus_transaction"
+
     }
 }

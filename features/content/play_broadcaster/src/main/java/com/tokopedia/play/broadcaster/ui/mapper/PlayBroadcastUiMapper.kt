@@ -5,6 +5,7 @@ import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
@@ -160,7 +161,7 @@ class PlayBroadcastUiMapper @Inject constructor(
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount != 0) {
+                price = if (it.discount != 0L) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFormatted,
                         originalPriceNumber = it.originalPrice,
@@ -239,13 +240,13 @@ class PlayBroadcastUiMapper @Inject constructor(
                 imageUrl = it.imageUrl,
                 originalImageUrl = it.imageUrl,
                 stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount.toInt() != 0) {
+                price = if (it.discount.toLong() != 0L) {
                     DiscountedPrice(
                         originalPrice = it.originalPriceFmt,
                         originalPriceNumber = it.originalPrice.toDouble(),
                         discountedPrice = it.priceFmt,
                         discountedPriceNumber = it.price.toDouble(),
-                        discountPercent = it.discount.toInt()
+                        discountPercent = it.discount.toLong()
                     )
                 } else {
                     OriginalPrice(
@@ -256,8 +257,11 @@ class PlayBroadcastUiMapper @Inject constructor(
             )
         }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
-        return if (timestamp.publishedAt.isBlank()) BroadcastScheduleUiModel.NoSchedule
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
+        return if (timestamp.publishedAt.isBlank() || ChannelStatus.getByValue(status.id) == ChannelStatus.Live) BroadcastScheduleUiModel.NoSchedule
         else {
             val scheduleDate = timestamp.publishedAt.toDateWithFormat(DATE_FORMAT_RFC3339)
             BroadcastScheduleUiModel.Scheduled(
@@ -361,11 +365,9 @@ class PlayBroadcastUiMapper @Inject constructor(
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
-                maxRewardLength = response.interactiveConfig.quizConfig.maxRewardLength,
                 maxChoiceLength = response.interactiveConfig.quizConfig.maxChoiceLength,
                 availableStartTimeInMs = quizDurationInMs,
                 eligibleStartTimeInMs = quizDurationInMs,
-                showPrizeCoachMark = true,
             ),
         )
     }

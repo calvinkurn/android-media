@@ -481,4 +481,51 @@ class ShipmentPresenterEnhancedEcommerceTest {
         assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoCode == promoCodes)
         assert(newDataCheckoutRequest.firstOrNull()?.shopProducts?.firstOrNull()?.productData?.firstOrNull()?.promoDetails == promoDetails)
     }
+
+    @Test
+    fun `WHEN update enhanced ecommerce promo data with null data checkout request THEN data checkout request should be generated`() {
+        // Given
+        val cartString = "1"
+        val productId = 1L
+        val promoCodes = "a"
+        val promoDetails = "aaa"
+
+        val dataCheckoutRequests = arrayListOf<DataCheckoutRequest>().apply {
+            add(DataCheckoutRequest().apply {
+                shopProducts = arrayListOf<ShopProductCheckoutRequest>().apply {
+                    add(ShopProductCheckoutRequest().apply {
+                        this.cartString = cartString
+                        productData = arrayListOf<ProductDataCheckoutRequest>().apply {
+                            add(ProductDataCheckoutRequest().apply {
+                                this.productId = productId
+                            })
+                        }
+                    })
+                }
+            })
+        }
+
+        val shipmentCartItemModelList = arrayListOf<ShipmentCartItemModel>().apply {
+            add(ShipmentCartItemModel().apply {
+                this.cartString = cartString
+                cartItemModels = arrayListOf<CartItemModel>().apply {
+                    add(CartItemModel().apply {
+                        this.productId = productId
+                        analyticsProductCheckoutData = AnalyticsProductCheckoutData().apply {
+                            this.promoCode = promoCodes
+                            this.promoDetails = promoDetails
+                        }
+                    })
+                }
+            })
+        }
+
+        every { view.generateNewCheckoutRequest(any(), any()) } returns dataCheckoutRequests
+
+        // When
+        val newDataCheckoutRequest = presenter.updateEnhancedEcommerceCheckoutAnalyticsDataLayerPromoData(shipmentCartItemModelList)
+
+        // Then
+        verify { view.generateNewCheckoutRequest(any(), any()) }
+    }
 }

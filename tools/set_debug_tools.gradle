@@ -7,6 +7,13 @@ if (project.hasProperty('tkpdBuildType') && tkpdBuildType == "hockeyapp") {
     println("Debug tools set true based on buildType Parameter")
     return
 }
+if (project.hasProperty('enableMacrobenchmarkUtil')?: false) {
+    rootProject.ext.debugToolsEnabled = false
+    rootProject.ext.enableMacrobenchmarkUtil = true
+    println("Debug tools set false based on buildType Parameter")
+    println("enableMacrobenchmarkUtil tools set true based on buildType Parameter")
+    return
+}
 def taskNames = project.gradle.startParameter.taskNames
 if (taskNames==null || taskNames.size() == 0) {
     rootProject.ext.debugToolsEnabled = true

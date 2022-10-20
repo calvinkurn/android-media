@@ -1,9 +1,11 @@
 package com.tokopedia.notifications.utils
 
+import android.app.Activity
 import android.app.NotificationManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
@@ -55,7 +57,7 @@ class NotificationSettingsUtils(private val context: Context) {
         }
     }
 
-    fun checkNotificationPermission() {
+    fun checkNotificationPermission(activity: Activity) {
         if (Build.VERSION.SDK_INT >= sdkLevel33) {
             if (ContextCompat.checkSelfPermission(
                     context,
@@ -70,7 +72,10 @@ class NotificationSettingsUtils(private val context: Context) {
             } else if (ContextCompat.checkSelfPermission(
                     context,
                     postNotificationPermission
-                ) == PackageManager.PERMISSION_DENIED
+                ) == PackageManager.PERMISSION_DENIED &&
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity, postNotificationPermission
+                )
             ) {
                 try {
                     NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(

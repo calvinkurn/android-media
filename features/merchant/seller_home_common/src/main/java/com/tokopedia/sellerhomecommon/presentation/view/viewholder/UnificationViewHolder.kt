@@ -223,9 +223,9 @@ class UnificationViewHolder(
             tableShcUnification.setOnSwipeListener { position, _, _ ->
                 shcTableViewPageControl.setCurrentIndicator(position)
             }
-            tableShcUnification.addOnHtmlClickListener { url, _ ->
+            tableShcUnification.addOnHtmlClickListener { url, text, isEmpty ->
                 openAppLink(url)
-                listener.sendUnificationTableItemClickEvent(element)
+                listener.sendUnificationTableItemClickEvent(element, text, isEmpty)
             }
             tableShcUnification.addOnImpressionListener(tab.impressHolder) {
                 listener.sendUnificationTabImpressionEvent(element)
@@ -330,7 +330,11 @@ class UnificationViewHolder(
 
         fun sendUnificationEmptyStateCtaClickEvent(element: UnificationWidgetUiModel) {}
 
-        fun sendUnificationTableItemClickEvent(element: UnificationWidgetUiModel) {}
+        fun sendUnificationTableItemClickEvent(
+            element: UnificationWidgetUiModel,
+            text: String,
+            isEmpty: Boolean
+        ) {}
 
         fun showUnificationWidgetCoachMark(anchor: View) {}
     }

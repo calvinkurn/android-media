@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
@@ -30,7 +29,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
@@ -122,7 +120,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     lateinit var viewModelFactory: ViewModelProvider.Factory
     @Inject
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
-    lateinit var viewModel: ShopPageProductListResultViewModel
+
+    private val viewModel: ShopPageProductListResultViewModel by lazy {
+        ViewModelProvider(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
+    }
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private val shopProductAdapter: ShopProductAdapter by lazy { adapter as ShopProductAdapter }
@@ -138,11 +139,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             shopProductFilterParameter?.setSortId(value)
         }
     private val sortName
-        get() = if (::viewModel.isInitialized) {
-            viewModel.getSortNameById(sortId)
-        } else {
-            ""
-        }
+        get() = viewModel.getSortNameById(sortId)
+
     private var sourceRedirection: String = ""
     private var isShopPageProductSearchResultTrackerAlreadySent: Boolean = false
     private var attribution: String? = null
@@ -185,19 +183,14 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         CustomDimensionShopPage.create(shopId, isOfficialStore, isGoldMerchant)
     }
     private val isMyShop: Boolean
-        get() = if (::viewModel.isInitialized) {
-            shopId?.let { viewModel.isMyShop(it) } ?: false
-        } else false
+        get() = shopId?.let { viewModel.isMyShop(it) } ?: false
 
     private val isLogin: Boolean
-        get() = if (::viewModel.isInitialized) {
-            viewModel.isLogin
-        } else false
+        get() = viewModel.isLogin
 
     private val userId: String
-        get() = if (::viewModel.isInitialized) {
-            viewModel.userId
-        } else "0"
+        get() = viewModel.userId
+
     var localCacheModel: LocalCacheModel? = null
     private var rvDefaultPaddingBottom = 0
     private val viewBinding: FragmentShopProductListResultNewBinding? by viewBinding()
@@ -284,7 +277,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         context?.let {
             shopPageTracking = ShopPageTrackingBuyer(TrackingQueue(it))
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ShopPageProductListResultViewModel::class.java)
     }
 
     override fun getSwipeRefreshLayout(view: View): SwipeRefreshLayout? {
@@ -307,7 +299,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun initAffiliateCookie() {
-        viewModel?.initAffiliateCookie(
+        viewModel.initAffiliateCookie(
             affiliateCookieHelper,
             shopId.orEmpty()
         )
@@ -395,12 +387,12 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     selectedEtalaseId.split("_").let { it[1].toIntOrZero() }
                 } else 0
                 val restrictionParam = RestrictionEngineRequestParams().apply {
-                    userId = userIdFromSession
+                    userId = userIdFromSession.toLong()
                     dataRequest = mutableListOf(
                         RestrictionEngineDataRequest(
                                 product = RestrictionEngineDataRequestProduct(productID = 0.toString()),
-                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toIntOrZero()),
-                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId)
+                                shop = RestrictionEngineDataRequestShop(shopID = shopId.toLongOrZero()),
+                                campaign = RestrictionEngineDataRequestCampaign(campaignID = campaignId.toLong())
                         )
                     )
                 }
@@ -928,7 +920,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
                     shopId.orEmpty()
             )
         }
-        startActivity(getProductIntent(shopProductUiModel.id ?: "", attribution,
+        startActivity(getProductIntent(shopProductUiModel.productUrl, attribution,
                 shopPageTracking?.getListNameOfProduct(OldShopPageTrackingConstant.SEARCH, getSelectedEtalaseChip())
                         ?: ""))
     }
@@ -1088,27 +1080,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         )
     }
 
-    private fun getProductIntent(productId: String, attribution: String?, listNameOfProduct: String): Intent? {
+    private fun getProductIntent(pdpAppLink: String, attribution: String?, listNameOfProduct: String): Intent? {
         return if (context != null) {
-            val pdpAppLink = getPdpAppLink(productId)
+            val updatedPdpAppLink = createPdpAffiliateLink(pdpAppLink)
             val bundle = Bundle()
             bundle.putString("tracker_attribution", attribution)
             bundle.putString("tracker_list_name", listNameOfProduct)
-            RouteManager.getIntent(context, pdpAppLink)
+            RouteManager.getIntent(context, updatedPdpAppLink)
         } else {
             null
         }
     }
 
-    private fun getPdpAppLink(productId: String): String {
-        val basePdpAppLink = UriUtil.buildUri(
-            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            productId
-        )
-        return createPdpAffiliateLink(basePdpAppLink)
-    }
-
-    fun createPdpAffiliateLink(basePdpAppLink: String): String {
+    private fun createPdpAffiliateLink(basePdpAppLink: String): String {
         return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
@@ -1371,21 +1355,10 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private fun handleWishlistActionForLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
         viewModel.clearGetShopProductUseCase()
 
-        val isUsingWishlistV2 = productCardOptionsModel.wishlistResult.isUsingWishlistV2
         if (productCardOptionsModel.wishlistResult.isAddWishlist) {
-            if (isUsingWishlistV2) handleWishlistActionAddToWishlistV2(productCardOptionsModel)
-            else handleWishlistActionAddToWishlist(productCardOptionsModel)
+            handleWishlistActionAddToWishlistV2(productCardOptionsModel)
         } else {
-            if (isUsingWishlistV2) handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
-            else handleWishlistActionRemoveFromWishlist(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistActionAddToWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessAddWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorAddWishList(getString(com.tokopedia.wishlist_common.R.string.on_failed_add_to_wishlist_msg))
+            handleWishlistActionRemoveFromWishlistV2(productCardOptionsModel)
         }
     }
 
@@ -1397,14 +1370,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         if (productCardOptionsModel.wishlistResult.isSuccess) {
             shopProductAdapter.updateWishListStatus(productCardOptionsModel.productId, true)
-        }
-    }
-
-    private fun handleWishlistActionRemoveFromWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        if (productCardOptionsModel.wishlistResult.isSuccess) {
-            onSuccessRemoveWishlist(productCardOptionsModel.productId)
-        } else {
-            onErrorRemoveWishlist(getString(com.tokopedia.wishlist_common.R.string.on_failed_remove_from_wishlist_msg))
         }
     }
 

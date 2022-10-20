@@ -22,6 +22,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.PlayBufferControl
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.test.application.annotations.UiTest
 import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
@@ -33,6 +34,7 @@ import org.junit.runner.RunWith
  * Created by kenny.hadisaputra on 15/07/22
  */
 @RunWith(AndroidJUnit4ClassRunner::class)
+@UiTest
 class PlayPinnedProductUiTest {
 
     @get:Rule
@@ -86,7 +88,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(false)
     }
 
@@ -102,7 +104,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(
             true,
             buildMockProductName(sectionPinned, productPinned)
@@ -115,7 +117,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(false)
     }
 
@@ -132,7 +134,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(
             true,
             buildMockProductName(sectionPinned, productPinned)
@@ -152,7 +154,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(
             true,
             buildMockProductName(sectionPinned, productPinned)
@@ -172,7 +174,7 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot.assertHasPinnedItemInCarousel(
             true,
             buildMockProductName(sectionPinned, productPinned)
@@ -185,27 +187,36 @@ class PlayPinnedProductUiTest {
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot
+            .wait(5000)
             .openProductBottomSheet()
             .assertHasPinnedItemInProductBottomSheet(false)
     }
 
     @Test
     fun pinnedProduct_productBottomSheet_oneSection_hasPinned() {
+        val totalSection = 1
+        val productPerSection = 5
+
         val sectionPinned = 0
         val productPinned = 3
         val tagItem = buildTagItemWithPinned(
+            numOfSections = totalSection,
+            numOfProducts = productPerSection,
             hasPinned = { sectionIndex, productIndex ->
                 sectionIndex == sectionPinned && productIndex == productPinned
             }
         )
 
+        val position = sectionPinned + 1 + (sectionPinned * productPerSection) + productPinned
+
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot
             .openProductBottomSheet()
+            .scrollProductBottomSheet(position)
             .assertHasPinnedItemInProductBottomSheet(
                 buildMockProductName(sectionPinned, productPinned),
                 true,
@@ -214,26 +225,33 @@ class PlayPinnedProductUiTest {
 
     @Test
     fun pinnedProduct_productBottomSheet_threeSections_hasPinned_sectionThree_productThree() {
+        val numOfSections = 3
+        val productPerSection = 5
+
         val sectionPinned = 2
         val productPinned = 2
         val tagItem = buildTagItemWithPinned(
-            numOfSections = 3,
+            numOfSections = numOfSections,
+            numOfProducts = productPerSection,
             hasPinned = { sectionIndex, productIndex ->
                 sectionIndex == sectionPinned && productIndex == productPinned
             }
         )
+        val position = sectionPinned + 1 + (sectionPinned * productPerSection) + productPinned
 
         coEvery { repo.getTagItem(any(), any()) } returns tagItem
 
-        val robot = PlayActivityRobot(channelId)
+        val robot = createRobot()
         robot
             .openProductBottomSheet()
-            .scrollProductBottomSheet(sectionPinned)
+            .scrollProductBottomSheet(position)
             .assertHasPinnedItemInProductBottomSheet(
                 buildMockProductName(sectionPinned, productPinned),
                 true,
             )
     }
+
+    private fun createRobot() = PlayActivityRobot(channelId, 3000)
 
     private fun buildTagItemWithPinned(
         numOfSections: Int = 1,

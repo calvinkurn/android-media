@@ -32,11 +32,11 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.track)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
 
     implementation rootProject.ext.miscDependencies.viewPager2
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.supportLibDependencies.recyclerViewV7
-    implementation project(path: ':libraries:cm_push_notifications')
 }
 
 project.ext {

@@ -32,6 +32,7 @@ import com.tokopedia.digital_checkout.utils.DigitalCheckoutMapper
 import com.tokopedia.digital_checkout.utils.DigitalCurrencyUtil.getStringIdrFormat
 import com.tokopedia.digital_checkout.utils.analytics.DigitalAnalytics
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.data.model.response.DataResponse
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
@@ -116,7 +117,7 @@ class DigitalCartViewModel @Inject constructor(
             _showContentCheckout.postValue(false)
             _showLoading.postValue(true)
             digitalGetCartUseCase.execute(
-                DigitalGetCartUseCase.createParams(categoryId.toIntOrZero()),
+                DigitalGetCartUseCase.createParams(categoryId.toIntSafely()),
                 onSuccessGetCart(categoryId, isSpecialProduct),
                 onErrorGetCart()
             )
@@ -445,10 +446,10 @@ class DigitalCartViewModel @Inject constructor(
         }
 
         return PromoDigitalModel(
-            cartPassData?.categoryId?.toIntOrNull() ?: 0,
+            cartPassData?.categoryId?.toIntSafely() ?: 0,
             cartInfoData.attributes.categoryName,
             cartInfoData.attributes.operatorName,
-            cartPassData?.productId?.toIntOrNull() ?: 0,
+            cartPassData?.productId?.toIntSafely() ?: 0,
             cartPassData?.clientNumber ?: "",
             price.toLong()
         )

@@ -24,8 +24,12 @@ android {
     packagingOptions {
         exclude 'META-INF/**'
     }
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = JavaVersion.VERSION_11
     }
     buildFeatures {
         viewBinding true
@@ -58,6 +62,7 @@ dependencies {
 
     implementation rootProject.ext.miscDependencies.coroutineCore
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.rxAndroid
     kapt rootProject.ext.miscDependencies.daggerCompiler
 }
 

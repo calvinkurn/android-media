@@ -225,7 +225,6 @@ class ProfileViewModelTest {
         }
     }
 
-
     @Test
     fun `upload picture failed`() {
         coEvery { uploaderUsecase(any()) } returns dummyUploadResultFailed

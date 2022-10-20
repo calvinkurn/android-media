@@ -83,6 +83,11 @@ class SellerOnboardingActivity : BaseActivity() {
         NotificationSettingsUtils(applicationContext).sendNotificationPromptEvent()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
+    }
+
     private fun handleAppLink() {
         val uri = intent?.data
         val coachMarkStatus = uri?.getQueryParameter(PARAM_COACH_MARK)
@@ -266,10 +271,5 @@ class SellerOnboardingActivity : BaseActivity() {
 
     private fun getPositionViewPager(): Int {
         return binding?.sobViewPager?.currentItem.orZero() + ADDITIONAL_INDEX
-    }
-
-    override fun onStop() {
-        super.onStop()
-        NotificationSettingsUtils(applicationContext).checkNotificationPermission()
     }
 }

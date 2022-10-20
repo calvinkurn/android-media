@@ -16,9 +16,9 @@ import com.tokopedia.shop.common.widget.bundle.adapter.ProductBundleSingleAdapte
 import com.tokopedia.shop.common.widget.bundle.enum.BundleTypes
 import com.tokopedia.shop.common.widget.bundle.listener.ProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.model.BundleDetailUiModel
-import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.BundleShopUiModel
+import com.tokopedia.shop.common.widget.bundle.model.BundleUiModel
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Label
@@ -126,6 +126,8 @@ class ProductBundleSingleViewHolder(
 
         bundleDetailAdapter.setSelectionListener { selectedBundle ->
             renderBundlePriceDetails(selectedBundle)
+            bundle.selectedBundleId = selectedBundle.bundleId
+            bundle.selectedBundleApplink = selectedBundle.applink
             listener?.onTrackSingleVariantChange(
                 product,
                 selectedBundle,
@@ -135,11 +137,10 @@ class ProductBundleSingleViewHolder(
     }
 
     private fun initPreorderAndSoldItem(bundleDetail: BundleDetailUiModel) {
-        if (bundleDetail.isPreOrder) {
-            typographyBundlePreOrder?.text = bundleDetail.preOrderInfo
-        } else {
-            typographyBundlePreOrder?.text =
-                itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
+        typographyBundlePreOrder?.text = when {
+            bundleDetail.useProductSoldInfo -> bundleDetail.productSoldInfo
+            bundleDetail.isPreOrder -> bundleDetail.preOrderInfo
+            else -> itemView.context.getString(R.string.product_bundle_bundle_sold, bundleDetail.totalSold)
         }
     }
 

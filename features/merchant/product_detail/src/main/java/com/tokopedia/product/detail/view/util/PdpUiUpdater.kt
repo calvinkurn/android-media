@@ -16,7 +16,6 @@ import com.tokopedia.product.detail.common.data.model.pdplayout.Media
 import com.tokopedia.product.detail.common.data.model.rates.P2RatesEstimateData
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCategory
-import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
@@ -30,7 +29,7 @@ import com.tokopedia.product.detail.data.model.datamodel.PdpComparisonWidgetData
 import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentMainData
-import com.tokopedia.product.detail.data.model.datamodel.ProductDetailInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductMediaDataModel
@@ -42,6 +41,8 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
@@ -164,6 +165,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val contentWidgetData: ContentWidgetDataModel?
         get() = mapOfData[ProductDetailConstant.PLAY_CAROUSEL] as? ContentWidgetDataModel
 
+    private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
+
     fun updateDataP1(context: Context?, dataP1: DynamicProductInfoP1?, loadInitialData: Boolean = false) {
         dataP1?.let {
             updateData(ProductDetailConstant.PRODUCT_CONTENT, loadInitialData) {
@@ -251,6 +254,11 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     this.productId = dataP1.basic.productID
                 }
             }
+
+            if (loadInitialData) {
+                verticalRecommendationItems.clear()
+            }
+
         }
     }
 
@@ -607,6 +615,22 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         }
     }
 
+    fun updateVerticalRecommendationData(data: RecommendationWidget) {
+        updateData(data.pageName) {
+            (mapOfData[data.pageName] as? ProductRecommendationVerticalPlaceholderDataModel)?.apply {
+                if (recomWidgetData?.currentPage != data.currentPage) {
+                    verticalRecommendationItems.addAll(getItemDataModels())
+                }
+                recomWidgetData = data
+            }
+        }
+    }
+
+    fun getVerticalRecommendationNextPage(pageName: String): Int? {
+        val dataModel = (mapOfData[pageName] as? ProductRecommendationVerticalPlaceholderDataModel)
+        return dataModel?.recomWidgetData?.nextPage
+    }
+
     fun removeComponentP2Data(it: ProductInfoP2UiData, countReview: String) {
         if (it.ratesEstimate.isEmpty()) {
             removeComponent(ProductDetailConstant.SHIPMENT_V2)
@@ -903,4 +927,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
         updateAction.invoke()
     }
 
+    fun getCurrentDataModels(): List<DynamicPdpDataModel> {
+        val mutableItems = mapOfData.values.toMutableList()
+
+        val indexVerticalRecommendation = mutableItems.indexOfLast {
+            it is ProductRecommendationVerticalPlaceholderDataModel
+        }
+
+        if (indexVerticalRecommendation == -1) return mutableItems
+        verticalRecommendationItems.forEachIndexed { index, item ->
+            item.position = index + 1
+        }
+        mutableItems.addAll(indexVerticalRecommendation + 1, verticalRecommendationItems)
+        return mutableItems
+    }
 }

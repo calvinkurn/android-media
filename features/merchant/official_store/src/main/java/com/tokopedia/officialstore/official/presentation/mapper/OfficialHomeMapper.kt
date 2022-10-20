@@ -12,6 +12,7 @@ import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
+import com.tokopedia.officialstore.official.data.model.HeaderShop
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -23,8 +24,10 @@ import com.tokopedia.officialstore.official.presentation.adapter.datamodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 object OfficialHomeMapper {
     const val BANNER_POSITION = 0
@@ -32,6 +35,11 @@ object OfficialHomeMapper {
     const val FEATURE_SHOP_POSITION = 2
     const val RECOM_WIDGET_POSITION = 3
     const val WIDGET_NOT_FOUND = -1
+    private val atfOS = listOf(
+        OfficialBannerDataModel(mutableListOf(), ""), OfficialBenefitDataModel(
+            mutableListOf()
+        ), OfficialFeaturedShopDataModel(listOf(), HeaderShop(), "")
+    )
 
     fun mappingBanners(
         banner: OfficialStoreBanners,
@@ -119,7 +127,8 @@ object OfficialHomeMapper {
     ) {
         val newList = currentList.toMutableList()
         val dcList = mutableListOf<Visitable<*>>()
-        officialStoreChannels.forEachIndexed { position, officialStore ->
+        officialStoreChannels.forEachIndexed { pos, officialStore ->
+            val position = pos + atfOS.size
             when (officialStore.channel.layout) {
                 DynamicChannelLayout.LAYOUT_MIX_LEFT -> {
                     dcList.add(
@@ -139,6 +148,11 @@ object OfficialHomeMapper {
                                 position
                             )
                         )
+                    )
+                }
+                DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL -> {
+                    dcList.add(
+                        OfficialTopAdsBannerDataModel(officialStore.channel.header?.name)
                     )
                 }
                 DynamicChannelLayout.LAYOUT_FEATURED_BRAND -> {
@@ -274,6 +288,24 @@ object OfficialHomeMapper {
                 newList.add(featuredShopDataModel)
             }
             else {
+                newList.add(it)
+            }
+        }
+        action.invoke(newList)
+    }
+
+    fun updateTopAdsBanner(
+        officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel,
+        tdnBanner: ArrayList<TopAdsImageViewModel>,
+        currentList: List<Visitable<*>>,
+        action: (updatedList: MutableList<Visitable<*>>) -> Unit
+    ) {
+        val newList = mutableListOf<Visitable<*>>()
+        currentList.forEach {
+            if (it is OfficialTopAdsBannerDataModel) {
+                officialTopAdsBannerDataModel.tdnBanner = tdnBanner
+                newList.add(officialTopAdsBannerDataModel)
+            } else {
                 newList.add(it)
             }
         }

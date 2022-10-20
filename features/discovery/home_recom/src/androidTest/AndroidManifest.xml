@@ -7,7 +7,7 @@
         android:label="Home Recom Test"
         tools:ignore="HardcodedDebugMode"
         tools:replace="android:debuggable,android:label"
-        android:debuggable="false">
+        android:debuggable="true">
         <activity
             android:name=".activity.HomeRecommendationActivityTest"
             android:label="@string/recom_home_recommendation"
