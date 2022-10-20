@@ -145,8 +145,8 @@ class ProductLineItemDecoration(
 
         if (position == adapter.itemCount - 1) outRect.bottom = offset4
 
-        outRect.left = offset14
-        outRect.right = offset14
+        outRect.left = offset10
+        outRect.right = offset10
     }
 
     private fun setColorBackground(
