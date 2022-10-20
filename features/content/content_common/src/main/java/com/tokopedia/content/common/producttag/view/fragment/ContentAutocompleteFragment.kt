@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.databinding.FragmentContentAutocompleteBinding
 import com.tokopedia.content.common.producttag.view.fragment.base.BaseProductTagChildFragment
@@ -32,12 +33,7 @@ class ContentAutocompleteFragment @Inject constructor(
     private val binding: FragmentContentAutocompleteBinding
         get() = _binding!!
 
-    private lateinit var viewModel: ProductTagViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = viewModelProvider[ProductTagViewModel::class.java]
-    }
+    private val viewModel: ProductTagViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

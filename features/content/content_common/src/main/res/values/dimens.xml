@@ -8,7 +8,6 @@
     <dimen name="content_common_space_12">12dp</dimen>
     <dimen name="content_common_space_14">14dp</dimen>
     <dimen name="content_common_space_16">16dp</dimen>
-    <dimen name="content_common_space_20">20dp</dimen>
     <dimen name="content_common_space_24">24dp</dimen>
     <dimen name="content_common_space_32">32dp</dimen>
     <dimen name="content_common_space_40">40dp</dimen>

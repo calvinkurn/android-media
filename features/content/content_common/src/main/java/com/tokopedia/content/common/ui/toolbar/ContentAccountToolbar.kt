@@ -32,7 +32,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
     private var mOnClickListener: AccountClickListener? = null
     private var mOnBackListener: BackClickListener? = null
     private var mBinding = ContentAccountToolbarBinding.inflate(LayoutInflater.from(context), this)
-    private lateinit var coachMark: CoachMark2
+    private var coachMark: CoachMark2? = null
 
     init {
         initViews()
@@ -137,10 +137,10 @@ class ContentAccountToolbar @JvmOverloads constructor(
     }
 
     fun showCoachMarkSwitchAccount() {
-        if (::coachMark.isInitialized && coachMark.isShowing) return
+        if (coachMark != null && coachMark?.isShowing == true) return
         getToolbarParentView().addOneTimeGlobalLayoutListener {
             coachMark = CoachMark2(context)
-            coachMark.showCoachMark(
+            coachMark?.showCoachMark(
                 arrayListOf(
                     CoachMark2Item(
                         mBinding.textComToolbarSubtitle,
@@ -154,7 +154,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
     }
 
     fun hideCoachMarkSwitchAccount() {
-        if (::coachMark.isInitialized && coachMark.isShowing) coachMark.dismissCoachMark()
+        if (coachMark != null && coachMark?.isShowing == true) coachMark?.dismissCoachMark()
     }
 
 }

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnboardingBottomSheet
@@ -37,22 +38,16 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private val binding: BottomsheetUserTncOnboardingBinding
         get() = _binding!!
 
-    private lateinit var viewModel: UGCOnboardingViewModel
+    private val viewModel: UGCOnboardingViewModel by viewModels {
+        viewModelFactoryCreator.create(
+            this,
+            onboardingType,
+            strategyFactory.create(onboardingType),
+        )
+    }
 
     private val _listener: Listener?
         get() = mListener as? Listener
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(
-            this,
-            viewModelFactoryCreator.create(
-                this,
-                onboardingType,
-                strategyFactory.create(onboardingType),
-            )
-        )[UGCOnboardingViewModel::class.java]
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

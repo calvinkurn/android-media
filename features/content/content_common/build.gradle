@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-    implementation project(rootProject.ext.features.productCard)
+    implementation projectOrAar(rootProject.ext.features.productCard)
 
     implementation projectOrAar(rootProject.ext.features.autocompleteComponent)
     implementation projectOrAar(rootProject.ext.features.createpostCommon)
@@ -88,6 +88,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.viewModel
     implementation rootProject.ext.miscDependencies.viewModelKtx
     implementation rootProject.ext.miscDependencies.dagger
+    implementation rootProject.ext.miscDependencies.fragmentKtx
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.debugToolsDependencies.chuck
     implementation rootProject.ext.supportLibDependencies.constraintLayout

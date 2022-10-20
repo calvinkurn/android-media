@@ -197,7 +197,7 @@ class ProductTagNavigationViewModelTest {
     fun `when user click suggested shop and come back from autocomplete page, it should emit state with appropriate page`() {
         val query = "pokemon"
         val source = ProductTagSource.Shop
-        val shopId = 1
+        val shopId = 1L
         val mockResponse = shopModelBuilder.buildUiModel(shopId.toString())
 
         coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } returns mockResponse
@@ -223,7 +223,7 @@ class ProductTagNavigationViewModelTest {
     fun `when user click suggested shop and error happens, it should emit error event`() {
         val query = "pokemon"
         val source = ProductTagSource.Shop
-        val shopId = 1
+        val shopId = 1L
 
         coEvery { mockRepo.getShopInfoByID(listOf(shopId)) } throws mockException
 
