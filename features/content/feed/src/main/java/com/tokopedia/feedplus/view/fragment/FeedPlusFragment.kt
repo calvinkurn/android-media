@@ -3762,9 +3762,20 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
-        onTagSheetItemBuy(
-            item
-        )
+        val list = adapter.getList()
+        val position = item.positionInFeed
+        var card: FeedXCard? = null
+        if (position in 0 until list.size && list[position] is DynamicPostUiModel) {
+            val item = list[position] as DynamicPostUiModel
+            card = item.feedXCard
+        }
+        if (card != null && shouldShowFollowerBottomSheet(card)) {
+            showFollowerBottomSheet(item.positionInFeed, card.campaign.status)
+        } else {
+            onTagSheetItemBuy(
+                item
+            )
+        }
     }
 
     override fun onTaggedProductCardClicked(

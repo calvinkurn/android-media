@@ -1596,17 +1596,27 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
 
-        onTagSheetItemBuy(
-            finalID,
-            item.positionInFeed,
-            item.product,
-            item.shopId,
-            item.postType,
-            item.isFollowed,
-            item.playChannelId,
-            item.shopName,
-            item.mediaType
-        )
+        val list = adapter.getList()
+        val position = item.positionInFeed
+        var card: FeedXCard? = null
+        if (position in 0 until list.size) {
+            card = list[position]
+        }
+        if (card != null && shouldShowFollowerBottomSheet(card)) {
+            showFollowerBottomSheet(item.positionInFeed, card.campaign.status)
+        } else {
+            onTagSheetItemBuy(
+                finalID,
+                item.positionInFeed,
+                item.product,
+                item.shopId,
+                item.postType,
+                item.isFollowed,
+                item.playChannelId,
+                item.shopName,
+                item.mediaType
+            )
+        }
     }
 
     private fun onTagSheetItemBuy(
