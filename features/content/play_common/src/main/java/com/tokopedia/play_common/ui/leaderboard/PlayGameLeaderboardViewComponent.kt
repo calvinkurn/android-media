@@ -72,6 +72,8 @@ class PlayGameLeaderboardViewComponent(
         }
     })
 
+    private val itemDecoration : PlayLeaderBoardItemDecoration
+
     init {
         tvSheetTitle.setText(R.string.play_interactive_leaderboard_title)
 
@@ -79,10 +81,12 @@ class PlayGameLeaderboardViewComponent(
             listener.onCloseButtonClicked(this)
         }
 
+        itemDecoration = PlayLeaderBoardItemDecoration(rvLeaderboard.context)
+
         rvLeaderboard.apply {
             adapter = leaderboardAdapter
             layoutManager = layoutManager
-            addItemDecoration(PlayLeaderBoardItemDecoration(this.context))
+            addItemDecoration(itemDecoration)
         }
 
         btnRefreshError.setOnClickListener {
@@ -192,6 +196,7 @@ class PlayGameLeaderboardViewComponent(
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     fun onDestroy() {
         unregisterAdapterObserver()
+        rvLeaderboard.removeItemDecoration(itemDecoration)
         ViewCompat.setOnApplyWindowInsetsListener(rootView, null)
     }
 
