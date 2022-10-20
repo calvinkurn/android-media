@@ -9,13 +9,14 @@ import com.tokopedia.kotlin.extensions.view.inflateLayout
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.model.CPLProductModel
 import com.tokopedia.logisticCommon.data.model.ShipperCPLModel
+import com.tokopedia.logisticCommon.data.model.ShipperListCPLModel
 import com.tokopedia.product.addedit.R
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>() {
 
-    private val shipmentCPLitem = mutableListOf<ShipperCPLModel>()
+    private val shipmentCPLitem = mutableListOf<ShipperListCPLModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShipmentViewHolder {
         return ShipmentViewHolder(parent.inflateLayout(R.layout.item_add_edit_shipment))
@@ -29,7 +30,7 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
         return shipmentCPLitem.size
     }
 
-    fun updateData(data: List<ShipperCPLModel>) {
+    fun updateData(data: List<ShipperListCPLModel>) {
         shipmentCPLitem.clear()
         shipmentCPLitem.addAll(data)
         notifyDataSetChanged()
@@ -37,44 +38,12 @@ class ShipmentAdapter : RecyclerView.Adapter<ShipmentAdapter.ShipmentViewHolder>
 
     inner class ShipmentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        private val shipmentItemImage = itemView.findViewById<ImageUnify>(R.id.img_shipment_item)
         private val shipmentItemName = itemView.findViewById<Typography>(R.id.shipment_name)
         private val shipmentItemCategory = itemView.findViewById<Typography>(R.id.shipment_category)
 
-        fun bindData(data: ShipperCPLModel) {
-            data.isActive = false
-            data.shipperProduct.forEach {
-                if (it.isActive) {
-                    data.isActive = true
-                }
-            }
-
-            if (data.isActive) {
-                shipmentItemImage.visible()
-                shipmentItemName.visible()
-                shipmentItemCategory.visible()
-
-                val shipperProduct = data.shipperProduct
-                val stringBuilder = StringBuilder()
-
-                for (x in shipperProduct.indices) {
-                    if (shipperProduct[x].isActive) {
-                        stringBuilder.append(shipperProduct[x].shipperProductName).append(", ")
-                    }
-                }
-
-                if (stringBuilder.isNotEmpty()) {
-                    shipmentItemImage?.let {
-                        ImageHandler.loadImageFitCenter(itemView.context, it, data.logo)
-                    }
-                    shipmentItemName.text = data.shipperName
-                    shipmentItemCategory.text = stringBuilder.substring(0, stringBuilder.length - 2)
-                }
-            } else {
-                shipmentItemImage.gone()
-                shipmentItemName.gone()
-                shipmentItemCategory.gone()
-            }
+        fun bindData(data: ShipperListCPLModel) {
+            shipmentItemName.text = data.header
+            shipmentItemCategory.text = data.getActiveServiceName()
         }
     }
 }

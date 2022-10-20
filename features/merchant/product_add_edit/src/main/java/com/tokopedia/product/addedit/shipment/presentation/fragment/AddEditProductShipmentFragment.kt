@@ -25,7 +25,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.dialog.DialogUnify
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.product.addedit.R
@@ -81,11 +80,11 @@ import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputMo
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
 import com.tokopedia.product.addedit.tracking.ProductAddShippingTracking
 import com.tokopedia.product.addedit.tracking.ProductEditShippingTracking
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifycomponents.ticker.Ticker
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -108,18 +107,12 @@ class AddEditProductShipmentFragment:
     private var tickerInsurance: Ticker? = null
 
     private var shipmentInputLayout: ConstraintLayout? = null
-    private var layoutCustomShipmentOnDemand: ConstraintLayout? = null
-    private var layoutCustomShipmentConventional: ConstraintLayout? = null
     private var radioStandarShipment: RadioButtonUnify? = null
     private var radioCustomShipment: RadioButtonUnify? = null
-    private var btnChangeOnDemandShipment: Typography? = null
-    private var btnChangeConventionalShipment: Typography? = null
-    private var btnIconOnDemand: IconUnify? = null
-    private var btnIconConventional: IconUnify? = null
-    private var shipmentListOnDemand: RecyclerView? = null
-    private var shipmentListConventional: RecyclerView? = null
-    private val shipmentOnDemandAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
-    private val shipmentConventionalAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
+    private var rvCpl: RecyclerView? = null
+    private var btnCpl: UnifyButton? = null
+    private var cplLayout: CardUnify2? = null
+    private val cplShipmentGroupAdapter: ShipmentAdapter by lazy { ShipmentAdapter() }
 
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
@@ -321,16 +314,11 @@ class AddEditProductShipmentFragment:
         tickerInsurance = binding.insuranceInputLayout.tickerInsurance
 
         shipmentInputLayout = binding.shipmentInputLayout.root
-        layoutCustomShipmentOnDemand = binding.shipmentInputLayout.layoutCustomOndemand
-        layoutCustomShipmentConventional = binding.shipmentInputLayout.layoutCustomConventional
         radioStandarShipment = binding.shipmentInputLayout.radioStandardShipment
         radioCustomShipment = binding.shipmentInputLayout.radioCustomShipment
-        btnChangeOnDemandShipment = binding.shipmentInputLayout.btnChangeOnDemand
-        btnChangeConventionalShipment = binding.shipmentInputLayout.btnChangeConventional
-        shipmentListOnDemand = binding.shipmentInputLayout.rvOnDemand
-        shipmentListConventional = binding.shipmentInputLayout.rvConventional
-        btnIconOnDemand = binding.shipmentInputLayout.btnInfoOnDemand
-        btnIconConventional = binding.shipmentInputLayout.btnInfoConventional
+        rvCpl = binding.shipmentInputLayout.rvShipperGroup
+        btnCpl = binding.shipmentInputLayout.btnCpl
+        cplLayout = binding.shipmentInputLayout.layoutCpl
 
         btnSave = binding.btnSave
         btnEnd = binding.btnEnd
@@ -401,37 +389,6 @@ class AddEditProductShipmentFragment:
 
     private fun setupShipment() {
         setupShipmentRadios()
-        shipmentListOnDemand?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = shipmentOnDemandAdapter
-        }
-
-        shipmentListConventional?.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = shipmentConventionalAdapter
-        }
-
-        btnChangeOnDemandShipment?.setOnClickListener {
-            goToCustomProductLogistic()
-        }
-
-        btnChangeConventionalShipment?.setOnClickListener {
-            goToCustomProductLogistic()
-        }
-
-        btnIconOnDemand?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(
-                childFragmentManager,
-                ShipmentInfoBottomSheet.SHIPMENT_ON_DEMAND_STATE
-            )
-        }
-
-        btnIconConventional?.setOnClickListener {
-            ShipmentInfoBottomSheet().show(
-                childFragmentManager,
-                ShipmentInfoBottomSheet.SHIPMENT_CONVENTIONAL_STATE
-            )
-        }
     }
 
     private fun goToCustomProductLogistic() {
@@ -468,21 +425,18 @@ class AddEditProductShipmentFragment:
 
     private fun setShipmentLayout(isStandardShipment: Boolean, data: CustomProductLogisticModel) {
         if (isStandardShipment) {
-            layoutCustomShipmentOnDemand?.gone()
-            layoutCustomShipmentConventional?.gone()
+            cplLayout?.gone()
         } else {
-            renderCustomShipmentList(data)
-            if (shipmentViewModel.isShipperGroupActivated(CPL_ON_DEMAND_INDEX)) {
-                layoutCustomShipmentOnDemand?.gone()
-            } else {
-                layoutCustomShipmentOnDemand?.visible()
+            cplLayout?.visible()
+            rvCpl?.apply {
+                layoutManager = LinearLayoutManager(context)
+                adapter = cplShipmentGroupAdapter
             }
 
-            if (shipmentViewModel.isShipperGroupActivated(CPL_CONVENTIONAL_INDEX)) {
-                layoutCustomShipmentConventional?.gone()
-            } else {
-                layoutCustomShipmentConventional?.visible()
+            btnCpl?.setOnClickListener {
+                goToCustomProductLogistic()
             }
+            cplShipmentGroupAdapter.updateData(data.shipperList)
         }
     }
 
@@ -630,24 +584,6 @@ class AddEditProductShipmentFragment:
 
     private fun hideShipment() {
         shipmentInputLayout?.gone()
-    }
-
-    private fun renderCustomShipmentList(data: CustomProductLogisticModel) {
-        if (data.shipperList.isNotEmpty()) {
-            if (data.shipperList.size >= CPL_THRESHOLD_SIZE) {
-                shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                shipmentConventionalAdapter.updateData(data.shipperList.last().shipper)
-            } else {
-                when (data.shipperList.first().header) {
-                    ON_DEMAND_VALIDATION -> {
-                        shipmentOnDemandAdapter.updateData(data.shipperList.first().shipper)
-                    }
-                    CONVENTIONAL_VALIDATION -> {
-                        shipmentConventionalAdapter.updateData(data.shipperList.first().shipper)
-                    }
-                }
-            }
-        }
     }
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {
