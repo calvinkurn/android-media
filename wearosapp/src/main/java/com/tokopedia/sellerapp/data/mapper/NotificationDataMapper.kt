@@ -1,27 +1,23 @@
 package com.tokopedia.sellerapp.data.mapper
 
 import com.google.gson.Gson
-import com.tokopedia.sellerapp.data.datasource.local.entity.OrderEntity
-import com.tokopedia.sellerapp.data.datasource.local.entity.ProductEntity
-import com.tokopedia.sellerapp.data.datasource.remote.OrderListModel
+import com.tokopedia.sellerapp.data.datasource.local.entity.NotificationEntity
+import com.tokopedia.sellerapp.data.datasource.remote.NotificationListModel
 
 object NotificationDataMapper {
-    fun String.mapMessageDataToModel() : OrderListModel {
-        return Gson().fromJson(this, OrderListModel::class.java)
+
+    fun mapMessageDataToModel(message: String): NotificationListModel {
+        return Gson().fromJson(message, NotificationListModel::class.java)
     }
 
-    fun OrderListModel.mapModelToOrderEntity() : List<OrderEntity> {
-        return orderList.list.map {
-            OrderEntity(
-                orderId = it.orderId,
-                orderStatusId = it.orderStatusId,
+    fun NotificationListModel.mapModelToNotificationEntity(): List<NotificationEntity> {
+        return notifications.map {
+            NotificationEntity(
+                notificationId = it.notificationId,
+                readStatus = it.readStatus,
                 status = it.status,
-                orderTotalPrice = it.orderTotalPrice,
-                orderDate = it.orderDate,
-                deadLineText = it.deadLineText,
-                courierName = it.courierName,
-                courierType = it.courierType,
-                destinationProvince = it.destinationProvince,
+                title = it.title,
+                shortDescription = it.shortDescription
             )
         }
     }

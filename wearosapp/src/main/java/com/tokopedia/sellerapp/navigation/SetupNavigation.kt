@@ -29,6 +29,13 @@ fun SetupNavigation(
         newOrderSummaryScreenComposable(
             navigateToNewOrderList = nav.toNewOrderListScreen
         )
+        notificationListComposable(
+            screenNavigation = nav,
+            sharedViewModel = sharedViewModel
+        )
+        notificationDetailComposable(
+            sharedViewModel = sharedViewModel
+        )
         newOrderListComposable(
             screenNavigation = nav,
             sharedViewModel = sharedViewModel,

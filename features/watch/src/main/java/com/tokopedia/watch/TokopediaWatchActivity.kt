@@ -3,9 +3,9 @@ package com.tokopedia.watch
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import androidx.wear.remote.interactions.RemoteActivityHelper
 import com.google.android.gms.wearable.*
@@ -16,15 +16,6 @@ import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
 import com.tokopedia.watch.databinding.ActivityTokopediaWatchBinding
-import com.tokopedia.watch.listenerservice.DataLayerServiceListener
-import com.tokopedia.watch.notification.model.Notification
-import com.tokopedia.watch.notification.model.NotificationListModel
-import com.tokopedia.watch.orderlist.mapper.OrderListMapper
-import com.tokopedia.watch.orderlist.model.OrderListModel
-import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
-import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import com.tokopedia.watch.util.CapabilityConstant.CAPABILITY_WEAR_APP
 import kotlinx.android.synthetic.main.activity_tokopedia_watch.*
 import kotlinx.coroutines.*
@@ -34,7 +25,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.guava.await
 import kotlinx.coroutines.tasks.await
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 class TokopediaWatchActivity : AppCompatActivity(),
     DataClient.OnDataChangedListener {

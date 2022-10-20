@@ -1,5 +1,6 @@
 package com.tokopedia.watch.listenerservice
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.util.Log
 import com.google.android.gms.wearable.MessageEvent
@@ -13,6 +14,8 @@ import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.watch.TokopediaWatchActivity
 import com.tokopedia.watch.di.DaggerTkpdWatchComponent
+import com.tokopedia.watch.notification.model.NotificationListModel
+import com.tokopedia.watch.notification.usecase.GetNotificationListUseCase
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
 import com.tokopedia.watch.ordersummary.model.SummaryDataModel
@@ -32,6 +35,9 @@ class DataLayerServiceListener: WearableListenerService() {
 
     @Inject
     lateinit var getOrderListUseCase: Lazy<GetOrderListUseCase>
+
+    @Inject
+    lateinit var getNotificationListUseCase: Lazy<GetNotificationListUseCase>
 
     @Inject
     lateinit var getSummaryUseCase: Lazy<GetSummaryUseCase>
@@ -72,7 +78,7 @@ class DataLayerServiceListener: WearableListenerService() {
             }
             GET_NOTIFICATION_LIST_PATH -> {
                 runBlocking {
-
+                    getNotificationList()
                 }
             }
             GET_SUMMARY_PATH -> {
@@ -119,7 +125,7 @@ class DataLayerServiceListener: WearableListenerService() {
         if (!userSession.get().isLoggedIn) {
             return
         }
-
+        getNotificationListUseCase.get().executeSync(RequestParams(), getLoadNotificationListDataSubscriber())
     }
 
     private fun getSummaryData() {
@@ -147,6 +153,27 @@ class DataLayerServiceListener: WearableListenerService() {
                     Gson().toJson(orderListModel)
                 )
             }
+        }
+    }
+
+    private fun getLoadNotificationListDataSubscriber(): Subscriber<NotificationListModel> {
+        return object : Subscriber<NotificationListModel>() {
+            override fun onCompleted() {
+
+            }
+
+            @SuppressLint("LongLogTag")
+            override fun onError(e: Throwable?) {
+                Log.e(TAG,e?.message.orEmpty())
+            }
+
+            override fun onNext(notificationListModel: NotificationListModel) {
+                sendMessageToWatch(
+                    GET_NOTIFICATION_LIST_PATH,
+                    Gson().toJson(notificationListModel)
+                )
+            }
+
         }
     }
 

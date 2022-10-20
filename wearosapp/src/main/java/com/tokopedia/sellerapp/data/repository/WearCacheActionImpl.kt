@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
+import com.tokopedia.sellerapp.data.mapper.NotificationDataMapper
 import com.tokopedia.sellerapp.data.mapper.OrderDataMapper
 import com.tokopedia.sellerapp.data.mapper.SummaryDataMapper
 import kotlinx.coroutines.CoroutineScope
@@ -36,7 +37,7 @@ open class WearCacheActionImpl(
 
     override fun saveNotificationListToCache(message: String) {
         launch {
-//            notificationRoomDataSource.s
+            notificationRoomDataSource.saveNotificationList(NotificationDataMapper.mapMessageDataToModel(message))
         }
     }
 }

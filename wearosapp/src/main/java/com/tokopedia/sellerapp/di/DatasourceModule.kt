@@ -8,6 +8,7 @@ import com.google.android.gms.wearable.NodeClient
 import com.google.android.gms.wearable.Wearable
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
+//import com.tokopedia.sellerapp.data.datasource.local.NotificationRoomDataSource
 import com.tokopedia.sellerapp.data.datasource.local.OrderRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.SummaryRoomDatasource
 import com.tokopedia.sellerapp.data.datasource.local.dao.NotificationDao
@@ -29,10 +30,10 @@ class DatasourceModule {
         return OrderRoomDatasource(orderDao)
     }
 
-//    @Provides
-//    fun provideNotificationRoomDataSource(notificationDao: NotificationDao) : NotificationRoomDataSource {
-//        return NotificationRoomDataSource(notificationDao)
-//    }
+    @Provides
+    fun provideNotificationRoomDataSource(notificationDao: NotificationDao) : NotificationRoomDataSource {
+        return NotificationRoomDataSource(notificationDao)
+    }
 
     @Provides
     fun provideSummaryRoomDatasource(summaryDao: SummaryDao): SummaryRoomDatasource {
