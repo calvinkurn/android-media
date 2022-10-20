@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
@@ -85,8 +87,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     CoverFormView.Listener {
 
     /** ViewModel */
-    private lateinit var viewModel: PlayBroadcastPrepareViewModel
-    private lateinit var parentViewModel: PlayBroadcastViewModel
+    private val viewModel: PlayBroadcastPrepareViewModel by viewModels { viewModelFactory }
+    private val parentViewModel: PlayBroadcastViewModel by activityViewModels {
+        parentViewModelFactoryCreator.create(
+            requireActivity()
+        )
+    }
 
     /** View */
     private var _binding by viewBinding<FragmentPlayBroadcastPreparationBinding>()
@@ -95,8 +101,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     /** Others */
     private val fragmentViewContainer = FragmentViewContainer()
 
-    private lateinit var earlyLiveStreamDialog: DialogUnify
-    private lateinit var switchAccountConfirmationDialog: DialogUnify
+    private var earlyLiveStreamDialog: DialogUnify? = null
+    private var switchAccountConfirmationDialog: DialogUnify? = null
 
     override fun getScreenName(): String = "Play Prepare Page"
 
@@ -140,15 +146,6 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     /** Lifecycle */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(requireActivity(), viewModelFactory).get(PlayBroadcastPrepareViewModel::class.java)
-        parentViewModel = ViewModelProvider(
-            requireActivity(),
-            parentViewModelFactoryCreator.create(requireActivity()),
-        ).get(PlayBroadcastViewModel::class.java)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -201,8 +198,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 childFragment.setDataSource(object : ProductSetupFragment.DataSource {
                     override fun getProductSectionList(): List<ProductTagSectionUiModel> {
                         //TODO("Use uiState directly when uiState already return StateFlow")
-                        return if (::parentViewModel.isInitialized) parentViewModel.productSectionList
-                        else emptyList()
+                        return parentViewModel.productSectionList
                     }
 
                     override fun isEligibleForPin(): Boolean = false
@@ -218,20 +214,15 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
                 childFragment.setDataSource(object : PlayBroadcastSetupBottomSheet.DataSource {
                     override fun getProductList(): List<ProductUiModel> {
-                        return if (::parentViewModel.isInitialized) {
-                            parentViewModel.productSectionList.flatMap { it.products }
-                        }
-                        else emptyList()
+                        return parentViewModel.productSectionList.flatMap { it.products }
                     }
 
                     override fun getAuthorId(): String {
-                        return if (::parentViewModel.isInitialized) parentViewModel.authorId
-                        else ""
+                        return parentViewModel.authorId
                     }
 
                     override fun getChannelId(): String {
-                        return if (::parentViewModel.isInitialized) parentViewModel.channelId
-                        else ""
+                        return parentViewModel.channelId
                     }
                 })
             }
@@ -841,8 +832,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
     }
 
     private fun getEarlyLiveStreamDialog(): DialogUnify {
-        if (!::earlyLiveStreamDialog.isInitialized) {
-            earlyLiveStreamDialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+        var dialog = earlyLiveStreamDialog
+        if (dialog == null || !dialog.isShowing) {
+            dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setPrimaryCTAText(getString(R.string.play_broadcast_start_streaming_action))
                 setPrimaryCTAClickListener {
                     analytic.clickStartLiveBeforeScheduleTime()
@@ -855,12 +847,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 setDescription(getString(R.string.play_broadcast_early_streaming_dialog_desc))
             }
         }
-        return earlyLiveStreamDialog
+        return dialog
     }
 
     private fun getSwitchAccountConfirmationDialog(contentAccount: ContentAccountUiModel): DialogUnify {
-        if (!::switchAccountConfirmationDialog.isInitialized || !switchAccountConfirmationDialog.isShowing) {
-            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+        var dialog = switchAccountConfirmationDialog
+        if (dialog == null || !dialog.isShowing) {
+            dialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     if (contentAccount.isShop) getString(R.string.play_bro_switch_account_title_shop_dialog)
                     else getString(R.string.play_bro_switch_account_title_buyer_dialog)
@@ -871,7 +864,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setPrimaryCTAText(getString(R.string.play_bro_switch_account_primary_cta_dialog))
                 setPrimaryCTAClickListener {
-                    if (switchAccountConfirmationDialog.isShowing) {
+                    if (dialog?.isShowing == true) {
                         analytic.onClickCancelSwitchAccount()
                         dismiss()
                     }
@@ -882,14 +875,14 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 )
                 setSecondaryCTAClickListener {
                     parentViewModel.submitAction(SwitchAccount)
-                    if (switchAccountConfirmationDialog.isShowing) {
+                    if (dialog?.isShowing == true) {
                         analytic.onClickConfirmSwitchAccount()
                         dismiss()
                     }
                 }
             }
         }
-        return switchAccountConfirmationDialog
+        return dialog
     }
 
     private fun showUGCOnboardingBottomSheet(onboardingType: Int) {

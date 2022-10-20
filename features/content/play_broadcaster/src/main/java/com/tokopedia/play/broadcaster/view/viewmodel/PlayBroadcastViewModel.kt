@@ -190,8 +190,8 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
-    lateinit var warningInfoType: WarningType
-    lateinit var tncList: List<TermsAndConditionUiModel>
+    var warningInfoType: WarningType = WarningType.UNKNOWN
+    var tncList: List<TermsAndConditionUiModel> = emptyList()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
