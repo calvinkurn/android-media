@@ -295,6 +295,7 @@ public interface ApplinkConst {
     String PURCHASE_DELIVERED = "tokopedia://buyer/delivered";
     String PURCHASE_HISTORY = "tokopedia://buyer/history";
     String PURCHASE_ONGOING = "tokopedia://buyer/ongoing-order";
+    String TOKOPEDIA_PLUS_ORDER = "tokopedia://plus/order";
 
     String SELLER_PURCHASE_READY_TO_SHIP = "tokopedia://seller/ready-to-ship";
     String SELLER_PURCHASE_SHIPPED = "tokopedia://seller/shipped";
@@ -544,6 +545,11 @@ public interface ApplinkConst {
         String SEARCH = "tokopedia://now/search";
         String CATEGORY = "tokopedia://now/category";
         String REPURCHASE = "tokopedia://now/repurchase-page";
+        String RECIPE_DETAIL = "tokopedia://now/recipe/detail/{recipe_id}";
+        String RECIPE_BOOKMARK = "tokopedia://now/recipe/bookmarks";
+        String RECIPE_HOME = "tokopedia://now/recipe";
+        String RECIPE_SEARCH = "tokopedia://now/recipe/search";
+        String RECIPE_AUTO_COMPLETE = "tokopedia://now/recipe/autocomplete";
     }
 
     interface TokoFood {
