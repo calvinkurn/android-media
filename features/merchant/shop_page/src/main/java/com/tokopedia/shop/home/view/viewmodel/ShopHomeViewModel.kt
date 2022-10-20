@@ -201,9 +201,9 @@ class ShopHomeViewModel @Inject constructor(
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
-    val isCreateAffiliateCookieAtcDirectPurchase: LiveData<Boolean>
-        get() = _isCreateAffiliateCookieAtcDirectPurchase
-    private val _isCreateAffiliateCookieAtcDirectPurchase = MutableLiveData<Boolean>()
+    val createAffiliateCookieAtcDirectPurchase: LiveData<String>
+        get() = _createAffiliateCookieAtcDirectPurchase
+    private val _createAffiliateCookieAtcDirectPurchase = MutableLiveData<String>()
 
     val userSessionShopId: String
         get() = userSession.shopId ?: ""
@@ -959,7 +959,7 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopHomeProductUiModel.id)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -1000,21 +1000,22 @@ class ShopHomeViewModel @Inject constructor(
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopHomeProductUiModel.id)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
     }
 
-    private fun checkShouldCreateAffiliateCookieDirectPurchase(atcType: ShopPageAtcTracker.AtcType) {
+    private fun checkShouldCreateAffiliateCookieDirectPurchase(
+        atcType: ShopPageAtcTracker.AtcType,
+        productId: String
+    ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
-                _isCreateAffiliateCookieAtcDirectPurchase.postValue(true)
+                _createAffiliateCookieAtcDirectPurchase.postValue(productId)
             }
-            else -> {
-                _isCreateAffiliateCookieAtcDirectPurchase.postValue(false)
-            }
+            else -> {}
         }
     }
 

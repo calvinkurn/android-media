@@ -912,7 +912,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         presenter.addPostTagItemToCart(postTagItem)
 
         verify {
-            view.onAddToCartSuccess()
+            view.onAddToCartSuccess(model.data.productId)
         }
     }
 

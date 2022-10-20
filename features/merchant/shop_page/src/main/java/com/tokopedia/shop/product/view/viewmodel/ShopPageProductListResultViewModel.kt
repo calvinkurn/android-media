@@ -27,7 +27,6 @@ import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
-import com.tokopedia.kotlin.extensions.view.decodeToUtf8
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.shop.common.data.source.cloud.model.followstatus.FollowStatus
@@ -126,9 +125,9 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
 
-    val isCreateAffiliateCookieAtcDirectPurchase: LiveData<Boolean>
-        get() = _isCreateAffiliateCookieAtcDirectPurchase
-    private val _isCreateAffiliateCookieAtcDirectPurchase = MutableLiveData<Boolean>()
+    val createAffiliateCookieAtcDirectPurchase: LiveData<String>
+        get() = _createAffiliateCookieAtcDirectPurchase
+    private val _createAffiliateCookieAtcDirectPurchase = MutableLiveData<String>()
 
     val shopAffiliateChannel: LiveData<String>
         get() = _shopAffiliateChannel
@@ -549,21 +548,22 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 ShopPageAtcTracker.AtcType.ADD,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopProductUiModel.id)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
         })
     }
 
-    private fun checkShouldCreateAffiliateCookieDirectPurchase(atcType: ShopPageAtcTracker.AtcType) {
+    private fun checkShouldCreateAffiliateCookieDirectPurchase(
+        atcType: ShopPageAtcTracker.AtcType,
+        productId: String
+    ) {
         when (atcType) {
             ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
-                _isCreateAffiliateCookieAtcDirectPurchase.postValue(true)
+                _createAffiliateCookieAtcDirectPurchase.postValue(productId)
             }
-            else -> {
-                _isCreateAffiliateCookieAtcDirectPurchase.postValue(false)
-            }
+            else -> {}
         }
     }
 
@@ -601,7 +601,7 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
                 atcType,
                 componentName
             )
-            checkShouldCreateAffiliateCookieDirectPurchase(atcType)
+            checkShouldCreateAffiliateCookieDirectPurchase(atcType, shopProductUiModel.id)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
@@ -734,13 +734,14 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     fun createAffiliateCookieShopAtcDirectPurchase(
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateChannel: String,
-        shopId: String
+        shopId: String,
+        productId: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             affiliateCookieHelper.initCookie(
                 "",
                 affiliateChannel,
-                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
+                AffiliatePageDetail(productId, AffiliateSdkPageSource.Shop(shopId)),
                 isATC = true
             )
         }) {

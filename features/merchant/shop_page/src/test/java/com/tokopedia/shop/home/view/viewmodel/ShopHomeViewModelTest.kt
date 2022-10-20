@@ -23,7 +23,6 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.play.widget.data.PlayWidget
 import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
@@ -1801,7 +1800,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartAdd.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(viewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
+        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1857,7 +1856,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartRemove.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
-        assert(viewModel.isCreateAffiliateCookieAtcDirectPurchase.value == null)
+        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value == null)
     }
 
     @Test
@@ -1914,7 +1913,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(viewModel.isCreateAffiliateCookieAtcDirectPurchase.value == true)
+        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value?.isNotEmpty() == true)
     }
 
     @Test
@@ -1947,7 +1946,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
-        assert(viewModel.isCreateAffiliateCookieAtcDirectPurchase.value == false)
+        assert(viewModel.createAffiliateCookieAtcDirectPurchase.value == null)
     }
 
     @Test

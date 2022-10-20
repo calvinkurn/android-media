@@ -757,13 +757,15 @@ class NewShopPageViewModelTest {
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         val mockIsAtc = true
+        val mockProductId = "678"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } returns Unit
         shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId
+            mockShopId,
+            mockProductId
         )
         coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
     }
@@ -773,13 +775,15 @@ class NewShopPageViewModelTest {
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         val mockIsAtc = true
+        val mockProductId = "678"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
         } throws Exception()
         shopPageViewModel.createAffiliateCookieShopAtcDirectPurchase(
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId
+            mockShopId,
+            mockProductId
         )
         coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
     }

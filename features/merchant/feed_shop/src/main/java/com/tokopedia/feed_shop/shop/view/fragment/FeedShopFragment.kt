@@ -43,7 +43,6 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.util.FeedScrollListener
 import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
 import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
@@ -60,7 +59,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
@@ -951,13 +949,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
     }
 
-    override fun onAddToCartSuccess() {
-        createAffiliateCookieAtcDirectPurchase()
+    override fun onAddToCartSuccess(productId: Long) {
+        createAffiliateCookieAtcDirectPurchase(productId.toString())
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase() {
-        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase(productId)
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {

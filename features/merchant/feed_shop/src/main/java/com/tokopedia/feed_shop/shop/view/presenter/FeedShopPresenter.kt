@@ -344,7 +344,7 @@ class FeedShopPresenter @Inject constructor(
                                 if(isNotSuccess)
                                     view.onAddToCartFailed(postTagItem.applink)
                                 else
-                                    view.onAddToCartSuccess()
+                                    view.onAddToCartSuccess(model.data.productId)
                             } else {
                                 view.onAddToCartFailed(postTagItem.applink)
                             }

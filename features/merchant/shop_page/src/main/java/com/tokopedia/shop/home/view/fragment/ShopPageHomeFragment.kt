@@ -865,15 +865,15 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
     }
 
     private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
-        viewModel?.isCreateAffiliateCookieAtcDirectPurchase?.observe(viewLifecycleOwner) {
-            if (it == true) {
-                createAffiliateCookieAtcDirectPurchase()
+        viewModel?.createAffiliateCookieAtcDirectPurchase?.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                createAffiliateCookieAtcDirectPurchase(it)
             }
         }
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase() {
-        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase(productId)
     }
 
     private fun observeShopAtcTrackerLiveData() {

@@ -25,8 +25,6 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
@@ -1173,15 +1171,15 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
-        viewModel.isCreateAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
-            if (it == true) {
-                createAffiliateCookieAtcDirectPurchase()
+        viewModel.createAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                createAffiliateCookieAtcDirectPurchase(it)
             }
         }
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase() {
-        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase()
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcDirectPurchase(productId)
     }
 
     private fun observeShopAtcTrackerLiveData() {

@@ -639,13 +639,14 @@ class NewShopPageViewModel @Inject constructor(
     fun createAffiliateCookieShopAtcDirectPurchase(
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateChannel: String,
-        shopId: String
+        shopId: String,
+        productId: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             affiliateCookieHelper.initCookie(
                 "",
                 affiliateChannel,
-                AffiliatePageDetail(shopId, AffiliateSdkPageSource.Shop(shopId)),
+                AffiliatePageDetail(productId, AffiliateSdkPageSource.Shop(shopId)),
                 isATC = true
             )
         }) {

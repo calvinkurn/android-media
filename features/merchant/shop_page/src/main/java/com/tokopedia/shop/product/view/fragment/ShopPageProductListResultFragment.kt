@@ -30,7 +30,6 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
-import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalMechant
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
@@ -633,18 +632,19 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun observeIsCreateAffiliateCookieAtcDirectPurchase() {
-        viewModel.isCreateAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
-            if (it == true) {
-                createAffiliateCookieAtcDirectPurchase()
+        viewModel.createAffiliateCookieAtcDirectPurchase.observe(viewLifecycleOwner) {
+            if (it.isNotEmpty()) {
+                createAffiliateCookieAtcDirectPurchase(it)
             }
         }
     }
 
-    private fun createAffiliateCookieAtcDirectPurchase() {
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
         viewModel.createAffiliateCookieShopAtcDirectPurchase(
             affiliateCookieHelper,
             affiliateChannel,
-            shopId.orEmpty()
+            shopId.orEmpty(),
+            productId
         )
     }
 
