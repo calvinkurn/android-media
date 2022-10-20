@@ -1,8 +1,15 @@
 package com.tokopedia.sellerhome.view.viewmodel
 
+import android.content.Intent
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.Node
+import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.device.info.DeviceInfo.await
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
@@ -14,7 +21,8 @@ import com.tokopedia.shop.common.constant.AccessId
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.user.session.UserSessionInterface
-import kotlinx.coroutines.async
+import kotlinx.coroutines.*
+import kotlinx.coroutines.guava.await
 import javax.inject.Inject
 
 /**
@@ -28,11 +36,17 @@ class SellerHomeActivityViewModel @Inject constructor(
         private val sellerAdminUseCase: SellerAdminUseCase,
         private val authorizeChatAccessUseCase: AuthorizeAccessUseCase,
         private val authorizeOrderAccessUseCase: AuthorizeAccessUseCase,
+        private val capabilityClient: CapabilityClient,
+        private val nodeClient: NodeClient,
+        private val remoteActivityHelper: RemoteActivityHelper,
         dispatcher: CoroutineDispatchers
 ) : CustomBaseViewModel(dispatcher) {
 
     companion object {
         private const val SOURCE = "stuart_seller_home"
+
+        private const val CAPABILITY_WEAR_APP = "verify_remote_tokopedia_wear_app"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
@@ -47,6 +61,10 @@ class SellerHomeActivityViewModel @Inject constructor(
     private val _isRoleEligible = MutableLiveData<Result<Boolean>>()
     val isRoleEligible: LiveData<Result<Boolean>>
         get() = _isRoleEligible
+
+    private val _shouldAskInstallCompanionApp = MutableLiveData<Boolean>()
+    val shouldAskInstallCompanionApp: LiveData<Boolean>
+        get() = _shouldAskInstallCompanionApp
 
     fun getNotifications() = executeCall(_notifications) {
         val notificationUiModelDeferred = async {
@@ -130,6 +148,63 @@ class SellerHomeActivityViewModel @Inject constructor(
             setIsLocationAdmin(roleType.isLocationAdmin)
             setIsShopAdmin(roleType.isShopAdmin)
             setIsMultiLocationShop(isMultiLocationShop)
+        }
+    }
+
+    private suspend fun findAllWearDevices(): MutableList<Node>? {
+        return nodeClient.connectedNodes.await()
+    }
+
+    fun checkIfWearHasCompanionApp() {
+        launch {
+            nodeClient.connectedNodes.await().let { connectedNodes ->
+                connectedNodes?.let {
+                    try {
+                        val capabilityInfo = capabilityClient
+                            .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
+                            .await()
+
+                        withContext(Dispatchers.Main) {
+                            // There should only ever be one phone in a node set (much less w/ the correct
+                            // capability), so I am just grabbing the first one (which should be the only one).
+                            val nodes = capabilityInfo?.nodes
+                            val androidPhoneNodeWithApp =
+                                nodes?.firstOrNull { it.isNearby } ?: nodes?.firstOrNull()
+
+
+                            _shouldAskInstallCompanionApp.value = !connectedNodes.contains(androidPhoneNodeWithApp)
+                        }
+                    } catch (cancellationException: CancellationException) {
+                        // Request was cancelled normally
+                    } catch (throwable: Throwable) {
+
+                    }
+                }
+            }
+        }
+    }
+
+    fun launchMarket() {
+        val intent = Intent(Intent.ACTION_VIEW)
+            .addCategory(Intent.CATEGORY_BROWSABLE)
+            .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
+
+        launch {
+            startRemoteActivity(remoteActivityHelper, intent)
+        }
+    }
+
+    private suspend fun startRemoteActivity(
+        remoteActivityHelper: RemoteActivityHelper,
+        intent: Intent,
+    ) {
+        try {
+            remoteActivityHelper.startRemoteActivity(intent).await()
+        } catch (cancellationException: CancellationException) {
+            // Request was cancelled normally
+            throw cancellationException
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
         }
     }
 }

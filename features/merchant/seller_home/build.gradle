@@ -63,6 +63,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation 'com.google.android.gms:play-services-wearable:17.1.0'
+    implementation "androidx.wear:wear-remote-interactions:1.0.0"
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.coach_mark

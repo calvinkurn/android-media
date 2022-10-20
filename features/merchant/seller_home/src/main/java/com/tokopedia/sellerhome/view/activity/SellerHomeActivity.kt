@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.applink.sellermigration.SellerMigrationApplinkConst
 import com.tokopedia.device.info.DeviceScreenInfo
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.internal_review.factory.createReviewHelper
 import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.kotlin.extensions.view.hide
@@ -147,6 +148,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         observeIsRoleEligible()
         fetchSellerAppWidget()
         setupSellerHomeInsetListener()
+        observeWearDialog()
     }
 
     override fun getComponent(): HomeDashboardComponent {
@@ -159,6 +161,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         super.onResume()
         homeViewModel.getNotifications()
         homeViewModel.getAdminInfo()
+        homeViewModel.checkIfWearHasCompanionApp()
 
         if (!userSession.isLoggedIn) {
             RouteManager.route(this, ApplinkConstInternalSellerapp.WELCOME)
@@ -706,5 +709,25 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                 .isNullOrBlank()
 
         UpdateCheckerHelper.checkAppUpdate(this, isRedirectedFromSellerMigrationEntryPoint)
+    }
+
+    private fun observeWearDialog() {
+        homeViewModel.shouldAskInstallCompanionApp.observe(this) {
+            if (it) {
+                val dialog = DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+                dialog.apply{
+                    setTitle(resources.getString(R.string.wearos_install_popup_title))
+                    setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
+                    setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
+                    setPrimaryCTAClickListener {
+                        homeViewModel.launchMarket()
+                    }
+                    setSecondaryCTAClickListener {
+                        dialog.dismiss()
+                    }
+                }
+                dialog.show()
+            }
+        }
     }
 }
