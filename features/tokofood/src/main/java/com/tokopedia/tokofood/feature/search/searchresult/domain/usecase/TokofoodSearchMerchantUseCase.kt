@@ -34,6 +34,10 @@ private const val QUERY = """
               hasBranch
               branchApplink
               isClosed
+              additionalData {
+                topTextBanner
+                discountIcon
+              }
             }
             state {
               status

@@ -18,7 +18,7 @@ object TokoFoodHomeCategoryCommonAnalytics: BaseTrackerConst() {
         val merchantAddress = if (merchant.addressLocality.isNotEmpty()) merchant.addressLocality else EMPTY_DATA
         val listPromotions = arrayListOf(
             Promotion(
-                creative = "",
+                creative = "null - ${merchant.promo}",
                 position = (horizontalPosition + Int.ONE).toString(),
                 id = "${merchant.id} - ${merchant.name}",
                 name = "$merchantAddress - ${merchant.etaFmt} - ${merchant.distanceFmt} - ${merchant.ratingFmt}"
