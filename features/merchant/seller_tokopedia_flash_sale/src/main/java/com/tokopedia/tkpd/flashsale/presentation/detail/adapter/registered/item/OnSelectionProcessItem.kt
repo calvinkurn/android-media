@@ -20,7 +20,7 @@ data class OnSelectionProcessItem(
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<SubmittedProduct.Warehouse>,
-    var countLocation: Int
+    val countLocation: Int
 ) : DelegateAdapterItem {
     override fun id() = productId
 }
