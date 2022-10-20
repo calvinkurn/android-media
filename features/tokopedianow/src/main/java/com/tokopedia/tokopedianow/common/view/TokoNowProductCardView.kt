@@ -1,6 +1,8 @@
 package com.tokopedia.tokopedianow.common.view
 
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
@@ -19,6 +21,8 @@ import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.model.LABEL_BEST_SELLER
+import com.tokopedia.tokopedianow.common.model.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
@@ -48,6 +52,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             imageUrl = "https://slack-imgs.com/?c=1&o1=ro&url=https%3A%2F%2Fimages.tokopedia.net%2Fimg%2Fandroid%2Fnow%2FPN-RICH.jpg",
             minOrder = 2,
             maxOrder = 3,
+            stock = 0,
             price = "Rp 15.000.000",
             discount = "10%",
             slashPrice = "12121",
@@ -56,7 +61,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
             progressBarLabel = WORDING_SEGERA_HABIS,
             progressBarLabelColor = "#ef144a",
             progressBarPercentage = 20,
-            labelGroupList = listOf(),
+            labelGroupList = listOf(
+                LabelGroup(
+                    position = LABEL_BEST_SELLER,
+                    type = "#E1AA1D",
+                    title = "Terlaris"
+                )
+            ),
         )
         setData(model)
     }
@@ -70,16 +81,17 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private fun setupUi(
         model: TokoNowProductCardViewUiModel
     ) {
-        val isNormal = false
-        val isOos = true
-        val isFlashSale = !isOos && !isNormal
+        val isOos = model.isOos()
+        val isFlashSale = model.isFlashSale()
+        val isNormal = !isOos && !isFlashSale
+
         binding.apply {
             initImageFilterView(
                 imageUrl = model.imageUrl,
                 brightness = if (isOos) 0.5f else 1f
             )
             initAssignedValueTypography(
-                assignedValue = "Terbaru"
+                labelGroup = model.getBestSellerLabel()
             )
             initMainPriceTypography(
                 price = model.price
@@ -97,7 +109,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 isNormal = isNormal
             )
             initOosLabel(
-                label = "terjual",
+                labelGroup = model.getOosLabel(),
                 isOos = isOos
             )
             initProgressBar(
@@ -118,10 +130,27 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initAssignedValueTypography(
-        assignedValue: String
+        labelGroup: LabelGroup?
     ) {
-        assignedValueTypography.showIfWithBlock(assignedValue.isNotBlank()) {
-            text = assignedValue
+        assignedValueTypography.showIfWithBlock(labelGroup != null) {
+            text = labelGroup?.title
+            background = ContextCompat.getDrawable(
+                context,
+                R.drawable.tokopedianow_bg_product_card_best_seller
+            )
+            backgroundTintList = ColorStateList.valueOf(
+                safeParseColor(labelGroup?.type.orEmpty())
+            )
+        }
+    }
+
+    fun safeParseColor(color: String): Int {
+        return try {
+            Color.parseColor(color)
+        }
+        catch (throwable: Throwable) {
+            throwable.printStackTrace()
+            0
         }
     }
 
@@ -191,9 +220,12 @@ class TokoNowProductCardView @JvmOverloads constructor(
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.initOosLabel(label: String, isOos: Boolean) {
-        oosLabel.showIfWithBlock(label.isNotBlank() && isOos) {
-            text = label
+    private fun LayoutTokopedianowProductCardViewBinding.initOosLabel(
+        labelGroup: LabelGroup?,
+        isOos: Boolean
+    ) {
+        oosLabel.showIfWithBlock( labelGroup != null && isOos) {
+            text = labelGroup?.title
             unlockFeature = true
             setLabelType(
                 getHexColorFromIdColor(
