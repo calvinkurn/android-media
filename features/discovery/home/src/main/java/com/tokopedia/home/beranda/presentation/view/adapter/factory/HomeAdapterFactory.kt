@@ -38,6 +38,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.dynamic_icon.DynamicIconSectionDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.spotlight.SpotlightDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.static_channel.RetryModel
+import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.HomeTopAdsVerticalBannerDataModel
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.HomeInitialShimmerViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.InspirationHeaderViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.RetryViewHolder
@@ -74,6 +75,7 @@ import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_ch
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringChannelViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.ShimmeringIconViewHolder
 import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.static_channel.recommendation.HomeRecommendationFeedViewHolder
+import com.tokopedia.home.beranda.presentation.view.adapter.viewholder.dynamic_channel.TopAdsVerticalBannerViewHolder
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.beranda.presentation.view.listener.HomePayLaterWidgetListener
 import com.tokopedia.home.beranda.presentation.view.viewmodel.HomeInitialShimmerDataModel
@@ -278,6 +280,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
     override fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int {
         return TopadsBannerViewHolder.LAYOUT
     }
+    override fun type(homeTopAdsVerticalBannerDataModel: HomeTopAdsVerticalBannerDataModel): Int {
+        return TopAdsVerticalBannerViewHolder.LAYOUT
+    }
 
     //Home-Component
     override fun type(categoryWidgetV2DataModel: CategoryWidgetV2DataModel): Int {
@@ -481,6 +486,9 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
              * refer to mix top carousel com.tokopedia.home.R.layout#home_mix_top_banner
              */
             DynamicHomeChannel.Channels.LAYOUT_BANNER_ADS -> TopadsBannerViewHolder.LAYOUT
+
+            DynamicHomeChannel.Channels.LAYOUT_VERTICAL_BANNER_ADS -> TopAdsVerticalBannerViewHolder.LAYOUT
+
             else -> EmptyBlankViewHolder.LAYOUT
         }
     }
@@ -551,6 +559,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
             ReminderWidgetViewHolder.LAYOUT -> viewHolder =
                     ReminderWidgetViewHolder(view,reminderWidgetListener, cardInteraction = true)
             TopadsBannerViewHolder.LAYOUT -> viewHolder = TopadsBannerViewHolder(view, listener)
+            TopAdsVerticalBannerViewHolder.LAYOUT -> viewHolder = TopAdsVerticalBannerViewHolder(view)
             DynamicChannelLoadingViewHolder.LAYOUT -> viewHolder = DynamicChannelLoadingViewHolder(view)
             DynamicChannelRetryViewHolder.LAYOUT -> viewHolder = DynamicChannelRetryViewHolder(view, listener)
             Lego4AutoBannerViewHolder.LAYOUT -> viewHolder =

@@ -17,9 +17,9 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.R
+import com.tokopedia.topads.sdk.TopAdsConstants.TdnBannerConstants.TYPE_VERTICAL_CAROUSEL
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.unifycomponents.LoaderUnify
 import timber.log.Timber
 
 class TdnCarouselAdapter(
@@ -64,11 +64,13 @@ class TdnCarouselAdapter(
         private var tdnShimmer = itemView.findViewById<ImageView>(R.id.tdnShimmer)
 
         fun bind(shopProductModelItem: TopAdsImageViewModel?) {
-            tdnShimmer.layoutParams =
-                ConstraintLayout.LayoutParams(
-                    calculatedWidth(itemView.context.resources.displayMetrics.widthPixels),
-                    itemView.context.resources.getDimensionPixelSize(R.dimen.sdk_dp_112)
+            shopProductModelItem?.let {
+                tdnShimmer.layoutParams = getLayoutParams(
+                    shopProductModelItem.layoutType,
+                    shopProductModelItem.imageWidth,
+                    shopProductModelItem.imageHeight
                 )
+            }
             shopProductModelItem?.let {
                 loadImage(
                     it,
@@ -76,6 +78,26 @@ class TdnCarouselAdapter(
                     cornerRadius = cornerRadius,
                     onLoadFailed = onLoadFailed,
                     onTdnBannerImpressed = onTdnBannerImpressed
+                )
+            }
+        }
+
+        private fun getLayoutParams(
+            layoutType: String,
+            imageWidth: Int,
+            imageHeight: Int
+        ): ViewGroup.LayoutParams {
+            return if (layoutType == TYPE_VERTICAL_CAROUSEL) {
+                val width =
+                    widthVerticalCarousel(itemView.context.resources.displayMetrics.widthPixels)
+                ConstraintLayout.LayoutParams(
+                    width,
+                    getHeight(imageWidth, imageHeight, width)
+                )
+            } else {
+                ConstraintLayout.LayoutParams(
+                    widthHorizontalCarousel(itemView.context.resources.displayMetrics.widthPixels),
+                    itemView.context.resources.getDimensionPixelSize(R.dimen.sdk_dp_112)
                 )
             }
         }
@@ -89,7 +111,8 @@ class TdnCarouselAdapter(
         ) {
             if (!imageData.imageUrl.isNullOrEmpty()) {
                 val width = itemView.context.resources.displayMetrics.widthPixels
-                val calculatedWidth = calculatedWidth(width)
+                val calculatedWidth = if (imageData.layoutType == TYPE_VERTICAL_CAROUSEL)
+                    widthVerticalCarousel(width) else widthHorizontalCarousel(width)
                 getRequestBuilder(imageData.imageUrl, cornerRadius).override(
                     calculatedWidth,
                     getHeight(imageData.imageWidth, imageData.imageHeight, calculatedWidth)
@@ -131,7 +154,7 @@ class TdnCarouselAdapter(
 
         }
 
-        private fun calculatedWidth(width: Int): Int {
+        private fun widthHorizontalCarousel(width: Int): Int {
             return width - (width * 10 / 100)
         }
 
@@ -189,6 +212,10 @@ class TdnCarouselAdapter(
             return (widthRatio * height).toInt()
         }
 
+    }
+
+    private fun widthVerticalCarousel(width: Int): Int {
+        return (width/2.8).toInt()
     }
 
 }

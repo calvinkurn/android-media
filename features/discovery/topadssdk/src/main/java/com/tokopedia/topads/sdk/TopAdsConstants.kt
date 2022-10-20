@@ -20,6 +20,7 @@ object TopAdsConstants {
     object TdnBannerConstants {
         const val TYPE_CAROUSEL = "carousel"
         const val TYPE_SINGLE = "single"
+        const val TYPE_VERTICAL_CAROUSEL = "vertical_carousel'"
 
     }
 

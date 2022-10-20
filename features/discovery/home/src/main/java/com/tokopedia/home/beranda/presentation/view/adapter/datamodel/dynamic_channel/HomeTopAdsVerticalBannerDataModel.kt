@@ -7,12 +7,9 @@ import com.tokopedia.home.beranda.presentation.view.adapter.factory.HomeTypeFact
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
-/**
- * @author by devaraFA on 2020-07-10
- */
-data class HomeTopAdsBannerDataModel(
-        var topAdsImageViewModel: TopAdsImageViewModel?,
-        val channel : DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
+data class HomeTopAdsVerticalBannerDataModel(
+    var topAdsImageViewModelList: List<TopAdsImageViewModel>?,
+    val channel: DynamicHomeChannel.Channels = DynamicHomeChannel.Channels()
 ) : HomeVisitable, ImpressHolder() {
 
     private var isCache: Boolean = false
