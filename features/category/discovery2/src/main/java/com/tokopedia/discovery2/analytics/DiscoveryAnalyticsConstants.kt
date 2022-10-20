@@ -267,4 +267,4 @@ const val ACTION_CAROUSEL_BUNDLING_VIEW = "scroll carousel - discovery bundling 
 const val PHYSICAL_GOODS = "physical goods"
 const val PRODUCT_ID = "productId"
 const val NAME_KEY_PRODUCT_BUNDLING = "product_bundling"
-const val ACTION_PRODUCT_BUNDLING_PRODUCT_CLICK = "click view package - discovery bundling widget"
+const val ACTION_PRODUCT_BUNDLING_PRODUCT_CLICK = "click lihat paket - discovery bundling widget"
