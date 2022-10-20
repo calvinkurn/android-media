@@ -21,12 +21,23 @@ import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderStatusUiModel
 import com.tokopedia.watch.orderlist.param.SomListGetAcceptBulkOrderStatusParam
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
+import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase.Companion.ORDER_STATUS_NEW_ORDER
+import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase.Companion.ORDER_STATUS_READY_TO_SHIP
 import com.tokopedia.watch.orderlist.usecase.SomListAcceptBulkOrderUseCase
 import com.tokopedia.watch.orderlist.usecase.SomListGetAcceptBulkOrderStatusUseCase
 import com.tokopedia.watch.ordersummary.model.SummaryDataModel
 import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import javax.inject.Inject
@@ -98,7 +109,8 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             }
             GET_ORDER_LIST_PATH -> {
                 runBlocking {
-                    getOrderList()
+                    getOrderList(ORDER_STATUS_NEW_ORDER)
+                    getOrderList(ORDER_STATUS_READY_TO_SHIP)
                 }
             }
             GET_SUMMARY_PATH -> {
@@ -107,7 +119,8 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }            }
             GET_ALL_DATA_PATH -> {
                 runBlocking {
-                    getOrderList()
+                    getOrderList(ORDER_STATUS_NEW_ORDER)
+                    getOrderList(ORDER_STATUS_READY_TO_SHIP)
                     getSummaryData()
                 }
             }
@@ -190,12 +203,17 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         }
     }
 
-    private fun getOrderList() {
+    private fun getOrderList(orderStatus: List<Int>) {
         if (!userSession.get().isLoggedIn) {
             return
         }
 
-        getOrderListUseCase.get().executeSync(RequestParams(), getLoadOrderListDataSubscriber())
+        getOrderListUseCase.get().executeSync(
+            RequestParams().apply {
+                putObject(GetOrderListUseCase.PARAM_STATUS_LIST, orderStatus)
+            },
+            getLoadOrderListDataSubscriber()
+        )
     }
 
     private fun getSummaryData() {
