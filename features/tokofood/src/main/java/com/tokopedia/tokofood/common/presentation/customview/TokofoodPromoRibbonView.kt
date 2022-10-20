@@ -22,6 +22,11 @@ class TokofoodPromoRibbonView @JvmOverloads constructor(
         )
     }
 
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        binding = null
+    }
+
     fun setRibbonText(ribbonText: String) {
         binding?.tvTokofoodPromoName?.text = ribbonText
     }
