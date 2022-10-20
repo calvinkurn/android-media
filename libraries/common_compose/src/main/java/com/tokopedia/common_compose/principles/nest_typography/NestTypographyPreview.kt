@@ -1,7 +1,9 @@
-package com.tokopedia.common_compose.principles.nest_text
+package com.tokopedia.common_compose.principles.nest_typography
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Divider
@@ -10,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.tokopedia.unifyprinciples.R as unifyR
 
 /**
@@ -17,71 +20,60 @@ import com.tokopedia.unifyprinciples.R as unifyR
  * Project name: android-tokopedia-core
  **/
 
-
-
 @Preview
 @Composable
-internal fun NestTextRegularPreview() {
-
-    NestTextFontConfig.isFontTypeOpenSauceOne = false
-
+internal fun NestTypographyPreview() {
     LazyColumn(modifier = Modifier
         .background(colorResource(unifyR.color.Unify_Background))
     ) {
         item {
-            NestText(
+            NestTypography(
                 text = "Regular",
-                type = NestTextType.Heading1,
+                type = NestTypographyType.Heading1,
                 textStyle = TextStyle(color = colorResource(id = unifyR.color.Unify_G500))
             )
         }
-        items(NestTextType.values()) {
+
+        items(NestTypographyType.values()) {
             Column {
-                NestText(
+                NestTypography(
                     text = it.name,
                     type = it
                 )
 
-                NestText(
+                NestTypography(
                     text = it.name,
                     type = it,
-                    isFontTypeOpenSauceOne = true
+                    isFontTypeOpenSauceOne = false
                 )
             }
 
             Divider()
         }
-    }
-}
 
-@Preview
-@Composable
-internal fun NestTextBoldPreview() {
-    NestTextFontConfig.isFontTypeOpenSauceOne = false
-
-    LazyColumn(modifier = Modifier
-        .background(colorResource(unifyR.color.Unify_Background))
-    ) {
         item {
-            NestText(
+            Spacer(modifier = Modifier.height(16.dp))
+
+            NestTypography(
                 text = "Bold",
-                type = NestTextType.Heading1,
+                type = NestTypographyType.Heading1,
                 textStyle = TextStyle(color = colorResource(id = unifyR.color.Unify_G500))
             )
         }
-        items(NestTextType.values()) {
+
+        items(NestTypographyType.values()) {
             Column {
-                NestText(
+                NestTypography(
                     text = it.name,
                     type = it,
-                    weight = NestTextWeight.Bold
+                    weight = NestTypographyWeight.Bold
                 )
 
-                NestText(
+                NestTypography(
                     text = it.name,
                     type = it,
-                    weight = NestTextWeight.Bold,
-                    isFontTypeOpenSauceOne = true
+                    weight = NestTypographyWeight.Bold,
+                    isFontTypeOpenSauceOne = false
                 )
             }
 
