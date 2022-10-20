@@ -12,6 +12,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageCarousellModel
 import com.tokopedia.digital.home.model.RechargeHomepageCategoryModel
 import com.tokopedia.digital.home.model.RechargeHomepageDualBannersModel
 import com.tokopedia.digital.home.model.RechargeHomepageFavoriteModel
+import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageOfferingWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductBannerModel
 import com.tokopedia.digital.home.model.RechargeHomepageProductCardCustomBannerV2Model
@@ -203,6 +204,7 @@ object RechargeHomepageSectionMapper {
                         it
                     )
                     SECTION_OFFERING_WIDGET -> RechargeHomepageOfferingWidgetModel(it)
+                    SECTION_MY_BILLS_WIDGET -> RechargeHomepageMyBillsWidgetModel(it)
                     else -> null
                 }
             }
