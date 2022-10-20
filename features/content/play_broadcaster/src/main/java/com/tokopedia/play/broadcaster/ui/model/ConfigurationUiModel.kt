@@ -2,6 +2,7 @@ package com.tokopedia.play.broadcaster.ui.model
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import java.util.*
 
 /**
