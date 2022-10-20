@@ -22,9 +22,6 @@ import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.ProgramActions
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmProgramDetailCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
-import com.tokopedia.tokomember_seller_dashboard.model.LayoutType
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramItem
-import com.tokopedia.tokomember_seller_dashboard.model.ProgramSellerListItem
 import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ACTION_CANCEL
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_CARD_ID
@@ -78,7 +75,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         }
 
         if (context is TmProgramDetailCallback) {
-            homeFragmentCallback =  context as TmProgramDetailCallback
+            homeFragmentCallback =  context
         } else {
             throw RuntimeException(context.toString() )
         }
@@ -107,17 +104,16 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         tmTracker = TmTracker()
 
-        rvProgram = view.findViewById<RecyclerView>(R.id.rv_program)
+        rvProgram = view.findViewById(R.id.rv_program)
         linearLayoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvProgram?.apply {
             layoutManager = linearLayoutManager
             adapter = tokomemberDashProgramAdapter
         }
         observeViewModel()
-        tmProgramListViewModel?.getProgramList(shopId, cardId, page = currentPage)
+        tmProgramListViewModel?.getInitalProgramList(shopId, cardId, page = currentPage)
 
         setToastOnProgramAction(arguments?.getInt(BUNDLE_PROGRAM_ACTION)?:0)
         btnCreateProgram.setOnClickListener {
@@ -141,17 +137,19 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
     }
 
     private fun observeViewModel() {
-        tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner, {
+        tmProgramListViewModel?.tokomemberProgramListResultLiveData?.observe(viewLifecycleOwner){
             when (it.status) {
                 TokoLiveDataResult.STATUS.LOADING ->{
                     viewFlipperProgramList.displayedChild = 0
                 }
                 TokoLiveDataResult.STATUS.INFINITE_LOADING ->{
                     viewFlipperProgramList.displayedChild = 1
-                    addLoader()
+                     tmProgramListViewModel?.let{ it1 ->
+                         tokomemberDashProgramAdapter.programSellerList = it1.programList
+                         tokomemberDashProgramAdapter.notifyItemInserted(it1.programList.size.toZeroIfNull() - 1)
+                     }
                 }
                 TokoLiveDataResult.STATUS.SUCCESS -> {
-                    removeLoader()
                     tmProgramListViewModel?.refreshProgramList(LOADED)
                     tmProgramListViewModel?.programListLoadingState(LOADED)
                     hasNext = it.data?.membershipGetProgramList?.programSellerList?.size != 0
@@ -160,29 +158,27 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     }
                     else {
                         viewFlipperProgramList.displayedChild = 1
-                        val list = arrayListOf<ProgramItem>()
-                        it.data?.membershipGetProgramList?.programSellerList?.forEach {
-                            it?.let { it1 -> ProgramItem(it1) }?.let { it2 -> list.add(it2) }
+                        tmProgramListViewModel?.let{ it1 ->
+                            tokomemberDashProgramAdapter.programSellerList = it1.programList
+                            tokomemberDashProgramAdapter.notifyDataSetChanged()
                         }
-                        tokomemberDashProgramAdapter.programSellerList.addAll(list)
-                        tokomemberDashProgramAdapter.notifyDataSetChanged()
                     }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     tmProgramListViewModel?.refreshProgramList(LOADED)
                 }
             }
-        })
+        }
 
-        tmProgramListViewModel?.tmRefreshProgramListLiveData?.observe(viewLifecycleOwner, {
+        tmProgramListViewModel?.tmRefreshProgramListLiveData?.observe(viewLifecycleOwner){
             when (it) {
                 REFRESH ->{
                     tmProgramListViewModel?.getProgramList(shopId, cardId)
                 }
             }
-        })
+        }
 
-        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner,{
+        tmDashCreateViewModel.tmProgramResultLiveData.observe(viewLifecycleOwner){
             when(it.status){
                 TokoLiveDataResult.STATUS.LOADING -> {
                     openLoadingDialog()
@@ -199,17 +195,14 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                         }
                         tmDashCreateViewModel.updateProgram(ProgramUpdateMapper.formToUpdateMapper(it.data.membershipGetProgramForm, ProgramActionType.CANCEL, periodInMonth, cardId))
                     }
-                    else{
-
-                    }
                 }
                 TokoLiveDataResult.STATUS.ERROR -> {
                     closeLoadingDialog()
                 }
             }
-        })
+        }
 
-        tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner,{
+        tmDashCreateViewModel.tokomemberProgramUpdateResultLiveData.observe(viewLifecycleOwner){
             when(it.status){
                 TokoLiveDataResult.STATUS.SUCCESS -> {
                     if(it.data?.membershipCreateEditProgram?.resultStatus?.code=="200"){
@@ -225,7 +218,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     closeLoadingDialog()
                 }
             }
-        })
+        }
         Log.d("REFRESH_TAG", "observeViewModel: " + tmProgramListViewModel?.tmRefreshProgramListLiveData?.hasActiveObservers())
     }
 
@@ -288,7 +281,7 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
         tv_desc_error.text = "Program yang menarik bisa bikin member lebih sering berbelanja di tokomu."
         btn_error.text = "Buat Program TokoMember"
         btn_error.setOnClickListener {
-            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null, )
+            TmDashCreateActivity.openActivity(shopId, activity, CreateScreenType.PROGRAM, ProgramActionType.CREATE_BUAT, null, null )
         }
     }
 
@@ -330,20 +323,6 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                 }
             }
         })
-    }
-
-    private fun addLoader(){
-        val currentCount = tokomemberDashProgramAdapter.programSellerList.size.toZeroIfNull()
-        tokomemberDashProgramAdapter.programSellerList.add(ProgramItem(ProgramSellerListItem(), LayoutType.LOADER))
-        tokomemberDashProgramAdapter.notifyItemInserted(currentCount)
-    }
-
-    private fun removeLoader() {
-        if(tokomemberDashProgramAdapter.programSellerList.any { it.layoutType == LayoutType.LOADER }) {
-            val currentCount = tokomemberDashProgramAdapter.programSellerList.size.toZeroIfNull()
-            tokomemberDashProgramAdapter.programSellerList.removeAt(currentCount-1)
-            tokomemberDashProgramAdapter.notifyItemRemoved(currentCount)
-        }
     }
 
 }

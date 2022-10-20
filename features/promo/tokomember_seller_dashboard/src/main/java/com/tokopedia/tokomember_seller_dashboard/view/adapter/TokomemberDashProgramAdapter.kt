@@ -14,7 +14,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmMemberLoaderV
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TokomemberDashProgramVh
 
 class TokomemberDashProgramAdapter(
-    var programSellerList: ArrayList<ProgramItem>,
+    var programSellerList: List<ProgramItem>,
     val fragmentManager: FragmentManager,
     val shopId: Int,
     val programActions: ProgramActions,

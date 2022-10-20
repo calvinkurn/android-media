@@ -14,7 +14,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmCouponVh
 import com.tokopedia.tokomember_seller_dashboard.view.viewholder.TmMemberLoaderVh
 
 class TmCouponAdapter(
-    var vouchersItemList: ArrayList<CouponItem>,
+    var vouchersItemList: List<CouponItem>,
     val fragmentManager: FragmentManager,
     val tmCouponActions: TmCouponActions,
     private val callback:TmCouponDetailCallback?,

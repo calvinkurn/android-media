@@ -19,8 +19,12 @@ class TmCouponUsecase@Inject constructor(
         setRequestParams(getRequestParams(voucherStatus, voucherType, page, perPage))
         setGraphqlQuery(QUERY_TM_COUPON_LIST)
         execute(
-            { success(it) },
-            { failure(it) }
+            {
+                success(it)
+            },
+            {
+                failure(it)
+            }
         )
     }
 
