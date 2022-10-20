@@ -14,8 +14,6 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
-import com.tokopedia.kotlin.extensions.view.ONE
-import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.media.loader.loadImage
 
 
