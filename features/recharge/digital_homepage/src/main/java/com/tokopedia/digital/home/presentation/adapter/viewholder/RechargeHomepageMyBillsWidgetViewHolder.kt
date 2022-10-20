@@ -2,6 +2,7 @@ package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -85,22 +86,8 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             with(binding){
                 tvProductDetailName.text = element.title
                 tvProductDetailNumber.text = element.subtitle
-
-                try {
-                    tvProductDetailName.setTextColor(
-                        Color.parseColor(element.attributes.titleColor)
-                    )
-                } catch (t: Throwable) {
-                    t.printStackTrace()
-                }
-
-                try {
-                    tvProductDetailNumber.setTextColor(
-                        Color.parseColor(element.attributes.subtitleColor)
-                    )
-                } catch (t: Throwable) {
-                    t.printStackTrace()
-                }
+                tvProductDetailName.setTextColor(element.attributes.titleColor)
+                tvProductDetailNumber.setTextColor(element.attributes.subtitleColor)
             }
         }
 
@@ -109,8 +96,12 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             element: RechargeHomepageSections.Item
         ) {
             binding.tvExpired.text = element.attributes.specialInfoText
+            binding.tvExpired.setTextColor(element.attributes.specialInfoColor)
+        }
+
+        private fun TextView.setTextColor(color: String) {
             try {
-                binding.tvExpired.setTextColor(Color.parseColor(element.attributes.specialInfoColor))
+                setTextColor(Color.parseColor(color))
             } catch (t: Throwable) {
                 t.printStackTrace()
             }
