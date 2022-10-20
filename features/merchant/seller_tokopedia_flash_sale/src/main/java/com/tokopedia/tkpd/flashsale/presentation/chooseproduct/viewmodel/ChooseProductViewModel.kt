@@ -61,6 +61,9 @@ class ChooseProductViewModel @Inject constructor(
     val categoryAllList = Transformations.map(criteriaList) {
         ChooseProductUiMapper.collectAllCategory(it)
     }
+    val isCriteriaEmpty = Transformations.map(criteriaList) {
+        it.isEmpty()
+    }
     val maxSelectedProduct = Transformations.map(maxProductSubmission) {
         ChooseProductUiMapper.getMaxSelectedProduct(it)
     }
