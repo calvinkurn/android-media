@@ -23,6 +23,7 @@ import com.tokopedia.checkout.view.ShipmentFragment
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter
+import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EditAddressUseCase
 import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.domain.executor.MainScheduler
@@ -105,21 +106,25 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
                                  shipmentDataConverter: ShipmentDataConverter,
                                  releaseBookingUseCase: ReleaseBookingUseCase,
                                  prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
+                                 epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
                                  validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
                                  gson: Gson,
                                  executorSchedulers: ExecutorSchedulers,
-                                 eligibleForAddressUseCase: EligibleForAddressUseCase): ShipmentContract.Presenter {
-        return ShipmentPresenter(compositeSubscription,
-                checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
-                editAddressUseCase, changeShippingAddressGqlUseCase,
-                saveShipmentStateGqlUseCase,
-                ratesUseCase, ratesApiUseCase,
-                clearCacheAutoApplyStackUseCase,
-                stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
-                analyticsPurchaseProtection, checkoutAnalytics,
-                shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
-                validateUsePromoRevampUseCase, gson,
-                executorSchedulers, eligibleForAddressUseCase)
+                                 eligibleForAddressUseCase: EligibleForAddressUseCase
+    ): ShipmentContract.Presenter {
+        return ShipmentPresenter(
+            compositeSubscription,
+            checkoutGqlUseCase, getShipmentAddressFormV3UseCase,
+            editAddressUseCase, changeShippingAddressGqlUseCase,
+            saveShipmentStateGqlUseCase,
+            ratesUseCase, ratesApiUseCase,
+            clearCacheAutoApplyStackUseCase,
+            stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
+            analyticsPurchaseProtection, checkoutAnalytics,
+            shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
+            epharmacyUseCase, validateUsePromoRevampUseCase, gson,
+            executorSchedulers, eligibleForAddressUseCase
+        )
     }
 
     @Provides
