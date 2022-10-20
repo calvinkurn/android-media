@@ -118,7 +118,7 @@ class TdnBannerView : FrameLayout {
         onLoadFailed: () -> Unit = {} ,
         onTdnBannerImpressed: () -> Unit = {}
     ) {
-        val layoutType = TYPE_VERTICAL_CAROUSEL
+        val layoutType = tdnBanners.firstOrNull()?.layoutType
         if (layoutType == TYPE_CAROUSEL || layoutType == TYPE_VERTICAL_CAROUSEL) {
             tdnCarouselView?.setCarouselModel(tdnBanners, onTdnBannerClicked, cornerRadius, onLoadFailed, onTdnBannerImpressed)
             tdnCarouselView?.show()
