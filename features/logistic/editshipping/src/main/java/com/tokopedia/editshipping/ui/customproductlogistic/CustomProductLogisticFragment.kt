@@ -94,7 +94,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun initViews() {
         binding.swipeRefresh.isRefreshing = true
-        viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds, cplParam)
+        viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam)
 
         binding.btnSaveShipper.setOnClickListener { validateSaveButton() }
     }
@@ -242,7 +242,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.globalError.setType(type)
         binding.globalError.setActionClickListener {
             context?.let {
-                viewModel.getCPLList(shopId, productId.toString(), shipperServicesIds, cplParam)
+                viewModel.getCPLList(shopId, productId, shipperServicesIds, cplParam)
             }
         }
         binding.globalError.visible()

@@ -25,7 +25,7 @@ class CustomProductLogisticViewModel @Inject constructor(
 
     fun getCPLList(
         shopId: Long,
-        productId: String,
+        productId: Long,
         shipperServicesIds: List<Long>?,
         cplParam: List<Long>?
     ) {

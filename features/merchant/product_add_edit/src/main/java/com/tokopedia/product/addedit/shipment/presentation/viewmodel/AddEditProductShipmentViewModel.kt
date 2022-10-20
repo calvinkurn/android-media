@@ -92,7 +92,7 @@ class AddEditProductShipmentViewModel @Inject constructor(
 
     fun getCPLList(
         shopId: Long,
-        productId: String,
+        productId: Long,
         shipmentServicesIds: List<Long>?,
         cplParam: List<Long>?
     ) {

@@ -8,7 +8,7 @@ class CustomProductLogisticMapper @Inject constructor() {
 
     fun mapCPLData(
         response: GetCPLData,
-        productId: String,
+        productId: Long,
         draftShipperServices: List<Long>? = null
     ): CustomProductLogisticModel {
         return CustomProductLogisticModel().apply {
@@ -19,7 +19,7 @@ class CustomProductLogisticMapper @Inject constructor() {
 
     private fun mapCPLProduct(
         response: List<CPLProduct>,
-        productId: String,
+        productId: Long,
         draftShipperServices: List<Long>? = null
     ): List<CPLProductModel> {
         return if (response.isNotEmpty()) {
@@ -35,10 +35,10 @@ class CustomProductLogisticMapper @Inject constructor() {
         }
     }
 
-    private fun List<Long>.mapCPLProductFromDraft(productId: String): List<CPLProductModel> {
+    private fun List<Long>.mapCPLProductFromDraft(productId: Long): List<CPLProductModel> {
         return arrayListOf(
             CPLProductModel(
-                productId = productId.toLong(),
+                productId = productId,
                 cplStatus = getCplStatus(),
                 shipperServices = this
             )
