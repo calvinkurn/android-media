@@ -125,7 +125,7 @@ class ProductLineItemDecoration(
         position: Int,
     ) {
         //the previous item of a section is always a product
-        outRect.top = if (position == 0) 0 else offset14
+        outRect.top = if (position == 0) offset16 else offset14
         outRect.left = offset16
         outRect.right = offset16
     }
