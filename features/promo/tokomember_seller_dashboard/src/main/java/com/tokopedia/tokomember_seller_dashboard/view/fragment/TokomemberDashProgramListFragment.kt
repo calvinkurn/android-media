@@ -159,8 +159,17 @@ class TokomemberDashProgramListFragment : BaseDaggerFragment(), ProgramActions {
                     else {
                         viewFlipperProgramList.displayedChild = 1
                         tmProgramListViewModel?.let{ it1 ->
-                            tokomemberDashProgramAdapter.programSellerList = it1.programList
-                            tokomemberDashProgramAdapter.notifyDataSetChanged()
+                            if(currentPage==1){
+                                val prevSize = tokomemberDashProgramAdapter.programSellerList.size
+                                tokomemberDashProgramAdapter.programSellerList = it1.programList
+                                tokomemberDashProgramAdapter.notifyItemRangeChanged(prevSize,it?.data?.membershipGetProgramList?.programSellerList?.size ?: 0)
+                            }
+                            else{
+                                val prevSize = tokomemberDashProgramAdapter.programSellerList.size
+                                tokomemberDashProgramAdapter.notifyItemRemoved(prevSize)
+                                tokomemberDashProgramAdapter.programSellerList = it1.programList
+                                tokomemberDashProgramAdapter.notifyItemRangeChanged(prevSize,it?.data?.membershipGetProgramList?.programSellerList?.size ?: 0)
+                            }
                         }
                     }
                 }
