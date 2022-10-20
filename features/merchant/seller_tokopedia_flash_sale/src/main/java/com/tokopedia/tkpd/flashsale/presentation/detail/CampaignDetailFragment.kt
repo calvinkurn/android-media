@@ -673,6 +673,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     private fun setupChooseProductRedirection() {
         binding?.btnRegister?.setOnClickListener {
             navigateToChooseProductPage()
+            viewModel.sendAddProductClickEvent(flashSaleId)
         }
     }
 
@@ -819,6 +820,7 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 tpgSelectedProductCount.visible()
                 tpgProductCount.invisible()
                 btnSelectAllProduct.text = getString(R.string.fs_canceled_lable)
+                viewModel.sendBulkChooseClickEvent(flashSaleId)
             } else {
                 tpgSelectedProductCount.invisible()
                 tpgProductCount.visible()
@@ -837,12 +839,14 @@ class CampaignDetailFragment : BaseDaggerFragment() {
                 text = getString(R.string.stfs_label_delete)
                 setOnClickListener {
                     showDeleteDialog()
+                    viewModel.sendDeleteClickEvent(flashSaleId)
                 }
             }
             btnEdit.apply {
                 text = getString(R.string.stfs_label_edit)
                 setOnClickListener {
                     reserveProduct()
+                    viewModel.sendEditClickEvent(flashSaleId)
                 }
             }
             if (!isShown) {

@@ -11,10 +11,15 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaCheckingResult
 import com.tokopedia.tkpd.flashsale.domain.entity.CriteriaSelection
 import com.tokopedia.tkpd.flashsale.domain.entity.ProductReserveResult
-import com.tokopedia.tkpd.flashsale.domain.usecase.*
+import com.tokopedia.tkpd.flashsale.domain.usecase.DoFlashSaleProductReserveUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleDetailForSellerUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductCriteriaCheckingUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductListToReserveUseCase
+import com.tokopedia.tkpd.flashsale.domain.usecase.GetFlashSaleProductPerCriteriaUseCase
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.FILTER_PRODUCT_CRITERIA_PASSED
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.constant.ChooseProductConstant.MAX_PER_PAGE
 import com.tokopedia.tkpd.flashsale.presentation.chooseproduct.mapper.ChooseProductUiMapper
+import com.tokopedia.tkpd.flashsale.util.tracker.AddChooseProductTracker
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.combine
@@ -28,7 +33,8 @@ class ChooseProductViewModel @Inject constructor(
     private val doFlashSaleProductReserveUseCase: DoFlashSaleProductReserveUseCase,
     private val getFlashSaleProductCriteriaCheckingUseCase: GetFlashSaleProductCriteriaCheckingUseCase,
     private val getFlashSaleDetailForSellerUseCase: GetFlashSaleDetailForSellerUseCase,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val tracker: AddChooseProductTracker
 ) : BaseViewModel(dispatchers.main){
 
     // General Livedata
@@ -186,4 +192,14 @@ class ChooseProductViewModel @Inject constructor(
             }
         )
     }
+
+    // BEGIN - Tracker Functions
+    fun onAddButtonClicked(campaignId: String) {
+        tracker.sendClickAddProductEvent(campaignId)
+    }
+
+    fun onCheckDetailButtonClicked(campaignId: String, productId: String) {
+        tracker.sendClickDetailCheckAllIneligibleLocationOrVariantEvent(campaignId, productId)
+    }
+    // END - Tracker Functions
 }

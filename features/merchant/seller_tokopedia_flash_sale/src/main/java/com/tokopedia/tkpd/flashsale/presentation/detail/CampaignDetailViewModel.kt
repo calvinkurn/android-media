@@ -524,6 +524,7 @@ class CampaignDetailViewModel @Inject constructor(
             .apply()
     }
 
+    // BEGIN - Tracker Functions
     fun sendSeeCriteriaClickEvent(campaignId: Long) {
         tracker.sendClickSeeCriteriaEvent(campaignId.toString())
     }
@@ -536,6 +537,23 @@ class CampaignDetailViewModel @Inject constructor(
         tracker.sendClickCheckReasonEvent(campaignId.toString())
     }
 
+    fun sendBulkChooseClickEvent(campaignId: Long) {
+        tracker.sendClickBulkChooseEvent(campaignId.toString())
+    }
+
+    fun sendAddProductClickEvent(campaignId: Long) {
+        tracker.sendClickAddProductEvent(campaignId.toString())
+    }
+
+    fun sendDeleteClickEvent(campaignId: Long) {
+        tracker.sendClickDeleteEvent(campaignId.toString())
+    }
+
+    fun sendEditClickEvent(campaignId: Long) {
+        tracker.sendClickEditEvent(campaignId.toString())
+    }
+    // END - Tracker Functions
+
     private fun SellerEligibility.isEligibleUsingFeature(): Boolean {
         val isRbacRuleActive = isDeviceAllowed
 
@@ -545,4 +563,5 @@ class CampaignDetailViewModel @Inject constructor(
             else -> false
         }
     }
+
 }

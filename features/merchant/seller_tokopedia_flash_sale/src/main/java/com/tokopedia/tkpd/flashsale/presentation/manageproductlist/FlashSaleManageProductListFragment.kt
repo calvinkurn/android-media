@@ -541,7 +541,7 @@ class FlashSaleManageProductListFragment :
         if (productData.isParentProduct) {
             redirectToManageProductVariantPage(productData)
         } else {
-            redirectToManageProductNonVariantPage(productData)
+            redirectToManageProductNonVariantPage(productData, campaignId)
         }
     }
 
@@ -556,7 +556,7 @@ class FlashSaleManageProductListFragment :
         }
     }
 
-    private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product) {
+    private fun redirectToManageProductNonVariantPage(productData: ReservedProduct.Product, campaignId: String) {
         context?.let {
             ManageProductNonVariantActivity.createIntent(it, productData, campaignId.toLongOrZero()).apply {
                 startActivityForResult(
