@@ -24,11 +24,11 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
-class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider.Factory) :
-    BottomSheetUnify() {
+class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     private var binding: ItemPosttagBinding? = null
 
+    private var viewModelFactory: ViewModelProvider.Factory? = null
     private var viewModel: FeedProductItemInfoViewModel? = null
 
     private lateinit var listProducts: List<FeedXProduct>
@@ -51,17 +51,6 @@ class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
-
-    init {
-        context?.let {
-            activity?.let {
-                viewModel = ViewModelProvider(
-                    it,
-                    viewModelFactory
-                ).get(FeedProductItemInfoViewModel::class.java)
-            }
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +77,15 @@ class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider
             setAdapter()
         } else {
             dismiss()
+        }
+
+        activity?.let {
+            viewModelFactory?.let { factory ->
+                viewModel = ViewModelProvider(
+                    it,
+                    factory
+                ).get(FeedProductItemInfoViewModel::class.java)
+            }
         }
 
         viewModel?.fetchMerchantVoucherSummary(shopId)
@@ -185,7 +183,8 @@ class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider
     fun show(
         fragmentManager: FragmentManager,
         listener: Listener?,
-        productBottomSheetData: ProductBottomSheetData
+        productBottomSheetData: ProductBottomSheetData,
+        viewModelFactory: ViewModelProvider.Factory
     ) {
         this.listProducts = productBottomSheetData.products
         this.listener = listener
@@ -199,6 +198,8 @@ class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider
         this.mediaType = productBottomSheetData.mediaType
         this.saleType = productBottomSheetData.saleType
         this.saleStatus = productBottomSheetData.saleStatus
+        this.viewModelFactory = viewModelFactory
+
         show(fragmentManager, "")
     }
 
