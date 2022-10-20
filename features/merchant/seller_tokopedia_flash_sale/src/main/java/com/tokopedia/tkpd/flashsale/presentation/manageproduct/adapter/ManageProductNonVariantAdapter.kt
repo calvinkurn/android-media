@@ -44,6 +44,7 @@ class ManageProductNonVariantAdapter: RecyclerView.Adapter<ManageProductNonVaria
         private val listener: ManageProductNonVariantAdapterListener?
     ) : ManageProductNonVariantBaseViewHolder(binding.root, listener) {
         fun bind(criteria: ReservedProduct.Product.ProductCriteria, warehouse: ReservedProduct.Product.Warehouse) {
+            warehouse.isToggleOn = true
             binding.mainLayout.apply {
                 val discount = warehouse.discountSetup
                 setupInputField(criteria, discount)
