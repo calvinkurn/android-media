@@ -169,6 +169,7 @@ class MixTopComponentViewHolder(
         bannerTitle.visibility = if(bannerItem.title.isEmpty()) View.GONE else View.VISIBLE
         bannerDescription.text = bannerItem.description
         bannerDescription.visibility = if(bannerItem.description.isEmpty()) View.GONE else View.VISIBLE
+        val a= bannerItem.gradientColor
         if(bannerItem.gradientColor.isEmpty() || getGradientBackgroundViewAllWhite(bannerItem.gradientColor, itemView.context)) {
             background.gone()
             val layoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams

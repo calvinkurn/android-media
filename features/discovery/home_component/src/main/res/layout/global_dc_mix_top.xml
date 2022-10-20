@@ -25,6 +25,8 @@
             android:id="@+id/background"
             android:layout_width="match_parent"
             android:layout_height="160dp"
+            tools:background="@color/black"
+            tools:visibility="visible"
             android:background="@color/Unify_Y200"
             android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"

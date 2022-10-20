@@ -29,8 +29,8 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
         /*
         TODO - wait from BE - change from empty to dt
          */
-//        private const val PARAM_VALUE_PAGE_DT = ""
-        private const val PARAM_VALUE_PAGE_DT = "dt"
+        private const val PARAM_VALUE_PAGE_DT = ""
+//        private const val PARAM_VALUE_PAGE_DT = "dt"
     }
 
     init {
