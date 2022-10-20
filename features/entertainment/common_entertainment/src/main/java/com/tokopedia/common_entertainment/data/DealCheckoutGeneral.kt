@@ -1,4 +1,4 @@
-package com.tokopedia.digital_deals.data
+package com.tokopedia.common_entertainment.data
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
