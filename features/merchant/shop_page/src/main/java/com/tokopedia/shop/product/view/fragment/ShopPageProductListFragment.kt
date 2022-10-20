@@ -184,9 +184,8 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModel: ShopPageProductListViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(ShopPageProductListViewModel::class.java)
-    }
+    private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
+    private val viewModel by lazy { viewModelProvider.get(ShopPageProductListViewModel::class.java) }
 
     private var shopPageTracking: ShopPageTrackingBuyer? = null
     private var lastQuestId: Int = 0
