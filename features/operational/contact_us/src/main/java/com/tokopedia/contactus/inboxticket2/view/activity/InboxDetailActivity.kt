@@ -168,7 +168,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
         edMessage?.text?.clear()
         setSubmitButtonEnabled(false)
         imageUploadAdapter?.clearAll()
-        imageUploadAdapter?.notifyDataSetChanged()
+        imageUploadAdapter?.notifyItemChanged(imageUploadAdapter!!.itemCount - 1)
         rvSelectedImages?.hide()
         rvMessageList?.setPadding(0, 0, 0,
                 resources.getDimensionPixelSize(R.dimen.contact_us_text_toolbar_height_collapsed))
