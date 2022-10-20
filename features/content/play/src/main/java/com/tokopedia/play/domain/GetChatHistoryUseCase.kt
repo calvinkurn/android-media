@@ -30,10 +30,12 @@ class GetChatHistoryUseCase @Inject constructor(
     ): PlayChatHistoryResponse {
         setRequestParams(
             mapOf(
-                PARAM_SEARCH_TYPE to "HISTORY",
-                PARAM_CHANNEL_ID to channelId,
-                PARAM_PAGINATION to mapOf(
-                    PARAM_CURSOR to cursor
+                PARAM_REQ to mapOf(
+                    PARAM_SEARCH_TYPE to SEARCH_TYPE_HISTORY,
+                    PARAM_CHANNEL_ID to channelId,
+                    PARAM_PAGINATION to mapOf(
+                        PARAM_CURSOR to cursor
+                    )
                 )
             )
         )
@@ -42,22 +44,21 @@ class GetChatHistoryUseCase @Inject constructor(
     }
 
     companion object {
+        private const val PARAM_REQ = "req"
         private const val PARAM_SEARCH_TYPE = "searchType"
         private const val PARAM_CHANNEL_ID = "channelID"
         private const val PARAM_PAGINATION = "pagination"
         private const val PARAM_CURSOR = "cursor"
 
+        private const val SEARCH_TYPE_HISTORY = "HISTORY"
+
         const val QUERY_NAME = "GetChatHistoryUseCaseQuery"
         const val QUERY = """
             query PlayInteractiveGetChatHistory(
-                ${"$$PARAM_SEARCH_TYPE"}: PlayInteractiveSearchType,
-                ${"$$PARAM_CHANNEL_ID"}: String,
-                ${"$$PARAM_PAGINATION"}: PlayInteractiveGetChatHistoryPaginationRequest
+                ${"$$PARAM_REQ"}: PlayInteractiveGetChatHistoryRequest
             ) {
-                PlayInteractiveGetChatHistory(
-                    $PARAM_SEARCH_TYPE: ${"$$PARAM_SEARCH_TYPE"},
-                    $PARAM_CHANNEL_ID: ${"$$PARAM_CHANNEL_ID"},
-                    $PARAM_PAGINATION: ${"$$PARAM_PAGINATION"}
+                playInteractiveGetChatHistory(
+                    $PARAM_REQ: ${"$$PARAM_REQ"}
                 ) {
                     data {
                         channel_id

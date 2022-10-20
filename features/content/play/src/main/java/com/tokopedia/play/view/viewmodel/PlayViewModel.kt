@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -1023,7 +1024,7 @@ class PlayViewModel @AssistedInject constructor(
 
         updateTagItems()
         updateChannelStatus()
-
+        updateChatHistory()
         updateChannelInfo(channelData)
         sendInitialLog()
     }
@@ -1180,6 +1181,19 @@ class PlayViewModel @AssistedInject constructor(
                 it.copy(channelStatus = channelStatus)
             }
         }) {}
+    }
+
+    /**
+     * Updating chat history
+     */
+    private fun updateChatHistory() {
+        viewModelScope.launchCatchError(block = {
+            Log.d("<LOG>", "getChatHistory for $channelId")
+            val response = repo.getChatHistory(channelId)
+            Log.d("<LOG>", "getChatHistory response : $response")
+        }) {
+            Log.d("<LOG>", "getChatHistory error : $it")
+        }
     }
 
     fun sendChat(message: String) {
