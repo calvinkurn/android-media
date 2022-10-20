@@ -281,4 +281,9 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         viewModel.setShipperServiceState(check, spId)
     }
 
+    override fun onWhitelabelServiceCheckboxClicked(spIds: List<Long>, check: Boolean) {
+        binding.btnSaveShipper.isEnabled = true
+        viewModel.setWhitelabelServiceState(spIds, check)
+    }
+
 }

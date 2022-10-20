@@ -107,4 +107,25 @@ class CustomProductLogisticViewModel @Inject constructor(
             }
         }
     }
+
+    fun setWhitelabelServiceState(spIds: List<Long>, check: Boolean) {
+        _cplList.value.let {
+            if (it is Success) {
+                run loop@{
+                    it.data.shipperList.forEach { shipperGroup ->
+                        val whitelabelShippers = shipperGroup.shipper.filter { shipper -> shipper.isWhitelabel }
+                        for (service in whitelabelShippers) {
+                            val shipperProductIds = service.shipperProduct.map { sp -> sp.shipperProductId }
+                            if (spIds.containsAll(shipperProductIds)) {
+                                service.isActive = check
+                                service.shipperProduct.forEach { sp -> sp.isActive = check }
+                                return@loop
+                            }
+                        }
+                    }
+                }
+                _cplList.value = it
+            }
+        }
+    }
 }

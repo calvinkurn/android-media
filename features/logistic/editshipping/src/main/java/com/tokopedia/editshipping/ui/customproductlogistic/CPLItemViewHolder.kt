@@ -37,7 +37,7 @@ class CPLItemViewHolder(
         binding.shipmentItemList.gone()
         binding.imgShipmentItem.gone()
         binding.cbShipmentItem.setOnCheckedChangeListener { _, isChecked ->
-            listener.onShipperCheckboxClicked(data.shipperId, isChecked)
+            listener.onWhitelabelServiceCheckboxClicked(data.shipperProduct.map { it.shipperProductId }, isChecked)
         }
     }
 

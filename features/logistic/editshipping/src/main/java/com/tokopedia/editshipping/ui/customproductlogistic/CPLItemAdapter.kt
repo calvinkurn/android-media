@@ -15,6 +15,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
     interface CPLItemAdapterListener {
         fun onShipperCheckboxClicked(shipperId: Long, check: Boolean)
         fun onShipperProductCheckboxClicked(spId: Long, check: Boolean)
+        fun onWhitelabelServiceCheckboxClicked(spIds: List<Long>, check: Boolean)
     }
 
     var shipperServices = ""
