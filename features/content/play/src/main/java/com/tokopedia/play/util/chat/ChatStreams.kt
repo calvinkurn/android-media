@@ -36,11 +36,24 @@ class ChatStreams @AssistedInject constructor(
     val chats: StateFlow<List<PlayChatUiModel>>
         get() = _chats
 
+    private var isWaitingForHistory: Boolean = false
+
     init {
         setLoopingTimer()
     }
 
+    fun setWaitingForHistory() {
+        isWaitingForHistory = true
+    }
+
     fun addChat(chat: PlayChatUiModel) {
+        /**
+         * When we get chat either from local user / web socket,
+         * set isWaitingForHistory to false so the chat won't
+         * be override by history later on.
+         */
+        isWaitingForHistory = false
+
         scope.launch(dispatchers.computation) {
             mutex.withLock {
                 pendingChats.add(chat)
@@ -50,11 +63,15 @@ class ChatStreams @AssistedInject constructor(
     }
 
     fun addHistoryChat(chatList: List<PlayChatUiModel>) {
-        scope.launch(dispatchers.computation) {
-            mutex.withLock {
-                pendingChats.clear()
-                pendingChats.addAll(chatList)
-                sendPendingChats()
+        if(isWaitingForHistory) {
+            isWaitingForHistory = false
+
+            scope.launch(dispatchers.computation) {
+                mutex.withLock {
+                    pendingChats.clear()
+                    pendingChats.addAll(chatList)
+                    sendPendingChats()
+                }
             }
         }
     }

@@ -1189,10 +1189,11 @@ class PlayViewModel @AssistedInject constructor(
     private fun updateChatHistory() {
         viewModelScope.launchCatchError(block = {
             Log.d("<LOG>", "getChatHistory for $channelId")
-            val response = repo.getChatHistory(channelId)
 
-            /** TODO: add validation before setHistoryChat */
-            setHistoryChat(response.chatList.reversed())
+            chatStreams.setWaitingForHistory()
+            val response = repo.getChatHistory(channelId)
+            chatStreams.addHistoryChat(response.chatList.reversed())
+
             Log.d("<LOG>", "getChatHistory response : $response")
         }) {
             Log.d("<LOG>", "getChatHistory error : $it")
@@ -1439,10 +1440,6 @@ class PlayViewModel @AssistedInject constructor(
      */
     private fun setNewChat(chat: PlayChatUiModel) {
         chatStreams.addChat(chat)
-    }
-
-    private fun setHistoryChat(chatList: List<PlayChatUiModel>) {
-        chatStreams.addHistoryChat(chatList)
     }
 
     private suspend fun getReportSummaries(channelId: String): ReportSummaries = withContext(dispatchers.io) {
