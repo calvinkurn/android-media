@@ -320,6 +320,7 @@ class PlayFragment @Inject constructor(
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            newAnalytic.setData(channelData.channelDetail.channelInfo)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }

@@ -1,7 +1,10 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.R
+import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.ui.engagement.adapter.EngagementItemDecoration
 import com.tokopedia.play.ui.engagement.adapter.EngagementWidgetAdapter
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
@@ -52,6 +56,10 @@ class EngagementCarouselViewComponent(
                 val diff = TimeUnit.MILLISECONDS.toSeconds(timeInMillis)
                 if (diff < STOP_SCROLL_TIME) stopAutoScroll() else return
             }
+
+            override fun onWidgetImpressed(engagement: EngagementUiModel) {
+                listener.onWidgetImpressed(this@EngagementCarouselViewComponent, engagement)
+            }
         })
 
     private val snapHelper by lazy(LazyThreadSafetyMode.NONE) {
@@ -75,14 +83,21 @@ class EngagementCarouselViewComponent(
     private val rvSize: Int
         get() = carouselAdapter.itemCount
 
+    private val touchListener = View.OnTouchListener { v, event ->
+        if (event?.action == MotionEvent.ACTION_UP || event?.action == MotionEvent.ACTION_UP)
+            v.performClick()
+            listener.onWidgetSwipe(this@EngagementCarouselViewComponent, v?.findViewById<ConstraintLayout>(commonR.id.cl_vh_engagement)?.tag.toString())
+        false
+    }
+
     init {
         carousel.apply {
             adapter = carouselAdapter
             layoutManager = linearLayoutManager
+            setOnTouchListener(touchListener)
             addItemDecoration(EngagementItemDecoration(this.context))
             addOnScrollListener(scrollListener)
         }
-
         snapHelper.attachToRecyclerView(carousel)
     }
 
@@ -136,6 +151,8 @@ class EngagementCarouselViewComponent(
         )
 
         fun onWidgetClicked(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
+        fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String)
+        fun onWidgetImpressed(view: EngagementCarouselViewComponent, engagement: EngagementUiModel)
     }
 
     companion object {

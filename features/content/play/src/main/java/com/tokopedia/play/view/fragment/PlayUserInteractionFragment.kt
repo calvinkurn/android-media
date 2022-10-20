@@ -1831,12 +1831,31 @@ class PlayUserInteractionFragment @Inject constructor(
         when (engagement){
             is EngagementUiModel.Promo -> {
                 playViewModel.showCouponSheet(bottomSheetMaxHeight)
+                newAnalytic.clickVoucherWidget(engagement.info.id)
             }
             is EngagementUiModel.Game -> {
                 playViewModel.submitAction(PlayViewerNewAction.StartPlayingInteractive)
                 newAnalytic.clickActiveInteractive(interactiveId = playViewModel.interactiveData.id,
                     shopId = playViewModel.partnerId.toString(),
                     interactiveType = playViewModel.interactiveData, channelId = playViewModel.channelId)
+            }
+        }
+    }
+
+    override fun onWidgetSwipe(view: EngagementCarouselViewComponent, id: String) {
+        newAnalytic.swipeWidget(id)
+    }
+
+    override fun onWidgetImpressed(
+        view: EngagementCarouselViewComponent,
+        engagement: EngagementUiModel
+    ) {
+        when (engagement){
+            is EngagementUiModel.Promo -> {
+                newAnalytic.impressVoucherWidget(engagement.info.id)
+            }
+            is EngagementUiModel.Game -> {
+                newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.interactive.id, channelId = playViewModel.channelId)
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.tokopedia.play.model.tagitem
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -34,7 +34,7 @@ class TagItemBuilderImpl : TagItemBuilder {
     )
 
     override fun buildVoucherModel(
-        voucherList: List<MerchantVoucherUiModel>
+        voucherList: List<PlayVoucherUiModel.Merchant>
     ) = VoucherUiModel(
         voucherList = voucherList,
     )
@@ -78,8 +78,9 @@ class TagItemBuilderImpl : TagItemBuilder {
         copyable: Boolean,
         highlighted: Boolean,
         voucherStock: Int,
-        expiredDate: String
-    ) = MerchantVoucherUiModel(
+        expiredDate: String,
+        isPrivate: Boolean,
+    ) = PlayVoucherUiModel.Merchant(
         id = id,
         type = type,
         title = title,
@@ -89,6 +90,7 @@ class TagItemBuilderImpl : TagItemBuilder {
         highlighted = highlighted,
         voucherStock = voucherStock,
         expiredDate = expiredDate,
+        isPrivate = isPrivate,
     )
 
     override fun buildProductSection(
