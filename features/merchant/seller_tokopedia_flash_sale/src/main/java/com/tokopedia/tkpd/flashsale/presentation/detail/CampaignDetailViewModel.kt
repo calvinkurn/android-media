@@ -350,7 +350,8 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            countLocation
         )
     }
 
@@ -370,7 +371,8 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            countLocation
         )
     }
 
@@ -391,6 +393,7 @@ class CampaignDetailViewModel @Inject constructor(
             discountedPrice,
             submittedProductStockStatus,
             warehouses,
+            countLocation,
             totalSubsidy,
             statusText
         )
@@ -414,7 +417,8 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            countLocation
         )
     }
 
@@ -435,7 +439,8 @@ class CampaignDetailViewModel @Inject constructor(
             discount,
             discountedPrice,
             submittedProductStockStatus,
-            warehouses
+            warehouses,
+            countLocation
         )
     }
 

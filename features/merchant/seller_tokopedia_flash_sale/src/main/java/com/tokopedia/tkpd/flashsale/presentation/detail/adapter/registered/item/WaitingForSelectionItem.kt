@@ -20,6 +20,7 @@ data class WaitingForSelectionItem(
     val discountedPrice: SubmittedProduct.DiscountedPrice,
     val submittedProductStockStatus: ProductStockStatus,
     val warehouses: List<SubmittedProduct.Warehouse>?,
+    var countLocation: Int,
     var isSelected:Boolean = false,
     var isCheckBoxShown: Boolean = false
 ) : DelegateAdapterItem {

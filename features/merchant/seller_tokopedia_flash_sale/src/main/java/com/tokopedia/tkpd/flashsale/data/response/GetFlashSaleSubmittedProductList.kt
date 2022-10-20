@@ -139,6 +139,8 @@ data class GetFlashSaleSubmittedProductListResponse(
         @SerializedName("total_subsidy")
         val totalSubsidy: Long,
         @SerializedName("status_text")
-        val statusText: String
+        val statusText: String,
+        @SerializedName("count_location")
+        val countLocation: Int
     )
 }
