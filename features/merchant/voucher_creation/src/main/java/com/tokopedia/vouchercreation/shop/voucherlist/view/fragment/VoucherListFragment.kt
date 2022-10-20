@@ -226,6 +226,7 @@ class VoucherListFragment :
 
     private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
         universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
+            setOgImageUrl(voucherUiModel.imageSquare)
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     context?.let {
