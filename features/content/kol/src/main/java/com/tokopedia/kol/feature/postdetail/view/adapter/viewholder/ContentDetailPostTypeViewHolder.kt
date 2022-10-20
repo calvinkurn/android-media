@@ -447,13 +447,21 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         topAdsProductName.text = getCTAButtonText(feedXCard)
-        topAdsProductCampaignCopywritingText.text = feedXCard.cta.subtitle
+        val ctaSubtitle =
+            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
+                ?: String.EMPTY else String.EMPTY
+        topAdsProductCampaignCopywritingText.text = ctaSubtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
         )
-        topAdsProductCampaignCopywritingText.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.campaign.isRSFollowersRestrictionOn)
+        topAdsProductCampaignCopywritingText.showWithCondition(
+            shouldShowCtaSubtitile(
+                ctaSubtitle,
+                feedXCard
+            )
+        )
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -466,6 +474,9 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             }
         }
     }
+    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
+        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
+
 
     private fun bindViews(feedXCard: FeedXCard){
 

@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.transition.TransitionManager
 import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.exoplayer2.text.Subtitle
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
@@ -537,13 +538,16 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         asgcCtaProductName.text = getCTAButtonText(feedXCard)
-        asgcProductCampaignCopywring.text = feedXCard.cta.subtitle
+        val ctaSubtitle =
+            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
+                ?: String.EMPTY else String.EMPTY
+        asgcProductCampaignCopywring.text = ctaSubtitle
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                     feedXCard.media.any { it.isImage }
         )
-        asgcProductCampaignCopywring.showWithCondition(feedXCard.campaign.isRilisanSpl && feedXCard.campaign.isRSFollowersRestrictionOn)
+        asgcProductCampaignCopywring.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle, feedXCard))
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -579,6 +583,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
     }
+
+    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
+        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
 
     fun bindLike(feedXCard: FeedXCard) {
         val isLongVideo = feedXCard.media.isNotEmpty() && feedXCard.media.first().type == TYPE_LONG_VIDEO
