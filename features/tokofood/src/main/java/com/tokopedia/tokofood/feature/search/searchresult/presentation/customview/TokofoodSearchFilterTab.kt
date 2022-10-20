@@ -56,7 +56,6 @@ class TokofoodSearchFilterTab(
 
     fun removeListener() {
         removeScrollListeners()
-        sortFilter.removeScrollListener()
     }
 
     private fun initSortFilter() {
