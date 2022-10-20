@@ -10,6 +10,7 @@ import com.tokopedia.play.view.type.OriginalPrice
 import com.tokopedia.play.view.type.OutOfStock
 import com.tokopedia.play.view.type.StockAvailable
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
@@ -56,6 +57,15 @@ class PlayUiModelMapper @Inject constructor(
 
     fun mapChat(input: PlayChat): PlayChatUiModel {
         return chatMapper.mapChat(input)
+    }
+
+    fun mapHistoryChat(response: PlayChatHistoryResponse): PlayChatHistoryUiModel {
+        return PlayChatHistoryUiModel(
+            chatList = response.wrapper.data.map {
+                mapChat(it)
+            },
+            nextCursor = response.wrapper.pagination.nextCursor
+        )
     }
 
     fun mapStatus(input: ChannelStatusResponse): PlayStatusType {

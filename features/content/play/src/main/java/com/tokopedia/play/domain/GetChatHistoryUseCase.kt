@@ -25,13 +25,13 @@ class GetChatHistoryUseCase @Inject constructor(
     }
 
     suspend fun executeOnBackground(
-        channelID: String,
+        channelId: String,
         cursor: String = "",
     ): PlayChatHistoryResponse {
         setRequestParams(
             mapOf(
                 PARAM_SEARCH_TYPE to "HISTORY",
-                PARAM_CHANNEL_ID to channelID,
+                PARAM_CHANNEL_ID to channelId,
                 PARAM_PAGINATION to mapOf(
                     PARAM_CURSOR to cursor
                 )
