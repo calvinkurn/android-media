@@ -103,7 +103,6 @@
     <string name="deals_checkout_voucher_delivery_destination">Tujuan pengiriman Voucher</string>
     <string name="deals_checkout_ticker_desc">Kamu bisa cek status pembelian dan e-voucher lewat halaman Daftar Transaksi</string>
     <string name="deals_checkout_email">Email</string>
-    <string name="deals_checkout_phone_number">Nomor Telepon</string>
     <string name="deals_checkout_pricing_details">Rincian Harga</string>
     <string name="deals_checkout_text_discount_promo">Diskon Promo</string>
     <string name="deals_checkout_text_service_fees">Biaya Layanan</string>
