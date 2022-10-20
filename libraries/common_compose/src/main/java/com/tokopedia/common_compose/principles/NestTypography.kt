@@ -1,5 +1,7 @@
 package com.tokopedia.common_compose.principles
 
+import android.content.res.Configuration.UI_MODE_NIGHT_NO
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 
 @Composable
@@ -95,4 +98,30 @@ fun NestTypographyAnnotationPreview() {
         },
         Modifier
     )
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_YES)
+@Composable
+fun NestLightPreview() {
+    NestTheme {
+        NestTypography(
+            text = "Flash Sale",
+            textStyle = NestTheme.typography.display3.copy(
+                color = LocalNestColor.current.NN._0
+            )
+        )
+    }
+}
+
+@Preview(uiMode = UI_MODE_NIGHT_NO)
+@Composable
+fun NestDarkPreview() {
+    NestTheme {
+        NestTypography(
+            text = "Flash Sale",
+            textStyle = NestTheme.typography.display3.copy(
+                color = LocalNestColor.current.NN._0
+            )
+        )
+    }
 }

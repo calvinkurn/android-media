@@ -17,11 +17,11 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tokopedia.common_compose.R
+import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
 
 data class SortFilter(val title: String, val isSelected : Boolean, val onClick: () -> Unit)
@@ -59,7 +59,7 @@ private fun ClearSortFilterItem(onClearFilter: () -> Unit) {
                 .clickable { onClearFilter() }
                 .padding(horizontal = 12.dp),
             contentDescription = "Clear Filter Icon",
-            tint = colorResource(id = com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+            tint = LocalNestColor.current.NN._500
         )
     }
 }

@@ -229,6 +229,7 @@ ext {
     ]
 
     miscDependencies = [
+            androidxCore          : 'androidx.core:core-ktx:1.8.0',
             javaPoet              : 'com.squareup:javapoet:1.11.1',
             autoService           : "com.google.auto.service:auto-service:1.0-rc6",
             kotlinPoet            : "com.squareup:kotlinpoet:1.4.3",
