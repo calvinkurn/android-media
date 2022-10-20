@@ -135,7 +135,6 @@ class ProductChooserIdGenerator {
                 configStore = configStore,
                 userSession = userSession,
                 dispatchers = CoroutineDispatchersProvider,
-                isEligibleForPin = isEligibleForPin,
             )
         }
     }

@@ -27,7 +27,6 @@ fun productSetupViewModel(
     configStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     dispatchers: CoroutineDispatchers = CoroutineDispatchersProvider,
-    isEligibleForPin: Boolean = false,
 ): PlayBroProductSetupViewModel {
     return PlayBroProductSetupViewModel(
         productSectionList = productSectionList,
@@ -37,7 +36,6 @@ fun productSetupViewModel(
         configStore = configStore,
         userSession = userSession,
         dispatchers = dispatchers,
-        isEligibleForPin = isEligibleForPin,
     )
 }
 
