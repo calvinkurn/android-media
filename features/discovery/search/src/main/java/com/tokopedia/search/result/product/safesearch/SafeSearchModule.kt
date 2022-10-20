@@ -12,7 +12,14 @@ object SafeSearchModule {
     @JvmStatic
     @Provides
     @SearchScope
-    fun provideSafeSearchPreference(): MutableSafeSearchPreference {
+    fun provideSafeSearchPreference(): SafeSearchPreference {
+        return SafeSearchMemoryPreference
+    }
+
+    @JvmStatic
+    @Provides
+    @SearchScope
+    fun provideMutableSafeSearchPreference(): MutableSafeSearchPreference {
         return SafeSearchMemoryPreference
     }
 
