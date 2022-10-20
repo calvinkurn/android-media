@@ -65,15 +65,10 @@ import com.tokopedia.product.addedit.productlimitation.presentation.dialog.Produ
 import com.tokopedia.product.addedit.productlimitation.presentation.model.ProductLimitationModel
 import com.tokopedia.product.addedit.shipment.di.DaggerAddEditProductShipmentComponent
 import com.tokopedia.product.addedit.shipment.presentation.adapter.ShipmentAdapter
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CONVENTIONAL_VALIDATION
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_CONVENTIONAL_INDEX
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_ON_DEMAND_INDEX
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.CPL_THRESHOLD_SIZE
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_CPL_PARAM
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_PRODUCT_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
-import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.ON_DEMAND_VALIDATION
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
