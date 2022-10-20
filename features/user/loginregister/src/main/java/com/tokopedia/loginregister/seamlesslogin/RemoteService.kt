@@ -3,13 +3,10 @@ package com.tokopedia.loginregister.seamlesslogin
 import android.app.Service
 import android.content.Intent
 import android.os.Bundle
-import android.os.DeadObjectException
 import android.os.IBinder
-import androidx.lifecycle.LifecycleService
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.loginregister.RemoteApi
 import com.tokopedia.loginregister.common.di.DaggerLoginRegisterComponent
-import com.tokopedia.loginregister.seamlesslogin.data.model.GenerateKeyData
 import com.tokopedia.loginregister.seamlesslogin.di.DaggerSeamlessLoginComponent
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginModule
 import com.tokopedia.loginregister.seamlesslogin.di.SeamlessLoginQueryModule
