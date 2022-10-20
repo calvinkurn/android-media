@@ -2,16 +2,15 @@ package com.tokopedia.sellerapp.navigation
 
 import androidx.navigation.NavController
 import com.tokopedia.sellerapp.util.ScreenConstant.ACCEPT_ORDER_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.APP_NOT_INSTALLED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.CONNECTION_FAILED_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.FORMAT_NAVIGATION_PATH
 import com.tokopedia.sellerapp.util.ScreenConstant.HOME_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION_DETAIL_SCREEN
+import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_DETAIL_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.ORDER_SUMMARY_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION_DETAIL_SCREEN
-import com.tokopedia.sellerapp.util.ScreenConstant.NOTIFICATION_LIST_SCREEN
 import com.tokopedia.sellerapp.util.ScreenConstant.SPLASH_SCREEN
 
 class ScreenNavigation(navController: NavController) {
