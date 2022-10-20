@@ -22,7 +22,7 @@ import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSession
-import java.util.*
+import java.util.Locale
 
 class AffiliatePromotionShopItemVH(
     itemView: View,
@@ -64,8 +64,6 @@ class AffiliatePromotionShopItemVH(
             setUpFooterData(it)
             setUpPromotionClickListener(it)
         }
-
-
     }
 
     private fun setUpAdditionData(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item) {
@@ -197,6 +195,9 @@ class AffiliatePromotionShopItemVH(
     private fun getMessageData(
         item: AffiliateSearchData.SearchAffiliate.Data.Card.Item,
     ): String? {
-        return item.status?.messages?.firstOrNull()?.title
+        return when(item.status?.messages?.firstOrNull()?.messageType){
+            SHOP_INACTIVE , SHOP_CLOSED -> item.status?.messages?.firstOrNull()?.title
+            else -> ""
+        }
     }
 }

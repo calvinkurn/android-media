@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.ui.custom
 
+import com.tokopedia.affiliate.EMPTY_STOCK
+import com.tokopedia.affiliate.PRODUCT_INACTIVE
 import com.tokopedia.affiliate.model.response.AffiliateSearchData
 import com.tokopedia.productcard.ProductCardModel
 
@@ -95,8 +97,14 @@ class AffiliatePromotionProductCard {
             return (item.footer?.find { it?.footerType == type.type })
         }
 
-        private fun getMessageDataFromType(item: AffiliateSearchData.SearchAffiliate.Data.Card.Item) : String =
-            item.status?.messages?.firstOrNull()?.title.orEmpty()
+        private fun getMessageDataFromType(
+            item: AffiliateSearchData.SearchAffiliate.Data.Card.Item
+        ): String {
+            return when (item.status?.messages?.firstOrNull()?.messageType) {
+                EMPTY_STOCK, PRODUCT_INACTIVE -> item.status?.messages?.firstOrNull()?.title.orEmpty()
+                else -> ""
+            }
+        }
 
     }
 }
