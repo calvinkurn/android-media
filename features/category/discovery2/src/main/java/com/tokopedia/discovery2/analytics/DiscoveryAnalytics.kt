@@ -678,7 +678,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
             productCardImpressionLabel = "$login - $productTypeName"
             productMap[KEY_NAME] = it.name.toString()
             productMap[KEY_ID] = it.productId.toString()
-            productMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
+            productMap[PRICE] = convertRupiahToInt(it.price ?: "")
             productMap[KEY_BRAND] = NONE_OTHER
             productMap[KEY_ITEM_CATEGORY] = NONE_OTHER
             productMap[KEY_VARIANT] = NONE_OTHER
@@ -857,7 +857,7 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
                 productCardImpressionLabel = "$login - $productTypeName"
                 listMap[KEY_NAME] = it.name.toString()
                 listMap[KEY_ID] = it.productId.toString()
-                listMap[PRICE] = CurrencyFormatHelper.convertRupiahToInt(it.price ?: "")
+                listMap[PRICE] = convertRupiahToInt(it.price ?: "")
                 listMap[KEY_BRAND] = NONE_OTHER
                 listMap[KEY_ITEM_CATEGORY] = NONE_OTHER
                 listMap[KEY_VARIANT] = NONE_OTHER
@@ -2279,5 +2279,12 @@ open class DiscoveryAnalytics(pageType: String = DISCOVERY_DEFAULT_PAGE_TYPE,
         map[CURRENT_SITE] = TOKOPEDIA_MARKET_PLACE
         map[USER_ID] = userSession.userId
         getTracker().sendEnhanceEcommerceEvent(map)
+    }
+
+    private fun convertRupiahToInt(rupiah: String): Int {
+        return if(rupiah.isEmpty() || rupiah.contains("?"))
+            0
+        else
+            CurrencyFormatHelper.convertRupiahToInt(rupiah)
     }
 }

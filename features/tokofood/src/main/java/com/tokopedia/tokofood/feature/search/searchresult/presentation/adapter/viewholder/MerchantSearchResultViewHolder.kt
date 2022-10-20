@@ -1,6 +1,7 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder
 
 import android.view.View
+import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -8,7 +9,6 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -220,14 +221,16 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun addImpressionListener(merchant: Merchant) {
-        binding?.root?.addOnImpressionListener(merchant) {
-            listener?.onImpressMerchant(merchant, adapterPosition)
+        binding?.root?.addAndReturnImpressionListener(merchant) {
+            listener?.onImpressMerchant(merchant, bindingAdapterPosition)
+        }?.let { impressionListener ->
+            listener?.onImpressionListenerAdded(impressionListener)
         }
     }
 
     private fun setOnClickListener(merchant: Merchant) {
         binding?.root?.setOnClickListener {
-            listener?.onClickMerchant(merchant, adapterPosition)
+            listener?.onClickMerchant(merchant, bindingAdapterPosition)
         }
     }
 
@@ -264,6 +267,7 @@ class MerchantSearchResultViewHolder(
         fun onClickMerchant(merchant: Merchant, position: Int)
         fun onImpressMerchant(merchant: Merchant, position: Int)
         fun onBranchButtonClicked(merchant: Merchant)
+        fun onImpressionListenerAdded(listener: ViewTreeObserver.OnScrollChangedListener)
     }
 
     companion object {
