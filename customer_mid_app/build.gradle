@@ -47,6 +47,7 @@ dependencies {
 
     implementation projectOrAar(rootProject.ext.features.notifTroubleshooter)
     implementation projectOrAar(rootProject.ext.features.affiliateCommon)
+    implementation projectOrAar(rootProject.ext.features.contentCommon)
     implementation projectOrAar(rootProject.ext.features.feedComponent)
     implementation projectOrAar(rootProject.ext.features.kolCommon)
     implementation projectOrAar(rootProject.ext.features.home)
@@ -380,7 +381,7 @@ dependencies {
     androidTestImplementation rootProject.ext.testDependencies.archCoreTesting
     androidTestImplementation rootProject.ext.testDependencies.benchmark
     androidTestImplementation rootProject.ext.testDependencies.testCore
-    androidTestImplementation projectOrAar(rootProject.ext.features.playTest)
+    androidTestImplementation projectOrAar(rootProject.ext.features.contentTest)
 
     debugImplementation rootProject.ext.testDependencies.fragmentTest
 }

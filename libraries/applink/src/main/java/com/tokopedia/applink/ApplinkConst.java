@@ -735,6 +735,10 @@ public interface ApplinkConst {
         String VALUE_GALLERY_PAGE = "1"; // gallery page
     }
 
+    interface MediaEditor {
+        String MEDIA_EDITOR = "tokopedia://media-editor";
+    }
+
     interface GeneralInfo {
         String GENERAL_INFO_FORCE_CLOSE_PAGE = "tokopedia://general-info-close";
     }
