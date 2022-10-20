@@ -16,8 +16,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.tokopedia.common_compose.ui.LocalNestColor
 import com.tokopedia.common_compose.ui.NestTheme
+
 
 @Composable
 fun NestTypography(
@@ -107,7 +107,7 @@ fun NestLightPreview() {
         NestTypography(
             text = "Flash Sale",
             textStyle = NestTheme.typography.display3.copy(
-                color = LocalNestColor.current.NN._0
+                color = NestTheme.colors.NN._0
             )
         )
     }
@@ -120,7 +120,7 @@ fun NestDarkPreview() {
         NestTypography(
             text = "Flash Sale",
             textStyle = NestTheme.typography.display3.copy(
-                color = LocalNestColor.current.NN._0
+                color = NestTheme.colors.NN._0
             )
         )
     }
