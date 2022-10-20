@@ -1,8 +1,8 @@
 package com.tokopedia.topads.dashboard.data.raw
 
 const val BUDGET_RECOMMENDATION = """
-    query topadsGetDailyBudgetRecommendation(${'$'}shopId: Int!) {
-      topadsGetDailyBudgetRecommendation(shopId:${'$'}shopId    ) {
+    query topadsGetDailyBudgetRecommendationV2(${'$'}shopId: String!) {
+      topadsGetDailyBudgetRecommendationV2(shopId:${'$'}shopId    ) {
         data {
           group_id
           group_name

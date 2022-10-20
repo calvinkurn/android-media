@@ -127,6 +127,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiMod
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TickerWidgetUiModel
@@ -647,7 +648,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         )
     }
 
-    override fun sendTableHyperlinkClickEvent(dataKey: String, url: String, isEmpty: Boolean) {
+    override fun sendTableHyperlinkClickEvent(
+        dataKey: String,
+        url: String,
+        isEmpty: Boolean
+    ) {
         SellerHomeTracking.sendTableClickHyperlinkEvent(dataKey, url, isEmpty)
     }
 
@@ -722,10 +727,11 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     override fun sendUnificationTableItemClickEvent(
         element: UnificationWidgetUiModel,
         text: String,
+        meta: TableRowsUiModel.Meta,
         isEmpty: Boolean
     ) {
         val selectedTab = element.data?.tabs?.firstOrNull { it.isSelected } ?: return
-        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab, text, isEmpty)
+        SellerHomeTracking.sendUnificationTableItemClickEvent(element.dataKey, selectedTab, text, meta, isEmpty)
     }
 
     override fun showUnificationWidgetCoachMark(anchor: View) {

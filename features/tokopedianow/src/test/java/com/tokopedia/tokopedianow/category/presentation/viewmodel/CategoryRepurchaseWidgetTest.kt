@@ -232,6 +232,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
             addToCartQty,
             cartId,
         )
+        `Then assert update toolbar notification true`()
     }
 
     private fun `When add to cart repurchase product`(
@@ -346,6 +347,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
 
         `Then assert repurchase product quantity`(repurchaseWidgetProduct, productUpdatedQuantity)
         `Then verify mini cart is refreshed`(2)
+        `Then assert update toolbar notification true`()
     }
 
     @Test
@@ -389,6 +391,7 @@ class CategoryRepurchaseWidgetTest: CategoryTestFixtures() {
         `Then assert repurchase product quantity`(repurchaseWidgetProduct, 0)
         `Then assert cart message event`(expectedSuccessMessage = deleteCartMessage)
         `Then verify mini cart is refreshed`(2)
+        `Then assert update toolbar notification true`()
     }
 
     @Test
