@@ -12,7 +12,9 @@ import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
+import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.viewholders.BannerComponentViewHolder
 import com.tokopedia.home_component.viewholders.CategoryNavigationViewHolder
 import com.tokopedia.home_component.viewholders.DynamicIconViewHolder
@@ -54,7 +56,7 @@ class DtHomeAdapterTypeFactory(
     private val featuredShopListener: FeaturedShopListener,
 //    private val tokoNowCategoryGridListener: TokoNowCategoryGridListener? = null,
     private val bannerComponentListener: BannerComponentListener? = null,
-//    private val homeProductRecomListener: HomeProductRecomListener? = null,
+//
 //    private val tokoNowProductCardListener: TokoNowProductCardListener? = null,
 //    private val homeSharingEducationListener: HomeSharingListener? = null,
 //    private val homeEducationalInformationListener: HomeEducationalInformationListener? = null,
@@ -64,6 +66,8 @@ class DtHomeAdapterTypeFactory(
     private val dynamicLegoBannerCallback: DynamicLegoBannerListener? = null,
 //    private val homeSwitcherListener: HomeSwitcherViewHolder.HomeSwitcherListener? = null,
 //    private val homeLeftCarouselAtcListener: HomeLeftCarouselAtcCallback? = null,
+    private val homeTopComponentListener: HomeComponentListener? = null,
+    private val homeTopCarouselListener: MixTopComponentListener? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
 //    private val playWidgetCoordinator: PlayWidgetCoordinator? = null
 ) : BaseAdapterTypeFactory(),
@@ -126,6 +130,7 @@ class DtHomeAdapterTypeFactory(
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
     override fun type(mixLeftDataModel: MixLeftDataModel): Int =
         MixLeftComponentViewHolder.LAYOUT
+
     override fun type(featuredShopDataModel: FeaturedShopDataModel): Int =
         FeaturedShopViewHolder.LAYOUT
 
@@ -175,7 +180,12 @@ class DtHomeAdapterTypeFactory(
 
             FeaturedShopViewHolder.LAYOUT -> FeaturedShopViewHolder(view, featuredShopListener, null)
 
-            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(view,null,null,true)
+            MixTopComponentViewHolder.LAYOUT -> MixTopComponentViewHolder(
+                view,
+                homeTopComponentListener,
+                homeTopCarouselListener,
+                true
+            )
             // endregion
             else -> {
                 //TODO - should handle biar gak crash

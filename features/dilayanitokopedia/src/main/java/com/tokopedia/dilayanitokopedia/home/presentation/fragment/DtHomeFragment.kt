@@ -3,6 +3,7 @@ package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
@@ -36,7 +38,9 @@ import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.listener.FeaturedShopListener
+import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
+import com.tokopedia.home_component.listener.MixTopComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.observe
@@ -89,7 +93,7 @@ class DtHomeFragment : Fragment() {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 dtView = createDtView(),
-                null,
+                dtChooseAddressWidgetListener = null,
                 featuredShopListener = createFeatureShopCallback(),
 
 //                homeTickerListener = this,
@@ -106,7 +110,8 @@ class DtHomeFragment : Fragment() {
 //                dynamicLegoBannerCallback = createLegoBannerCallback(),
 //                homeSwitcherListener = createHomeSwitcherListener(),
 //                homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
-
+                homeTopComponentListener = createTopComponentCallback(),
+                homeTopCarouselListener = createTopCarouselCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback()
 //                playWidgetCoordinator = createPlayWidgetCoordinator()
@@ -114,6 +119,7 @@ class DtHomeFragment : Fragment() {
             differ = HomeListDiffer()
         )
     }
+
 
     private fun createFeatureShopCallback(): FeaturedShopListener {
         return object : FeaturedShopListener {
@@ -685,5 +691,93 @@ class DtHomeFragment : Fragment() {
 //                }
 //            }
 //    }
+
+    private fun createTopComponentCallback(): HomeComponentListener? {
+        return object : HomeComponentListener {
+            override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
+                if (channelModel.channelConfig.isAutoRefreshAfterExpired) {
+//                    homeCategoryListener.getDynamicChannelData(visitable, channelModel, channelPosition)
+                } else {
+//                    homeCategoryListener.removeViewHolderAtPosition(channelPosition)
+                }
+            }
+
+        }
+
+    }
+
+    private fun createTopCarouselCallback(): MixTopComponentListener? {
+        return object : MixTopComponentListener {
+            override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
+            }
+
+            override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onMixtopButtonClicked(channel: ChannelModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onSectionItemClicked(applink: String) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onBackgroundClicked(channel: ChannelModel) {
+                TODO("Not yet implemented")
+            }
+
+            override fun onProductCardImpressed(
+                channel: ChannelModel,
+                channelGrid: ChannelGrid,
+                adapterPosition: Int,
+                position: Int
+            ) {
+            }
+
+            override fun onProductCardClicked(
+                channel: ChannelModel,
+                channelGrid: ChannelGrid,
+                adapterPosition: Int,
+                position: Int,
+                applink: String
+            ) {
+               onActionLinkClicked(channelGrid.applink)
+            }
+
+            override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
+                TODO("Not yet implemented")
+            }
+
+        }
+    }
+
+
+    private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
+        var mLastClickTime = System.currentTimeMillis()
+        val CLICK_TIME_INTERVAL: Long = 500
+
+        val now = System.currentTimeMillis()
+        if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
+            return
+        }
+        mLastClickTime = now
+        if (TextUtils.isEmpty(actionLink)) {
+            return
+        }
+        if (activity != null
+            && RouteManager.isSupportApplink(activity, actionLink)
+        ) {
+            openApplink(actionLink)
+        } else {
+//            openWebViewURL(actionLink, activity)
+        }
+    }
+
+    private fun openApplink(appLink: String) {
+        if (appLink.isNotEmpty()) {
+            RouteManager.route(context, appLink)
+        }
+    }
 
 }
