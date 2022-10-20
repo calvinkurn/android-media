@@ -5,21 +5,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.bottomsheet.ProductBottomSheetData
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
+import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
 import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.item_posttag.*
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 
-class ProductItemInfoBottomSheet : BottomSheetUnify() {
+class ProductItemInfoBottomSheet(private val viewModelFactory: ViewModelProvider.Factory) :
+    BottomSheetUnify() {
+
+    private var binding: ItemPosttagBinding? = null
+
+    private var viewModel: FeedProductItemInfoViewModel? = null
 
     private lateinit var listProducts: List<FeedXProduct>
     private var listener: Listener? = null
@@ -42,32 +52,46 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
 
+    init {
+        context?.let {
+            activity?.let {
+                viewModel = ViewModelProvider(
+                    it,
+                    viewModelFactory
+                ).get(FeedProductItemInfoViewModel::class.java)
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val contentView = View.inflate(context, R.layout.item_posttag, null)
+        binding = ItemPosttagBinding.inflate(inflater, container, false)
         setTitle(getString(R.string.content_product_bs_title))
-        setChild(contentView)
+        setChild(binding?.root)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        cardTitlePostTag?.gone()
-        rvPosttag.show()
-        rvPosttag.setHasFixedSize(true)
+        binding?.cardTitlePostTag?.gone()
+        binding?.rvPosttag?.show()
+        binding?.rvPosttag?.setHasFixedSize(true)
         val layoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvPosttag.isNestedScrollingEnabled = false
-        rvPosttag.layoutManager = layoutManager
-        rvPosttag.setPadding(0, 0, 0, 0)
+        binding?.rvPosttag?.isNestedScrollingEnabled = false
+        binding?.rvPosttag?.layoutManager = layoutManager
+        binding?.rvPosttag?.setPadding(0, 0, 0, 0)
         if (::listProducts.isInitialized) {
             setAdapter()
         } else {
             dismiss()
         }
+
+        viewModel?.fetchMerchantVoucherSummary(shopId)
+        observe()
 
         setCloseClickListener {
             dismissedByClosing = true
@@ -80,19 +104,33 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             }
         }
     }
-    private fun setAdapter() {
-            rvPosttag.adapter = adapter
-              if (listProducts.isNotEmpty()) {
-                listener?.onTaggedProductCardImpressed(
-                    if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
-                    listProducts,
-                    postType,
-                    shopId,
-                    isFollowed,
-                    mediaType
-                )
-                adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
+
+    private fun observe() {
+        viewModel?.merchantVoucherSummary?.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    Toast.makeText(requireContext(), "Berhasil", Toast.LENGTH_SHORT).show()
+                }
+                is Fail -> {
+                    Toast.makeText(requireContext(), "Gagal", Toast.LENGTH_SHORT).show()
+                }
             }
+        }
+    }
+
+    private fun setAdapter() {
+        binding?.rvPosttag?.adapter = adapter
+        if (listProducts.isNotEmpty()) {
+            listener?.onTaggedProductCardImpressed(
+                if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
+                listProducts,
+                postType,
+                shopId,
+                isFollowed,
+                mediaType
+            )
+            adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
+        }
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagViewModelNew> {
@@ -101,8 +139,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         val desc = context?.getString(R.string.feed_share_default_text)
         val itemList: MutableList<ProductPostTagViewModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
-                postDescription = desc?.replace("%s", postTagItem.authorName).toString()
-                adClickUrl = postTagItem.adClickUrl
+            postDescription = desc?.replace("%s", postTagItem.authorName).toString()
+            adClickUrl = postTagItem.adClickUrl
             val item = ProductPostTagViewModelNew(
                 postTagItem.id,
                 postTagItem.name,
@@ -164,13 +202,13 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         show(fragmentManager, "")
     }
 
-    fun changeWishlistIconOnWishlistSuccess(rowNumber: Int){
-            val item = adapter?.getItem(rowNumber)
-            item?.isWishlisted = true
-            val payload = Bundle().apply {
-                putBoolean(WISHLIST_ITEM_CLICKED, true)
-            }
-            adapter?.notifyItemChanged(rowNumber, payload)
+    fun changeWishlistIconOnWishlistSuccess(rowNumber: Int) {
+        val item = adapter?.getItem(rowNumber)
+        item?.isWishlisted = true
+        val payload = Bundle().apply {
+            putBoolean(WISHLIST_ITEM_CLICKED, true)
+        }
+        adapter?.notifyItemChanged(rowNumber, payload)
     }
 
     override fun onDestroy() {
@@ -184,6 +222,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             context: Context,
             shopId: String = ""
         )
+
         fun onTaggedProductCardImpressed(
             activityId: String,
             postTagItemList: List<FeedXProduct>,
@@ -200,10 +239,12 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             itemPosition: Int,
             mediaType: String
         )
+
         fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew)
         fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int)
     }
-    companion object{
+
+    companion object {
         private const val WISHLIST_ITEM_CLICKED = "wishlist_button_clicked"
         private const val PRODUCT_TYPE = "product"
     }

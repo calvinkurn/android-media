@@ -2436,7 +2436,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (products.isNotEmpty()) {
             val finalId = if (card.typename == TYPE_FEED_X_CARD_PLAY) card.playChannelID else card.id
             if (!::productTagBS.isInitialized)
-            productTagBS = ProductItemInfoBottomSheet()
+            productTagBS = ProductItemInfoBottomSheet(viewModelFactory)
             val label = getTrackerLabelSuffixForCampaignSaleTracker(card)
             feedAnalytics.eventTagClicked(
                 finalId,
