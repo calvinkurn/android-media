@@ -371,6 +371,9 @@ class ChatbotFragment :
         smallReplyBox = view.findViewById(R.id.small_reply_box)
         smallReplyBox?.bindCommentTextBackground()
         bigReplyBox = view.findViewById(R.id.big_reply_box)
+        bigReplyBox?.show()
+        smallReplyBox?.showReplyBox()
+
         setUpBigReplyBoxListeners()
 
         ticker = view.findViewById(R.id.chatbot_ticker)
@@ -594,12 +597,22 @@ class ChatbotFragment :
     }
 
     override fun blockTyping() {
-        getViewState()?.handleReplyBox(false)
+        showReplyBox(false)
     }
 
     override fun enableTyping() {
-        getViewState()?.handleReplyBox(true)
+        showReplyBox(true)
         swipeToRefresh.setMargin(0, 0, 0, 0)
+    }
+
+    private fun showReplyBox(toShow: Boolean) {
+        if (toShow) {
+            smallReplyBox?.showReplyBox()
+            bigReplyBox?.show()
+        } else {
+            smallReplyBox?.showReplyBox()
+            bigReplyBox?.show()
+        }
     }
 
     override fun onCreateViewState(view: View): BaseChatViewState {
@@ -1058,11 +1071,11 @@ class ChatbotFragment :
     }
 
     override fun handleSmallReplyBox(hidden: Boolean) {
-        if (hidden) {
-            smallReplyBox?.hideReplyBox()
-        } else {
-            smallReplyBox?.showReplyBox()
-        }
+//        if (hidden) {
+//            smallReplyBox?.hideReplyBox()
+//        } else {
+//            smallReplyBox?.showReplyBox()
+//        }
     }
 
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {

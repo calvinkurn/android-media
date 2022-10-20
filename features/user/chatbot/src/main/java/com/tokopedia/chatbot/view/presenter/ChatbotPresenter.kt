@@ -86,7 +86,7 @@ import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttribut
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
 import com.tokopedia.chatbot.domain.pojo.replyBox.BigReplyBoxAttribute
-import com.tokopedia.chatbot.domain.pojo.replyBox.ReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
@@ -372,15 +372,27 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleReplyBoxWSToggle() {
-        val replyBoxAttribute = Gson().fromJson(chatResponse.attachment?.attributes, ReplyBoxAttribute::class.java)
+        val dynamicAttachmentContents =
+            Gson().fromJson(chatResponse.attachment?.attributes, DynamicAttachment::class.java)
 
-        when(replyBoxAttribute.contentCode) {
+        Log.d("LEVI", "handleReplyBoxWSToggle: $dynamicAttachmentContents")
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        when (replyBoxAttribute?.contentCode) {
             TYPE_BIG_REPLY_BOX -> {
-                val bigReplyBoxContent = Gson().fromJson(replyBoxAttribute?.dynamicContent, BigReplyBoxAttribute::class.java)
+                val bigReplyBoxContent = Gson().fromJson(
+                    replyBoxAttribute.dynamicContent,
+                    BigReplyBoxAttribute::class.java
+                )
                 handleBigReplyBoxWS(bigReplyBoxContent)
             }
             TYPE_SMALL_REPLY_BOX -> {
-                val smallReplyBoxContent = Gson().fromJson(replyBoxAttribute?.dynamicContent, SmallReplyBoxAttribute::class.java)
+                val smallReplyBoxContent = Gson().fromJson(
+                    replyBoxAttribute?.dynamicContent,
+                    SmallReplyBoxAttribute::class.java
+                )
                 handleSmallReplyBoxWS(smallReplyBoxContent)
             }
             else -> {
@@ -391,13 +403,13 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
-        if (bigReplyBoxContent.isActive) {
-            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
-        }
+//        if (bigReplyBoxContent.isActive) {
+//            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
+//        }
     }
 
     private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
-        view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
+     //   view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
     }
 
     private fun onError(): (Throwable) -> Unit {
