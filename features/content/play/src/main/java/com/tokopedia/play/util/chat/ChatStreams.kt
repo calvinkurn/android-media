@@ -70,7 +70,7 @@ class ChatStreams @AssistedInject constructor(
                 mutex.withLock {
                     pendingChats.clear()
                     pendingChats.addAll(chatList)
-                    sendPendingChats()
+                    sendPendingChats(isClearAllPrevChats = true)
                 }
             }
         }
@@ -85,10 +85,14 @@ class ChatStreams @AssistedInject constructor(
         }
     }
 
-    private fun sendPendingChats() {
+    private fun sendPendingChats(isClearAllPrevChats: Boolean = false) {
         if (pendingChats.isEmpty()) return
+
         _chats.update {
-            it.takeLast((MAX_CHAT - pendingChats.size).coerceAtLeast(0)) + pendingChats
+            if(isClearAllPrevChats)
+                pendingChats.takeLast(MAX_CHAT)
+            else
+                it.takeLast((MAX_CHAT - pendingChats.size).coerceAtLeast(0)) + pendingChats
         }
         pendingChats.clear()
     }

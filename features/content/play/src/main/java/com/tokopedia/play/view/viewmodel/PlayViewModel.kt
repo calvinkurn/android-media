@@ -1191,6 +1191,7 @@ class PlayViewModel @AssistedInject constructor(
             Log.d("<LOG>", "getChatHistory for $channelId")
 
             chatStreams.setWaitingForHistory()
+            delay(5000)
             val response = repo.getChatHistory(channelId)
             chatStreams.addHistoryChat(response.chatList.reversed())
 
