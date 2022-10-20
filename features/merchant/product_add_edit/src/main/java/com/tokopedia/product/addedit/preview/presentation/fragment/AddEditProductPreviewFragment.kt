@@ -21,6 +21,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.PRODUCT_MANAGE
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -308,7 +309,6 @@ class AddEditProductPreviewFragment :
         observeGetShopInfoLocation()
         observeSaveShipmentLocationData()
         observeAdminPermission()
-        observeProductLimitationData()
         observeMustFillParentWeight()
         observeIsShopModerated()
 
@@ -1197,6 +1197,8 @@ class AddEditProductPreviewFragment :
                     val status = it.data
                     if (status) {
                         showBottomSheet()
+                    } else {
+                        observeProductLimitationData()
                     }
                 }
                 is Fail -> {
@@ -1835,14 +1837,17 @@ class AddEditProductPreviewFragment :
 
     private fun showBottomSheet(){
         val bottomSheet = IneligibleAccessWarningBottomSheet.newInstance()
-        bottomSheet.setOnButtonBackClicked { activityFinish() }
+        bottomSheet.setOnButtonBackClicked { goToManageProduct() }
         bottomSheet.setOnButtonLearningProblemClicked { routeToArticle() }
-        bottomSheet.setDismissListener { activityFinish() }
+        bottomSheet.setDismissListener { goToManageProduct() }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun activityFinish(){
-        activity?.finish()
+    private fun goToManageProduct(){
+        activity?.let {
+            RouteManager.route(it, PRODUCT_MANAGE)
+            it.finish()
+        }
     }
 
     private fun routeToArticle(){
