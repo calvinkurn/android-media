@@ -114,6 +114,12 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
+
+    }
+
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private fun setWindowFlag(on: Boolean) {
         val winParams = window.attributes
@@ -194,10 +200,5 @@ class OnboardingActivity : BaseSimpleActivity(), HasComponent<OnboardingComponen
     override fun attachBaseContext(newBase: Context?) {
         super.attachBaseContext(newBase)
         SplitCompat.installActivity(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        NotificationSettingsUtils(applicationContext).checkNotificationPermission(this)
     }
 }
