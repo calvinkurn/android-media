@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +21,7 @@ import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Guideline
 import androidx.core.content.ContextCompat
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -395,6 +397,9 @@ class ChatbotFragment :
         getRecyclerView(view)?.addItemDecoration(ChatBubbleItemDecorator(setDateIndicator()))
 
         chatbotAdapter = adapter as ChatbotAdapter
+
+        viewLifecycleOwner.lifecycle.addObserver(this)
+
         return view
     }
 
@@ -623,14 +628,12 @@ class ChatbotFragment :
         initRecyclerViewListener()
         setupBeforeReplyTime()
 
-        checkToShowCoachMark()
-
         if (savedInstanceState != null) {
             this.attribute = savedInstanceState.getParcelable(this.CSAT_ATTRIBUTES) ?: Attributes()
         }
     }
 
-    private fun checkToShowCoachMark() {
+    private fun checkToShowCoachMark(x: Int, y: Int) {
 //        activity?.let {
 //            val bottomSheetUnify = TestBottomSheet.newInstance(it)
 //            bottomSheetUnify.clearContentPadding = true
@@ -638,6 +641,9 @@ class ChatbotFragment :
 //        }
 
         val intent = Intent(activity, ChatbotOnboardingActivity::class.java)
+        intent.putExtra("x-coordinate",x)
+        intent.putExtra("y-coordinate",y)
+
         startActivity(intent)
 
     }
@@ -824,6 +830,19 @@ class ChatbotFragment :
             checkReplyBubbleOnboardingStatus()
             checkVideoUploadOnboardingStatus()
             replyBubbleContainer?.setReplyListener(this)
+
+//            val lifecycleObserver = object : LifecycleEventObserver {
+//                override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
+//                    if (event != Lifecycle.Event.ON_DESTROY) return
+//                }
+//            }
+//            viewLifecycleOwner.lifecycle.addObserver(lifecycleObserver)
+//
+//            viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+//                viewLifecycleOwner.lifecycle.removeObserver(lifecycleObserver)
+//            }
+
+
         }
     }
 
@@ -1725,6 +1744,16 @@ class ChatbotFragment :
 //                }
 //            }
 //        }
+
+        recyclerView?.doOnLayout {
+            val location = IntArray(2)
+            recyclerView?.getChildAt(getPositionToAnchorReplyBubbleCoachmark())?.getLocationOnScreen(location)
+            val x = location.get(0)
+            val y = location.get(1)
+            Log.d("LEVII", "checkReplyBubbleOnboardingStatus: $x $y")
+            checkToShowCoachMark(x,y)
+        }
+
         }
 
 
@@ -1993,8 +2022,8 @@ class ChatbotFragment :
     override fun sessionChangeStateHandler(state: Boolean) {
         isConnectedToAgent = state
         replyBubbleEnabled = state
-        checkReplyBubbleOnboardingStatus()
-        checkVideoUploadOnboardingStatus()
+//        checkReplyBubbleOnboardingStatus()
+//        checkVideoUploadOnboardingStatus()
         createAttachmentMenus()
     }
 
