@@ -3,35 +3,23 @@ package com.tokopedia.digital_deals.view.utils;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
-import android.util.SparseIntArray;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.android.gms.location.LocationServices;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.gson.Gson;
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler;
 import com.tokopedia.abstraction.constant.TkpdCache;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.digital_deals.data.source.DealsUrl;
 import com.tokopedia.digital_deals.view.model.Location;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.linker.LinkerManager;
 import com.tokopedia.linker.LinkerUtils;
 import com.tokopedia.linker.interfaces.ShareCallback;
@@ -190,46 +178,6 @@ public class Utils {
         } else {
             Toast.makeText(context, context.getResources().getString(com.tokopedia.digital_deals.R.string.cannot_find_application), Toast.LENGTH_SHORT).show();
         }
-    }
-
-    public void showSnackBarDeals(String text, Context context, ViewGroup coordinatorLayout, boolean locationToast) {
-        final Snackbar snackbar = Snackbar.make(coordinatorLayout, text, Snackbar.LENGTH_LONG);
-        Snackbar.SnackbarLayout layout = (Snackbar.SnackbarLayout) snackbar.getView();
-
-        TextView textView = layout.findViewById(com.google.android.material.R.id.snackbar_text);
-        textView.setVisibility(View.INVISIBLE);
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View snackView = inflater.inflate(com.tokopedia.digital_deals.R.layout.custom_location_change_snackbar, null);
-        TextView tvmsg = snackView.findViewById(com.tokopedia.digital_deals.R.id.tv_msg);
-        if (locationToast) {
-            String str = context.getResources().getString(com.tokopedia.digital_deals.R.string.location_changed_to);
-            str += text.toUpperCase();
-            tvmsg.setText(getLocationText(str, context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_N700_44)));
-        } else {
-            snackView.findViewById(com.tokopedia.digital_deals.R.id.main_content).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_R100));
-            snackView.findViewById(com.tokopedia.design.R.id.divider).setBackgroundColor(context.getResources().getColor(com.tokopedia.unifyprinciples.R.color.Unify_Y500));
-            tvmsg.setText(text);
-        }
-
-        TextView okbtn = snackView.findViewById(com.tokopedia.digital_deals.R.id.snack_ok);
-        okbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                snackbar.dismiss();
-            }
-        });
-        layout.addView(snackView, 0);
-        layout.setPadding(0, 0, 0, 0);
-        snackbar.show();
-    }
-
-    private SpannableString getLocationText(String text, int color) {
-        int startIndexOfLink = text.indexOf(":");
-        SpannableString spannableString = new SpannableString(text);
-        spannableString.setSpan(new StyleSpan(Typeface.BOLD), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannableString.setSpan(new ForegroundColorSpan(color), startIndexOfLink, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return spannableString;
     }
 
     public void shareDeal(String deeplinkSlug, Context context, String name, String imageUrl, String desktopUrl) {

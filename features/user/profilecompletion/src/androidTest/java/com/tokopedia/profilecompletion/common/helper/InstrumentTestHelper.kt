@@ -7,9 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
-import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.clearText
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.repeatedlyUntil
+import androidx.test.espresso.action.ViewActions.swipeUp
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.ActivityResultMatchers
@@ -19,6 +20,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers
 import androidx.test.espresso.matcher.BoundedMatcher
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
+import androidx.test.espresso.matcher.ViewMatchers.hasDescendant
 import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
@@ -48,10 +50,14 @@ fun clickViewHolder(title: String, action: ViewAction? = null) {
             return item?.binding?.fragmentProfileItemTitle?.text?.toString().equals(title, ignoreCase = true)
         }
     }
-    if (action == null)
-        Espresso.onView(withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, ViewActions.click()))
-    else
+    if (action == null) {
+        Espresso.onView(withId(R.id.nested_scroll_view)).perform(repeatedlyUntil(swipeUp(), hasDescendant(withText(title)), 10), click())
+    }
+    else {
+        Espresso.onView(withId(R.id.nested_scroll_view)).perform(repeatedlyUntil(swipeUp(), hasDescendant(withText(title)), 10))
         Espresso.onView(withId(R.id.fragmentProfileInfoRv)).perform(RecyclerViewActions.scrollToHolder(matcher), RecyclerViewActions.actionOnHolderItem(matcher, action))
+    }
+
 }
 
 fun <T : View> clickChildWithViewId(resId: Int): ViewAction {

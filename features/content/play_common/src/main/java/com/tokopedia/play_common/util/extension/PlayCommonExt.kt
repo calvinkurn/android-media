@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.ContentResolver
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.graphics.Typeface
@@ -30,14 +31,17 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 import kotlin.reflect.KProperty1
 
 /**
@@ -401,3 +405,30 @@ inline fun SpannableStringBuilder.inSpans(
 
 inline fun SpannableStringBuilder.bold(builderAction: SpannableStringBuilder.() -> Unit) =
     inSpans(StyleSpan(Typeface.BOLD), builderAction = builderAction)
+
+suspend fun getBitmapFromUrl(
+    context: Context,
+    url: String,
+): Bitmap = suspendCancellableCoroutine { cont ->
+    val target = object : CustomTarget<Bitmap>() {
+        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+            if (cont.isActive) cont.resume(resource)
+        }
+
+        override fun onLoadCleared(placeholder: Drawable?) {
+            if (!cont.isActive || cont.isCompleted) return
+            cont.resumeWithException(
+                IllegalStateException("Failed to load image from url: $url")
+            )
+        }
+    }
+
+    Glide.with(context)
+        .asBitmap()
+        .load(url)
+        .into(target)
+
+    cont.invokeOnCancellation {
+        Glide.with(context).clear(target)
+    }
+}

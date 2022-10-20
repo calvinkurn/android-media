@@ -528,4 +528,15 @@
     <string name="mvc_voucher_image">Voucher Image</string>
     <string name="mvc_tips">Tips</string>
     <string name="mvc_voucher_usage_preview">Voucher usage preview</string>
+
+    <!-- content descriptions -->
+    <string name="image_coupon_content_description">Image coupon</string>
+    <string name="image_view_coupon_detail_description">Image view coupon</string>
+    <string name="image_bottomsheet_menu_description">Image bottomsheet menu</string>
+    <string name="image_header_chip_reset_content_description">Image chip reset</string>
+    <string name="image_voucher_list_no_result_content_description">Image voucher list no result</string>
+    <string name="image_voucher_preview_content_description">Image voucher preview</string>
+    <string name="image_copy_subinfo_content_description">Image copy</string>
+    <string name="image_coupon_quota_info_content_description">Image coupon quota</string>
+    <string name="image_coupon_download_content_description">Image download</string>
 </resources>

@@ -263,6 +263,12 @@ open class EmoneyPdpFragment : BaseDaggerFragment(), EmoneyPdpHeaderViewWidget.A
             binding.emoneyFullPageLoadingLayout.hide()
             binding.emoneyBuyWidget.onBuyButtonLoading(false)
         })
+
+        addToCartViewModel.errorAtc.observe(viewLifecycleOwner){
+            renderErrorMessage(MessageErrorException(it.title))
+            binding.emoneyFullPageLoadingLayout.hide()
+            binding.emoneyBuyWidget.onBuyButtonLoading(false)
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

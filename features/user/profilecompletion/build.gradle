@@ -87,6 +87,9 @@ dependencies {
     implementation rootProject.ext.playServicesDependencies.core
     implementation projectOrAar(rootProject.ext.libraries.encryption)
 
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+    implementation projectOrAar(rootProject.ext.libraries.logger)
+
     //test
     testImplementation rootProject.ext.testDependencies.junit
     testImplementation rootProject.ext.testDependencies.mockitorCore

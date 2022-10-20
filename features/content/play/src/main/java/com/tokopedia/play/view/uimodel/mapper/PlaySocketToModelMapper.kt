@@ -21,6 +21,7 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
+import com.tokopedia.utils.date.DateUtil
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -60,8 +61,14 @@ class PlaySocketToModelMapper @Inject constructor(
     }
 
     fun mapProductSection(input: ProductSection): TagItemUiModel {
+        val controlTime = DateUtil.getCurrentDate()
         return TagItemUiModel(
-            product = ProductUiModel(input.sectionList.map(productTagMapper::mapSection), input.config.showProductTag),
+            product = ProductUiModel(
+                productSectionList = input.sectionList.map {
+                    productTagMapper.mapSection(it, controlTime)
+                },
+                canShow = input.config.showProductTag,
+            ),
             maxFeatured = input.config.peekProductCount,
             bottomSheetTitle = input.config.bottomSheetTitle,
             resultState = ResultState.Success,

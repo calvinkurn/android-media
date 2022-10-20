@@ -22,10 +22,6 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     defStyleAttr: Int = Int.ZERO
 ) : BaseReviewCustomView<WidgetCreateReviewAnonymousBinding>(context, attrs, defStyleAttr) {
 
-    companion object {
-        private const val TRANSITION_DURATION = 300L
-    }
-
     private val transitionHandler = TransitionHandler()
     private val checkboxListener = CheckboxListener()
     private val trackingHandler = TrackingHandler()
@@ -73,7 +69,7 @@ class CreateReviewAnonymous @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.layoutAnonymous.root)
                 addTarget(binding.layoutAnonymousLoading.root)
                 interpolator = AccelerateInterpolator()

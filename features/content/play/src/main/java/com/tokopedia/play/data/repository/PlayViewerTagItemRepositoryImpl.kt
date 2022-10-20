@@ -3,6 +3,7 @@ package com.tokopedia.play.data.repository
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.exception.ResponseErrorException
 import com.tokopedia.play.domain.CheckUpcomingCampaignReminderUseCase
@@ -10,6 +11,7 @@ import com.tokopedia.play.domain.GetProductTagItemSectionUseCase
 import com.tokopedia.play.domain.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
 import com.tokopedia.play.view.type.PlayUpcomingBellStatus
+import com.tokopedia.play.view.type.ProductSectionType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayUiModelMapper
 import com.tokopedia.play.view.uimodel.recom.tagitem.*
@@ -18,6 +20,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -30,7 +33,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     private val mapper: PlayUiModelMapper,
     private val userSession: UserSessionInterface,
     private val dispatchers: CoroutineDispatchers,
-): PlayViewerTagItemRepository {
+) : PlayViewerTagItemRepository {
 
     override suspend fun getTagItem(
         channelId: String,
@@ -50,7 +53,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
 
         return@withContext TagItemUiModel(
             product = ProductUiModel(
-                productSectionList = productList,
+                productSectionList = updateCampaignReminderStatus(productList),
                 canShow = true
             ),
             voucher = voucherList,
@@ -58,6 +61,29 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
             resultState = ResultState.Success,
             bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
         )
+    }
+
+    override suspend fun updateCampaignReminderStatus(
+        productSections: List<ProductSectionUiModel.Section>
+    ): List<ProductSectionUiModel.Section> = withContext(dispatchers.io) {
+        if (userSession.isLoggedIn) {
+            val reminderMap = productSections.filter {
+                it.config.type == ProductSectionType.Upcoming
+            }.associate {
+                it.id to async {
+                    checkUpcomingCampaign(it.id)
+                }
+            }
+
+            productSections.map {
+                it.copy(
+                    config = it.config.copy(
+                        reminder = if (reminderMap[it.id]?.await() == true) PlayUpcomingBellStatus.On
+                        else it.config.reminder
+                    )
+                )
+            }
+        } else productSections
     }
 
     override suspend fun getVariant(
@@ -148,17 +174,33 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun checkUpcomingCampaign(campaignId: Long): Boolean = withContext(dispatchers.io){
+    override suspend fun checkUpcomingCampaign(campaignId: String): Boolean = withContext(dispatchers.io){
         val response = checkUpcomingCampaignReminderUseCase.apply {
-                setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId).parameters)
+            setRequestParams(CheckUpcomingCampaignReminderUseCase.createParam(campaignId.toLongOrZero()).parameters)
         }.executeOnBackground()
         return@withContext response.response.isAvailable
     }
 
-    override suspend fun subscribeUpcomingCampaign(campaignId: Long, reminderType: PlayUpcomingBellStatus): Pair<Boolean, String> = withContext(dispatchers.io)  {
+    override suspend fun subscribeUpcomingCampaign(
+        campaignId: String,
+        shouldRemind: Boolean,
+    ): PlayViewerTagItemRepository.CampaignReminder = withContext(dispatchers.io) {
         val response = postUpcomingCampaignReminderUseCase.apply {
-                setRequestParams(PostUpcomingCampaignReminderUseCase.createParam(campaignId, reminderType).parameters)
+            setRequestParams(
+                PostUpcomingCampaignReminderUseCase.createParam(
+                    campaignId.toLongOrZero(),
+                    shouldRemind,
+                ).parameters
+            )
         }.executeOnBackground()
-        return@withContext Pair(response.response.success, if(response.response.errorMessage.isNotEmpty()) response.response.errorMessage else response.response.message)
+
+        val currentStatus = checkUpcomingCampaign(campaignId)
+
+        PlayViewerTagItemRepository.CampaignReminder(
+            isReminded = currentStatus,
+            message = if (!response.response.success) response.response.errorMessage
+            else if (shouldRemind != currentStatus) ""
+            else response.response.message
+        )
     }
 }

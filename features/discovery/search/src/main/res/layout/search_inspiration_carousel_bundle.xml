@@ -20,8 +20,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_product_bundle"
         android:layout_width="match_parent"
-        android:layout_height="268dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:minHeight="268dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tg_product_bundle_title"
         tools:listitem="@layout/item_product_bundle_multiple_widget" />

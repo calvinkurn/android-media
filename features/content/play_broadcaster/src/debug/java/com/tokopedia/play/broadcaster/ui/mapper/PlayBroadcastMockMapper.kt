@@ -206,7 +206,10 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
         return emptyList()
     }
 
-    override fun mapChannelSchedule(timestamp: GetChannelResponse.Timestamp): BroadcastScheduleUiModel {
+    override fun mapChannelSchedule(
+        timestamp: GetChannelResponse.Timestamp,
+        status: GetChannelResponse.ChannelBasicStatus
+    ): BroadcastScheduleUiModel {
         return BroadcastScheduleUiModel.NoSchedule
     }
 
@@ -273,11 +276,9 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
             maxTitleLength = 30,
             maxChoicesCount = 3,
             minChoicesCount = 2,
-            maxRewardLength = 30,
             maxChoiceLength = 35,
             availableStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
             eligibleStartTimeInMs = listOf(3 * 60 * 1000L, 5 * 60 * 1000L, 10 * 60 * 1000L).sorted(),
-            showPrizeCoachMark = true,
         ),
     )
 

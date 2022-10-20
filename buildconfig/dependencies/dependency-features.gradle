@@ -43,7 +43,7 @@ ext {
             play                            : ":features:content:play",
             playCommon                      : ":features:content:play_common",
             playBroadcaster                 : ":features:content:play_broadcaster",
-            playTest                        : ":features:content:play_test",
+            contentTest                     : ":features:content:content_test",
             playWidget                      : ":features:content:play_widget",
             commonTopupBills                : ":features:recharge:common_topup_bills",
             commonDigital                   : ":features:recharge:common_digital",
@@ -73,6 +73,7 @@ ext {
             deals                           : ":features:entertainment:deals",
             digitalDeals                    : ":features:entertainment:digital_deals",
             event                           : ":features:entertainment:event",
+            commonEntertainment             : ":features:entertainment:common_entertainment",
 
             umrah                           : ":features:salam:umrah",
 
@@ -81,12 +82,10 @@ ext {
             home                            : ":features:discovery:home",
             homeComponent                   : ":features:discovery:home_component",
             homeRecom                       : ":features:discovery:home_recom",
-            homeWishlist                    : ":features:discovery:home_wishlist",
             homeNav                         : ":features:discovery:home_nav",
             recentview                      : ":features:discovery:recentview",
             search                          : ":features:discovery:search",
             topAdsSdk                       : ":features:discovery:topadssdk",
-            wishlistCommon                  : ":features:discovery:wishlist_common",
             productCard                     : ":features:discovery:productcard",
             productCardOptions              : ":features:discovery:productcard_options",
             carouselProductCard             : ":features:discovery:carousel_productcard",
@@ -132,6 +131,7 @@ ext {
             mediaCommon                     : ":features:media:media-common",
             medialoader                     : ":features:media:medialoader",
             liveBroadcaster                 : ":features:media:live-broadcaster",
+            mediaeditor		                : ":features:media:mediaeditor",
             mediapicker		                : ":features:media:mediapicker",
             mediapickerCommon		        : ":features:media:mediapicker-common",
 
