@@ -2773,6 +2773,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun fetchFirstPage() {
+        feedContainer.show()
         showRefresh()
         adapter.showShimmer()
         feedViewModel.getFeedFirstPage()
@@ -2889,7 +2890,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
             setActionClickListener {
                 fetchFirstPage()
                 hide()
-                feedContainer.show()
             }
         }
         feedContainer.hide()
